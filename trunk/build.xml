@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="version1.0" default="info" basedir=".">
+
+  <!-- Customisable properties -->
+  <property name="app.name" value="version1.0"/>
+  <property name="version" value="0.1"/>
+
+  <property name="deprecation" value="true"/>
+  <property name="debug" value="true"/>
+  <property name="optimize" value="true"/>
+
+  <!-- Setup of current time stamp and format -->
+  <tstamp>
+    <format property="TODAY" pattern="yyyy-MM-dd"/>
+  </tstamp>
+
+  <!-- Project and build related properties, no modifications needed -->
+  <property name="src.dir"           value="${basedir}/source"/>
+  <property name="resource.dir"      value="${basedir}/source/resources"/>
+  <property name="dist.dir"          value="${basedir}/dist"/>
+  <property name="war.dir"           value="${basedir}/war"/>
+  <property name="webinf.dir"        value="${war.dir}/WEB-INF"/>
+  <property name="webinflib.dir"     value="${webinf.dir}/lib"/>
+  <!-- <property name="compile-deps.dir"  value="${basedir}/deps/compile"/> <property name="config.dir"        value="${basedir}/source/config"/>     
+  <copy todir="${classes.dir}">
+      <fileset dir="${config.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+    <copy todir="${classes.dir}">
+      <fileset dir="${hbm.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+      </fileset>
+   </copy>   
+    
+   --> 
+
+	
+  <property name="classes.dir"       value="${webinf.dir}/classes"/>
+  <property name="version.string"    value="version ${version} (${TODAY})"/>
+  <property name="version.file"      value="${webinf.dir}/VERSION"/>
+  <property name="war.filename"      value="${dist.dir}/${app.name}.war"/>
+  <property name="javadoc.dir"       value="${basedir}/docs"/>
+  <property name="src.charset"       value="UTF-8"/>
+
+  <!-- Loading system and environmnet dependend settings -->
+  <property file="${basedir}/env.properties"/>
+
+  <!-- For propert working of the classpath this directory has to be created right here -->
+  <mkdir dir="${classes.dir}"/>
+
+  <path id="prj-classpath">
+    <dirset dir="${classes.dir}">
+      <include name="**"/>
+    </dirset>
+    <fileset dir="${webinflib.dir}">
+      <include name="*.jar"/>
+      <include name="*.zip"/>
+    </fileset>
+  </path>
+
+  <property name="prj.classpath" refid="prj-classpath"/>
+
+  <target name="info" description="Default target which displays all usable targets and describes them">
+    <echo>
+      ****************************************************************
+      ***                    Choose a task                         ***
+      ****************************************************************
+
+      compile     : Compiles all source. And does version string update.
+      war         : Invokes the compilation, then builds the deployable war file.
+      clean       : Cleans all files compiled with ant including deployable archives, reports and javadoc.
+      javadoc     : Creates the full javadoc of the whole project source, including private.
+    	
+    </echo>
+  </target>
+
+  <target name="clean" description="Cleans all files compiled with ant including deployable archives, reports and javadoc">
+    <delete dir="${classes.dir}"/>
+    <delete dir="${javadoc.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+  
+  <target name="init" description="Setup of all needed folders for the build process">
+    <mkdir dir="${classes.dir}"/>
+    <!-- Adding the patterns to exclude by default -->
+    <defaultexcludes add="**/*.skel"/>
+    <defaultexcludes add="**/*.input"/>
+    <defaultexcludes add="**/.svn"/>
+  </target>
+
+  <target name="compile" depends="init" description="Compiles all source. And does version string update.">
+    <javac srcdir="${src.dir}"
+           destdir="${classes.dir}"
+           classpath="${prj.classpath}"
+           deprecation="${deprecation}"
+           debug="${debug}"
+           encoding="${src.charset}"
+           optimize="${optimize}"
+           source="1.5">
+    </javac>
+    <copy todir="${classes.dir}">
+      <fileset dir="${resource.dir}">
+        <include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+      </fileset>
+    </copy>
+
+
+    <echo file="${version.file}" message="${version.string}"/>
+  </target>
+  
+  <target name="war" depends="compile" description="Invokes the compilation, then builds the deployable war file">
+    <mkdir dir="${dist.dir}"/>
+    <war destfile="${war.filename}" webxml="${webinf.dir}/web.xml">
+      <fileset dir="${war.dir}">
+        <exclude name="WEB-INF/web.xml"/>
+      </fileset>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <section name="common">
+          <attribute name="Implementation-Title"   value="${app.name}"/>
+          <attribute name="Implementation-Version" value="${version.string}"/>
+          <attribute name="Implementation-Vendor"  value="Doctor-Doc Team"/>
+          <attribute name="Sealed" value="false"/>
+        </section>
+      </manifest>
+    </war>
+  </target>
+  <target name="javadoc" description="Creates the full javadoc of the whole project source, including private.">
+    <mkdir dir="${javadoc.dir}"/>
+    <javadoc
+        packagenames="*"
+        sourcepath="${src.dir}"
+        classpath="${prj.classpath}"
+        destdir="${javadoc.dir}"
+        author="true"
+        version="true"
+        use="true"
+        splitindex="true"
+        access="private"
+        windowtitle="Test API"/>
+  </target>
+</project>

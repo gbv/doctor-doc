@@ -1,0 +1,1493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+  <data-sources/>
+  
+  <!-- ======================================== Form Bean Definitions -->
+  <form-beans>
+  	<form-bean name="BestellParam" type="ch.dbs.entity.BestellParam"/>
+  	<form-bean name="BillingForm" type="ch.dbs.form.BillingForm"/>
+  	<form-bean name="HoldingForm" type="ch.dbs.form.HoldingForm"/>
+	<form-bean name="LoginForm" type="ch.dbs.form.LoginForm"/>
+	<form-bean name="FindFree" type="ch.dbs.form.FindFree"/>
+	<form-bean name="JournalDetails" type="ch.dbs.form.JournalDetails"/>
+	<form-bean name="OrderForm" type="ch.dbs.form.OrderForm"/>
+	<form-bean name="UserInfo" type="ch.dbs.form.UserInfo"/>
+	<form-bean name="UserForm" type="ch.dbs.form.UserForm"/>
+	<form-bean name="OverviewForm" type="ch.dbs.form.OverviewForm"/>
+	<form-bean name="ErrorMessage" type="ch.dbs.form.ErrorMessage"/>
+	<form-bean name="Message" type="ch.dbs.form.Message"/>
+	<form-bean name="KontoForm" type="ch.dbs.form.KontoForm"/>
+	<form-bean name="OrderStatistikForm" type="ch.dbs.form.OrderStatistikForm"/>
+	<form-bean name="ActiveMenus" type="ch.dbs.form.ActiveMenusForm"/>
+	<form-bean name="ReSendFaxForm" type="ch.dbs.form.ReSendFaxForm"/>
+	<form-bean name="IllForm" type="ch.dbs.form.IllForm"/>
+	<form-bean name="IlvReportForm" type="ch.dbs.form.IlvReportForm"/>
+	<form-bean name="GbvSruForm" type="ch.dbs.form.GbvSruForm"/>
+	<form-bean name="PreisWaehrungForm" type="ch.dbs.form.PreisWaehrungForm"/>
+	<form-bean name="SearchesForm" type="ch.dbs.form.SearchesForm"/>
+  </form-beans>
+  
+  <global-exceptions/>
+  
+  <!-- =================================== Global Forward Definitions -->
+  <global-forwards>
+    <forward name="start" path="/Eingabe.do"/>
+  </global-forwards>
+ 
+  <!-- =================================== Action Mapping Definitions -->
+  
+ <action-mappings>
+ 
+   <!-- *************************************************Login************************************************* -->
+  	
+	<!-- Loginvorgang  -->
+  	<action name="ActiveMenus" forward="/jsp/login.jsp?activemenu=login" path="/login" />
+  	<action path="/logincheck"
+  			input="/login.do" 
+  			name="LoginForm"
+  			validate="true"  
+  			scope="request" 
+  			type="ch.dbs.actions.user.LoginAction">
+      <forward name="success" path="/searchfree.do"/>
+      <forward name="order" path="/journalorder.do?method=prepare"/>
+      <forward name="checkavailability" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+      <forward name="chooseuser" path="/chooseuser.do"/>
+      <forward name="konto" path="/kontochoose.do"/>
+      <forward name="gtc" path="/gtc.do"/>
+      <forward name="adduser" path="/add.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Übernahme von Bestelldaten aus Bestellform-Email  -->
+    <action path="/pl"
+  			name="LoginForm"
+  			validate="false"  
+  			scope="request"
+  			type="ch.dbs.actions.user.PrepareLoginAction">
+      <forward name="success" path="/login.do"/>
+      <forward name="checkavailability" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Übernahme von Userangaben aus Bestellform-Email  -->
+    <action path="/add"
+  			name="UserForm"
+  			validate="false"  
+  			scope="request"
+  			type="ch.dbs.actions.user.PrepareUserAddAction">
+      <forward name="login" path="/login.do"/>
+      <forward name="adduser" path="/modifykontousers.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action path="/login1"
+  			name="LoginForm"
+  			validate="false"  
+  			scope="request"
+  			type="ch.dbs.actions.user.LoginAction">
+      <forward name="success" path="/searchfree.do"/>
+      <forward name="order" path="/journalorder.do?method=prepare"/>
+      <forward name="checkavailability" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+      <forward name="konto" path="/kontochoose.do"/>
+      <forward name="chooseuser" path="/chooseuser.do"/>
+      <forward name="gtc" path="/gtc.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action name="LoginForm" forward="/jsp/chooseuser.jsp?activemenu=login" path="/chooseuser" />
+    
+    <action path="/setuser" 
+  			input="/chooseuser.do" 
+  			name="LoginForm"
+  			parameter="method"
+  			validate="false"  
+  			scope="request" 
+  			type="ch.dbs.actions.user.UserAction">
+      <forward name="success" path="/searchfree.do"/>
+      <forward name="order" path="/journalorder.do?method=prepare"/>
+      <forward name="checkavailability" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+      <forward name="kontochoose" path="/kontochoose.do"/>
+      <forward name="gtc" path="/gtc.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- *************************************************Switch manually Locales************************************************* -->
+    
+    <action path="/language"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.user.LocaleSwitcher">
+      <forward name="loggedout" path="/login.do?activemenu=login"/>
+      <forward name="loggedin" path="/searchfree.do?activemenu=suchenbestellen"/>
+    </action>
+    
+    <!-- *************************************************AGB/GTC************************************************* -->
+  	
+	<!-- Nutzungsbedingungen  -->		
+    <action name="ActiveMenus" forward="/jsp/gtc.jsp" path="/gtc"/>
+  	<action path="/gtc_"
+  			input="/jsp/gtc.jsp"
+  			name="OrderForm"
+  			parameter="method"
+  			validate="false"  
+  			scope="request"
+  			type="ch.dbs.actions.user.GtcAction">
+      <forward name="success" path="/searchfree.do"/>
+      <forward name="order" path="/journalorder.do?method=prepare"/>
+      <forward name="checkavailability" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+      <forward name="decline" path="/logout.do"/>
+      <forward name="konto" path="/kontochoose.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- *************************************************HowTo************************************************* -->
+	<action name="ActiveMenus" forward="/jsp/howto.jsp" path="/howto"/>
+	<action name="ActiveMenus" forward="/howto.do?activemenu=howto" path="/howto_openurl"/>
+   
+	    
+	<!-- ************************************************* Impressum ************************************************* -->    
+	<action name="ActiveMenus" forward="/jsp/impressum.jsp" path="/impressum" />    
+	
+	<!-- *************************************************Administration************************************************* -->
+	<!-- Passwörter Benutzer zurücksetzen -->
+	<action path="/pwreset"  
+			input="/login.do" 
+  			name="LoginForm"
+  			parameter="method"
+  			validate="false"  
+  			scope="request"  
+			type="ch.dbs.actions.user.UserAction">
+			<forward name="failure" path="/error.do"/>
+			<forward name="success" path="/jsp/message.jsp"/>
+    </action>
+    
+    <!-- Fax erneut von Faxserver ausliefern lassen -->
+	<action path="/sendfaxagain"  
+  			name="ReSendFaxForm"
+  			parameter="method"
+  			validate="false"  
+  			scope="request"  
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="failure" path="/error.do"/>
+			<forward name="success" path="/jsp/message.jsp"/>
+    </action>
+    
+    <!-- Servertest für Admins beliebiger Methoden -->    
+    <action path="/test"
+            validate="false" 
+            scope="request"
+            type="ch.dbs.admin.AdminServerTest">
+      <forward name="success" path="/jsp/message.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+
+	<!-- *************************************************Kontoübersicht************************************************* --> 
+      
+    <action path="/listkontobestellungen"
+  			name="OverviewForm"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.user.UserAction">
+  	  <forward name="success" path="/uebersicht.do"/>
+  	  <forward name="search" path="/searchord.do?method=search"/>
+  	  <forward name="result" path="/uebersicht.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/kontochoose.jsp" path="/kontochoose"/>
+    <action forward="/jsp/uebersicht.jsp" path="/uebersicht"/>
+
+   <!-- *************************************************Logout************************************************* -->    
+    <!-- Logout -->
+    <action path="/logout"
+  			scope="request" 
+  			type="ch.dbs.actions.user.LogoutAction">
+  	  <forward name="success" path="/login.do"/>
+    </action>
+
+   <!-- *************************************************Konto wechseln************************************************* -->    
+    <!-- Konto wechseln -->
+    <action path="/changekonto"
+  			name="KontoForm"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.user.UserAction">
+  	  <forward name="success" path="/searchfree.do"/>
+  	  <forward name="order" path="/journalorder.do?method=prepare"/>
+  	  <forward name="checkavailability" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+  	  <forward name="adduser" path="/add.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/uebersicht.jsp" path="/uebersicht"/>
+    
+    <!-- Fehleranzeige mapping -->
+    <action forward="/jsp/error.jsp" path="/error"/>
+    
+    
+    <!-- *************************************************Kontoverwaltung************************************************ -->    
+    <!-- Konto- und Benutzerregistration mapping -->    
+    
+        <action path="/anmeldungkont"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/anmeldungkonto.do"/>
+			<forward name="failure" path="/error.do"/>
+   	    </action>
+    
+       <action path="/anmeldungkonto"
+    		input="/jsp/anmeldungkonto.jsp" 
+			name="KontoForm" 
+			parameter="method"
+			validate="false" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/anmeldungbibliothekar.do"/>
+			<forward name="failure" path="/error.do"/>
+			<forward name="subitofailed" path="/anmeldungkonto.do"/>			
+    </action>
+    <action forward="/jsp/anmeldungkonto.jsp"  path="/anmeldungkonto"/>
+    <action path="/anmeldungkonto_"
+  			input="/jsp/anmeldungkonto.jsp" 
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/anmeldungbibliothekar.do"/>
+			<forward name="failure" path="/error.do"/>
+			<forward name="subitofailed" path="/anmeldungkonto.do"/>	
+    </action>
+        
+    <action forward="/jsp/anmeldungbibliothekar.jsp" path="/anmeldungbibliothekar"/>
+    <action path="/anmeldungbibliothekar_"
+  			input="/jsp/anmeldungbibliothekar.jsp"
+			name="UserForm" 
+			parameter="method"
+			validate="false" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="weiter" path="/login1.do?method=LoginAction"/>
+			<forward name="userfailed" path="/anmeldungbibliothekar.do"/>
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action name="ActiveMenus" forward="/jsp/anmeldungtyp.jsp" path="/anmeldungtyp" />
+    <action path="/anmeldungtyp_"
+  			input="/jsp/anmeldungtyp.jsp" 
+			name="UserForm"  
+			scope="request" 
+			type="ch.dbs.actions.user.UserAction">
+			<forward name="weiter" path="/login.do"/>
+			<forward name="zurueck" path="/anmeldungbibliothekar.do"/>
+			<forward name="failure" path="/error.do"/>			
+    </action>
+    
+
+    <action path="/modifykont"
+         	input="/jsp/modifykonto.jsp"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/modifykonto.do"/>
+			<forward name="failure" path="/error.do"/>
+    </action>
+
+    
+    <action name="ActiveMenus" forward="/jsp/modifykonto.jsp"  path="/modifykonto"/>
+    <action path="/modifykonto_"
+  			input="/jsp/modifykonto.jsp" 
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/modifykont.do?method=prepareModifyKonto"/>
+			<forward name="failure" path="/error.do"/>
+			<forward name="missingvalues" path="/modifykonto.do"/>
+			<forward name="subitofailed" path="/modifykonto.do"/>
+    </action>
+    
+    <!-- Auflistung aller Konten zum Verwalten -->
+    <action path="/kontoadmin"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/listkontos.do"/>
+			<forward name="failure" path="/error.do"/>
+    </action>
+    <action name="ActiveMenus" forward="/jsp/kontolist.jsp"  path="/listkontos"/>
+    
+    <!-- Kontotyp aender -->
+    <action path="/changekontotyp"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/jsp/message.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Kontostatus ändern -->
+    <action path="/changekontostate"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/jsp/message.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Paydate setzen -->
+    <action path="/setpaydate"
+			name="BillingForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.billing.BillingAction">
+			<forward name="success" path="/jsp/message.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Expdate setzen -->
+    <action path="/setexpdate"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/jsp/message.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    <!-- Expdate Popfax-Server setzen -->
+    <action path="/setexpdateserver"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/jsp/message.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+        
+    <!-- Rechnung vorbereiten -->
+    <action path="/preparebillingtext"
+			name="BillingForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/jsp/editbillingtext.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Rechnung versenden -->
+    <action path="/sendbill"
+			name="BillingForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.user.KontoAction">
+			<forward name="success" path="/jsp/message.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Rechnung zu Konto auflisten -->
+    <action path="/listbillings"
+			name="KontoForm" 
+			parameter="method" 
+			scope="request" 
+			type="ch.dbs.actions.billing.BillingAction">
+			<forward name="success" path="/jsp/billinglist.jsp"/> 
+			<forward name="failure" path="/error.do"/>
+    </action>
+    
+   <!-- *************************************************ISSN-Search************************************************* -->    
+    <!-- Arikelorder mapping -->
+    <action forward="/jsp/issnsearch.jsp" path="/issnsearch"/>
+    <action path="/issnsearch_"
+    		validate="false" 
+            name="OrderForm"
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderAction">
+      <forward name="success" path="/jsp/issnsearch.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action name="ActiveMenus" forward="/jsp/searchfree.jsp" path="/searchfree"/>
+    
+    <action path="/findissn"
+    		input="/jsp/searchfree.jsp" 
+            name="OrderForm"
+            parameter="method"
+            scope="request"
+            validate="false" 
+            type="ch.dbs.actions.bestellung.OrderAction">
+      <forward name="success" path="/jsp/issnresult.jsp"/>
+      <forward name="stock" path="/stock.do?method=prepare"/>
+      <forward name="issn_direkt" path="/jsp/issnsearch.jsp"/>
+      <forward name="notfreeebz" path="/journalorder.do?method=prepare"/>
+	  <forward name="freeezb" path="/jsp/availabilityresult.jsp"/>
+      <forward name="noresult" path="/jsp/issnsearch.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+   <!-- *************************************************Session-ID British Library************************************************* -->
+   
+   <action path="/sessionbritishlibrary"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.BestellformAction">
+      <forward name="success" path="/jsp/redirectbl.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+   
+   
+    
+   <!-- *************************************************Bestellformular für Kunden************************************************* -->    
+   
+    <action path="/bestellform"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.BestellformAction">
+      <forward name="success" path="/bestellformjsp.do"/>
+      <forward name="failure" path="/jsp/error.jsp"/>
+    </action>
+    
+       <action path="/validateBestellform"
+		    input="/jsp/bestellformular.jsp" 
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.BestellformAction">
+      <forward name="success" path="/bestellformsuccess.do"/>
+      <forward name="missingvalues" path="/bestellform.do?method=validate"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action path="/bfconfigureselect"
+            name="BestellParam"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.BestellformAction">
+      <forward name="success" path="/bestellformconfigureselect.do"/>
+      <forward name="failure" path="/jsp/error.jsp"/>
+    </action>
+    
+    <action path="/bfconfigure"
+            name="BestellParam"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.BestellformAction">
+      <forward name="success" path="/bestellformconfigure.do"/>
+      <forward name="bestellform" path="/bestellformjsp.do"/>
+      <forward name="failure" path="/jsp/error.jsp"/>
+    </action>
+    
+    <action name="ActiveMenus" forward="/jsp/bestellformular.jsp" path="/bestellformjsp"/> 
+    <action name="ActiveMenus" forward="/jsp/bestellformsuccess.jsp" path="/bestellformsuccess"/>
+    <action name="ActiveMenus" forward="/jsp/bestellformconfigureselect.jsp" path="/bestellformconfigureselect"/>
+    <action name="ActiveMenus" forward="/jsp/bestellformconfigure.jsp" path="/bestellformconfigure"/> 
+    
+   <!-- *************************************************OpenURL / Base-URL************************************************* -->    
+   
+    <action path="/openurl"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.openurl.GetOpenUrlRequest">
+      <forward name="success" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+   <!-- *************************************************DAIA (Document Availability Information API / Base-URL************************************************* -->    
+   
+    <action path="/daia"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.ddl.daia.Daia">
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+       <!-- *************************************************ILL-Format / Base-URL************************************************* -->    
+   
+    <action path="/illform"
+            name="IllForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.illformat.GetIllFormatRequest">
+      <forward name="success" path="/illanswer.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action forward="/jsp/illanswer.jsp" path="/illanswer"/>
+    
+   <!-- *************************************************Suchfunktionen************************************************* -->
+    
+        <action path="/searchorder"
+            name="OverviewForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.user.UserAction">
+      <forward name="success" path="/jsp/searchorders.jsp"/>
+      <forward name="result" path="/uebersicht.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action> 
+    
+       <action path="/searchord"
+		    input="/jsp/searchorders.jsp" 
+            name="OverviewForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.user.UserAction">
+      <forward name="success" path="/searchresult.do"/>
+      <forward name="result" path="/uebersicht.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action forward="/jsp/searchresult.jsp" path="/searchresult"/>
+
+   <!-- *************************************************Artikelbestellung bei Subito************************************************* -->    
+    <action path="/journalorder"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderAction">
+      <forward name="success" path="/jsp/journalorder.jsp"/>
+      <forward name="redirectsubito" path="/jsp/redirectsubito.jsp"/>
+      <forward name="bestellform" path="/bestellform.do?method=validate"/>
+      <forward name="save" path="/prepareJournalSave.do?method=prepareJournalSave"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action path="/journalorder2"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderAction">
+      <forward name="success" path="/jsp/journalorder.jsp"/>
+      <forward name="redirectsubito" path="/jsp/redirectsubito.jsp"/>
+      <forward name="bestellform" path="/bestellform.do?method=validate"/>
+      <forward name="save" path="/prepareJournalSave.do?method=prepareJournalSave"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action path="/journalorder1"
+  			input="/jsp/journalorder.jsp" 
+			name="OrderForm" 
+			parameter="method" 
+			scope="request"
+			validate="false" 
+			type="ch.dbs.actions.bestellung.OrderAction">
+			<forward name="found" path="/found.do"/>
+			<forward name="notfound" path="/jsp/issnsearch.jsp"/>
+			<forward name="pmidfailure" path="/jsp/searchfree.jsp"/>
+			<forward name="captcha" path="/jsp/captcha.jsp"/>
+			<forward name="ordersuccess" path="/ordersuccess.do"/>
+			<forward name="benutzerauswahl" path="/choosehits.do"/>
+			<forward name="success" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+			<forward name="freeezb" path="/jsp/availabilityresult.jsp"/>
+			<forward name="notfreeebz" path="/journalorder.do?method=prepare"/>
+   	        <forward name="bestellform" path="/bestellform.do?method=validate"/>
+   	        <forward name="bestellformular" path="/jsp/bestellformular.jsp"/>
+			<forward name="journalorder" path="/journalorder1.do?method=journalorder"/>
+			<forward name="abbrechen" path="/uebersicht.do"/>
+			<forward name="notpossible" path="/uebersicht.do"/>
+			<forward name="failure" path="/error.do"/>
+			<forward name="error" path="/error.do"/>
+    </action>
+    <action forward="/jsp/ordersuccess.jsp" path="/ordersuccess"/>
+    <action forward="/jsp/choosehits.jsp" path="/choosehits"/>
+    <action forward="/jsp/foundfree.jsp" path="/found"/>
+    
+    <!-- journaldetails  -->
+    <action path="/journalorderdetail"
+  			name="OrderForm" 
+  			validate="false"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.bestellung.OrderAction">
+  	  <forward name="success" path="/orderview.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/orderview.jsp" path="/orderview"/>
+    
+    <action path="/reorder"
+  			name="OrderForm" 
+  			validate="false"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.bestellung.OrderAction">
+  	  <forward name="success" path="/journalorder1.do?method=checkAvailabilityOpenUrl"/>
+  	  <forward name="save" path="/prepareJournalSave.do?method=prepareJournalSave"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+   <!-- *************************************************Artikelbestellung beim GBV************************************************* -->
+   
+    <action path="/changeMediatypeGbv"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderGbvAction">
+      <forward name="success" path="/jsp/journalorder.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action path="/orderGbv"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderGbvAction">
+      <forward name="missingvalues" path="/jsp/journalorder.jsp"/>
+      <forward name="success" path="/orderGbv.do?method=order"/>
+      <forward name="redirect" path="/jsp/redirectgbv.jsp"/>
+      <forward name="search" path="/jsp/searchgbv.jsp"/>
+      <forward name="trefferauswahl" path="/choosehits.do"/>
+      <forward name="ordersuccess" path="/jsp/ordersuccess.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    
+    
+       <!-- *************************************************Bestellungen ändern************************************************* -->       
+ 	
+ 	<!-- Status einer Bestellung ändern  -->
+ 	<action path="/changestat"
+  			name="OverviewForm" 
+  			validate="false"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.user.UserAction">
+  	  <forward name="success" path="/listkontobestellungen.do?method=overview"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+     	<!-- Notizen einer Bestellung ändern  -->
+ 	<action path="/changenotes"
+  			name="OverviewForm" 
+  			validate="false"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.user.UserAction">
+  	  <forward name="success" path="/listkontobestellungen.do?method=overview"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+ 
+       <!-- *************************************************Bestellangaben als erledigt eintragen************************************************* -->   
+    <!-- Bestellangaben ohne Bestellung als erledigt abspeichern -->
+    
+    <action path="/prepareJournalSave"
+  			input="/jsp/foundfree.jsp"
+            name="OrderForm"
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestellung.OrderAction">
+  	  <forward name="success" path="/jsp/journalsave.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/journalsave.jsp" path="/journalsave"/>
+    
+    <action path="/changeMediatype"
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderAction">
+      <forward name="success" path="/jsp/journalsave.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/journalsave.jsp" path="/journalsave"/>
+    
+    <action path="/preparemodifyorder"
+            name="OrderForm"
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestellung.OrderAction">
+  	  <forward name="success" path="/jsp/journalsave.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/journalsave.jsp" path="/journalsave"/>
+    
+        <action path="/saveOrder"
+		    input="/jsp/journalsave.jsp" 
+            name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestellung.OrderAction">
+  	  <forward name="success" path="/listkontobestellungen.do?method=overview"/>
+  	  <forward name="newcustomer" path="/addkontousersfrombestellung.do?method=keepOrderDetails"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action forward="/jsp/ordersuccess.jsp" path="/ordersuccess"/>
+    
+    <action path="/deleteorder"
+            name="OrderForm"
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestellung.OrderAction">
+  	  <forward name="promptDelete" path="/orderview.do"/>
+  	  <forward name="success" path="/jsp/message.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+ 	
+   <!-- *************************************************Statistiken************************************************* -->   
+    <!-- Statistiken -->
+    
+        <action path="/statistics"
+  			input="/jsp/choosestat.jsp"
+  			name="OverviewForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.action.statistik.OrderStatistik">
+  	  <forward name="success" path="/jsp/showkontoorderstats.jsp"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+   <!-- *************************************************Kunden auflisten************************************************* -->    
+    <!-- Kunden anzeigen mapping -->
+    <action path="/listkontousers"
+  			name="UserForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.user.UserAction">
+  	  <forward name="success" path="/showkontousers.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    <action name="ActiveMenus" forward="/jsp/showkontousers.jsp" path="/showkontousers"/>
+    
+    <!-- *************************************************Kunden Verwaltung************************************************* -->
+    <!-- neue Kunden anlegen mapping -->
+    <action path="/addkontousers"
+    		input="/jsp/modifykontousers.jsp" 
+			name="UserForm" 
+			parameter="method"
+			validate="false" 
+			scope="request" 
+			type="ch.dbs.actions.user.UserAction">
+			<forward name="success" path="/modifykontousers.do"/>
+			<forward name="abbrechen" path="/listkontousers.do"/>
+			<forward name="failure" path="/error.do"/>
+    </action>
+    <action name="ActiveMenus" forward="/jsp/modifykontousers.jsp"  path="/modifykontousers"	/>
+    <action path="/addkontousers1"
+  			input="/jsp/modifykontousers.jsp" 
+			name="UserForm" 
+			parameter="method"
+			validate="false"  
+			scope="request" 
+			type="ch.dbs.actions.user.UserAction">
+			<forward name="success" path="/jsp/message.jsp"/>
+			<forward name="abbrechen" path="/listkontousers.do"/>
+			<forward name="failure" path="/error.do"/>
+    </action>
+        
+    <!-- neue Kunden anlegen und Bestellangaben behalten mapping -->    
+    <action path="/addkontousersfrombestellung"
+    		input="/jsp/journalsave.jsp"
+  			name="OrderForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.user.UserAction">
+  	  <forward name="success" path="/addkontousers.do?method=prepareAddUser"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
+    <!-- Kunden bearbeiten mapping -->
+    <action path="/edituserdetail"
+  			input="/jsp/showkontousers.jsp" 
+			name="UserForm" 
+			parameter="method" 
+			scope="request" 
+			validate="false"
+			type="ch.dbs.actions.user.UserAction">
+			<forward name="success" path="/modifykontousers.do"/>
+			<forward name="abbrechen" path="/listkontousers.do"/>
+			<forward name="failure" path="/error.do"/>
+    </action>
+    <action path="/editkontousers1"
+  			input="/jsp/modifykontousers.jsp" 
+			name="UserForm" 
+			parameter="method"
+			validate="false"  
+			scope="request" 
+			type="ch.dbs.actions.user.UserAction">
+			<forward name="success" path="/jsp/message.jsp"/>
+			<forward name="missing" path="/modifykontousers.do"/>
+			<forward name="abbrechen" path="/listkontousers.do"/>
+			<forward name="failure" path="/error.do"/>
+			<forward name="returntojournalorder" path="/journalorder.do?method=prepare"/>
+			<forward name="returntojournalsave" path="/prepareJournalSave.do?method=prepareJournalSave"/>
+    </action>
+    
+    <!-- *************************************************Cronjobs************************************************* -->
+    <action path="/checkpopfax"  
+			scope="request" 
+			type="ch.dbs.cronjobs.PopFax">
+			<forward name="failure" path="/error.do"/>
+			<forward name="success" path="/jsp/message.jsp"/>
+    </action>    
+    <action path="/autobilling"  
+			scope="request"
+			name="KontoForm"
+			validate="false" 
+			parameter="method" 
+			type="ch.dbs.cronjobs.KontoCron">
+    </action>
+    <!-- ********************************************************************************************************** -->
+      
+    <!-- *************************************************Reports************************************************* -->
+    <action path="/report"  
+			scope="request" 
+			type="test.ReportTest">
+    </action> 
+    
+    <action path="/orderreport"
+  			input="/jsp/choosestat.jsp"
+  			name="OverviewForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.reports.OrderReports">
+  			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action path="/prepare-ilv-order-pdf"
+  			input="/jsp/orderview.jsp"
+  			name="OrderForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestellung.OrderAction">
+  			<forward name="success" path="/ilv-order-modifymanual.do?method=prepareFormIlv"/>
+  			<forward name="failure" path="/error.do"/>
+    </action>
+    
+    <action path="/ilv-order-modifymanual"
+  			name="OrderForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.reports.ILVReport">
+  			<forward name="success" path="/jsp/prepareilvreport.jsp"/>
+  			<forward name="failure" path="/error.do"/>
+    </action>
+        
+    <action path="/ilv-order-pdf"
+  			input="/jsp/orderview.jsp"
+  			name="IlvReportForm"  
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.reports.ILVReport">
+  			<forward name="failure" path="/error.do"/>
+    </action>  
+    <!-- ********************************************************************************************************** -->
+    
+    <!-- *************************************************Bestandesverwaltung************************************************* -->   
+    <action path="/stock"
+  			input="/jsp/modifystock.jsp"
+  			name="HoldingForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestand.Stock">
+  			<forward name="failure" path="/error.do"/>
+  			<forward name="success" path="/modifystock.do"/>
+    </action>
+    <action path="/savestock"
+  			input="/jsp/modifystock.jsp"
+  			name="HoldingForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestand.Stock">
+  			<forward name="failure" path="/error.do"/>
+  			<forward name="success" path="/modifystock.do"/>
+    </action>
+    <action path="/modplace"
+  			input="/jsp/modifystockplaces.jsp"
+  			name="HoldingForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestand.Stock">
+  			<forward name="failure" path="/error.do"/>
+  			<forward name="success" path="/modifystockplaces.do"/>
+    </action>
+    <action path="/allstock"
+  			input="/jsp/showstock.jsp"
+  			name="HoldingForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestand.Stock">
+  			<forward name="failure" path="/error.do"/>
+  			<forward name="success" path="/showstock.do"/>
+    </action>
+    
+    <action name="ActiveMenus" forward="/jsp/modifystock.jsp" path="/modifystock"/>
+    <action name="ActiveMenus" forward="/jsp/modifystockplaces.jsp" path="/modifystockplaces"/>
+    <action name="ActiveMenus" forward="/jsp/showstock.jsp" path="/showstock"/>
+    <!-- ********************************************************************************************************** -->
+    
+    
+  </action-mappings>
+  
+  <!-- ================================ Message Resources Definitions -->
+  <message-resources parameter="resources.MessageResources"/>
+  <message-resources key="systemConfig" parameter="resources.SystemConfiguration"/>
+  
+  <!-- ======================================= Plug Ins Configuration -->
+<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+  <set-property property="pathnames"
+    value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+</plug-in>
+
+<plug-in className="org.apache.struts.tiles.TilesPlugin" >
+       <!-- Path to XML definition file -->
+       <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+       <!-- Set Module-awareness to true -->
+       <set-property property="moduleAware" value="true" />
+</plug-in>
+
+</struts-config>
+
+
+<!--
+     DTD for the Struts Application Configuration File, Version 1.1
+
+     To support validation of your configuration file, include the following
+     DOCTYPE element at the beginning (after the "xml" declaration):
+
+     <!DOCTYPE struts-config PUBLIC
+       "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+     $Id: struts-config.xml,v 1.5 2005/07/14 21:04:18 pascal Exp $
+-->
+<!-- ========== Defined Types ============================================= -->
+<!-- An "AttributeName" is the identifier of a page, request, session, or
+     application scope attribute.
+-->
+<!-- A "BeanName" is the identifier of a JavaBean, such as a form bean,
+     and also serves as the name of the corresponding scripting variable
+     and the name of the JSP attribute under which the bean is accessed.
+     Therefore, it must conform to the rules for a Java identifier.
+-->
+<!-- A "Boolean" is the string representation of a boolean (true or false)
+     variable.
+-->
+<!-- A "ClassName" is the fully qualified name of a Java class that is
+     instantiated to provide the functionality of the enclosing element.
+-->
+<!-- An "Integer" is a character string consisting solely of numeric digits,
+     optionally preceeded by a minus sign, that can be converted to a
+     32-bit integer.
+-->
+<!-- A "Location" is a relative path, delimited by "/" characters, that
+     defines the location of a resource relative to the location of the
+     Struts configuration file itself.
+-->
+<!-- A "PropName" is the name of a JavaBeans property, and must begin with
+     a lower case letter and contain only characters that are legal in a
+     Java identifier.
+-->
+<!-- A "RequestPath" is an application-relative URI path, beginning with a
+     slash, that identifies a mapped resource (such as a JSP page or a servlet)
+     within this web application.
+-->
+<!-- The name of a JSP bean scope within which such a form bean may be
+     accessed.
+-->
+<!-- ========== Top Level Elements ======================================== -->
+<!-- The "struts-config" element is the root of the configuration file
+     hierarchy, and contains nested elements for all of the other
+     configuration settings.
+-->
+<!-- The "data-sources" element describes a set of DataSource objects [JDBC 2.0
+     Standard Extension]. The individual DataSource objects are configured through
+     nested <data-source> elements.
+-->
+<!-- The "data-source" element describes a DataSource object [JDBC 2.0 Standard
+     Extension] that will be instantiated, configured, and made available as a
+     servlet context attribute (or "application-scope bean"). Any object can be
+     specified so long as it implements [javax.sql.DataSource] and can be
+     configured entirely from JavaBean properties. The following attributes
+     are required:
+
+     className       The configuration bean for this DataSource object. If
+                     specified, the object must be a subclass of the default
+                     configuration bean.
+                     ["org.apache.struts.config.DataSourceConfig"]
+
+     key             Servlet context attribute key under which this data source
+                     will be stored.  Default is the value specified by string
+                     constant defined by Globals.DATA_SOURCE_KEY. The application
+                     module prefix (if any) is appended to the key
+                     (${key}$prefix}).
+                     [org.apache.struts.Globals.DATA_SOURCE_KEY]
+
+                     NOTE: The application module prefix includes the leading
+                     slash, so the default datasource for a module named "foo" is
+                     stored under "org.apache.struts.action.DATA_SOURCE/foo".
+
+     type            Fully qualified Java class name for this data source object.
+                     The class must implement DataSource [javax.sql.DataSource],
+                     and the object must be configurable entirely from JavaBean
+                     properties.
+-->
+<!-- The "form-beans" element describes the set of form bean descriptors for this
+     application module. The following attributes are defined:
+
+     type            Fully qualified Java class to use when instantiating
+                     ActionFormBean objects. If specified, the object must be a
+                     subclass of the default class type.
+                     DEPRECATED.
+
+                     WARNING:  For Struts 1.0, this value is ignored.  You
+                     can set the default implementation class name with the
+                     "formBean" initialization parameter to the Struts
+                     controller servlet.
+-->
+<!-- The "form-bean" element describes an ActionForm subclass
+     [org.apache.struts.action.ActionForm] that can be referenced by an "action"
+     element.
+
+
+The "form-bean" element describes a particular form bean, which is a
+     JavaBean that implements the org.apache.struts.action.ActionForm
+     class.  The following attributes are defined:
+
+     className       The configuration bean for this form bean object. If
+                     specified, the object must be a subclass of the default
+                     configuration bean.
+                     ["org.apache.struts.config.FormBeanConfig"]
+
+     dynamic         If the form bean type is a  DynaActionForm subclass (that you
+                     created), then (and only then) set this attribute to "true".
+                     If the type is set to the default DynaActionForm or any
+                     conventional ActionForm subclass, then this attribute can be
+                     omitted.
+                     [true] if type is "org.apache.struts.action.DynaActionForm"
+                     [false] otherwise  DEPRECATED - THIS IS NOW DETERMINED
+                     DYNAMICALLY BASED ON THE SPECIFIED IMPLEMENTATION CLASS.
+
+     name            The unique identifier for this form bean. Referenced by the
+                     <action> element to specify which form bean to use with its
+                     request.
+
+     type            Fully qualified Java class name of the ActionForm subclass
+                     to use with this form bean.
+-->
+<!-- The "form-property" element describes a JavaBean property that can be used to
+     configure an instance of a DynaActionForm or a subclass thereof. This element
+     is only utilized when the "type" attribute of the enclosing "form-bean" element
+     is [org.apache.struts.action.DynaActionForm] or a subclass of DynaActionForm. If
+     a custom DynaActionForm subclass is used, then the "dynamic" attribute of the
+     enclosing <form-bean> element must be set to "true". Since Struts 1.1.
+
+     className       The configuration bean for this form property object. If
+                     specified, the object must be a subclass of the default
+                     configuration bean.
+                     ["org.apache.struts.config.FormPropertyConfig"]
+
+     initial         String representation of the initial value for this property.
+                     If not specified, primitives will be initialized to zero and
+                     objects initialized to the zero-argument instantiation of that
+                     object class.  For example, Strings will be initialized to ""
+
+
+     name            The name of the JavaBean property described by this element.
+
+     size            The number of array elements to create if the value of the
+                     "type" attribute specifies an array, but there is no value
+                     specified for the "initial" attribute.
+
+     type            Fully qualified Java class name of the field underlying this
+                     property, optionally followed by "[]" to indicate that the
+                     field is indexed.
+-->
+<!-- The "global-exceptions" element describes a set of exceptions that might be
+     thrown by an Action object. The handling of individual exception types is
+     configured through nested exception elements. An <action> element may
+     override a global exception handler by registering a local exception handler
+     for the same exception type. Since Struts 1.1.
+-->
+<!-- The "exception" element registers an ExceptionHandler for an exception type.
+     The following attributes are defined:
+
+    bundle           Servlet context attribute for the message resources bundle
+                     associated with this handler. The default attribute is the
+                     value specified by the string constant declared at
+                     Globals.MESSAGES_KEY.
+                     [org.apache.struts.Globals.MESSAGES_KEY]
+
+    className        The configuration bean for this ExceptionHandler object.
+                     If specified, className must be a subclass of the default
+                     configuration bean
+                     ["org.apache.struts.config.ExceptionConfig"]
+
+    handler          Fully qualified Java class name for this exception handler.
+                     ["org.apache.struts.action.ExceptionHandler"]
+
+    key              The key to use with this handler's message resource bundle
+                     that will retrieve the error message template for this
+                     exception.
+
+    path             The module-relative URI to the resource that will complete
+                     the request/response if this exception occurs.
+
+    scope            The context ("request" or "session") that is used to access
+                     the ActionError object [org.apache.struts.action.ActionError]
+                     for this exception.
+
+    type             Fully qualified Java class name of the exception type to
+                     register with this handler.
+-->
+<!-- The "global-forwards" element describes a set of ActionForward objects
+     [org.apache.struts.action.ActionForward] that are available to all Action
+     objects as a return value. The individual ActionForwards are configured
+     through nested <forward> elements. An <action> element may override a global
+     forward by defining a local <forward> of the same name.
+
+     type            Fully qualified Java class to use when instantiating
+                     ActionForward objects.  If specified, the object must be a
+                     subclass of the default class type.
+                     DEPRECATED.
+
+                     WARNING:  For Struts 1.0, this value is ignored.  You
+                     can set the default implementation class name with the
+                     "forward" initialization parameter to the Struts
+                     controller servlet.
+-->
+<!-- The "forward" element describes an ActionForward that is to be made
+     available to an Action as a return value. An ActionForward is referenced by
+     a logical name and encapsulates a URI. A "forward" element may be used to
+     describe both global and local ActionForwards. Global forwards are available
+     to all the Action objects in the application module. Local forwards can be
+     nested within an <action> element and only available to an Action object
+     when it is invoked through that ActionMapping.
+
+     className       Fully qualified Java class name of ActionForward
+                     subclass to use for this object.
+                     ["org.apache.struts.action.ActionForward"]
+
+    contextRelative  Set this to "true" if, in a modular application, the path
+                     attribute starts with a slash "/" and should be considered
+                     relative to the entire web application rather than the module.
+                     Since Struts 1.1.
+                     [false]
+
+     name            The unique identifier for this forward. Referenced by the
+                     Action object at runtime to select - by its logical name -
+                     the resource that should complete the request/response.
+
+     path            The module-relative or context-relative path to the resources
+                     that is encapsulated by the logical name of this ActionForward.
+                     If the path is to be considered context-relative when used in
+                     a modular application, then the contextRelative attribute
+                     should be set to "true". This value should begin with a slash
+                     ("/") character.
+
+     redirect        Set to "true" if a redirect instruction should be issued to
+                     the user-agent so that a new request is issued for this
+                     forward's resource. If true,  RequestDispatcher.Redirect is
+                     called. If "false", RequestDispatcher.forward is called instead.
+                     [false]
+-->
+<!-- The "action-mappings" element describes a set of ActionMapping objects
+     [org.apache.struts.action.ActionMapping] that are available to process
+     requests matching the url-pattern our ActionServlet registered with the
+     container. The individual ActionMappings are configured through nested
+     <action> elements. The following attributes are defined:
+
+     type           Fully qualified Java class to use when instantiating
+                    ActionMapping objects. If specified, the object must be a
+                    subclass of the default class type.
+
+                    WARNING:  For Struts 1.0, this value is ignored.  You
+                    can set the default implementation class name with the
+                    "mapping" initialization parameter to the Struts
+                    controller servlet.
+-->
+<!-- The "action" element describes an ActionMapping object that is to be used
+     to process a request for a specific module-relative URI. The following
+     attributes are defined:
+
+     attribute       Name of the request-scope or session-scope attribute that
+                     is used to access our ActionForm bean, if it is other than
+                     the bean's specified "name". Optional if "name" is specified,
+                     else not valid.
+
+     className       The fully qualified Java class name of the ActionMapping
+                     subclass to use for this action mapping object. Defaults to
+                     the type specified by the enclosing <action-mappings>
+                     element or to "org.apache.struts.action.ActionMapping" if
+                     not specified.
+                     ["org.apache.struts.action.ActionMapping"]
+
+     forward         Module-relative path of the servlet or other resource that
+                     will process this request, instead of the Action class
+                     specified by "type".  The path WILL NOT be processed
+                     through the "forwardPattern" attribute that is configured
+                     on the "controller" element for this application module.
+                     Exactly one of "forward", "include", or "type" must be
+                     specified.
+
+     include         Module-relative path of the servlet or other resource that
+                     will process this request, instead of the Action class
+                     specified by "type".  The path WILL NOT be processed
+                     through the "forwardPattern" attribute that is configured
+                     on the "controller" element for this application module.
+                     Exactly one of "forward", "include", or "type" must be
+                     specified.
+
+     input           Module-relative path of the action or other resource to
+                     which control should be returned if a validation error is
+                     encountered. Valid only when "name" is specified. Required
+                     if "name" is specified and the input bean returns
+                     validation errors. Optional if "name" is specified and the
+                     input bean does not return validation errors.
+
+     name            Name of the form bean, if any, that is associated with this
+                     action mapping.
+
+     path            The module-relative path of the submitted request, starting
+                     with a "/" character, and without the filename extension if
+                     extension mapping is used.
+
+                     NOTE:  Do *not* include a period in your path name,
+                     because it will look like a filename extension and
+                     cause your Action to not be located.
+
+     parameter       General-purpose configuration parameter that can be used to
+                     pass extra information to the Action object selected by
+                     this action mapping.
+
+     prefix          Prefix used to match request parameter names to ActionForm
+                     property names, if any. Optional if "name" is specified,
+                     else not allowed.
+
+     roles           Comma-delimited list of security role names that are allowed
+                     access to this ActionMapping object. Since Struts 1.1.
+
+     scope           The context ("request" or "session") that is used to
+                     access our ActionForm bean, if any.  Optional if "name" is
+                     specified, else not valid.
+
+     suffix          Suffix used to match request parameter names to ActionForm
+                     bean property names, if any. Optional if "name" is
+                     specified, else not valid.
+
+     type            Fully qualified Java class name of the Action subclass
+                     [org.apache.struts.action.Action] that will process requests
+                     for this action mapping. Not valid if either the "forward"
+                     or "include" attribute is specified.  Exactly one of
+                     "forward", "include", or "type" must be specified.
+
+     unknown         Set to "true" if this object should be configured as the
+                     default action mapping for this module. If a request does not
+                     match another object, it will be passed to the ActionMapping
+                     object with unknown set to "true". Only one ActionMapping
+                     can be marked as "unknown" within a module.
+                     [false]
+
+     validate        Set to "true" if the validate method of the ActionForm bean
+                     should be called prior to calling the Action object for this
+                     action mapping, or set to "false" if you do not want the
+                     validate method called.
+                     [true]
+-->
+<!-- The "controller" element describes the ControllerConfig bean
+     [org.apache.struts.config.ControllerConfig] that encapsulates
+     an application module's runtime configuration. The following
+     attributes are defined:
+
+     bufferSize      The size of the input buffer used when processing
+                     file uploads.
+                     [4096]
+
+     className       Fully qualified Java class name of the
+                     ControllerConfig subclass for this controller object.
+                     If specified, the object must be a subclass of the
+                     default class.
+                     ["org.apache.struts.config.ControllerConfig"]
+
+     contentType     Default content type (and optional character encoding) to
+                     be set on each response. May be overridden by the Action,
+                     JSP, or other resource to which the request is forwarded.
+                     ["text/html"]
+
+     debug           Debugging detail level for this module. [0]
+                     DEPRECATED - configure the logging detail level
+                     in your underlying logging implementation.
+
+     forwardPattern  Replacement pattern defining how the "path" attribute of a
+                     <forward> element is mapped to a context-relative URL when
+                     it starts with a slash (and when the contextRelative
+                     property is false). This value may consist of any
+                     combination of the following:
+                     - "$M" - Replaced by the module prefix of this module
+                     - "$P" - Replaced by the "path" attribute of the  selected
+                     "forward" element
+                     - "$$" - Causes a literal dollar sign to be rendered
+                     - "$x" - (Where "x" is any character not defined above)
+                     Silently swallowed, reserved for future use
+                     If not specified, the default forwardPattern is "$M$P",
+                     which is consistent with the previous behavior of
+                     forwards.  Since Struts 1.1.  ["$M$P"]
+
+     inputForward    Set to "true" if you want the "input" attribute of
+                     <action> elements to be the name of a local or global
+                     ActionForward, which will then be used to calculate the
+                     ultimate URL. Set to "false" (the default) to treat the
+                     "input" parameter of <action> elements as a
+                     module-relative path to the resource
+                     to be used as the input form. Since Struts 1.1.
+                     [false]
+
+     locale          Set to "true" if you want a Locale object stored in the
+                     user's session if not already present.
+                     [true]
+
+     maxFileSize     The maximum size (in bytes) of a file to be accepted as a
+                     file upload.  Can be expressed as a number followed by a
+                     "K", "M", or "G", which are interpreted to mean kilobytes,
+                     megabytes, or gigabytes, respectively.
+                     ["250M"]
+
+     memFileSize     The maximum size (in bytes) of a file whose contents will
+                     be retained in memory after uploading. Files larger than
+                     this threshold will be written to some alternative storage
+                     medium, typically a hard disk. Can be expressed as a number
+                     followed by a "K", "M", or "G", which are interpreted to
+                     mean kilobytes, megabytes, or gigabytes, respectively.
+                     ["256K"]
+
+     multipartClass  The fully qualified Java class name of the multipart
+                     request handler class to be used with this module.
+                     ["org.apache.struts.upload.CommonsMultipartRequestHandler"]
+
+     nocache         Set to "true" if you want the controller to add HTTP
+                     headers for defeating caching to every response from
+                     this module.  [false]
+
+     pagePattern     Replacement pattern defining how the "page" attribute of
+                     custom tags using it is mapped to a context-relative URL
+                     of the corresponding resource.  This value may consist of
+                     any combination of the following:
+                     - "$M" - Replaced by the module prefix of this module
+                     - "$P" - Replaced by the value of the "page" attribute
+                     - "$$" - Causes a literal dollar sign to be rendered
+                     - "$x" - (Where "x" is any character not defined above)
+                              Silently swallowed, reserved for future use
+                     If not specified, the default forwardPattern is
+                     "$M$P", which is consistent with previous hard coded
+                     behavior of URL evaluation for "page" attributes.
+                     ["$M$P"]
+
+     processorClass  The fully qualified Java class name of the
+                     RequestProcessor subclass to be used with this module.
+                     ["org.apache.struts.action.RequestProcessor"]
+
+     tempDir         Temporary working directory to use when processing
+                     file uploads.
+                     [{Directory provided by servlet container}]
+-->
+<!-- The "message-resources" element describes a MessageResources object with
+     message templates for this module. The following attributes are defined:
+
+     className       The configuration bean for this message resources object.
+                     If specified, the object must be a subclass of the default
+                     configuration bean.
+                     ["org.apache.struts.config.MessageResourcesConfig"]
+
+     factory         Fully qualified Java class name of the
+                     MessageResourcesFactory subclass to use for this message
+                     resources object.
+                     ["org.apache.struts.util.PropertyMessageResourcesFactory"]
+
+     key             Servlet context attribute under which this message
+                     resources bundle will be stored. The default attribute is
+                     the value specified by the string constant at
+                     [Globals.MESSAGES_KEY]. The application module prefix (if
+                     any) is appended to the key (${key}${prefix}).
+                     [org.apache.struts.Globals.MESSAGES_KEY]
+
+                     NOTE: The application module  prefix includes the leading
+                     slash, so the default message resource bundle for a module
+                     named "foo" is stored under
+                     "org.apache.struts.action.MESSAGE/foo".
+
+     null            Set to "true" if you want our message resources to return a
+                     null string for unknown message keys, or "false" to return a
+                     message with the bad key value.
+
+     parameter       Configuration parameter to be passed to the createResources
+                     method of our factory object.
+-->
+<!-- The "plug-in" element specifies the fully qualified class name of a
+     general-purpose application plug-in module that receives notification of
+     application startup and shutdown events. An instance of the specified class
+     is created for each element, and can be configured with nested <set-property>
+     elements. The following attributes are supported:
+
+     className       Fully qualified Java class name of the plug-in class; must
+                     implement [org.apache.struts.action.PlugIn].
+-->
+<!-- ========== Subordinate Elements ====================================== -->
+<!-- The "description" element contains descriptive (paragraph length) text
+     about the surrounding element, suitable for use in GUI tools.
+-->
+<!-- The "display-name" element contains a short (one line) description of
+     the surrounding element, suitable for use in GUI tools.
+-->
+<!-- The "icon" element contains a small-icon and large-icon element which
+     specify the location, relative to the Struts configuration file, for small
+     and large images used to represent the surrounding element in GUI tools.
+-->
+<!-- The "large-icon" element specifies the location, relative to the Struts
+     configuration file, of a resource containing a large (32x32 pixel)
+     icon image.
+-->
+<!-- The "set-property" element specifies the method name and initial value of
+     an additional JavaBean configuration property. When the object representing
+     the surrounding element is instantiated, the accessor for the indicated
+     property is called and passed the indicated value. The "set-property"
+     element is especially useful when a custom subclass is used with
+     <data-source>, <forward>, <action>, or <plug-in> elements. The subclass
+     can be passed whatever other properties may be required to configure the
+     object without changing how the struts-config is parsed.
+
+     property        Name of the JavaBeans property whose setter method
+                     will be called.
+
+     value           String representation of the value to which this
+                     property will be set, after suitable type conversion
+-->
+<!-- The "small-icon" element specifies the location, relative to the Struts
+     configuration file, of a resource containing a small (16x16 pixel)
+     icon image.
+-->

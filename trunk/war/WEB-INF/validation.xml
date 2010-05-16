@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
+          "http://jakarta.apache.org/commons/dtds/validator_1_1_3.dtd">
+
+<form-validation>
+
+<!--
+     This is a minimal Validator form file with a couple of examples.
+-->
+
+    <global>
+
+        <!-- An example global constant
+        <constant>
+            <constant-name>postalCode</constant-name>
+            <constant-value>^\d{5}\d*$</constant-value>
+        </constant>
+        end example-->
+
+    </global>
+    <formset>
+       <form name="LoginForm">
+            <field
+                property="email"
+                depends="email">
+                    <arg0 key="error.mail"/>
+            </field>
+            <field
+                property="email"
+                depends="required">
+                    <arg0 key="error.mail"/>
+            </field>
+            <field
+                property="password"
+                depends="required">
+                    <arg0 key="error.password"/>
+            </field>
+       </form>
+       
+       <form name="UserForm">
+            <field
+                property="email"
+                depends="email">
+                    <arg0 key="error.mail"/>
+            </field>
+            <field
+                property="email"
+                depends="required">
+                    <arg0 key="error.mail"/>
+            </field>
+            
+            <field
+                property="kontos"
+                depends="required">
+                    <arg0 key="error.kontos"/>
+            </field>
+            
+            <field
+                property="anrede"
+                depends="required">
+                    <arg0 key="error.anrede"/>
+            </field>
+            
+            <field
+                property="vorname"
+                depends="required">
+                    <arg0 key="error.vorname"/>
+            </field>
+            
+            <field
+                property="name"
+                depends="required">
+                    <arg0 key="error.name"/>
+            </field>
+       </form>
+        
+       <form name="OrderForm">               
+            <field
+                property="foruser"
+                depends="required">
+                    <arg0 key="error.foruser"/>
+            </field> 
+            <field
+                property="issn"
+                depends="required">
+                    <arg0 key="error.issn"/>
+            </field>
+               <field
+                property="jahr"
+                depends="required">
+                    <arg0 key="error.jahr"/>
+            </field>
+               <field
+                property="seiten"
+                depends="required">
+                    <arg0 key="error.seiten"/>
+            </field>
+       </form>        
+        
+	</formset>
+
+</form-validation>
