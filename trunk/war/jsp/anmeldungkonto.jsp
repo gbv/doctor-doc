@@ -132,28 +132,12 @@
       <td><input type="radio" name="kontotyp" value="0" checked="checked" /><bean:message arg0="<%=appName%>" key="register.free" /></td>
     </tr>
     <tr>
-      	<td></td>
-      	<td><input type="radio" name="kontotyp" value="2" <logic:present name="kontoform" property="kontotyp"><logic:equal name="kontoform" property="kontotyp" value="2"> checked="checked"</logic:equal></logic:present> /><bean:message arg0="<%=appName%>" key="register.faxyear" /></td>
-       </tr>
-    <tr>
-      	<td></td>
-      	<td><input type="radio" name="kontotyp" value="3" <logic:present name="kontoform" property="kontotyp"><logic:equal name="kontoform" property="kontotyp" value="3"> checked="checked"</logic:equal></logic:present> /><bean:message arg0="<%=appName%>" key="register.fax3" /></td>
-    </tr>
-    <tr>
       	<td><br></td>
       	<td></td>
-    </tr>
-    <tr>
-      	<td></td>
-      	<td><bean:message key="register.fax_comment" /></td>
     </tr>
     <tr>        
     	<td><input type="submit" value="<bean:message key="register.submit_account" />" /></td>
     	<td></td>
-    </tr>    
-    <tr>        
-    	<td colspan="2"><p /><bean:message key="register.fax_footnote" />
-    	</td>
     </tr>
 
   </table>
