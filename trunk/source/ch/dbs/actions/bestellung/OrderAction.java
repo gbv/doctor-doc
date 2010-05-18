@@ -328,7 +328,7 @@ try {
     
     if (!check.containsGoogleCaptcha(content)) { // Sicherstellen, dass Google Scholar nicht mit Captcha reagiert
     	
-    	String identifierHitsGoogleScholar = "<div class=gs_r><h3><a href=\""; // You may have to change this, to adapt to any major changes of GoogleScholars sourcecode.
+    	String identifierHitsGoogleScholar = "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\""; // You may have to change this, to adapt to any major changes of GoogleScholars sourcecode.
     
      if (content.contains(identifierHitsGoogleScholar)){
     	ergebnis = true;
