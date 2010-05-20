@@ -89,7 +89,7 @@ OpenURL - Linkresolver
 		<th id="th-left"><bean:message key="openurl.kommentar" /></th>
 	</tr>
 	<tr>
-		<td><a href="http://www.bibnet.ch/vufind" target="_blank">Bibnet.ch</a>&nbsp;</td>
+		<td><a href="http://www.bibnet.org/vufind" target="_blank">Bibnet.org</a>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
