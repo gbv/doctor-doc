@@ -11,7 +11,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Datenbank: `dd_os`
---
+-- Revision 1 (see also dbchanges_forUpdate, if using SVN)
 
 -- --------------------------------------------------------
 
