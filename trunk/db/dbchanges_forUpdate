@@ -1,0 +1,21 @@
+-- Revision 9
+
+-- New orderstate "zu bestellen" (don't change expression: will be translated automatically)
+
+INSERT INTO `doctor-doc_com_dbs`.`text` (
+`TID` ,
+`KID` ,
+`TYID` ,
+`inhalt`
+)
+VALUES (
+'9', NULL , '2', 'zu bestellen'
+);
+
+-- boolean value to specify if orders from orderform shall be saved in DB
+
+ALTER TABLE `bestellform_param` ADD `saveorder` TINYINT( 1 ) NOT NULL AFTER `kennung` ;
+
+-- use same lenght in bestellungen.deloptions as bestellform_param.lieferart_value
+
+ALTER TABLE `bestellungen` CHANGE `deloptions` `deloptions` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ;

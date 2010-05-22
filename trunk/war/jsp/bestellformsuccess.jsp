@@ -52,7 +52,7 @@
 
 <br />
       				
-<h3><logic:present name="orderform" property="bibliothek"><logic:notEqual name="orderform" property="bibliothek" value=""><bean:write name="orderform" property="bibliothek" /> - </logic:notEqual></logic:present><bean:message key="bestellformsuccess.header" />:</h3>
+<h3><logic:present name="library"><bean:write name="library" /> - </logic:present><bean:message key="bestellformsuccess.header" />:</h3>
 
 <p><bean:message key="bestellformsuccess.danke" /></p>
 <p><bean:message key="bestellformsuccess.emailstart" /> <b><bean:write name="orderform" property="kundenmail" /></b> <bean:message key="bestellformsuccess.emailend" /></p>

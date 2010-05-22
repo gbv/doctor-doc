@@ -224,7 +224,7 @@ public class Check {
     		boolean validFilterCriteria = false;
         	if (of.getStatitexts().size()>0) { // Die kontoabhängigen Stati müssen vorgängig mittels of.setStati abgelegt werden
         		for (int i=0;i<of.getStatitexts().size();i++) {
-        			if (of.getFilter().equals(of.getStatitexts().get(i).getInhalt()) || of.getFilter().equals("zu bearbeiten")) validFilterCriteria = true;        			
+        			if (of.getFilter().equals(of.getStatitexts().get(i).getInhalt()) || of.getFilter().equals("offen")) validFilterCriteria = true;        			
         		}
         	}
         	if (!validFilterCriteria) of.setFilter(null); // ungültige Filterkriterien löschen

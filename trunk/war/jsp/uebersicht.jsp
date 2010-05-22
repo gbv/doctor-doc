@@ -23,9 +23,9 @@
  <table style="position:absolute; text-align:left; left:<bean:message key="submenupos.uebersicht" />px; z-index:2;">
 	<tr>
 		<td 
-			<logic:equal name="overviewform" property="filter" value="zu bearbeiten">id="submenuactive" </logic:equal>
-			<logic:notEqual name="overviewform" property="filter" value="zu bearbeiten">id="submenu" </logic:notEqual>
-			title="<bean:message key="menu.open_explain" />"><a href="listkontobestellungen.do?method=overview&filter=zu%20bearbeiten&sort=statedate&sortorder=desc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />"><bean:message key="menu.open" /></a></td>
+			<logic:equal name="overviewform" property="filter" value="offen">id="submenuactive" </logic:equal>
+			<logic:notEqual name="overviewform" property="filter" value="offen">id="submenu" </logic:notEqual>
+			title="<bean:message key="menu.open_explain" />"><a href="listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />"><bean:message key="menu.open" /></a></td>
 		<td 
 			<logic:equal name="overviewform" property="filter" value="erledigt">id="submenuactive" </logic:equal>
 			<logic:notEqual name="overviewform" property="filter" value="erledigt">id="submenu" </logic:notEqual>
@@ -35,10 +35,14 @@
 			<logic:notEqual name="overviewform" property="filter" value="reklamiert">id="submenu" </logic:notEqual>
 			title="<bean:message key="menu.claimed_explain" />"><a href="listkontobestellungen.do?method=overview&filter=reklamiert&sort=statedate&sortorder=desc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />"><bean:message key="menu.claimed" /></a></td>
 		<td 
+			<logic:equal name="overviewform" property="filter" value="zu bestellen">id="submenuactive" </logic:equal>
+			<logic:notEqual name="overviewform" property="filter" value="zu bestellen">id="submenu" </logic:notEqual>
+			title="<bean:message key="menu.toOrder_explain" />"><a href="listkontobestellungen.do?method=overview&filter=zu%20bestellen&sort=orderdate&sortorder=desc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />"><bean:message key="menu.toOrder" /></a></td>
+		<td 
 			<logic:equal name="overviewform" property="filter" value="bestellt">id="submenuactive" </logic:equal>
 			<logic:notEqual name="overviewform" property="filter" value="bestellt">id="submenu" </logic:notEqual>
 			title="<bean:message key="menu.ordered_explain" />"><a href="listkontobestellungen.do?method=overview&filter=bestellt&sort=orderdate&sortorder=desc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />"><bean:message key="menu.ordered" /></a></td>
-		<td 
+	    <td 
 			<logic:equal name="overviewform" property="filter" value="geliefert">id="submenuactive" </logic:equal>
 			<logic:notEqual name="overviewform" property="filter" value="geliefert">id="submenu" </logic:notEqual>
 			title="<bean:message key="menu.shipped_explain" />"><a href="listkontobestellungen.do?method=overview&filter=geliefert&sort=statedate&sortorder=desc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />"><bean:message key="menu.shipped" /></a></td>
@@ -302,7 +306,7 @@
 	 		<bean:define id="var" name="b" property="statustext" type="java.lang.String"/>
       			<logic:present name="overviewform" property="statitexts">
       				<logic:iterate id="s" name="overviewform" property="statitexts">
-			 			<option value="<bean:write name="s" property="id" />" <logic:equal name="s" property="inhalt" value="<%=var%>">selected</logic:equal> ><logic:equal name="s" property="inhalt" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="s" property="inhalt" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="s" property="inhalt" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="s" property="inhalt" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="s" property="inhalt" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal></option>		
+			 			<option value="<bean:write name="s" property="id" />" <logic:equal name="s" property="inhalt" value="<%=var%>">selected</logic:equal> ><logic:equal name="s" property="inhalt" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="s" property="inhalt" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="s" property="inhalt" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="s" property="inhalt" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="s" property="inhalt" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal><logic:equal name="s" property="inhalt" value="zu bestellen"><bean:message key="menu.toOrder" /></logic:equal></option>		
    					</logic:iterate>
 	  	</logic:present>
 	  </select>	

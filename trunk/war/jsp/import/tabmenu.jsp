@@ -61,7 +61,7 @@
 			<nobr><a href="searchfree.do?activemenu=suchenbestellen" alt="<bean:message key="tabmenu.search" />" title="<bean:message key="tabmenu.search" />"><bean:message key="tabmenu.slide.search" /></a></nobr>
 		</td>
 		<td width="<%=wdth%>" <logic:equal name="ActiveMenus" property="activemenu" value="uebersicht">id="menuActive"</logic:equal>>
-			<a href="listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc" alt="<bean:message key="tabmenu.tracking" />" title="<bean:message key="tabmenu.tracking" />"><bean:message key="tabmenu.slide.track" /></a>
+			<a href="listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc" alt="<bean:message key="tabmenu.tracking" />" title="<bean:message key="tabmenu.tracking" />"><bean:message key="tabmenu.slide.track" /></a>
 		</td>
 		<!-- Section visible only for librarian and admin  -->
 		<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">

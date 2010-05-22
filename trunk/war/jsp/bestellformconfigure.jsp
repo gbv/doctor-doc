@@ -45,6 +45,21 @@
 
 <html:form action="bfconfigure.do" method="post">
 
+
+<h4><bean:message key="bestellform.saveorder" /></h4>
+<table border="1" cellspacing="0px">
+	<tr>
+		<th id="th-left"><bean:message key="order.title" /></th>
+		<th id="th-left"><bean:message key="bestellform.save" /></th>
+	</tr>
+	<tr>
+		<td><bean:message key="order.title" />&nbsp;</td>
+		<td align="center"><input type="checkbox" name="saveorder" <logic:equal name="bestellform" property="saveorder" value="true">checked="checked"</logic:equal> ></td>
+	</tr>
+</table>
+<p><bean:message key="bestellform.saveorder_explain" /></p>
+<p><br></p><hr></hr>
+
 <h4><bean:message key="bestellform.overwritedelivery" /></h4>
 <table border="1" cellspacing="0px">
 	<tr>

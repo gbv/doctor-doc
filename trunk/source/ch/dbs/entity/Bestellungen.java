@@ -105,7 +105,7 @@ public class Bestellungen extends AbstractIdEntity {
 	  this.setBenutzer(user);
 	  this.setLieferant(of.getLieferant());
 	  if (of.getMediatype()!=null) {this.setMediatype(of.getMediatype());} else {this.setMediatype("");}
-	  if (of.getPrio()!=null) {this.setPriority(of.getPrio());} else {this.setPriority("");}
+	  if (of.getPrio()!=null) {this.setPriority(of.getPrio());} else {this.setPriority("normal");}
 	  if (of.getDeloptions()!=null) {this.setDeloptions(of.getDeloptions());} else {this.setDeloptions("");}
 	  if (of.getFileformat()!=null) {this.setFileformat(of.getFileformat());} else {this.setFileformat("");}
 	  if (of.getZeitschriftentitel()!=null) {this.setZeitschrift(of.getZeitschriftentitel());} else {this.setZeitschrift("");}
@@ -501,19 +501,19 @@ public class Bestellungen extends AbstractIdEntity {
          	String mysql = "";
          	if (subitocheck == false) {
          		mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-         		if (status.equals("zu bearbeiten")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+         		if (status.equals("offen")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
          	}
          	if (subitocheck == true) {
          		mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-         		if (status.equals("zu bearbeiten")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+         		if (status.equals("offen")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
          	}
              pstmt = cn.prepareStatement(mysql);
              pstmt.setString(1, u.getId().toString());
-             if (!status.equals("zu bearbeiten")) {
+             if (!status.equals("offen")) {
             	 pstmt.setString(2, status);
             	 pstmt.setString(3, date_from);
             	 pstmt.setString(4, date_to);
-             } else { // status.equals("zu bearbeiten") => kein Status setzen, das bereits in MySQL mit "AND NOT erledigt" hardcodiert.
+             } else { // status.equals("offen") => kein Status setzen, das bereits in MySQL mit "AND NOT erledigt" hardcodiert.
             	 pstmt.setString(2, date_from);
             	 pstmt.setString(3, date_to);
              }
@@ -627,20 +627,20 @@ public class Bestellungen extends AbstractIdEntity {
             	String mysql = "";
             	if (subitocheck == false) {
             		mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-            		if (status.equals("zu bearbeiten")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+            		if (status.equals("offen")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
             	}
             	if (subitocheck == true) {
             		mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-            		if (status.equals("zu bearbeiten")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+            		if (status.equals("offen")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
             	}
             	
                	pstmt = cn.prepareStatement(mysql);
                	pstmt.setString(1, String.valueOf(KID));
-               	if (!status.equals("zu bearbeiten")) {
+               	if (!status.equals("offen")) {
                		pstmt.setString(2, status);
                		pstmt.setString(3, date_from);
                		pstmt.setString(4, date_to);
-               	} else { // status.equals("zu bearbeiten") => kein Status setzen, das bereits in MySQL mit "AND NOT erledigt" hardcodiert.
+               	} else { // status.equals("offen") => kein Status setzen, das bereits in MySQL mit "AND NOT erledigt" hardcodiert.
             	 pstmt.setString(2, date_from);
             	 pstmt.setString(3, date_to);               		
                	}
@@ -864,22 +864,22 @@ public class Bestellungen extends AbstractIdEntity {
 			String mysql = "";
 			if (subitocheck == false) {
 				mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-				if (status.equals("zu bearbeiten"))
+				if (status.equals("offen"))
 					mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
 			}
 			if (subitocheck == true) {
 				mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-				if (status.equals("zu bearbeiten"))
+				if (status.equals("offen"))
 					mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
 			}
 
 			pstmt = cn.prepareStatement(mysql);
 			pstmt.setString(1, String.valueOf(KID));
-			if (!status.equals("zu bearbeiten")) {
+			if (!status.equals("offen")) {
 				pstmt.setString(2, status);
 				pstmt.setString(3, date_from);
 	       	 	pstmt.setString(4, date_to);
-			} else { // status.equals("zu bearbeiten") => kein Status setzen, das bereits in MySQL mit "AND NOT erledigt" hardcodiert.
+			} else { // status.equals("offen") => kein Status setzen, das bereits in MySQL mit "AND NOT erledigt" hardcodiert.
 				pstmt.setString(2, date_from);
 	       	 	pstmt.setString(3, date_to);
 			}
@@ -2930,9 +2930,9 @@ public String getArtikeltitel() {
 	private PreparedStatement setOrderValues(PreparedStatement ps, Bestellungen b) throws Exception{
         ps.setString(1, b.getKonto().getId().toString());
         ps.setString(2, b.getBenutzer().getId().toString());
-        if (b.getLieferant().getLid()==null || b.getLieferant().getLid().toString().equals("")
+        if (b.getLieferant()==null || b.getLieferant().getLid()==null || b.getLieferant().getLid().toString().equals("")
          || b.getLieferant().getLid().toString().equals("0")) {ps.setString(3, "1");}else{ps.setString(3, b.getLieferant().getLid().toString());}
-        if (b.getPriority()==null){ps.setString(4, "normal");}else{ps.setString(4, b.getPriority());}
+        if (b.getPriority()==null || b.getPriority().equals("")){ps.setString(4, "normal");}else{ps.setString(4, b.getPriority());}
         if (b.getDeloptions()==null){ps.setString(5, "");}else{ps.setString(5, b.getDeloptions());}
         if (b.getFileformat()==null){ps.setString(6, "");}else{ps.setString(6, b.getFileformat());}
         if (b.getHeft()==null){ps.setString(7, "");}else{ps.setString(7, b.getHeft());}

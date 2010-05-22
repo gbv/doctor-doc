@@ -71,17 +71,14 @@ public final class UserAction extends DispatchAction {
 	
 	private static final SimpleLogger log = new SimpleLogger(UserAction.class);
 	
-	
-    /**
-     * dient nur dazu, sicherzustellen, dass der Aufruf eingeloggt erfolgt
-     */
+
     public ActionForward stati(ActionMapping mp, ActionForm form,
                               HttpServletRequest rq, HttpServletResponse rp) {
     	
      String forward = "failure";
      Auth auth = new Auth();
 
-//    Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+//    Make sure user is logged in
       if (auth.isLogin(rq)) {
     	  
     	  forward = "success";

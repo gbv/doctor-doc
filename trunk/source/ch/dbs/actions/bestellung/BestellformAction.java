@@ -48,10 +48,13 @@ import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.BestellParam;
+import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
+import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
 import ch.dbs.entity.Texttyp;
+import ch.dbs.entity.VKontoBenutzer;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.Message;
@@ -310,32 +313,34 @@ public final class BestellformAction extends DispatchAction {
 		BestellParam bp = new BestellParam();
 		Countries countriesInstance = new Countries();
 		ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
+		
+		UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
+		Konto k = new Konto();
+		String library = "";
+		boolean saveOrder = false;
         
-	     // es gibt drei mögliche Zugriffsformen, ohne eingeloggt zu sein. Priorisiert wie folgt:
-		// 1. Kontokennung (überschreibt IP-basiert)
-        // 2. IP-basiert (überschreibt Broker-Kennung)
-		// 3. Broker-Kennung (z.B. Careum Explorer)
+	     // There are three ways of taking access, without being logged in. Priority is as follows:
+		// 1. Kontokennung (overwrites IP-based access)
+        // 2. IP-based (overwrites Broker-Kennung)
+		// 3. Broker-Kennung (e.g. Careum Explorer)
 		
 		if (of.getKkid()==null && !auth.isLogin(rq)) t = auth.grantAccess(rq);
 		
-		// Eingeloggt. IP-basiert, Kontokennung oder Brokerkennung
-		if (((t!=null && t.getInhalt()!=null) || (of.getKkid()!=null || of.getBkid()!=null)) || auth.isLogin(rq)) {
+		// Logged in. IP-based, Kontokennung or Brokerkennung
+		if (((t!=null && t.getInhalt()!=null) || (of.getKkid()!=null || of.getBkid()!=null)) || auth.isLogin(rq)) {	 
+			
+			if (t == null || t.getInhalt() == null) {
+				if (of.getKkid() != null) { // Kontokennung
+					t = new Text(cn.getConnection(), Long.valueOf(12), of.getKkid()); // Text with Kontokennung
+				}
+				if (of.getBkid() != null) { // Brokerkennung
+					t = new Text(cn.getConnection(), Long.valueOf(11), of.getBkid()); // Text with Brokerkennung
+				}
+			}
 			
 			if (t!=null && t.getInhalt()!=null) {
-    			of.setBibliothek(t.getKonto().getBibliotheksname());
-            } else {            
-            if (of.getKkid()!=null) { // Kontokennung
-    			t = new Text(cn.getConnection(), Long.valueOf(12), of.getKkid()); // Text mit Kontokennung
-    			of.setBibliothek(t.getKonto().getBibliotheksname());
-    		}
-    		if (of.getBkid()!=null) { // Brokerkennung
-    			t = new Text(cn.getConnection(), Long.valueOf(11), of.getBkid()); // Text mit Brokerkennung
-    			if (t.getKonto().getId()!=null) { // Brokerkennung ist EINEM Konto zugewiesen
-    				of.setBibliothek(t.getKonto().getBibliotheksname());
-    			} else { // Borkerkennung ist offen
-    				// TODO: Prüfungen wer was liefern kann und Anzeige
-    			}
-    		}
+    			library = t.getKonto().getBibliotheksname();
+    			k = t.getKonto();
             }
 			
 			// zugehörige Bestellformular-Parameter holen
@@ -346,55 +351,85 @@ public final class BestellformAction extends DispatchAction {
                 of.setCountries(allPossCountries);
             } else {
             	if (auth.isLogin(rq)) {
-            		UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
-            		bp = new BestellParam(ui.getKonto(), cn.getConnection());
+            		k = ui.getKonto();
+            		bp = new BestellParam(k, cn.getConnection());
             		// Länderauswahl setzen
                 	List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());           
                     of.setCountries(allPossCountries);
             	}
             }
+            
+            if (bp!=null && bp.getId()!=null) saveOrder = bp.isSaveorder(); // additionally save order in the database?
         	
         try {
-        	// allenfalls Leerschläge aus Email entfernen
+        	// remove empty spaces from email
         	if (of.getKundenmail()!=null) of.setKundenmail(of.getKundenmail().trim());
         	Message message = getMessageForMissingBestellParams(of, bp);
         	if (message.getMessage()==null) {
         		
-        		of.setKundenmail(extractEmail(of.getKundenmail())); // ungültige Zeichen entfernen
+        		of.setKundenmail(extractEmail(of.getKundenmail())); // remove invalid characters
         		CodeString codeString = new CodeString();
-        		// Cookie Base64 codiert um besseren Datenschutz zu gewährleisten
+        		// Cookie Base64 coded for better privacy
         		Cookie cookie = new Cookie( "doctordoc-bestellform", codeString.encodeString(of.getKundenvorname() + "---" + of.getKundenname() + "---" + of.getKundenmail()));
-        		cookie.setMaxAge(-1); //nur während aktueller Session gültig
+        		cookie.setMaxAge(-1); // only valid for session
         		cookie.setVersion(1);
-        		try { // falls Eingabe ungültige, Nicht-ASCII-Zeichen enthielt, klappt das Versenden, und das Cookie-Setzen wird übersprungen.
+        		try { // if there were invalid not-ASCI-characters, the order will still be processed and no cookie set.
 						rp.addCookie(cookie);
 					} catch (Exception e) {
 						log.error("Setting Cookie: " + e.toString());
 					}
-        	
-            forward = "success";
+			
+			AbstractBenutzer u = new AbstractBenutzer();
             
-        	// aktuelles Datum setzen
+			if (auth.isLogin(rq)) { // User is already known
+				u = ui.getBenutzer();
+				// if registered email is not the same as specified in the orderform
+				// append to remarks
+				if (!u.getEmail().equals(of.getKundenmail())) of.setNotizen((of.getKundenmail() + "\012" + of.getNotizen()).trim());
+            } else { // try to look up user from given Emailaddress
+        		library = k.getBibliotheksname();
+        		u = getUserFromBestellformEmail(k, of.getKundenmail(), cn.getConnection());
+            }
+			
+			if (u.getId()!=null) { // we do have already a valid user
+				of.setForuser(u.getId().toString());  // Preselection of user for saving an order through the getMethod in the email (depreceated)
+			} else if (saveOrder) {
+			// save as new user
+				u = new AbstractBenutzer(of);
+				if (u.getLand()==null) u.setLand(k.getLand()); // use same value as library, if not specified
+				u.setId(u.saveNewUser(u, cn.getConnection()));
+				VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
+				vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
+                of.setForuser(u.getId().toString());
+			}
+			
+			if (saveOrder) {
+			// save oder
+    			Bestellungen b = new Bestellungen(of, u, k);
+    			// set standard values. Fileformat isn't implemented in any possible orderform
+    			if (!b.getMediatype().equals("Buch")) {
+    				b.setFileformat("PDF");
+    			} else {
+    				b.setFileformat("Papierkopie");
+    			}
+    			b.setStatustext("zu bestellen");
+    			b.save(cn.getConnection());
+    			
+    			Text state = new Text(cn.getConnection(), "zu bestellen");
+    			OrderState orderstate = new OrderState();
+                orderstate.setNewOrderState(b, state, null, u.getEmail(), cn.getConnection());
+			}
+			
+			forward = "success";
+			
+        	// set current date
             Date d = new Date();
             ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             String date = sdf.format(d);
             
             MHelper mh = new MHelper();
 			String[] to = new String[2];
-			
-			AbstractBenutzer u = new AbstractBenutzer(); // Für aus dbs anhand der Email und dem Konto geholter Benutzer
-            
-			if (auth.isLogin(rq)) {
-            	UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
-            	to[0] = ui.getKonto().getDbsmail();
-            	u = getUserFromBestellformEmail(ui.getKonto(), of.getKundenmail(), cn.getConnection());
-            } else { // IP-basiert, Konto- und Borkerkennungen
-        		to[0] = t.getKonto().getDbsmail();
-        		of.setBibliothek(t.getKonto().getBibliotheksname());
-        		u = getUserFromBestellformEmail(t.getKonto(), of.getKundenmail(), cn.getConnection());
-            }
-			
-			if (u.getId()!=null) of.setForuser(u.getId().toString());  // Vorselektion bei Abspeichern in JSP, falls User bekannt
+			to[0] = k.getDbsmail();
 			
 			to[1] = of.getKundenmail();
 			StringBuffer m = new StringBuffer();
@@ -460,7 +495,7 @@ public final class BestellformAction extends DispatchAction {
 					
 //					 EZB-Link vorbereiten
 		            String bibid = "AAAAA";
-		            if (t.getKonto().getEzbid()!=null && !t.getKonto().getEzbid().equals("")) bibid = t.getKonto().getEzbid();
+		            if (k.getEzbid()!=null && !k.getEzbid().equals("")) bibid = k.getEzbid();
 		            String link = "http://rzblx1.uni-regensburg.de/ezeit/searchres.phtml?bibid=" + bibid + "&colors=7&lang=de&jq_type1=KT&jq_term1=&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+&jq_type4=IS&offset=-1&hits_per_page=50&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=4&jq_term4=";
 					
 					m.append("Link zur EZB: " + link + of.getIssn() + "\n"); // Link zur EZB mitschicken
@@ -600,6 +635,7 @@ public final class BestellformAction extends DispatchAction {
             of = of.encodeOrderForm(of);
 
             rq.setAttribute("orderform", of);
+            if (!library.equals("")) rq.setAttribute("library", library);
             
         } catch (Exception e) {
         	forward = "failure";

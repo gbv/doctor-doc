@@ -2620,12 +2620,15 @@ try {
                 tty.setId(id);
                 pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
                 
+                DefaultPreis dp = new DefaultPreis();
+                pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
+                
                 rq.setAttribute("orderform", pageForm);
                 
                 if (b.checkAnonymize(b)) {            	
             		
             			forward = "failure";
-                        ErrorMessage em = new ErrorMessage("error.anonymised", "listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc");
+                        ErrorMessage em = new ErrorMessage("error.anonymised", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute("errormessage", em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
             	}
@@ -2634,7 +2637,7 @@ try {
             		if (!b.getKonto().getId().equals(ui.getKonto().getId())) { // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
             			System.out.println("URL-Hacking... ;-)");
             			forward = "failure";
-                        ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc");
+                        ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute("errormessage", em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         log.info("prepareModifyOrder: prevented URL-hacking!");
@@ -2644,7 +2647,7 @@ try {
                 	if (!b.getBenutzer().getId().equals(ui.getBenutzer().getId())) { // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
                 		System.out.println("URL-Hacking... ;-)");
                 		forward = "failure";
-                        ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc");
+                        ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute("errormessage", em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         log.info("prepareModifyOrder: prevented URL-hacking!");
@@ -2653,7 +2656,7 @@ try {
                           
             } else {
             	forward = "failure";
-                ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc");
+                ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                 rq.setAttribute("errormessage", em);
                 rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                 log.info("prepareModifyOrder: prevented URL-hacking!");
@@ -2711,7 +2714,7 @@ try {
         	ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("uebersicht");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc");
+            ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
             rq.setAttribute("errormessage", em);
             log.info("prepareDeleteOrder: prevented URL-hacking!");
         }
@@ -2751,7 +2754,7 @@ try {
                 mf.setActivemenu("uebersicht");
                 rq.setAttribute("ActiveMenus", mf);
         		Message m = new Message("message.deleteorder");
-                m.setLink("listkontobestellungen.do?method=overview&filter=zu%20bearbeiten&sort=statedate&sortorder=desc");
+                m.setLink("listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                 rq.setAttribute("message", m);
         	} else { // löschen fehlgeschlagen
         		ErrorMessage em = new ErrorMessage();
@@ -2765,7 +2768,7 @@ try {
         	ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("uebersicht");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=zu bearbeiten&sort=statedate&sortorder=desc");
+            ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
             rq.setAttribute("errormessage", em);
             log.info("deleteOrder: prevented URL-hacking!");
         }

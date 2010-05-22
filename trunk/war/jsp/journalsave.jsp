@@ -139,16 +139,23 @@ function wahrung(a)
 </logic:notPresent>
 	
  <!--
- Hier folgt das Form um die Bestellung zu speichern.
+ Hier folgt das Form eine Bestellung zu speichern.
  -->  
   <html:form action="saveOrder.do" method="post" focus="foruser">
   <input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />" /> 
   
-  <!--
- Formular um eine neue Bestellung abzuspeichern
- --> 
-  <logic:notPresent name="orderform" property="bid">
+   <logic:present name="orderform" property="bid">
+	 	<input name="bid" type="hidden" value="<bean:write name="orderform" property="bid" />" />
+	  	<tr>
+	  		<td><bean:message key="bestellform.typ" /></td>
+	  		<td><bean:write name="orderform" property="mediatype" /></td>
+	  	</tr>
+	</logic:present>
 
+	<!--
+ 	The hidden deloptions element at the end of the section, keeps other values than
+ 	specified in the radio buttons (saved through custom orderfrom from patron)
+ 	-->
  	<tr>
       <td><bean:message key="bestellform.bestellart" /></td><td>
 		<input type="radio" name="deloptions" value="online"<logic:equal name="orderform" property="deloptions" value="online"> checked="checked"</logic:equal>><bean:message key="save.online" />
@@ -156,7 +163,7 @@ function wahrung(a)
       	<input type="radio" name="deloptions" value="post"<logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal>><bean:message key="save.post" />
 		<input type="radio" name="deloptions" value="fax"<logic:equal name="orderform" property="deloptions" value="fax"> checked="checked"</logic:equal>><bean:message key="save.fax" />
 		<input type="radio" name="deloptions" value="fax to pdf"<logic:equal name="orderform" property="deloptions" value="fax to pdf"> checked="checked"</logic:equal>><bean:message key="save.faxtopdf" />
-
+		<input name="deloptions" type="hidden" value="<bean:write name="orderform" property="deloptions" />" />
       <br></td>
     </tr>
     
@@ -220,6 +227,7 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
   			</select>
   		</td>
     </tr>
+  <logic:notPresent name="orderform" property="bid">
     <tr>
       <td><bean:message key="save.foruser" />&nbsp;</td><td><select name="foruser">
       									<option value="0" selected><bean:message key="select.kunde" /></option>
@@ -229,85 +237,8 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
    										</logic:iterate>
 									</select> <logic:present name="userinfo" property="benutzer"><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><input type="submit" name="submit" value="<bean:message key="save.newuser" />"></input></input></logic:notEqual></logic:present></td>
     </tr>
-    
-    
- </logic:notPresent>
-
-  <!--
-Hier folgt das Verändern einer bereits vorhandenen Bestellung
- --> 
- <logic:present name="orderform" property="bid">
- <input name="bid" type="hidden" value="<bean:write name="orderform" property="bid" />">
-  
-  	<tr>
-  		<td><bean:message key="bestellform.typ" /></td>
-  		<td><bean:write name="orderform" property="mediatype" /><input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />"></td>
-  	</tr>
- 
- 	 <tr>
-      <td><bean:message key="bestellform.bestellart" /></td><td>
-		<input type="radio" name="deloptions" value="email"<logic:equal name="orderform" property="deloptions" value="email"> checked="checked"</logic:equal>><bean:message key="save.email" />
-      	<input type="radio" name="deloptions" value="post"<logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal>><bean:message key="save.post" />
-		<input type="radio" name="deloptions" value="fax"<logic:equal name="orderform" property="deloptions" value="fax"> checked="checked"</logic:equal>><bean:message key="save.fax" />
-		<input type="radio" name="deloptions" value="fax to pdf"<logic:equal name="orderform" property="deloptions" value="fax to pdf"> checked="checked"</logic:equal>><bean:message key="save.faxtopdf" />
-		<input type="radio" name="deloptions" value="online"<logic:equal name="orderform" property="deloptions" value="online"> checked="checked"</logic:equal>><bean:message key="save.online" />
-      <br></td>
-    </tr>
-    
-  <tr><td><br></td></tr>
-    <tr><td><bean:message key="save.subitonr" />:</td><td><input name="subitonr" value="<bean:write name="orderform" property="subitonr" />" type="text" size="25" maxlength="25"></td></tr>
-    <logic:present name="userinfo" property="konto.gbvbenutzername">
-    <tr><td><bean:message key="save.gbvnr" />:</td><td><input name="gbvnr" value="<bean:write name="orderform" property="gbvnr" />" type="text" size="25" maxlength="25"></td></tr>
-    </logic:present>
-  <tr><td><br></td></tr>
-    
-      <tr><td><bean:message key="save.lieferquelle" /></td>
-      	  <td>
-      	  		<select name="lid">
-      				<option value="0" selected><bean:message key="select.library" /></option>
- 					<logic:iterate id="l" name="orderform" property="quellen">
- 					<bean:define id="tmp"><bean:write name="orderform" property="lieferant.lid"/></bean:define>
-     				<option value="<bean:write name="l" property="lid" />"<logic:equal name="l" property="lid" value="<%=tmp%>"> selected</logic:equal>><bean:write name="l" property="sigel" /> <bean:write name="l" property="name" /></option>
-   					</logic:iterate>
-				</select>
-		  </td>
-      </tr>
-    <tr>
-      <td><bean:message key="save.status" /></td><td>
-      					<select name="status">
-      						<option value="0" selected><bean:message key="select.status" /></option>
- 							<logic:iterate id="s" name="orderform" property="statitexts">
- 							<bean:define id="tmp" name="s" property="inhalt" type="java.lang.String"/>
-     							<option value="<bean:write name="s" property="inhalt" />"<logic:equal name="orderform" property="status" value="<%=tmp%>"> selected</logic:equal>><bean:write name="s" property="inhalt" /></option>
-   							</logic:iterate>
-						</select>
-						</td>
-    </tr>
-    
-    <tr>
-      <td><bean:message key="bestellform.prio" /></td>
-      <td>
-      		<select name="prio" size="1">
-    			<option value="normal" <logic:equal name="orderform" property="prio" value="normal">selected</logic:equal>><bean:message key="bestellform.normal" /></option>
-    			<option value="urgent"<logic:equal name="orderform" property="prio" value="urgent">selected</logic:equal>><bean:message key="bestellform.urgent" /></option>
-  			</select>
-  		</td>
-    </tr>
-    
-    <tr>
-      <td><bean:message key="save.format" /></td>
-      <td><select name="fileformat" size="1">
-    			<option value="PDF"<logic:equal name="orderform" property="fileformat" value="PDF"> selected</logic:equal>><bean:message key="save.pdf" /></option>
-    			<option value="PDF mit DRM"<logic:equal name="orderform" property="fileformat" value="PDF mit DRM"> selected</logic:equal>><bean:message key="save.drm" /></option>
-    			<option value="Papierkopie"<logic:equal name="orderform" property="fileformat" value="Papierkopie"> selected</logic:equal>><bean:message key="save.papierkopie" /></option>
-    			<option value="HTML"<logic:equal name="orderform" property="fileformat" value="HTML"> selected</logic:equal>><bean:message key="save.html" /></option>
-    			<option value="DOC"<logic:equal name="orderform" property="fileformat" value="DOC"> selected</logic:equal>><bean:message key="save.doc" /></option>
-    			<option value="TIFF"<logic:equal name="orderform" property="fileformat" value="TIFF"> selected</logic:equal>><bean:message key="save.tiff" /></option>
-    			<option value="andere"<logic:equal name="orderform" property="fileformat" value="andere"> selected</logic:equal>><bean:message key="save.andere" /></option>
-  			</select>
-  		</td>
-    </tr>    
-    
+  </logic:notPresent>
+  <logic:present name="orderform" property="bid">
     <tr>
       <td><bean:message key="save.foruser" />&nbsp;</td><td><select name="foruser">
       									<option value="0" selected><bean:message key="select.kunde" /></option>
@@ -317,9 +248,7 @@ Hier folgt das Verändern einer bereits vorhandenen Bestellung
    										</logic:iterate>
 									</select> <logic:present name="userinfo" property="benutzer"><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><input type="submit" name="submit" value="<bean:message key="save.newuser" />"></logic:notEqual></logic:present></td>
     </tr>
- 
- </logic:present>
- 
+  </logic:present>
  
 <logic:present name="userinfo" property="benutzer">
 	<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">    

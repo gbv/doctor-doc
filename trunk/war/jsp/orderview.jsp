@@ -219,7 +219,7 @@
    <logic:iterate id="s" name="orderform" property="states">
      <tr>
       <td><bean:write name="s" property="date" />&nbsp;</td>
-      <td><logic:equal name="s" property="orderstate" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="s" property="orderstate" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="s" property="orderstate" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="s" property="orderstate" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="s" property="orderstate" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal>&nbsp;</td>
+      <td><logic:equal name="s" property="orderstate" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="s" property="orderstate" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="s" property="orderstate" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="s" property="orderstate" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="s" property="orderstate" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal><logic:equal name="s" property="orderstate" value="zu bestellen"><bean:message key="menu.toOrder" /></logic:equal>&nbsp;</td>
       <td><logic:present name="s" property="bearbeiter"><bean:write name="s" property="bearbeiter" /></logic:present>&nbsp;</td>
       <td><logic:present name="s" property="bemerkungen"><bean:write name="s" property="bemerkungen" /></logic:present>&nbsp;</td>
     </tr>

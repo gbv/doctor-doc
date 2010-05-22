@@ -31,6 +31,7 @@ import java.sql.SQLException;
 
 import org.grlea.log.SimpleLogger;
 
+import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
 import util.ThreadSafeSimpleDateFormat;
@@ -146,6 +147,69 @@ public class AbstractBenutzer extends AbstractIdEntity {
 		gtc = uf.getGtc();
 		gtcdate = uf.getGtcdate();
 
+	}
+	
+	public AbstractBenutzer(OrderForm of) {
+		if (of.getKundenvorname()!=null) {
+			this.vorname = of.getKundenvorname().trim();
+		} else {
+			this.vorname = of.getKundenvorname();
+		}
+		if (of.getKundenname()!=null) {
+			this.name = of.getKundenname().trim();
+		} else {
+			this.name = of.getKundenname();
+		}
+		if (of.getKundenmail()!=null) {
+			this.email = of.getKundenmail().trim();
+		} else {
+			this.email = of.getKundenmail();
+		}
+		if (of.getKundeninstitution()!=null) {
+			this.institut = of.getKundeninstitution().trim();
+		} else {
+			this.institut = of.getKundeninstitution();
+		}
+		if (of.getKundenabteilung()!=null) {
+			this.abteilung = of.getKundenabteilung().trim();
+		} else {
+			this.abteilung = of.getKundenabteilung();
+		}
+		if (of.getKundenadresse()!=null) { // this may contain street, zip and place!
+			this.adresszusatz = of.getKundenadresse().trim();
+		} else {
+			this.adresszusatz = of.getKundenadresse();
+		}
+		if (of.getKundenstrasse()!=null) {
+			this.adresse = of.getKundenstrasse().trim();
+		} else {
+			this.adresse = of.getKundenstrasse();
+		}
+		if (of.getKundenplz()!=null) {
+			this.plz = of.getKundenplz().trim();
+		} else {
+			this.plz = of.getKundenplz();
+		}
+		if (of.getKundenort()!=null) {
+			this.ort = of.getKundenort().trim();
+		} else {
+			this.ort = of.getKundenort();
+		}
+		if (of.getKundenland()!=null) {
+			this.land = of.getKundenland().trim();
+		} else {
+			this.land = of.getKundenland();
+		}
+		if (of.getKundentelefon()!=null) {
+			this.telefonnrg = of.getKundentelefon().trim();
+		} else {
+			this.telefonnrg = of.getKundentelefon();
+		}
+		if (of.getKundenbenutzernr()!=null) {
+			this.librarycard = of.getKundenbenutzernr().trim();
+		} else {
+			this.librarycard = of.getKundenbenutzernr();
+		}
 	}
 	
     /**
@@ -774,6 +838,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
         	} else {
         		pstmt.setString(14, u.getPassword());
         		}
+        } else {
+        	pstmt.setString(14, "");
         }
         pstmt.setString(15, loginOpt);
         pstmt.setString(16, userBestellung);
