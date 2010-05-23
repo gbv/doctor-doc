@@ -86,52 +86,52 @@ public final class BestellformAction extends DispatchAction {
 		Countries countriesInstance = new Countries();
 		
         if (rq.getAttribute("ofjo")!=null) {
-        	of = (OrderForm) rq.getAttribute("ofjo"); // Übergabe aus checkAvailability von getOpenUrlRequest und nach Kunde neu erstellen...
+        	of = (OrderForm) rq.getAttribute("ofjo"); // if coming from checkAvailability and getOpenUrlRequest
         }
         
-     // es gibt drei mögliche Zugriffsformen, ohne eingeloggt zu sein. Priorisiert wie folgt:
-		// 1. Kontokennung (überschreibt IP-basiert)
-        // 2. IP-basiert (überschreibt Broker-Kennung)
-		// 3. Broker-Kennung (z.B. Careum Explorer)
+	     // There are three ways of taking access, without being logged in. Priority is as follows:
+		// 1. Kontokennung (overwrites IP-based access)
+        // 2. IP-based (overwrites Broker-Kennung)
+		// 3. Broker-Kennung (e.g. Careum Explorer)
         
         if (of.getKkid()==null) t = auth.grantAccess(rq);
 		
-		// Nicht eingeloggt. IP-basiert, Kontokennung oder Brokerkennung
+		// Not logged in: IP-based, Kontokennung or Brokerkennung
         if (((t!=null && t.getInhalt()!=null) || (of.getKkid()!=null || of.getBkid()!=null)) && !auth.isLogin(rq)) {
             forward = "success";
             
-            String kkid = of.getKkid(); // wird benötigt, damit kkid bei resolvePmid nicht überschrieben wird...
+            String kkid = of.getKkid(); // separate variables to avoid that kkid gets overwritten in resolvePmid
             String bkid = of.getBkid();
           
-            if (of.getMediatype() == null || // Defaultformular Artikel
+            if (of.getMediatype() == null || // default orderform 'Article'
                (!of.getMediatype().equals("Artikel") && !of.getMediatype().equals("Teilkopie Buch") && !of.getMediatype().equals("Buch")) ) {
             		of.setMediatype("Artikel");
             	}
             
-            // hier erfolgt die Auflösung von PMID oder DOI
+            // resolve PMID or DOI
             if (of.isResolve()==true && of.getPmid()!=null && !of.getPmid().equals("") && of.getMediatype().equals("Artikel")) {
             	of = resolvePmid(extractPmid(of.getPmid()));
             } else {
             	if (of.isResolve()==true && of.getDoi()!=null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")) {
             		of = resolveDoi(extractDoi(of.getDoi()));
-            		if (of.getDoi()==null || of.getDoi().equals("")) of = (OrderForm) fm; // falls Auflösung nicht geklappt hat...
+            		if (of.getDoi()==null || of.getDoi().equals("")) of = (OrderForm) fm; // sometimes we can't resolve a DOI...
             	}            	
             }
             
-            // muss nach resolvePmid stehen, das sonst der Bibliotheksname überschrieben wird...
+            // has to be placed after resolvePmid, to avoid overwriting of library name (Bibliotheksname)...
             if (t!=null && t.getInhalt()!=null) {
-            	rq.setAttribute("ip", t); // Text mit Konto in Request setzen
+            	rq.setAttribute("ip", t);
     			of.setBibliothek(t.getKonto().getBibliotheksname());
     			if (t.getTexttyp().getId()==11) of.setBkid(t.getInhalt());
     			if (t.getTexttyp().getId()==12) of.setKkid(t.getInhalt());
             } else {            
             if (kkid!=null) { // Kontokennung
-    			t = new Text(cn.getConnection(), Long.valueOf(12), kkid); // Text mit Kontokennung
-    			if (t!=null && t.getInhalt()!=null) { // ungültige kkid abfangen!
-    				rq.setAttribute("ip", t); // Text mit Konto in Request setzen
+    			t = new Text(cn.getConnection(), Long.valueOf(12), kkid); // Text with Kontokennung
+    			if (t!=null && t.getInhalt()!=null) { // makes sure the kkid entered is valid!
+    				rq.setAttribute("ip", t);
         			of.setBibliothek(t.getKonto().getBibliotheksname());
         			of.setKkid(kkid);        			
-        		} else { // ungültige kkid
+        		} else { // invalid kkid
         			forward = "failure";
         			ErrorMessage em = new ErrorMessage("error.kkid", "login.do");
                     rq.setAttribute("errormessage", em);
@@ -141,16 +141,16 @@ public final class BestellformAction extends DispatchAction {
         		}
     		}
     		if (bkid!=null) { // Brokerkennung
-    			t = new Text(cn.getConnection(), Long.valueOf(11), bkid); // Text mit Brokerkennung
-    			if (t!=null && t.getInhalt()!=null) { // ungültige bkid abfangen!
-    			if (t.getKonto().getId()!=null) { // Brokerkennung ist EINEM Konto zugewiesen
-    				rq.setAttribute("ip", t); // Text mit Konto in Request setzen
+    			t = new Text(cn.getConnection(), Long.valueOf(11), bkid); // Text with Brokerkennung
+    			if (t!=null && t.getInhalt()!=null) { // makes sure the bkid entered is valid!
+    			if (t.getKonto().getId()!=null) { // Brokerkennung belongs to ONE account
+    				rq.setAttribute("ip", t);
     				of.setBibliothek(t.getKonto().getBibliotheksname());
     				of.setBkid(bkid);
-    			} else { // Borkerkennung ist offen
+    			} else { // Brokerkennung remains unresolved
     				// TODO: Prüfungen wer was liefern kann und Anzeige
     			}
-    			} else { // ungültige bkid
+    			} else { // invalid bkid
     				forward = "failure"; 
     				ErrorMessage em = new ErrorMessage("error.bkid", "login.do");
                     rq.setAttribute("errormessage", em);
@@ -161,25 +161,25 @@ public final class BestellformAction extends DispatchAction {
     		}
             }
             
-            // zugehörige Bestellformular-Parameter holen
+            // get additional orderform parameters (BestellParam bp)
             // Änderungen in diesem Abschnitt müssen in save() wiederholt werden
             if (t!=null && t.getInhalt()!=null) {            	
             	bp = new BestellParam(t, cn.getConnection());
             	// Länderauswahl setzen
             	List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());            
                 of.setCountries(allPossCountries);
-                if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // Default Option1
+                if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // default Option1
             }
             
-            if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // Defaultwert deloptions
+            if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // default value deloptions
                  		if (bp.isLieferart()==false) {of.setDeloptions("email");} else {of.setDeloptions(bp.getLieferart_value1());}
                  	}
             
-            // Cookie auslesen
+            // read Cookie
             Cookie cookies[] = rq.getCookies();
             
             if (cookies == null) {
-            	log.ludicrous("kein Cookie gesetzt!");
+            	log.ludicrous("no Cookie set!");
             } else {
 				CodeString codeString = new CodeString();
 
@@ -195,8 +195,8 @@ public final class BestellformAction extends DispatchAction {
 							 cookietext = cookietext.substring(cookietext.indexOf("---")+3);
 							 of.setKundenmail(cookietext);
 							 } catch (Exception e) { // 
-								 log.error("Fehler beim Cookie auslesen!: " + e.toString());
-								 System.out.println("Fehler beim Cookie auslesen!: " + e.toString());
+								 log.error("Error while reading cookie!: " + e.toString());
+								 System.out.println("Error while reading cookie!: " + e.toString());
 							 }
 						 }
 						
@@ -208,44 +208,42 @@ public final class BestellformAction extends DispatchAction {
             mf.setActivemenu("bestellform");
             rq.setAttribute("ActiveMenus", mf);
             
-            // für Get-Methode in PrepareLogin of URL-codieren
+            // URL-encode contents of OrderForm for get-methode in PrepareLogin
             of = of.encodeOrderForm(of);
             
             rq.setAttribute("bestellparam", bp);
             rq.setAttribute("orderform", of);
         } else {        	
         	
-            // Falls User eingeloggt
+            // Case User is logged in
             if (auth.isLogin(rq)) {
             	
                 forward = "success";
                 UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
               
-                if (of.getMediatype() == null || // Defaultformular Artikel
+                if (of.getMediatype() == null || // default orderform 'Artikel'
                    (!of.getMediatype().equals("Artikel") && !of.getMediatype().equals("Teilkopie Buch") && !of.getMediatype().equals("Buch")) ) {
                 		of.setMediatype("Artikel");
                 	}
                 
-//              hier erfolgt die Auflösung von PMID oder DOI
+//              resolve PMID or DOI
                 if (of.isResolver()==false && of.getPmid()!=null && !of.getPmid().equals("") && of.getMediatype().equals("Artikel")) {
                 	of = resolvePmid(extractPmid(of.getPmid()));
                 } else {
                 	if (of.isResolver()==false && of.getDoi()!=null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")) {
                 		of = resolveDoi(extractDoi(of.getDoi()));
-                		if (of.getDoi()==null || of.getDoi().equals("")) of = (OrderForm) fm; // falls Auflösung nicht geklappt hat...
+                		if (of.getDoi()==null || of.getDoi().equals("")) of = (OrderForm) fm; // sometimes we can't resolve a DOI...
                 	}            	
                 }
                 
-                bp = new BestellParam(ui.getKonto(), cn.getConnection()); // das für eingeloggt wird nicht über eine Textverknüpfung abgehandelt
+                bp = new BestellParam(ui.getKonto(), cn.getConnection()); // special case BestellParam when logged in
                 
-             // Länderauswahl setzen
-             // zugehörige Bestellformular-Parameter holen
+             // set country select
                 if (bp!=null && bp.getId()!=null) {
-                	// Länderauswahl setzen
                 	List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());           
                     of.setCountries(allPossCountries);
-                    if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // Default Option1
-                 // Angaben für parametriertes Bestellformular
+                    if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // default Option1
+                 // values for customizable orderform
                     of.setKundeninstitution(ui.getBenutzer().getInstitut());
                     of.setKundenabteilung(ui.getBenutzer().getAbteilung());
                     of.setKundenadresse(ui.getBenutzer().getAdresse() + "\012" + ui.getBenutzer().getAdresszusatz() + "\012" + ui.getBenutzer().getPlz() + "\040" + ui.getBenutzer().getOrt());
@@ -262,7 +260,7 @@ public final class BestellformAction extends DispatchAction {
                     }
                 }
                 
-                if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // Defaultwert alle anderen Situationen deloptions
+                if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // default values all other situations of deloptions
                 	if (bp.isLieferart()==false) {of.setDeloptions("email");} else {of.setDeloptions(bp.getLieferart_value1());}
              	}
                 
@@ -271,7 +269,7 @@ public final class BestellformAction extends DispatchAction {
                 of.setKundenname(ui.getBenutzer().getName());
                 of.setKundenmail(ui.getBenutzer().getEmail());
                 
-             // für Get-Methode in PrepareLogin of URL-codieren
+             // URL-encode contents of OrderForm for get-methode in PrepareLogin
                 of = of.encodeOrderForm(of);
                 
                 rq.setAttribute("bestellparam", bp);
@@ -884,7 +882,7 @@ public final class BestellformAction extends DispatchAction {
 	        	// Länderauswahl setzen
             	List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());            
                 of.setCountries(allPossCountries);
-                if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // Default Option1
+                if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // default Option1
             
             if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // Defaultwert deloptions
                  		if (bp.isLieferart()==false) {of.setDeloptions("email");} else {of.setDeloptions(bp.getLieferart_value1());}

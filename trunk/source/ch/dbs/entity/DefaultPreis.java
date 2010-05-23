@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
-import ch.dbs.actions.bestellung.OrderAction;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 
@@ -199,7 +198,6 @@ public class DefaultPreis extends AbstractIdEntity {
    */
   public DefaultPreis getDefaultPreis(String lieferant, Long kid, Connection cn){
       DefaultPreis dp = new DefaultPreis();
-      OrderAction orderActionInstance = new OrderAction();
               
       PreparedStatement pstmt = null;
       ResultSet rs = null;
@@ -214,7 +212,7 @@ public class DefaultPreis extends AbstractIdEntity {
           	dp = getDefaultPreis(rs);
           	OrderForm pageForm = new OrderForm();
           	pageForm.setKaufpreis(dp.getPreis());
-          	pageForm = orderActionInstance.bigDecimalToString(pageForm);
+          	pageForm = pageForm.bigDecimalToString(pageForm);
           	dp.setVorkomma(pageForm.getPreisvorkomma());
           	dp.setNachkomma(pageForm.getPreisnachkomma());
            }
@@ -248,7 +246,6 @@ public class DefaultPreis extends AbstractIdEntity {
   public List<DefaultPreis> getAllKontoDefaultPreise(Long kid, Connection cn){
       ArrayList<DefaultPreis> list = new ArrayList<DefaultPreis>();
       DefaultPreis dp = new DefaultPreis();
-      OrderAction orderActionInstance = new OrderAction();
               
       PreparedStatement pstmt = null;
       ResultSet rs = null;
@@ -262,7 +259,7 @@ public class DefaultPreis extends AbstractIdEntity {
           	dp = getDefaultPreis(rs);
           	OrderForm pageForm = new OrderForm();
           	pageForm.setKaufpreis(dp.getPreis());
-          	pageForm = orderActionInstance.bigDecimalToString(pageForm);
+          	pageForm = pageForm.bigDecimalToString(pageForm);
           	dp.setVorkomma(pageForm.getPreisvorkomma());
           	dp.setNachkomma(pageForm.getPreisnachkomma());
               list.add(dp);

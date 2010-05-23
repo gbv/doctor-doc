@@ -114,7 +114,12 @@
 
 <logic:present name="userinfo" property="benutzer">
 <p />
-<div id="italic"><bean:message key="save.artikel" /> <bean:message key="save.gefunden" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=erledigt<logic:present name="orderform" property="lieferant.lid">&lid=<bean:write name="orderform" property="lieferant.lid" /></logic:present><logic:present name="orderform" property="deloptions">&deloptions=<bean:write name="orderform" property="deloptions" /></logic:present><logic:notPresent name="orderform" property="deloptions">&deloptions=email</logic:notPresent>&preisvorkomma=0&preisnachkomma=00&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></div>
+	<logic:notPresent name="orderform" property="bid">
+		<div id="italic"><bean:message key="save.artikel" /> <bean:message key="save.gefunden" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=erledigt<logic:present name="orderform" property="lieferant.lid">&lid=<bean:write name="orderform" property="lieferant.lid" /></logic:present><logic:present name="orderform" property="deloptions">&deloptions=<bean:write name="orderform" property="deloptions" /></logic:present><logic:notPresent name="orderform" property="deloptions">&deloptions=email</logic:notPresent>&preisvorkomma=0&preisnachkomma=00&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></div>
+	</logic:notPresent>
+	<logic:present name="orderform" property="bid">
+		<div id="italic"><bean:message key="save.artikel" /> <bean:message key="save.gefunden" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></div>
+	</logic:present>
 <p />
 </logic:present>
  
@@ -186,7 +191,14 @@
 	
 	<p><a href="http://www.ubka.uni-karlsruhe.de/kvk.html?SS=<bean:write name="orderform" property="issn" />" target="_blank"><bean:message key="availresult.kvk" /></a></p>
 	
-	<p><font color="white"><i><bean:message key="save.extern" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=bestellt&deloptions=email&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font></p>
+	<p>
+		<logic:notPresent name="orderform" property="bid">
+			<font color="white"><i><bean:message key="save.extern" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=bestellt&deloptions=email&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
+		</logic:notPresent>
+		<logic:present name="orderform" property="bid">
+			<font color="white"><i><bean:message key="save.extern" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
+		</logic:present>
+	</p>
   </logic:notEqual>
   </logic:present>
   
@@ -210,7 +222,14 @@
 	
 	<p><a href="http://www.ubka.uni-karlsruhe.de/kvk.html" target="_blank"><bean:message key="availresult.kvk" /></a></p>
 	
-	<p><font color="white"><i><bean:message key="save.extern" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=bestellt&deloptions=email&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font></p>
+	<p>
+		<logic:notPresent name="orderform" property="bid">
+			<font color="white"><i><bean:message key="save.extern" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=bestellt&deloptions=email&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
+		</logic:notPresent>
+		<logic:present name="orderform" property="bid">
+			<font color="white"><i><bean:message key="save.extern" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
+		</logic:present>
+	</p>
   </logic:equal>
   </logic:present>
 

@@ -17,7 +17,6 @@
 
 package ch.dbs.actions.bestellung;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -2052,28 +2051,12 @@ try {
                 mf.setActivemenu("suchenbestellen");
                 rq.setAttribute("ActiveMenus", mf);
         	 	
-        	 	// auscodiert um nur ausgewählte Angaben zu übernehmen und Angaben wie interne Notizen etc. zu unterdrücken
-        	 	OrderForm of = new OrderForm();
-        	 	of.setMediatype(order.getMediatype());
-        	 	of.setArtikeltitel(order.getArtikeltitel());
-        	 	of.setAuthor(order.getAutor());
-        	 	of.setBuchtitel(order.getBuchtitel());
-        	 	of.setDoi(order.getDoi());
-        	 	of.setForuser(order.getBenutzer().getId().toString());
-        	 	of.setHeft(order.getHeft());
-        	 	of.setIsbn(order.getIsbn());
-        	 	of.setIssn(order.getIssn());
-        	 	of.setJahr(order.getJahr());
-        	 	of.setJahrgang(order.getJahrgang());
-        	 	of.setKapitel(order.getKapitel());
-        	 	of.setPmid(order.getPmid());
-        	 	of.setSeiten(order.getSeiten());
-        	 	of.setVerlag(order.getVerlag());
-        	 	of.setZeitschriftentitel(order.getZeitschrift());
+        	 	OrderForm of = new OrderForm(order);
         	 	
         	 	rq.setAttribute("ofjo", of);
         	 	
-        	 	if (!of.getMediatype().equals("Artikel")) forward = "save"; // direkt zum Speicherformular ohne Checkavailability
+        	 // mediatype != Artikel: go directly to the page for saving/modifying the order and not to checkavailability
+        	 	if (!of.getMediatype().equals("Artikel")) forward = "save";
         	
         	} else {
         		forward = "failure";
@@ -2566,39 +2549,7 @@ try {
             	
             	if (b.getId()!=null) {
             	
-            	pageForm.setAnmerkungen(b.getSystembemerkung());
-            	pageForm.setArtikeltitel(b.getArtikeltitel());
-            	pageForm.setAuthor(b.getAutor());
-            	pageForm.setDeloptions(b.getDeloptions());
-            	pageForm.setFileformat(b.getFileformat());
-            	pageForm.setUid(Long.toString(b.getBenutzer().getId()));
-            	pageForm.setHeft(b.getHeft());
-            	pageForm.setIssn(b.getIssn());
-            	pageForm.setJahr(b.getJahr());
-            	pageForm.setJahrgang(b.getJahrgang());
-            	pageForm.setNotizen(b.getNotizen());
-            	pageForm.setPrio(b.getPriority());            	
-
-                pageForm.setLieferant(b.getLieferant());
-                pageForm.setBestellquelle(b.getBestellquelle()); // nur Dublette um Sortieren und Suche zu ermöglichen
-            	
-            	pageForm.setSeiten(b.getSeiten());
-            	pageForm.setStatus(b.getStatustext());
-            	pageForm.setZeitschriftentitel(b.getZeitschrift());
-            	if (b.getWaehrung()!=null) pageForm.setKaufpreis(b.getKaufpreis()); // nur Abfüllen wenn Preis und Währung vorhanden!
-            	pageForm.setWaehrung(b.getWaehrung());
-            	pageForm.setDoi(b.getDoi());
-            	pageForm.setPmid(b.getPmid());
-            	pageForm.setIsbn(b.getIsbn());
-            	pageForm.setMediatype(b.getMediatype());
-            	pageForm.setVerlag(b.getVerlag());
-            	pageForm.setKapitel(b.getKapitel());
-            	pageForm.setBuchtitel(b.getBuchtitel());
-            	pageForm.setGbvnr(b.getGbvnr());
-            	pageForm.setSubitonr(b.getSubitonr());
-            	pageForm.setInterne_bestellnr(b.getInterne_bestellnr());
-            	
-                pageForm = bigDecimalToString(pageForm); // hier werden Preisvorkomma und Preisnachkomma gesetzt
+            	pageForm = new OrderForm(b);
             	
             	if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
                 	List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
@@ -3228,25 +3179,6 @@ try {
 		  
 		  return output;
 	  }
-    
-    public OrderForm bigDecimalToString (OrderForm pageForm){
-    	
-    	if (pageForm.getKaufpreis()!=null) {
-    	BigDecimal bd = pageForm.getKaufpreis();
-    	
-    	int vorkomma = bd.intValue();
-    	
-    	String nachkomma = bd.toString();
-    	nachkomma = nachkomma.substring(nachkomma.indexOf(".")+1);
-    	if (nachkomma.length()==1) nachkomma = nachkomma + "0";
-
-    	pageForm.setPreisvorkomma(Integer.toString(vorkomma));
-    	pageForm.setPreisnachkomma(nachkomma);
-    	
-    	}
-        
-        return pageForm;
-    }
     
     
 }

@@ -49,7 +49,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
     private Lieferanten lieferant; // neue Verknüpfung zu Tabelle Lieferanten
     private String bestellquelle; // dient lediglich noch der Führung des doppelten Eintrages in der DB
     private String submit = ""; // dient zur Unterscheidung welcher Submit-Knopf in einem Formular gewählt wurde
-    private Long bid;
+    private Long bid; // Order-ID
     private String uid;
     private String lid;
     private String artikeltitel = "";
@@ -58,21 +58,21 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
     private String jahr = "";
     private String jahrgang = "";
     private String issn = "";
-    private String zdbid; // kann null sein, für Anzeige-Logik
-    private String ppn; // Pica-Production-Number => eindeutige Datensatznummer beim GBV 
+    private String zdbid; // may be null => important in view logic
+    private String ppn; // Pica-Production-Number => unique media-ID in the GBV
     private String fileformat = "";
     private String deloptions = "";
     private String prio = "";
     private String author = "";
     private String author_encoded = "";
     private String seiten = "";
-    private String foruser = "0"; // enthält ID eines Benutzers. 0 = "Bitte auswählen" im Select
+    private String foruser = "0"; // ID of patron/customer. 0 = "Please select" in the select menu
     private String sessionid;
     private String bibliothek = "";
     private String subitonr;
     private String gbvnr;
-    private String trackingnr = ""; // eindeutige Nr. in der Kommunikation zwischen Bestellsystemen. Wird vor dem Abspeichern der Bestellung benötigt...
-    private String interne_bestellnr = ""; // falls eine Bibliothek ein eigenes Nummersystem führt
+    private String trackingnr = ""; // unique order-# for the communication between different orderingsystems (e.g. GBV-Order)
+    private String interne_bestellnr = ""; // if a library uses an own internal numbering system
     private String sigel = "";
     private String faxno;
     private String zeitschriftentitel = "";
@@ -167,6 +167,55 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
     private String Preis;
     
     public OrderForm(){
+        
+    }
+    
+    public OrderForm(Bestellungen b){
+    	this.setBid(b.getId());
+    	
+    	this.setMediatype(b.getMediatype());
+	 	this.setArtikeltitel(b.getArtikeltitel());
+	 	this.setAuthor(b.getAutor());
+	 	this.setBuchtitel(b.getBuchtitel());
+	 	this.setDoi(b.getDoi());
+	 	if (b.getBenutzer()!=null && b.getBenutzer().getId()!=null) {
+	 		this.setForuser(Long.toString(b.getBenutzer().getId()));
+	 		this.setUid(Long.toString(b.getBenutzer().getId()));
+	 	} else {
+	 		this.setForuser("0");
+	 	}
+	 	this.setHeft(b.getHeft());
+	 	this.setIsbn(b.getIsbn());
+	 	this.setIssn(b.getIssn());
+	 	this.setJahr(b.getJahr());
+	 	this.setJahrgang(b.getJahrgang());
+	 	this.setKapitel(b.getKapitel());
+	 	this.setPmid(b.getPmid());
+	 	this.setSeiten(b.getSeiten());
+	 	this.setVerlag(b.getVerlag());
+	 	this.setZeitschriftentitel(b.getZeitschrift());
+	 	
+	 	this.setLieferant(b.getLieferant());
+	 	this.setBestellquelle(b.getBestellquelle());
+	 	this.setPrio(b.getPriority());
+	 	this.setFileformat(b.getFileformat());
+	 	this.setDeloptions(b.getDeloptions());
+	 	this.setSubitonr(b.getSubitonr());
+	 	this.setGbvnr(b.getGbvnr());
+	 	this.setTrackingnr(b.getTrackingnr());
+        this.setInterne_bestellnr(b.getInterne_bestellnr());
+        this.setSigel(b.getSigel());
+        this.setBibliothek(b.getBibliothek());
+        this.setNotizen(b.getNotizen());
+        this.setStatus(b.getStatustext());
+        this.setWaehrung(b.getWaehrung());
+        if (b.getWaehrung()!=null) this.setKaufpreis(b.getKaufpreis()); // nur Abfüllen wenn Preis und Währung vorhanden!
+        this.setAnmerkungen(b.getSystembemerkung());
+
+        OrderForm of = bigDecimalToString(this);
+        this.setPreisvorkomma(of.getPreisvorkomma());
+        this.setPreisnachkomma(of.getPreisnachkomma());
+        
         
     }
     
@@ -1293,6 +1342,25 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
 		}		
 		return zeitschrift_verlag;
 	}
+	
+    public OrderForm bigDecimalToString (OrderForm pageForm){
+    	
+    	if (pageForm.getKaufpreis()!=null) {
+    	BigDecimal bd = pageForm.getKaufpreis();
+    	
+    	int vorkomma = bd.intValue();
+    	
+    	String nachkomma = bd.toString();
+    	nachkomma = nachkomma.substring(nachkomma.indexOf(".")+1);
+    	if (nachkomma.length()==1) nachkomma = nachkomma + "0";
+
+    	pageForm.setPreisvorkomma(Integer.toString(vorkomma));
+    	pageForm.setPreisnachkomma(nachkomma);
+    	
+    	}
+        
+        return pageForm;
+    }
     
     
 
