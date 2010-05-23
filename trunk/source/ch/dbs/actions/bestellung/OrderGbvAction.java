@@ -304,7 +304,12 @@ public final class OrderGbvAction extends DispatchAction {
             	                        of.setTrackingnr(gbv.getTransaction_group_qualifier());
             	                        of.setGbvnr(return_value);
             							Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
-            							b.save(t.getConnection());
+            							if (of.getBid()==null) {
+            								b.save(t.getConnection());
+            							} else {
+            								b.setId(of.getBid());
+            								b.update(t.getConnection());
+            							}
             							if (b.getId()!=null) orderstate.setNewOrderState(b, new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
 
             						} else {
@@ -370,7 +375,12 @@ public final class OrderGbvAction extends DispatchAction {
     	                        of.setTrackingnr(gbv.getTransaction_group_qualifier());
     	                        of.setGbvnr(return_value);
     							Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
-    							b.save(t.getConnection());
+    							if (of.getBid()==null) {
+    								b.save(t.getConnection());
+    							} else {
+    								b.setId(of.getBid());
+    								b.update(t.getConnection());
+    							}
     							if (b.getId()!=null) orderstate.setNewOrderState(b, new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
 
     						} else {
@@ -497,7 +507,12 @@ public final class OrderGbvAction extends DispatchAction {
         	                        of.setTrackingnr(gbv.getTransaction_group_qualifier());
         	                        of.setGbvnr(return_value);
         							Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
-        							b.save(t.getConnection());
+        							if (of.getBid()==null) {
+        								b.save(t.getConnection());
+        							} else {
+        								b.setId(of.getBid());
+        								b.update(t.getConnection());
+        							}
         							if (b.getId()!=null) orderstate.setNewOrderState(b, new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
 
         						} else {

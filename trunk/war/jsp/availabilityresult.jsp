@@ -268,6 +268,10 @@
   <form action="journalorder2.do" method="post">
   <input name="method" type="hidden" value="prepare" /> 
     
+    <logic:present name="orderform" property="bid">
+ 		<input name="bid" type="hidden" value="<bean:write name="orderform" property="bid" />" />
+    </logic:present>
+    
     <logic:present name="orderform" property="artikeltitel">
  		<input name="artikeltitel" type="hidden" value="<bean:write name="orderform" property="artikeltitel" />" />
     </logic:present>

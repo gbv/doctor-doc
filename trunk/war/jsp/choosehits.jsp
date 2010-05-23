@@ -207,6 +207,9 @@
 	
 	</logic:notEqual>
 
+  <logic:present name="orderform" property="bid">
+ 	<input name="bid" type="hidden" value="<bean:write name="orderform" property="bid" />" />
+  </logic:present>
   <input name="method" type="hidden" value="order" />
   <input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />" />
   <input name="author" type="hidden" value="<bean:write name="orderform" property="author" />" /> 

@@ -284,6 +284,9 @@
 	</table>
 		<p></p>
 		
+  <logic:present name="orderform" property="bid">
+ 	<input name="bid" type="hidden" value="<bean:write name="orderform" property="bid" />" />
+  </logic:present>
   <input name="pmid" type="hidden" value="<bean:write name="orderform" property="pmid" />" />
   <input name="doi" type="hidden" value="<bean:write name="orderform" property="doi" />" />
   <input name="sici" type="hidden" value="<bean:write name="orderform" property="sici" />" />

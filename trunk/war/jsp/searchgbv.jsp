@@ -292,6 +292,9 @@
      <tr><td><br></td></tr>
      </table>
 
+  <logic:present name="orderform" property="bid">
+ 	<input name="bid" type="hidden" value="<bean:write name="orderform" property="bid" />" />
+  </logic:present>
   <input name="method" type="hidden" value="search" />
   <input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />" />
   <input name="author" type="hidden" value="<bean:write name="orderform" property="author" />" /> 
