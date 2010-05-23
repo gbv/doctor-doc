@@ -2292,7 +2292,7 @@ try {
             	UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
             	Texttyp tty = new Texttyp();
                 
-                if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
+                if (auth.isBenutzer(rq)) { // user may only see his own address
                 	List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
                 	AbstractBenutzer b = new AbstractBenutzer();
                 	b = ui.getBenutzer();
@@ -2303,10 +2303,10 @@ try {
                 }
               
                 if (pageForm.getDeloptions()==null || pageForm.getDeloptions().equals("")) pageForm.setDeloptions("email"); // default
-                if (pageForm.getMediatype()==null) pageForm.setMediatype("Artikel"); // Defaultwert Artikel
-                if (pageForm.getMediatype().equals("Buch")) {
-                	pageForm.setDeloptions("post"); // logische Konsequenz
-                	pageForm.setFileformat("Papierkopie"); // logische Konsequenz
+                if (pageForm.getMediatype()==null) pageForm.setMediatype("Artikel"); // default value 'article'
+                if (pageForm.getBid()==null && pageForm.getMediatype().equals("Buch")) { // if not coming from function reorder with an existing bid
+                	pageForm.setDeloptions("post"); // logical consequence
+                	pageForm.setFileformat("Papierkopie"); // logical consequence
                 }
                 
             	long id = 2; // Bestellstati
