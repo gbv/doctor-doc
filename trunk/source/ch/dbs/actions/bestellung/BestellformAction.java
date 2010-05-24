@@ -394,7 +394,7 @@ public final class BestellformAction extends DispatchAction {
 			} else if (saveOrder) {
 			// save as new user
 				u = new AbstractBenutzer(of);
-				if (u.getLand()==null) u.setLand(k.getLand()); // use same value as library, if not specified
+				if (u.getLand()==null || u.getLand().equals("0")) u.setLand(k.getLand()); // use same value as library, if not specified
 				u.setId(u.saveNewUser(u, cn.getConnection()));
 				VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 				vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
