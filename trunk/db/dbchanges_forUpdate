@@ -2,14 +2,14 @@
 
 -- New orderstate "zu bestellen" (don't change expression: will be translated automatically)
 
-INSERT INTO `doctor-doc_com_dbs`.`text` (
+INSERT INTO `text` (
 `TID` ,
 `KID` ,
 `TYID` ,
 `inhalt`
 )
 VALUES (
-'9', NULL , '2', 'zu bestellen'
+NULL , NULL , '2', 'zu bestellen'
 );
 
 -- boolean value to specify if orders from orderform shall be saved in DB
