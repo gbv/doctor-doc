@@ -210,6 +210,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
 		} else {
 			this.librarycard = of.getKundenbenutzernr();
 		}
+		this.setKontostatus(true);
 	}
 	
     /**
