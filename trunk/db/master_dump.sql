@@ -3,15 +3,15 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 24. Mai 2010 um 21:07
+-- Erstellungszeit: 25. Mai 2010 um 18:16
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Datenbank: `dd_os`
--- Revision 13 (see also dbchanges_forUpdate, if using SVN)
+-- works with  >= Revision 13 (see also dbchanges_forUpdate, if using SVN)
+--
 
 -- --------------------------------------------------------
 
@@ -870,7 +870,7 @@ CREATE TABLE IF NOT EXISTS `lieferanten` (
   PRIMARY KEY (`LID`),
   KEY `siegel` (`siegel`),
   KEY `KID` (`KID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=396 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=397 ;
 
 --
 -- Daten für Tabelle `lieferanten`
@@ -1051,9 +1051,9 @@ INSERT INTO `lieferanten` (`LID`, `siegel`, `lieferant`, `D`, `A`, `CH`, `allgem
 (390, '', 'ETH Zürich', 0, 0, 1, 0, NULL),
 (391, '', 'ZB Zürich', 0, 0, 1, 0, NULL),
 (392, '', 'Carelit-Volltexte', 0, 0, 0, 1, NULL),
-(393, '', 'Spibinet', 0, 0, 1, 0, NULL),
 (394, '101', 'Deutsche Nationalbibliothek', 1, 0, 0, 0, NULL),
-(395, '', 'Deutsche Nationalbibliothek', 0, 0, 1, 0, NULL);
+(395, '', 'Deutsche Nationalbibliothek', 0, 0, 1, 0, NULL),
+(396, 'Wa 1', 'Leibniz-Institut für Ostseeforschung Warnemünde', 1, 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
