@@ -731,6 +731,8 @@
 			<td id="tablestats">&nbsp;</td>
 		</tr>
 	</table>
+	
+	<bean:message key="stats.comment3" /><br>
 
 	<br></br>
 
