@@ -148,7 +148,7 @@
 			<td width="20%"><a href="http://zdb-opac.de/CHARSET=ISO-8859-1/DB=1.1/PRS=HOL/CMD?ACT=SRCHA&IKT=8&SRT=YOP&TRM=<bean:write name="orderform" property="issn" />+mat-o&HOLDINGS_YEAR=<bean:write name="orderform" property="jahr" />" target="_blank"><bean:message key="availresult.zdb" /></a></td>
 			</logic:notPresent>
 			<td><a href="http://www.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-kvk2.cgi?maske=chzk&timeout=20&title=Schweizer+Zeitschriftenportal+SZP+%3A+Ergebnisanzeige&header=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeige_de.htm&spacer=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeigetop_de.htm&footer=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeigemail_de.htm&lang=de&zeiten=nein&kvk-session=P0ER4LN0&flexpositon_start=1&RERO=&DEUTSCHSCHWEIZ=&WEITERE=&kataloge=CHZK_FRIB&kataloge=CHZK_GENF&kataloge=CHZK_RCBN&kataloge=CHZK_VALAIS&kataloge=CHZK_VAUD&kataloge=CHZK_BASEL&kataloge=CHZK_LUZERN&kataloge=CHZK_STGALLEN&kataloge=ZUERICH&kataloge=CHZK_NEBIS&kataloge=ALEXANDRIA&kataloge=CHZK_BGR&kataloge=HELVETICAT&kataloge=CHZK_SBT&kataloge=CHZK_SGBN&kataloge=LIECHTENSTEIN&kataloge=CHZK_CERN&kataloge=VKCH_KUNSTHAUS&kataloge=CHZK_RPVZ&ALL=&SE=&VORT=&CI=&target=_blank&Timeout=20&SS=<bean:write name="orderform" property="issn" />&inhibit_redirect=1" target="_blank">SZP</a></td>
-			<td><a href="http://meteor.bibvb.ac.at/F/?FUNC=find-c&CCL_TERM=+%28ISN%3D%28<bean:write name="orderform" property="issn" />%29%29+" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
+			<td><a href="http://opac.obvsg.at/acc01" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
 			<td><a href="sessionbritishlibrary.do?method=redirect&issn=<bean:write name="orderform" property="issn" />" target="_blank">British Library</a></td>
 			<td><a href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images" target="_blank">Google</a></td>
 		</tr>
@@ -213,18 +213,62 @@
   <logic:present name="orderform" property="issn">
  <logic:equal name="orderform" property="issn" value="">
  <div id="italic"><bean:message key="availresult.manuell" /></div><br />
- 	<table width="100%">
+ 	<table border="1" cellspacing="0" cellpadding="3">
 		<tr>
-			<td width="25%"><bean:message key="availresult.deutschland" /></td>
-			<td width="20%"><bean:message key="availresult.schweiz" /></td>
-			<td width="30%"><bean:message key="availresult.osterreich" /></td>
-			<td width="25%"><bean:message key="availresult.england" /></td>
+			<th id="th-left" width="20%"><bean:message key="availresult.deutschland" /></td>
+			<th id="th-left" width="15%"><bean:message key="availresult.schweiz" /></td>
+			<th id="th-left" width="20%"><bean:message key="availresult.osterreich" /></td>
+			<th id="th-left" width="20%"><bean:message key="availresult.england" /></td>
+			<th id="th-left" width="25%"><bean:message key="availresult.general" /></th>
 		</tr>
 		<tr>
-			<td width="25%"><a href="http://zdb-opac.de" target="_blank">ZDB</a></td>
-			<td width="20%"><a href="http://ead.nb.admin.ch/web/swiss-serials/psp_de.html" target="_blank">SZP</a></td>
-			<td width="30%"><a href="http://meteor.bibvb.ac.at/F/?func=file&file_name=find-b" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
-			<td width="25%"><a href="sessionbritishlibrary.do?method=redirect&issn=<bean:write name="orderform" property="issn" />" target="_blank">British Library</a></td>
+			<td width="20%"><a href="http://zdb-opac.de" target="_blank">ZDB</a></td>
+			<td width="15%"><a href="http://ead.nb.admin.ch/web/swiss-serials/psp_de.html" target="_blank">SZP</a></td>
+			<td width="20%"><a href="http://opac.obvsg.at/acc01" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
+			<td width="20%"><a href="sessionbritishlibrary.do?method=redirect&issn=<bean:write name="orderform" property="issn" />" target="_blank">British Library</a></td>
+			<td width="25%"><a href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images" target="_blank">Google</a></td>
+		</tr>
+				<tr>
+			<td><a href="http://opac.bib-bvb.de:8080/InfoGuideClient.fasttestsis/start.do?" target="_blank">BVB</a></td>
+			<td><a href="http://www.chvk.ch/" target="_blank">CHVK</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td width="25%"><a href="http://scholar.google.com/scholar?as_q=&num=10&btnG=Scholar-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=" target="_blank">Google Scholar</a></td>
+		</tr>
+		<tr>
+			<td><a href="http://gso.gbv.de/DB=2.1/" target="_blank">GBV/GVK</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK+&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK+</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.portal.hebis.de" target="_blank">HeBis</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://rhea.hbz-nrw.de/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">DigiBib</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.kobv.de" target="_blank">KOBV</a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 	</table>
 	
