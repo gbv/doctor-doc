@@ -72,6 +72,7 @@
 		<tr>
 			<td>
 				<ul>
+					<li><a href="http://www.doctor-doc.com/Newsletter6.pdf">Newsletter 6</a> (26-Mai-2010)</li>
 					<li><a href="http://www.doctor-doc.com/Newsletter5.pdf">Newsletter 5</a> (04-Jan-2010)</li>
 					<li><a href="http://www.doctor-doc.com/Newsletter4.pdf">Newsletter 4</a> (24-Aug-2009)</li>
 					<li><a href="http://www.doctor-doc.com/Newsletter3.pdf">Newsletter 3</a> (11-Jun-2009)</li>
