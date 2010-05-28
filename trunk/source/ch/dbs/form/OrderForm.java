@@ -54,6 +54,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
     private String lid;
     private String artikeltitel = "";
     private String artikeltitel_encoded = "";
+    private String artikeltitel_encodedUTF8 = ""; // normally get-methods are encoded with Latin1. Google-Scholar expects UTF-8
     private String heft = "";
     private String jahr = "";
     private String jahrgang = "";
@@ -317,12 +318,13 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
     	CodeUrl codeUrl = new CodeUrl();
     	
     	try {    	
-    		of.setArtikeltitel_encoded(codeUrl.encode(of.getArtikeltitel()));
-    		of.setAuthor_encoded(codeUrl.encode(of.getAuthor()));
-    		of.setZeitschriftentitel_encoded(codeUrl.encode(of.getZeitschriftentitel()));
-    		of.setVerlag_encoded(codeUrl.encode(of.getVerlag()));
-    		of.setKapitel_encoded(codeUrl.encode(of.getKapitel()));
-    		of.setBuchtitel_encoded(codeUrl.encode(of.getBuchtitel()));
+    		of.setArtikeltitel_encoded(codeUrl.encodeLatin1(of.getArtikeltitel()));
+    		of.setArtikeltitel_encodedUTF8(codeUrl.encodeUTF8(of.getArtikeltitel()));
+    		of.setAuthor_encoded(codeUrl.encodeLatin1(of.getAuthor()));
+    		of.setZeitschriftentitel_encoded(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+    		of.setVerlag_encoded(codeUrl.encodeLatin1(of.getVerlag()));
+    		of.setKapitel_encoded(codeUrl.encodeLatin1(of.getKapitel()));
+    		of.setBuchtitel_encoded(codeUrl.encodeLatin1(of.getBuchtitel()));
     		
     	} catch (Exception e) {
     		log.error("encodeOrderForm(OrderForm of): " + e.toString());
@@ -711,6 +713,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler{
 
 	public void setArtikeltitel_encoded(String artikeltitel_encoded) {
 		this.artikeltitel_encoded = artikeltitel_encoded;
+	}
+
+	public String getArtikeltitel_encodedUTF8() {
+		return artikeltitel_encodedUTF8;
+	}
+
+	public void setArtikeltitel_encodedUTF8(String artikeltitelEncodedUTF8) {
+		artikeltitel_encodedUTF8 = artikeltitelEncodedUTF8;
 	}
 
 	public List<AbstractBenutzer> getKontouser() {

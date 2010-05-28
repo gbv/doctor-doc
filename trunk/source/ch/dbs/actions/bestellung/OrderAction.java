@@ -101,17 +101,8 @@ public final class OrderAction extends DispatchAction {
         	if (pageForm.getArtikeltitel().equals("")) forward = "pmidfailure"; // hier hat die Auflösung nicht geklappt => zurück zum Eingabeformular
         }
         
-    	String artikeltitel_encoded = "";
-    	if (pageForm.getArtikeltitel() != null) artikeltitel_encoded = pageForm.getArtikeltitel();
-    	
-    	artikeltitel_encoded = googlePreparePhraseSearch(artikeltitel_encoded); // verkürzt die Phrase auf die ggf. zulässige Höchstlänge...
-    	
-    	try {    		
-    		artikeltitel_encoded = java.net.URLEncoder.encode(artikeltitel_encoded, "ISO-8859-1"); // ISO-8859-1-Codierung wichtig!
-    		pageForm.setArtikeltitel_encoded(artikeltitel_encoded); // in pageForm legen für manuelle Google-Suche
-        } catch(Exception e){
-        	log.error("findForFree - Point H artikeltitel_encoded: " + e.toString());
-        }
+    	// ISO-8859-1 encoding is important for automatic search!
+    	pageForm.setArtikeltitel_encoded(codeUrl.encodeLatin1(shortenGoogleSearchPhrase(pageForm.getArtikeltitel())));
         
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         if (auth.isLogin(rq)) {
@@ -161,7 +152,7 @@ public final class OrderAction extends DispatchAction {
     	link = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
     	}	
     	if (did_you_mean == false){
-    		link = link + artikeltitel_encoded;
+    		link = link + pageForm.getArtikeltitel_encoded();
     	}
     	if (did_you_mean == true){ // Verwendung von String aus Methode googleDidYouMean
     		link = link + pageForm.getDidYouMean();
@@ -258,7 +249,7 @@ public final class OrderAction extends DispatchAction {
     	if ( (searches == 2) &&
     		 (did_you_mean == false) ){ // zweite Kondition eigentlich unnoetig...
     		did_you_mean = true;
-    		pageForm.setDidYouMean(googleDidYouMean(artikeltitel_encoded));   
+    		pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));   
     		if (pageForm.getDidYouMean().equals("")){
     			searches = searches + 2; // Zaehler vorwaertssetzen
     			did_you_mean = false;
@@ -292,12 +283,6 @@ public final class OrderAction extends DispatchAction {
         
     // Google Scholar
     
-try {
-		artikeltitel_encoded = java.net.URLEncoder.encode(pageForm.getArtikeltitel(), "ISO-8859-1");
-    } catch(Exception e){
-    	log.error("findForFree - Point G artikeltitel_encoded: " + e.toString());
-    }
-    
     searches = 0;
 	ergebnis = false;
 	did_you_mean = false;
@@ -308,7 +293,7 @@ try {
     
     	if (searches==0){ // phrase + allintitle + filetype:pdf
     		if (did_you_mean == false){
-    		link = "http://scholar.google.com/scholar?q=allintitle%3A%22" + artikeltitel_encoded + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
+    		link = "http://scholar.google.com/scholar?q=allintitle%3A%22" + pageForm.getArtikeltitel_encoded() + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
     		}
     		if (did_you_mean == true) {
     		link = "http://scholar.google.com/scholar?q=allintitle%3A%22" + pageForm.getDidYouMean() + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";	
@@ -316,7 +301,7 @@ try {
     	}
     	if (searches==1){ // phrase + allintitle
     		if (did_you_mean == false){
-    		link = "http://scholar.google.com/scholar?q=allintitle%3A%22" + artikeltitel_encoded + "%22&hl=de&lr=&btnG=Suche&lr=";
+    		link = "http://scholar.google.com/scholar?q=allintitle%3A%22" + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
     		}
     		if (did_you_mean == true) {
     			link = "http://scholar.google.com/scholar?q=allintitle%3A%22" + pageForm.getDidYouMean() + "%22&hl=de&lr=&btnG=Suche&lr=";	
@@ -386,7 +371,7 @@ try {
     	
     	if ((searches == 2) && (did_you_mean == false)){
     		did_you_mean = true;
-    		pageForm.setDidYouMean(googleDidYouMean(artikeltitel_encoded));   
+    		pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));   
     		if (!pageForm.getDidYouMean().equals("")){
     			searches = 0; // Zaehler zuruecksetzen
     		}
@@ -426,7 +411,7 @@ try {
         	}
         	
         	// Captcha: manuelle Google-Suche vorbereiten
-        	link = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq=" + artikeltitel_encoded + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
+        	link = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq=" + pageForm.getArtikeltitel_encoded() + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
     		
     		JournalDetails jdGoogleCaptcha = new JournalDetails();
     		jdGoogleCaptcha.setLink(link);
@@ -437,11 +422,8 @@ try {
     		ff.setZeitschriften(trefferGoogle);
         	rq.setAttribute("treffer_gl", ff);
         	
-        	String author = "";
-        	if (pageForm.getAuthor()!=null) pageForm.setAuthor_encoded(prepareWorldCat2(codeUrl.encode(pageForm.getAuthor())));
-        	if (pageForm.getAuthor_encoded()!=null && !pageForm.getAuthor_encoded().equals("")) author = "%22" + pageForm.getAuthor_encoded() + "%22";
-        	
-        	link = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq=" + pageForm.getArtikeltitel_encoded() + "&as_oq=&as_eq=&as_occt=any&as_sauthors=" + author + "&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
+        	// needs to be UTF-8 encoded
+        	link = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq=" + codeUrl.encodeUTF8(pageForm.getArtikeltitel()) + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
     		
     		JournalDetails jdGoogleScholarCaptcha = new JournalDetails();
     		jdGoogleScholarCaptcha.setLink(link);
@@ -457,7 +439,7 @@ try {
         } else {
         	
         	// User: manuelle Google-Suche vorbereiten
-        	link = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq=" + artikeltitel_encoded + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
+        	link = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq=" + pageForm.getArtikeltitel_encoded() + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
     		
     		JournalDetails jdGoogleManual = new JournalDetails();
     		jdGoogleManual.setLink(link);
@@ -468,11 +450,8 @@ try {
     		ff.setZeitschriften(trefferGoogle);
         	rq.setAttribute("treffer_gl", ff);
         	
-        	String author = "";
-        	if (pageForm.getAuthor()!=null) pageForm.setAuthor_encoded(prepareWorldCat2(codeUrl.encode(pageForm.getAuthor())));
-        	if (pageForm.getAuthor_encoded()!=null && !pageForm.getAuthor_encoded().equals("")) author = "%22" + pageForm.getAuthor_encoded() + "%22";
-        	
-        	link = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq=" + pageForm.getArtikeltitel_encoded() + "&as_oq=&as_eq=&as_occt=any&as_sauthors=" + author + "&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
+        	// needs to be UTF-8 encoded
+        	link = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq=" + codeUrl.encodeUTF8(pageForm.getArtikeltitel()) + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=";
     		
     		JournalDetails jdGoogleScholarManual = new JournalDetails();
     		jdGoogleScholarManual.setLink(link);
@@ -514,7 +493,7 @@ try {
         	 pageForm.isAutocomplete() == false){
         	
         	if (pageForm.getDidYouMean().length() == 0){ // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen      		
-        		pageForm.setDidYouMean(googleDidYouMean(artikeltitel_encoded));
+        		pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));
         	}
         	if (pageForm.getDidYouMean().length() != 0){ // autocomplete mit meinten_sie ausführen
         		pageForm.setCheckDidYouMean(true);
@@ -562,7 +541,7 @@ try {
     	BestellformAction bestellFormActionInstance = new BestellformAction();
     	CodeUrl codeUrl = new CodeUrl();
 
-		String artikeltitel_encoded = codeUrl.encode(pageForm.getArtikeltitel());
+		String artikeltitel_encoded = codeUrl.encodeLatin1(pageForm.getArtikeltitel());
        
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         String forward = "failure";
@@ -596,15 +575,15 @@ try {
                		
                		// alle anderen Angaben URL-codieren und vorbereiten für Übergabe an ff, da Weitergabe über Hyperlink auf jsp läuft
                 		
-        				pageForm.setJahr(codeUrl.encode(pageForm.getJahr()));
-        				pageForm.setSeiten(codeUrl.encode(pageForm.getSeiten()));        				
-        				pageForm.setHeft(codeUrl.encode(pageForm.getHeft()));
-        				pageForm.setJahrgang(codeUrl.encode(pageForm.getJahrgang()));
-        				pageForm.setAuthor(codeUrl.encode(pageForm.getAuthor()));               		
+        				pageForm.setJahr(codeUrl.encodeLatin1(pageForm.getJahr()));
+        				pageForm.setSeiten(codeUrl.encodeLatin1(pageForm.getSeiten()));        				
+        				pageForm.setHeft(codeUrl.encodeLatin1(pageForm.getHeft()));
+        				pageForm.setJahrgang(codeUrl.encodeLatin1(pageForm.getJahrgang()));
+        				pageForm.setAuthor(codeUrl.encodeLatin1(pageForm.getAuthor()));               		
                	}
             	
         	    String zeitschriftentitel_encoded = correctArtikeltitIssnAssist(pageForm.getZeitschriftentitel());
-                zeitschriftentitel_encoded = codeUrl.encode(zeitschriftentitel_encoded);
+                zeitschriftentitel_encoded = codeUrl.encodeLatin1(zeitschriftentitel_encoded);
             	
 //              Methode 1 ueber Journalseek
                 FindFree ff = new FindFree();
@@ -841,10 +820,6 @@ try {
         	}
         }
         
-        	// wird gebraucht um statische Links auf Bestellform nach Google und Google-Scholar auszugeben
-    		if (pageForm.getArtikeltitel()!=null) pageForm.setArtikeltitel_encoded(prepareWorldCat2(codeUrl.encode(googlePreparePhraseSearch(pageForm.getArtikeltitel()))));
-    		if (pageForm.getAuthor()!=null) pageForm.setAuthor_encoded(prepareWorldCat2(codeUrl.encode(pageForm.getAuthor())));
-        
     		// eingeloggt, oder Zugriff IP-basiert/kkid/bkid
         if (auth.isLogin(rq) || t.getInhalt() != null ) {
         	forward = "notfreeebz";
@@ -868,7 +843,7 @@ try {
             	// z.B. http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=article&atitle=robotics-based&date=2005&volume=11&issue=1-2&issn=1022-0038&spage=189&pid=bibid=UBR
     		
             link = "http://services.d-nb.de/fize-service/gvr/html-service.htm?"; // baseurl
-            link = link + codeUrl.encode("sid=DRDOC:doctor-doc") + openurl + "&pid=bibid=" + bibid;
+            link = link + codeUrl.encodeLatin1("sid=DRDOC:doctor-doc") + openurl + "&pid=bibid=" + bibid;
             
     		} else { // Link für Vascoda-Schnittstelle (alle anderen Länder und für Nicht-ZDB-Teilnehmer in D)            
         	
@@ -1040,7 +1015,7 @@ try {
         pageForm.setAutocomplete(false); // Variable zurückstellen
         rq.setAttribute("findfree", ff);
         
-     // für Get-Methode in PrepareLogin of URL-codieren
+        // for get-method in PrepareLogin encode pageForm
         pageForm = pageForm.encodeOrderForm(pageForm);
         
         rq.setAttribute("orderform", pageForm);
@@ -1071,7 +1046,7 @@ try {
 	    	zeitschriftentitel_encoded_trunkiert = zeitschriftentitel_encoded_trunkiert.replaceAll("\040", "*\040") + "*";// Achtung Regexp hat * spezielle Bedeutung...
 //    	    System.out.println("Sternchentitel; " + zeitschriftentitel_encoded_trunkiert);
     	    
-    	    	zeitschriftentitel_encoded_trunkiert = codeUrl.encode(zeitschriftentitel_encoded_trunkiert);
+    	    	zeitschriftentitel_encoded_trunkiert = codeUrl.encodeLatin1(zeitschriftentitel_encoded_trunkiert);
     	    	link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query=" + zeitschriftentitel_encoded_trunkiert;
     	    
 //    	    System.out.println("Suchstring ISSN Journalseek zweiter Versuch: " + link + "\012");
@@ -1183,7 +1158,7 @@ try {
     				String zeitschriftentitel_rb = getZeitschriftentitelFromEzb(content);
     				
     				// notwendig, da Titel per Get-Methode weitergeschickt wird, z.B. Pflege & Managament
-    					String zeitschriftentitel_rb_encoded = codeUrl.encode(zeitschriftentitel_rb);
+    					String zeitschriftentitel_rb_encoded = codeUrl.encodeLatin1(zeitschriftentitel_rb);
     				
     	        					
     				if (content.contains("P-ISSN(s):")){		
@@ -1299,7 +1274,7 @@ try {
     				String zeitschriftentitel_rb_encoded = "";
     				
     				// notwendig, da Titel per Get-Methode weitergeschickt wird, z.B. Pflege & Managament
-    				zeitschriftentitel_rb_encoded = codeUrl.encode(zeitschriftentitel_rb);
+    				zeitschriftentitel_rb_encoded = codeUrl.encodeLatin1(zeitschriftentitel_rb);
     				
     	        	content = content.substring(start+1);
     	        	
@@ -1397,8 +1372,7 @@ try {
 	        
 	        if (auth.isLogin(rq)) {
 	        	
-	        	String artikeltitel_wc = pageForm.getArtikeltitel();
-	        	artikeltitel_wc = prepareWorldCat2(artikeltitel_wc); // erste Korrektur, z.B für β => beta
+	        	String artikeltitel_wc = prepareWorldCat2(pageForm.getArtikeltitel()); // first correction, e.g. for β => beta
 	        	int run = 0;
 	        	
 	        	// *** bis zu 4 WorldCat Prüfungen
@@ -1418,7 +1392,7 @@ try {
 	        	}        	    
         	    
 	        }
-	        rq.setAttribute("orderform", pageForm); // unnötig!?
+
 	        return autocomplete;
 	    }
 	
@@ -1442,10 +1416,10 @@ try {
 			  }
 	        	
 
-	 	        	artikeltitel_encoded = codeUrl.encode(artikeltitel_encoded);
+	 	        	artikeltitel_encoded = codeUrl.encodeLatin1(artikeltitel_encoded);
 //	 	        	System.out.println("artikeltitel_encoded_wc: " + artikeltitel_encoded);
 	 	        	if (tmp_wc.length() != 0){
-	 	        	tmp_wc = codeUrl.encode(tmp_wc);
+	 	        	tmp_wc = codeUrl.encodeLatin1(tmp_wc);
 //	 	        	System.out.println("tmp_wc (Untertitel): " + tmp_wc);
 	 	        	}
 
@@ -1537,7 +1511,7 @@ try {
         	    }
         	    
 	        }
-	        rq.setAttribute("orderform", pageForm);
+
 	        return worldcat;
 	        
 	    }
@@ -2093,7 +2067,7 @@ try {
                 	
                 	if (pageForm.getDidYouMean().length() == 0){ // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
                 		CodeUrl codeUrl = new CodeUrl();
-                		pageForm.setDidYouMean(googleDidYouMean(codeUrl.encode(pageForm.getArtikeltitel())));
+                		pageForm.setDidYouMean(googleDidYouMean(codeUrl.encodeLatin1(pageForm.getArtikeltitel())));
                 	}
                 	if (pageForm.getDidYouMean().length() != 0){ // autocomplete mit meinten_sie ausführen
                 		pageForm.setCheckDidYouMean(true);
@@ -2101,10 +2075,8 @@ try {
                 	}
                 	
                 }
-//                System.out.println("Ergebnis autocomplete: " + pageForm.isAutocomplete());
-//                System.out.println("Testausgabe ISSN: " + pageForm.getIssn());
-                //***
-                pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel())); // ersetzt eigentlich nur griechisches Alphabet zu alpha, beta etc.
+                // basically replaces greek alphabet to alpha, beta...
+                pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         		
         	}
         	
@@ -2787,7 +2759,7 @@ try {
   	  return meinten_sie;
 	  }
 	  
-	  private String googlePreparePhraseSearch(String artikeltitel) {
+	  private String shortenGoogleSearchPhrase(String artikeltitel) {
 			
 		   	try {		
 	    		if (artikeltitel.length()>75){ // Google ist limitiert in der Laenge bei Phrasen-Suche im Titel
@@ -2949,7 +2921,7 @@ try {
 		  boolean check = false;
 		  CodeUrl codeUrl = new CodeUrl();
 		  
-		  input = codeUrl.encode(input);
+		  input = codeUrl.encodeLatin1(input);
 		  
 		  if (input.contains("%E4") || input.contains("%F6") || input.contains("%FC") ||
 			  input.contains("%C4") || input.contains("%D6") || input.contains("%DC")) {

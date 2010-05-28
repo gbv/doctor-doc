@@ -48,12 +48,27 @@ public class CodeUrl {
 	}
 	
 	/**
-	 * Codier-Methode
+	 * Encoding in ISO-8859-1
 	 */
-	public String encode(String input) {
+	public String encodeLatin1(String input) {
 		
 		try {
 			if (input!=null) input = java.net.URLEncoder.encode(input, "ISO-8859-1");
+			
+		} catch(Exception e){
+			log.error("encode in UrlCode: " + input + "\040" + e.toString());    		
+    	}
+		
+		return input;
+	}
+	
+	/**
+	 * Encoding in UTF-8
+	 */
+	public String encodeUTF8(String input) {
+		
+		try {
+			if (input!=null) input = java.net.URLEncoder.encode(input, "UTF-8");
 			
 		} catch(Exception e){
 			log.error("encode in UrlCode: " + input + "\040" + e.toString());    		

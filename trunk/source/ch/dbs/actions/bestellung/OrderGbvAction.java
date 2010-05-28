@@ -1256,7 +1256,7 @@ public final class OrderGbvAction extends DispatchAction {
     	SpecialCharacters specialCharacters = new SpecialCharacters();
     	
     	String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica." + gbvfield.toLowerCase() + "%3D%22" +
-    	codeUrl.encode(gbvsearchterm) + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + String.valueOf(start_record);
+    	codeUrl.encodeLatin1(gbvsearchterm) + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + String.valueOf(start_record);
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link, 3000, 2)));
     	
@@ -1277,7 +1277,7 @@ public final class OrderGbvAction extends DispatchAction {
     	SpecialCharacters specialCharacters = new SpecialCharacters();
     	
     	String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica." + gbvfield.toLowerCase() + "%3D" +
-    	codeUrl.encode(gbvsearchterm) + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + String.valueOf(start_record);
+    	codeUrl.encodeLatin1(gbvsearchterm) + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + String.valueOf(start_record);
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link, 3000, 2)));
 

@@ -840,27 +840,20 @@ public class OpenUrl {
 			
 		String key = pairs.getKey();
 		String[] values = pairs.getValue();
-
-		String value = "";
-		
-		try {
 		
 		if (key.equals("rft_id")) { // rft_id enthält nocheinmal unterschiedliche Identifier nach dem info: Scheme
 			// rft_id wird jeweils separat abgelegt und nicht aneinander gehängt
 			for (int z=0;z<values.length;z++) {
-				hm.put(key, Decoder.utf8Convert(values[z]));
+				hm.put(key, getOpenUrlValue(values[z]));
 			}		
 		} else { // hier werden Mehrfachparameter (z.B. mehrere Autoren) aneinander gehängt
 			StringBuffer buf = new StringBuffer();
 			for (int z=0;z<values.length;z++) {
 				if (z==0) {buf.append(values[z]);} else {buf.append("\040;\040" + values[z]);}
 			}
-		hm.put(key, Decoder.utf8Convert(buf.toString()));
-			
+			hm.put(key, getOpenUrlValue(buf.toString()));			
 		}
-		} catch (Exception e) {
-			log.error("getOpenUrlParameters(HttpServletRequest rq):" + "\040key:\040" + key + "\040value:\040" + value + "\040" + e.toString());	
-		}
+		
 		}
 		
 		return hm;
@@ -929,10 +922,39 @@ public class OpenUrl {
 		
 		output = content.substring(content.indexOf(">", content.indexOf(starttag))+1, content.indexOf(endtag, content.indexOf(starttag)));
 		
-
-		
-		
 		return output;
+	}
+	
+	private String getOpenUrlValue (String input) {
+		
+		try {
+		
+		if (decode(input)) input = Decoder.utf8Convert(input);
+		
+		} catch (Exception e) {
+			log.error("private boolean decode (String input): " + e.toString());
+		}
+		
+		return input;
+	}
+	
+	/**
+	 * OpenURL-request sometimes are UTF-8 encoded, sometimes ISO-8895-1
+	 * Here will, check if we need to decode a string or not
+	 */
+	private boolean decode (String input) {
+		
+		boolean check = false;
+		
+		try {
+		
+		if (input.length()>Decoder.utf8Convert(input).length()) check = true;
+		
+		} catch (Exception e) {
+			log.error("private boolean decode (String input): " + e.toString());
+		}
+		
+		return check;
 	}
 
 

@@ -275,26 +275,26 @@ public class ConvertOpenUrl {
 		ContextObject co = new ContextObject();
 		CodeUrl codeUrl = new CodeUrl();
 		
-		if (of.getMediatype().equals("Artikel")) co.setRft_val_fmt(codeUrl.encode("info:ofi/fmt:kev:mtx:journal"));
-		if (of.getMediatype().contains("Buch")) co.setRft_val_fmt(codeUrl.encode("info:ofi/fmt:kev:mtx:book"));		
+		if (of.getMediatype().equals("Artikel")) co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:journal"));
+		if (of.getMediatype().contains("Buch")) co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:book"));		
 //		co.setRfr_id(UrlCode.encode("DRDOC:doctor-doc")); // Aus Kompatibilität mit OpenURl 01.1 momentan ausserhalb dieser Methode zu implementieren
 		
-		if (of.getMediatype().equals("Artikel")) co.setRft_genre(codeUrl.encode("article"));
-		if (of.getMediatype().equals("Buch")) co.setRft_genre(codeUrl.encode("book"));
-		if (of.getMediatype().equals("Teilkopie Buch")) co.setRft_genre(codeUrl.encode("bookitem"));
+		if (of.getMediatype().equals("Artikel")) co.setRft_genre(codeUrl.encodeLatin1("article"));
+		if (of.getMediatype().equals("Buch")) co.setRft_genre(codeUrl.encodeLatin1("book"));
+		if (of.getMediatype().equals("Teilkopie Buch")) co.setRft_genre(codeUrl.encodeLatin1("bookitem"));
 		
-		co.setRft_atitle(codeUrl.encode(of.getArtikeltitel()));
-		co.setRft_btitle(codeUrl.encode(of.getBuchtitel()));
-		co.setRft_jtitle(codeUrl.encode(of.getZeitschriftentitel()));
-		co.setRft_pub(codeUrl.encode(of.getVerlag())); // fragwürdig, da vermutlich nicht immer im korrekten Format...
-		co.setRft_issn(codeUrl.encode(of.getIssn()));
-		co.setRft_isbn(codeUrl.encode(of.getIsbn()));
-		co.setRft_date(codeUrl.encode(of.getJahr()));
-		co.setRft_volume(codeUrl.encode(of.getJahrgang()));
-		co.setRft_issue(codeUrl.encode(of.getHeft()));
-		co.setRft_pages(codeUrl.encode(of.getSeiten()));
-		co.setRft_spage(codeUrl.encode(extractSpage(of.getSeiten())));
-		co.setRft_author(codeUrl.encode(of.getAuthor()));
+		co.setRft_atitle(codeUrl.encodeLatin1(of.getArtikeltitel()));
+		co.setRft_btitle(codeUrl.encodeLatin1(of.getBuchtitel()));
+		co.setRft_jtitle(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+		co.setRft_pub(codeUrl.encodeLatin1(of.getVerlag())); // fragwürdig, da vermutlich nicht immer im korrekten Format...
+		co.setRft_issn(codeUrl.encodeLatin1(of.getIssn()));
+		co.setRft_isbn(codeUrl.encodeLatin1(of.getIsbn()));
+		co.setRft_date(codeUrl.encodeLatin1(of.getJahr()));
+		co.setRft_volume(codeUrl.encodeLatin1(of.getJahrgang()));
+		co.setRft_issue(codeUrl.encodeLatin1(of.getHeft()));
+		co.setRft_pages(codeUrl.encodeLatin1(of.getSeiten()));
+		co.setRft_spage(codeUrl.encodeLatin1(extractSpage(of.getSeiten())));
+		co.setRft_author(codeUrl.encodeLatin1(of.getAuthor()));
 		
 		// TODO: private List rft_id;	// enthält uri-infos wie pmid, doi, lccn etc.: // http://www.info-uri.info/registry/
 		
@@ -309,27 +309,27 @@ public class ConvertOpenUrl {
 		
 		StringBuffer sb = new StringBuffer();
 		CodeUrl codeUrl = new CodeUrl();
-		sb.append("mediatype=" + codeUrl.encode(of.getMediatype())); // Default "Artikel" (s.a. OrderForm)
-		if (of.getIssn()!=null && !of.getIssn().equals("")) sb.append("&issn=" + codeUrl.encode(of.getIssn()));
-		if (of.getJahr()!=null && !of.getJahr().equals("")) sb.append("&jahr=" + codeUrl.encode(of.getJahr()));
-		if (of.getJahrgang()!=null && !of.getJahrgang().equals("")) sb.append("&jahrgang=" + codeUrl.encode(of.getJahrgang())); // könnte Leerschläge und Interpunktion enthalten
-		if (of.getHeft()!=null && !of.getHeft().equals("")) sb.append("&heft=" + codeUrl.encode(of.getHeft())); // Leerschläge etc.
-		if (of.getSeiten()!=null && !of.getSeiten().equals("")) sb.append("&seiten=" + codeUrl.encode(of.getSeiten())); // Leerschläge etc.
+		sb.append("mediatype=" + codeUrl.encodeLatin1(of.getMediatype())); // Default "Artikel" (s.a. OrderForm)
+		if (of.getIssn()!=null && !of.getIssn().equals("")) sb.append("&issn=" + codeUrl.encodeLatin1(of.getIssn()));
+		if (of.getJahr()!=null && !of.getJahr().equals("")) sb.append("&jahr=" + codeUrl.encodeLatin1(of.getJahr()));
+		if (of.getJahrgang()!=null && !of.getJahrgang().equals("")) sb.append("&jahrgang=" + codeUrl.encodeLatin1(of.getJahrgang())); // könnte Leerschläge und Interpunktion enthalten
+		if (of.getHeft()!=null && !of.getHeft().equals("")) sb.append("&heft=" + codeUrl.encodeLatin1(of.getHeft())); // Leerschläge etc.
+		if (of.getSeiten()!=null && !of.getSeiten().equals("")) sb.append("&seiten=" + codeUrl.encodeLatin1(of.getSeiten())); // Leerschläge etc.
 		if (of.getIsbn()!=null && !of.getIsbn().equals("")) sb.append("&isbn=" + of.getIsbn());
-		if (of.getArtikeltitel()!=null && !of.getArtikeltitel().equals("")) sb.append("&artikeltitel=" + codeUrl.encode(of.getArtikeltitel()));
-		if (of.getZeitschriftentitel()!=null && !of.getZeitschriftentitel().equals("")) sb.append("&zeitschriftentitel=" + codeUrl.encode(of.getZeitschriftentitel()));
-		if (of.getAuthor()!=null && !of.getAuthor().equals("")) sb.append("&author=" + codeUrl.encode(of.getAuthor()));
-		if (of.getKapitel()!=null && !of.getKapitel().equals("")) sb.append("&kapitel=" + codeUrl.encode(of.getKapitel()));
-		if (of.getBuchtitel()!=null && !of.getBuchtitel().equals("")) sb.append("&buchtitel=" + codeUrl.encode(of.getBuchtitel()));
-		if (of.getVerlag()!=null && !of.getVerlag().equals("")) sb.append("&verlag=" + codeUrl.encode(of.getVerlag()));
-		if (of.getRfr_id()!=null && !of.getRfr_id().equals("")) sb.append("&rfr_id=" + codeUrl.encode(of.getRfr_id()));
-		if (of.getForuser()!=null && !of.getForuser().equals("0")) sb.append("&foruser=" + codeUrl.encode(of.getForuser())); // falls in bestellform.sendOrder bereits ein User anhand der Email gefunden wurde
-		if (of.getGenre()!=null && !of.getGenre().equals("")) sb.append("&genre=" + codeUrl.encode(of.getGenre()));
-		if (of.getPmid()!=null && !of.getPmid().equals("")) sb.append("&pmid=" + codeUrl.encode(of.getPmid()));
-		if (of.getDoi()!=null && !of.getDoi().equals("")) sb.append("&doi=" + codeUrl.encode(of.getDoi()));
-		if (of.getSici()!=null && !of.getSici().equals("")) sb.append("&sici=" + codeUrl.encode(of.getSici())); // kann Sonderzeichen enthalten
-		if (of.getZdbid()!=null && !of.getZdbid().equals("")) sb.append("&zdbid=" + codeUrl.encode(of.getZdbid()));
-		if (of.getLccn()!=null && !of.getLccn().equals("")) sb.append("&lccn=" + codeUrl.encode(of.getLccn())); // http://www.info-uri.info/registry/
+		if (of.getArtikeltitel()!=null && !of.getArtikeltitel().equals("")) sb.append("&artikeltitel=" + codeUrl.encodeLatin1(of.getArtikeltitel()));
+		if (of.getZeitschriftentitel()!=null && !of.getZeitschriftentitel().equals("")) sb.append("&zeitschriftentitel=" + codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+		if (of.getAuthor()!=null && !of.getAuthor().equals("")) sb.append("&author=" + codeUrl.encodeLatin1(of.getAuthor()));
+		if (of.getKapitel()!=null && !of.getKapitel().equals("")) sb.append("&kapitel=" + codeUrl.encodeLatin1(of.getKapitel()));
+		if (of.getBuchtitel()!=null && !of.getBuchtitel().equals("")) sb.append("&buchtitel=" + codeUrl.encodeLatin1(of.getBuchtitel()));
+		if (of.getVerlag()!=null && !of.getVerlag().equals("")) sb.append("&verlag=" + codeUrl.encodeLatin1(of.getVerlag()));
+		if (of.getRfr_id()!=null && !of.getRfr_id().equals("")) sb.append("&rfr_id=" + codeUrl.encodeLatin1(of.getRfr_id()));
+		if (of.getForuser()!=null && !of.getForuser().equals("0")) sb.append("&foruser=" + codeUrl.encodeLatin1(of.getForuser())); // falls in bestellform.sendOrder bereits ein User anhand der Email gefunden wurde
+		if (of.getGenre()!=null && !of.getGenre().equals("")) sb.append("&genre=" + codeUrl.encodeLatin1(of.getGenre()));
+		if (of.getPmid()!=null && !of.getPmid().equals("")) sb.append("&pmid=" + codeUrl.encodeLatin1(of.getPmid()));
+		if (of.getDoi()!=null && !of.getDoi().equals("")) sb.append("&doi=" + codeUrl.encodeLatin1(of.getDoi()));
+		if (of.getSici()!=null && !of.getSici().equals("")) sb.append("&sici=" + codeUrl.encodeLatin1(of.getSici())); // kann Sonderzeichen enthalten
+		if (of.getZdbid()!=null && !of.getZdbid().equals("")) sb.append("&zdbid=" + codeUrl.encodeLatin1(of.getZdbid()));
+		if (of.getLccn()!=null && !of.getLccn().equals("")) sb.append("&lccn=" + codeUrl.encodeLatin1(of.getLccn())); // http://www.info-uri.info/registry/
 		
 		return sb.toString();
 	}

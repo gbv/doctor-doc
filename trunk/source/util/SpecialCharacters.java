@@ -58,6 +58,13 @@ public class SpecialCharacters {
 				output = htmlDezToString(output);		
 			}
 			
+			output = output.replaceAll("a%CC%88", "ä");
+			output = output.replaceAll("o%CC%88", "ö");
+			output = output.replaceAll("u%CC%88", "ü");
+			output = output.replaceAll("A%CC%88", "Ä");
+			output = output.replaceAll("O%CC%88", "Ö");
+			output = output.replaceAll("U%CC%88", "Ü");			
+			
 			if (output.contains("&")){
 			output = output.replaceAll("&scaron;", "š");
 			output = output.replaceAll("&Scaron;", "Š");

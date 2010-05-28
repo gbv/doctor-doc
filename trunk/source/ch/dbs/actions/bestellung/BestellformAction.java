@@ -109,10 +109,10 @@ public final class BestellformAction extends DispatchAction {
             	}
             
             // resolve PMID or DOI
-            if (of.isResolve()==true && of.getPmid()!=null && !of.getPmid().equals("") && of.getMediatype().equals("Artikel")) {
+            if (of.isResolve()==true && of.getPmid()!=null && !of.getPmid().equals("") && areArticleValuesMissing(of)) {
             	of = resolvePmid(extractPmid(of.getPmid()));
             } else {
-            	if (of.isResolve()==true && of.getDoi()!=null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")) {
+            	if (of.isResolve()==true && of.getDoi()!=null && !of.getDoi().equals("") && areArticleValuesMissing(of)) {
             		of = resolveDoi(extractDoi(of.getDoi()));
             		if (of.getDoi()==null || of.getDoi().equals("")) of = (OrderForm) fm; // sometimes we can't resolve a DOI...
             	}            	
@@ -227,10 +227,10 @@ public final class BestellformAction extends DispatchAction {
                 	}
                 
 //              resolve PMID or DOI
-                if (of.isResolver()==false && of.getPmid()!=null && !of.getPmid().equals("") && of.getMediatype().equals("Artikel")) {
+                if (of.isResolver()==false && of.getPmid()!=null && !of.getPmid().equals("") && areArticleValuesMissing(of)) {
                 	of = resolvePmid(extractPmid(of.getPmid()));
                 } else {
-                	if (of.isResolver()==false && of.getDoi()!=null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")) {
+                	if (of.isResolver()==false && of.getDoi()!=null && !of.getDoi().equals("") && areArticleValuesMissing(of)) {
                 		of = resolveDoi(extractDoi(of.getDoi()));
                 		if (of.getDoi()==null || of.getDoi().equals("")) of = (OrderForm) fm; // sometimes we can't resolve a DOI...
                 	}            	
@@ -1233,16 +1233,16 @@ public final class BestellformAction extends DispatchAction {
 		CodeUrl urlCoder = new CodeUrl();
 		
 		if (of.getKundenmail()!=null && !of.getKundenmail().equals("")) urlParam.append("email=" + of.getKundenmail());
-		if (of.getKundenname()!=null && !of.getKundenname().equals("")) urlParam.append("&name=" + urlCoder.encode(of.getKundenname()));
-		if (of.getKundenvorname()!=null && !of.getKundenvorname().equals("")) urlParam.append("&vorname=" + urlCoder.encode(of.getKundenvorname()));
-		if (of.getKundeninstitution()!=null && !of.getKundeninstitution().equals("")) urlParam.append("&institut=" + urlCoder.encode(of.getKundeninstitution()));
-		if (of.getKundenabteilung()!=null && !of.getKundenabteilung().equals("")) urlParam.append("&abteilung=" + urlCoder.encode(of.getKundenabteilung()));
-		if (of.getKundenadresse()!=null && !of.getKundenadresse().equals("")) urlParam.append("&adresse=" + urlCoder.encode(of.getKundenadresse()));
-		if (of.getKundenstrasse()!=null && !of.getKundenstrasse().equals("")) urlParam.append("&adresse=" + urlCoder.encode(of.getKundenstrasse()));
+		if (of.getKundenname()!=null && !of.getKundenname().equals("")) urlParam.append("&name=" + urlCoder.encodeLatin1(of.getKundenname()));
+		if (of.getKundenvorname()!=null && !of.getKundenvorname().equals("")) urlParam.append("&vorname=" + urlCoder.encodeLatin1(of.getKundenvorname()));
+		if (of.getKundeninstitution()!=null && !of.getKundeninstitution().equals("")) urlParam.append("&institut=" + urlCoder.encodeLatin1(of.getKundeninstitution()));
+		if (of.getKundenabteilung()!=null && !of.getKundenabteilung().equals("")) urlParam.append("&abteilung=" + urlCoder.encodeLatin1(of.getKundenabteilung()));
+		if (of.getKundenadresse()!=null && !of.getKundenadresse().equals("")) urlParam.append("&adresse=" + urlCoder.encodeLatin1(of.getKundenadresse()));
+		if (of.getKundenstrasse()!=null && !of.getKundenstrasse().equals("")) urlParam.append("&adresse=" + urlCoder.encodeLatin1(of.getKundenstrasse()));
 		if (of.getKundentelefon()!=null && !of.getKundentelefon().equals("")) urlParam.append("&telefonnrg=" + of.getKundentelefon());
-		if (of.getKundenplz()!=null && !of.getKundenplz().equals("")) urlParam.append("&plz=" + urlCoder.encode(of.getKundenplz()));
-		if (of.getKundenort()!=null && !of.getKundenort().equals("")) urlParam.append("&ort=" + urlCoder.encode(of.getKundenort()));
-		if (of.getKundenland()!=null && !of.getKundenland().equals("")) urlParam.append("&land=" + urlCoder.encode(of.getKundenland()));
+		if (of.getKundenplz()!=null && !of.getKundenplz().equals("")) urlParam.append("&plz=" + urlCoder.encodeLatin1(of.getKundenplz()));
+		if (of.getKundenort()!=null && !of.getKundenort().equals("")) urlParam.append("&ort=" + urlCoder.encodeLatin1(of.getKundenort()));
+		if (of.getKundenland()!=null && !of.getKundenland().equals("")) urlParam.append("&land=" + urlCoder.encodeLatin1(of.getKundenland()));
 		
 		return urlParam.toString();
 	}

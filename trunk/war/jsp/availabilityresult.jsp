@@ -135,9 +135,10 @@
  	<table border="1" cellspacing="0" cellpadding="3">
 		<tr>
 			<th id="th-left" width="20%"><bean:message key="availresult.deutschland" /></th>
-			<th id="th-left" width="20%"><bean:message key="availresult.schweiz" /></th>
+			<th id="th-left" width="15%"><bean:message key="availresult.schweiz" /></th>
 			<th id="th-left" width="20%"><bean:message key="availresult.osterreich" /></th>
 			<th id="th-left" width="20%"><bean:message key="availresult.england" /></th>
+			<th id="th-left" width="25%"><bean:message key="availresult.general" /></th>
 		</tr>
 		<tr>
 			<logic:present name="findfree" property="zdb_link">
@@ -149,15 +150,18 @@
 			<td><a href="http://www.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-kvk2.cgi?maske=chzk&timeout=20&title=Schweizer+Zeitschriftenportal+SZP+%3A+Ergebnisanzeige&header=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeige_de.htm&spacer=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeigetop_de.htm&footer=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeigemail_de.htm&lang=de&zeiten=nein&kvk-session=P0ER4LN0&flexpositon_start=1&RERO=&DEUTSCHSCHWEIZ=&WEITERE=&kataloge=CHZK_FRIB&kataloge=CHZK_GENF&kataloge=CHZK_RCBN&kataloge=CHZK_VALAIS&kataloge=CHZK_VAUD&kataloge=CHZK_BASEL&kataloge=CHZK_LUZERN&kataloge=CHZK_STGALLEN&kataloge=ZUERICH&kataloge=CHZK_NEBIS&kataloge=ALEXANDRIA&kataloge=CHZK_BGR&kataloge=HELVETICAT&kataloge=CHZK_SBT&kataloge=CHZK_SGBN&kataloge=LIECHTENSTEIN&kataloge=CHZK_CERN&kataloge=VKCH_KUNSTHAUS&kataloge=CHZK_RPVZ&ALL=&SE=&VORT=&CI=&target=_blank&Timeout=20&SS=<bean:write name="orderform" property="issn" />&inhibit_redirect=1" target="_blank">SZP</a></td>
 			<td><a href="http://meteor.bibvb.ac.at/F/?FUNC=find-c&CCL_TERM=+%28ISN%3D%28<bean:write name="orderform" property="issn" />%29%29+" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
 			<td><a href="sessionbritishlibrary.do?method=redirect&issn=<bean:write name="orderform" property="issn" />" target="_blank">British Library</a></td>
+			<td><a href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images" target="_blank">Google</a></td>
 		</tr>
 		<tr>
 			<td><a href="http://gateway-bayern.bib-bvb.de/aleph-cgi/bvb_suche?sid=ZDB&find_code_1=ZDB&find_request_1=<bean:write name="orderform" property="zdbid" />" target="_blank">BVB</a></td>
 			<td><a href="http://www.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-chvk.cgi?maske=vk_schweiz&header=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-header_de_10_06_01.html&footer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-footer_de_29_11_05.html&spacer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-spacer_de.html&css=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-result_01_07.css&target=_blank&kataloge=VKCH_BASEL&kataloge=HELVETICAT&kataloge=VKCH_CONS_GENEVE&kataloge=VKCH_SGB&kataloge=VKCH_GLARUS&kataloge=VKCH_CONS_LAUSANNE&kataloge=VKCH_LAUSANNE&kataloge=VKCH_LUZERN&kataloge=VKCH_SOLOTHURN&kataloge=VKCH_STGALLEN&kataloge=LIECHTENSTEIN&kataloge=VKCH_ZUG&kataloge=VKCH_ZUERICH&kataloge=VKCH_NEBIS&kataloge=VKCH_KUNSTHAUS&kataloge=ALEXANDRIA&kataloge=CHZK_BGR&kataloge=VKCH_THURGAU&kataloge=VKCH_RERO&kataloge=SCHAFFHAUSEN&kataloge=CHZK_SBT&kataloge=STGALLENNETZ&TI=&PY=&AU=&SB=&CI=&SS=<bean:write name="orderform" property="issn" />&ST=&PU=&sortiert=nein" target="_blank">CHVK</a></td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+			<td width="25%"><a href="http://scholar.google.com/scholar?as_q=&num=10&btnG=Scholar-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=" target="_blank">Google Scholar</a></td>
 		</tr>
 		<tr>
 			<td><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK</a></td>
+			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
@@ -167,9 +171,11 @@
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td><a href="http://www.portal.hebis.de/direktsuche/vonCBS?issn=<bean:write name="orderform" property="issn" />&db=2.1" target="_blank">HeBis</a></td>
+			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
@@ -179,9 +185,11 @@
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td><a href="http://sfx.kobv.de/cgi-bin/fernleihe3/cgi/nachauth?zdb_id=<bean:write name="orderform" property="zdbid" />" target="_blank">KOBV</a></td>
+			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
