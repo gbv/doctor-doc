@@ -108,12 +108,10 @@
 <!-- To minimize the risk of loosing parameters of an order during the change of locales -->
 	<td align="right">
 		<table border="0" align="right">
-		<!--
 			<td align="right">
   	   			<a href="language.do?request_locale=fr"><img src="img/fr.png" class="whiteborder">
 			</td>
 			<td>&nbsp;</td>
-		-->
 			<td align="right">
 				<a href="language.do?request_locale=en"><img src="img/en.png" class="whiteborder">
 			</td>
@@ -129,11 +127,9 @@
 <!-- To minimize the risk of loosing parameters of an order during the change of locales -->
 	<td align="right">
 		<table border="0" align="right">
-		<!--
 			<td align="right">
   	   			<a href="language.do?request_locale=fr"><img src="img/fr.png" class="whiteborder">
 			</td>
-		-->
 			<td align="right">
 				<a href="language.do?request_locale=en"><img src="img/en.png" class="whiteborder">
 			</td>

@@ -2178,7 +2178,8 @@ public final class OrderAction extends DispatchAction {
                 	// d.h. GBV-Submit ist nicht vorhanden und er hat keine Wahl den Artikel beim GBV zu bestellen....
                 	(!auth.isUserSubitoBestellung(rq) && !(auth.isUserGBVBestellung(rq) && pageForm.getSubmit().equals("GBV")) ) || // keine Bestellberechtigung
                 	(!pageForm.getSubmit().equals("GBV") && auth.isBenutzer(rq) && (pageForm.getMediatype()==null || !pageForm.getMediatype().equals("Artikel"))) || // Für Subito nur Artikel zugelassen...
-                	  pageForm.getSubmit().contains("meine Bibliothek") || pageForm.getSubmit().contains("my library") || pageForm.getSubmit().contains("bestellform")) { // der Kunde will das Doku bei seiner Bibliothek bestellen
+                	  pageForm.getSubmit().contains("meine Bibliothek") || pageForm.getSubmit().contains("my library") || 
+                	  pageForm.getSubmit().contains("ma bibliothèque") || pageForm.getSubmit().contains("bestellform")) { // der Kunde will das Doku bei seiner Bibliothek bestellen
                 	
                 	forward = "bestellform";
                     if (pageForm.getDeloptions() == null || // Defaultwert deloptions

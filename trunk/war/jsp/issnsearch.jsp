@@ -71,7 +71,7 @@
 					</logic:equal>
 					<logic:present name="orderform" property="artikeltitel">
 						<tr>
-							<td><bean:message key="bestellform.artikeltitel" /></td>
+							<td><bean:message key="bestellform.artikeltitel" />:</td>
 							<td><bean:write name="orderform" property="artikeltitel" /></td>
 						</tr>
 					</logic:present>

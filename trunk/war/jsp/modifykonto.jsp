@@ -65,7 +65,6 @@
       <td><bean:message key="modifykonto.kontotyp" /> (<a href="anmeldungtyp.do" target="_blank"><bean:message key="modifykonto.list" /></a>)</td>
       <td>
       	<logic:equal name="kontoform" property="kontotyp" value="0"><bean:message arg0="<%=appName%>" key="modifykonto.free" /></logic:equal>
-      	<logic:equal name="kontoform" property="kontotyp" value="1"><bean:message arg0="<%=appName%>" key="modifykonto.enhanced" /></logic:equal>
       	<logic:equal name="kontoform" property="kontotyp" value="2"><bean:message arg0="<%=appName%>" key="modifykonto.faxyear" /></logic:equal>
       	<logic:equal name="kontoform" property="kontotyp" value="3"><bean:message arg0="<%=appName%>" key="modifykonto.fax3" /></logic:equal>
       </td>
