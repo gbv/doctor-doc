@@ -25,7 +25,7 @@
  
 <table width="800">
 	<tr>
-		<td><b>OpenSource</b></td>
+		<td><b>Open Source</b></td>
 	</tr>
 	<tr>
 		<td><bean:message arg0="<%=appName%>" key="anmeldungtyp.kosten" /></td>	
