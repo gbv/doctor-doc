@@ -40,7 +40,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
 	private static final SimpleLogger log = new SimpleLogger(DBConn.class);
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
-    private static final String SERVER = "jdbc:mysql://localhost/" + DATABASE_NAME + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false"; // z.B. 127.0.0.1 oder localhost
+    private static final String SERVER = "jdbc:mysql://" + DATABASE_SERVERADDRESS + "/" + DATABASE_NAME + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false"; // z.B. 127.0.0.1 oder localhost
     private Connection cn = null;
     
     /**

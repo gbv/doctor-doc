@@ -40,6 +40,7 @@ public abstract class AbstractReadSystemConfigurations {
 	static final String SYSTEM_EMAIL_PASSWORD = readSystemEmailPassword();
 	static final String ERROR_EMAIL = readErrorEmail();
 	
+	static final String DATABASE_SERVERADDRESS = readDatabaseServerAddress();
 	static final String DATABASE_NAME = readDatabaseName();
 	static final String DATABASE_USER = readDatabaseUser();
 	static final String DATABASE_PASSWORD = readDatabasePassword();
@@ -132,6 +133,21 @@ public abstract class AbstractReadSystemConfigurations {
 		}
 		
 		return errorEmail;
+	}
+	
+	private static final String readDatabaseServerAddress() {
+		
+		String databaseServerAdress = "";
+		
+		try {			
+			Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+			databaseServerAdress = config.getString("mysql.serveraddress");
+			
+		} catch (ConfigurationException e) {
+			log.error(e.toString());
+		}
+		
+		return databaseServerAdress;
 	}
 	
 	private static final String readDatabaseName() {
