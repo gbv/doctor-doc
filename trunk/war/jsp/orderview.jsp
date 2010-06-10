@@ -110,7 +110,18 @@
 			<td><bean:write name="orderform" property="bestellung.interne_bestellnr" />&nbsp;</td>
 		</logic:notEqual>
 		<logic:notEqual name="orderform" property="bestellung.mediatype" value="">
-			<td><bean:write name="orderform" property="bestellung.mediatype" />&nbsp;</td>
+			<td>
+				<logic:equal name="orderform" property="bestellung.mediatype" value="Artikel">
+					<bean:message key="save.artikel" />
+				</logic:equal>
+				<logic:equal name="orderform" property="bestellung.mediatype" value="Teilkopie Buch">
+					<bean:message key="save.bookpart" />
+				</logic:equal>
+				<logic:equal name="orderform" property="bestellung.mediatype" value="Buch">
+					<bean:message key="save.book" />
+				</logic:equal>
+				&nbsp;
+			</td>
 		</logic:notEqual>
 		<logic:notEqual name="orderform" property="bestellung.autor" value="">
 		<logic:notEqual name="orderform" property="bestellung.autor" value=" ">		
@@ -160,7 +171,15 @@
 			<td><bean:write name="orderform" property="bestellung.fileformat" />&nbsp;</td>
 		</logic:notEqual>
 		<logic:notEqual name="orderform" property="bestellung.priority" value="">
-			<td><bean:write name="orderform" property="bestellung.priority" />&nbsp;</td>
+			<td>
+				<logic:equal name="orderform" property="bestellung.priority" value="normal">
+					<bean:message key="bestellform.normal" />
+				</logic:equal>
+				<logic:equal name="orderform" property="bestellung.priority" value="urgent">
+					<bean:message key="bestellform.urgent" />
+				</logic:equal>
+			&nbsp;
+			</td>
 		</logic:notEqual>    
      </tr>
      </table>

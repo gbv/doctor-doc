@@ -199,7 +199,14 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
       						<option value="0" selected><bean:message key="select.status" /></option>
  							<logic:iterate id="s" name="orderform" property="statitexts">
  							<bean:define id="tmp" name="s" property="inhalt" type="java.lang.String"/>
-     							<option value="<bean:write name="s" property="inhalt" />"<logic:equal name="orderform" property="status" value="<%=tmp%>"> selected</logic:equal>><bean:write name="s" property="inhalt" /></option>
+     							<option value="<bean:write name="s" property="inhalt" />"<logic:equal name="orderform" property="status" value="<%=tmp%>"> selected</logic:equal>>
+     								<logic:equal name="s" property="inhalt" value="erledigt"><bean:message key="menu.closed" /></logic:equal>
+     								<logic:equal name="s" property="inhalt" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal>
+     								<logic:equal name="s" property="inhalt" value="bestellt"><bean:message key="menu.ordered" /></logic:equal>
+     								<logic:equal name="s" property="inhalt" value="zu bestellen"><bean:message key="menu.toOrder" /></logic:equal>
+     								<logic:equal name="s" property="inhalt" value="geliefert"><bean:message key="menu.shipped" /></logic:equal>
+     								<logic:equal name="s" property="inhalt" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal>
+     							</option>
    							</logic:iterate>
 						</select>
 						</td>
