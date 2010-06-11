@@ -47,12 +47,12 @@
 	">
 	<tr>
 		<td
-			<logic:equal name="ActiveMenus" property="activesubmenu" value="OpenURL">id="submenuactive"</logic:equal>
-			<logic:notEqual name="ActiveMenus" property="activesubmenu" value="OpenURL">id="submenu"</logic:notEqual>><a
+			<logic:equal name="ActiveMenus" property="activesubmenu" value="OpenURL">id="submenuactive" nowrap</logic:equal>
+			<logic:notEqual name="ActiveMenus" property="activesubmenu" value="OpenURL">id="submenu" nowrap</logic:notEqual>><a
 			href="howto.do?activesubmenu=OpenURL&activemenu=howto">OpenURL</a></td>
 		<td
-			<logic:equal name="ActiveMenus" property="activesubmenu" value="bestellformular">id="submenuactive"</logic:equal>
-			<logic:notEqual name="ActiveMenus" property="activesubmenu" value="bestellformular">id="submenu"</logic:notEqual>><a
+			<logic:equal name="ActiveMenus" property="activesubmenu" value="bestellformular">id="submenuactive" nowrap</logic:equal>
+			<logic:notEqual name="ActiveMenus" property="activesubmenu" value="bestellformular">id="submenu" nowrap</logic:notEqual>><a
 			href="howto.do?activesubmenu=bestellformular&activemenu=howto"><bean:message key="bestellformconfigureselect.titel" /></a></td>
 	</tr>
 </table>

@@ -52,15 +52,15 @@ document.getElementById('4').style. visibility = 'hidden';
 <table
 	style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
 	<tr>
-		<td id="submenu" title="Bestandes&uuml;bersicht"><a
+		<td id="submenu" nowrap title="Bestandes&uuml;bersicht"><a
 			href="allstock.do?method=listBestand&activemenu=stock">&Uuml;bersicht</a></td>
-		<td <logic:notEqual name="holdingform" property="submit" value="minus">id="submenuactive"</logic:notEqual><logic:equal name="holdingform" property="submit" value="minus">id="submenu"</logic:equal>
+		<td <logic:notEqual name="holdingform" property="submit" value="minus">id="submenuactive" nowrap</logic:notEqual><logic:equal name="holdingform" property="submit" value="minus">id="submenu" nowrap</logic:equal>
 			title="Neuen Bestand eingeben: Positivliste"><a
 			href="stock.do?method=prepare&activemenu=stock">Bestand eingeben</a></td>
-		<td <logic:notEqual name="holdingform" property="submit" value="minus">id="submenu"</logic:notEqual><logic:equal name="holdingform" property="submit" value="minus">id="submenuactive"</logic:equal>
+		<td <logic:notEqual name="holdingform" property="submit" value="minus">id="submenu" nowrap</logic:notEqual><logic:equal name="holdingform" property="submit" value="minus">id="submenuactive" nowrap</logic:equal>
 			title="Fehlendes vermerken: Negativliste"><a
 			href="stock.do?method=prepare&submit=minus&activemenu=stock">L&uuml;cke eingeben</a></td>
-		<td id="submenu"
+		<td id="submenu" nowrap
 			title="Standorte hinzuf&uuml;gen und verwalten"><a
 			href="modplace.do?method=listStandorte&activemenu=stock">Standortverwaltung</a></td>
 	</tr>

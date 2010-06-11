@@ -25,19 +25,19 @@
 	<logic:equal name="userinfo" property="benutzer.rechte" value="1">  				
 		<table style="position:absolute; text-align:left; left:111px; z-index:2;">
 			<tr>
-				<td id="submenu" title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
-				<td id="submenu" title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
+				<td id="submenu" nowrap title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
+				<td id="submenu" nowrap title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
 <logic:present name="userinfo" property="benutzer.userbestellung">  
 	<logic:equal name="userinfo" property="benutzer.userbestellung" value="true">
-				<td id="submenu" title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
+				<td id="submenu" nowrap title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
 	</logic:equal>
-		<td id="submenuactive" title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
+		<td id="submenuactive" nowrap title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
 </logic:present>
 <logic:present name="userinfo" property="konto.gbvrequesterid">
 <logic:present name="userinfo" property="konto.isil">
 <logic:present name="userinfo" property="benutzer.gbvbestellung">
 	<logic:equal name="userinfo" property="benutzer.gbvbestellung" value="true">
-				<logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
+				<logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
 	</logic:equal>
 </logic:present>
 </logic:present>
