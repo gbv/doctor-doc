@@ -431,72 +431,72 @@ public final class BestellformAction extends DispatchAction {
 			
 			to[1] = of.getKundenmail();
 			StringBuffer m = new StringBuffer();
-			m.append("Vorname: " + of.getKundenvorname() + "\n");
-			m.append("Name: " + of.getKundenname() + "\n");
+			m.append("First name: " + of.getKundenvorname() + "\n");
+			m.append("Last name: " + of.getKundenname() + "\n");
 			m.append("Email: " + of.getKundenmail() + "\n");
 			
-			// parametrisierbarer Teil
+			// configurable part (orderforms)
 			if (of.getFreitxt1_inhalt()!=null && !of.getFreitxt1_inhalt().equals("")) m.append(of.getFreitxt1_label()+ ": " + of.getFreitxt1_inhalt() + "\n");
 			
-			if (of.getKundeninstitution()!=null && !of.getKundeninstitution().equals("")) { // ggf. Angaben aus Formular
+			if (of.getKundeninstitution()!=null && !of.getKundeninstitution().equals("")) {
 				m.append("Institution: " + of.getKundeninstitution() + "\n");
 			} else { // ggf. Angaben aus dbs
 				if (u.getInstitut()!=null && !u.getInstitut().equals("")) m.append("Institution: " + u.getInstitut() + "\n");
 			}
 			
-			if (of.getKundenabteilung()!=null && !of.getKundenabteilung().equals("")) { // ggf. Angaben aus Formular
-				m.append("Abteilung: " + of.getKundenabteilung() + "\n");
+			if (of.getKundenabteilung()!=null && !of.getKundenabteilung().equals("")) {
+				m.append("Department: " + of.getKundenabteilung() + "\n");
 			} else { // ggf. Angaben aus dbs
-				if (u.getAbteilung()!=null && !u.getAbteilung().equals("")) m.append("Abteilung: " + u.getAbteilung() + "\n");
+				if (u.getAbteilung()!=null && !u.getAbteilung().equals("")) m.append("Department: " + u.getAbteilung() + "\n");
 			}
 			
 			if (of.getFreitxt2_inhalt()!=null && !of.getFreitxt2_inhalt().equals("")) m.append(of.getFreitxt2_label()+ ": " + of.getFreitxt2_inhalt() + "\n");
-			if (of.getKundenadresse()!=null && !of.getKundenadresse().equals("")) m.append("Lieferadresse: " + of.getKundenadresse() + "\n");
-			if (of.getKundenstrasse()!=null && !of.getKundenstrasse().equals("")) m.append("Strasse: " + of.getKundenstrasse() + "\n");
-			if (of.getKundenplz()!=null && !of.getKundenplz().equals("")) m.append("PLZ: " + of.getKundenplz() + "\n");
-			if (of.getKundenort()!=null && !of.getKundenort().equals("")) m.append("Ort: " + of.getKundenort() + "\n");
-			if (of.getKundenland()!=null && !of.getKundenland().equals("0")) m.append("Land: " + of.getKundenland() + "\n");
+			if (of.getKundenadresse()!=null && !of.getKundenadresse().equals("")) m.append("Address: " + of.getKundenadresse() + "\n");
+			if (of.getKundenstrasse()!=null && !of.getKundenstrasse().equals("")) m.append("Street: " + of.getKundenstrasse() + "\n");
+			if (of.getKundenplz()!=null && !of.getKundenplz().equals("")) m.append("ZIP: " + of.getKundenplz() + "\n");
+			if (of.getKundenort()!=null && !of.getKundenort().equals("")) m.append("Place: " + of.getKundenort() + "\n");
+			if (of.getKundenland()!=null && !of.getKundenland().equals("0")) m.append("Country: " + of.getKundenland() + "\n");
 			
 			if (of.getKundentelefon()!=null && !of.getKundentelefon().equals("")) { // ggf. Angaben aus Formular
-				m.append("Telefon: " + of.getKundentelefon() + "\n");
+				m.append("Phone: " + of.getKundentelefon() + "\n");
 			} else { // ggf. Angaben aus dbs
-				if (u.getTelefonnrg()!=null && !u.getTelefonnrg().equals("")) m.append("Telefon G: " + u.getTelefonnrg() + "\n");
-				if (u.getTelefonnrp()!=null && !u.getTelefonnrp().equals("")) m.append("Telefon P: " + u.getTelefonnrp() + "\n");
+				if (u.getTelefonnrg()!=null && !u.getTelefonnrg().equals("")) m.append("Phone B: " + u.getTelefonnrg() + "\n");
+				if (u.getTelefonnrp()!=null && !u.getTelefonnrp().equals("")) m.append("Phone P: " + u.getTelefonnrp() + "\n");
 			}
 			
-			if (of.getKundenbenutzernr()!=null && !of.getKundenbenutzernr().equals("")) m.append("Benutzernummer: " + of.getKundenbenutzernr() + "\n");
+			if (of.getKundenbenutzernr()!=null && !of.getKundenbenutzernr().equals("")) m.append("Library card #: " + of.getKundenbenutzernr() + "\n");
 			if (of.getFreitxt3_inhalt()!=null && !of.getFreitxt3_inhalt().equals("")) m.append(of.getFreitxt3_label()+ ": " + of.getFreitxt3_inhalt() + "\n");
 			if (of.getRadiobutton()!=null && !of.getRadiobutton().equals("")) m.append(of.getRadiobutton_name()+ ": " + of.getRadiobutton() + "\n");
 			
 			m.append("\n");
 			
-			if (of.getDeloptions() != null && !of.getDeloptions().equals("")) m.append("Gewünschte Lieferart: " + of.getDeloptions().toUpperCase() + "\n");
-			if (of.getPrio()!=null && of.getPrio().equals("urgent")) m.append("Priorität: EILT" + "\n");
+			if (of.getDeloptions() != null && !of.getDeloptions().equals("")) m.append("Desired deliveryway: " + of.getDeloptions().toUpperCase() + "\n");
+			if (of.getPrio()!=null && of.getPrio().equals("urgent")) m.append("Priority: URGENT" + "\n");
 			
 			m.append("-----" + "\n");
 			
 			if (of.getMediatype().equals("Artikel")) {
-				if (of.getRfr_id()!=null && !of.getRfr_id().equals("")) m.append("DATENBANK: " + of.getRfr_id() + "\n"); ;
-				m.append("PUBLIKATIONSART: Zeitschriftenartikel " + of.getGenre() + "\n");
-				m.append("VERFASSER: " + of.getAuthor() + "\n");
-				m.append("ARTIKELTITEL: " + of.getArtikeltitel() + "\n");
-				m.append("ZEITSCHRIFT: " + of.getZeitschriftentitel() + "\n");
+				if (of.getRfr_id()!=null && !of.getRfr_id().equals("")) m.append("DATABASE: " + of.getRfr_id() + "\n"); ;
+				m.append("PUBLICATION: Journal Article " + of.getGenre() + "\n");
+				m.append("AUTHOR: " + of.getAuthor() + "\n");
+				m.append("TITLE OF ARTICLE: " + of.getArtikeltitel() + "\n");
+				m.append("JOURNAL: " + of.getZeitschriftentitel() + "\n");
 				m.append("ISSN: " + of.getIssn() + "\n");
-				m.append("JAHR: " + of.getJahr() + "\n");
-				m.append("JAHRGANG: " + of.getJahrgang() + "\n");
-				m.append("HEFT: " + of.getHeft() + "\n");
-				m.append("SEITEN: " + of.getSeiten() + "\n");
+				m.append("YEAR: " + of.getJahr() + "\n");
+				m.append("VOLUME: " + of.getJahrgang() + "\n");
+				m.append("ISSUE: " + of.getHeft() + "\n");
+				m.append("PAGES: " + of.getSeiten() + "\n");
 
-				// Falls nur ISSN und kein Zeitschriftentitel vorhanden...
+				// If there is only an ISSN and no journaltitle present...
 				if (of.getIssn() != null && !of.getIssn().equals("") && 
 				   (of.getZeitschriftentitel()==null || of.getZeitschriftentitel().equals("")) ) {
 					
-//					 EZB-Link vorbereiten
+//					Add a link to the EZB
 		            String bibid = "AAAAA";
 		            if (k.getEzbid()!=null && !k.getEzbid().equals("")) bibid = k.getEzbid();
 		            String link = "http://rzblx1.uni-regensburg.de/ezeit/searchres.phtml?bibid=" + bibid + "&colors=7&lang=de&jq_type1=KT&jq_term1=&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+&jq_type4=IS&offset=-1&hits_per_page=50&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=4&jq_term4=";
 					
-					m.append("Link zur EZB: " + link + of.getIssn() + "\n"); // Link zur EZB mitschicken
+					m.append("EZB link: " + link + of.getIssn() + "\n");
 				}
 				
 				if (of.getDoi() != null && !of.getDoi().equals("")) {
@@ -515,17 +515,17 @@ public final class BestellformAction extends DispatchAction {
 			}
 			
 			if (of.getMediatype().equals("Teilkopie Buch") || of.getMediatype().equals("Buch")) {
-				if (of.getRfr_id()!=null && !of.getRfr_id().equals("")) m.append("DATENBANK: " + of.getRfr_id() + "\n"); ;
-				if (of.getMediatype().equals("Teilkopie Buch")) {m.append("PUBLIKATIONSART: Buchausschnitt " + of.getGenre() + "\n");} else {m.append("PUBLIKATIONSART: Buch komplett " + of.getGenre() + "\n");}
-				m.append("VERFASSER: " + of.getAuthor() + "\n");
-				if (of.getMediatype().equals("Teilkopie Buch")) m.append("KAPITEL: " + of.getKapitel() + "\n");
-				m.append("BUCHTITEL: " + of.getBuchtitel() + "\n");
-				m.append("VERLAG: " + of.getVerlag() + "\n");
+				if (of.getRfr_id()!=null && !of.getRfr_id().equals("")) m.append("DATABASE: " + of.getRfr_id() + "\n"); ;
+				if (of.getMediatype().equals("Teilkopie Buch")) {m.append("PUBLICATION: Book Part " + of.getGenre() + "\n");} else {m.append("PUBLICATION: Book " + of.getGenre() + "\n");}
+				m.append("AUTHOR: " + of.getAuthor() + "\n");
+				if (of.getMediatype().equals("Teilkopie Buch")) m.append("CHAPTER: " + of.getKapitel() + "\n");
+				m.append("TITLE OF BOOK: " + of.getBuchtitel() + "\n");
+				m.append("PUBLISHER: " + of.getVerlag() + "\n");
 				m.append("ISBN: " + of.getIsbn() + "\n");
 				if (!of.getIssn().equals("")) m.append("ISSN: " + of.getIssn() + "\n");  // Buchserie mit ISSN
 				m.append("JAHR: " + of.getJahr() + "\n");
-				if (!of.getJahrgang().equals("")) m.append("Jahrgang: " + of.getJahrgang() + "\n"); // Buchserie mit Zählung
-				if (of.getMediatype().equals("Teilkopie Buch")) m.append("SEITEN: " + of.getSeiten() + "\n");
+				if (!of.getJahrgang().equals("")) m.append("VOLUME: " + of.getJahrgang() + "\n"); // Buchserie mit Zählung
+				if (of.getMediatype().equals("Teilkopie Buch")) m.append("PAGES: " + of.getSeiten() + "\n");
 				
 				if (of.getDoi() != null && !of.getDoi().equals("")) {
 					m.append("DOI: " + of.getDoi() + "\n");
@@ -540,66 +540,66 @@ public final class BestellformAction extends DispatchAction {
 				}
 			
 			if (of.getNotizen() != null && !of.getNotizen().equals("")) {
-			m.append("Anmerkungen des Kunden/der Kundin: " + of.getNotizen() + "\n");
+			m.append("Remarks of patron: " + of.getNotizen() + "\n");
 			}
 			
 			m.append("-----" + "\n");
-			m.append("Bestelldatum: " + date + "\n");
+			m.append("Order date: " + date + "\n");
 			m.append("Brought to you by ");
 			m.append(ReadSystemConfigurations.getApplicationName() + ": " + ReadSystemConfigurations.getServerWelcomepage() + "\n");
 			
-			// direkten Login-Link für Bibliothekare zusammenstellen			
+			// Prepare a direct login link for librarians, to save order details			
 			String loginlink = "http://www.doctor-doc.com/version1.0/pl.do?" + convertOpenUrlInstance.makeGetMethodString(of) + "&foruser=" + of.getForuser();
 			
 			String adduserlink = "";
-			if (u.getId()==null) { // User unbekannt => Übernahme-Link für Bibliothekare
+			if (u.getId()==null) { // User unknown => Prepare a direct login link for librarians, to save new user
 				adduserlink = "http://www.doctor-doc.com/version1.0/add.do?" + createUrlParamsForAddUser(of);
 			}
 			
-			String prio = "3"; // Email-Priorität 3 = normal
-			if (of.getPrio()!=null && of.getPrio().equals("urgent")) prio = "1"; // hoch
+			String prio = "3"; // Email priority 3 = normal
+			if (of.getPrio()!=null && of.getPrio().equals("urgent")) prio = "1"; // high
 						
 			if (of.getMediatype().equals("Artikel")) {
 				String[] toemail = new String[1];
 				
-				// Mail an Kunde schicken, ReplyTo = Bibliothek
-				toemail[0] = to[1]; // Kundenmail
-				mh.sendMailReplyTo(toemail,"Artikelbestellung aus: " + of.getZeitschriftentitel() + "\040" +
+				// Mail to patron, ReplyTo = library
+				toemail[0] = to[1]; // email of patron
+				mh.sendMailReplyTo(toemail,"Article: " + of.getZeitschriftentitel() + "\040" +
 				of.getJahr() + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(), m.toString(), to[0]);				
 				
-				// Mail an Bibliothek schicken, ReplyTo = Kunde
-				toemail[0] = to[0]; // Bibliomail
-				if (u.getId()!=null) { // Kunde bekannt
-					mh.sendMailReplyTo(toemail,"Artikelbestellung aus: " + of.getZeitschriftentitel() + "\040" +
+				// Mail to library, ReplyTo = patron
+				toemail[0] = to[0]; // email of library
+				if (u.getId()!=null) { // User already exists
+					mh.sendMailReplyTo(toemail,"Article: " + of.getZeitschriftentitel() + "\040" +
 					of.getJahr() + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(), m.toString() + 
-					"\012Bestellangaben nach " + ReadSystemConfigurations.getApplicationName() + " übernehmen:\012"
+					"\012Save order details in " + ReadSystemConfigurations.getApplicationName() + ":\012"
 					+ loginlink, of.getKundenmail(), prio);
-				} else { // Kunde unbekannt
-					mh.sendMailReplyTo(toemail,"Artikelbestellung aus: " + of.getZeitschriftentitel() + "\040" +
+				} else { // User unknown
+					mh.sendMailReplyTo(toemail,"Article: " + of.getZeitschriftentitel() + "\040" +
 					of.getJahr() + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(), m.toString() + 
-					"\012Unbekannte Email! Kundenangaben nach " + ReadSystemConfigurations.getApplicationName()
-					+ " übernehmen:\012" + adduserlink + "\012" +
-					"\012Bestellangaben nach " + ReadSystemConfigurations.getApplicationName() + " übernehmen:\012" + loginlink, of.getKundenmail(), prio);
+					"\012Unknown Email! Save patron in " + ReadSystemConfigurations.getApplicationName()
+					+ ":\012" + adduserlink + "\012" +
+					"\012Save order details in " + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink, of.getKundenmail(), prio);
 				}
 			}
 			
 			if (of.getMediatype().equals("Teilkopie Buch")) {
 				String[] toemail = new String[1];
 				
-//				 Mail an Kunde schicken, ReplyTo = Bibliothek
-				toemail[0] = to[1]; // Kundenmail
-				mh.sendMailReplyTo(toemail,"Bestellung Buchausschnitt aus: " + of.getBuchtitel() + "\040" +
+//				 Mail to patron, ReplyTo = library
+				toemail[0] = to[1]; // email of patron
+				mh.sendMailReplyTo(toemail,"Book part: " + of.getBuchtitel() + "\040" +
 				of.getJahr() + ":" + of.getSeiten(), m.toString(), to[0]);	
 				
-				// Mail an Bibliothek schicken, ReplyTo = Kunde
-				toemail[0] = to[0]; // Bibliomail
-				if (u.getId()!=null) { // Kunde bekannt
-					mh.sendMailReplyTo(toemail,"Bestellung Buchausschnitt aus: " + of.getBuchtitel() + "\040" +
+				// Mail to library, ReplyTo = patron
+				toemail[0] = to[0]; // email of library
+				if (u.getId()!=null) { // User already exists
+					mh.sendMailReplyTo(toemail,"Book part: " + of.getBuchtitel() + "\040" +
 					of.getJahr() + ":" + of.getSeiten(), m.toString(), of.getKundenmail(), prio);
-				} else { // Kunde unbekannt
-					mh.sendMailReplyTo(toemail,"Bestellung Buchausschnitt aus: " + of.getBuchtitel() + "\040" +
+				} else { // User unknown
+					mh.sendMailReplyTo(toemail,"Book part: " + of.getBuchtitel() + "\040" +
 					of.getJahr() + ":" + of.getSeiten(), m.toString() + 
-					"\012Unbekannte Email! Kundenangaben nach " + ReadSystemConfigurations.getApplicationName() + " übernehmen:\012" + 
+					"\012Unknown Email! Save patron in " + ReadSystemConfigurations.getApplicationName() + ":\012" + 
 					adduserlink, of.getKundenmail(), prio);
 				}
 			}
@@ -607,19 +607,19 @@ public final class BestellformAction extends DispatchAction {
 			if (of.getMediatype().equals("Buch")) {
 				String[] toemail = new String[1];
 				
-//				 Mail an Kunde schicken, ReplyTo = Bibliothek
-				toemail[0] = to[1]; // Kundenmail
-				mh.sendMailReplyTo(toemail,"Bestellung Buch komplett: " + of.getBuchtitel() + "\040" +
+//				 Mail to patron, ReplyTo = library
+				toemail[0] = to[1]; // email of patron
+				mh.sendMailReplyTo(toemail,"Book: " + of.getBuchtitel() + "\040" +
 				of.getJahr(), m.toString(), to[0]);
 				
-				// Mail an Bibliothek schicken, ReplyTo = Kunde
-				toemail[0] = to[0]; // Bibliomail
-				if (u.getId()!=null) { // Kunde bekannt
-					mh.sendMailReplyTo(toemail,"Bestellung Buch komplett: " + of.getBuchtitel() + "\040" +
+				// Mail to library, ReplyTo = patron
+				toemail[0] = to[0]; // email of library
+				if (u.getId()!=null) { // User already exists
+					mh.sendMailReplyTo(toemail,"Book: " + of.getBuchtitel() + "\040" +
 					of.getJahr(), m.toString(), of.getKundenmail(), prio);
-				} else { // Kunde unbekannt
-					mh.sendMailReplyTo(toemail,"Bestellung Buch komplett: " + of.getBuchtitel() + "\040" +
-					of.getJahr(), m.toString() + "\012Unbekannte Email! Kundenangaben nach " + ReadSystemConfigurations.getApplicationName() + " übernehmen:\012" + 
+				} else { // User unknown
+					mh.sendMailReplyTo(toemail,"Book: " + of.getBuchtitel() + "\040" +
+					of.getJahr(), m.toString() + "\012Unknown Email! Save patron in " + ReadSystemConfigurations.getApplicationName() + ":\012" + 
 					adduserlink, of.getKundenmail(), prio);
 				}
 			}
@@ -629,7 +629,7 @@ public final class BestellformAction extends DispatchAction {
         		rq.setAttribute("messagemissing", message);
         	}
         	
-        	// für Get-Methode in PrepareLogin of URL-codieren
+        	// URL-encode for get-methode in PrepareLogin
             of = of.encodeOrderForm(of);
 
             rq.setAttribute("orderform", of);
@@ -641,7 +641,7 @@ public final class BestellformAction extends DispatchAction {
             rq.setAttribute("errormessage", em);
             // Severe error
             MHelper mh = new MHelper();
-	        mh.sendErrorMail(e.toString(), "Bestellformular - Fehler beim Versenden der Bestellung");
+	        mh.sendErrorMail(e.toString(), "Order form - Error sending an order");
         }
         
         if (auth.isLogin(rq)) {
