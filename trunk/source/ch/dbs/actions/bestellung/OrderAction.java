@@ -727,7 +727,7 @@ public final class OrderAction extends DispatchAction {
     public ActionForward checkAvailabilityOpenUrl(ActionMapping mp, ActionForm form,
             HttpServletRequest rq, HttpServletResponse rp){
     	
-    	UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // für ezbid auslesen
+    	UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // will be needed for the ezbid
         OrderForm pageForm = (OrderForm) form; 
         BestellformAction bfInstance = new BestellformAction();
         CodeUrl codeUrl = new CodeUrl();
@@ -747,7 +747,7 @@ public final class OrderAction extends DispatchAction {
 		Future<String> carelitcontent = null;
     	
 		String forward = "failure";
-		String bibid = "AAAAA"; // // entspricht unbestimmter Bibliothek
+		String bibid = "AAAAA"; // ID in the EZB for an 'undefined' library
     	String land = "";
     	String link = "";
         String content = "";
@@ -755,7 +755,7 @@ public final class OrderAction extends DispatchAction {
     	long kid = 0;
     	boolean zdb = false;
         
-    	// Übergabe aus getOpenUrlRequest, oder prepareReorder
+    	// if coming from getOpenUrlRequest or prepareReorder
         if (rq.getAttribute("ofjo")!=null) {
         	pageForm = (OrderForm) rq.getAttribute("ofjo");
         	pageForm.setResolver(true);
@@ -769,7 +769,7 @@ public final class OrderAction extends DispatchAction {
 			if (t.getTexttyp().getId()==12) pageForm.setKkid(t.getInhalt()); // Text mit Kontoangaben anhand Konto-Kennung holen
 		}
     	
-		// bibid und land aus ui abfüllen
+		// get bibid and land (country) from ui
     	if (ui!=null) {
     		if (ui.getKonto().getEzbid()!=null && !ui.getKonto().getEzbid().equals("")) bibid = ui.getKonto().getEzbid();
     		land = ui.getKonto().getLand();
@@ -786,30 +786,30 @@ public final class OrderAction extends DispatchAction {
     			}
     		}
         
-        // allfällige PMID normalisieren
+        // normalize PMID if available
         pageForm.setPmid(bfInstance.extractPmid(pageForm.getPmid()));
         
-        // pmid vorhanden aber es fehlen wichtige Artikelangaben
+        // PMID available and there are article references missing
         if (pageForm.getPmid()!=null && !pageForm.getPmid().equals("") &&
         	bfInstance.areArticleValuesMissing(pageForm)) {
         	OrderForm of = new OrderForm();
         	of = bfInstance.resolvePmid(pageForm.getPmid());
         	pageForm.completeOrderForm(pageForm, of);
         } else {
-        // ggf. fehlende pmid bestimmen und fehlende Artikelangaben über Pubmed ergänzen
+        // try to get missing PMID and complete missing article references
         if (isPubmedSearchWithoutPmidPossible(pageForm)) {
         	pubmedthread.setLink(bfInstance.composePubmedlinkToPmid(pageForm));
         	pubmedcontent = executor.submit(pubmedthread);
         }
         }
         
-        // zdbid anhand ISSN bestimmen. Nur nötig falls eingeloggt...
+        // get zdbid from ISSN. Only necessary if logged in...
         boolean gbvThread = false;
         if (auth.isLogin(rq) && pageForm.getIssn()!=null && !pageForm.getIssn().equals("")) {        	
-        	pageForm.setZdbid(getZdbidFromIssn(pageForm.getIssn(), t.getConnection())); // holt ZDB-ID aus dbs (meistens E-Journal)
+        	pageForm.setZdbid(getZdbidFromIssn(pageForm.getIssn(), t.getConnection())); // gets zdbid from database (will be an e-journal)
         	t.close();
         	// System.out.println("ZDB-ID aus dbs: " + pageForm.getZdbid());
-        	// Versuch mit e-ZDB-ID eine p-ZDB-ID über den GBV in einem neuen Thread zu holen.
+        	// Try to get from e-ZDB-ID a p-ZDB-ID from GBV using a seperate thread.
         	if (pageForm.getZdbid()!=null && !pageForm.getZdbid().equals("")) {
         	String gbvlink = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
 				+ pageForm.getZdbid()
@@ -913,31 +913,31 @@ public final class OrderAction extends DispatchAction {
             	
             }
             
-            // Prüfung interne / externe Bestände. DAIA Document Availability Information API
+            // Check for internal / external Holdings using DAIA Document Availability Information API
             ArrayList<Bestand> allHoldings = new ArrayList<Bestand>();
             ArrayList<Bestand> internalHoldings = new ArrayList<Bestand>();
             ArrayList<Bestand> externalHoldings = new ArrayList<Bestand>();
             
-            if (ReadSystemConfigurations.isUseDaia()) { // Abfrage eines externen Registers über DAIA
+            if (ReadSystemConfigurations.isUseDaia()) { // Check an external register over DAIA
             	DaiaRequest daiaRequest = new DaiaRequest();
             	allHoldings = daiaRequest.get(openurl);
             	internalHoldings = extractInternalHoldings(allHoldings, daiaId);
         		externalHoldings = extractExternalHoldings(allHoldings, daiaId);
             } 
-            // Interne Abfrage
+            // Check internal database
             Stock stock = new Stock();
             allHoldings = stock.checkGeneralStockAvailability(pageForm, true);
             internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
         	externalHoldings.addAll(extractExternalHoldings(allHoldings, kid));
         		
-        	if (internalHoldings.size()>0) { // es gibt Eigenbestände
+        	if (internalHoldings.size()>0) { // we have own holdings
         		forward = "freeezb";
 	        	ff = getFindFreeForInternalHoldings(ff, internalHoldings, link);
 	        	pageForm.setLieferant(ff.getLieferant()); // Bestellquelle setzen (Internet / abonniert)...
 	        	pageForm.setDeloptions(ff.getDeloptions()); // // Deloptions setzen (Online / Email)...
         	}
-        	if (externalHoldings.size()>0) { // es gibt Fremdbestände
-        		// TODO: Anzeige und Bestellmöglichkeit     			
+        	if (externalHoldings.size()>0) { // there external holdings
+        		rq.setAttribute("holdings", externalHoldings);		
         	}
             
          // hier wird der GBV-Thread mit einem zusätzlich Maximum Timeout von 2 Sekunden zurückgeholt

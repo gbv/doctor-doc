@@ -285,6 +285,34 @@
   </logic:equal>
   </logic:present>
 
+	<logic:equal name="userinfo" property="konto.land" value="Schweiz">
+	<!-- This is experimental, so we show this at the moment only in Switzerland.
+		 You may remove the above condition for your local installation -->
+	<logic:present name="holdings">
+	<h3><bean:message key="availresult.singleHoldings" /></h3>
+		<table border="1" cellspacing="0" cellpadding="3">
+			<tr>
+				<th id="th-left"><bean:message key="availresult.library" /></td>
+				<th id="th-left"><bean:message key="impressum.contact" /></td>
+			</tr>
+			<logic:iterate id="hold" name="holdings">
+			<tr>
+				<td><bean:write name="hold" property="holding.konto.bibliotheksname" /></td>
+				<td><a href="mailto:<bean:write name="hold" property="holding.konto.bibliotheksmail" />"><bean:write name="hold" property="holding.konto.bibliotheksmail" /></a></td>
+			</tr>
+			</logic:iterate>
+		</table>		
+	<p>
+		<logic:notPresent name="orderform" property="bid">
+			<font color="white"><i><bean:message key="save.extern" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=bestellt&deloptions=email&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
+		</logic:notPresent>
+		<logic:present name="orderform" property="bid">
+			<font color="white"><i><bean:message key="save.extern" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
+		</logic:present>
+	</p>		
+	</logic:present>
+	</logic:equal>
+
 </logic:notEqual>
 </logic:present>
 
