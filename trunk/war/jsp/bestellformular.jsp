@@ -436,13 +436,19 @@
 				<td>
 					<bean:define id="tmp" name="orderform" property="radiobutton" type="java.lang.String"/>
 					<logic:present name="bestellparam" property="option_value1">
-						<input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value1" />" <logic:equal name="bestellparam" property="option_value1" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value1" />
+						<logic:notEqual name="bestellparam" property="option_value1" value="">
+							<input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value1" />" <logic:equal name="bestellparam" property="option_value1" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value1" />
+						</logic:notEqual>
 					</logic:present>
 					<logic:present name="bestellparam" property="option_value2">
-						<input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value2" />" <logic:equal name="bestellparam" property="option_value2" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value2" />
+						<logic:notEqual name="bestellparam" property="option_value2" value="">
+							<input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value2" />" <logic:equal name="bestellparam" property="option_value2" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value2" />
+						</logic:notEqual>
 					</logic:present>
 					<logic:present name="bestellparam" property="option_value3">
-						<input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value3" />" <logic:equal name="bestellparam" property="option_value3" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value3" />
+						<logic:notEqual name="bestellparam" property="option_value3" value="">
+							<input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value3" />" <logic:equal name="bestellparam" property="option_value3" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value3" />
+						</logic:notEqual>
 					</logic:present>
 				</td>
 			</tr>			
