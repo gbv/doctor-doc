@@ -32,10 +32,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import util.ThreadSafeSimpleDateFormat;
+
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Administrator;
 import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Bibliothekar;
+import ch.dbs.entity.Konto;
 
 public class TestBenutzer extends TestCase{
 
@@ -94,8 +97,13 @@ public class TestBenutzer extends TestCase{
 	public void testSaveBenutzer() throws SQLException{
 		//Benutzervalues vorbereiten
 		AbstractBenutzer u = this.setUserValues();
+		Konto tz = new Konto(); // we need this for setting a default timezone
+		Date d = new Date(); 
+		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datum = fmt.format(d, tz.getTimezone());
+        u.setDatum(datum);
 		assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getSingleConnection());
-		u.saveNewUser(u, u.getSingleConnection());
+		u.saveNewUser(u, tz, u.getSingleConnection());
 		u.close();
 	}
 	@Test
@@ -138,11 +146,12 @@ public class TestBenutzer extends TestCase{
 	public void testChangeBenutzer() throws SQLException{
 		//Benutzervalues vorbereiten
 		AbstractBenutzer b = new AbstractBenutzer();
+		Konto tz = new Konto(); // we need this for setting a default timezone
 		Connection cn = b.getSingleConnection();
 		b = b.getUserFromEmail(email, cn);
 		b.setName(name+"1");
 		b.setVorname(vorname + "1");
-		b.updateUser(b, cn);
+		b.updateUser(b, tz, cn);
 		b = b.getUserFromEmail(email, cn);
 		cn.close();
 		assertEquals(b.getVorname(),vorname+"1");
@@ -167,9 +176,14 @@ public class TestBenutzer extends TestCase{
 
 //		Benutzervalues vorbereiten
 		AbstractBenutzer u = this.setUserValues();
+		Konto tz = new Konto(); // we need this for setting a default timezone
+		Date d = new Date(); 
+		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datum = fmt.format(d, tz.getTimezone());
+        u.setDatum(datum);
 		assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getSingleConnection());
-		u.saveNewUser(u, u.getSingleConnection());		
-		u.saveNewUser(u, u.getSingleConnection());
+		u.saveNewUser(u, tz, u.getSingleConnection());		
+		u.saveNewUser(u, tz, u.getSingleConnection());
 
 		List <AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getSingleConnection());
 		assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!",2, abl.size());

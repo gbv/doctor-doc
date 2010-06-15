@@ -431,7 +431,7 @@ public class Auth {
             if (maxordersj == 0) check = true; // unlimitiert...
          
         // Orderlimits aktiv / maxordersj nicht unlimitiert & Limite noch nicht überschritten
-        if (check == false && b.allOrdersThisYearForKonto(ui.getKonto().getId(), cn) < maxordersj) check = true;
+        if (check == false && b.allOrdersThisYearForKonto(ui.getKonto(), cn) < maxordersj) check = true;
             
         }
         
@@ -456,7 +456,7 @@ public class Auth {
             if (maxordersutotal == 0) check = true; // unlimitiert...
          
         // Orderlimits aktiv / maxordersutotal nicht unbegrenzt & Limite noch nicht überschritten
-        if (check == false && b.countOrdersPerUser(uid, ui.getKonto().getId(), cn) < maxordersutotal) check = true;  
+        if (check == false && b.countOrdersPerUser(uid, ui.getKonto(), cn) < maxordersutotal) check = true;  
         
         }
         

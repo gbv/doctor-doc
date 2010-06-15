@@ -31,6 +31,7 @@ import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserInfo;
 
 import util.DBConn;
+import util.ReadSystemConfigurations;
 
 /**
  * Abstract base class for entities having a {@link Long} unique
@@ -49,6 +50,7 @@ public class Konto extends AbstractIdEntity {
     private String PLZ;
     private String Ort;
     private String Land;
+    private String timezone = ReadSystemConfigurations.getSystemTimezone();
     private String faxno; // DD-Faxservernummer, nur durch Admin editierbar!
     private String faxusername;
     private String faxpassword;
@@ -56,7 +58,7 @@ public class Konto extends AbstractIdEntity {
     private String fax_extern; // externe Faxnummer, editierbar durch Kunde
     private String Telefon;
     private String Bibliotheksmail; // Bibliothekskontakt
-    private String dbsmail; // Hier landen die bestellten Artikel
+    private String dbsmail; // This is the email that receives ILL deliveries
     private String dbsmailpw;
     private String gbvbenutzername;
     private String gbvpasswort;
@@ -100,6 +102,7 @@ public class Konto extends AbstractIdEntity {
 	    if (kf.getPLZ()!=null) this.PLZ = kf.getPLZ().trim();
 	    if (kf.getOrt()!=null) this.Ort = kf.getOrt().trim();
 	    if (kf.getLand()!=null) this.Land = kf.getLand();
+	    if (kf.getTimezone()!=null) this.timezone = kf.getTimezone();
 	    if (kf.getFaxno()!=null) this.faxno = kf.getFaxno(); // DD-Faxservernummer, nur durch Admin editierbar!
 	    if (kf.getFaxusername()!=null) this.faxusername = kf.getFaxusername();
 	    if (kf.getFaxpassword()!=null) this.faxpassword = kf.getFaxpassword();
@@ -107,7 +110,7 @@ public class Konto extends AbstractIdEntity {
 	    if (kf.getFax_extern()!=null) this.fax_extern = kf.getFax_extern().trim(); // externe Faxnummer, editierbar durch Kunde
 	    if (kf.getTelefon()!=null) this.Telefon = kf.getTelefon().trim();
 	    if (kf.getBibliotheksmail()!=null) this.Bibliotheksmail = kf.getBibliotheksmail().trim(); // Bibliothekskontakt
-	    if (kf.getDbsmail()!=null) this.dbsmail = kf.getDbsmail().trim(); // Hier landen die bestellten Artikel
+	    if (kf.getDbsmail()!=null) this.dbsmail = kf.getDbsmail().trim(); // This is the email that receives ILL deliveries
 	    if (kf.getDbsmailpw()!=null) this.dbsmailpw = kf.getDbsmailpw();
 	    this.gbvbenutzername = kf.getGbvbenutzername();
 	    this.gbvpasswort = kf.getGbvpasswort();
@@ -160,6 +163,7 @@ public class Konto extends AbstractIdEntity {
     		this.setOrt(rs.getString("ort"));
       }
       this.setLand(rs.getString("land"));
+      if (rs.getString("timezone")!=null) this.setTimezone(rs.getString("timezone"));
       this.setTelefon(rs.getString("telefon"));
       this.setFaxno(rs.getString("faxno"));
       this.setFaxusername(rs.getString("faxusername"));
@@ -167,7 +171,7 @@ public class Konto extends AbstractIdEntity {
       this.setPopfaxend(rs.getString("popfaxend"));
       this.setFax_extern(rs.getString("fax2"));
       this.setBibliotheksmail(rs.getString("bibliomail")); // Bibliothekskontakt
-      this.setDbsmail(rs.getString("dbsmail")); // Hier landen die bestellten Artikel
+      this.setDbsmail(rs.getString("dbsmail")); // This is the email that receives ILL deliveries
       this.setDbsmailpw(rs.getString("dbsmailpw"));
       this.setGbvbenutzername(rs.getString("gbvbn"));
       this.setGbvpasswort(rs.getString("gbvpw"));
@@ -285,10 +289,10 @@ public class Konto extends AbstractIdEntity {
 	  try {
 		  Konto kontoInstance = new Konto();
 	      pstmt = kontoInstance.setKontoValues(cn.prepareStatement( "INSERT INTO `konto` (`biblioname` , `isil` , " +
-	      "`adresse` , `adresszusatz` , `plz` , `ort` , `land` , `telefon` , `faxno` , `faxusername` , `faxpassword` , `popfaxend` , `fax2` , `bibliomail` , `dbsmail` , " +
+	      "`adresse` , `adresszusatz` , `plz` , `ort` , `land` , `timezone` , `telefon` , `faxno` , `faxusername` , `faxpassword` , `popfaxend` , `fax2` , `bibliomail` , `dbsmail` , " +
 	      "`dbsmailpw` , `gbvbn` , `gbvpw` , `gbv_requester_id` , `ezbid` , `zdb` , `billing` , `billingtype` , `accounting_rhythmvalue` , `accounting_rhythmday` , " +
 	      "`accounting_rhythmtimeout` , `billingschwellwert` , `maxordersu` ,`maxordersutotal`, `maxordersj` , `orderlimits` , `userlogin` , " +
-	      "`userbestellung` , `gbvbestellung` , `kontostatus` , `kontotyp` , `default_deloptions` , `paydate`, `expdate`,`edatum`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"), this);            
+	      "`userbestellung` , `gbvbestellung` , `kontostatus` , `kontotyp` , `default_deloptions` , `paydate`, `expdate`,`edatum`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"), this);            
 
 	      pstmt.executeUpdate();
 
@@ -329,7 +333,7 @@ public class Konto extends AbstractIdEntity {
 	  PreparedStatement pstmt = null;
 	  try {
           pstmt = setKontoValues(cn.prepareStatement( "UPDATE `konto` SET biblioname=?, isil=?, " +
-          "adresse=?, adresszusatz=?, plz=?, ort=?, land=?, telefon=?, faxno=?, faxusername=? , faxpassword=?, popfaxend=?, fax2=?, " +
+          "adresse=?, adresszusatz=?, plz=?, ort=?, land=?, timezone=?, telefon=?, faxno=?, faxusername=? , faxpassword=?, popfaxend=?, fax2=?, " +
           "bibliomail=?, dbsmail=?, dbsmailpw=?, gbvbn=?, gbvpw=?, gbv_requester_id=?, ezbid=?, zdb=?, billing=?, billingtype=?, accounting_rhythmvalue=?, " +
           "accounting_rhythmday=?, accounting_rhythmtimeout=?, billingschwellwert=?, maxordersu=?, maxordersutotal=?, " +
           "maxordersj=?, orderlimits=?, userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, default_deloptions=?, paydate=?, expdate=? " +
@@ -586,38 +590,39 @@ public class Konto extends AbstractIdEntity {
       if (k.getPLZ()!=null){pstmt.setString(5, k.getPLZ());} else {pstmt.setString(5, "");}
       if (k.getOrt()!=null){pstmt.setString(6, k.getOrt());} else {pstmt.setString(6, "");}
       if (k.getLand()!=null){pstmt.setString(7, k.getLand());} else {pstmt.setString(7, "");}
-      if (k.getTelefon()!=null){pstmt.setString(8, k.getTelefon());} else {pstmt.setString(8, "");}
-      if (k.getFaxno()!=null){pstmt.setString(9, k.getFaxno());} else {pstmt.setString(9, null);} // falls nicht vorhanden => Null belassen, wegen Anzeige in jsp!
-      if (k.getFaxusername()!=null){pstmt.setString(10, k.getFaxusername());} else {pstmt.setString(10, "");}
-      if (k.getFaxpassword()!=null){pstmt.setString(11, k.getFaxpassword());} else {pstmt.setString(11, "");} 
-      if (k.getPopfaxend()!=null){pstmt.setString(12, k.getPopfaxend());} else {pstmt.setString(12, null);}
-      if (k.getFax_extern()!=null && !k.getFax_extern().equals("")){pstmt.setString(13, k.getFax_extern());} else {pstmt.setString(13, null);}
-      if (k.getBibliotheksmail()!=null){pstmt.setString(14, k.getBibliotheksmail());} else {pstmt.setString(14, "");}
-      if (k.getDbsmail()!=null){pstmt.setString(15, k.getDbsmail());} else {pstmt.setString(15, "");}
-      if (k.getDbsmailpw()!=null){pstmt.setString(16, k.getDbsmailpw());} else {pstmt.setString(16, "");}
-      if (k.getGbvbenutzername()==null || k.getGbvbenutzername().equals("")){pstmt.setString(17, null);} else {pstmt.setString(17, k.getGbvbenutzername());}
-      if (k.getGbvpasswort()==null || k.getGbvpasswort().equals("")){pstmt.setString(18, null);} else {pstmt.setString(18, k.getGbvpasswort());}
-      if (k.getGbvrequesterid()==null || k.getGbvrequesterid().equals("")){pstmt.setString(19, null);} else {pstmt.setString(19, k.getGbvrequesterid());}
-      if (k.getEzbid()!=null){pstmt.setString(20, k.getEzbid());} else {pstmt.setString(20, "");}
-      if (k.isZdb()==false){pstmt.setString(21, "0");} else {pstmt.setString(21, "1");}
-      if (k.getBilling()!=null){pstmt.setString(22, k.getBilling().toString());} else {pstmt.setString(22, "");}
-      if (k.getBillingtype()!=null){pstmt.setString(23, k.getBillingtype().toString());} else {pstmt.setString(23, "");}        
-      if (k.getAccounting_rhythmvalue()==0){pstmt.setString(24, "0");} else {pstmt.setString(24, "1");}
-      if (k.getAccounting_rhythmday()==0){pstmt.setString(25, "0");} else {pstmt.setString(25, "1");}
-      if (k.getAccounting_rhythmtimeout()==0){pstmt.setString(26, "0");} else {pstmt.setString(26, "1");}
-      if (k.getThreshold_value()==0){pstmt.setString(27, "0");} else {pstmt.setString(27, "1");}
-      pstmt.setString(28, Integer.valueOf(k.getMaxordersu()).toString());
-      pstmt.setString(29, Integer.valueOf(k.getMaxordersutotal()).toString());
-      pstmt.setString(30, Integer.valueOf(k.getMaxordersj()).toString());
-      pstmt.setString(31, Integer.valueOf(k.getOrderlimits()).toString());
-      if (k.isUserlogin()==false){pstmt.setString(32, "0");} else {pstmt.setString(32, "1");}
-      if (k.isUserbestellung()==false){pstmt.setString(33, "0");} else {pstmt.setString(33, "1");}
-      if (k.isGbvbestellung()==false){pstmt.setString(34, "0");} else {pstmt.setString(34, "1");}
-      if (k.isKontostatus()==false){pstmt.setString(35, "0");} else {pstmt.setString(35, "1");}
-      pstmt.setString(36, Integer.valueOf(k.getKontotyp()).toString());
-      pstmt.setString(37, k.getDefault_deloptions());
-      if (k.getPaydate() !=null) pstmt.setDate(38, k.getPaydate());  else pstmt.setDate(38, null);
-      if (k.getExpdate() !=null) pstmt.setDate(39, k.getExpdate());  else pstmt.setDate(39, null);
+      if (k.getTimezone()!=null){pstmt.setString(8, k.getTimezone());} else {pstmt.setString(8, ReadSystemConfigurations.getSystemTimezone());}
+      if (k.getTelefon()!=null){pstmt.setString(9, k.getTelefon());} else {pstmt.setString(9, "");}
+      if (k.getFaxno()!=null){pstmt.setString(10, k.getFaxno());} else {pstmt.setString(10, null);} // falls nicht vorhanden => Null belassen, wegen Anzeige in jsp!
+      if (k.getFaxusername()!=null){pstmt.setString(11, k.getFaxusername());} else {pstmt.setString(11, "");}
+      if (k.getFaxpassword()!=null){pstmt.setString(12, k.getFaxpassword());} else {pstmt.setString(12, "");} 
+      if (k.getPopfaxend()!=null){pstmt.setString(13, k.getPopfaxend());} else {pstmt.setString(13, null);}
+      if (k.getFax_extern()!=null && !k.getFax_extern().equals("")){pstmt.setString(14, k.getFax_extern());} else {pstmt.setString(14, null);}
+      if (k.getBibliotheksmail()!=null){pstmt.setString(15, k.getBibliotheksmail());} else {pstmt.setString(15, "");}
+      if (k.getDbsmail()!=null){pstmt.setString(16, k.getDbsmail());} else {pstmt.setString(16, "");}
+      if (k.getDbsmailpw()!=null){pstmt.setString(17, k.getDbsmailpw());} else {pstmt.setString(17, "");}
+      if (k.getGbvbenutzername()==null || k.getGbvbenutzername().equals("")){pstmt.setString(18, null);} else {pstmt.setString(18, k.getGbvbenutzername());}
+      if (k.getGbvpasswort()==null || k.getGbvpasswort().equals("")){pstmt.setString(19, null);} else {pstmt.setString(19, k.getGbvpasswort());}
+      if (k.getGbvrequesterid()==null || k.getGbvrequesterid().equals("")){pstmt.setString(20, null);} else {pstmt.setString(20, k.getGbvrequesterid());}
+      if (k.getEzbid()!=null){pstmt.setString(21, k.getEzbid());} else {pstmt.setString(21, "");}
+      if (k.isZdb()==false){pstmt.setString(22, "0");} else {pstmt.setString(22, "1");}
+      if (k.getBilling()!=null){pstmt.setString(23, k.getBilling().toString());} else {pstmt.setString(23, "");}
+      if (k.getBillingtype()!=null){pstmt.setString(24, k.getBillingtype().toString());} else {pstmt.setString(24, "");}        
+      if (k.getAccounting_rhythmvalue()==0){pstmt.setString(25, "0");} else {pstmt.setString(25, "1");}
+      if (k.getAccounting_rhythmday()==0){pstmt.setString(26, "0");} else {pstmt.setString(26, "1");}
+      if (k.getAccounting_rhythmtimeout()==0){pstmt.setString(27, "0");} else {pstmt.setString(27, "1");}
+      if (k.getThreshold_value()==0){pstmt.setString(28, "0");} else {pstmt.setString(28, "1");}
+      pstmt.setString(29, Integer.valueOf(k.getMaxordersu()).toString());
+      pstmt.setString(30, Integer.valueOf(k.getMaxordersutotal()).toString());
+      pstmt.setString(31, Integer.valueOf(k.getMaxordersj()).toString());
+      pstmt.setString(32, Integer.valueOf(k.getOrderlimits()).toString());
+      if (k.isUserlogin()==false){pstmt.setString(33, "0");} else {pstmt.setString(33, "1");}
+      if (k.isUserbestellung()==false){pstmt.setString(34, "0");} else {pstmt.setString(34, "1");}
+      if (k.isGbvbestellung()==false){pstmt.setString(35, "0");} else {pstmt.setString(35, "1");}
+      if (k.isKontostatus()==false){pstmt.setString(36, "0");} else {pstmt.setString(36, "1");}
+      pstmt.setString(37, Integer.valueOf(k.getKontotyp()).toString());
+      pstmt.setString(38, k.getDefault_deloptions());
+      if (k.getPaydate() !=null) pstmt.setDate(39, k.getPaydate());  else pstmt.setDate(39, null);
+      if (k.getExpdate() !=null) pstmt.setDate(40, k.getExpdate());  else pstmt.setDate(40, null);
       return pstmt;
   }
 
@@ -690,81 +695,37 @@ public void setAccounting_rhythmvalue(int accounting_rhythmvalue) {
     this.accounting_rhythmvalue = accounting_rhythmvalue;
 }
 
-
-
-/**
- * @return Returns the adresse.
- */
 public String getAdresse() {
     return Adresse;
 }
 
-
-
-/**
- * @param adresse The adresse to set.
- */
 public void setAdresse(String adresse) {
     Adresse = adresse;
 }
 
-
-
-/**
- * @return Returns the adressenzusatz.
- */
 public String getAdressenzusatz() {
     return Adressenzusatz;
 }
 
-
-
-/**
- * @param adressenzusatz The adressenzusatz to set.
- */
 public void setAdressenzusatz(String adressenzusatz) {
     Adressenzusatz = adressenzusatz;
 }
 
-
-
-/**
- * Bibliothekskontakt
- * @return Returns the bibliotheksmail.
- */
 public String getBibliotheksmail() {
     return Bibliotheksmail;
 }
 
-
-
-/**
- * Bibliothekskontakt
- * @param bibliotheksmail The bibliotheksmail to set.
- */
 public void setBibliotheksmail(String bibliotheksmail) {
     Bibliotheksmail = bibliotheksmail;
 }
 
-
-
-/**
- * @return Returns the bibliotheksname.
- */
 public String getBibliotheksname() {
     return bibliotheksname;
 }
 
-
-
-/**
- * @param bibliotheksname The bibliotheksname to set.
- */
 public void setBibliotheksname(String bibname) {
     bibliotheksname = bibname;
 }
-
-
 
 /**
  * Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den Wert welcher beim User hinterlegt ist berschrieben werden.
@@ -774,8 +735,6 @@ public Text getBilling() {
     return billing;
 }
 
-
-
 /**
  * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle Text mit dem Texttyp Billingtype
  * @param billing The billing to set.
@@ -783,8 +742,6 @@ public Text getBilling() {
 public void setBilling(Text billing) {
     this.billing = billing;
 }
-
-
 
 /**
  * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle Text mit dem Texttyp Billingtype
@@ -794,68 +751,38 @@ public Text getBillingtype() {
     return billingtype;
 }
 
-
-
-/**
- * @param billingtype The billingtype to set.
- */
 public void setBillingtype(Text billingtype) {
     this.billingtype = billingtype;
 }
 
-
-
 /**
- * Hier landen die bestellten Artikel
+ * This is the email that receives ILL deliveries
  * @return Returns the dbsmail.
  */
 public String getDbsmail() {
     return dbsmail;
 }
 
-
-
 /**
- * Hier landen die bestellten Artikel
+ * This is the email that receives ILL deliveries
  * @param dbsmail The dbsmail to set.
  */
 public void setDbsmail(String dbsmail) {
     this.dbsmail = dbsmail;
 }
 
-
-
-/**
- * 
- * @return Returns the dbsmailpw.
- */
 public String getDbsmailpw() {
     return dbsmailpw;
 }
 
-
-
-/**
- * @param dbsmailpw The dbsmailpw to set.
- */
 public void setDbsmailpw(String dbsmailpw) {
     this.dbsmailpw = dbsmailpw;
 }
 
-
-
-/**
- * @return Returns the edatum.
- */
 public Date getEdatum() {
     return edatum;
 }
 
-
-
-/**
- * @param edatum The edatum to set.
- */
 public void setEdatum(Date edatum) {
     this.edatum = edatum;
 }
@@ -865,11 +792,9 @@ public boolean isKontostatus() {
 }
 
 
-
 public void setKontostatus(boolean kontostatus) {
 	this.kontostatus = kontostatus;
 }
-
 
 public String getDefault_deloptions() {
 	return default_deloptions;
@@ -883,43 +808,33 @@ public String getGtc() {
 	return gtc;
 }
 
-
-
 public void setGtc(String gtc) {
 	this.gtc = gtc;
 }
-
-
 
 public String getGtcdate() {
 	return gtcdate;
 }
 
-
-
 public void setGtcdate(String gtcdate) {
 	this.gtcdate = gtcdate;
 }
 
-
-
-/**
- * @return Returns the land.
- */
 public String getLand() {
     return Land;
 }
 
-
-
-/**
- * @param land The land to set.
- */
 public void setLand(String land) {
     Land = land;
 }
 
+public String getTimezone() {
+	return timezone;
+}
 
+public void setTimezone(String timezone) {
+	this.timezone = timezone;
+}
 
 /**
  * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
@@ -929,8 +844,6 @@ public int getMaxordersj() {
     return maxordersj;
 }
 
-
-
 /**
  * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
  * @param maxordersj The maxordersj to set.
@@ -938,8 +851,6 @@ public int getMaxordersj() {
 public void setMaxordersj(int maxordersj) {
     this.maxordersj = maxordersj;
 }
-
-
 
 /**
  * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
@@ -949,8 +860,6 @@ public int getMaxordersu() {
     return maxordersu;
 }
 
-
-
 /**
  * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
  * @param maxordersu The maxordersu to set.
@@ -958,8 +867,6 @@ public int getMaxordersu() {
 public void setMaxordersu(int maxordersu) {
     this.maxordersu = maxordersu;
 }
-
-
 
 /**
  * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
@@ -969,8 +876,6 @@ public int getMaxordersutotal() {
     return maxordersutotal;
 }
 
-
-
 /**
  * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
  * @param maxordersutotal The maxordersutotal to set.
@@ -979,56 +884,26 @@ public void setMaxordersutotal(int maxordersutotal) {
     this.maxordersutotal = maxordersutotal;
 }
 
-
-
-/**
- * @return Returns the orderlimits.
- */
 public int getOrderlimits() {
     return orderlimits;
 }
 
-
-
-/**
- * @param orderlimits The orderlimits to set.
- */
 public void setOrderlimits(int orderlimits) {
     this.orderlimits = orderlimits;
 }
 
-
-
-/**
- * @return Returns the ort.
- */
 public String getOrt() {
     return Ort;
 }
 
-
-
-/**
- * @param ort The ort to set.
- */
 public void setOrt(String ort) {
     Ort = ort;
 }
 
-
-
-/**
- * @return Returns the pLZ.
- */
 public String getPLZ() {
     return PLZ;
 }
 
-
-
-/**
- * @param plz The pLZ to set.
- */
 public void setPLZ(String plz) {
     PLZ = plz;
 }
@@ -1075,8 +950,6 @@ public int getThreshold_value() {
     return threshold_value;
 }
 
-
-
 /**
  * Verrechnungsschwellwert Sammelrechnungen in Tagen
  * @param threshold_value The threshold_value to set.
@@ -1085,15 +958,12 @@ public void setThreshold_value(int threshold_value) {
     this.threshold_value = threshold_value;
 }
 
-
-
 /**
  * @return Returns the userbestellung.
  */
 public boolean isUserbestellung() {
     return userbestellung;
 }
-
 
 /**
  * @param userbestellung The userbestellung to set.
@@ -1111,41 +981,25 @@ public void setGbvbestellung(boolean gbvbestellung) {
 	this.gbvbestellung = gbvbestellung;
 }
 
-/**
- * @return Returns the userlogin.
- */
 public boolean isUserlogin() {
     return userlogin;
 }
 
-
-
-/**
- * @param userlogin The userlogin to set.
- */
 public void setUserlogin(boolean userlogin) {
     this.userlogin = userlogin;
 }
-
-
 
 public boolean isSelected() {
 	return selected;
 }
 
-
-
 public void setSelected(boolean selected) {
 	this.selected = selected;
 }
 
-
-
 public String getTelefon() {
     return Telefon;
 }
-
-
 
 public void setTelefon(String telefon) {
     Telefon = telefon;
@@ -1156,8 +1010,6 @@ public String getFaxno() {
 	return faxno;
 }
 
-
-
 public void setFaxno(String faxno) {
 	this.faxno = faxno;
 }
@@ -1165,7 +1017,6 @@ public void setFaxno(String faxno) {
 public String getFaxpassword() {
 	return faxpassword;
 }
-
 
 public void setFaxpassword(String faxpassword) {
 	this.faxpassword = faxpassword;
@@ -1187,7 +1038,6 @@ public void setFaxusername(String faxusername) {
 	this.faxusername = faxusername;
 }
 
-
 public String getFax_extern() {
 	return fax_extern;
 }
@@ -1199,8 +1049,6 @@ public void setFax_extern(String fax_extern) {
 public int getKontotyp() {
 	return kontotyp;
 }
-
-
 
 public void setKontotyp(int kontotyp) {
 	this.kontotyp = kontotyp;

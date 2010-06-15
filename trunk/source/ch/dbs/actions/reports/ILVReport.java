@@ -124,13 +124,13 @@ public final class ILVReport extends DispatchAction {
 				Konto k = (Konto) r.simplyGettterSetterMethods(ui.getKonto());
 				
 				ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
-			    tf.setTimeZone(TimeZone.getTimeZone(ThreadSafeSimpleDateFormat.getTIMEZONE()));
+			    tf.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
 				Calendar cal = new GregorianCalendar();
-	        	cal.setTimeZone(TimeZone.getTimeZone(ThreadSafeSimpleDateFormat.getTIMEZONE()));
+	        	cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
 	        	
 				// Labels vorbereiten
 				ConcurrentHashMap<String, String> values = new ConcurrentHashMap<String, String>();
-				values.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime()));
+				values.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
 				values.put("labelfrom", ilvf.getLabelfrom());
 				values.put("labelto", ilvf.getLabelto());
 				values.put("labeljournaltitel", ilvf.getLabeljournaltitel());

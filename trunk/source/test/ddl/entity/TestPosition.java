@@ -18,6 +18,8 @@
 package test.ddl.entity;
 
 
+import java.util.Date;
+
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -25,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.PrepareTestObjects;
+import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.*;
 import ch.ddl.entity.Position;
 
@@ -56,7 +59,13 @@ public class TestPosition extends TestCase{
 	@Test //@BeforeClass funzt nicht
 	public void testSetUp() {
 		AbstractBenutzer b = new AbstractBenutzer();
-		b.saveNewUser(PrepareTestObjects.getBibliothekar(), k.getSingleConnection());
+		Konto tz = new Konto(); // we need this for setting a default timezone
+		Date d = new Date(); 
+		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datum = fmt.format(d, tz.getTimezone());
+        b = PrepareTestObjects.getBibliothekar();
+        b.setDatum(datum);
+		b.saveNewUser(b, tz, k.getSingleConnection());
 		k.close();		
 	}
 	

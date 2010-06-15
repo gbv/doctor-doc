@@ -26,6 +26,10 @@ package util;
  */
 public class ReadSystemConfigurations {
 	
+	public final static String getSystemTimezone() {
+		return AbstractReadSystemConfigurations.SYSTEM_TIMEZONE;
+	}
+	
 	public final static String getSystemEmail() {
 		return AbstractReadSystemConfigurations.SYSTEM_EMAIL;
 	}

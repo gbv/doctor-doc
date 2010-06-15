@@ -26,6 +26,7 @@ import java.util.Date;
 import org.grlea.log.SimpleLogger;
 
 import util.DBConn;
+import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 
 
@@ -116,7 +117,7 @@ public class Fax extends AbstractIdEntity {
           
           Date d = new Date(); // aktuelles Datum setzen
           ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-          String datum = fmt.format(d);
+          String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
           pstmt.setString(7, datum);
 
           pstmt.executeUpdate();
@@ -149,7 +150,7 @@ public class Fax extends AbstractIdEntity {
       	
       	Date d = new Date();
           ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-          String datum = sdf.format(d);
+          String datum = sdf.format(d, ReadSystemConfigurations.getSystemTimezone());
 
           pstmt.setString(3, datum);
 

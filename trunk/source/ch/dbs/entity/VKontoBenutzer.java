@@ -199,7 +199,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
             pstmt = b.setUserValues(cn.prepareStatement( "SELECT * FROM `benutzer` WHERE " +
             "`institut` = ? AND `abteilung` = ? AND `anrede` = ? AND `vorname` = ? AND `name` = ? AND `adr` = ? AND`adrzus` = ? AND" +
             "`telp` = ? AND `telg` = ? AND `plz` = ? AND `ort` = ? AND `land` = ? AND `mail` = ? AND `pw` = ? AND`loginopt` = ? AND " +
-            "`userbestellung` = ? AND `gbvbestellung` = ? AND `billing` = ? AND `kontoval` = ? AND `kontostatus` = ? AND `rechte` = ? AND `gtc` = ? AND `gtcdate` = ? AND `lastuse` = ?"), b, cn); 
+            "`userbestellung` = ? AND `gbvbestellung` = ? AND `billing` = ? AND `kontoval` = ? AND `kontostatus` = ? AND `rechte` = ? AND `gtc` = ? AND `gtcdate` = ? AND `lastuse` = ?"), b, k, cn); 
 
             rs = pstmt.executeQuery();
             while (rs.next()) {

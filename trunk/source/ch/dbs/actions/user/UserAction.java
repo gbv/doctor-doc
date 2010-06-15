@@ -131,7 +131,7 @@ public final class UserAction extends DispatchAction {
         	// wird auch für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
             of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui.getKonto().getId(), cn.getConnection()));
             
-            of = check.checkDateRegion(of, 1); // angegebener Zeitraum prüfen, resp. Defaultbereich von 1 Monat zusammenstellen
+            of = check.checkDateRegion(of, 1, ui.getKonto().getTimezone()); // angegebener Zeitraum prüfen, resp. Defaultbereich von 1 Monat zusammenstellen
             of = check.checkSortOrderValues(of); // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
             of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of); //Check, damit nur gültige Sortierkriterien daherkommen
             of = check.checkOrdersSortCriterias(of); // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
@@ -160,7 +160,7 @@ public final class UserAction extends DispatchAction {
             // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
             Date d = new Date(); // aktuelles Datum setzen
             ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-            String datum = fmt.format(d);
+            String datum = fmt.format(d, ui.getKonto().getTimezone());
             int year_now = Integer.parseInt(datum);
             int year_start = 2007;
             
@@ -216,7 +216,7 @@ public final class UserAction extends DispatchAction {
             	Text status = new Text(t.getConnection(), of.getTid());
             	Bestellungen b = new Bestellungen(t.getConnection(), of.getBid());
             	if (b!=null && status!=null){
-            		orderstate.changeOrderState(b, status, null, ui.getBenutzer().getEmail(), t.getConnection());  
+            		orderstate.changeOrderState(b, ui.getKonto().getTimezone(), status, null, ui.getBenutzer().getEmail(), t.getConnection());  
             		forward = "success";
                 	rq.setAttribute("overviewform", of);
             	}
@@ -362,7 +362,7 @@ public final class UserAction extends DispatchAction {
         mf.setActivemenu("login");
         
         Auth auth = new Auth();
-        
+        Text cn = new Text();        
     	
     	//	Ueberprüfung ob Auswahl aus LoginForm tatsächlich authorisierte Benutzer sind
     	for (UserInfo authlist: authuserlist.getUserinfolist()){
@@ -372,15 +372,14 @@ public final class UserAction extends DispatchAction {
     			ui.setBenutzer(authlist.getBenutzer());
     			ui.setKontos(authlist.getKontos());
     			rq.getSession().setAttribute("userinfo", ui);
+    			
     			//Bei nur einem Konto dieses gleich setzen
     			if (ui.getKontos().size()==1){
     				ui.setKonto(ui.getKontos().get(0));
-    				
-    				Text cn = new Text();
     				// Last-Login Datum beim Benutzer hinterlegen
     	        	AbstractBenutzer u = new AbstractBenutzer();
     	        	u = ui.getBenutzer();
-    	        	u.updateLastuse(u, cn.getConnection());   				
+    	        	u.updateLastuse(u, ui.getKonto(), cn.getConnection());   				
     				
     				Gtc g = new Gtc();
     				if (g.isAccepted(ui.getBenutzer(), cn.getConnection())){
@@ -392,10 +391,16 @@ public final class UserAction extends DispatchAction {
     			}
     			//Falls Benutzer unter mehreren Kontos arbeiten darf weiterleitung zur Kontoauswahl
     			if (ui.getKontos().size()>1){
+    				// Last-Login Datum beim Benutzer hinterlegen
+    	        	AbstractBenutzer u = new AbstractBenutzer();
+    	        	u = ui.getBenutzer();
+    	        	u.updateLastuse(u, ui.getKontos().get(0), cn.getConnection());
     				forward = "kontochoose";
     			}
     		}
     	}
+    	
+    	cn.close();
     	
     	// Fehlermeldung bereitstellen falls mittels URL-Hacking versucht wurde zu manipulieren
     	if (forward.equals("failure")){
@@ -610,7 +615,8 @@ public final class UserAction extends DispatchAction {
 				// Passwort codieren und in DB speichern
 				Encrypt e = new Encrypt();
 				u.setPassword(e.makeSHA(pw));
-				u.updateUser(u, cn.getConnection());
+				Konto tz = new Konto(); // we need this for setting a default timezone
+				u.updateUser(u, tz, cn.getConnection());
 				// Benutzer per Mail das neue Passwort mitteilen
 				String[] recipients = new String[1];
 				recipients[0] = u.getEmail();
@@ -697,6 +703,7 @@ public final class UserAction extends DispatchAction {
         VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
         
         if (auth.isLogin(rq)) {
+        	UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
         	UserForm uf = (UserForm)fm;
         	
@@ -747,9 +754,13 @@ public final class UserAction extends DispatchAction {
                 u.setGtcdate(uf.getGtcdate());
                 if (uf.getBid()!=null){
                 	u.setId(uf.getBid());
-                	u.updateUser(u, cn.getConnection());
+                	u.updateUser(u, ui.getKonto(), cn.getConnection());
                 } else {
-                	uf.setBid(u.saveNewUser(u, cn.getConnection()));
+                	Date d = new Date(); 
+            		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String datum = fmt.format(d, ui.getKonto().getTimezone());
+                    u.setDatum(datum);
+                	uf.setBid(u.saveNewUser(u, ui.getKonto(), cn.getConnection()));
                 }
 
                 if (u.getId()!=null) vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection());
@@ -883,13 +894,14 @@ public final class UserAction extends DispatchAction {
             ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("uebersicht");
             rq.setAttribute("ActiveMenus", mf);
-
-            of = checkDateRegion(of, 3); // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
+            
+            Check check = new Check();
+            of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone()); // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
 
             // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
             Date d = new Date(); // aktuelles Datum setzen
             ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-            String datum = fmt.format(d);
+            String datum = fmt.format(d, ui.getKonto().getTimezone());
             int year_now = Integer.parseInt(datum);
             int year_start = 2007;
             
@@ -962,7 +974,7 @@ public final class UserAction extends DispatchAction {
          // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
             of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui.getKonto().getId(), cn.getConnection()));
 
-            of = check.checkDateRegion(of, 3); // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
+            of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone()); // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
             of = check.checkSortOrderValues(of); // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
             of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of); //Check, damit nur gültige Sortierkriterien daherkommen
             of = check.checkOrdersSortCriterias(of); // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
@@ -970,7 +982,7 @@ public final class UserAction extends DispatchAction {
             // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
             Date d = new Date(); // aktuelles Datum setzen
             ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-            String datum = fmt.format(d);
+            String datum = fmt.format(d, ui.getKonto().getTimezone());
             int year_now = Integer.parseInt(datum);
             int year_start = 2007;
             
@@ -1124,7 +1136,7 @@ public final class UserAction extends DispatchAction {
     			composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("vorname") ||
     			composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("mail") || 
     			composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("systembemerkung")) {
-    			if (checkAnonymize(date_from)) {
+    			if (checkAnonymize(date_from, k.getTimezone())) {
     				stop = true;
     				pstmt = null;
     			}
@@ -1444,14 +1456,14 @@ public final class UserAction extends DispatchAction {
      * @param Strinf date_from
      * @return true/false
      */
-	public boolean checkAnonymize(String date_from){ 
+	public boolean checkAnonymize(String date_from, String timezone){ 
 		boolean check = false;
 		
 		if (date_from!=null && ReadSystemConfigurations.isAnonymizationActivated()) {
 		Bestellungen b = new Bestellungen();
 		Calendar cal = b.stringFromMysqlToCal(date_from);
 		Calendar limit = Calendar.getInstance();
-		limit.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+		limit.setTimeZone(TimeZone.getTimeZone(timezone));
 		limit.add(Calendar.MONTH, -ReadSystemConfigurations.getAnonymizationAfterMonths());
 		limit.add(Calendar.DAY_OF_MONTH, -1);
 		if (cal.before(limit)) {
@@ -1460,19 +1472,7 @@ public final class UserAction extends DispatchAction {
 		}
         	
 		return check;
-	}
-	
-
-	/**
-	 * Prüft Datumseingaben und stellt ggf. einen gültigen Datumsbereich von x Wochen zusammen
-	 */
-	public OverviewForm checkDateRegion(OverviewForm of, int x) {
-		
-        Check check = new Check();
-        of = check.checkDateRegion(of, x);        
-        
-        return of;
-    }  
+	} 
 	
 	/**
 	 * stellt ein SearchForm zusammen

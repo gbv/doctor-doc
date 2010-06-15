@@ -59,7 +59,7 @@ public final class KontoAdmin  {
     	// Datumsformatierung vorbereiten
 		SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd"); // Datumsformatierung für Vergleich
 		SimpleDateFormat expdateformater = new SimpleDateFormat("dd.MM.yyyy");	// Datumsformatierung für Mailtext
-		Calendar cal = new GregorianCalendar( TimeZone.getTimeZone("Europe/Berlin") );
+		Calendar cal = new GregorianCalendar( TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()) );
 	    
 		// Delta 2 Monate zu aktuellem Monat ausrechnen
 	    cal.add(Calendar.MONTH, +2);
@@ -68,21 +68,21 @@ public final class KontoAdmin  {
 	    String lastpaydate2month = expdateformater.format(cal.getTime()); //Letzte Zahlungsmöglichkeit
 	    
 	    // Delta 1 Monat ausrechnen
-	    cal = new GregorianCalendar( TimeZone.getTimeZone("Europe/Berlin") );	   //ECT 
+	    cal = new GregorianCalendar( TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()) );
 	    cal.add(Calendar.MONTH, +1);
 	    String expdatemysql1month = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
 	    cal.add(Calendar.DAY_OF_MONTH, -14);
 	    String lastpaydate1month = expdateformater.format(cal.getTime()); // Letzte Zahlungsmöglichkeit
 	    
 	    // 10 Tage vor Kontoablauf ausrechnen (Hinweis, dass es zu Unterbruch kommen kann)
-		cal = new GregorianCalendar( TimeZone.getTimeZone("Europe/Berlin") );	   //ECT 
+		cal = new GregorianCalendar( TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()) ); 
 	    cal.add(Calendar.DAY_OF_MONTH, +10);
 	    String warningdatemysql = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
 	    cal.add(Calendar.DAY_OF_MONTH, -14);
 	    String warninglastpaydate = expdateformater.format(cal.getTime()); // Letzte Zahlungsmöglichkeit vorbei am
 	    
 	    // Abgelaufenen Kontos deaktivieren !!CronJob Muss ca 10:30 laufen  (cal.add(Calendar.DAY_OF_MONTH, -1); geht nicht, sonst wird eine neue Rechnung erstellt!!
-	    cal = new GregorianCalendar( TimeZone.getTimeZone("ECT") );	   //ECT 
+	    cal = new GregorianCalendar( TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()) ); 
 //	    cal.add(Calendar.DAY_OF_MONTH, -1);
 	    String expire = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
     	

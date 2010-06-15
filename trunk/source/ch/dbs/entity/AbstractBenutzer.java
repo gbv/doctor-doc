@@ -657,21 +657,18 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * 
      * @param AbstractBenutzer u 
      */
-    public Long saveNewUser(AbstractBenutzer u, Connection cn){
+    public Long saveNewUser(AbstractBenutzer u, Konto k, Connection cn){
     	
     	Long uid=null;
                 
         PreparedStatement pstmt = null;
-        PreparedStatement session_timezone = null;
         ResultSet rs = null;
     	try {
-        	session_timezone = cn.prepareStatement("SET SESSION time_zone = '+0:00'");
-        	session_timezone.executeUpdate();
             pstmt = setUserValues(cn.prepareStatement( "INSERT INTO `benutzer` (`institut` , " +
                     "`abteilung` , `anrede` , `vorname` , `name` , `adr` , `adrzus` , `telp` , `telg` , `plz` , " +
                     "`ort` , `land` , `mail` , `pw` , `loginopt` , `userbestellung` , `gbvbestellung` , `billing` , `kontoval` , " +
-                    "`kontostatus` , `rechte` , `datum` , `gtc` , `gtcdate`, `lastuse`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CONVERT_TZ(NOW(), @@session.time_zone, '+2:00'), ?, ?,?)"), u, cn);            
-            
+                    "`kontostatus` , `rechte` , `gtc` , `gtcdate`, `lastuse` , `datum`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), u, k, cn);            
+            pstmt.setString(25, u.getDatum());
             pstmt.executeUpdate();
             
 //          ID des gerade gespeicherten Benutzers ermitteln und hinterlegen
@@ -697,13 +694,6 @@ public class AbstractBenutzer extends AbstractIdEntity {
         			log.error("saveNewUser(): " + e.toString());
         		}
         	}
-        	if (session_timezone != null) {
-        		try {
-        			session_timezone.close();
-        		} catch (SQLException e) {
-        			log.error("saveNewUser(): " + e.toString());
-        		}
-        	}
         }
         
         return uid;
@@ -714,7 +704,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * 
      * @param AbstractBenutzer u
      */
-    public void updateUser(AbstractBenutzer u, Connection cn){
+    public void updateUser(AbstractBenutzer u, Konto k, Connection cn){
         
         PreparedStatement pstmt = null;
     	try {
@@ -722,7 +712,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
                     "`institut` = ?, `abteilung` = ?, `anrede` = ?, `vorname` = ?, `name` = ?, `adr` = ?,`adrzus` = ?," +
                     "`telp` = ?, `telg` = ?, `plz` = ?, `ort` = ?, `land` = ?, `mail` = ?, `pw` = ?,`loginopt` = ?, " +
                     "`userbestellung` = ?, `gbvbestellung` = ?, `billing` = ?, `kontoval` = ?, `kontostatus` = ?, `rechte` = ?, `gtc` = ?, " +
-                    "`gtcdate` = ?, `lastuse` = ? WHERE `UID` =?"), u, cn);           
+                    "`gtcdate` = ?, `lastuse` = ? WHERE `UID` =?"), u, k, cn);           
             pstmt.setLong(25, u.getId());
             pstmt.executeUpdate();
             
@@ -742,11 +732,11 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
 	 * setzt das Lastuse-Datum bei einem AbstractBenutzer
 	 */
-	public void updateLastuse(AbstractBenutzer u, Connection cn) {		
+	public void updateLastuse(AbstractBenutzer u, Konto k, Connection cn) {		
     	Calendar cal = new GregorianCalendar();
-    	cal.setTimeZone(TimeZone.getTimeZone(ThreadSafeSimpleDateFormat.getTIMEZONE()));
+    	cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
     	u.setLastuse(cal.getTime());
-    	u.updateUser(u, cn);		
+    	u.updateUser(u, k, cn);		
 	} 
     
     /**
@@ -786,7 +776,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * Setzt die Werte im Preparestatement der Methoden updateUser() sowie saveNewUser()
      * Funktionniert auch für Bibliothekare sowie Administratoren
      */
-    public PreparedStatement setUserValues(PreparedStatement pstmt, AbstractBenutzer u, Connection cn) throws Exception{
+    public PreparedStatement setUserValues(PreparedStatement pstmt, AbstractBenutzer u, Konto k, Connection cn) throws Exception{
         String berechtigung = "";
         String userBestellung = "0";
         String gbvBestellung = "0";
@@ -852,7 +842,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         if (u.getGtc()!=null) {pstmt.setString(22, u.getGtc());} else {pstmt.setString(22, "");}
         if (u.getGtcdate()==null || u.getGtcdate().equals("")){pstmt.setString(23, "0000-00-00 00:00:00");} else {pstmt.setString(23, u.getGtcdate());}
         ThreadSafeSimpleDateFormat formater = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");        
-        if (u.getLastuse()==null) pstmt.setString(24, "0000-00-00 00:00:00"); else pstmt.setString(24, formater.format(u.getLastuse()));
+        if (u.getLastuse()==null) pstmt.setString(24, "0000-00-00 00:00:00"); else pstmt.setString(24, formater.format(u.getLastuse(), k.getTimezone()));
         
         return pstmt;
     }

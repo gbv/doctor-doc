@@ -122,7 +122,7 @@ public class Check {
      * @param of
      * @return
      */
-    public OverviewForm checkDateRegion(OverviewForm of, int x) {
+    public OverviewForm checkDateRegion(OverviewForm of, int x, String defaultTimezone) {
 
 		//Längen Sicherstellen
 		if (this.isExactLength(of.getYfrom(), 4) && this.isExactLength(of.getYto(), 4) && 
@@ -166,9 +166,9 @@ public class Check {
 				of.getDfrom() == null || of.getDto() == null) {
 
 			Calendar cal_to = Calendar.getInstance();
-			cal_to.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+			cal_to.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
 			Calendar cal_from = Calendar.getInstance();
-			cal_from.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+			cal_from.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
 			cal_from.add(Calendar.MONTH, -x); // bessere Verständlichkeit wenn Monatsbereiche vorliegen...
 
 			of.setYfrom(new SimpleDateFormat("yyyy").format(cal_from.getTime()));

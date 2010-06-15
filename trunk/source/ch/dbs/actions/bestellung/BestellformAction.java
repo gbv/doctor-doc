@@ -393,9 +393,13 @@ public final class BestellformAction extends DispatchAction {
 				of.setForuser(u.getId().toString());  // Preselection of user for saving an order through the getMethod in the email (depreceated)
 			} else if (saveOrder) {
 			// save as new user
+				Date d = new Date(); 
+				ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		        String datum = fmt.format(d, k.getTimezone());
+		        u.setDatum(datum);
 				u = new AbstractBenutzer(of);
 				if (u.getLand()==null || u.getLand().equals("0")) u.setLand(k.getLand()); // use same value as library, if not specified
-				u.setId(u.saveNewUser(u, cn.getConnection()));
+				u.setId(u.saveNewUser(u, k, cn.getConnection()));
 				VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 				vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
                 of.setForuser(u.getId().toString());
@@ -415,7 +419,7 @@ public final class BestellformAction extends DispatchAction {
     			
     			Text state = new Text(cn.getConnection(), "zu bestellen");
     			OrderState orderstate = new OrderState();
-                orderstate.setNewOrderState(b, state, null, u.getEmail(), cn.getConnection());
+                orderstate.setNewOrderState(b, k, state, null, u.getEmail(), cn.getConnection());
 			}
 			
 			forward = "success";
@@ -423,7 +427,7 @@ public final class BestellformAction extends DispatchAction {
         	// set current date
             Date d = new Date();
             ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-            String date = sdf.format(d);
+            String date = sdf.format(d, k.getTimezone());
             
             MHelper mh = new MHelper();
 			String[] to = new String[2];

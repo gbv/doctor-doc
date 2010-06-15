@@ -72,7 +72,7 @@ public final class LoginAction extends Action {
 
         	u = uil.get(0).getBenutzer();
         	// Last-Login Datum beim Benutzer hinterlegen
-        	u.updateLastuse(u, cn.getConnection());
+        	u.updateLastuse(u, uil.get(0).getKontos().get(0), cn.getConnection());
   
 //        	 Prüfung, ob GTC (General Terms and Conditions) in der aktuellen Version akzeptiert wurden
         	Gtc gtc = new Gtc();

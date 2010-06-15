@@ -17,7 +17,9 @@
 
 package ch.dbs.actions.user;
 
+import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -54,16 +56,20 @@ public final class KontoAction extends DispatchAction {
                               HttpServletRequest rq,
                               HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-
-        KontoForm kf = new KontoForm();
-        Countries countriesInstance = new Countries();
+      String forward = "failure";
+      Text cn = new Text();
         
-            List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());            
-            kf.setCountries(allPossCountries);
-            forward = "success";
-            rq.setAttribute("kontoform", kf);          
+      TimeZones tz = new TimeZones();
+	  TreeSet<String> setTZ = tz.getTimeZonesAsString();
+	  rq.setAttribute("timezones", setTZ);
+
+      KontoForm kf = new KontoForm();
+      Countries countriesInstance = new Countries();
+        
+      List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());            
+      kf.setCountries(allPossCountries);
+      forward = "success";
+      rq.setAttribute("kontoform", kf);          
             
       cn.close();
       
@@ -128,6 +134,9 @@ public final class KontoAction extends DispatchAction {
             	} else {
             		forward = "subitofailed"; // Pfad i.O.
                 	kf.setMessage("error.gbv_values");
+                	TimeZones tz = new TimeZones();
+            		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+            		rq.setAttribute("timezones", setTZ);
                     List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());                
                     kf.setCountries(allPossCountries);
                     rq.setAttribute("kontoform", kf);
@@ -136,6 +145,9 @@ public final class KontoAction extends DispatchAction {
             		log.info("GBV-Timeout: " + e.toString());
     				forward = "subitofailed"; // Pfad i.O.
                 	kf.setMessage("error.gbv_timeout");
+                	TimeZones tz = new TimeZones();
+            		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+            		rq.setAttribute("timezones", setTZ);
                     List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());                
                     kf.setCountries(allPossCountries);
                     rq.setAttribute("kontoform", kf);
@@ -160,6 +172,10 @@ public final class KontoAction extends DispatchAction {
             	forward = "subitofailed";
             	kf.setMessage("error.values");
             	
+            	TimeZones tz = new TimeZones();
+        		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+        		rq.setAttribute("timezones", setTZ);
+            	
                 List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());              
                 kf.setCountries(allPossCountries);
             	
@@ -169,6 +185,10 @@ public final class KontoAction extends DispatchAction {
 		    } else {
 		    	forward = "subitofailed";
 		    	kf.setMessage("error.berechtigung");
+		    	
+		    	TimeZones tz = new TimeZones();
+	    		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+	    		rq.setAttribute("timezones", setTZ);
 		    	
 		        List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());              
 		        kf.setCountries(allPossCountries);
@@ -243,68 +263,73 @@ public final class KontoAction extends DispatchAction {
         u.setGbvbestellung(true); // Bestellungen beim GBV erlaubt
         u.setKontovalidation(uf.getKontovalidation());
         u.setRechte(2); // Berechtigung Bibliothekar
+        
+        Date d = new Date(); 
+		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datum = fmt.format(d, k.getTimezone());
+        u.setDatum(datum);
 
-        		//        		 Konto abspeichern und wieder holen wegen KID 
-        		k.save(cn.getConnection());
-        		AbstractBenutzer b = new AbstractBenutzer();
-                b.saveNewUser(u, cn.getConnection());
-                VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
-                vKontoBenutzer.setKontoBibliothekar(u, k, cn.getConnection());
-                forward = "weiter";          	
+        // Konto abspeichern und wieder holen wegen KID 
+        k.setId(k.save(cn.getConnection()));
+        AbstractBenutzer b = new AbstractBenutzer();
+        b.saveNewUser(u, k, cn.getConnection());
+        VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
+        vKontoBenutzer.setKontoBibliothekar(u, k, cn.getConnection());
+        forward = "weiter";          	
             	
-////            	Nachricht über neues Konto abschicken
-                StringBuffer message = new StringBuffer("There has been registered a new library account in " + ReadSystemConfigurations.getApplicationName() + "\012\012");
-                message.append("Library account: " + k.getBibliotheksname() + "\012");
-                message.append("City: " + k.getOrt() + "\012");
-                message.append("Country: " + k.getLand() + "\012");
-                message.append("Library email: " + k.getBibliotheksmail() + "\012");
-                message.append("Type of account (0 = free | 1 = 1 year enhanced | 2 = 1 year faxserver | 3 = 3 months faxserver): " + k.getKontotyp() + "\012");
-                message.append("Librarian: " + u.getVorname() + "\040" + u.getName() + "\012");
-                message.append("Librarian email: " + u.getEmail() + "\012");
-                String[] to = new String[1];
-                to[0]= ReadSystemConfigurations.getSystemEmail();
-                MHelper mh = new MHelper();
-                mh.sendMail(to, "New library account!", message.toString());
+        // Nachricht über neues Konto abschicken
+        StringBuffer message = new StringBuffer("There has been registered a new library account in " + ReadSystemConfigurations.getApplicationName() + "\012\012");
+        message.append("Library account: " + k.getBibliotheksname() + "\012");
+        message.append("City: " + k.getOrt() + "\012");
+        message.append("Country: " + k.getLand() + "\012");
+        message.append("Library email: " + k.getBibliotheksmail() + "\012");
+        message.append("Type of account (0 = free | 1 = 1 year enhanced | 2 = 1 year faxserver | 3 = 3 months faxserver): " + k.getKontotyp() + "\012");
+        message.append("Librarian: " + u.getVorname() + "\040" + u.getName() + "\012");
+        message.append("Librarian email: " + u.getEmail() + "\012");
+        String[] to = new String[1];
+        to[0]= ReadSystemConfigurations.getSystemEmail();
+        MHelper mh = new MHelper();
+        mh.sendMail(to, "New library account!", message.toString());
+               
+        // Bestätigungsemail mit Angaben zu den nächsten Schritten und Möglichkeiten
+        StringBuffer mg = new StringBuffer("Dear\040");
+        if (u.getAnrede().equals("Frau")) mg.append("Ms\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
+        if (u.getAnrede().equals("Herr")) mg.append("Mr\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
+        mg.append("Welcome at " + ReadSystemConfigurations.getApplicationName() + "!\012\012");
+        mg.append("To use the IP-based oderform for your patrons within your institution, send us your IP. We'll activate this function for your account at " + ReadSystemConfigurations.getApplicationName() + ".\012\012");
+        mg.append("This link will show you your IP: http://www.whatismyip.com (if your institution uses an IP-range instead of a single IP, ask your IT)\012\012");
+        mg.append("Check out the How-To to use " + ReadSystemConfigurations.getApplicationName() + " as a linkresolver (in connection with the services of EZB/ZDB): http://www.doctor-doc.com/version1.0/howto_openurl.do\012\012");
+        mg.append("You team consists of several librarians and you want each one of them to have their own ID + PW? Create their accounts as normal patrons and contact us which addresses should be granted as librarians.\012\012");
+        if (k.getKontotyp()!=0) mg.append("Thank you for choosing the option \"Fax to PDF\". We'll register you for this service and we will contact you with the details as soon as possible.\012\012");
+        if (k.getKontotyp()!=0 && k.getLand().equals("Deutschland")) {
+        mg.append("-------------------\012");
+        mg.append("GILT FÜR DEUTSCHLAND:\012");
+        mg.append("Aufgrund der geltenden Bestimmungen des deutschen Gesetzes für Telekommunikation bezüglich der Ortsnetzrufnummern, die von der Bundesnetzagentur (http://www.bundesnetzagentur.de/media/archive/11497.pdf) verwaltet werden, ");
+        mg.append("benötigen wir eine schriftliche Bescheinigung, dass Sie tatsächlich den Sitz im selben Ortsnetzbereich mit der von uns vergebenen Faxnummer haben.\012");
+        mg.append("Bitte senden Sie uns, deshalb per Email eine Bescheinigung des \"Firmensitzes\", entweder in Form einer:\012");
+        mg.append("- Kopie einer Rechnung für Wasser, Strom, Gas usw.\012");
+        mg.append("- Kopie des Handelsregisterauszugs/Gewerbeanmeldung\012");
+        mg.append("Bitte entschuldigen Sie diesen Zusatzaufwand, aber leider verlangt die deutsche Gesetzgebung diese Überprüfung.\012");
+        mg.append("-------------------\012\012");
+             	
+        }
+        mg.append("We hope you enjoy using " + ReadSystemConfigurations.getApplicationName() + "!\012\012");
+        mg.append("Get in contact with us if you have any questions!\012\012");
+        mg.append("Best regards\012");
+        mg.append("Your team " + ReadSystemConfigurations.getApplicationName() + "\012");
+        String[] sendto = new String[1];
+        sendto[0]=u.getEmail();
+        MHelper mailh = new MHelper();
+        mailh.sendMail(sendto, "Your account at " + ReadSystemConfigurations.getApplicationName(), mg.toString());
+             
+        // Kontoform in Session leeren
+        rq.getSession().setAttribute("kontoform", null);
                 
-////        	Bestätigungsemail mit Angaben zu den nächsten Schritten und Möglichkeiten
-                StringBuffer mg = new StringBuffer("Dear\040");
-                if (u.getAnrede().equals("Frau")) mg.append("Ms\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
-                if (u.getAnrede().equals("Herr")) mg.append("Mr\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
-                mg.append("Welcome at " + ReadSystemConfigurations.getApplicationName() + "!\012\012");
-                mg.append("To use the IP-based oderform for your patrons within your institution, send us your IP. We'll activate this function for your account at " + ReadSystemConfigurations.getApplicationName() + ".\012\012");
-                mg.append("This link will show you your IP: http://www.whatismyip.com (if your institution uses an IP-range instead of a single IP, ask your IT)\012\012");
-                mg.append("Check out the How-To to use " + ReadSystemConfigurations.getApplicationName() + " as a linkresolver (in connection with the services of EZB/ZDB): http://www.doctor-doc.com/version1.0/howto_openurl.do\012\012");
-                mg.append("You team consists of several librarians and you want each one of them to have their own ID + PW? Create their accounts as normal patrons and contact us which addresses should be granted as librarians.\012\012");
-                if (k.getKontotyp()!=0) mg.append("Thank you for choosing the option \"Fax to PDF\". We'll register you for this service and we will contact you with the details as soon as possible.\012\012");
-                if (k.getKontotyp()!=0 && k.getLand().equals("Deutschland")) {
-                	mg.append("-------------------\012");
-                	mg.append("GILT FÜR DEUTSCHLAND:\012");
-                	mg.append("Aufgrund der geltenden Bestimmungen des deutschen Gesetzes für Telekommunikation bezüglich der Ortsnetzrufnummern, die von der Bundesnetzagentur (http://www.bundesnetzagentur.de/media/archive/11497.pdf) verwaltet werden, ");
-                	mg.append("benötigen wir eine schriftliche Bescheinigung, dass Sie tatsächlich den Sitz im selben Ortsnetzbereich mit der von uns vergebenen Faxnummer haben.\012");
-                	mg.append("Bitte senden Sie uns, deshalb per Email eine Bescheinigung des \"Firmensitzes\", entweder in Form einer:\012");
-                	mg.append("- Kopie einer Rechnung für Wasser, Strom, Gas usw.\012");
-                	mg.append("- Kopie des Handelsregisterauszugs/Gewerbeanmeldung\012");
-                	mg.append("Bitte entschuldigen Sie diesen Zusatzaufwand, aber leider verlangt die deutsche Gesetzgebung diese Überprüfung.\012");
-                	mg.append("-------------------\012\012");
-                	
-                }
-                mg.append("We hope you enjoy using " + ReadSystemConfigurations.getApplicationName() + "!\012\012");
-                mg.append("Get in contact with us if you have any questions!\012\012");
-                mg.append("Best regards\012");
-                mg.append("Your team " + ReadSystemConfigurations.getApplicationName() + "\012");
-                String[] sendto = new String[1];
-                sendto[0]=u.getEmail();
-                MHelper mailh = new MHelper();
-                mailh.sendMail(sendto, "Your account at " + ReadSystemConfigurations.getApplicationName(), mg.toString());
-                
-//              Kontoform in Session leeren
-                rq.getSession().setAttribute("kontoform", null);
-                
-                LoginForm lf = new LoginForm();                
-                lf.setEmail(uf.getEmail());
-                lf.setPassword(uf.getPassword());
-                
-                rq.setAttribute("loginform", lf); // um Kunde nach Registration gleich einzuloggen
+        LoginForm lf = new LoginForm();                
+        lf.setEmail(uf.getEmail());
+        lf.setPassword(uf.getPassword());
+             
+        rq.setAttribute("loginform", lf); // um Kunde nach Registration gleich einzuloggen
         
         } else {
     		ErrorMessage em = new ErrorMessage("error.values");
@@ -343,6 +368,10 @@ public final class KontoAction extends DispatchAction {
             
     		if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
     			
+    		TimeZones tz = new TimeZones();
+    		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+    		rq.setAttribute("timezones", setTZ);
+    			
     		k = new Konto(ui.getKonto().getId(),cn.getConnection());
     		
     		forward = "success";
@@ -362,6 +391,7 @@ public final class KontoAction extends DispatchAction {
             if (k.getPLZ() !=null) {kf.setPLZ(k.getPLZ().trim());} else {kf.setPLZ(k.getPLZ());}
             if (k.getOrt() !=null) {kf.setOrt(k.getOrt().trim());} else {kf.setOrt(k.getOrt());}
             kf.setLand(k.getLand());
+            if (k.getTimezone()!=null) kf.setTimezone(k.getTimezone()); // only set Timezone if not null, else we will use default value of initialized kontoform
             if (k.getTelefon() !=null) {kf.setTelefon(k.getTelefon().trim());} else {kf.setTelefon(k.getTelefon());}
             kf.setFaxno(k.getFaxno()); // Bibliothekar nur Leserecht!
             if (k.getFax_extern()!=null) {kf.setFax_extern(k.getFax_extern().trim());} else {kf.setFax_extern(k.getFax_extern());} // Bibliothekar Schreibrecht!
@@ -404,11 +434,9 @@ public final class KontoAction extends DispatchAction {
 			}
             
             List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());                
-            kf.setCountries(allPossCountries);	
-            
-            	
+            kf.setCountries(allPossCountries);
                 
-            	rq.setAttribute("kontoform", kf);
+            rq.setAttribute("kontoform", kf);
 
         cn.close();
         return mp.findForward(forward);
@@ -467,6 +495,9 @@ public final class KontoAction extends DispatchAction {
                 	} else {
                 		forward = "subitofailed"; // Pfad i.O.
                     	kf.setMessage("error.gbv_values");
+                    	TimeZones tz = new TimeZones();
+                		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                		rq.setAttribute("timezones", setTZ);
                         List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());                
                         kf.setCountries(allPossCountries);
                 	}
@@ -474,6 +505,9 @@ public final class KontoAction extends DispatchAction {
                 		log.info("GBV-Timeout: " + e.toString());
         				forward = "subitofailed"; // Pfad i.O.
                     	kf.setMessage("error.gbv_timeout");
+                    	TimeZones tz = new TimeZones();
+                		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                		rq.setAttribute("timezones", setTZ);
                         List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());                
                         kf.setCountries(allPossCountries);
         			} catch (Exception e) {
@@ -508,6 +542,7 @@ public final class KontoAction extends DispatchAction {
     			if (kf.getPLZ() !=null) {k.setPLZ(kf.getPLZ().trim());} else {k.setPLZ(kf.getPLZ());}
     			if (kf.getOrt() !=null) {k.setOrt(kf.getOrt().trim());} else {k.setOrt(kf.getOrt());}
     			k.setLand(kf.getLand());
+    			k.setTimezone(kf.getTimezone());
     			if (kf.getTelefon() !=null) {k.setTelefon(kf.getTelefon().trim());} else {k.setTelefon(kf.getTelefon());}
     			if (kf.getFax_extern() !=null) {k.setFax_extern(kf.getFax_extern().trim());} else {k.setFax_extern(kf.getFax_extern());}
     			if (kf.getBibliotheksmail() !=null) {k.setBibliotheksmail(kf.getBibliotheksmail().trim());} else {k.setBibliotheksmail(kf.getBibliotheksmail());}
@@ -539,6 +574,9 @@ public final class KontoAction extends DispatchAction {
                 } else {
                 	forward = "missingvalues";
                 	kf.setMessage("error.values");
+                	TimeZones tz = new TimeZones();
+            		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+            		rq.setAttribute("timezones", setTZ);
                     List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());             
                     kf.setCountries(allPossCountries);
                 }

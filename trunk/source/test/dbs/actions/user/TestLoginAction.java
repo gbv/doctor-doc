@@ -20,8 +20,11 @@ package test.dbs.actions.user;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+
 import servletunit.struts.MockStrutsTestCase;
 import test.PrepareTestObjects;
+import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Bibliothekar;
@@ -94,9 +97,13 @@ public class TestLoginAction extends MockStrutsTestCase{
 		k1.save(k1.getSingleConnection());
 		
 		//Testbenutzer erstellen
+		Date d = new Date(); 
+		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datum = fmt.format(d, k1.getTimezone());
 		AbstractBenutzer b = new AbstractBenutzer();
 		bi = PrepareTestObjects.getBibliothekar();
-		bi.setId(b.saveNewUser(bi, k1.getSingleConnection()));
+		bi.setDatum(datum);
+		bi.setId(b.saveNewUser(bi, k1, k1.getSingleConnection()));
 		
 //		Benutzer mit Konten verknuepfen
 		vkb = new VKontoBenutzer();		
@@ -196,9 +203,13 @@ public class TestLoginAction extends MockStrutsTestCase{
 		k2.save(k1.getSingleConnection());
 		
 		//Testbenutzer erstellen
+		Date d = new Date(); 
+		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datum = fmt.format(d, k2.getTimezone());
 		AbstractBenutzer b = new AbstractBenutzer();
-		be = PrepareTestObjects.getBenutzer();		
-		be.setId(b.saveNewUser(be, k1.getSingleConnection()));
+		be = PrepareTestObjects.getBenutzer();
+		be.setDatum(datum);
+		be.setId(b.saveNewUser(be, k2, k1.getSingleConnection()));
 		
 //		Benutzer mit Konten verknuepfen
 		vkb = new VKontoBenutzer();		
@@ -226,9 +237,10 @@ public class TestLoginAction extends MockStrutsTestCase{
 		
 		// Benutzer login in DB auf Benutzer erlauben
 		AbstractBenutzer b = new AbstractBenutzer();
+		Konto tz = new Konto(); // we need this for setting a default timezone
 		be = PrepareTestObjects.getTestBenutzerFromDb(k1.getSingleConnection());
 		be.setLoginopt(true);
-		b.updateUser(be, k1.getSingleConnection());
+		b.updateUser(be, tz, k1.getSingleConnection());
 		
 		//Login
 		LoginForm lf = new LoginForm();

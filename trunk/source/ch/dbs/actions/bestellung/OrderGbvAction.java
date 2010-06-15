@@ -310,7 +310,7 @@ public final class OrderGbvAction extends DispatchAction {
             								b.setId(of.getBid());
             								b.update(t.getConnection());
             							}
-            							if (b.getId()!=null) orderstate.setNewOrderState(b, new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
+            							if (b.getId()!=null) orderstate.setNewOrderState(b, ui.getKonto(), new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
 
             						} else {
             							ErrorMessage em = new ErrorMessage();
@@ -381,7 +381,7 @@ public final class OrderGbvAction extends DispatchAction {
     								b.setId(of.getBid());
     								b.update(t.getConnection());
     							}
-    							if (b.getId()!=null) orderstate.setNewOrderState(b, new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
+    							if (b.getId()!=null) orderstate.setNewOrderState(b, ui.getKonto(), new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
 
     						} else {
     							ErrorMessage em = new ErrorMessage();
@@ -513,7 +513,7 @@ public final class OrderGbvAction extends DispatchAction {
         								b.setId(of.getBid());
         								b.update(t.getConnection());
         							}
-        							if (b.getId()!=null) orderstate.setNewOrderState(b, new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
+        							if (b.getId()!=null) orderstate.setNewOrderState(b, ui.getKonto(), new Text(t.getConnection(),"bestellt"), null, ui.getBenutzer().getEmail(), t.getConnection()); // Status bestellt setzen wenn Bestellung gültige ID hat
 
         						} else {
         							ErrorMessage em = new ErrorMessage();

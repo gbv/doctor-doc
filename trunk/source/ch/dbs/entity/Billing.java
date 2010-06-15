@@ -307,7 +307,7 @@ public class Billing extends AbstractIdEntity {
     	Billing b = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	// TODO: NOW() berücksichtigt nur Serverzeit und funktioniert nicht im Zusammenhang mit anderen Zeitzonen. Mögliche Lösung: CONVERT_TZ(NOW(), @@session.time_zone, '+2:00') s. AbstractBenutzer
+    	// TODO: NOW() berücksichtigt nur Serverzeit und funktioniert nicht im Zusammenhang mit anderen Zeitzonen.
     	try {
     		pstmt = cn.prepareStatement("SELECT * FROM `konto` \n" +
     				"INNER JOIN billing USING ( kid ) \n" +

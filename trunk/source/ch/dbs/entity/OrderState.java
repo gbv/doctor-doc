@@ -55,7 +55,7 @@ public class OrderState extends AbstractIdEntity {
   }
   
   // History Bestellungen eröffnen, Status, Statusdatum sowie Bestelldatum eintragen
-  public void setNewOrderState(Bestellungen b, Text t, String bemerkungen, String bearbeiter, Connection cn){
+  public void setNewOrderState(Bestellungen b, Konto k, Text t, String bemerkungen, String bearbeiter, Connection cn){
       
       PreparedStatement pstmt = null;
       try {            
@@ -69,7 +69,7 @@ public class OrderState extends AbstractIdEntity {
           
           Date dt = new Date();
           ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-          String datum = sdf.format(dt);
+          String datum = sdf.format(dt, k.getTimezone());
 
           pstmt.setString(5, datum);
        
@@ -98,7 +98,7 @@ public class OrderState extends AbstractIdEntity {
   }
   
   // History Bestellungen eröffnen, Status, Statusdatum (now) sowie Bestelldatum eintragen
-  public void changeOrderState(Bestellungen b, Text t, String bemerkungen, String bearbeiter, Connection cn){
+  public void changeOrderState(Bestellungen b, String timezone, Text t, String bemerkungen, String bearbeiter, Connection cn){
       
       PreparedStatement pstmt = null;
 	  try {
@@ -111,7 +111,7 @@ public class OrderState extends AbstractIdEntity {
           
           Date dt = new Date();
           ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-          String datum = sdf.format(dt);
+          String datum = sdf.format(dt, timezone);
 
           pstmt.setString(5, datum);
        
@@ -228,7 +228,7 @@ public class OrderState extends AbstractIdEntity {
 		if (bs.getBearbeiter()!=null && ReadSystemConfigurations.isAnonymizationActivated()) {
 		Calendar cal = b.stringFromMysqlToCal(bs.getDate());
 		Calendar limit = Calendar.getInstance();
-		limit.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+		limit.setTimeZone(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
 		limit.add(Calendar.MONTH, -ReadSystemConfigurations.getAnonymizationAfterMonths());
 		limit.add(Calendar.DAY_OF_MONTH, -1);
 		if (cal.before(limit)) {

@@ -1,16 +1,20 @@
+--
+-- works with  >= Revision 38 (see also dbchanges_forUpdate, if using SVN)
+--
+
 -- phpMyAdmin SQL Dump
 -- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 25. Mai 2010 um 18:16
+-- Erstellungszeit: 15. Juni 2010 um 16:27
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- works with  >= Revision 13 (see also dbchanges_forUpdate, if using SVN)
+-- Datenbank: `dd_os`
 --
 
 -- --------------------------------------------------------
@@ -19,6 +23,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Tabellenstruktur für Tabelle `benutzer`
 --
 
+DROP TABLE IF EXISTS `benutzer`;
 CREATE TABLE IF NOT EXISTS `benutzer` (
   `UID` bigint(20) NOT NULL AUTO_INCREMENT,
   `institut` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -73,6 +78,7 @@ INSERT INTO `benutzer` (`UID`, `institut`, `abteilung`, `anrede`, `vorname`, `na
 -- Tabellenstruktur für Tabelle `bestellform_param`
 --
 
+DROP TABLE IF EXISTS `bestellform_param`;
 CREATE TABLE IF NOT EXISTS `bestellform_param` (
   `BPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -141,6 +147,7 @@ CREATE TABLE IF NOT EXISTS `bestellform_param` (
 -- Tabellenstruktur für Tabelle `bestellstatus`
 --
 
+DROP TABLE IF EXISTS `bestellstatus`;
 CREATE TABLE IF NOT EXISTS `bestellstatus` (
   `BSID` bigint(20) NOT NULL AUTO_INCREMENT,
   `BID` bigint(20) NOT NULL,
@@ -164,6 +171,7 @@ CREATE TABLE IF NOT EXISTS `bestellstatus` (
 -- Tabellenstruktur für Tabelle `bestellungen`
 --
 
+DROP TABLE IF EXISTS `bestellungen`;
 CREATE TABLE IF NOT EXISTS `bestellungen` (
   `BID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -228,6 +236,7 @@ CREATE TABLE IF NOT EXISTS `bestellungen` (
 -- Tabellenstruktur für Tabelle `billing`
 --
 
+DROP TABLE IF EXISTS `billing`;
 CREATE TABLE IF NOT EXISTS `billing` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `UID` bigint(20) DEFAULT NULL,
@@ -253,6 +262,7 @@ CREATE TABLE IF NOT EXISTS `billing` (
 -- Tabellenstruktur für Tabelle `c3p0TestTable`
 --
 
+DROP TABLE IF EXISTS `c3p0TestTable`;
 CREATE TABLE IF NOT EXISTS `c3p0TestTable` (
   `a` char(1) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -268,6 +278,7 @@ CREATE TABLE IF NOT EXISTS `c3p0TestTable` (
 -- Tabellenstruktur für Tabelle `ddl_billing`
 --
 
+DROP TABLE IF EXISTS `ddl_billing`;
 CREATE TABLE IF NOT EXISTS `ddl_billing` (
   `DBID` bigint(20) NOT NULL AUTO_INCREMENT,
   `UID` bigint(20) NOT NULL,
@@ -288,6 +299,7 @@ CREATE TABLE IF NOT EXISTS `ddl_billing` (
 -- Tabellenstruktur für Tabelle `ddl_billingstatus`
 --
 
+DROP TABLE IF EXISTS `ddl_billingstatus`;
 CREATE TABLE IF NOT EXISTS `ddl_billingstatus` (
   `BSID` bigint(20) NOT NULL AUTO_INCREMENT,
   `DBID` bigint(20) NOT NULL,
@@ -306,6 +318,7 @@ CREATE TABLE IF NOT EXISTS `ddl_billingstatus` (
 -- Tabellenstruktur für Tabelle `ddl_positionen`
 --
 
+DROP TABLE IF EXISTS `ddl_positionen`;
 CREATE TABLE IF NOT EXISTS `ddl_positionen` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
   `UID` bigint(20) NOT NULL COMMENT 'Endkunde / Bibliothekskunde',
@@ -339,6 +352,7 @@ CREATE TABLE IF NOT EXISTS `ddl_positionen` (
 -- Tabellenstruktur für Tabelle `default_preise`
 --
 
+DROP TABLE IF EXISTS `default_preise`;
 CREATE TABLE IF NOT EXISTS `default_preise` (
   `DPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `TID_bezeichnung` bigint(20) NOT NULL,
@@ -366,6 +380,7 @@ CREATE TABLE IF NOT EXISTS `default_preise` (
 -- Tabellenstruktur für Tabelle `ezb_id`
 --
 
+DROP TABLE IF EXISTS `ezb_id`;
 CREATE TABLE IF NOT EXISTS `ezb_id` (
   `EID` bigint(20) NOT NULL AUTO_INCREMENT,
   `ezb_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
@@ -386,6 +401,7 @@ CREATE TABLE IF NOT EXISTS `ezb_id` (
 -- Tabellenstruktur für Tabelle `fax`
 --
 
+DROP TABLE IF EXISTS `fax`;
 CREATE TABLE IF NOT EXISTS `fax` (
   `FID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -409,6 +425,7 @@ CREATE TABLE IF NOT EXISTS `fax` (
 -- Tabellenstruktur für Tabelle `faxrun`
 --
 
+DROP TABLE IF EXISTS `faxrun`;
 CREATE TABLE IF NOT EXISTS `faxrun` (
   `FRID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -428,6 +445,7 @@ CREATE TABLE IF NOT EXISTS `faxrun` (
 -- Tabellenstruktur für Tabelle `holdings`
 --
 
+DROP TABLE IF EXISTS `holdings`;
 CREATE TABLE IF NOT EXISTS `holdings` (
   `HOID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -453,6 +471,7 @@ CREATE TABLE IF NOT EXISTS `holdings` (
 -- Tabellenstruktur für Tabelle `iso_countries`
 --
 
+DROP TABLE IF EXISTS `iso_countries`;
 CREATE TABLE IF NOT EXISTS `iso_countries` (
   `rowId` int(11) NOT NULL AUTO_INCREMENT,
   `countryId` int(11) NOT NULL,
@@ -770,6 +789,7 @@ INSERT INTO `iso_countries` (`rowId`, `countryId`, `locale`, `countryCode`, `cou
 -- Tabellenstruktur für Tabelle `issn`
 --
 
+DROP TABLE IF EXISTS `issn`;
 CREATE TABLE IF NOT EXISTS `issn` (
   `IID` bigint(20) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(10) CHARACTER SET utf8 NOT NULL,
@@ -798,6 +818,7 @@ CREATE TABLE IF NOT EXISTS `issn` (
 -- Tabellenstruktur für Tabelle `konto`
 --
 
+DROP TABLE IF EXISTS `konto`;
 CREATE TABLE IF NOT EXISTS `konto` (
   `KID` bigint(20) NOT NULL AUTO_INCREMENT,
   `biblioname` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -807,6 +828,7 @@ CREATE TABLE IF NOT EXISTS `konto` (
   `plz` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `ort` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `land` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `timezone` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `telefon` varchar(20) COLLATE utf8_unicode_ci DEFAULT '0',
   `faxno` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `faxusername` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -849,8 +871,8 @@ CREATE TABLE IF NOT EXISTS `konto` (
 -- Daten für Tabelle `konto`
 --
 
-INSERT INTO `konto` (`KID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `plz`, `ort`, `land`, `telefon`, `faxno`, `faxusername`, `faxpassword`, `popfaxend`, `fax2`, `bibliomail`, `dbsmail`, `dbsmailpw`, `gbvbn`, `gbvpw`, `gbv_requester_id`, `ezbid`, `zdb`, `billing`, `billingtype`, `accounting_rhythmvalue`, `accounting_rhythmday`, `accounting_rhythmtimeout`, `billingschwellwert`, `maxordersu`, `maxordersutotal`, `maxordersj`, `orderlimits`, `userlogin`, `userbestellung`, `gbvbestellung`, `kontostatus`, `kontotyp`, `default_deloptions`, `paydate`, `expdate`, `edatum`, `gtc`, `gtcdate`) VALUES
-(1, 'My Library', NULL, 'Adress / Institution', 'Street 10', '10000', 'My City', 'Schweiz', '+41 (0)43 111 11 11', '+41 (0)43 111 11 12', '', '', NULL, NULL, 'mail@mylibrary.ch', 'mail@mylibrary.ch', '', NULL, NULL, NULL, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 'post', NULL, NULL, '2010-05-15', NULL, NULL);
+INSERT INTO `konto` (`KID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `plz`, `ort`, `land`, `timezone`, `telefon`, `faxno`, `faxusername`, `faxpassword`, `popfaxend`, `fax2`, `bibliomail`, `dbsmail`, `dbsmailpw`, `gbvbn`, `gbvpw`, `gbv_requester_id`, `ezbid`, `zdb`, `billing`, `billingtype`, `accounting_rhythmvalue`, `accounting_rhythmday`, `accounting_rhythmtimeout`, `billingschwellwert`, `maxordersu`, `maxordersutotal`, `maxordersj`, `orderlimits`, `userlogin`, `userbestellung`, `gbvbestellung`, `kontostatus`, `kontotyp`, `default_deloptions`, `paydate`, `expdate`, `edatum`, `gtc`, `gtcdate`) VALUES
+(1, 'My Library', NULL, 'Adress / Institution', 'Street 10', '10000', 'My City', 'Schweiz', NULL, '+41 (0)43 111 11 11', '+41 (0)43 111 11 12', '', '', NULL, NULL, 'mail@mylibrary.ch', 'mail@mylibrary.ch', '', NULL, NULL, NULL, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 'post', NULL, NULL, '2010-05-15', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -858,6 +880,7 @@ INSERT INTO `konto` (`KID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `pl
 -- Tabellenstruktur für Tabelle `lieferanten`
 --
 
+DROP TABLE IF EXISTS `lieferanten`;
 CREATE TABLE IF NOT EXISTS `lieferanten` (
   `LID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Lieferanten ID',
   `siegel` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1061,6 +1084,7 @@ INSERT INTO `lieferanten` (`LID`, `siegel`, `lieferant`, `D`, `A`, `CH`, `allgem
 -- Tabellenstruktur für Tabelle `stock`
 --
 
+DROP TABLE IF EXISTS `stock`;
 CREATE TABLE IF NOT EXISTS `stock` (
   `STID` bigint(20) NOT NULL AUTO_INCREMENT,
   `HOID` bigint(20) NOT NULL,
@@ -1098,6 +1122,7 @@ CREATE TABLE IF NOT EXISTS `stock` (
 -- Tabellenstruktur für Tabelle `stock_missing`
 --
 
+DROP TABLE IF EXISTS `stock_missing`;
 CREATE TABLE IF NOT EXISTS `stock_missing` (
   `NLID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Negative-List-ID',
   `STID` bigint(20) NOT NULL,
@@ -1123,6 +1148,7 @@ CREATE TABLE IF NOT EXISTS `stock_missing` (
 -- Tabellenstruktur für Tabelle `text`
 --
 
+DROP TABLE IF EXISTS `text`;
 CREATE TABLE IF NOT EXISTS `text` (
   `TID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) DEFAULT NULL,
@@ -1165,6 +1191,7 @@ INSERT INTO `text` (`TID`, `KID`, `TYID`, `inhalt`) VALUES
 -- Tabellenstruktur für Tabelle `texttyp`
 --
 
+DROP TABLE IF EXISTS `texttyp`;
 CREATE TABLE IF NOT EXISTS `texttyp` (
   `TYID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) DEFAULT NULL,
@@ -1198,6 +1225,7 @@ INSERT INTO `texttyp` (`TYID`, `KID`, `inhalt`) VALUES
 -- Tabellenstruktur für Tabelle `v_konto_benutzer`
 --
 
+DROP TABLE IF EXISTS `v_konto_benutzer`;
 CREATE TABLE IF NOT EXISTS `v_konto_benutzer` (
   `vkbid` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,

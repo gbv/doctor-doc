@@ -111,7 +111,18 @@
 			</select>
 		  </td>  
       
-    </tr>    
+    </tr>
+    <tr>
+          <td><b><bean:message key="modifykonto.timezone" /></b></td>
+          <td>
+          	<select name="timezone">
+          		<bean:define id="tmp" name="kontoform" property="timezone" type="java.lang.String"/>
+ 				<logic:iterate id="tz" name="timezones">
+     				<option value="<bean:write name="tz" />" <logic:equal name="tz" value="<%=tmp%>"> selected</logic:equal>><bean:write name="tz" /></option>
+   				</logic:iterate>
+			</select>
+		  </td>      
+    </tr>  
     <tr>
       <td><b><bean:message key="modifykonto.telefon" />*</b></td><td><input name="telefon" type="text"<logic:present name="kontoform" property="telefon"> value="<bean:write name="kontoform" property="telefon" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="telefon" /></font></td>
     </tr>

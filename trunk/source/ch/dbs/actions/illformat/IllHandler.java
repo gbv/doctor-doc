@@ -135,13 +135,13 @@ public class IllHandler {
     	ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyyMMddHHmmss");
     	Calendar calendar = new GregorianCalendar();
     	Date d = calendar.getTime(); 
-        String datum = fmt.format(d);
+        String datum = fmt.format(d, k.getTimezone());
 //        System.out.println("Bestelldatum: " + datum);
         
         ThreadSafeSimpleDateFormat ft = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         calendar.add(Calendar.MONTH, +1);
         d = calendar.getTime();
-        String date_to = ft.format(d);
+        String date_to = ft.format(d, k.getTimezone());
 //        System.out.println("Expiry: " + date_to);
         
         String deloptions = "POST"; // default
@@ -359,7 +359,7 @@ public class IllHandler {
     					ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     				    Calendar calendar = new GregorianCalendar();
     				    Date d = calendar.getTime();
-    				    date = fmt.format(d);
+    				    date = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 //    				    System.out.println("Status-Datum: " + date);  					 
     				 }
     				 
@@ -367,7 +367,7 @@ public class IllHandler {
     				 b.setStatusdate(date);
     				 String statustext = null; // darf tatsächlich null sein
     				 if (ill.getResponder_note()!=null && !ill.getResponder_note().equals("")) statustext = ill.getResponder_note();
-					 orderstate.changeOrderState(b, new Text(cn,"geliefert"), statustext, "automatisch", cn);
+					 orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,"geliefert"), statustext, "automatisch", cn);
     			 }
     		}
     		if (ill.getMessage_type().equals("ANSWER")) {
@@ -387,7 +387,7 @@ public class IllHandler {
     					ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     				    Calendar calendar = new GregorianCalendar();
     				    Date d = calendar.getTime();
-    				    date = fmt.format(d);
+    				    date = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 //    				    System.out.println("Status-Datum: " + date);    					 
     				 }
     				 
@@ -395,7 +395,7 @@ public class IllHandler {
     				 b.setStatusdate(date);
     				 String statustext = null; // darf tatsächlich null sein
     				 if (ill.getResponder_note()!=null && !ill.getResponder_note().equals("")) statustext = ill.getResponder_note();
-					 orderstate.changeOrderState(b, new Text(cn,"nicht lieferbar"), statustext, "automatisch", cn);
+					 orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,"nicht lieferbar"), statustext, "automatisch", cn);
     			 }
     			
     		}

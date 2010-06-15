@@ -53,7 +53,7 @@ public String listHoldings(ArrayList<Bestand> bestaende, String rfr_id) {
 		
 		Date d = new Date(); // aktuelles Datum erstellen
         ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        String datum = fmt.format(d);
+        String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 		
 		// ROOT tag
 		atts.addAttribute("","","timestamp","CDATA", datum);
@@ -220,7 +220,7 @@ public String noHoldings(String msg, String rfr_id) {
 		
 		Date d = new Date(); // aktuelles Datum erstellen
         ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        String datum = fmt.format(d);
+        String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 		
 		// ROOT tag
 		atts.addAttribute("","","timestamp","CDATA", datum);

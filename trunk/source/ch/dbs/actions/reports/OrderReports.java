@@ -90,7 +90,7 @@ public final class OrderReports extends DispatchAction {
 				
 				//Eingaben Testen und Notfalls korrigieren mit defaultwerten
 				Check c = new Check();
-				of = c.checkDateRegion(of, 4);
+				of = c.checkDateRegion(of, 4, ui.getKonto().getTimezone());
 				of = c.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
 				of = c.checkOrdersSortCriterias(of);
 				of = c.checkSortOrderValues(of);
@@ -132,7 +132,7 @@ public final class OrderReports extends DispatchAction {
 				    Collection<ConcurrentHashMap<String, String>> al = new ArrayList<ConcurrentHashMap<String, String>>();
 				    Iterator<Bestellungen> i = o.iterator();
 				    ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
-				    tf.setTimeZone(TimeZone.getTimeZone(ThreadSafeSimpleDateFormat.getTIMEZONE()));
+				    tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
 					while (i.hasNext()){						
 						Bestellungen order = (Bestellungen) i.next();
 						ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
@@ -186,8 +186,8 @@ public final class OrderReports extends DispatchAction {
 					param.put("from", new SimpleDateFormat("dd.MM.yyyy").format(from));
 					param.put("to", new SimpleDateFormat("dd.MM.yyyy").format(to));
 					Calendar cal = new GregorianCalendar();
-		        	cal.setTimeZone(TimeZone.getTimeZone(ThreadSafeSimpleDateFormat.getTIMEZONE()));		        	
-					param.put("today", tf.format(cal.getTime()));
+		        	cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));		        	
+					param.put("today", tf.format(cal.getTime(), ui.getKonto().getTimezone()));
 
 					//Reportauswahl, Verbindung zum Report aufbauen
 					if (of.getReport()==null) of.setReport("reports/Orders.jasper");

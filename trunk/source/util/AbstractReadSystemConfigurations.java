@@ -34,6 +34,8 @@ public abstract class AbstractReadSystemConfigurations {
 	
 	private static final SimpleLogger log = new SimpleLogger(AbstractReadSystemConfigurations.class);
 	
+	static final String SYSTEM_TIMEZONE = readSystemTimezone();
+	
 	static final String SYSTEM_EMAIL = readSystemEmail();
 	static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
 	static final String SYSTEM_EMAIL_ACCOUNTNAME = readSystemEmailAccountname();
@@ -59,6 +61,21 @@ public abstract class AbstractReadSystemConfigurations {
 	
 	static final boolean USE_DAIA = readUseDaia();
 	static final String DAIA_HOST = readDaiaHost();
+	
+	private static final String readSystemTimezone() {
+		
+		String systemTimezone = "";
+		
+		try {			
+			Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+			systemTimezone = config.getString("system.timezone");
+			
+		} catch (ConfigurationException e) {
+			log.error(e.toString());
+		}
+		
+		return systemTimezone;
+	}
 	
 	private static final String readSystemEmail() {
 		

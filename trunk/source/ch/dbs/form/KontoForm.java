@@ -23,6 +23,8 @@ import java.util.List;
 import org.apache.struts.validator.ValidatorForm;
 import org.grlea.log.SimpleLogger;
 
+import util.ReadSystemConfigurations;
+
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
@@ -43,6 +45,7 @@ public final class KontoForm extends ValidatorForm{
     private String PLZ;
     private String Ort;
     private String Land;
+    private String timezone = ReadSystemConfigurations.getSystemTimezone();
     private List<Countries> countries;
     private String countryid;
     private String faxno; // DD-Faxservernummer, nur durch Admin editierbar!
@@ -52,7 +55,7 @@ public final class KontoForm extends ValidatorForm{
     private String fax_extern; // externe Faxnummer, editierbar durch Kunde
     private String Telefon;
     private String Bibliotheksmail; // Bibliothekskontakt
-    private String dbsmail; // Hier landen die bestellten Artikel
+    private String dbsmail; // This is the email that receives ILL deliveries
     private String dbsmailpw;
     private String gbvbenutzername;
     private String gbvpasswort;
@@ -392,6 +395,16 @@ public final class KontoForm extends ValidatorForm{
 
 	public void setLand(String land) {
 		Land = land;
+	}
+
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 
 
@@ -980,6 +993,7 @@ public final class KontoForm extends ValidatorForm{
 	    if (konto.getPLZ()!=null) this.PLZ = konto.getPLZ().trim();
 	    if (konto.getOrt()!=null) this.Ort = konto.getOrt().trim();
 	    if (konto.getLand()!=null) this.Land = konto.getLand();
+	    if (konto.getTimezone()!=null) this.timezone = konto.getTimezone();
 	    if (konto.getFaxno()!=null) this.faxno = konto.getFaxno(); // DD-Faxservernummer, nur durch Admin editierbar!
 	    if (konto.getFaxusername()!=null) this.faxusername = konto.getFaxusername();
 	    if (konto.getFaxpassword()!=null) this.faxpassword = konto.getFaxpassword();
@@ -987,7 +1001,7 @@ public final class KontoForm extends ValidatorForm{
 	    if (konto.getFax_extern()!=null) this.fax_extern = konto.getFax_extern().trim(); // externe Faxnummer, editierbar durch Kunde
 	    if (konto.getTelefon()!=null) this.Telefon = konto.getTelefon().trim();
 	    if (konto.getBibliotheksmail()!=null) this.Bibliotheksmail = konto.getBibliotheksmail().trim(); // Bibliothekskontakt
-	    if (konto.getDbsmail()!=null) this.dbsmail = konto.getDbsmail().trim(); // Hier landen die bestellten Artikel
+	    if (konto.getDbsmail()!=null) this.dbsmail = konto.getDbsmail().trim(); // This is the email that receives ILL deliveries
 	    if (konto.getDbsmailpw()!=null) this.dbsmailpw = konto.getDbsmailpw();
 	    this.gbvbenutzername = konto.getGbvbenutzername();
 	    this.gbvpasswort = konto.getGbvpasswort();

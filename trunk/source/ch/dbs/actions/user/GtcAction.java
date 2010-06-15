@@ -58,12 +58,12 @@ public final class GtcAction extends DispatchAction {
             
             Date d = new Date(); // aktuelles Datum setzen
             ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String datum = fmt.format(d);
+            String datum = fmt.format(d, ui.getKonto().getTimezone());
             
             ui.getBenutzer().setGtc(t.getInhalt());
             ui.getBenutzer().setGtcdate(datum);
             AbstractBenutzer b = new AbstractBenutzer();
-            b.updateUser(ui.getBenutzer(), cn.getConnection());
+            b.updateUser(ui.getBenutzer(), ui.getKonto(), cn.getConnection());
             rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
             
         	if (ui.getKonto()!=null){ // Prüfung ob mehrere Konti vorhanden

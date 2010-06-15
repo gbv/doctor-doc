@@ -26,14 +26,14 @@ import java.util.TimeZone;
 public class ThreadSafeSimpleDateFormat {
 
 	 private DateFormat df;
-	 private static final String TIMEZONE = "GTM+01";
+//	 private static final String TIMEZONE = "GTM+01";
 
 	 public ThreadSafeSimpleDateFormat(String format) {
 	     this.df = new SimpleDateFormat(format);
 	 }
 
-	 public synchronized String format(Date date) {
-		 df.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+	 public synchronized String format(Date date, String timezone) {
+		 df.setTimeZone(TimeZone.getTimeZone(timezone));
 	     return df.format(date);
 	 }
 
@@ -45,9 +45,9 @@ public class ThreadSafeSimpleDateFormat {
 	     df.setTimeZone(tz);
 	 }
 
-	public static String getTIMEZONE() {
-		return TIMEZONE;
-	}
+//	public static String getTIMEZONE() {
+//		return TIMEZONE;
+//	}
 	 
 	 
 	}

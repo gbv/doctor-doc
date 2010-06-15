@@ -2381,7 +2381,7 @@ public final class OrderAction extends DispatchAction {
             	
         		Date d = new Date(); 
         		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String datum = fmt.format(d);
+                String datum = fmt.format(d, ui.getKonto().getTimezone());
 //                System.out.println("Bestelldatum: " + datum);
             	
 //            	 Bestellung in DB speichern:
@@ -2400,7 +2400,7 @@ public final class OrderAction extends DispatchAction {
               
                         Text t = new Text(cn.getConnection(), pageForm.getStatus());
 
-                        orderstate.setNewOrderState(b, t, null, ui.getBenutzer().getEmail(), cn.getConnection()); // Status setzen
+                        orderstate.setNewOrderState(b, ui.getKonto(), t, null, ui.getBenutzer().getEmail(), cn.getConnection()); // Status setzen
                 		
                 	}
                 }
@@ -2462,7 +2462,7 @@ public final class OrderAction extends DispatchAction {
                 // klappt leider nicht zuverlässig (s. Workaround oben)                
                 Text t = new Text(cn.getConnection(), pageForm.getStatus());
 
-                orderstate.setNewOrderState(b, t, null, ui.getBenutzer().getEmail(), cn.getConnection()); // Status Bestellt setzen
+                orderstate.setNewOrderState(b, ui.getKonto(), t, null, ui.getBenutzer().getEmail(), cn.getConnection()); // Status Bestellt setzen
                 
                 } else { // hier wird eine bestehende Bestellung geupdated
                 	b.update(cn.getConnection());                	

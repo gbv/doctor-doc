@@ -72,7 +72,7 @@ public final class OrderStatistik extends DispatchAction {
         				of.getDfrom() == null || of.getDto() == null) {
 
         			Calendar cal_to = Calendar.getInstance();
-        			cal_to.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+        			cal_to.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
         			
         			of.setYfrom(new SimpleDateFormat("yyyy").format(cal_to.getTime()));
         			of.setMfrom("01");
@@ -85,12 +85,12 @@ public final class OrderStatistik extends DispatchAction {
         			of.setTodate(of.getYto()+"-"+of.getMto()+"-"+of.getDto() + "23:59:59");
         		}
             	
-            	of = check.checkDateRegion(of, 4);            	 
+            	of = check.checkDateRegion(of, 4, ui.getKonto().getTimezone());            	 
            	            
 // 				angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
                             Date d = new Date(); // aktuelles Datum setzen
                             ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                            String datum = fmt.format(d);
+                            String datum = fmt.format(d, ui.getKonto().getTimezone());
                             int year_now = Integer.parseInt(datum);
                             int year_start = 2007;
                             

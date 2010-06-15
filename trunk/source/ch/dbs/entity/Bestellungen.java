@@ -99,7 +99,7 @@ public class Bestellungen extends AbstractIdEntity {
 	  
 	  ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	  Date d = new Date();
-      String datum = fmt.format(d);
+      String datum = fmt.format(d, k.getTimezone());
 	  
 	  this.setKonto(k);
 	  this.setBenutzer(user);
@@ -748,17 +748,17 @@ public class Bestellungen extends AbstractIdEntity {
             * @param Long uid, kid
             * @return int anzahl
             */
-           public int countOrdersPerUser(String uid, Long kid, Connection cn){
+           public int countOrdersPerUser(String uid, Konto k, Connection cn){
                int anzahl = 0;
                PreparedStatement pstmt = null;
                ResultSet rs = null;
                try {
              	  Calendar cal = Calendar.getInstance();
-             	  cal.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+             	  cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
              	  String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
                	// SQL ausführen
                    pstmt = cn.prepareStatement("SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
-                   pstmt.setString(1, kid.toString());
+                   pstmt.setString(1, k.getId().toString());
                    pstmt.setString(2, uid);
                    pstmt.setString(3, datum);
                    rs = pstmt.executeQuery();
@@ -921,17 +921,17 @@ public class Bestellungen extends AbstractIdEntity {
             * @param Long kid
             * @return int anzahl
             */
-           public int allOrdersThisYearForKonto(Long kid, Connection cn){
+           public int allOrdersThisYearForKonto(Konto k, Connection cn){
                int anzahl = 0;
                PreparedStatement pstmt = null;
                ResultSet rs = null;
                try {
              	  Calendar cal = Calendar.getInstance();
-             	  cal.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+             	  cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
              	  String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
                	// SQL ausführen
                    pstmt = cn.prepareStatement("SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `orderdate` >= ?");
-                   pstmt.setString(1, kid.toString());
+                   pstmt.setString(1, k.getId().toString());
                    pstmt.setString(2, datum);
                    rs = pstmt.executeQuery();
                    while (rs.next()) {
@@ -993,7 +993,7 @@ public class Bestellungen extends AbstractIdEntity {
  		if (b.getBenutzer()!=null && ReadSystemConfigurations.isAnonymizationActivated()) {
  		Calendar cal = stringFromMysqlToCal(b.getOrderdate());
  		Calendar limit = Calendar.getInstance();
- 		limit.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+ 		limit.setTimeZone(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone())); // takes SystemTimezone due to pratical reasons
  		limit.add(Calendar.MONTH, -ReadSystemConfigurations.getAnonymizationAfterMonths());
  		limit.add(Calendar.DAY_OF_MONTH, -1);
  		if (cal.before(limit)) {
@@ -1037,7 +1037,7 @@ public class Bestellungen extends AbstractIdEntity {
         
         Date dateParsed = new Date();
         Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+		cal.setTimeZone(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
         
         try {
         ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
