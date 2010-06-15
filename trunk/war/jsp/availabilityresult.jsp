@@ -164,7 +164,7 @@
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td><a href="http://worldcatlibraries.org/registry/gateway?genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />" target="_blank">WorldCat</a></td>
 		</tr>
 		<tr>
 			<td><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK+&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK+</a></td>
