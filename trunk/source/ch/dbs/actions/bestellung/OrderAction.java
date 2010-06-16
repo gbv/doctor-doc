@@ -2640,7 +2640,8 @@ public final class OrderAction extends DispatchAction {
             rq.setAttribute("ActiveMenus", mf);
             ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
             rq.setAttribute("errormessage", em);
-            log.info("prepareDeleteOrder: prevented URL-hacking!");
+            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            log.info("prepareDeleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
         }
         } else {
         	ActiveMenusForm mf = new ActiveMenusForm();
@@ -2694,7 +2695,8 @@ public final class OrderAction extends DispatchAction {
             rq.setAttribute("ActiveMenus", mf);
             ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
             rq.setAttribute("errormessage", em);
-            log.info("deleteOrder: prevented URL-hacking!");
+            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            log.info("deleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
         }
         } else {
         	ActiveMenusForm mf = new ActiveMenusForm();

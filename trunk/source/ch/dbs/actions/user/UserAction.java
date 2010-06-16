@@ -574,7 +574,7 @@ public final class UserAction extends DispatchAction {
     	  forward = "failure";
           em = new ErrorMessage("error.hack");
           em.setLink("searchfree.do?activemenu=suchenbestellen");
-          log.info("changeuserdetails: prevented URL-hacking!");
+          log.info("changeuserdetails: prevented URL-hacking! " + ui.getBenutzer().getEmail());
        }
             
       } else {
@@ -722,11 +722,10 @@ public final class UserAction extends DispatchAction {
         		String[] kontos = (String[]) uf.getKontos();
         		
                 forward = "success";
-                AbstractBenutzer u = new AbstractBenutzer();
+                AbstractBenutzer u = new Benutzer();
+                
                 if (uf.getBid()!=null){
                 	u = u.getUser(uf.getBid(), cn.getConnection());
-                } else {
-                	u = new Benutzer();
                 }
                            
                 u.setAnrede(uf.getAnrede());
@@ -752,17 +751,29 @@ public final class UserAction extends DispatchAction {
                 u.setBilling(uf.getBilling());
                 u.setGtc(uf.getGtc());
                 u.setGtcdate(uf.getGtcdate());
-                if (uf.getBid()!=null){
-                	u.setId(uf.getBid());
-                	u.updateUser(u, ui.getKonto(), cn.getConnection());
-                } else {
+                
+                if (uf.getBid()==null) {
                 	Date d = new Date(); 
             		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String datum = fmt.format(d, ui.getKonto().getTimezone());
                     u.setDatum(datum);
                 	uf.setBid(u.saveNewUser(u, ui.getKonto(), cn.getConnection()));
+                // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
+                } else if (vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), uf.getBid(), cn.getConnection())) {
+                	u.setId(uf.getBid());
+                	u.updateUser(u, ui.getKonto(), cn.getConnection());
+                } else {
+                	ErrorMessage em = new ErrorMessage();
+                	forward = "failure";
+                    em = new ErrorMessage("error.hack");
+                    em.setLink("searchfree.do?activemenu=suchenbestellen");
+                    rq.setAttribute("errormessage", em);
+                    log.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
-
+                
+                // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
+                if (u.getId()==null || vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
+                
                 if (u.getId()!=null) vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection());
                 for (int i=0;i<kontos.length;i++){                	
                      Konto k = new Konto(Long.parseLong(kontos[i]),cn.getConnection());
@@ -788,6 +799,7 @@ public final class UserAction extends DispatchAction {
                 	rq.getSession().setAttribute("ofjo", null);
                 }
                 rq.setAttribute("userform", uf);
+              }
                 
         	} else {
         		ErrorMessage em = new ErrorMessage();
@@ -831,14 +843,16 @@ public final class UserAction extends DispatchAction {
         String forward = "failure";
         Text cn = new Text();
         Auth auth = new Auth();
+        VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
         
         if (auth.isLogin(rq)) {
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            forward = "success";
-            Benutzer u = new Benutzer();
+        	Benutzer u = new Benutzer();
             UserForm uf = (UserForm)fm; 
             UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
             Konto k = ui.getKonto();
+        if (vKontoBenutzer.isUserFromKonto(k.getId(), uf.getBid(), cn.getConnection())) {
+            forward = "success";
             
             if (uf.getBid()!=null){
             	u.setId(uf.getBid());
@@ -851,7 +865,14 @@ public final class UserAction extends DispatchAction {
             if (rkv.isEmpty())b.deleteUser(u, cn.getConnection());
             
             rq.setAttribute("userform", uf);
-            
+        } else {
+        	ErrorMessage em = new ErrorMessage();
+            em = new ErrorMessage("error.hack");
+            em.setLink("searchfree.do?activemenu=suchenbestellen");
+            rq.setAttribute("errormessage", em);
+            log.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());        	
+        }
+        
         } else {
             ErrorMessage em = new ErrorMessage("error.berechtigung");
             rq.setAttribute("errormessage", em);

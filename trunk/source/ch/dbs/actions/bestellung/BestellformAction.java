@@ -396,8 +396,8 @@ public final class BestellformAction extends DispatchAction {
 				Date d = new Date(); 
 				ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		        String datum = fmt.format(d, k.getTimezone());
-		        u.setDatum(datum);
 				u = new AbstractBenutzer(of);
+				u.setDatum(datum);
 				if (u.getLand()==null || u.getLand().equals("0")) u.setLand(k.getLand()); // use same value as library, if not specified
 				u.setId(u.saveNewUser(u, k, cn.getConnection()));
 				VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
@@ -821,7 +821,7 @@ public final class BestellformAction extends DispatchAction {
             rq.setAttribute("ActiveMenus", mf);
 			ErrorMessage em = new ErrorMessage("error.hack", "searchfree.do?activemenu=suchenbestellen");
             rq.setAttribute("errormessage", em);
-            log.info("modify: prevented URL-hacking!");
+            log.info("modify: prevented URL-hacking! " + ui.getBenutzer().getEmail());
 		}
 		} else { // keine Berechtigung
 			ActiveMenusForm mf = new ActiveMenusForm();
@@ -913,7 +913,7 @@ public final class BestellformAction extends DispatchAction {
             rq.setAttribute("ActiveMenus", mf);
 			ErrorMessage em = new ErrorMessage("error.hack", "searchfree.do?activemenu=suchenbestellen");
             rq.setAttribute("errormessage", em);
-            log.info("save: prevented URL-hacking!");
+            log.info("save: prevented URL-hacking! " + ui.getBenutzer().getEmail());
 		}
 		} else { // keine Berechtigung
 			ActiveMenusForm mf = new ActiveMenusForm();
