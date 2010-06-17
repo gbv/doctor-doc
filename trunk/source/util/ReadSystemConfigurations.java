@@ -70,6 +70,10 @@ public class ReadSystemConfigurations {
 		return AbstractReadSystemConfigurations.ANONYMIZATION_AFTER_MONTHS;
 	}
 	
+	public final static boolean isSearchCarelit() {
+		return AbstractReadSystemConfigurations.SEARCH_CARELIT;
+	}
+	
 	public final static boolean isUseDaia() {
 		return AbstractReadSystemConfigurations.USE_DAIA;
 	}

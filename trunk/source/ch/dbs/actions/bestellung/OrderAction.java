@@ -856,10 +856,12 @@ public final class OrderAction extends DispatchAction {
     		link = link + openurl + "&bibid=" + bibid;    
     		}
     		
-//            System.out.println("\012Suchstring Pruefung Verfuegbarkeit OpenUrl bei EZB: " + link + "\012");
-            
-            carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc" + openurl);
-        	carelitcontent = executor.submit(carelitthread);
+
+			if (ReadSystemConfigurations.isSearchCarelit()) {
+				carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc"
+								+ openurl);
+				carelitcontent = executor.submit(carelitthread);
+			}
             
             content = getWebcontent(link, 3000, 2);
             content = content.replaceAll("\012", ""); // Layout-Umbrueche entfernen
@@ -984,6 +986,7 @@ public final class OrderAction extends DispatchAction {
     			}
     		}
             
+            if (ReadSystemConfigurations.isSearchCarelit()) {
          // hier wird der Carelit-Thread mit einem zusätzlich Maximum Timeout von 1 Sekunde zurückgeholt
     			try {
     				String carelitanswer = carelitcontent.get(1, TimeUnit.SECONDS);
@@ -1002,6 +1005,7 @@ public final class OrderAction extends DispatchAction {
     				// ungefährlich, falls der Task schon beendet ist. Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
 	    			carelitcontent.cancel(true);
     			}
+            }
             
         	
         } else {

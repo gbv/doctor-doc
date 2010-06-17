@@ -59,6 +59,7 @@ public abstract class AbstractReadSystemConfigurations {
 	static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
 	static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
 	
+	static final boolean SEARCH_CARELIT = searchCarelit();
 	static final boolean USE_DAIA = readUseDaia();
 	static final String DAIA_HOST = readDaiaHost();
 	
@@ -345,6 +346,21 @@ private static final int readAnonymizationAfterMonths() {
 	}
 	
 	return months;
+}
+
+private static final boolean searchCarelit() {
+	
+	boolean searchCarelit = false;
+	
+	try {			
+		Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+		searchCarelit = config.getBoolean("searchCarelit");
+		
+	} catch (ConfigurationException e) {
+		log.error(e.toString());
+	}
+	
+	return searchCarelit;
 }
 
 private static final boolean readUseDaia() {
