@@ -315,7 +315,8 @@
 			<logic:iterate id="os" name="statistics"
 				property="gratis_kosten.statistik">
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<bean:define id="tmp" name="os" property="label" type="java.lang.String" />
+					<th id="tablestatsleft"><bean:message key="<%=tmp%>" /></th>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
 				</tr>
 			</logic:iterate>
@@ -472,8 +473,9 @@
 		<logic:present name="statistics" property="genderstat">
 			<logic:iterate id="os" name="statistics"
 				property="genderstat.statistik">
+			<bean:define id="tmp" name="os" property="label" type="java.lang.String" />
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft"><bean:message key="<%=tmp%>" /></th>
 					<td id="tablestats"><bean:write name="os"
 						property="anzahl_two" /></td>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>

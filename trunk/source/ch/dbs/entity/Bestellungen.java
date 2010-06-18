@@ -1362,22 +1362,22 @@ public class Bestellungen extends AbstractIdEntity {
           }
           
           OrderStatistikForm ok = new OrderStatistikForm();
-          	ok.setLabel("kostenpflichtig");
+          	ok.setLabel("stats.toPay");
      		ok.setAnzahl(kostenpflichtig);
      		list.add(ok);
      		
      	   OrderStatistikForm og = new OrderStatistikForm();
-     		og.setLabel("gratis");
+     		og.setLabel("stats.free");
      		og.setAnzahl(gratis);
      		list.add(og);
      		
      	   OrderStatistikForm oka = new OrderStatistikForm();
-     		oka.setLabel("k.A.");
+     		oka.setLabel("stats.notSpecified");
      		oka.setAnzahl(unknown);
      		list.add(oka);
      		
      	   OrderStatistikForm osf = new OrderStatistikForm();
-     		osf.setLabel("Total");
+     		osf.setLabel("stats.total");
      		osf.setAnzahl(totalbestellungen);
      		list.add(osf);
 
@@ -1739,8 +1739,8 @@ public class Bestellungen extends AbstractIdEntity {
           while (rs.next()) {
           OrderStatistikForm osf = new OrderStatistikForm();
           String label = "";
-          if (rs.getString("anrede").equals("Herr")) label = "Mann";
-          if (rs.getString("anrede").equals("Frau")) label = "Frau";
+          if (rs.getString("anrede").equals("Herr")) label = "stats.male";
+          if (rs.getString("anrede").equals("Frau")) label = "stats.female";
           anzahl = rs.getInt("anzahl");
           bestellungen = countRowsPerFeld(kid, date_from, date_to, "anrede", rs.getString("anrede"), cn);
           total = total + anzahl;
@@ -1759,7 +1759,7 @@ public class Bestellungen extends AbstractIdEntity {
           
           if (unknown > 0) {
           OrderStatistikForm osf = new OrderStatistikForm(); // hier werden Bestellungen mit unbekanntem Gender als "k.A." aufgeführt...
-          osf.setLabel("k.A.");
+          osf.setLabel("stats.notSpecified");
           osf.setAnzahl(unknown);
           osf.setAnzahl_two(unknownbestellungen);
           list.add(osf);
