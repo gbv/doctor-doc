@@ -224,7 +224,7 @@
 							name="yt" /></option>
 					</logic:iterate>
 				</select> <input type="hidden" name="method" value="kontoOrders" /> <input
-					type="submit" value="anzeigen"></input></td>
+					type="submit" value="<bean:message key="stats.submit" />"></input></td>
 			</tr>
 		</html:form>
 	</table>
