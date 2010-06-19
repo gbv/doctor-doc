@@ -680,7 +680,7 @@
 			<th id="tablestatsleft"><bean:message key="stats.plz" />**</th>
 			<th id="tablestats"><bean:message key="stats.orders" /></th>
 			<th id="tablestats"><bean:message key="stats.users" /></th>
-			<th id="tablestatsleft"><bean:message key="stats.ort" /></th>
+			<th id="tablestatsleft"><bean:message key="bestellform.ort" /></th>
 		</tr>
 		<logic:present name="statistics" property="ortstat">
 			<logic:iterate id="os" name="statistics" property="ortstat.statistik">
