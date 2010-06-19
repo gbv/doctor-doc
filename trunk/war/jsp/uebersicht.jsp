@@ -292,7 +292,12 @@
 				<a href="https://www.gbv.de/cbs4/bestellverlauf.pl?BestellID=<bean:write name="b" property="gbvnr" />" target="_blank"><bean:write name="b" property="bestellquelle" /></a>&nbsp;
 			</logic:present>
 			<logic:notPresent name="b" property="gbvnr">
-      			<bean:write name="b" property="bestellquelle" />&nbsp;
+      			<logic:notEqual name="b" property="bestellquelle" value="k.A.">
+      				<bean:write name="b" property="bestellquelle" />&nbsp;
+      			</logic:notEqual>
+      			<logic:equal name="b" property="bestellquelle" value="k.A.">
+      				<bean:message key="stats.notSpecified" />&nbsp;
+      			</logic:equal>
       		</logic:notPresent>
       	</logic:equal>
       	<logic:notEqual name="b" property="subitonr" value="">

@@ -271,7 +271,14 @@
 			<logic:iterate id="os" name="statistics"
 				property="lieferantstat.statistik">
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
 					</td>
 					<td id="tablestatsleft"><logic:present name="os"
@@ -334,7 +341,14 @@
 			<logic:iterate id="os" name="statistics"
 				property="sum_gratis_kosten.statistik">
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os" property="preis" /></td>
 				</tr>
 			</logic:iterate>
@@ -352,7 +366,17 @@
 			<logic:present name="statistics" property="mediatype">
 				<logic:iterate id="os" name="statistics"
 					property="mediatype.statistik">
-					<th id="tablestats"><bean:write name="os" property="label" /></th>
+					<th id="tablestats">
+						<logic:equal name="os" property="label" value="Artikel">
+							<bean:message key="save.artikel" />
+						</logic:equal>
+						<logic:equal name="os" property="label" value="Teilkopie Buch">
+							<bean:message key="save.bookpart" />
+						</logic:equal>
+						<logic:equal name="os" property="label" value="Buch">
+							<bean:message key="save.book" />
+						</logic:equal>
+					</th>
 				</logic:iterate>
 		</tr>
 		<tr>
@@ -377,7 +401,14 @@
 			<logic:present name="statistics" property="lieferartstat">
 				<logic:iterate id="os" name="statistics"
 					property="lieferartstat.statistik">
-					<th id="tablestats"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 				</logic:iterate>
 		</tr>
 		<tr>
@@ -401,7 +432,14 @@
 			<logic:present name="statistics" property="fileformatstat">
 				<logic:iterate id="os" name="statistics"
 					property="fileformatstat.statistik">
-					<th id="tablestats"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 				</logic:iterate>
 		</tr>
 		<tr>
@@ -424,7 +462,13 @@
 				<th id="tablestatsleft"><bean:message key="stats.prio" />*</th>
 				<th id="tablestats"><bean:message key="stats.total" /></th>
 				<logic:iterate id="os" name="statistics" property="prioritystat.statistik">
-					<th id="tablestats"><bean:write name="os" property="label" />
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
 					</th>
 				</logic:iterate>
 			</tr>
@@ -527,7 +571,14 @@
 			<logic:iterate id="os" name="statistics"
 				property="institutionstat.statistik">
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os"
 						property="anzahl_two" /></td>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
@@ -579,7 +630,14 @@
 			<logic:iterate id="os" name="statistics"
 				property="abteilungstat.statistik">
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os"
 						property="anzahl_two" /></td>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
@@ -619,7 +677,7 @@
 
 	<table border="1">
 		<tr>
-			<th id="tablestats"><bean:message key="stats.plz" />**</th>
+			<th id="tablestatsleft"><bean:message key="stats.plz" />**</th>
 			<th id="tablestats"><bean:message key="stats.orders" /></th>
 			<th id="tablestats"><bean:message key="stats.users" /></th>
 			<th id="tablestatsleft"><bean:message key="stats.ort" /></th>
@@ -627,7 +685,14 @@
 		<logic:present name="statistics" property="ortstat">
 			<logic:iterate id="os" name="statistics" property="ortstat.statistik">
 				<tr>
-					<th id="tablestats"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os"
 						property="anzahl_two" /></td>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
@@ -658,7 +723,14 @@
 			<logic:iterate id="os" name="statistics"
 				property="landstat.statistik">
 				<tr>
-					<th id="tablestatsleft"><bean:write name="os" property="label" /></th>
+					<th id="tablestatsleft">
+						<logic:notEqual name="os" property="label" value="k.A.">
+							<bean:write name="os" property="label" />
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="k.A.">
+							<bean:message key="stats.notSpecified" />
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os"
 						property="anzahl_two" /></td>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
@@ -678,7 +750,7 @@
 
 	<table border="1">
 		<tr>
-			<th id="tablestats"><bean:message key="stats.issn" />*</th>
+			<th id="tablestats"><bean:message key="stats.issn" /></th>
 			<th id="tablestats"><bean:message key="stats.orders" /></th>
 			<th id="tablestats"><bean:message key="stats.users" /></th>
 			<th id="tablestatsleft"><bean:message key="stats.issn_comment" /></th>
@@ -691,9 +763,15 @@
 			<logic:iterate id="os" name="statistics"
 				property="zeitschriftstat.statistik">
 				<tr>
-					<th id="tablestats"><nobr><a
-						href="http://rzblx1.uni-regensburg.de/ezeit/searchres.phtml?bibid=<bean:write name="userinfo" property="konto.ezbid" />&colors=7&lang=de&jq_type1=IS&jq_term1=<bean:write name="os" property="label" />&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+&jq_type4=IS&jq_term4=&offset=-1&hits_per_page=50&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=2&selected_colors%5B%5D=4"
-						target="_blank"><bean:write name="os" property="label" /></a></nobr></th>
+					<th id="tablestats">
+						<logic:notEqual name="os" property="label" value="andere">
+							<nobr><a href="http://rzblx1.uni-regensburg.de/ezeit/searchres.phtml?bibid=<bean:write name="userinfo" property="konto.ezbid" />&colors=7&lang=de&jq_type1=IS&jq_term1=<bean:write name="os" property="label" />&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+&jq_type4=IS&jq_term4=&offset=-1&hits_per_page=50&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=2&selected_colors%5B%5D=4"
+							target="_blank"><bean:write name="os" property="label" /></a></nobr>
+						</logic:notEqual>
+						<logic:equal name="os" property="label" value="andere">
+							<bean:message key="save.andere" />*
+						</logic:equal>
+					</th>
 					<td id="tablestats"><bean:write name="os" property="anzahl" /></td>
 					<td id="tablestats"><logic:notEqual name="os"
 						property="anzahl_two" value="0">
