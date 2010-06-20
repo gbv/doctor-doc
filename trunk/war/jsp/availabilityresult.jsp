@@ -38,10 +38,10 @@
 <tr>
 <th id="th-left">
 <logic:present name="findfree" property="link_search">
-	<a href="<bean:write name="findfree" property="link_search"/>" target="_blank">powered by EZB und ZDB</a>
+	<a href="<bean:write name="findfree" property="link_search"/>" target="_blank">powered by EZB and ZDB</a>
 </logic:present>
 <logic:notPresent name="findfree" property="link_search">
-	powered by EZB und ZDB
+	powered by EZB and ZDB
 </logic:notPresent>
 </th>
 </tr>
