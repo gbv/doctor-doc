@@ -2358,7 +2358,8 @@ public final class OrderAction extends DispatchAction {
         if (auth.isLogin(rq)) {
         	
            // aufgrund von IE Bug wird value bei einem eigenen Icon im submit nicht übermittelt:
-        if (!pageForm.getSubmit().equals("neuen Kunden anlegen") && !pageForm.getSubmit().equals("add new patron")) { // Post-Methode um vor dem Abspeichern einer Bestellung einen neuen Kunden anzulegen
+        if (!pageForm.getSubmit().equals("neuen Kunden anlegen") && !pageForm.getSubmit().equals("add new patron") &&
+        	!pageForm.getSubmit().equals("Ajouter un nouveau client")) { // Post-Methode um vor dem Abspeichern einer Bestellung einen neuen Kunden anzulegen
         	
             forward = "success";
             
