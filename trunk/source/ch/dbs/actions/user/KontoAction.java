@@ -401,6 +401,7 @@ public final class KontoAction extends DispatchAction {
 			kf.setGbvpasswort(k.getGbvpasswort());
             kf.setPopfaxend(k.getPopfaxend());
             kf.setEzbid(k.getEzbid());
+            kf.setInstlogolink(k.getInstlogolink());
             kf.setZdb(k.isZdb());
             
             // Kontoeinstellungen
@@ -475,6 +476,11 @@ public final class KontoAction extends DispatchAction {
                 		check.isMinLength(kf.getLand(), 2) && check.isMinLength(kf.getTelefon(), 4) &&
                     	check.isEmail(kf.getBibliotheksmail()) && check.isEmail(kf.getDbsmail()) ) {
                 
+                String[] allowedFiletypes = { "jpg","jpeg","gif","png" };
+                
+                if (kf.getInstlogolink()==null || kf.getInstlogolink().equals("") || // no entry is valid
+                	check.isUrlAndFiletype(kf.getInstlogolink(), allowedFiletypes)) {
+                
                 // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
                 if (kf.getGbvbenutzername()!=null && !kf.getGbvbenutzername().equals("")) {
                 	String gbvlink = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" +
@@ -548,6 +554,7 @@ public final class KontoAction extends DispatchAction {
     			if (kf.getBibliotheksmail() !=null) {k.setBibliotheksmail(kf.getBibliotheksmail().trim());} else {k.setBibliotheksmail(kf.getBibliotheksmail());}
     			if (kf.getDbsmail() !=null) {k.setDbsmail(kf.getDbsmail().trim());} else {k.setDbsmail(kf.getDbsmail());}
     			k.setEzbid(kf.getEzbid());
+    			k.setInstlogolink(kf.getInstlogolink());
     			k.setZdb(kf.isZdb());
     			k.setUserlogin(kf.isUserlogin());
     			k.setUserbestellung(kf.isUserbestellung()); // SUBITO
@@ -573,13 +580,24 @@ public final class KontoAction extends DispatchAction {
     			
                 } else {
                 	forward = "missingvalues";
-                	kf.setMessage("error.values");
+                	kf.setMessage("error.url");
                 	TimeZones tz = new TimeZones();
             		TreeSet<String> setTZ = tz.getTimeZonesAsString();
             		rq.setAttribute("timezones", setTZ);
                     List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());             
                     kf.setCountries(allPossCountries);
                 }
+                
+                } else {
+                	forward = "missingvalues";
+                	kf.setMessage("error.values");
+                	TimeZones tz = new TimeZones();
+            		TreeSet<String> setTZ = tz.getTimeZonesAsString();
+            		rq.setAttribute("timezones", setTZ);
+                    List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());             
+                    kf.setCountries(allPossCountries);
+                }               
+                
             
     		} else {
                 ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");

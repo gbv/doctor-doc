@@ -270,6 +270,34 @@ public class Check {
         
         return check;
     }
+    
+    /**
+     * This method checks if a String is a valid URL and from a specific filetype
+     */
+    public boolean isUrlAndFiletype(String link, String[] filetypes) {
+    	
+    	boolean check = false;
+        
+    	try {
+    	      String extension = link.substring(link.lastIndexOf(".")+1); // may throw exception
+    	      
+    	      // check for specified filetypes
+    	      for (int i=0;i<filetypes.length;i++) {
+    	    	  if (extension.equalsIgnoreCase(filetypes[i])) check = true;
+    	      }
+    	      
+    	      // link mustn't be longer than 254 charactres
+    	      if (link.length()>254) check = false;
+    	      
+    	      // needs to be an URL after all!
+    	      if (check) check = isUrl(link);
+    		
+    	    } catch (Exception e) {
+    	      check = false;
+    	    }
+        
+        return check;
+    }
 
     
     /**

@@ -140,7 +140,7 @@ OpenURL - Linkresolver
 		<td>UpToDate&nbsp;</td>
 		<td><bean:message key="openurl.uptodate_anleitung" /></td>
 	</tr>
-<table>
+</table>
 			
 			<p><bean:message key="openurl.gbv_anleitung" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message key="openurl.kontakt" /></a> <bean:message key="openurl.kontakt.text" /></p>
 			
@@ -185,7 +185,7 @@ OpenURL - Linkresolver
 		<td><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
 		<td><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
 	</tr>
-<table>
+</table>
 
 <p><bean:message key="bestellformconfigureselect.kontakt" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message bundle="systemConfig" key="systemEmail.email"/></a></p>
 		

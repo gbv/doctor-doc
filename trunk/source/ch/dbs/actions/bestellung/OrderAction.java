@@ -823,6 +823,9 @@ public final class OrderAction extends DispatchAction {
     		// eingeloggt, oder Zugriff IP-basiert/kkid/bkid
         if (auth.isLogin(rq) || t.getInhalt() != null ) {
         	forward = "notfreeebz";
+        	
+        	// set link in request if there is institution logo for this account
+            if (t.getInhalt()!=null && t.getKonto().getInstlogolink()!=null) rq.setAttribute("logolink", t.getKonto().getInstlogolink());
             
             ContextObject co = new ContextObject();
             ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();

@@ -163,12 +163,15 @@ public final class BestellformAction extends DispatchAction {
             
             // get additional orderform parameters (BestellParam bp)
             // Änderungen in diesem Abschnitt müssen in save() wiederholt werden
-            if (t!=null && t.getInhalt()!=null) {            	
+            if (t!=null && t.getInhalt()!=null) {
             	bp = new BestellParam(t, cn.getConnection());
             	// Länderauswahl setzen
             	List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());            
                 of.setCountries(allPossCountries);
                 if (of.getRadiobutton().equals("")) of.setRadiobutton(bp.getOption_value1()); // default Option1
+                
+                // set link in request if there is institution logo for this account
+                if (t.getKonto().getInstlogolink()!=null) rq.setAttribute("logolink", t.getKonto().getInstlogolink());
             }
             
             if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // default value deloptions
@@ -339,6 +342,9 @@ public final class BestellformAction extends DispatchAction {
 			if (t!=null && t.getInhalt()!=null) {
     			library = t.getKonto().getBibliotheksname();
     			k = t.getKonto();
+    			
+    			// set link in request if there is institution logo for this account
+                if (t.getKonto().getInstlogolink()!=null) rq.setAttribute("logolink", t.getKonto().getInstlogolink());
             }
 			
 			// zugehörige Bestellformular-Parameter holen

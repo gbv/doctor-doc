@@ -1,3 +1,10 @@
+-- Revision 50
+
+-- introduce institutional logo/image on orderforms
+
+ALTER TABLE `konto` ADD `instlogolink` VARCHAR( 254 ) NULL DEFAULT NULL AFTER `ezbid` 
+
+
 -- Revision 38
 
 -- add timezone support

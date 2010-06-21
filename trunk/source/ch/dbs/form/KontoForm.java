@@ -61,6 +61,7 @@ public final class KontoForm extends ValidatorForm{
     private String gbvpasswort;
     private String gbvrequesterid; // ID jeder einzelnen Bibliothek beim GBV
     private String ezbid;
+    private String instlogolink; // Link to a logo/image on a remote server
     private boolean zdb = false;
     private Text billing; // Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den Wert welcher beim User hinterlegt ist berschrieben werden.
     private Text billingtype; // Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle Text mit dem Texttyp Billingtype
@@ -328,6 +329,16 @@ public final class KontoForm extends ValidatorForm{
 
 	public void setEzbid(String ezbid) {
 		this.ezbid = ezbid;
+	}
+
+
+	public String getInstlogolink() {
+		return instlogolink;
+	}
+
+
+	public void setInstlogolink(String instlogolink) {
+		this.instlogolink = instlogolink;
 	}
 
 
@@ -1007,6 +1018,7 @@ public final class KontoForm extends ValidatorForm{
 	    this.gbvpasswort = konto.getGbvpasswort();
 	    this.gbvrequesterid = konto.getGbvrequesterid();
 	    if (konto.getEzbid()!=null) this.ezbid = konto.getEzbid();
+	    this.instlogolink = konto.getInstlogolink();
 	    this.zdb = konto.isZdb(); // ZDB-Teilnehmer
 	    if (konto.getBilling()!=null) this.billing = konto.getBilling(); // Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den Wert welcher beim User hinterlegt ist berschrieben werden.
 	    if (konto.getBillingtype()!=null) this.billingtype = konto.getBillingtype(); // Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle Text mit dem Texttyp Billingtype

@@ -64,6 +64,7 @@ public class Konto extends AbstractIdEntity {
     private String gbvpasswort;
     private String gbvrequesterid; // ID jeder einzelnen Bibliothek beim GBV
     private String ezbid;
+    private String instlogolink; // Link to a logo/image on a remote server
     private boolean zdb = false; // gibt an, ob die Bibliothek seinen Bestand in der ZDB eingepflegt hat (Verfügbarkeitsprüfung)
     private Text billing; // Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den Wert welcher beim User hinterlegt ist berschrieben werden.
     private Text billingtype; // Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle Text mit dem Texttyp Billingtype
@@ -72,7 +73,7 @@ public class Konto extends AbstractIdEntity {
     private int accounting_rhythmtimeout=0; // Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach .... trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
     private int threshold_value=0; /* Verrechnungsschwellwert Sammelrechnungen in Tagen */
     private int maxordersu=0; // Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-    private int maxordersutotal=0; // Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
+    private int maxordersutotal=0; // Begrenzung möglicher Bestellungen durch einen Benutzer pro Jahr
     private int maxordersj=0; // Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
     private int orderlimits=0; // Boolean. Bei True gelten die Beschrnkungen in maxordersj, maxordersutotal und maxordersu
     private boolean userlogin = false; // Dürfen sich "Nichtbibliothekare" einloggen
@@ -86,7 +87,7 @@ public class Konto extends AbstractIdEntity {
     private java.sql.Date expdate; // Konto Ablaufdatum. Automatische zurückstufung Kontotyp = 0 falls date>expdate
     private Date edatum; // Erstellungsdatum des kontos
     private String gtc; // enthält GTC-Version (General Terms and Conditions)
-    private String gtcdate; // Datum der Annahme durch User    
+    private String gtcdate; // Datum der Annahme durch User
 
   
   
@@ -116,6 +117,7 @@ public class Konto extends AbstractIdEntity {
 	    this.gbvpasswort = kf.getGbvpasswort();
 	    this.gbvrequesterid = kf.getGbvrequesterid();
 	    if (kf.getEzbid()!=null) this.ezbid = kf.getEzbid();
+	    this.instlogolink = kf.getInstlogolink();
 	    this.zdb = kf.isZdb(); // ZDB-Teilnehmer
 	    if (kf.getBilling()!=null) this.billing = kf.getBilling(); // Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den Wert welcher beim User hinterlegt ist berschrieben werden.
 	    if (kf.getBillingtype()!=null) this.billingtype = kf.getBillingtype(); // Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle Text mit dem Texttyp Billingtype
@@ -177,6 +179,7 @@ public class Konto extends AbstractIdEntity {
       this.setGbvpasswort(rs.getString("gbvpw"));
       this.setGbvrequesterid(rs.getString("gbv_requester_id"));
       this.setEzbid(rs.getString("ezbid"));
+      this.setInstlogolink(rs.getString("instlogolink"));
       this.setZdb(rs.getBoolean("zdb"));
       this.setAccounting_rhythmvalue(rs.getInt("accounting_rhythmvalue"));
       this.setAccounting_rhythmtimeout(rs.getInt("accounting_rhythmtimeout"));
@@ -290,9 +293,9 @@ public class Konto extends AbstractIdEntity {
 		  Konto kontoInstance = new Konto();
 	      pstmt = kontoInstance.setKontoValues(cn.prepareStatement( "INSERT INTO `konto` (`biblioname` , `isil` , " +
 	      "`adresse` , `adresszusatz` , `plz` , `ort` , `land` , `timezone` , `telefon` , `faxno` , `faxusername` , `faxpassword` , `popfaxend` , `fax2` , `bibliomail` , `dbsmail` , " +
-	      "`dbsmailpw` , `gbvbn` , `gbvpw` , `gbv_requester_id` , `ezbid` , `zdb` , `billing` , `billingtype` , `accounting_rhythmvalue` , `accounting_rhythmday` , " +
+	      "`dbsmailpw` , `gbvbn` , `gbvpw` , `gbv_requester_id` , `ezbid` , `instlogolink` , `zdb` , `billing` , `billingtype` , `accounting_rhythmvalue` , `accounting_rhythmday` , " +
 	      "`accounting_rhythmtimeout` , `billingschwellwert` , `maxordersu` ,`maxordersutotal`, `maxordersj` , `orderlimits` , `userlogin` , " +
-	      "`userbestellung` , `gbvbestellung` , `kontostatus` , `kontotyp` , `default_deloptions` , `paydate`, `expdate`,`edatum`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"), this);            
+	      "`userbestellung` , `gbvbestellung` , `kontostatus` , `kontotyp` , `default_deloptions` , `paydate`, `expdate`,`edatum`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"), this);            
 
 	      pstmt.executeUpdate();
 
@@ -334,7 +337,7 @@ public class Konto extends AbstractIdEntity {
 	  try {
           pstmt = setKontoValues(cn.prepareStatement( "UPDATE `konto` SET biblioname=?, isil=?, " +
           "adresse=?, adresszusatz=?, plz=?, ort=?, land=?, timezone=?, telefon=?, faxno=?, faxusername=? , faxpassword=?, popfaxend=?, fax2=?, " +
-          "bibliomail=?, dbsmail=?, dbsmailpw=?, gbvbn=?, gbvpw=?, gbv_requester_id=?, ezbid=?, zdb=?, billing=?, billingtype=?, accounting_rhythmvalue=?, " +
+          "bibliomail=?, dbsmail=?, dbsmailpw=?, gbvbn=?, gbvpw=?, gbv_requester_id=?, ezbid=?, instlogolink=?, zdb=?, billing=?, billingtype=?, accounting_rhythmvalue=?, " +
           "accounting_rhythmday=?, accounting_rhythmtimeout=?, billingschwellwert=?, maxordersu=?, maxordersutotal=?, " +
           "maxordersj=?, orderlimits=?, userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, default_deloptions=?, paydate=?, expdate=? " +
           "WHERE `KID` = " + this.getId()), this);
@@ -604,25 +607,26 @@ public class Konto extends AbstractIdEntity {
       if (k.getGbvpasswort()==null || k.getGbvpasswort().equals("")){pstmt.setString(19, null);} else {pstmt.setString(19, k.getGbvpasswort());}
       if (k.getGbvrequesterid()==null || k.getGbvrequesterid().equals("")){pstmt.setString(20, null);} else {pstmt.setString(20, k.getGbvrequesterid());}
       if (k.getEzbid()!=null){pstmt.setString(21, k.getEzbid());} else {pstmt.setString(21, "");}
-      if (k.isZdb()==false){pstmt.setString(22, "0");} else {pstmt.setString(22, "1");}
-      if (k.getBilling()!=null){pstmt.setString(23, k.getBilling().toString());} else {pstmt.setString(23, "");}
-      if (k.getBillingtype()!=null){pstmt.setString(24, k.getBillingtype().toString());} else {pstmt.setString(24, "");}        
-      if (k.getAccounting_rhythmvalue()==0){pstmt.setString(25, "0");} else {pstmt.setString(25, "1");}
-      if (k.getAccounting_rhythmday()==0){pstmt.setString(26, "0");} else {pstmt.setString(26, "1");}
-      if (k.getAccounting_rhythmtimeout()==0){pstmt.setString(27, "0");} else {pstmt.setString(27, "1");}
-      if (k.getThreshold_value()==0){pstmt.setString(28, "0");} else {pstmt.setString(28, "1");}
-      pstmt.setString(29, Integer.valueOf(k.getMaxordersu()).toString());
-      pstmt.setString(30, Integer.valueOf(k.getMaxordersutotal()).toString());
-      pstmt.setString(31, Integer.valueOf(k.getMaxordersj()).toString());
-      pstmt.setString(32, Integer.valueOf(k.getOrderlimits()).toString());
-      if (k.isUserlogin()==false){pstmt.setString(33, "0");} else {pstmt.setString(33, "1");}
-      if (k.isUserbestellung()==false){pstmt.setString(34, "0");} else {pstmt.setString(34, "1");}
-      if (k.isGbvbestellung()==false){pstmt.setString(35, "0");} else {pstmt.setString(35, "1");}
-      if (k.isKontostatus()==false){pstmt.setString(36, "0");} else {pstmt.setString(36, "1");}
-      pstmt.setString(37, Integer.valueOf(k.getKontotyp()).toString());
-      pstmt.setString(38, k.getDefault_deloptions());
-      if (k.getPaydate() !=null) pstmt.setDate(39, k.getPaydate());  else pstmt.setDate(39, null);
-      if (k.getExpdate() !=null) pstmt.setDate(40, k.getExpdate());  else pstmt.setDate(40, null);
+      if (k.getInstlogolink()==null||k.getInstlogolink().equals("")) {pstmt.setString(22, null);} else { pstmt.setString(22, k.getInstlogolink());} // set null if empty
+      if (k.isZdb()==false){pstmt.setString(23, "0");} else {pstmt.setString(23, "1");}
+      if (k.getBilling()!=null){pstmt.setString(24, k.getBilling().toString());} else {pstmt.setString(24, "");}
+      if (k.getBillingtype()!=null){pstmt.setString(25, k.getBillingtype().toString());} else {pstmt.setString(25, "");}        
+      if (k.getAccounting_rhythmvalue()==0){pstmt.setString(26, "0");} else {pstmt.setString(26, "1");}
+      if (k.getAccounting_rhythmday()==0){pstmt.setString(27, "0");} else {pstmt.setString(27, "1");}
+      if (k.getAccounting_rhythmtimeout()==0){pstmt.setString(28, "0");} else {pstmt.setString(28, "1");}
+      if (k.getThreshold_value()==0){pstmt.setString(29, "0");} else {pstmt.setString(29, "1");}
+      pstmt.setString(30, Integer.valueOf(k.getMaxordersu()).toString());
+      pstmt.setString(31, Integer.valueOf(k.getMaxordersutotal()).toString());
+      pstmt.setString(32, Integer.valueOf(k.getMaxordersj()).toString());
+      pstmt.setString(33, Integer.valueOf(k.getOrderlimits()).toString());
+      if (k.isUserlogin()==false){pstmt.setString(34, "0");} else {pstmt.setString(34, "1");}
+      if (k.isUserbestellung()==false){pstmt.setString(35, "0");} else {pstmt.setString(35, "1");}
+      if (k.isGbvbestellung()==false){pstmt.setString(36, "0");} else {pstmt.setString(36, "1");}
+      if (k.isKontostatus()==false){pstmt.setString(37, "0");} else {pstmt.setString(37, "1");}
+      pstmt.setString(38, Integer.valueOf(k.getKontotyp()).toString());
+      pstmt.setString(39, k.getDefault_deloptions());
+      if (k.getPaydate() !=null) pstmt.setDate(40, k.getPaydate());  else pstmt.setDate(40, null);
+      if (k.getExpdate() !=null) pstmt.setDate(41, k.getExpdate());  else pstmt.setDate(41, null);
       return pstmt;
   }
 
@@ -941,6 +945,14 @@ public void setEzbid(String ezbid) {
 	this.ezbid = ezbid;
 }
 
+
+public String getInstlogolink() {
+	return instlogolink;
+}
+
+public void setInstlogolink(String instlogolink) {
+	this.instlogolink = instlogolink;
+}
 
 /**
  * Verrechnungsschwellwert Sammelrechnungen in Tagen

@@ -12,7 +12,19 @@
 				</p>
 				<h4><bean:write name="userinfo" property="konto.bibliotheksname" /> | <bean:write name="userinfo" property="konto.telefon" /> | 
 				<a href="mailto:<bean:write name="userinfo" property="konto.bibliotheksmail" />"><font color="white"><bean:write name="userinfo" property="konto.bibliotheksmail" /></font></a></h4>
-			</logic:present>		
+			</logic:present>
+			
+			<logic:notPresent name="userinfo" property="konto">
+				<logic:present name="logolink">
+					<table align="left">
+						<tr>
+							<td>
+								<img class="instlogo" src='<bean:write name="logolink" />' />
+							</td>
+						</tr>					
+					</table>
+				</logic:present>
+			</logic:notPresent>	
 
 
 			

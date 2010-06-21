@@ -1,20 +1,18 @@
 --
--- works with  >= Revision 38 (see also dbchanges_forUpdate, if using SVN)
+-- works with  >= Revision 50 (see also dbchanges_forUpdate, if using SVN)
 --
-
 -- phpMyAdmin SQL Dump
 -- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 15. Juni 2010 um 16:27
+-- Erstellungszeit: 20. Juni 2010 um 17:51
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Datenbank: `dd_os`
 --
 
 -- --------------------------------------------------------
@@ -842,6 +840,7 @@ CREATE TABLE IF NOT EXISTS `konto` (
   `gbvpw` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gbv_requester_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ezbid` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `instlogolink` varchar(254) COLLATE utf8_unicode_ci DEFAULT NULL,
   `zdb` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Ist Bibliothek ZDB-Teilnehmer?',
   `billing` bigint(20) DEFAULT NULL,
   `billingtype` bigint(20) DEFAULT NULL,
@@ -871,8 +870,8 @@ CREATE TABLE IF NOT EXISTS `konto` (
 -- Daten für Tabelle `konto`
 --
 
-INSERT INTO `konto` (`KID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `plz`, `ort`, `land`, `timezone`, `telefon`, `faxno`, `faxusername`, `faxpassword`, `popfaxend`, `fax2`, `bibliomail`, `dbsmail`, `dbsmailpw`, `gbvbn`, `gbvpw`, `gbv_requester_id`, `ezbid`, `zdb`, `billing`, `billingtype`, `accounting_rhythmvalue`, `accounting_rhythmday`, `accounting_rhythmtimeout`, `billingschwellwert`, `maxordersu`, `maxordersutotal`, `maxordersj`, `orderlimits`, `userlogin`, `userbestellung`, `gbvbestellung`, `kontostatus`, `kontotyp`, `default_deloptions`, `paydate`, `expdate`, `edatum`, `gtc`, `gtcdate`) VALUES
-(1, 'My Library', NULL, 'Adress / Institution', 'Street 10', '10000', 'My City', 'Schweiz', NULL, '+41 (0)43 111 11 11', '+41 (0)43 111 11 12', '', '', NULL, NULL, 'mail@mylibrary.ch', 'mail@mylibrary.ch', '', NULL, NULL, NULL, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 'post', NULL, NULL, '2010-05-15', NULL, NULL);
+INSERT INTO `konto` (`KID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `plz`, `ort`, `land`, `timezone`, `telefon`, `faxno`, `faxusername`, `faxpassword`, `popfaxend`, `fax2`, `bibliomail`, `dbsmail`, `dbsmailpw`, `gbvbn`, `gbvpw`, `gbv_requester_id`, `ezbid`, `instlogolink`, `zdb`, `billing`, `billingtype`, `accounting_rhythmvalue`, `accounting_rhythmday`, `accounting_rhythmtimeout`, `billingschwellwert`, `maxordersu`, `maxordersutotal`, `maxordersj`, `orderlimits`, `userlogin`, `userbestellung`, `gbvbestellung`, `kontostatus`, `kontotyp`, `default_deloptions`, `paydate`, `expdate`, `edatum`, `gtc`, `gtcdate`) VALUES
+(1, 'My Library', NULL, 'Adress / Institution', 'Street 10', '10000', 'My City', 'Schweiz', NULL, '+41 (0)43 111 11 11', '+41 (0)43 111 11 12', '', '', NULL, NULL, 'mail@mylibrary.ch', 'mail@mylibrary.ch', '', NULL, NULL, NULL, '', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 'post', NULL, NULL, '2010-05-15', NULL, NULL);
 
 -- --------------------------------------------------------
 

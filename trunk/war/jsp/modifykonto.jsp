@@ -173,11 +173,15 @@
 	 </logic:equal>
     </logic:present>
     <tr>
-      <td><bean:message key="modifykonto.ezbid" /></td><td><input name="ezbid" type="text"<logic:notPresent name="kontoform" property="ezbid"> value="[...falls Sie &uuml;ber einen eigenen EZB-Zugang verf&uuml;gen]"</logic:notPresent><logic:present name="kontoform" property="ezbid"> value="<bean:write name="kontoform" property="ezbid" />"</logic:present> size="50" maxlength="300" /></td>
+      <td><bean:message key="modifykonto.ezbid" /></td><td><input name="ezbid" type="text"<logic:notPresent name="kontoform" property="ezbid"> value="<bean:message key="register.ezb_url_comment" />"</logic:notPresent><logic:present name="kontoform" property="ezbid"> value="<bean:write name="kontoform" property="ezbid" />"</logic:present> size="50" maxlength="300" /></td>
     </tr>
     <tr title="<bean:message key="modifykonto.isil_explain" />">
       <td><bean:message key="modifykonto.isil" /><img src="img/info.png" alt="<bean:message key="modifykonto.isil_explain" />" /></td>
-      <td><input name="isil" type="text"<logic:present name="kontoform" property="isil"> value="<bean:write name="kontoform" property="isil" />"</logic:present> size="50" maxlength="16" /> [z.B. DE-Bre14]</td>
+      <td><input name="isil" type="text"<logic:present name="kontoform" property="isil"> value="<bean:write name="kontoform" property="isil" />"</logic:present> size="50" maxlength="16" /> <bean:message key="modifykonto.isil_bp" /></td>
+    </tr>
+    <tr title="<bean:message key="modifykonto.instlogo_explain" />">
+      <td><bean:message key="modifykonto.instlogo" /><img src="img/info.png" alt="<bean:message key="modifykonto.instlogo_explain" />" /></td>
+      <td><input name="instlogolink" type="text"<logic:present name="kontoform" property="instlogolink"> value="<bean:write name="kontoform" property="instlogolink" />"</logic:present> size="50" maxlength="254" /> [jpg, jpeg, gif, png]</td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.checkzdb" />&nbsp;</td><td><select name="zdb">
