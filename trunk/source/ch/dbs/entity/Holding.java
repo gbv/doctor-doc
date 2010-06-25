@@ -336,10 +336,10 @@ public class Holding extends AbstractIdEntity {
 	  
 	  if (identifier.size()>0) {
 	  
-	  StringBuffer sqlQuery = new StringBuffer("SELECT HOID FROM holdings WHERE issn = ? OR coden = ? OR zdbid = ?");
+	  StringBuffer sqlQuery = new StringBuffer("SELECT HOID FROM holdings WHERE issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 	  
 	  for (int i=1;i<identifier.size();i++) { // nur ausführen falls length > 1
-		  sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
+		  sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 	  }
 
 	  PreparedStatement pstmt = null;
@@ -399,10 +399,10 @@ public class Holding extends AbstractIdEntity {
 	  
 	  if (identifier.size()>0) {
 	  
-	  StringBuffer sqlQuery = new StringBuffer("SELECT HOID FROM holdings WHERE KID = ? AND (issn = ? OR coden = ? OR zdbid = ?");
+	  StringBuffer sqlQuery = new StringBuffer("SELECT HOID FROM holdings WHERE KID LIKE ? AND (issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 	  
 	  for (int i=1;i<identifier.size();i++) { // nur ausführen falls length > 1
-		  sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
+		  sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 	  }
 	  
 	  sqlQuery.append(")");
