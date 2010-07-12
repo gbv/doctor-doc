@@ -1,18 +1,17 @@
 --
--- works with  >= Revision 50 (see also dbchanges_forUpdate, if using SVN)
+-- works with  >= Revision 53 (see also dbchanges_forUpdate, e.g. if using SVN)
 --
 -- phpMyAdmin SQL Dump
 -- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 20. Juni 2010 um 17:51
+-- Erstellungszeit: 12. Juli 2010 um 21:36
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
---
 --
 
 -- --------------------------------------------------------
@@ -369,27 +368,6 @@ CREATE TABLE IF NOT EXISTS `default_preise` (
 
 --
 -- Daten für Tabelle `default_preise`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `ezb_id`
---
-
-DROP TABLE IF EXISTS `ezb_id`;
-CREATE TABLE IF NOT EXISTS `ezb_id` (
-  `EID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `ezb_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `zdb_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`EID`),
-  KEY `zdb_id` (`zdb_id`),
-  KEY `ezb_id` (`ezb_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `ezb_id`
 --
 
 
@@ -791,7 +769,7 @@ DROP TABLE IF EXISTS `issn`;
 CREATE TABLE IF NOT EXISTS `issn` (
   `IID` bigint(20) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(10) CHARACTER SET utf8 NOT NULL,
-  `identifier_id` bigint(20) NOT NULL,
+  `identifier_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `issn` varchar(9) CHARACTER SET utf8 NOT NULL,
   `eissn` tinyint(1) NOT NULL,
   `lissn` tinyint(1) NOT NULL,
@@ -1241,3 +1219,27 @@ CREATE TABLE IF NOT EXISTS `v_konto_benutzer` (
 INSERT INTO `v_konto_benutzer` (`vkbid`, `KID`, `UID`) VALUES
 (2, 1, 1),
 (3, 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `zdb_id`
+--
+
+DROP TABLE IF EXISTS `zdb_id`;
+CREATE TABLE IF NOT EXISTS `zdb_id` (
+  `ZID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(20) NOT NULL,
+  `identifier_id` varchar(20) NOT NULL,
+  `zdbid` varchar(20) NOT NULL,
+  PRIMARY KEY (`ZID`),
+  KEY `identifier` (`identifier`),
+  KEY `zdbid` (`zdbid`),
+  KEY `identifier_id` (`identifier_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `zdb_id`
+--
+
+

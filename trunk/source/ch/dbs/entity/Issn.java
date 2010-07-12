@@ -137,14 +137,14 @@ public ArrayList<String> getAllIssnsFromOneIssn(String issn, Connection cn){
 }
 
 /**
- * Erstellt eine dublettenbereinigte ArrayList aller verwandten ISSN-Objekte
- * anhand einer Verbindung und der einer ezbid
+ * Creates a deduped ArrayList with all related ISSN numbers from
+ * a connection and an identifier_id
  * 
- * @param String ezbid
+ * @param String ident_id
  * @param Connection cn
  * @return ArrayList<ISSN> issn
  */
-public ArrayList<String> getAllIssnsFromOneEzbid(String ezbid, Connection cn){
+public ArrayList<String> getAllIssnsFromOneIdentifierID(String ident_id, Connection cn){
 	
 	ArrayList<String> issn = new ArrayList<String>();
 
@@ -152,7 +152,7 @@ public ArrayList<String> getAllIssnsFromOneEzbid(String ezbid, Connection cn){
 	ResultSet rs = null;
 	try {
         pstmt = cn.prepareStatement("SELECT DISTINCT b.issn FROM `issn` AS a JOIN issn AS b ON a.identifier_id = b.identifier_id AND a.identifier = b.identifier WHERE a.identifier_id = ?");
-        pstmt.setString(1, ezbid);
+        pstmt.setString(1, ident_id);
         rs = pstmt.executeQuery();
 
         while (rs.next()) {
@@ -160,7 +160,7 @@ public ArrayList<String> getAllIssnsFromOneEzbid(String ezbid, Connection cn){
         }
 
     } catch (Exception e) {
-    	log.error("getAllIssnsFromOneEzbid(String ezbid, Connection cn): " + e.toString());
+    	log.error("getAllIssnsFromOneEzbid(String ident_id, Connection cn): " + e.toString());
     } finally {
     	if (rs != null) {
     		try {

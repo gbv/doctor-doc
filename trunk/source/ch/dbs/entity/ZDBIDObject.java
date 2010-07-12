@@ -32,32 +32,33 @@ import org.grlea.log.SimpleLogger;
  * <p/>
  * @author Markus Fischer
  */
-public class EzbObject extends AbstractIdEntity {
+public class ZDBIDObject extends AbstractIdEntity {
 	
-	private static final SimpleLogger log = new SimpleLogger(EzbObject.class);
+	private static final SimpleLogger log = new SimpleLogger(ZDBIDObject.class);
 
-private String ezbid;
+private String identifier;
+private String identifier_id;
 private String zdbid;
 private ArrayList<String> issn;
 
-public EzbObject() {
+public ZDBIDObject() {
     
 }
 
 /**
- * Erstellt ein EZB-Objekt anhand einer Verbindung und der ID
+ * Creates a ZDBID-Object from a connection and and ID
  * 
- * @param Long eid
+ * @param Long zid
  * @param Connection cn
- * @return EzbObject eo
+ * @return ZDBIDObject zo
  */
-public EzbObject (Long eid, Connection cn){
+public ZDBIDObject (Long zid, Connection cn){
 
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	try {
-        pstmt = cn.prepareStatement("SELECT * FROM ezb_id WHERE EID = ?");
-        pstmt.setLong(1, eid);
+        pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE ZID = ?");
+        pstmt.setLong(1, zid);
         rs = pstmt.executeQuery();
 
         while (rs.next()) {
@@ -65,7 +66,7 @@ public EzbObject (Long eid, Connection cn){
         }
 
     } catch (Exception e) {
-    	log.error("EzbObject (Long eid, Connection cn)" + e.toString());
+    	log.error("ZDBIDObject (Long zid, Connection cn)" + e.toString());
     } finally {
     	if (rs != null) {
     		try {
@@ -85,19 +86,21 @@ public EzbObject (Long eid, Connection cn){
 }
 
 /**
- * Erstellt ein EZB-Objekt anhand einer Verbindung und der ezbid
+ * Creates a ZDBID-Object from a connection, an identifier and an identifier_id
  * 
- * @param String ezbid
+ * @param String ident
+ * @param String ident_id
  * @param Connection cn
- * @return EzbObject eo
+ * @return ZDBIDObject zo
  */
-public EzbObject (String ezbid, Connection cn){
+public ZDBIDObject (String ident, String ident_id, Connection cn){
 
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	try {
-        pstmt = cn.prepareStatement("SELECT * FROM ezb_id WHERE ezb_id = ?");
-        pstmt.setString(1, ezbid);
+        pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE identifier = ? AND identifier_id = ?");
+        pstmt.setString(1, ident);
+        pstmt.setString(2, ident_id);
         rs = pstmt.executeQuery();
 
         while (rs.next()) {
@@ -105,7 +108,7 @@ public EzbObject (String ezbid, Connection cn){
         }
 
     } catch (Exception e) {
-    	log.error("EzbObject (String ezbid, Connection cn)" + e.toString());
+    	log.error("ZDBIDObject (String ident, String ident_id, Connection cn)" + e.toString());
     } finally {
     	if (rs != null) {
     		try {
@@ -125,29 +128,29 @@ public EzbObject (String ezbid, Connection cn){
 }
 
 /**
- * Erstellt ein EZB-Objekt anhand einer Verbindung und der zdbid
+ * Creates a ZDBID-Object from a connection and a zdbid
  * 
  * @param String zdbid
  * @param Connection cn
- * @return EzbObject eo
+ * @return ZDBIDObject zo
  */
-public EzbObject getEzbObjectFromZdbid (String zdbid, Connection cn){
+public ZDBIDObject getZdbidObjectFromZdbid (String zdbid, Connection cn){
 	
-		EzbObject eo = new EzbObject();
+		ZDBIDObject zo = new ZDBIDObject();
 
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	try {
-        pstmt = cn.prepareStatement("SELECT * FROM ezb_id WHERE zdb_id = ?");
+        pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE zdbid = ?");
         pstmt.setString(1, zdbid);
         rs = pstmt.executeQuery();
 
         while (rs.next()) {
-        	eo = new EzbObject(cn, rs);
+        	zo = new ZDBIDObject(cn, rs);
         }
 
     } catch (Exception e) {
-    	log.error("getEzbObjectFromZdbid (String zdbid, Connection cn): " + e.toString());
+    	log.error("getZdbidObjectFromZdbid (String zdbid, Connection cn): " + e.toString());
     } finally {
     	if (rs != null) {
     		try {
@@ -165,36 +168,46 @@ public EzbObject getEzbObjectFromZdbid (String zdbid, Connection cn){
     	}
     }
     
-    return eo;
+    return zo;
 }
 
-public EzbObject (Connection cn, ResultSet rs) {
+public ZDBIDObject (Connection cn, ResultSet rs) {
 	Issn issnInstance = new Issn();
 	
 	try {
-	  	this.setId(rs.getLong("EID"));
-	  	this.setIssn(issnInstance.getAllIssnsFromOneEzbid(rs.getString("ezb_id"), cn));
-	  	this.setEzbid(rs.getString("ezb_id"));
-	  	this.setZdbid(rs.getString("zdb_id"));
+	  	this.setId(rs.getLong("ZID"));
+	  	this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
+	  	this.setIdentifier(rs.getString("identifier"));
+	  	this.setIdentifier_id(rs.getString("identifier_id"));
+	  	this.setZdbid(rs.getString("zdbid"));
 	} catch (Exception e) {
-		log.error("EzbObject (Connection cn, ResultSet rs)" + e.toString());
+		log.error("ZDBIDObject (Connection cn, ResultSet rs)" + e.toString());
 	    }
 }
 
 private void setRsValues(Connection cn, ResultSet rs) throws Exception{
 	Issn issnInstance = new Issn();
-  	this.setId(rs.getLong("EID"));
-  	this.setIssn(issnInstance.getAllIssnsFromOneEzbid(rs.getString("ezb_id"), cn));
-  	this.setEzbid(rs.getString("ezb_id"));
-  	this.setZdbid(rs.getString("zdb_id"));
+  	this.setId(rs.getLong("ZID"));
+  	this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
+  	this.setIdentifier(rs.getString("identifier"));
+  	this.setIdentifier_id(rs.getString("identifier_id"));
+  	this.setZdbid(rs.getString("zdbid"));
 }
 
-public String getEzbid() {
-	return ezbid;
+public String getIdentifier() {
+	return identifier;
 }
 
-public void setEzbid(String ezbid) {
-	this.ezbid = ezbid;
+public void setIdentifier(String identifier) {
+	this.identifier = identifier;
+}
+
+public String getIdentifier_id() {
+	return identifier_id;
+}
+
+public void setIdentifier_id(String identifierId) {
+	identifier_id = identifierId;
 }
 
 public String getZdbid() {
@@ -212,6 +225,8 @@ public ArrayList<String> getIssn() {
 public void setIssn(ArrayList<String> issn) {
 	this.issn = issn;
 }
+
+
 
 
  

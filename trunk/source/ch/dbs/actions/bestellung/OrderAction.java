@@ -1851,7 +1851,7 @@ public final class OrderAction extends DispatchAction {
     }
     
     /**
-     * Ermittelt zu einer ISSN die zdbid aus der lokalen DB
+     * Trys to get zdbid from an ISSN out of the local DB
      * 
      */
     public String getZdbidFromIssn(String issn, Connection cn) {
@@ -1861,26 +1861,15 @@ public final class OrderAction extends DispatchAction {
     	PreparedStatement pstmt = null;
 		ResultSet rs = null;
     	try {
-    		String ezbid = null;
-    				
-    		pstmt = cn.prepareStatement( "SELECT * FROM `issn` WHERE `issn` = ? AND `identifier` = 'ezb'");
+
+    		pstmt = cn.prepareStatement("SELECT DISTINCT a.zdbid FROM `zdb_id` AS a JOIN issn AS b ON a.identifier_id = b.identifier_id AND a.identifier = b.identifier WHERE b.issn = ?");
     		pstmt.setString(1, issn);
     		rs = pstmt.executeQuery();
     		           
-    		     if (rs.next()) { // erste ezbid wird genommen
-    		     	ezbid = rs.getString("identifier_id");
-    		     }
-    		
-    		if (ezbid!=null) {
-    			
-    			pstmt = cn.prepareStatement( "SELECT zdb_id FROM `ezb_id` WHERE `ezb_id` = ?");
-    			pstmt.setString(1, ezbid);
-        		rs = pstmt.executeQuery();
-        		
-        		if (rs.next()) { // erste zdbid wird genommen
-    		     	zdbid = rs.getString("zdb_id");
-    		     }
+    		if (rs.next()) { // only the first zdbid is used
+    			zdbid = rs.getString("zdbid");
     		}
+    		     
     		
     	} catch(Exception e){
     		log.error("getZdbidFromIssn in OrderAction: " + issn + "\040" + e.toString()); 		

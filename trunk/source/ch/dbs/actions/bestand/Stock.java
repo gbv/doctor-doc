@@ -32,7 +32,7 @@ import org.grlea.log.SimpleLogger;
 
 import util.Auth;
 import ch.dbs.entity.Bestand;
-import ch.dbs.entity.EzbObject;
+import ch.dbs.entity.ZDBIDObject;
 import ch.dbs.entity.Holding;
 import ch.dbs.entity.Issn;
 import ch.dbs.entity.Text;
@@ -485,10 +485,10 @@ public class Stock extends DispatchAction {
     		if (issns.size()==0) issns.add(hf.getHolding().getIssn()); // falls kein Treffer gefunden wurde, ursprüngliche ISSN zurückgeben
     	} else { // TODO: Strategie überlegen für diesen Fall!?
 			if (hf.getHolding().getZdbid()!=null) { // anhand zdbid
-				EzbObject eo = new EzbObject();
-				eo = eo.getEzbObjectFromZdbid(hf.getHolding().getZdbid(), cn);
-				if (eo!=null && eo.getEzbid()!=null) {
-					issns = issnInstance.getAllIssnsFromOneEzbid(eo.getEzbid(), cn);
+				ZDBIDObject zo = new ZDBIDObject();
+				zo = zo.getZdbidObjectFromZdbid(hf.getHolding().getZdbid(), cn);
+				if (zo!=null && zo.getIdentifier_id()!=null) {
+					issns = issnInstance.getAllIssnsFromOneIdentifierID(zo.getIdentifier_id(), cn);
 				}
 			}
 		}

@@ -1,3 +1,21 @@
+ALTER TABLE `issn` CHANGE `identifier_id` `identifier_id` VARCHAR( 20 ) NOT NULL 
+
+DROP TABLE `ezb_id`
+
+
+CREATE TABLE IF NOT EXISTS `zdb_id` (
+  `ZID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(20) NOT NULL,
+  `identifier_id` varchar(20) NOT NULL,
+  `zdbid` varchar(20) NOT NULL,
+  PRIMARY KEY (`ZID`),
+  KEY `identifier` (`identifier`),
+  KEY `zdbid` (`zdbid`),
+  KEY `identifier_id` (`identifier_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+
+
 -- Revision 50
 
 -- introduce institutional logo/image on orderforms
