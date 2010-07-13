@@ -1953,8 +1953,9 @@ public final class OrderAction extends DispatchAction {
             Text cn = new Text();
             
             try {
+            	UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             	Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
-            	// URL-Hacking unterdrücken!
+            	// URL-hacking unterdrücken!
             	if (auth.isLegitimateOrder(rq, order)) {
             	
             	order.setPmid(instance.extractPmid(order.getPmid()));
@@ -1972,7 +1973,7 @@ public final class OrderAction extends DispatchAction {
                     em.setError("error.hack");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
                     rq.setAttribute("errormessage", em);
-                    log.info("journalorderdetail: prevented URL-hacking!");
+                    log.info("journalorderdetail: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             	}
 
             } catch (Exception e) {
@@ -2012,8 +2013,9 @@ public final class OrderAction extends DispatchAction {
         Auth auth = new Auth();
         
         if (auth.isLogin(rq)) {
+        	UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         	Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
-        	// URL-Hacking unterdrücken!
+        	// URL-hacking unterdrücken!
         	if (auth.isLegitimateOrder(rq, order)) {
         	 	forward = "success";        	 	
             	
@@ -2033,7 +2035,7 @@ public final class OrderAction extends DispatchAction {
                 em.setError("error.hack");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute("errormessage", em);
-                log.info("prepareReorder: prevented URL-hacking!");
+                log.info("prepareReorder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
         	}
            
       } else {
@@ -2156,7 +2158,7 @@ public final class OrderAction extends DispatchAction {
                 }
                 
                 if (pageForm.getSubmit().contains("GBV")) { // Bestellung über GBV
-                	if (auth.isUserGBVBestellung(rq)) { // verhindert URL-Hacking
+                	if (auth.isUserGBVBestellung(rq)) { // verhindert URL-hacking
                 		pageForm.setSubmit("GBV"); // setzt z.B. "zur GBV-Bestellung" auf "GBV", um in journalorder.jsp zwischen Subito- und GBV-Bestellungen unterscheiden zu können.
                 	pageForm.setMaximum_cost("8"); // Default bei GBV
                 	if (ui.getKonto().getIsil()==null || ui.getKonto().getGbvrequesterid()==null) {pageForm.setManuell(true);} else {pageForm.setManuell(false);} // ISIL wird für autom. Bestellung benötigt
@@ -2556,22 +2558,22 @@ public final class OrderAction extends DispatchAction {
                 
             	if (auth.isBibliothekar(rq)) {            	
             		if (!b.getKonto().getId().equals(ui.getKonto().getId())) { // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
-            			System.out.println("URL-Hacking... ;-)");
+            			System.out.println("URL-hacking... ;-)");
             			forward = "failure";
                         ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute("errormessage", em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
-                        log.info("prepareModifyOrder: prevented URL-hacking!");
+                        log.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             	}
             	}
             	if (auth.isBenutzer(rq)) {         	
                 	if (!b.getBenutzer().getId().equals(ui.getBenutzer().getId())) { // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
-                		System.out.println("URL-Hacking... ;-)");
+                		System.out.println("URL-hacking... ;-)");
                 		forward = "failure";
                         ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute("errormessage", em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
-                        log.info("prepareModifyOrder: prevented URL-hacking!");
+                        log.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 	}
                 	}
                           
@@ -2580,7 +2582,7 @@ public final class OrderAction extends DispatchAction {
                 ErrorMessage em = new ErrorMessage("error.hack", "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                 rq.setAttribute("errormessage", em);
                 rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
-                log.info("prepareModifyOrder: prevented URL-hacking!");
+                log.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             	
             }
             } catch (Exception e) {

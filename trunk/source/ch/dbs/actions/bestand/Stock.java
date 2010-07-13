@@ -259,7 +259,7 @@ public class Stock extends DispatchAction {
     }
     
     /**
-     * Bereitet das Ändern eines konkreten Standortes vor und verhindert URL-Hacking
+     * Bereitet das Ändern eines konkreten Standortes vor und verhindert URL-hacking
      */
     public ActionForward changeStandort(ActionMapping mp, ActionForm fm,
             HttpServletRequest rq, HttpServletResponse rp) {
@@ -315,10 +315,10 @@ public class Stock extends DispatchAction {
         
         rq.setAttribute("holdingform", hf);
         
-        } else { // URL-Hacking
+        } else { // URL-hacking
         	ErrorMessage em = new ErrorMessage("error.hack", "login.do");
             rq.setAttribute("errormessage", em);
-            log.info("changeStandort: prevented URL-hacking!");
+            log.info("changeStandort: prevented URL-hacking! " + ui.getBenutzer().getEmail());
         }
  
          

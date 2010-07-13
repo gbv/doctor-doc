@@ -771,7 +771,7 @@ public final class BestellformAction extends DispatchAction {
 		
 		if (auth.isLogin(rq)) {
 		if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-		if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-Hacking			
+		if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking			
 		
 		try {
 		forward = "success";
@@ -821,7 +821,7 @@ public final class BestellformAction extends DispatchAction {
         	cn.close();
         }
 		
-		} else { // URL-Hacking
+		} else { // URL-hacking
 			ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
             rq.setAttribute("ActiveMenus", mf);
@@ -864,7 +864,7 @@ public final class BestellformAction extends DispatchAction {
 		
 		if (auth.isLogin(rq)) {
 		if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-		if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-Hacking
+		if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
 			
 		try {
 			forward = "success";
@@ -913,7 +913,7 @@ public final class BestellformAction extends DispatchAction {
         	cn.close();
         }
 		
-		} else { // URL-Hacking
+		} else { // URL-hacking
 			ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
             rq.setAttribute("ActiveMenus", mf);
@@ -1322,7 +1322,7 @@ public final class BestellformAction extends DispatchAction {
     }
 	
 	/**
-	 * Prüft auf URL-Hacking bei modify (Bestellformular)
+	 * Prüft auf URL-hacking bei modify (Bestellformular)
 	 */
 	private boolean checkPermission(UserInfo ui, BestellParam bp, Connection cn) {
 		
@@ -1358,7 +1358,7 @@ public final class BestellformAction extends DispatchAction {
 					}					
 				}
 				BestellParam bp_compare = new BestellParam(bp.getId(), cn);
-				// Prüfung, ob die ID zum Konto gehört! (URL-Hacking)
+				// Prüfung, ob die ID zum Konto gehört! (URL-hacking)
 				if (bp_compare.getKid()!=null && bp_compare.getKid().equals(ui.getKonto().getId())) {
 					check = true;
 					return check;

@@ -402,12 +402,12 @@ public final class UserAction extends DispatchAction {
     	
     	cn.close();
     	
-    	// Fehlermeldung bereitstellen falls mittels URL-Hacking versucht wurde zu manipulieren
+    	// Fehlermeldung bereitstellen falls mittels URL-hacking versucht wurde zu manipulieren
     	if (forward.equals("failure")){
     		rq.getSession().setAttribute("userinfo", null);
     		ErrorMessage em = new ErrorMessage("error.hack", "login.do");
             rq.setAttribute("errormessage", em);
-            log.info("setuser: prevented URL-hacking!");
+            log.info("setuser: prevented URL-hacking! " + ui.getBenutzer().getEmail());
     	}
       
       // Angaben vom Linkresolver
@@ -666,7 +666,7 @@ public final class UserAction extends DispatchAction {
         if (auth.isLogin(rq)) {
             forward = "success";
             UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
-            // Bei URL-Hacking: User sehen nur sich selber
+            // Bei URL-hacking: User sehen nur sich selber
             if (auth.isBenutzer(rq)) {
             	ArrayList<AbstractBenutzer> ul = new ArrayList<AbstractBenutzer>();
             	ul.add(ui.getBenutzer());
