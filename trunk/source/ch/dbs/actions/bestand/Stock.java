@@ -1057,6 +1057,8 @@ public class Stock extends DispatchAction {
     		// this will deduplicate and centralize the holdings for each account
     		if (h.getId()!=null) {
     			b.setHolding(h);
+    		} else { // the holdings needs to be updated! Make sure it will...
+    			b.getHolding().setId(null);
     		}
 
     		// create a location if we do not have a location ID
