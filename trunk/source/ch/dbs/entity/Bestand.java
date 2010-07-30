@@ -179,11 +179,12 @@ public class Bestand extends AbstractIdEntity {
 	  }
 	  
 	    /*
-	     * Setzt die Werte im Preparestatement der Methoden save()
+	     * Sets the values for the PreparedStatement. Leaves the ID blank and lets
+	     * MySQL autoincrement the STID
 	     */
-	    private PreparedStatement setBestandValues(PreparedStatement pstmt, Bestand be, Connection cn) throws Exception{
+	    private PreparedStatement setBestandValuesAutoincrement(PreparedStatement pstmt, Bestand be, Connection cn) throws Exception{
 	        
-	        pstmt.setString(1, be.getHolding().getId().toString());
+	        pstmt.setLong(1, be.getHolding().getId());
 	        pstmt.setString(2, be.getStartyear());
 	        pstmt.setString(3, be.getStartvolume());
 	        pstmt.setString(4, be.getStartissue());
@@ -199,16 +200,40 @@ public class Bestand extends AbstractIdEntity {
 	        
 	        return pstmt;
 	    }
+	    
+	    /*
+	     * Sets the values for the PreparedStatement. Specifies the ID and sets
+	     * a given STID for MySQL
+	     */
+	    private PreparedStatement setAllBestandValues(PreparedStatement pstmt, Bestand be, Connection cn) throws Exception{
+	        
+	        pstmt.setLong(1, be.getId());
+	    	pstmt.setLong(2, be.getHolding().getId());
+	        pstmt.setString(3, be.getStartyear());
+	        pstmt.setString(4, be.getStartvolume());
+	        pstmt.setString(5, be.getStartissue());
+	        pstmt.setString(6, be.getEndyear());
+	        pstmt.setString(7, be.getEndvolume());
+	        pstmt.setString(8, be.getEndissue());
+	        pstmt.setInt(9, be.getSuppl());
+	        pstmt.setBoolean(10, be.isEissue());
+	        pstmt.setLong(11, be.getStandort().getId());
+	        pstmt.setString(12, be.getShelfmark());
+	        pstmt.setString(13, be.getBemerkungen());
+	        pstmt.setBoolean(14, be.isInternal());
+	        
+	        return pstmt;
+	    }
 	  
 	    /**
-	     * Speichert einen neuen Bestand in der Datenbank
+	     * Saves a new Bestand in the database. Will use the autoincremented ID.
 	     * 
 	     * @param Bestand be
 	     * @param Connection cn 
 	     */
-	    public void save(Bestand be, Connection cn){
+	    public void saveWithoutID(Bestand be, Connection cn){
 	    	
-	    	// falls noch kein Holding zum Bestand existiert zuerst ein Holding abspeichern
+	    	// if there is no Holding specified, save one first
 	    	if (be.getHolding().getId()==null) {
 	    		Holding h = new Holding();
 	    		h = h.save(be.getHolding(), cn);
@@ -217,14 +242,77 @@ public class Bestand extends AbstractIdEntity {
 	                
 	        PreparedStatement pstmt = null;
 	    	try {
-	            pstmt = setBestandValues(cn.prepareStatement( "INSERT INTO `stock` (`HOID` , " +
+	            pstmt = setBestandValuesAutoincrement(cn.prepareStatement( "INSERT INTO `stock` (`HOID` , " +
 	            "`startyear` , `startvolume` , `startissue` , `endyear` , `endvolume` , `endissue` , `suppl` , `eissue` , " +
 	            "`standort` , `shelfmark` , `bemerkungen` , `internal`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be, cn);
 	            
 	            pstmt.executeUpdate();
 	            
 	        } catch (Exception e) {
-	        	log.error("save(Bestand be, Connection cn)" + e.toString());
+	        	log.error("saveWithoutID(Bestand be, Connection cn)" + e.toString());
+	        } finally {
+	        	if (pstmt != null) {
+	        		try {
+	        			pstmt.close();
+	        		} catch (SQLException e) {
+	        			System.out.println(e);
+	        		}
+	        	}
+	        }
+	    }
+	    
+	    /**
+	     * Saves a new Bestand in the database. Will use the ID secified.
+	     * 
+	     * @param Bestand be
+	     * @param Connection cn 
+	     */
+	    public void saveWithID(Bestand be, Connection cn){
+	    	
+	    	// if there is no Holding specified, save one first
+	    	if (be.getHolding().getId()==null) {
+	    		Holding h = new Holding();
+	    		h = h.save(be.getHolding(), cn);
+	    		be.setHolding(h);
+	    	}
+	                
+	        PreparedStatement pstmt = null;
+	    	try {
+	            pstmt = setAllBestandValues(cn.prepareStatement( "INSERT INTO `stock` (`STID` , `HOID` , " +
+	            "`startyear` , `startvolume` , `startissue` , `endyear` , `endvolume` , `endissue` , `suppl` , `eissue` , " +
+	            "`standort` , `shelfmark` , `bemerkungen` , `internal`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be, cn);
+	            
+	            pstmt.executeUpdate();
+	            
+	        } catch (Exception e) {
+	        	log.error("saveWithID(Bestand be, Connection cn)" + e.toString());
+	        } finally {
+	        	if (pstmt != null) {
+	        		try {
+	        			pstmt.close();
+	        		} catch (SQLException e) {
+	        			System.out.println(e);
+	        		}
+	        	}
+	        }
+	    }
+	    
+	    /**
+	     * Deletes all Stock from a given account. But does not touch the corresponding holdings.
+	     * 
+	     * @param Konto k
+	     * @param Connection cn 
+	     */
+	    public void deleteAllKontoBestand(Konto k, Connection cn){
+	        
+	        PreparedStatement pstmt = null;
+	    	try {
+	            pstmt = cn.prepareStatement( "DELETE a FROM stock AS a INNER JOIN holdings AS b ON a.HOID = b.HOID WHERE b.KID=?;");	            
+	            pstmt.setLong(1, k.getId());	            
+	            pstmt.executeUpdate();
+	            
+	        } catch (Exception e) {
+	        	log.error("deleteAllKontoBestand(Konto k, Connection cn)" + e.toString());
 	        } finally {
 	        	if (pstmt != null) {
 	        		try {
@@ -283,6 +371,51 @@ public class Bestand extends AbstractIdEntity {
 
 		      } catch (Exception e) {
 		    	  log.error("ArrayList<Bestand> getAllBestandForIssn(OrderForm pageForm, boolean internal, Connection cn): " + e.toString());
+		      } finally {
+		        	if (rs != null) {
+		        		try {
+		        			rs.close();
+		        		} catch (SQLException e) {
+		        			System.out.println(e);
+		        		}
+		        	}
+		        	if (pstmt != null) {
+		        		try {
+		        			pstmt.close();
+		        		} catch (SQLException e) {
+		        			System.out.println(e);
+		        		}
+		        	}
+		        }
+		      
+		      return listBestand;  
+		  }
+		  
+		  /**
+		   * Gets all "Bestand" from a kid
+		   * 
+		   * @param Long kid
+		   * @param Connection cn
+		   * 
+		   * @return ArrayList<Bestand> listBestand
+		   */
+		  public ArrayList<Bestand> getAllKontoBestand(Long kid, Connection cn){
+		      ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
+		      
+		      PreparedStatement pstmt = null;
+		      ResultSet rs = null;
+		      try {
+		          pstmt = cn.prepareStatement("SELECT a.* FROM stock AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE b.KID = ?");
+		          pstmt.setLong(1, kid);
+		          rs = pstmt.executeQuery();
+
+		          while (rs.next()) {
+		              Bestand be = new Bestand(cn, rs);
+		              listBestand.add(be);
+		          }
+
+		      } catch (Exception e) {
+		    	  log.error("ArrayList<Bestand> getAllKontoBestand(Long kid, Connection cn): " + e.toString());
 		      } finally {
 		        	if (rs != null) {
 		        		try {

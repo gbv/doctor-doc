@@ -192,6 +192,61 @@ public class Holding extends AbstractIdEntity {
   }
   
   /**
+   * Gets a Holding from an existing Holding, ignoring the ID. This is useful to reduce the number of
+   * identical Holdings for an account.
+   * 
+   * @param Holding h
+   * @param Connection cn
+   * @return Holding holding
+   */
+  public Holding (Holding h, Connection cn){
+
+	  PreparedStatement pstmt = null;
+	  ResultSet rs = null;
+	  
+	  StringBuffer sql = new StringBuffer();
+	  sql.append("SELECT * FROM holdings WHERE KID = ? AND titel = ? AND coden ");
+	  if (h.getCoden()==null||h.getCoden().equals("")) {sql.append("IS ? ");} else {sql.append("= ? ");}
+	  sql.append("AND verlag = ? AND ort = ? AND issn = ? AND zdbid ");
+	  if (h.getZdbid()==null||h.getZdbid().equals("")) {sql.append("IS ?");} else {sql.append("= ?");}
+	  
+	  try {
+          pstmt = cn.prepareStatement(sql.toString());
+          pstmt.setLong(1, h.getKid());
+          pstmt.setString(2, h.getTitel());
+          if (h.getCoden()==null || h.getCoden().equals("")) {pstmt.setString(3, null);} else {pstmt.setString(3, h.getCoden());}
+          pstmt.setString(4, h.getVerlag());
+          pstmt.setString(5, h.getOrt());
+          pstmt.setString(6, h.getIssn());
+          if (h.getZdbid()==null || h.getZdbid().equals("")) {pstmt.setString(7, null);} else {pstmt.setString(7, h.getZdbid());}
+          rs = pstmt.executeQuery();
+
+          if (rs.next()) { // just take the first one
+             setRsValues(cn, rs);
+          }
+
+      } catch (Exception e) {
+    	  log.error("Holding (Holding h, Connection cn): " + e.toString());
+      } finally {
+      	if (rs != null) {
+    		try {
+    			rs.close();
+    		} catch (SQLException e) {
+    			System.out.println(e);
+    		}
+    	}
+    	if (pstmt != null) {
+    		try {
+    			pstmt.close();
+    		} catch (SQLException e) {
+    			System.out.println(e);
+    		}
+    	}
+    }
+
+  }
+  
+  /**
    * Holt alle Holdings anhand einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID) und einer Verbindung 
    * 
    * @param ArrayList<String> identifier
@@ -253,12 +308,56 @@ public class Holding extends AbstractIdEntity {
       return list;
   }
   
-
-  
   /**
-   * Holt alle Holdings eines spezifischen Kontos anhand der KID, 
-   * einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID) 
-   * und einer Verbindung
+   * Gets all holdings for a given library from its KID and a connection
+   * 
+   * @param Long kid
+   * @param Connection cn
+   * @return ArrayList<Holding> holdings
+   */
+  public ArrayList<Holding> getAllHoldingsForKonto (Long kid, Connection cn){
+	  
+	  ArrayList<Holding> list = new ArrayList<Holding>();
+	  
+	  PreparedStatement pstmt = null;
+	  ResultSet rs = null;
+	  try {
+          pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ?");
+          pstmt.setLong(1, kid);
+
+          rs = pstmt.executeQuery();
+
+          while (rs.next()) {
+        	  Holding ho = setRsstValues(cn, rs);
+        	  list.add(ho);
+          }
+
+      } catch (Exception e) {
+    	  log.error("getAllHoldingsForKonto (Long kid, Connection cn): " + e.toString());
+      } finally {
+      	if (rs != null) {
+    		try {
+    			rs.close();
+    		} catch (SQLException e) {
+    			System.out.println(e);
+    		}
+    	}
+    	if (pstmt != null) {
+    		try {
+    			pstmt.close();
+    		} catch (SQLException e) {
+    			System.out.println(e);
+    		}
+    	}
+    }
+      
+      return list;
+  }  
+
+
+  /**
+   * Gets all holdings for a given library from its KID, a list of all related 
+   * identifieres (ISSN, Coden or ZDB-ID) and a connection
    * 
    * @param ArrayList<String> identifier
    * @param Long kid
@@ -533,6 +632,33 @@ public class Holding extends AbstractIdEntity {
     	}
     }
       return h;
+  }
+  
+  /**
+   * Deletes holdings from a given account that do not have any referenced stock.
+   * 
+   * @param Konto k
+   * @param Connection cn 
+   */
+  public void purgeNotUsedKontoHoldings(Konto k, Connection cn){
+
+      PreparedStatement pstmt = null;
+  	try {  
+  		  pstmt = cn.prepareStatement( "DELETE a FROM holdings AS a LEFT OUTER JOIN stock AS b ON a.HOID = b.HOID WHERE a.KID=? AND b.STID IS null");	            
+          pstmt.setLong(1, k.getId());	            
+          pstmt.executeUpdate();
+          
+      } catch (Exception e) {
+      	log.error("purgeNotUsedKontoHoldings(Konto k, Connection cn)" + e.toString());
+      } finally {
+      	if (pstmt != null) {
+      		try {
+      			pstmt.close();
+      		} catch (SQLException e) {
+      			System.out.println(e);
+      		}
+      	}
+      }
   }
 
 

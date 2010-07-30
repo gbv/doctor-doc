@@ -46,9 +46,8 @@ public class ThreadedJournalSeek implements Callable<ArrayList <JournalDetails>>
 	    this.concurrentCopyZeitschriftentitel = concurrentCopyZeitschriftentitel;
 	  } 
 	  public ArrayList<JournalDetails> call() {
-		  ArrayList<JournalDetails> jd = new ArrayList<JournalDetails>();
 		  OrderAction oa = new OrderAction();
-	      jd = oa.searchJournalseek(zeitschriftentitel_encoded, artikeltitel_encoded, pageForm, concurrentCopyZeitschriftentitel);
+		  ArrayList<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded, artikeltitel_encoded, pageForm, concurrentCopyZeitschriftentitel);
 	    return jd;
 	  }
 

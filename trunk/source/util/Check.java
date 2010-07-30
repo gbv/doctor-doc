@@ -293,8 +293,38 @@ public class Check {
     	      if (check) check = isUrl(link);
     		
     	    } catch (Exception e) {
-    	      check = false;
+    	      check = false; // if we got here, the check failed
     	    }
+        
+        return check;
+    }
+    
+    /**
+     * This method checks if a String ends with a valid filetype extension
+     * 
+     * @param String path
+     * @return boolean check
+     */
+    public boolean isFiletypeExtension(String fileName, String extension) {
+    	
+    	boolean check = false;        
+    	
+    	if (fileName!=null && extension!=null && 
+    		fileName.length()>extension.length()) {// filename must be longer than the filetype extension
+    		// make case insensitive
+    		fileName = fileName.toLowerCase();
+    		extension = extension.toLowerCase();
+	    	try {
+	    		if (fileName.contains(extension) && // must contain extension
+	    			fileName.lastIndexOf(extension)==fileName.length()-extension.length()) { // extension must be placed at the end
+	    			check = true;
+	    		}
+
+	    	    } catch (Exception e) {
+	    	      check = false; // if we got here, the check failed
+	    	    }
+    	    
+    	}
         
         return check;
     }
@@ -320,6 +350,13 @@ public class Check {
     	}
     	
     	return words;    	
+    }
+    
+    /**
+     * Counts the occurence of a character in a string
+     */
+    public int countCharacterInString(String input, String countString){
+        return input.split("\\Q"+countString+"\\E", -1).length - 1;
     }
     
     /**
@@ -358,7 +395,7 @@ public class Check {
     }
     
     /**
-     * Prüft, ob eine ISSN valide ist
+     * Checks if an ISSN is valid
      * @param String issn
      * @return boolean check
      */
@@ -399,7 +436,35 @@ public class Check {
     	
     	
     	return check;    	
-    }    
+    }
+    
+	 
+    /**
+     * Checks if a String is a valid year.
+     * Works from 14th century till 22th century. This sould be usable for some time...
+     * @param String year
+     * @return boolean check
+     */
+    public boolean isYear(String year) {
+		  
+		  boolean check = false;
+		  
+		  // check if length = 4 and string contains only digits
+		  if (isExactLength(year, 4) && org.apache.commons.lang.StringUtils.isNumeric(year)) {
+			  // Search pattern works from 14th century till 22th century. This sould be usable for some time...
+			  Pattern p = Pattern.compile("13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
+		  	  Matcher m = p.matcher(year);
+		  	  try{
+		  	  if (m.find()) {
+		  		  check = true;
+		  	  	}
+		  	  } catch (Exception e) {
+		  		log.error("isYear(String year): " + year + "\040" + e.toString());
+		  	  }
+		  }
+		  
+		return check;
+      }
     
 
 }

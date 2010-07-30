@@ -359,7 +359,6 @@ public final class KontoAction extends DispatchAction {
         	
     		UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");    		
             KontoForm kf = (KontoForm)fm;
-            Konto k = new Konto();
             Text cn = new Text();
             Countries countriesInstance = new Countries();
             Auth auth = new Auth();
@@ -372,7 +371,7 @@ public final class KontoAction extends DispatchAction {
     		TreeSet<String> setTZ = tz.getTimeZonesAsString();
     		rq.setAttribute("timezones", setTZ);
     			
-    		k = new Konto(ui.getKonto().getId(),cn.getConnection());
+    		Konto k = new Konto(ui.getKonto().getId(),cn.getConnection());
     		
     		forward = "success";
     		
@@ -454,7 +453,6 @@ public final class KontoAction extends DispatchAction {
         	
     		UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");    		
             KontoForm kf = (KontoForm)fm;
-            Konto k = new Konto();
             Check check = new Check();
             Auth auth = new Auth();
             Text cn = new Text();
@@ -529,7 +527,7 @@ public final class KontoAction extends DispatchAction {
     			
     			forward = "success";
 
-    			k = new Konto(ui.getKonto().getId(),cn.getConnection());
+    			Konto k = new Konto(ui.getKonto().getId(),cn.getConnection());
     			
     			if (auth.isAdmin(rq)) {
         			if (kf.getFaxno().equals("")){k.setFaxno(null);}else{k.setFaxno(kf.getFaxno());} // Faxno == null => Deaktivierung von Faxserver-Cronjob
@@ -623,16 +621,17 @@ public final class KontoAction extends DispatchAction {
             HttpServletRequest rq, HttpServletResponse rp) {
     	
     	String forward = "failure";
-    	ReSendFaxForm fileForm = (ReSendFaxForm)fm;
-    	String name = fileForm.getFile().getFileName();
+    	FileForm fileForm = (FileForm)fm;
+    	String fileName = fileForm.getFile().getFileName().toLowerCase(); // make case insensitive
     	
     	Auth auth = new Auth();
+    	Check ck = new Check();
     	
     	if (auth.isLogin(rq)) {
     	if (auth.isAdmin(rq)) {
 //    		Wird ein Fax-to Mail File übertragen (PDF)?
-            if (name.contains(".pdf")){
-            	String popfaxid = name.substring(0, name.indexOf(".pdf"));
+            if (ck.isFiletypeExtension(fileName, ".pdf")){
+            	String popfaxid = fileName.substring(0, fileName.indexOf(".pdf"));
             	
             	Fax f = new Fax();
             	//Wird ein Eintrag der Popfaxid in der DB gefunden und kann auch gelöscht werden?
@@ -713,9 +712,8 @@ public final class KontoAction extends DispatchAction {
     	if (auth.isLogin(rq)) {
     	if (auth.isAdmin(rq)) {
     		try {
-    			KontoForm kf = (KontoForm) fm;
-    			Konto k = new Konto();   		
-    			k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+    			KontoForm kf = (KontoForm) fm;  		
+    			Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
     			k.setKontotyp(kf.getKontotyp());
     			if (k.getKontotyp()==0) k.setExpdate(null); // Gratiskontos laufen nicht ab!
     			k.update(cn.getConnection());
@@ -757,8 +755,7 @@ public final class KontoAction extends DispatchAction {
     	if (auth.isAdmin(rq)) {
     		try {
     			KontoForm kf = (KontoForm) fm;
-				Konto k = new Konto();
-				k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+				Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
 				k.setKontostatus(kf.isKontostatus());
 				k.update(cn.getConnection());
 
@@ -799,8 +796,7 @@ public final class KontoAction extends DispatchAction {
     	if (auth.isAdmin(rq)) {
     		try {
     			KontoForm kf = (KontoForm) fm;
-				Konto k = new Konto();
-				k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+				Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
 				k.setExpdate(kf.getExpdate());
 				k.update(cn.getConnection());
 
@@ -841,8 +837,7 @@ public final class KontoAction extends DispatchAction {
     	if (auth.isAdmin(rq)) {
     		try {
     			KontoForm kf = (KontoForm) fm;
-				Konto k = new Konto();
-				k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+				Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
 				k.setPopfaxend(kf.getPopfaxend());
 				k.update(cn.getConnection());
 
@@ -885,8 +880,7 @@ public final class KontoAction extends DispatchAction {
 			if (auth.isAdmin(rq)) {
 				try {
 					BillingForm bf = (BillingForm) fm;
-					Konto k = new Konto();
-					k = new Konto(bf.getKontoid(), cn.getConnection());
+					Konto k = new Konto(bf.getKontoid(), cn.getConnection());
 
 					// Rechnung vorbereiten
 					KontoAdmin ka = new KontoAdmin();
@@ -931,10 +925,9 @@ public final class KontoAction extends DispatchAction {
 			if (auth.isAdmin(rq)) {
 				try {
 					BillingForm bf = (BillingForm) fm;
-					Konto k = new Konto();
 					MHelper mh = new MHelper();
 
-					k = new Konto(bf.getKontoid(), cn.getConnection());
+					Konto k = new Konto(bf.getKontoid(), cn.getConnection());
 
 					String[] to = new String[1];
 					to[0] = k.getBibliotheksmail();

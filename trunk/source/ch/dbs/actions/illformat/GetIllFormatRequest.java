@@ -47,15 +47,13 @@ public final class GetIllFormatRequest extends Action {
 
 		Text cn = new Text();
 		String forward = "failure";
-		
-		IllForm ill = new IllForm();
 		IllHandler illHandlerInstance = new IllHandler();
 		
 		try {
 			
 			forward = "success";
 	        
-	        ill = illHandlerInstance.readIllRequest(rq);
+			IllForm ill = illHandlerInstance.readIllRequest(rq);
 	        String returnvalue = illHandlerInstance.updateOrderState(ill, cn.getConnection());
 	        
 	        if (returnvalue.equals("OK")) {

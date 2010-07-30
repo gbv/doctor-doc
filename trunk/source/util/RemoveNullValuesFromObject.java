@@ -20,39 +20,39 @@ package util;
 import java.lang.reflect.Method;
 import org.grlea.log.SimpleLogger;
 
-public class RemoveNullvaluesFrom {
+public class RemoveNullValuesFromObject {
 	
-	private static final SimpleLogger log = new SimpleLogger(RemoveNullvaluesFrom.class);
+	private static final SimpleLogger log = new SimpleLogger(RemoveNullValuesFromObject.class);
 
     /**
     
      * @author Pascal Steiner
      */
 	
-	public RemoveNullvaluesFrom(){
+	public RemoveNullValuesFromObject(){
 		
 	}    
     
     /**
-     * Repalce all null values from Objects in his simply  .getters & .setters with String as GenericReturnType()
+     * Replace all null values from an object in his .getters & .setters with String as GenericReturnType()
      * & GenericParameterTypes 
      * 
      * @author Pascal Steiner
      * @param Object o
-     * @return Object o without null values in simply getters/setters
+     * @return Object o without null values in his getters and setters methods
      * 
      */
-    public Object simplyGettterSetterMethods(Object o){
+    public Object remove(Object o){
     	
         Method[] methods = o.getClass().getMethods();
         Object setvalue[] = new Object[1];
-		setvalue[0] = new String("");  
+		setvalue[0] = "";
 
 		// Alle Methoden der Klasse durchlaufen
         for (Method m: methods)
         {
         	// Alle getter welche einen String zurückgeben behandeln 
-            if (m.getGenericReturnType()== new String().getClass()){
+            if (m.getGenericReturnType()== "".getClass()){
             	try {
             		// liefert get null? (getmethode ausführen)
 					if (m.invoke(o)==null){
@@ -60,7 +60,7 @@ public class RemoveNullvaluesFrom {
 	            		String membervar = m.getName().substring(3);
 	            		
 	            		// Falls es eine settermethode mit simplem String als Parameter gibt den wert null durch "" ersetzen
-	            		Method methode = o.getClass().getMethod("set"+membervar, new String().getClass());
+	            		Method methode = o.getClass().getMethod("set"+membervar, "".getClass());
 						methode.invoke(o, setvalue);						            		            		
 	            	}				
 				} catch (Exception e) {

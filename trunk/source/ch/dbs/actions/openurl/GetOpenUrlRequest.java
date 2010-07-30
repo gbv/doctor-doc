@@ -49,13 +49,11 @@ public final class GetOpenUrlRequest extends Action {
 	public ActionForward execute(ActionMapping mp, ActionForm form,
             HttpServletRequest rq, HttpServletResponse rp) {
 
-		Text requester = new Text();
 		Auth auth = new Auth();
 		String forward = "failure";
 		OrderForm of = (OrderForm) form;
 		BestellformAction bestellFormActionInstance = new BestellformAction();
 		of.setResolver(true); // markiert, dass Angaben bereits aufgelöst wurden
-		ContextObject co = new ContextObject();
 		ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
 		OpenUrl openUrlInstance = new OpenUrl();
 		
@@ -68,7 +66,7 @@ public final class GetOpenUrlRequest extends Action {
 	        // 2. IP-basiert
 			// 3. Broker-Kennung (z.B. Careum Explorer)
 			
-			requester = auth.grantAccess(rq);
+			Text requester = auth.grantAccess(rq);
 			
 			// Nicht eingeloggt. IP-basiert, Kontokennung oder Brokerkennung
 	        if (requester!=null && requester.getInhalt()!=null) {		
@@ -94,7 +92,7 @@ public final class GetOpenUrlRequest extends Action {
 				
 			} else { // Übergabe aus Linkresolver
 				if (query != null) {
-					co = openUrlInstance.readOpenUrlFromRequest(rq);
+					ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
 					of = convertOpenUrlInstance.makeOrderform(co);
 					// nur bei Übergabe über OpenURL Rfr_id abfüllen. Nicht bei WorldCat! Deshalb hier nachträglich...
 					if (co.getRfr_id()!=null && !co.getRfr_id().equals("")) of.setRfr_id(co.getRfr_id());
@@ -180,7 +178,7 @@ public final class GetOpenUrlRequest extends Action {
 	    				
 	    			} else { // Übergabe aus Linkresolver
 	    				if (query != null) {
-	    					co = openUrlInstance.readOpenUrlFromRequest(rq);
+	    					ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
 	    					of = convertOpenUrlInstance.makeOrderform(co);
 	    					// nur bei Übergabe über OpenURL Rfr_id abfüllen. Nicht bei WorldCat! Deshalb hier nachträglich...
 	    					if (co.getRfr_id()!=null && !co.getRfr_id().equals("")) of.setRfr_id(co.getRfr_id());

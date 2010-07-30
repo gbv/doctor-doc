@@ -1,3 +1,5 @@
+-- Revision 56
+
 ALTER TABLE `issn` CHANGE `identifier_id` `identifier_id` VARCHAR( 20 ) NOT NULL 
 
 DROP TABLE `ezb_id`
@@ -48,6 +50,6 @@ NULL , NULL , '2', 'zu bestellen'
 
 ALTER TABLE `bestellform_param` ADD `saveorder` TINYINT( 1 ) NOT NULL AFTER `kennung` ;
 
--- use same lenght in bestellungen.deloptions as bestellform_param.lieferart_value
+-- use same length in bestellungen.deloptions as bestellform_param.lieferart_value
 
 ALTER TABLE `bestellungen` CHANGE `deloptions` `deloptions` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ;

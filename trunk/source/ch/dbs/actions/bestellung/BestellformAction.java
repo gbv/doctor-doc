@@ -1025,7 +1025,6 @@ public final class BestellformAction extends DispatchAction {
 		// http://generator.ocoins.info/ [Eingabe: 10.1002/hec.1381 ]
 		
 		OrderForm of = new OrderForm();
-		ContextObject co = new ContextObject();
 		ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
 		OpenUrl openUrlInstance = new OpenUrl();
 		Http http = new Http();
@@ -1042,7 +1041,7 @@ public final class BestellformAction extends DispatchAction {
         // Sicherstellen, dass die Anfrage aufgelöst wurde und vom OCoinS-Generator selber stammt (Ausschluss von direkter Weiterleitung)
         if (!content.contains("DOI Resolution Error") && content.contains("rfr_id=info%3Asid%2Focoins.info%3Agenerator")) {
         
-        co = openUrlInstance.readOpenUrlFromString(content);
+        ContextObject co = openUrlInstance.readOpenUrlFromString(content);
         of = convertOpenUrlInstance.makeOrderform(co);
         
         }
@@ -1063,7 +1062,6 @@ public final class BestellformAction extends DispatchAction {
 		// http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=3966282
 		
 		OrderForm of = new OrderForm();
-		ContextObject co = new ContextObject();
 		ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
 		OpenUrl openUrlInstance = new OpenUrl();
 		Http http = new Http();
@@ -1076,7 +1074,7 @@ public final class BestellformAction extends DispatchAction {
 		try {
 
         content = http.getWebcontent(link, 2000, 2);
-        co = openUrlInstance.readXmlPubmed(content);
+        ContextObject co = openUrlInstance.readXmlPubmed(content);
         of = convertOpenUrlInstance.makeOrderform(co);
         
 		} catch(Exception e) {
@@ -1225,9 +1223,8 @@ public final class BestellformAction extends DispatchAction {
 		AbstractBenutzer u = new AbstractBenutzer();
 		
 		try {
-			
-			ArrayList<AbstractBenutzer> list = new ArrayList<AbstractBenutzer>();
-			list = u.getUserListFromEmailAndKonto(k, email, cn);
+
+			ArrayList<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(k, email, cn);
 			
 			if (list.size()>0) u = list.get(0); // es wird der erste Benutzer zurückgegeben
 				

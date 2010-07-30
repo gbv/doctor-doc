@@ -1123,9 +1123,8 @@ public final class UserAction extends DispatchAction {
     	sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND ( "); // letzte Klammer wichtig: sonst kann mit OR Bestellungen anderer Kontos ausgelesen werden...!!!
     	
     	for (int i=0;i<searches.size();i++){
-    		
-    		SearchesForm sf = new SearchesForm();
-    		sf = (SearchesForm) searches.get(i);
+
+    		SearchesForm sf = (SearchesForm) searches.get(i);
     		
     		sf = searchMapping(sf); // ggf. Suchwerte in Datenbankwerte übersetzen...
     		
@@ -1148,9 +1147,8 @@ public final class UserAction extends DispatchAction {
     	
     	boolean stop = false; // bricht die Suche ab, falls nach Name || Vorname ausserhalb des erlaubten Datumbereiches (3 Monate) gesucht wird...
     	for (int i=0;i<searches.size() && !stop;i++){
-    		
-    		SearchesForm sf = new SearchesForm();
-    		sf = (SearchesForm) searches.get(i);
+
+    		SearchesForm sf = (SearchesForm) searches.get(i);
     		
 //    		 Kontrolle, ob mit Name || Vorname || Email || Systembemerkungen ausserhalb des erlaubten Datumbereiches (3 Monate) gesucht wird...
     		if (composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("name") || 
@@ -1187,9 +1185,8 @@ public final class UserAction extends DispatchAction {
     	sql.append("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND ( ");
     	
     	for (int i=0;i<searches.size();i++){
-    		
-    		SearchesForm sf = new SearchesForm();
-    		sf = (SearchesForm) searches.get(i);
+
+    		SearchesForm sf = (SearchesForm) searches.get(i);
     		
     		sf = searchMapping(sf); // ggf. Suchwerte in Datenbankwerte übersetzen...
     		
@@ -1211,9 +1208,8 @@ public final class UserAction extends DispatchAction {
     	pstmt.setString(1, k.getId().toString());
     	
     	for (int i=0;i<searches.size();i++){
-    		
-    		SearchesForm sf = new SearchesForm();
-    		sf = (SearchesForm) searches.get(i);
+
+    		SearchesForm sf = (SearchesForm) searches.get(i);
     		
     		String truncation = ""; // Normalerweise keine Trunkierung
     		if (sf.getCondition().contains("contains")) truncation = "%"; // Trunkierung für LIKE
@@ -1411,9 +1407,8 @@ public final class UserAction extends DispatchAction {
     	if (input!=null) {
     		
     		Check check = new Check();
-    		ArrayList<String> words = new ArrayList<String>();
     		
-    		words = check.getAlphanumericWordCharacters(input); // nur Buchstaben inkl. Umlaute und Zahlen zugelassen. Keine Sonderzeichen wie ";.-?!" etc.
+    		ArrayList<String> words = check.getAlphanumericWordCharacters(input); // nur Buchstaben inkl. Umlaute und Zahlen zugelassen. Keine Sonderzeichen wie ";.-?!" etc.
     		StringBuffer buf = new StringBuffer();
     		buf.append("");
     		

@@ -285,10 +285,11 @@
   </logic:equal>
   </logic:present>
 
-	<logic:equal name="userinfo" property="konto.land" value="Schweiz">
-	<!-- This is experimental, so we show this at the moment only in Switzerland.
-		 You may remove the above condition for your local installation -->
+	<!-- Here we show holdings found in the same country as the user is coming from -->
 	<logic:present name="holdings">
+	
+	 <bean:define id="country" type="java.lang.String"><bean:write name="userinfo" property="konto.land" /></bean:define>
+	
 	<h3><bean:message key="availresult.singleHoldings" /></h3>
 		<table border="1" cellspacing="0" cellpadding="3">
 			<tr>
@@ -296,10 +297,10 @@
 				<th id="th-left"><bean:message key="impressum.contact" /></td>
 			</tr>
 			<logic:iterate id="hold" name="holdings">
-			<tr>
-				<td><bean:write name="hold" property="holding.konto.bibliotheksname" /></td>
-				<td><a href="mailto:<bean:write name="hold" property="holding.konto.bibliotheksmail" />"><bean:write name="hold" property="holding.konto.bibliotheksmail" /></a></td>
-			</tr>
+					<tr>
+						<td><bean:write name="hold" property="holding.konto.bibliotheksname" /></td>
+						<td><a href="mailto:<bean:write name="hold" property="holding.konto.bibliotheksmail" />"><bean:write name="hold" property="holding.konto.bibliotheksmail" /></a></td>
+					</tr>
 			</logic:iterate>
 		</table>		
 	<p>
@@ -311,7 +312,6 @@
 		</logic:present>
 	</p>		
 	</logic:present>
-	</logic:equal>
 
 </logic:notEqual>
 </logic:present>

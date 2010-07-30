@@ -610,9 +610,9 @@ public final class OrderAction extends DispatchAction {
 //        	  Methode 2 ueber Regensburger Zeitschriftenkatalog
         	    // Anzeige auf 30 limitiert (hits_per_page):
             FindFree ff_rb = new FindFree();
-            ArrayList<JournalDetails> issn_rb = new ArrayList<JournalDetails>(); // Print ISSN Regensburg
-        	    
-        	    issn_rb = searchEzbRegensburg(zeitschriftentitel_encoded, artikeltitel_encoded, pageForm, bibid);
+            
+            // Print ISSN Regensburg
+            ArrayList<JournalDetails> issn_rb = searchEzbRegensburg(zeitschriftentitel_encoded, artikeltitel_encoded, pageForm, bibid);
         	    
         	    if (issn_rb.size()>0) {
         	    	treffer = true;
@@ -927,13 +927,13 @@ public final class OrderAction extends DispatchAction {
             	DaiaRequest daiaRequest = new DaiaRequest();
             	allHoldings = daiaRequest.get(openurl);
             	internalHoldings = extractInternalHoldings(allHoldings, daiaId);
-        		externalHoldings = extractExternalHoldings(allHoldings, daiaId);
+        		externalHoldings = extractExternalHoldings(allHoldings, daiaId, ui);
             } 
             // Check internal database
             Stock stock = new Stock();
             allHoldings = stock.checkGeneralStockAvailability(pageForm, true);
             internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
-        	externalHoldings.addAll(extractExternalHoldings(allHoldings, kid));
+        	externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
         		
         	if (internalHoldings.size()>0) { // we have own holdings
         		forward = "freeezb";
@@ -1497,13 +1497,11 @@ public final class OrderAction extends DispatchAction {
 //        	    	System.out.println("String OpenURL: " + OpenURL);
         	    	OpenURL = correctWorldCat(OpenURL);
         	    
-        	    // Hier folgt die OpenURL-Auswertung	
-        	    	ContextObject co = new ContextObject();
+        	    // Hier folgt die OpenURL-Auswertung
         	    	ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
         	    	OpenUrl openUrlInstance = new OpenUrl();
-        	    	co = openUrlInstance.readOpenUrlFromString(OpenURL); // ContextObject mit Inhalten von content abfüllen
-        	    	OrderForm of = new OrderForm();
-        	    	of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
+        	    	ContextObject co = openUrlInstance.readOpenUrlFromString(OpenURL); // ContextObject mit Inhalten von content abfüllen
+        	    	OrderForm of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
 
         	    // Artikeltitel als User-Eingabe muss behalten werden
         	    pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
@@ -2136,8 +2134,7 @@ public final class OrderAction extends DispatchAction {
                 
                 if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
                 	List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                	AbstractBenutzer b = new AbstractBenutzer();
-                	b = ui.getBenutzer();
+                	AbstractBenutzer b = ui.getBenutzer();
                 	kontouser.add(b);
                 	pageForm.setKontouser(kontouser);
                 } 
@@ -2265,8 +2262,7 @@ public final class OrderAction extends DispatchAction {
                 
                 if (auth.isBenutzer(rq)) { // user may only see his own address
                 	List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                	AbstractBenutzer b = new AbstractBenutzer();
-                	b = ui.getBenutzer();
+                	AbstractBenutzer b = ui.getBenutzer();
                 	kontouser.add(b);
                 	pageForm.setKontouser(kontouser);
                 } else {
@@ -2708,20 +2704,20 @@ public final class OrderAction extends DispatchAction {
         return mp.findForward(forward);
     }
 
-	  public String extractJahreszahl(String datum) {
-		  String jahr = "";
-		  // Suchpattern funktioniert vom 14. Jahrhundert bis 22. Jahrhundert. Sollte vermutlich für die nächste Zeit reichen...
+	  public String extractYear(String date) {
+		  String year = "";
+		  // Search pattern works from 14th century till 22th century. This sould be usable for some time...
 		  Pattern p = Pattern.compile("13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
-	  	  Matcher m = p.matcher(datum);
+	  	  Matcher m = p.matcher(date);
 	  	  try{
-	  	  if (m.find()) { // Idee: nur erste Zahl abfüllen...
-	  		 jahr = datum.substring(m.start(), m.end()); // hier wird nur der letzte Treffer abgefüllt...
+	  	  if (m.find()) { // Only takes the first hit...
+	  		 year = date.substring(m.start(), m.end());
 	  	  	}
 	  	  } catch (Exception e) {
-	  		log.error("extractJahreszahl(String datum): " + datum + "\040" + e.toString());
+	  		log.error("extractYear(String date): " + date + "\040" + e.toString());
 	  	  }
 		  
-		return jahr;
+		return year;
       }
 	  
 	  private String extractSubitonummer(String subitonr) {
@@ -2878,17 +2874,25 @@ public final class OrderAction extends DispatchAction {
 	  /**
 	   * Holt aus einer ArrayList<Bestand> die Fremdbestände
 	   */
-	  private ArrayList<Bestand> extractExternalHoldings (ArrayList<Bestand> bestaende, long id) {
+	  private ArrayList<Bestand> extractExternalHoldings (ArrayList<Bestand> bestaende, long id, UserInfo ui) {
 		  
 		  ArrayList<Bestand> externalHoldings = new ArrayList<Bestand>();
 		  
 		  try {
 			  
 			  for (int i=0;i<bestaende.size();i++) {
+				  
+				  // TODO: we need a better mechanism to manage the indication of external holdings
+				  // We make sure that the holdings are from the same country as the requester
+				  if (ui!=null && bestaende.get(i).getHolding().getKonto().getLand()!=null &&
+					  bestaende.get(i).getHolding().getKonto().getLand().equals(ui.getKonto().getLand())) {
+				  
+				  // add to list if it is not a holding from the own account
 				  if (!bestaende.get(i).getHolding().getKid().equals(id) && 
 					  !bestaende.get(i).isInternal()) {
-					  externalHoldings.add(bestaende.get(i));
+					  	externalHoldings.add(bestaende.get(i));
 					  }
+				  }
 			  }
 			  
 		  } catch(Exception e) {

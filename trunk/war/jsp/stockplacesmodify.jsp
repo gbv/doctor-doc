@@ -26,63 +26,44 @@
  
 <div class="content">
 <logic:present name="userinfo" property="benutzer">
-			<logic:equal name="userinfo" property="benutzer.rechte" value="3">
+			<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
 <table
 	style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
 	<tr>
-		<td id="submenu" nowrap title="Bestandes&uuml;bersicht"><a
-			href="allstock.do?method=listBestand&activemenu=stock">&Uuml;bersicht</a></td>
+		<td id="submenu" nowrap title="<bean:message key="menu.export_explain" />"><a
+			href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
 		<td id="submenu" nowrap
-			title="Neuen Bestand eingeben: Positivliste"><a
-			href="stock.do?method=prepare&activemenu=stock">Bestand eingeben</a></td>
-		<td id="submenu" nowrap
-			title="Fehlendes vermerken: Negativliste"><a
-			href="stock.do?method=prepare&submit=minus&activemenu=stock">L&uuml;cke eingeben</a></td>
+			title="<bean:message key="menu.import_explain" />"><a
+			href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
 		<td id="submenuactive" nowrap
-			title="Standorte hinzuf&uuml;gen und verwalten"><a
-			href="modplace.do?method=listStandorte&activemenu=stock">Standortverwaltung</a></td>
+			title="<bean:message key="menu.locations_explain" />"><a
+			href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
 	</tr>
 </table>
-</logic:equal>
+</logic:notEqual>
 </logic:present>
  <br />
-<h3>Standortverwaltung</h3>
+<h3><bean:message key="stockplacesmodify.header" /></h3>
+
+<p><bean:message key="stockplacesmodify.intro" /><br /></p>
 
 <logic:equal name="holdingform" property="mod" value="false">
-<p>neuen Standort eingeben:</p>
-<html:form action="modplace.do" method="post" focus="standortid">
-<table>
-    <tr>
-    	<td>Standort</td>
-    	<td><input name="standortid" type="text" size="50" maxlength="100" value="" /></td>
-    </tr>
-	<tr>
-    	<td><br /></td>
-    </tr>
-    <tr>
-      <td><input type="submit" value="speichern"></input></td>
-    </tr>
-     <tr>
-    	<td><br /></td>
-    </tr>
-    <tr>
-    	<logic:present name="holdingform" property="message"><td colspan="2"><div id="italic"><bean:write name="holdingform" property="message" /></div></td></logic:present>
-    	<logic:notPresent name="holdingform" property="message"><td colspan="2"><br /></td></logic:notPresent>
-    </tr>
-    </table>
-  <input name="method" type="hidden" value="listStandorte" />
-  </html:form>
 
-<logic:present name="holdingform" property="standorte">  
-  <p>bestehende Standorte &auml;ndern</p>  
+<logic:present name="holdingform" property="standorte">
+
+<logic:present name="holdingform" property="message">
+	<div id="italic"><bean:write name="holdingform" property="message" /></div>
+	<p></p>
+</logic:present>
+
   <table border="1">
   <logic:iterate id="st" name="holdingform" property="standorte">
     <tr>
-    	<td><a href="modplace.do?method=changeStandort&stid=<bean:write name="st" property="id" />">&auml;ndern</a></td>
+    	<td><a href="modplace.do?method=changeStockplace&stid=<bean:write name="st" property="id" />"><bean:message key="stockplacesmodify.change" /></a></td>
       	<td> 			
      		<bean:write name="st" property="inhalt" />
 		</td>
-		<td><a href="modplace.do?method=changeStandort&stid=<bean:write name="st" property="id" />&del=true">l&ouml;schen</a></td>
+		<td><a href="modplace.do?method=changeStockplace&stid=<bean:write name="st" property="id" />&del=true"><bean:message key="stockplacesmodify.delete" /></a></td>
     </tr>
    </logic:iterate>   
   </table>
@@ -91,7 +72,6 @@
 
 <logic:equal name="holdingform" property="mod" value="true">
 <html:form action="modplace.do" method="post" focus="standortid">
-<p>Standort &auml;ndern:</p>
 <table>
 	<logic:iterate id="st" name="holdingform" property="standorte">
     <tr>
@@ -104,18 +84,15 @@
    <tr>
     	<td><br></td>
     </tr>
-    <tr>
-      	<td><div id="italic">Die &Auml;nderung betrifft auch alle bereits erfassten Best&auml;nde mit diesem Standort!</div></td>
-    </tr>
    <tr>
     	<td><br></td>
     </tr>
     <tr>
-      	<td><input type="submit" value="&auml;ndern"></input></td>
+      	<td><input type="submit" value="<bean:message key="stockplacesmodify.change" />"></input></td>
     </tr>
 </table>
 <input name="mod" type="hidden" value="true" />
-<input name="method" type="hidden" value="changeStandort" />
+<input name="method" type="hidden" value="changeStockplace" />
 </html:form>			
 </logic:equal>
       				

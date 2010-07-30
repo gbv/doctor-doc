@@ -105,10 +105,9 @@ public class Auth {
         		  log.error("grantAccess ip: " + ip + "\040" + ex.toString());
         		}        	
         }
-		
-		Text tip = new Text();
+
         IPChecker ipck = new IPChecker();
-		tip = ipck.contains(ip, cn.getConnection());
+        Text tip = ipck.contains(ip, cn.getConnection());
 		
 		// Broker-Kennung
 		Texttyp bktyp = new Texttyp(Long.valueOf(11), cn.getConnection()); // Texttyp Brokerkennung
@@ -249,8 +248,7 @@ public class Auth {
         if (rq.getSession().getAttribute("userinfo")!=null){
             UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
         // Check nach Bibliothekar / Admin => können sich grundsätzlich immer einloggen (//TODO: ausser wenn Konto deaktiviert...)
-        AbstractBenutzer b = new AbstractBenutzer();
-        b = ui.getBenutzer();
+        AbstractBenutzer b = ui.getBenutzer();
         Bibliothekar bib = new Bibliothekar();
         Administrator a = new Administrator();
     	if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {
@@ -304,8 +302,7 @@ public class Auth {
         if (rq.getSession().getAttribute("userinfo")!=null){
             UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
         // Check nach Bibliothekar / Admin => können grundsätzlich immer bestellen (// TODO: ausser wenn Konto deaktiviert...)
-        AbstractBenutzer b = new AbstractBenutzer();
-        b = ui.getBenutzer();
+        AbstractBenutzer b = ui.getBenutzer();
         Bibliothekar bib = new Bibliothekar();
         Administrator a = new Administrator();
     	if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {
@@ -335,8 +332,7 @@ public class Auth {
         if (rq.getSession().getAttribute("userinfo")!=null){
             UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
         // Check nach Bibliothekar / Admin => können grundsätzlich immer bestellen (// TODO: ausser wenn Konto deaktiviert...)
-        AbstractBenutzer b = new AbstractBenutzer();
-        b = ui.getBenutzer();
+        AbstractBenutzer b = ui.getBenutzer();
         Bibliothekar bib = new Bibliothekar();
         Administrator a = new Administrator();
     	if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {
@@ -367,8 +363,7 @@ public class Auth {
         if (rq.getSession().getAttribute("userinfo")!=null){
             UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
         // Check nach Bibliothekar / Admin => sind grundsätzlich immer aktiv (// TODO: ausser wenn Konto deaktiviert...)
-        AbstractBenutzer b = new AbstractBenutzer();
-        b = ui.getBenutzer();
+        AbstractBenutzer b = ui.getBenutzer();
         Bibliothekar bib = new Bibliothekar();
         Administrator a = new Administrator();
     	if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {

@@ -21,7 +21,7 @@
 	<form-bean name="KontoForm" type="ch.dbs.form.KontoForm"/>
 	<form-bean name="OrderStatistikForm" type="ch.dbs.form.OrderStatistikForm"/>
 	<form-bean name="ActiveMenus" type="ch.dbs.form.ActiveMenusForm"/>
-	<form-bean name="ReSendFaxForm" type="ch.dbs.form.ReSendFaxForm"/>
+	<form-bean name="FileForm" type="ch.dbs.form.FileForm"/>
 	<form-bean name="IllForm" type="ch.dbs.form.IllForm"/>
 	<form-bean name="IlvReportForm" type="ch.dbs.form.IlvReportForm"/>
 	<form-bean name="GbvSruForm" type="ch.dbs.form.GbvSruForm"/>
@@ -166,7 +166,7 @@
     
     <!-- Fax erneut von Faxserver ausliefern lassen -->
 	<action path="/sendfaxagain"  
-  			name="ReSendFaxForm"
+  			name="FileForm"
   			parameter="method"
   			validate="false"  
   			scope="request"  
@@ -175,7 +175,7 @@
 			<forward name="success" path="/jsp/message.jsp"/>
     </action>
     
-    <!-- Servertest für Admins beliebiger Methoden -->    
+    <!-- Servertest für Admins beliebiger Methoden -->
     <action path="/test"
             validate="false" 
             scope="request"
@@ -902,54 +902,66 @@
   			parameter="method"
   			type="ch.dbs.actions.reports.ILVReport">
   			<forward name="failure" path="/error.do"/>
-    </action>  
+    </action>
+    
+    <action path="/export-holdings"
+  			scope="request" 
+  			parameter="method"
+  			type="ch.dbs.actions.reports.HoldingsReport">
+  			<forward name="failure" path="/error.do"/>
+    </action>
+    
     <!-- ********************************************************************************************************** -->
     
-    <!-- *************************************************Bestandesverwaltung************************************************* -->   
-    <action path="/stock"
-  			input="/jsp/modifystock.jsp"
-  			name="HoldingForm"  
-  			scope="request" 
-  			parameter="method"
-  			validate="false"
-  			type="ch.dbs.actions.bestand.Stock">
-  			<forward name="failure" path="/error.do"/>
-  			<forward name="success" path="/modifystock.do"/>
-    </action>
-    <action path="/savestock"
-  			input="/jsp/modifystock.jsp"
-  			name="HoldingForm"  
-  			scope="request" 
-  			parameter="method"
-  			validate="false"
-  			type="ch.dbs.actions.bestand.Stock">
-  			<forward name="failure" path="/error.do"/>
-  			<forward name="success" path="/modifystock.do"/>
-    </action>
-    <action path="/modplace"
-  			input="/jsp/modifystockplaces.jsp"
-  			name="HoldingForm"  
-  			scope="request" 
-  			parameter="method"
-  			validate="false"
-  			type="ch.dbs.actions.bestand.Stock">
-  			<forward name="failure" path="/error.do"/>
-  			<forward name="success" path="/modifystockplaces.do"/>
-    </action>
+    <!-- *************************************************Bestandesverwaltung************************************************* -->
+    <!-- Prepares the JSP page to export holdings -->
     <action path="/allstock"
-  			input="/jsp/showstock.jsp"
+  			input="/jsp/stockexport.jsp"
   			name="HoldingForm"  
   			scope="request" 
   			parameter="method"
   			validate="false"
   			type="ch.dbs.actions.bestand.Stock">
   			<forward name="failure" path="/error.do"/>
-  			<forward name="success" path="/showstock.do"/>
+  			<forward name="success" path="/stockexport.do"/>
+    </action>
+    <!-- Prepares the JSP page to import holdings -->
+    <action path="/stock"
+  			input="/jsp/stockimport.jsp"
+  			name="HoldingForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestand.Stock">
+  			<forward name="failure" path="/error.do"/>
+  			<forward name="success" path="/stockimport.do"/>
+    </action>
+   <!-- Upload a CSV-File of holdings -->
+	<action path="/importholdinglist"
+  			name="FileForm"
+  			parameter="method"
+  			validate="false"  
+  			scope="request"  
+			type="ch.dbs.actions.bestand.Stock">
+			<forward name="failure" path="/error.do"/>
+			<forward name="importError" path="/jsp/messages.jsp"/>
+			<forward name="success" path="/jsp/message.jsp"/>
+    </action>
+    <!-- Modify locations of holdings -->
+    <action path="/modplace"
+  			input="/jsp/stockplacesmodify.jsp"
+  			name="HoldingForm"  
+  			scope="request" 
+  			parameter="method"
+  			validate="false"
+  			type="ch.dbs.actions.bestand.Stock">
+  			<forward name="failure" path="/error.do"/>
+  			<forward name="success" path="/stockplacesmodify.do"/>
     </action>
     
-    <action name="ActiveMenus" forward="/jsp/modifystock.jsp" path="/modifystock"/>
-    <action name="ActiveMenus" forward="/jsp/modifystockplaces.jsp" path="/modifystockplaces"/>
-    <action name="ActiveMenus" forward="/jsp/showstock.jsp" path="/showstock"/>
+    <action name="ActiveMenus" forward="/jsp/stockimport.jsp" path="/stockimport"/>
+    <action name="ActiveMenus" forward="/jsp/stockplacesmodify.jsp" path="/stockplacesmodify"/>
+    <action name="ActiveMenus" forward="/jsp/stockexport.jsp" path="/stockexport"/>
     <!-- ********************************************************************************************************** -->
     
     

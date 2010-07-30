@@ -126,6 +126,50 @@ public class Text extends AbstractIdEntity {
   }
   
   /**
+   * Gets a Text from a Texttype, a KID and the content
+   * 
+   * @param cn Connection
+   * @param Texttyp typ
+   * @param Long KID
+   * @param inhalt String
+   */
+  public Text(Connection cn, Texttyp typ, Long kid, String inhalt){
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+	  try {
+          pstmt = cn.prepareStatement( "SELECT * FROM `text` WHERE `TYID`=? AND `KID`=? AND `inhalt`=?");
+          pstmt.setString(1, typ.getId().toString());
+          pstmt.setLong(2, kid);
+          pstmt.setString(3, inhalt);
+          rs = pstmt.executeQuery();
+          while (rs.next()) {
+        	  this.setId(rs.getLong("TID"));
+              this.setKonto(new Konto(rs.getLong("KID"),cn));
+              this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn ));
+              this.setInhalt(rs.getString("inhalt"));
+          }
+       
+      } catch (Exception e) {
+    	  log.error("Text(Connection cn, Texttyp typ, Long kid, String inhalt): " + e.toString());
+      } finally {
+      	if (rs != null) {
+    		try {
+    			rs.close();
+    		} catch (SQLException e) {
+    			System.out.println(e);
+    		}
+    	}
+    	if (pstmt != null) {
+    		try {
+    			pstmt.close();
+    		} catch (SQLException e) {
+    			System.out.println(e);
+    		}
+    	}
+    }
+  }
+  
+  /**
    * Erstellt einen Text anhand eines Texttyps und einer KID
    * 
    * @param cn Connection

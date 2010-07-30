@@ -39,12 +39,11 @@ public class Daia extends Action {
 		
 		String output = "";
 		String outputformat = rq.getParameter("format");
-		
-		ContextObject co = new ContextObject();
+
 		ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
 		OpenUrl openUrlInstance = new OpenUrl();
 		
-		co = openUrlInstance.readOpenUrlFromRequest(rq);
+		ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
 		ofjo.completeOrderForm(ofjo, convertOpenUrlInstance.makeOrderform(co));
 		
 		// Parameter für indirekte Nutzung über einen Metakatalog (z.B. Vufind)
@@ -63,10 +62,9 @@ public class Daia extends Action {
 			} else { // Bestände für ein bestimmtes Konto prüfen (IP-basiert)
 				msgBestand = "No holdings found";
 				Text cn = new Text();
-				Text tip = new Text();
 				// Text mit Konto anhand IP holen
 				IPChecker ipck = new IPChecker();
-				tip = ipck.contains(daiaIP, cn.getConnection());
+				Text tip = ipck.contains(daiaIP, cn.getConnection());
 
 				if (tip.getKonto() != null && tip.getKonto().getId() != null) { // Nur prüfen, falls Konto vorhanden
 					bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());

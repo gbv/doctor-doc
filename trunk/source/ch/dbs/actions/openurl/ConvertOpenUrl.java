@@ -164,7 +164,7 @@ public class ConvertOpenUrl {
 		
 		if (co.getRft_date()!=null && !co.getRft_date().equals("")) {
 			OrderAction orderActionInstance = new OrderAction();
-			of.setJahr(orderActionInstance.extractJahreszahl(co.getRft_date()));
+			of.setJahr(orderActionInstance.extractYear(co.getRft_date()));
 		}
 		
 		if (co.getRft_volume()!=null && !co.getRft_volume().equals("")) {

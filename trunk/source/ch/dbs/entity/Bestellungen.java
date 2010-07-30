@@ -141,8 +141,6 @@ public class Bestellungen extends AbstractIdEntity {
   
   
   public Bestellungen(Connection cn, Long id){
-
-	  Bestellungen b = new Bestellungen();
 	  
 	  if (id!=null) {
 	        
@@ -155,7 +153,7 @@ public class Bestellungen extends AbstractIdEntity {
 
 	            while (rs.next()) {
 	                getBestellung(rs);
-	                if (checkAnonymize(this)) b = anonymize(this);
+	                if (checkAnonymize(this)) anonymize(this);
 	            }
 
 	        } catch (Exception e) {
@@ -188,8 +186,6 @@ public class Bestellungen extends AbstractIdEntity {
    * @return Bestellungen b
    */
   public Bestellungen(Connection cn, String trackingnr, String gbvnr){
-
-	  Bestellungen b = new Bestellungen();
 	        
 	  PreparedStatement pstmt = null;
 	  ResultSet rs = null;

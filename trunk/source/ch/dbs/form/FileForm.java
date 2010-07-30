@@ -21,23 +21,32 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.upload.FormFile;
 
 
-public final class ReSendFaxForm extends ActionForm{
+public final class FileForm extends ActionForm{
 	
 	/**
-	 * ReSendFaxForm 
+	 * FileForm used to upload a file 
 	 * 
-	 * @author Pascal Steiner
 	 */
 	
 	private static final long serialVersionUID = 1L;
 	private FormFile file;
+	boolean condition;
 	
 
 	public FormFile getFile() {
 		return file;
 	}
+	
 	public void setFile(FormFile file) {
 		this.file = file;
-	}    
+	}
+
+	public boolean isCondition() {
+		return condition;
+	}
+
+	public void setCondition(boolean condition) {
+		this.condition = condition;
+	}
 
 }

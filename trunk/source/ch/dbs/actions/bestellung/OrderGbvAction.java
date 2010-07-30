@@ -712,8 +712,7 @@ public final class OrderGbvAction extends DispatchAction {
                 
                 if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
                 	List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                	AbstractBenutzer b = new AbstractBenutzer();
-                	b = ui.getBenutzer();
+                	AbstractBenutzer b = ui.getBenutzer();
                 	kontouser.add(b);
                 	of.setKontouser(kontouser);
                 } else {
@@ -780,8 +779,7 @@ public final class OrderGbvAction extends DispatchAction {
                 
                 if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
                 	List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                	AbstractBenutzer b = new AbstractBenutzer();
-                	b = ui.getBenutzer();
+                	AbstractBenutzer b = ui.getBenutzer();
                 	kontouser.add(b);
                 	of.setKontouser(kontouser);
                 } else {
@@ -892,8 +890,7 @@ public final class OrderGbvAction extends DispatchAction {
     		
     		while (content.contains("<srw:record>")) {
     			
-    			GbvSruForm gsf = new GbvSruForm();
-    			gsf = readSruRecord(content.substring(content.indexOf("<srw:record>"), content.indexOf("</srw:record>")));
+    			GbvSruForm gsf = readSruRecord(content.substring(content.indexOf("<srw:record>"), content.indexOf("</srw:record>")));
         		gsf.setTreffer_total(treffer);
         		gsf.setStart_record(start_record);
         		gsf.setMaximum_record(maximum_record);
@@ -1463,15 +1460,14 @@ public final class OrderGbvAction extends DispatchAction {
     	String p_zdbid = null;
 
 		try {
-			GbvSruForm gsf = new GbvSruForm();
-			ArrayList<GbvSruForm> matches = new ArrayList<GbvSruForm>();
-			matches = getGbvMatches(content);
+			ArrayList<GbvSruForm> matches = getGbvMatches(content);
+			
 			if (matches.size()>0) { // nur falls nicht keine Treffer! Sonst kracht es...
-			gsf = (GbvSruForm) matches.get(0);
+				GbvSruForm gsf = (GbvSruForm) matches.get(0);
 			// bringt aus ggf. mehreren Umleitungen die letztmögliche
-			if (gbvIsEjournalRedirectableIgnoreMultipleHits(gsf)) {    						
-				p_zdbid = gsf.getVerknuepfung_zdbid_horizontal();						
-			}
+				if (gbvIsEjournalRedirectableIgnoreMultipleHits(gsf)) {    						
+					p_zdbid = gsf.getVerknuepfung_zdbid_horizontal();						
+				}
 			}
 			
 		} catch (Exception e) {

@@ -38,7 +38,7 @@ import org.grlea.log.SimpleLogger;
 
 import util.Auth;
 import util.ReadSystemConfigurations;
-import util.RemoveNullvaluesFrom;
+import util.RemoveNullValuesFromObject;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
@@ -120,8 +120,8 @@ public final class ILVReport extends DispatchAction {
 				IlvReportForm ilvf = (IlvReportForm) fm; 		
 				UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
 				ServletOutputStream servletOutputStream = null;
-				RemoveNullvaluesFrom r = new RemoveNullvaluesFrom();
-				Konto k = (Konto) r.simplyGettterSetterMethods(ui.getKonto());
+				RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
+				Konto k = (Konto) nullValues.remove(ui.getKonto());
 				
 				ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
 			    tf.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
