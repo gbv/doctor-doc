@@ -52,7 +52,8 @@
 <logic:present name="holdingform" property="standorte">
 
 <logic:present name="holdingform" property="message">
-	<div id="italic"><bean:write name="holdingform" property="message" /></div>
+	<bean:define id="translationKey" name="holdingform" property="message" type="java.lang.String"/>
+	<div id="italic"><bean:message key="<%=translationKey%>" /></div>
 	<p></p>
 </logic:present>
 

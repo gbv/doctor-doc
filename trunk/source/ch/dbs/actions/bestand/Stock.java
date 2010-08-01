@@ -290,7 +290,7 @@ public class Stock extends DispatchAction {
             hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
             
             if (hf.getStandorte().size()==0) { // 
-            	hf.setMessage("Sie habe noch keine Bestände und Standorte importiert!");
+            	hf.setMessage("error.stockplacesmodify.nolocations");
             }
             
             rq.setAttribute("holdingform", hf);
@@ -359,7 +359,7 @@ public class Stock extends DispatchAction {
 			hf.setDel(false);
 			} else {
 				// there are still holdings for this location!
-				hf.setMessage("Standort nicht löschbar! Es existieren noch verknüpfte Bestände!");
+				hf.setMessage("error.stockplacesmodify.notdeletable");
 			}
 			hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
         }
