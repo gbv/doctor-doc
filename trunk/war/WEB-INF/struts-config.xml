@@ -856,6 +856,12 @@
 			parameter="method" 
 			type="ch.dbs.cronjobs.KontoCron">
     </action>
+    <action path="/optimize"  
+			scope="request"
+			validate="false" 
+			parameter="method" 
+			type="ch.dbs.cronjobs.OptimizeDB">
+    </action>
     <!-- ********************************************************************************************************** -->
       
     <!-- *************************************************Reports************************************************* -->
