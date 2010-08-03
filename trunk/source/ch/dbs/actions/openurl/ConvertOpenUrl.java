@@ -146,16 +146,16 @@ public class ConvertOpenUrl {
 			
 		}
 		
-		// Falls issn ode eissn leer sind und issn1 oder eissn1 vorhanden sind => zuweisen
+		// if issn or eissn are empty and issn1 or eissn1 are available => set them
 		if ((co.getRft_issn()==null || co.getRft_issn().equals("")) && (co.getRft_issn1()!=null && !co.getRft_issn1().equals("")) ) co.setRft_issn(co.getRft_issn1());
 		if ((co.getRft_eissn()==null || co.getRft_eissn().equals("")) && (co.getRft_eissn1()!=null && !co.getRft_eissn1().equals("")) ) co.setRft_eissn(co.getRft_eissn1());
 		
 		if (co.getRft_issn()!=null && !co.getRft_issn().equals("")) {
-				of.setIssn(normalizeIssn(co.getRft_issn()));
+				of.setIssn(normalizeIssn(extractFromSeveralIssns(co.getRft_issn())));
 		}
 		
 		if (co.getRft_eissn()!=null && !co.getRft_eissn().equals("") && (of.getIssn()==null || of.getIssn().equals("")) ) { // ...nur ausführen, falls P-ISSN nicht schon gesetzt
-			of.setIssn(normalizeIssn(co.getRft_eissn()));
+			of.setIssn(normalizeIssn(extractFromSeveralIssns(co.getRft_eissn())));
 		}
 		
 		if (co.getRft_isbn()!=null && !co.getRft_isbn().equals("")) {
@@ -505,19 +505,44 @@ public class ConvertOpenUrl {
 	}
 	
 	/**
+	 * gets an ISSN out of a String with several ISSNs
+	 * e.g. Refworks is sending multiple ISSN in the param:
+	 * issn=1234-1234; 2345-2345
+	 */
+	public String extractFromSeveralIssns(String input) {
+		
+		
+		try {			
+			if (input!=null && input.length()>19 && // must have at least the lenght of two ISSNs plus a separation character
+			   (input.contains(";") || input.contains(",")) ) { // Separation character is comma or semicolon
+				if (input.contains(";")) {
+					if (input.indexOf(";")>8) { // must have a ISSN number before the separtion character
+						input = input.substring(0, input.indexOf(";")).trim(); // take the first ISSN
+						}
+				} else if (input.contains(",")) {
+					if (input.indexOf(",")>8) { // must have a ISSN number before the separtion character
+						input = input.substring(0, input.indexOf(",")).trim(); // take the first ISSN
+						}					
+				}		
+			}			
+			
+		} catch(Exception e){
+			log.error("extractFromSeveralIssns:\040" + input + "\040" + e.toString());    		
+    	}
+		
+		return input;
+	}
+	
+	/**
 	 * Bringt eine ISSN ohne Bindestrich in die "normale Form"
 	 */
 	public String normalizeIssn(String input) {
 		
 		
-		try {
-			
-			if (input!=null && input.length()==8 && !input.contains("-")) {
-				
-				input = input.substring(0, 4) + "-" + input.substring(4, 8);
-				
-			}
-			
+		try {			
+			if (input!=null && input.length()==8 && !input.contains("-")) {				
+				input = input.substring(0, 4) + "-" + input.substring(4, 8);				
+			}			
 			
 		} catch(Exception e){
 			log.error("normalizeIssn:\040" + input + "\040" + e.toString());    		

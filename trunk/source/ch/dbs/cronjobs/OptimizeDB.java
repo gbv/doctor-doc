@@ -31,10 +31,9 @@ import ch.dbs.entity.Text;
 public final class OptimizeDB extends DispatchAction {
     
     /**
-     * Allows to optimize the databse upon a regular cronjob. Use with caution:
+     * Allows to optimize the database upon a regular cronjob. Use with caution:
      * the tables will be locked, while optimizing and depending on the table size
-     * this may take a while.
-     * 
+     * this may take a while. 
      */
     public void optimizeDB(ActionMapping mp,
             				ActionForm form,
@@ -46,8 +45,7 @@ public final class OptimizeDB extends DispatchAction {
         
     	try {
             pstmt = cn.getConnection().prepareStatement("OPTIMIZE TABLE `benutzer` , `bestellform_param` , `bestellungen` , `bestellstatus` , `default_preise` , `holdings` , `konto` , `lieferanten` , `stock` , `text` , `v_konto_benutzer`");            
-            pstmt.executeUpdate();
-            
+            pstmt.executeUpdate();            
         } catch (Exception e) {
         	log.error("public void optimize)" + e.toString());
         } finally {

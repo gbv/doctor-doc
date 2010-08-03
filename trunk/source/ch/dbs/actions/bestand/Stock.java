@@ -65,7 +65,7 @@ public class Stock extends DispatchAction {
 	private static final SimpleLogger log = new SimpleLogger(Stock.class);
 	private static final int CSV_COLUMNS = 21; // Number of columns per CSV line
 	private static final int FILESIZELIMIT = 6000000; // Limits the file size for upload to avoid OutOfMemory errors
-	private static final char DELIMITER = ','; // Comma seems to be compatible with Excel
+	private static final char DELIMITER = ';'; // Semicolon seems to be mostly compatible with Excel
 	
     /**
      * Access control for the holdings export page
