@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.grlea.log.SimpleLogger;
 
@@ -323,74 +324,7 @@ public class Bestand extends AbstractIdEntity {
 	        	}
 	        }
 	    }
-
-		  /**
-		   * Liefert alle Bestände anhand einer einzelnen ISSN unter
-		   * Berücksichtigung aller verwandten ISSNs
-		   * @param OrderForm pageForm
-		   * @param boolean internal
-		   * @param Connection cn
-		   * 
-		   * @return ArrayList<Bestand> listBestand
-		   */
-		  public ArrayList<Bestand> getAllBestandForIssn(OrderForm pageForm, boolean internal, Connection cn){
-		      ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
-		      
-		      String sqlQuery = "SELECT stock.* FROM stock JOIN holdings ON stock.HOID = holdings.HOID JOIN issn AS b " +
-		      "ON holdings.issn = b.issn JOIN issn AS a ON a.identifier_id = b.identifier_id AND a.identifier = b.identifier " +
-		      "WHERE a.issn = ? AND internal <= ? AND ((startyear < ? AND (endyear > ? OR endyear = '')) OR (startyear <= ? AND (startyear = ? OR endyear = ? OR endyear = '') AND " +
-		      "(startvolume < ? OR startvolume = '') AND (endvolume > ? OR endvolume = '')) OR (startyear <= ? AND (startyear = ? OR endyear = ? OR endyear = '') AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '') AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')))";
-		      
-		      PreparedStatement pstmt = null;
-		      ResultSet rs = null;
-		      try {
-		          pstmt = cn.prepareStatement(sqlQuery);
-		          pstmt.setString(1, pageForm.getIssn());		          
-		          pstmt.setBoolean(2, internal);		          
-		          pstmt.setString(3, pageForm.getJahr());
-		          pstmt.setString(4, pageForm.getJahr());
-		          pstmt.setString(5, pageForm.getJahr());
-		          pstmt.setString(6, pageForm.getJahr());
-		          pstmt.setString(7, pageForm.getJahr());		          
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(8, "99999999999");} else {pstmt.setString(8, pageForm.getJahrgang());}
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(9, "1");} else {pstmt.setString(9, pageForm.getJahrgang());}
-		          pstmt.setString(10, pageForm.getJahr());
-		          pstmt.setString(11, pageForm.getJahr());
-		          pstmt.setString(12, pageForm.getJahr());
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(13, "99999999999");} else {pstmt.setString(13, pageForm.getJahrgang());}
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(14, "1");} else {pstmt.setString(14, pageForm.getJahrgang());}
-		          if (pageForm.getHeft().equals("")) {pstmt.setString(15, "99999999999");} else {pstmt.setString(15, pageForm.getHeft());}
-		          if (pageForm.getHeft().equals("")) {pstmt.setString(16, "1");} else {pstmt.setString(16, pageForm.getHeft());}
-
-		          rs = pstmt.executeQuery();
-
-		          while (rs.next()) {
-		              Bestand be = new Bestand(cn, rs);
-		              listBestand.add(be);
-		          }
-
-		      } catch (Exception e) {
-		    	  log.error("ArrayList<Bestand> getAllBestandForIssn(OrderForm pageForm, boolean internal, Connection cn): " + e.toString());
-		      } finally {
-		        	if (rs != null) {
-		        		try {
-		        			rs.close();
-		        		} catch (SQLException e) {
-		        			System.out.println(e);
-		        		}
-		        	}
-		        	if (pstmt != null) {
-		        		try {
-		        			pstmt.close();
-		        		} catch (SQLException e) {
-		        			System.out.println(e);
-		        		}
-		        	}
-		        }
-		      
-		      return listBestand;  
-		  }
-		  
+ 
 		  /**
 		   * Gets all "Bestand" from a kid
 		   * 
@@ -416,75 +350,6 @@ public class Bestand extends AbstractIdEntity {
 
 		      } catch (Exception e) {
 		    	  log.error("ArrayList<Bestand> getAllKontoBestand(Long kid, Connection cn): " + e.toString());
-		      } finally {
-		        	if (rs != null) {
-		        		try {
-		        			rs.close();
-		        		} catch (SQLException e) {
-		        			System.out.println(e);
-		        		}
-		        	}
-		        	if (pstmt != null) {
-		        		try {
-		        			pstmt.close();
-		        		} catch (SQLException e) {
-		        			System.out.println(e);
-		        		}
-		        	}
-		        }
-		      
-		      return listBestand;  
-		  }
-
-		  /**
-		   * Liefert alle Bestände eines Kontos anhand einer einzelnen ISSN unter
-		   * Berücksichtigung aller verwandten ISSNs
-		   * @param Long kid
-		   * @param OrderForm pageForm
-		   * @param boolean internal
-		   * @param Connection cn
-		   * 
-		   * @return ArrayList<Bestand> listBestand
-		   */
-		  public ArrayList<Bestand> getKontoBestandForIssn(Long kid, OrderForm pageForm, boolean internal, Connection cn){
-		      ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
-		      
-		      String sqlQuery = "SELECT stock.* FROM stock JOIN holdings ON stock.HOID = holdings.HOID JOIN issn AS b " +
-		      "ON holdings.issn = b.issn JOIN issn AS a ON a.identifier_id = b.identifier_id AND a.identifier = b.identifier " +
-		      "WHERE holdings.KID = ? AND a.issn = ? AND internal <= ? AND ((startyear < ? AND (endyear > ? OR endyear = '')) OR (startyear <= ? AND (startyear = ? OR endyear = ? OR endyear = '') AND " +
-		      "(startvolume < ? OR startvolume = '') AND (endvolume > ? OR endvolume = '')) OR (startyear <= ? AND (startyear = ? OR endyear = ? OR endyear = '') AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '') AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')))";
-		      
-		      PreparedStatement pstmt = null;
-		      ResultSet rs = null;
-		      try {
-		          pstmt = cn.prepareStatement(sqlQuery);
-		          pstmt.setLong(1, kid);
-		          pstmt.setString(2, pageForm.getIssn());		          
-		          pstmt.setBoolean(3, internal);		          
-		          pstmt.setString(4, pageForm.getJahr());
-		          pstmt.setString(5, pageForm.getJahr());
-		          pstmt.setString(6, pageForm.getJahr());
-		          pstmt.setString(7, pageForm.getJahr());
-		          pstmt.setString(8, pageForm.getJahr());		          
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(9, "99999999999");} else {pstmt.setString(9, pageForm.getJahrgang());}
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(10, "1");} else {pstmt.setString(10, pageForm.getJahrgang());}
-		          pstmt.setString(11, pageForm.getJahr());
-		          pstmt.setString(12, pageForm.getJahr());
-		          pstmt.setString(13, pageForm.getJahr());
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(14, "99999999999");} else {pstmt.setString(14, pageForm.getJahrgang());}
-		          if (pageForm.getJahrgang().equals("")) {pstmt.setString(15, "1");} else {pstmt.setString(15, pageForm.getJahrgang());}
-		          if (pageForm.getHeft().equals("")) {pstmt.setString(16, "99999999999");} else {pstmt.setString(16, pageForm.getHeft());}
-		          if (pageForm.getHeft().equals("")) {pstmt.setString(17, "1");} else {pstmt.setString(17, pageForm.getHeft());}
-
-		          rs = pstmt.executeQuery();
-
-		          while (rs.next()) {
-		              Bestand be = new Bestand(cn, rs);
-		              listBestand.add(be);
-		          }
-
-		      } catch (Exception e) {
-		    	  log.error("ArrayList<Bestand> getKontoBestandForIssn(Long kid, OrderForm pageForm, boolean internal, Connection cn): " + e.toString());
 		      } finally {
 		        	if (rs != null) {
 		        		try {
@@ -549,9 +414,8 @@ public class Bestand extends AbstractIdEntity {
 	      return sl;  
 	  }
 	  
-	  
 	  /**
-	   * Liefert alle Bestände anhand einer Holding-Liste für ein Orderform
+	   * Gets all Bestand from a list of holdings for a OrderForm
 	   * @param ArrayList<Holding> holdings
 	   * @param OrderForm pageForm
 	   * @param boolean internal
@@ -563,45 +427,92 @@ public class Bestand extends AbstractIdEntity {
 	      ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
 	      
 	      if (hoids.size()>0) {
+	    	  
+	      int searchMode = getSearchMode(pageForm);
 	      
-	      StringBuffer sqlQuery = new StringBuffer("SELECT * FROM `stock` WHERE internal <= ? AND ((startyear < ? AND (endyear > ? OR endyear = '')) OR " + 
-	      "(startyear <= ? AND (startyear = ? OR endyear = ? OR endyear = '') AND (startvolume < ? OR startvolume = '') AND (endvolume > ? OR endvolume = '')) OR " + 
-	      "(startyear <= ? AND (startyear = ? OR endyear = ? OR endyear = '') AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '') AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = ''))) AND (HOID = ?");
+	      if (searchMode>0) { // only proceed if there has been found a search modus (at least an ISSN)
 	      
-	      for (int i=1;i<hoids.size();i++) { // nur ausführen, wenn holdings > 1
+	      StringBuffer sqlQuery = new StringBuffer(getSQL(searchMode));
+	      
+	      for (int i=1;i<hoids.size();i++) { // only append if there are several holdings
 	    	  sqlQuery.append(" OR HOID = ?");
 	      }
-	      sqlQuery.append(")");
+	      sqlQuery.append(")"); // close SQL Syntax with a parenthesis
 	      
 	      PreparedStatement pstmt = null;
 	      ResultSet rs = null;
 	      try {
 	          pstmt = cn.prepareStatement(sqlQuery.toString());
-	          pstmt.setBoolean(1, internal);
-	          pstmt.setString(2, pageForm.getJahr());
-	          pstmt.setString(3, pageForm.getJahr());
-	          pstmt.setString(4, pageForm.getJahr());
-	          pstmt.setString(5, pageForm.getJahr());
-	          pstmt.setString(6, pageForm.getJahr());
-	          if (pageForm.getJahrgang().equals("")) {pstmt.setString(7, "99999999999");} else {pstmt.setString(7, pageForm.getJahrgang());}
-	          if (pageForm.getJahrgang().equals("")) {pstmt.setString(8, "1");} else {pstmt.setString(8, pageForm.getJahrgang());}
-	          pstmt.setString(9, pageForm.getJahr());
-	          pstmt.setString(10, pageForm.getJahr());
-	          pstmt.setString(11, pageForm.getJahr());
-	          if (pageForm.getJahrgang().equals("")) {pstmt.setString(12, "99999999999");} else {pstmt.setString(12, pageForm.getJahrgang());}
-	          if (pageForm.getJahrgang().equals("")) {pstmt.setString(13, "1");} else {pstmt.setString(13, pageForm.getJahrgang());}
-	          if (pageForm.getHeft().equals("")) {pstmt.setString(14, "99999999999");} else {pstmt.setString(14, pageForm.getHeft());}
-	          if (pageForm.getHeft().equals("")) {pstmt.setString(15, "1");} else {pstmt.setString(15, pageForm.getHeft());}
+	          
+	          int positionHoid = 2;
+	          
+	          switch (searchMode)
+	          {
+	          case 1: // everything without a year and at least an ISSN
+	        	  pstmt.setBoolean(1, internal);
+	        	  break;
+	          case 2: // ISSN, Year
+	        	  pstmt.setBoolean(1, internal);
+	        	  pstmt.setString(2, pageForm.getJahr());
+		          pstmt.setString(3, pageForm.getJahr());
+		          positionHoid = 4;
+	        	  break;
+	          case 3: // ISSN, Year, Volume
+	        	  pstmt.setBoolean(1, internal);
+	        	  pstmt.setString(2, pageForm.getJahr());
+		          pstmt.setString(3, pageForm.getJahr());
+		          pstmt.setString(4, pageForm.getJahrgang());
+		          pstmt.setString(5, pageForm.getJahrgang());
+		          positionHoid = 6;
+	        	  break;
+	          case 4: // ISSN, Year, Volume, Issue
+	        	  pstmt.setBoolean(1, internal);
+	        	  pstmt.setString(2, pageForm.getJahrgang());
+	        	  pstmt.setString(3, pageForm.getJahrgang());
+	        	  pstmt.setString(4, pageForm.getJahr());
+		          pstmt.setString(5, pageForm.getJahr());
+		          pstmt.setString(6, pageForm.getHeft());
+		          pstmt.setString(7, pageForm.getHeft());
+		          pstmt.setString(8, pageForm.getJahr());
+		          pstmt.setString(9, pageForm.getHeft());
+		          pstmt.setString(10, pageForm.getJahr());
+		          pstmt.setString(11, pageForm.getJahr());
+		          pstmt.setString(12, pageForm.getHeft());
+		          pstmt.setString(13, pageForm.getJahr());
+		          positionHoid = 14;
+	        	  break;
+	          case 5: // ISSN, Year, Issue
+	        	  pstmt.setBoolean(1, internal);
+	        	  pstmt.setString(2, pageForm.getJahr());
+		          pstmt.setString(3, pageForm.getJahr());
+		          pstmt.setString(4, pageForm.getHeft());
+		          pstmt.setString(5, pageForm.getHeft());
+		          pstmt.setString(6, pageForm.getJahr());
+		          pstmt.setString(7, pageForm.getHeft());
+		          pstmt.setString(8, pageForm.getJahr());
+		          pstmt.setString(9, pageForm.getJahr());
+		          pstmt.setString(10, pageForm.getHeft());
+		          pstmt.setString(11, pageForm.getJahr());
+		          positionHoid = 12;
+	        	  break;
+	          }
 	          
 	          for (int i=0;i<hoids.size();i++) {
-	        	  pstmt.setString(16+i, hoids.get(i));
+	        	  pstmt.setString(positionHoid+i, hoids.get(i));
 	          }
 
 	          rs = pstmt.executeQuery();
+	          
+	          // Controls that only one matching stock per location will be shown
+	          HashSet<Long> uniqueSetLocationID = new HashSet<Long>();
 
 	          while (rs.next()) {
-	              Bestand be = new Bestand(cn, rs);
-	              listBestand.add(be);
+	              Bestand be = new Bestand(cn, rs);	              
+	              if(!uniqueSetLocationID.contains(be.getStandort().getId())) {
+	            	  listBestand.add(be); // add only one stock for a given location
+	            	  uniqueSetLocationID.add(be.getStandort().getId());
+	              }
+	              
 	          }
 
 	      } catch (Exception e) {
@@ -623,58 +534,68 @@ public class Bestand extends AbstractIdEntity {
 	        	}
 	        }
 	      }
+	      }
 	      
 	      return listBestand;  
 	  }
-	  
+	
 	  /**
-	   * Liefert alle Bestände anhand einer HOID und einer Standort-ID, die nicht auf dem selben Gestell / die selbe Notation haben
+	   * Gets the correct SQL syntax for a given search mode
+	   * @param int mode
 	   * 
-	   * @param hoid Long
-	   * @param tid Long
-	   * @param gestell String
-	   * @param cn Connection
-	   * 
-	   * @return ArrayList<Bestand> listBestand
+	   * @return String sql
 	   */
-	  public ArrayList<Bestand> getAllBestandOnDifferentShelves(Long hoid, Long tid, String gestell, Connection cn){
-	      ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
-	      PreparedStatement pstmt = null;
-	      ResultSet rs = null;
-	      try {
-	          pstmt = cn.prepareStatement("SELECT * FROM stock WHERE HOID=? AND standort=? AND NOT shelfmark=? ORDER BY shelfmark");
-	          pstmt.setString(1, hoid.toString());
-	          pstmt.setString(2, tid.toString());
-	          pstmt.setString(3, gestell);
-	          rs = pstmt.executeQuery();
-
-	          while (rs.next()) {
-	              Bestand be = new Bestand(cn, rs);
-	              listBestand.add(be);
-	          }
-
-	      } catch (Exception e) {
-	    	  log.error("getAllBestandOnDifferentShelves(Long hoid, Long tid, Connection cn): " + e.toString());
-	      } finally {
-	        	if (rs != null) {
-	        		try {
-	        			rs.close();
-	        		} catch (SQLException e) {
-	        			System.out.println(e);
-	        		}
-	        	}
-	        	if (pstmt != null) {
-	        		try {
-	        			pstmt.close();
-	        		} catch (SQLException e) {
-	        			System.out.println(e);
-	        		}
-	        	}
-	        }
-	      
-	      return listBestand;  
-	  }
-
+	private String getSQL(int mode) {
+		String sql = "";
+		
+		switch (mode)
+		{
+		case 1: // everything without a year and at least an ISSN
+			sql = "SELECT * FROM `stock` WHERE internal <= ? AND (HOID = ?";
+			break;
+		case 2: // ISSN, Year
+			sql = "SELECT * FROM `stock` WHERE internal <= ? AND (startyear <= ? AND (endyear >= ? OR endyear = '')) AND (HOID = ?";
+			break;
+		case 3: // ISSN, Year, Volume
+			sql = "SELECT * FROM `stock` WHERE internal <= ? AND (startyear <= ? AND (endyear >= ? OR endyear = '') AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '')) AND (HOID = ?";
+			break;
+		case 4: // ISSN, Year, Volume, Issue
+			sql = "SELECT * FROM `stock` WHERE internal <= ? AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '') AND ( (startyear = ? AND ((endyear = ? AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')) OR ((endyear > ? OR endyear = '') AND (startissue <= ? OR startissue = ''))) ) OR (startyear < ? AND ((endyear = ? AND (endissue >= ? OR endissue = '')) OR (endyear > ? OR endyear = '')) ) ) AND (HOID = ?";
+			break;
+		case 5: // ISSN, Year, Issue
+			sql = "SELECT * FROM `stock` WHERE internal <= ? AND ( (startyear = ? AND ((endyear = ? AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')) OR ((endyear > ? OR endyear = '') AND (startissue <= ? OR startissue = ''))) ) OR (startyear < ? AND ((endyear = ? AND (endissue >= ? OR endissue = '')) OR (endyear > ? OR endyear = '')) ) ) AND (HOID = ?";
+			break;
+		}	
+		
+		return sql;
+	}
+	
+	  /**
+	   * Evaluates the orderform to find the appropriate search mode
+	   * @param OrderForm of
+	   * 
+	   * @return int mode
+	   */
+	private int getSearchMode(OrderForm of) {
+		int mode = 0;
+		
+		if (!of.getIssn().equals("")) { // cases with an ISSN!
+			
+			if (!of.getJahr().equals("") && of.getJahrgang().equals("") && of.getHeft().equals("")) { // ISSN, Year
+				mode = 2;
+			} else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && of.getHeft().equals("")) { // ISSN, Year, Volume
+				mode = 3;
+			} else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && !of.getHeft().equals("")) { // ISSN, Year, Volume, Issue
+				mode = 4;
+			} else if (!of.getJahr().equals("") && of.getJahrgang().equals("") && !of.getHeft().equals("")) { // ISSN, Year, Issue
+				mode = 5;
+			} else { // everything else without a year and at least an ISSN
+				mode = 1;
+			}			
+		}	
+		
+		return mode;
+	}
 	
 
 	public Holding getHolding() {
