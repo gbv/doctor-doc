@@ -467,19 +467,23 @@ public class Bestand extends AbstractIdEntity {
 	        	  break;
 	          case 4: // ISSN, Year, Volume, Issue
 	        	  pstmt.setBoolean(1, internal);
-	        	  pstmt.setString(2, pageForm.getJahrgang());
-	        	  pstmt.setString(3, pageForm.getJahrgang());
-	        	  pstmt.setString(4, pageForm.getJahr());
-		          pstmt.setString(5, pageForm.getJahr());
+	        	  pstmt.setString(2, pageForm.getJahr());
+		          pstmt.setString(3, pageForm.getJahr());
+		          pstmt.setString(4, pageForm.getJahrgang());
+	        	  pstmt.setString(5, pageForm.getJahrgang());
 		          pstmt.setString(6, pageForm.getHeft());
 		          pstmt.setString(7, pageForm.getHeft());
 		          pstmt.setString(8, pageForm.getJahr());
-		          pstmt.setString(9, pageForm.getHeft());
-		          pstmt.setString(10, pageForm.getJahr());
-		          pstmt.setString(11, pageForm.getJahr());
-		          pstmt.setString(12, pageForm.getHeft());
+		          pstmt.setString(9, pageForm.getJahrgang());
+	        	  pstmt.setString(10, pageForm.getJahrgang());
+		          pstmt.setString(11, pageForm.getHeft());
+		          pstmt.setString(12, pageForm.getJahr());
 		          pstmt.setString(13, pageForm.getJahr());
-		          positionHoid = 14;
+		          pstmt.setString(14, pageForm.getJahrgang());
+	        	  pstmt.setString(15, pageForm.getJahrgang());
+		          pstmt.setString(16, pageForm.getHeft());
+		          pstmt.setString(17, pageForm.getJahr());
+		          positionHoid = 18;
 	        	  break;
 	          case 5: // ISSN, Year, Issue
 	        	  pstmt.setBoolean(1, internal);
@@ -560,7 +564,7 @@ public class Bestand extends AbstractIdEntity {
 			sql = "SELECT * FROM `stock` WHERE internal <= ? AND (startyear <= ? AND (endyear >= ? OR endyear = '') AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '')) AND (HOID = ?";
 			break;
 		case 4: // ISSN, Year, Volume, Issue
-			sql = "SELECT * FROM `stock` WHERE internal <= ? AND (startvolume <= ? OR startvolume = '') AND (endvolume >= ? OR endvolume = '') AND ( (startyear = ? AND ((endyear = ? AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')) OR ((endyear > ? OR endyear = '') AND (startissue <= ? OR startissue = ''))) ) OR (startyear < ? AND ((endyear = ? AND (endissue >= ? OR endissue = '')) OR (endyear > ? OR endyear = '')) ) ) AND (HOID = ?";
+			sql = "SELECT * FROM `stock` WHERE internal <= ? AND ( (startyear = ? AND ((endyear = ? AND (startvolume <=? OR startvolume = '') AND (endvolume >=? OR endvolume = '') AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')) OR ((endyear > ? OR endyear = '') AND (startvolume <=? OR startvolume = '') AND (endvolume >=? OR endvolume = '') AND (startissue <= ? OR startissue = ''))) ) OR (startyear < ? AND ((endyear = ? AND (startvolume <=? OR startvolume = '') AND (endvolume >=? OR endvolume = '') AND (endissue >= ? OR endissue = '')) OR (endyear > ? OR endyear = '')) ) ) AND (HOID = ?";
 			break;
 		case 5: // ISSN, Year, Issue
 			sql = "SELECT * FROM `stock` WHERE internal <= ? AND ( (startyear = ? AND ((endyear = ? AND (startissue <= ? OR startissue = '') AND (endissue >= ? OR endissue = '')) OR ((endyear > ? OR endyear = '') AND (startissue <= ? OR startissue = ''))) ) OR (startyear < ? AND ((endyear = ? AND (endissue >= ? OR endissue = '')) OR (endyear > ? OR endyear = '')) ) ) AND (HOID = ?";
