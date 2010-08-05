@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.grlea.log.SimpleLogger;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 import ch.dbs.entity.Bestand;
 
