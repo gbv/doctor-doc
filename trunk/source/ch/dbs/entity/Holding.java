@@ -595,7 +595,7 @@ public class Holding extends AbstractIdEntity {
           pstmt = cn.prepareStatement( "INSERT INTO `holdings` (`KID` , " +
           "`titel` , `coden` , `verlag` , `ort` , `issn` , `zdbid`) VALUES (?, ?, ?, ?, ?, ?, ?)");
           
-          pstmt.setString(1, h.getKid().toString());
+          pstmt.setLong(1, h.getKid());
           pstmt.setString(2, h.getTitel());
           pstmt.setString(3, h.getCoden());
           pstmt.setString(4, h.getVerlag());

@@ -62,8 +62,8 @@ public class OrderState extends AbstractIdEntity {
 
           pstmt = cn.prepareStatement( "INSERT INTO `bestellstatus` (`BID` , " +
           "`TID` , `bemerkungen` , `bearbeiter` , `date`) VALUES (?, ?, ?, ?, ?)");
-          pstmt.setString(1, b.getId().toString());
-          pstmt.setString(2, t.getId().toString());
+          pstmt.setLong(1, b.getId());
+          pstmt.setLong(2, t.getId());
           pstmt.setString(3, bemerkungen);
           pstmt.setString(4, bearbeiter);
           
@@ -80,7 +80,7 @@ public class OrderState extends AbstractIdEntity {
           pstmt.setString(1, datum);
           pstmt.setString(2, t.getInhalt());
           pstmt.setString(3, datum);
-          pstmt.setString(4, b.getId().toString());
+          pstmt.setLong(4, b.getId());
           
           pstmt.executeUpdate();
           
@@ -104,8 +104,8 @@ public class OrderState extends AbstractIdEntity {
 	  try {
           pstmt = cn.prepareStatement( "INSERT INTO `bestellstatus` (`BID` , " +
           "`TID` , `bemerkungen` , `bearbeiter` , `date`) VALUES (?, ?, ?, ?, ?)");
-          pstmt.setString(1, b.getId().toString());
-          pstmt.setString(2, t.getId().toString());
+          pstmt.setLong(1, b.getId());
+          pstmt.setLong(2, t.getId());
           pstmt.setString(3, bemerkungen);
           pstmt.setString(4, bearbeiter);
           
@@ -121,7 +121,7 @@ public class OrderState extends AbstractIdEntity {
           pstmt = cn.prepareStatement( "UPDATE `bestellungen` SET statedate = ?, state = ? where bid = ?");
           pstmt.setString(1, datum);
           pstmt.setString(2, t.getInhalt());
-          pstmt.setString(3, b.getId().toString());
+          pstmt.setLong(3, b.getId());
           
           pstmt.executeUpdate();
           
@@ -144,7 +144,7 @@ public class OrderState extends AbstractIdEntity {
       ResultSet rs = null;
       try {
           pstmt = cn.prepareStatement("SELECT * FROM bestellstatus b inner join text t on(b.tid=t.tid) WHERE bid=? ORDER BY date desc");
-          pstmt.setString(1, b.getId().toString());
+          pstmt.setLong(1, b.getId());
           rs = pstmt.executeQuery();
 
           while (rs.next()) {
@@ -185,8 +185,8 @@ public class OrderState extends AbstractIdEntity {
 	  try {
           pstmt = cn.prepareStatement( "INSERT INTO `bestellstatus` (`BID` , " +
                   "`TID` , `bemerkungen` , `bearbeiter` , `date`) VALUES (?, ?, ?, ?, ?)");
-          pstmt.setString(1, b.getId().toString());
-          pstmt.setString(2, t.getId().toString());
+          pstmt.setLong(1, b.getId());
+          pstmt.setLong(2, t.getId());
           pstmt.setString(3, bemerkungen);
           pstmt.setString(4, bearbeiter);
 
@@ -198,7 +198,7 @@ public class OrderState extends AbstractIdEntity {
           pstmt = cn.prepareStatement( "UPDATE `bestellungen` SET statedate = ?, state = ? where bid = ?");
           pstmt.setString(1, datum);
           pstmt.setString(2, t.getInhalt());
-          pstmt.setString(3, b.getId().toString());
+          pstmt.setLong(3, b.getId());
           
           pstmt.executeUpdate();
           

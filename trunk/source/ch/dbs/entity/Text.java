@@ -95,7 +95,7 @@ public class Text extends AbstractIdEntity {
       ResultSet rs = null;
 	  try {
           pstmt = cn.prepareStatement( "SELECT * FROM `text` WHERE `TYID`=? AND `inhalt`=?");
-          pstmt.setString(1, typ.getId().toString());
+          pstmt.setLong(1, typ.getId());
           pstmt.setString(2, inhalt);
           rs = pstmt.executeQuery();
           while (rs.next()) {
@@ -138,7 +138,7 @@ public class Text extends AbstractIdEntity {
       ResultSet rs = null;
 	  try {
           pstmt = cn.prepareStatement( "SELECT * FROM `text` WHERE `TYID`=? AND `KID`=? AND `inhalt`=?");
-          pstmt.setString(1, typ.getId().toString());
+          pstmt.setLong(1, typ.getId());
           pstmt.setLong(2, kid);
           pstmt.setString(3, inhalt);
           rs = pstmt.executeQuery();
@@ -181,7 +181,7 @@ public class Text extends AbstractIdEntity {
       ResultSet rs = null;
 	  try {
           pstmt = cn.prepareStatement( "SELECT * FROM `text` WHERE `TYID`=? AND `KID`=?");
-          pstmt.setString(1, typ.getId().toString());
+          pstmt.setLong(1, typ.getId());
           pstmt.setLong(2, kid);
           rs = pstmt.executeQuery();
           while (rs.next()) {
@@ -446,8 +446,8 @@ public class Text extends AbstractIdEntity {
       PreparedStatement pstmt = null;
 	  try {
           pstmt = cn.prepareStatement( "INSERT INTO `text` (`KID` , `TYID`, `inhalt`) VALUES (?, ?, ?)");
-          pstmt.setString(1, t.getKonto().getId().toString());
-          pstmt.setString(2, t.getTexttyp().getId().toString());
+          pstmt.setLong(1, t.getKonto().getId());
+          pstmt.setLong(2, t.getTexttyp().getId());
           pstmt.setString(3, t.getInhalt());
           
           pstmt.executeUpdate();
@@ -477,7 +477,7 @@ public class Text extends AbstractIdEntity {
       ResultSet rs = null;
 	  try {
           pstmt = cn.prepareStatement( "SELECT * FROM `text` WHERE `KID`=? AND `TYID`=?");
-          pstmt.setString(1, k.getId().toString());
+          pstmt.setLong(1, k.getId());
           pstmt.setString(2, "9");
           
           rs = pstmt.executeQuery();
@@ -566,10 +566,10 @@ public class Text extends AbstractIdEntity {
       PreparedStatement pstmt = null;
 	  try {
           pstmt = cn.prepareStatement( "UPDATE `text` SET `KID` = ?, `TYID` = ?, `inhalt` = ? WHERE `TID` = ?");
-          pstmt.setString(1, t.getKonto().getId().toString());
-          pstmt.setString(2, t.getTexttyp().getId().toString());
+          pstmt.setLong(1, t.getKonto().getId());
+          pstmt.setLong(2, t.getTexttyp().getId());
           pstmt.setString(3, t.getInhalt());
-          pstmt.setString(4, t.getId().toString());
+          pstmt.setLong(4, t.getId());
           
           pstmt.executeUpdate();
           
@@ -596,7 +596,7 @@ public class Text extends AbstractIdEntity {
       PreparedStatement pstmt = null;
 	  try {
           pstmt = cn.prepareStatement( "DELETE FROM `text` WHERE `TID` = ?");
-          pstmt.setString(1, t.getId().toString());
+          pstmt.setLong(1, t.getId());
           
           pstmt.executeUpdate();
           
@@ -625,7 +625,7 @@ public class Text extends AbstractIdEntity {
       ResultSet rs = null;
       try {
           pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? AND KID=? ORDER BY inhalt");
-          pstmt.setString(1, t.getId().toString());
+          pstmt.setLong(1, t.getId());
           pstmt.setString(2, kid.toString());
           rs = pstmt.executeQuery();
 
@@ -666,7 +666,7 @@ public class Text extends AbstractIdEntity {
       ResultSet rs = null;
       try {
           pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? AND (KID IS null OR KID=?) ORDER BY inhalt");
-          pstmt.setString(1, t.getId().toString());
+          pstmt.setLong(1, t.getId());
           pstmt.setString(2, kid.toString());
           rs = pstmt.executeQuery();
 

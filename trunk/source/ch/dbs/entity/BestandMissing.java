@@ -79,7 +79,7 @@ public class BestandMissing extends AbstractIdEntity {
 	     */
 	    private PreparedStatement setBestandMissingValues(PreparedStatement pstmt, BestandMissing be, Connection cn) throws Exception{
 	        
-	        pstmt.setString(1, be.getBestand().getId().toString());
+	        pstmt.setLong(1, be.getBestand().getId());
 	        pstmt.setString(2, be.getStartyear());
 	        pstmt.setString(3, be.getStartvolume());
 	        pstmt.setString(4, be.getStartissue());

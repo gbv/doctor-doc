@@ -360,7 +360,7 @@ public class Billing extends AbstractIdEntity {
 		try {
 			pstmt = cn.getConnection().prepareStatement(
 					"SELECT count(kid) as anzahl FROM `billing` WHERE kid=?");
-			pstmt.setString(1, k.getId().toString());
+			pstmt.setLong(1, k.getId());
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {

@@ -129,7 +129,7 @@ public class DefaultPreis extends AbstractIdEntity {
           										"`TID_waehrung`=?, `waehrung`=?, `deloptions`=?, `KID`=?, `preis`=? WHERE `DPID`=?");
           pstmt.setLong(1, l.getLid());
           pstmt.setString(2, l.getName());
-          pstmt.setString(3, waehrungstext.getId().toString());
+          pstmt.setLong(3, waehrungstext.getId());
           pstmt.setString(4, waehrungstext.getInhalt());
           pstmt.setString(5, deloptions);
           pstmt.setLong(6, kid);

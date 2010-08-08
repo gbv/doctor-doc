@@ -366,7 +366,7 @@ public class Bestellungen extends AbstractIdEntity {
   	  PreparedStatement pstmt = null;
       try {
           pstmt = cn.prepareStatement( "DELETE FROM `bestellungen` WHERE `BID` =?");           
-          pstmt.setString(1, b.getId().toString());
+          pstmt.setLong(1, b.getId());
           pstmt.executeUpdate();
           
           success = true;
@@ -431,7 +431,7 @@ public class Bestellungen extends AbstractIdEntity {
          	String sql = "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ";
          	sql = sortOrder(sql, sort, sortorder);
              pstmt = cn.prepareStatement(sql);
-             pstmt.setString(1, u.getId().toString());
+             pstmt.setLong(1, u.getId());
              pstmt.setString(2, date_from);
              pstmt.setString(3, date_to);
              rs = pstmt.executeQuery();
@@ -504,7 +504,7 @@ public class Bestellungen extends AbstractIdEntity {
          		if (status.equals("offen")) mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
          	}
              pstmt = cn.prepareStatement(mysql);
-             pstmt.setString(1, u.getId().toString());
+             pstmt.setLong(1, u.getId());
              if (!status.equals("offen")) {
             	 pstmt.setString(2, status);
             	 pstmt.setString(3, date_from);
@@ -573,7 +573,7 @@ public class Bestellungen extends AbstractIdEntity {
             	String sql = "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ";
             	sql = sortOrder(sql, sort, sortorder);
             	pstmt = cn.prepareStatement(sql);
-            	pstmt.setString(1, k.getId().toString());
+            	pstmt.setLong(1, k.getId());
             	pstmt.setString(2, date_from);
            	 	pstmt.setString(3, date_to);
             	rs = pstmt.executeQuery();
@@ -685,8 +685,8 @@ public class Bestellungen extends AbstractIdEntity {
     	try {
 			pstmt = cn.prepareStatement("SELECT * FROM bestellungen WHERE uid=? and kid=? "
 							+ "and heft=? and seiten=? and issn=? and jahr=? and jahrgang=? and orderdate=?");
-			pstmt.setString(1, b.getBenutzer().getId().toString());
-			pstmt.setString(2, b.getKonto().getId().toString());
+			pstmt.setLong(1, b.getBenutzer().getId());
+			pstmt.setLong(2, b.getKonto().getId());
 			if (b.getHeft() != null) {
 				pstmt.setString(3, b.getHeft());
 			} else {
@@ -754,7 +754,7 @@ public class Bestellungen extends AbstractIdEntity {
              	  String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
                	// SQL ausführen
                    pstmt = cn.prepareStatement("SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
-                   pstmt.setString(1, k.getId().toString());
+                   pstmt.setLong(1, k.getId());
                    pstmt.setString(2, uid);
                    pstmt.setString(3, datum);
                    rs = pstmt.executeQuery();
@@ -804,7 +804,7 @@ public class Bestellungen extends AbstractIdEntity {
 		ResultSet rs = null;
 		try {
 			pstmt = cn.prepareStatement(sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder));
-			pstmt.setString(1, k.getId().toString());
+			pstmt.setLong(1, k.getId());
 			pstmt.setString(2, date_from);
        	 	pstmt.setString(3, date_to);
 			rs = pstmt.executeQuery();
@@ -927,7 +927,7 @@ public class Bestellungen extends AbstractIdEntity {
              	  String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
                	// SQL ausführen
                    pstmt = cn.prepareStatement("SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `orderdate` >= ?");
-                   pstmt.setString(1, k.getId().toString());
+                   pstmt.setLong(1, k.getId());
                    pstmt.setString(2, datum);
                    rs = pstmt.executeQuery();
                    while (rs.next()) {
@@ -2924,8 +2924,8 @@ public String getArtikeltitel() {
 	}
 
 	private PreparedStatement setOrderValues(PreparedStatement ps, Bestellungen b) throws Exception{
-        ps.setString(1, b.getKonto().getId().toString());
-        ps.setString(2, b.getBenutzer().getId().toString());
+        ps.setLong(1, b.getKonto().getId());
+        ps.setLong(2, b.getBenutzer().getId());
         if (b.getLieferant()==null || b.getLieferant().getLid()==null || b.getLieferant().getLid().toString().equals("")
          || b.getLieferant().getLid().toString().equals("0")) {ps.setString(3, "1");}else{ps.setString(3, b.getLieferant().getLid().toString());}
         if (b.getPriority()==null || b.getPriority().equals("")){ps.setString(4, "normal");}else{ps.setString(4, b.getPriority());}

@@ -506,7 +506,7 @@ public class Konto extends AbstractIdEntity {
       try {
           pstmt = cn.prepareStatement(
           "SELECT * FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
-          pstmt.setString(1, u.getId().toString());
+          pstmt.setLong(1, u.getId());
           rs = pstmt.executeQuery();
 
           while (rs.next()) {
@@ -553,7 +553,7 @@ public class Konto extends AbstractIdEntity {
               pstmt = cn.prepareStatement(
               "SELECT * FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ? AND k.userlogin = 1"); 
           }
-          pstmt.setString(1, u.getId().toString());
+          pstmt.setLong(1, u.getId());
           rs = pstmt.executeQuery();
 
           while (rs.next()) {

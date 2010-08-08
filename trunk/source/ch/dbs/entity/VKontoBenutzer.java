@@ -58,8 +58,8 @@ public class VKontoBenutzer extends AbstractIdEntity {
 			PreparedStatement pstmt = null;
 			try {
 				pstmt = cn.prepareStatement("DELETE FROM `v_konto_benutzer` WHERE `UID` =? and `KID` =?");
-				pstmt.setString(1, u.getId().toString());
-				pstmt.setString(2, k.getId().toString());
+				pstmt.setLong(1, u.getId());
+				pstmt.setLong(2, k.getId());
 				pstmt.executeUpdate();		
 				success = true;
 
@@ -89,7 +89,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
     	try {
             pstmt = cn.prepareStatement( "DELETE FROM `v_konto_benutzer` WHERE `UID` =?");           
-            pstmt.setString(1, u.getId().toString());
+            pstmt.setLong(1, u.getId());
             pstmt.executeUpdate();
 
         } catch (Exception e) {
@@ -208,8 +208,8 @@ public class VKontoBenutzer extends AbstractIdEntity {
             
             pstmt = cn.prepareStatement( "INSERT INTO `v_konto_benutzer` (`UID` , " +
                     "`KID`) VALUES (?, ?)");            
-            pstmt.setString(1, b.getId().toString());
-            pstmt.setString(2, k.getId().toString());
+            pstmt.setLong(1, b.getId());
+            pstmt.setLong(2, k.getId());
             pstmt.executeUpdate();
             
         } catch (Exception e) {
@@ -253,8 +253,8 @@ public class VKontoBenutzer extends AbstractIdEntity {
             
             pstmt = cn.prepareStatement( "INSERT INTO `v_konto_benutzer` (`UID` , " +
                     "`KID`) VALUES (?, ?)");            
-            pstmt.setString(1, b.getId().toString());
-            pstmt.setString(2, k.getId().toString());
+            pstmt.setLong(1, b.getId());
+            pstmt.setLong(2, k.getId());
             pstmt.executeUpdate();
             
         } catch (Exception e) {

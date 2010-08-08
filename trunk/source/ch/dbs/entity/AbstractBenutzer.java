@@ -268,7 +268,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) ON (b.UID=vkb.UID) WHERE vkb.KID = ? order by name, vorname");
-            pstmt.setString(1, k.getId().toString());
+            pstmt.setLong(1, k.getId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -314,7 +314,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
     	try {
             pstmt = cn.prepareStatement(
             "SELECT * FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) ON (b.UID=vkb.UID) WHERE vkb.KID = ? AND b.mail=?");
-                pstmt.setString(1, k.getId().toString());
+                pstmt.setLong(1, k.getId());
             	pstmt.setString(2, email);
                 rs = pstmt.executeQuery();
             while(rs.next()) {
@@ -751,7 +751,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
     	try {
             pstmt = cn.prepareStatement( "DELETE FROM `benutzer` WHERE `UID` =?");           
-            pstmt.setString(1, u.getId().toString());
+            pstmt.setLong(1, u.getId());
             pstmt.executeUpdate();
             
             success = true;

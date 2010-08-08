@@ -1143,7 +1143,7 @@ public final class UserAction extends DispatchAction {
     	sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '" + date_to + "' ORDER BY ", sort, sortorder)); // erste Klammer wichtig: sonst kann mit OR Bestellungen anderer Kontos ausgelesen werden...!!!
     	
     	PreparedStatement pstmt = cn.prepareStatement(sql.toString());
-    	pstmt.setString(1, k.getId().toString());
+    	pstmt.setLong(1, k.getId());
     	
     	boolean stop = false; // bricht die Suche ab, falls nach Name || Vorname ausserhalb des erlaubten Datumbereiches (3 Monate) gesucht wird...
     	for (int i=0;i<searches.size() && !stop;i++){
@@ -1205,7 +1205,7 @@ public final class UserAction extends DispatchAction {
     	sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '" + date_to + "' ORDER BY ", sort, sortorder));
     	
     	PreparedStatement pstmt = cn.prepareStatement(sql.toString());
-    	pstmt.setString(1, k.getId().toString());
+    	pstmt.setLong(1, k.getId());
     	
     	for (int i=0;i<searches.size();i++){
 
