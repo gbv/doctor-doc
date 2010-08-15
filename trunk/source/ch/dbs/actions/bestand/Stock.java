@@ -63,9 +63,10 @@ import ch.dbs.form.UserInfo;
 public class Stock extends DispatchAction {
 	
 	private static final SimpleLogger log = new SimpleLogger(Stock.class);
-	private static final int CSV_COLUMNS = 21; // Number of columns per CSV line
+	private static final int COLUMNS = 21; // Number of columns per import line
 	private static final int FILESIZELIMIT = 6000000; // Limits the file size for upload to avoid OutOfMemory errors
-	private static final char DELIMITER = ';'; // Semicolon seems to be mostly compatible with Excel
+	private static final char DELIMITER_CSV = ';'; // Delimiter for CSV-Export
+	private static final char DELIMITER_TXT = '\t'; // Delimiter for Tab delimited txt-Export (Excel can't read UTF-8 in CSV...)
 	
     /**
      * Access control for the holdings export page
@@ -146,7 +147,7 @@ public class Stock extends DispatchAction {
     }
     
     /**
-     * Import a CSV-file with holdings information
+     * Import a file with holdings information
      */
     public ActionForward importHoldings(ActionMapping mp, ActionForm fm,
             HttpServletRequest rq, HttpServletResponse rp) {
@@ -167,14 +168,17 @@ public class Stock extends DispatchAction {
     	if (auth.isLogin(rq)) {
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
         if (fileForm.isCondition()) { // conditions for upload must be accepted
-        if (ck.isFiletypeExtension(fileName, ".csv")) {
+        if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")) { // must be tab delimited or csv file
         if (upload.getFileSize()<FILESIZELIMIT) { // limit file size to avoid OutOfMemory errors
-            
-        	// Get an ArrayList<List<String>> representation of the CSV file
-            ArrayList<List<String>> stockList = readCSV(upload);
         	
-        	// Check if the CSV file contains the correct number of columns
-            ArrayList<Message> messageList = checkCSVFormat(stockList);
+        	char delimiter = DELIMITER_CSV; // default value
+        	if (ck.isFiletypeExtension(fileName, ".txt")) delimiter = DELIMITER_TXT;
+            
+        	// Get an ArrayList<List<String>> representation of the file
+            ArrayList<List<String>> stockList = readImport(upload, delimiter);
+        	
+        	// Check if the file contains the correct number of columns
+            ArrayList<Message> messageList = checkColumns(stockList);
             if (messageList.size()==0) {
         	
         	// Basic checks and make sure all entries in stockList are parsable
@@ -451,14 +455,14 @@ public class Stock extends DispatchAction {
     	ArrayList<Message> messageList = new ArrayList<Message>();
     	
     	for (int i=1;i<stockList.size();i++) { // start at position 1, thus ignoring the header
-    		List<String> csvLine = stockList.get(i);
-    	    ListIterator<String> csv = csvLine.listIterator();
-    	    int column = 0; // column number of CSV entry to check
+    		List<String> importLine = stockList.get(i);
+    	    ListIterator<String> elements = importLine.listIterator();
+    	    int column = 0; // column number of element to check
     	    String content = ""; // content of column
-    	    while (csv.hasNext()) {
+    	    while (elements.hasNext()) {
     	    	Message msg;
     	    	column++;
-    	    	content = (String) csv.next();
+    	    	content = (String) elements.next();
     	    	switch (column)
     	    	{
     	    	case 1: // Stock-ID
@@ -529,19 +533,19 @@ public class Stock extends DispatchAction {
     	    			messageList.add(msg);
     	    		}
     	    		break;
-    	    	case 19: // eissue
+    	    	case 19: // remarks
+    	    		break;
+    	    	case 20: // eissue
     	    		msg = checkBoolean(i, content);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
     	    		break;
-    	    	case 20: // internal
+    	    	case 21: // internal
     	    		msg = checkBoolean(i, content);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
-    	    		break;
-    	    	case 21: // remarks
     	    		break;
     	    	}
     	    }
@@ -552,19 +556,19 @@ public class Stock extends DispatchAction {
     }
     
     /**
-     * Checks if the CSV-file has the correct format, by counting
+     * Checks if the import file has the correct format, by counting
      * the columns per line.
      * 
      * @param ArrayList<List<String>> stockList
      * @return ArrayList<Message> messageList
      */
-    private ArrayList<Message> checkCSVFormat (ArrayList<List<String>> stockList) {
+    private ArrayList<Message> checkColumns (ArrayList<List<String>> stockList) {
 
     	ArrayList<Message> messageList = new ArrayList<Message>();
         	
         	for (int i=0;i<stockList.size();i++) {
-        		List<String> csvLine = stockList.get(i);
-        		if (csvLine.size()!=CSV_COLUMNS) {
+        		List<String> importLine = stockList.get(i);
+        		if (importLine.size()!=COLUMNS) {
         			int lineCount = i+1;
         			Message msg = new Message("error.import.separators", composeSystemMessage(lineCount, ""), "");
         			messageList.add(msg);
@@ -658,12 +662,13 @@ public class Stock extends DispatchAction {
     
     
     /**
-     * Converts a CSV file into an ArrayList<List<String>> with all the CSV elements 
+     * Converts an import file into an ArrayList<List<String>> with all the text line elements 
      * 
      * @param FormFile upload
+     * @param char delimiter
      * @return ArrayList<List<String>> list
      */
-    private ArrayList<List<String>> readCSV (FormFile upload) {
+    private ArrayList<List<String>> readImport (FormFile upload, char delimiter) {
     	
     	ArrayList<List<String>> list = new ArrayList<List<String>>();    	
     	String line = "";
@@ -675,8 +680,8 @@ public class Stock extends DispatchAction {
         	br = new BufferedReader(new InputStreamReader(fileStream));
     	    
     	    while ((line = br.readLine())!=null && !line.equals("")) {
-    	    	CSV csv = new CSV(DELIMITER);
-	    	    list.add(csv.parse(line));
+    	    	CSV importFile = new CSV(delimiter);
+	    	    list.add(importFile.parse(line));
     	    }
     	
     	} catch (Exception e) {
@@ -694,7 +699,7 @@ public class Stock extends DispatchAction {
     }
     
     /**
-     * Converts an ArrayList<List<String>> with CSV elements into an ArrayList<Bestand> 
+     * Converts an ArrayList<List<String>> with import elements into an ArrayList<Bestand> 
      * 
      * @param ArrayList<List<String>> stockList
      * @return ArrayList<Bestand> bestandList
@@ -711,7 +716,7 @@ public class Stock extends DispatchAction {
     }
     
     /**
-     * Converts a List<String> with elements of one CSV line into a Bestand().
+     * Converts a List<String> with elements of one import line into a Bestand().
      * It relies on the assumption, that all integrity checks for formatting 
      * etc. have been run before!
      * 
@@ -721,12 +726,12 @@ public class Stock extends DispatchAction {
     private Bestand getBestand(List<String> list, long kid) {
     	Bestand b = new Bestand();
 
-	    ListIterator<String> csv = list.listIterator();
+	    ListIterator<String> elements = list.listIterator();
 	    int column = 0; // column number of CSV entry to check
 	    String content = ""; // content of column
-	    while (csv.hasNext()) {
+	    while (elements.hasNext()) {
 	    	column++;
-	    	content = (String) csv.next();
+	    	content = (String) elements.next();
 
 	    	switch (column)
 	    	{
@@ -803,18 +808,18 @@ public class Stock extends DispatchAction {
 	    			b.setSuppl(Integer.valueOf(content));
 	    		}
 	    		break;
-	    	case 19: // eissue
+	    	case 19: // remarks
+	    		b.setBemerkungen(content);
+	    		break;
+	    	case 20: // eissue
 	    		if (!content.equals("")) { // Defaultvalue remains false
 	    			b.setEissue(Boolean.valueOf(content));
 	    		}
 	    		break;
-	    	case 20: // internal
+	    	case 21: // internal
 	    		if (!content.equals("")) { // Defaultvalue remains false
 	    			b.setInternal(Boolean.valueOf(content));
 	    		}
-	    		break;
-	    	case 21: // remarks
-	    		b.setBemerkungen(content);
 	    		break;
 	    	}
 	    }
@@ -1029,7 +1034,7 @@ public class Stock extends DispatchAction {
     }
     
     /**
-     * Handles the update, save and delete process for the CSV import into the DB.
+     * Handles the update, save and delete process for the import file into the DB.
      * It relies on the assumption, that all integrity checks for formatting 
      * etc. have been run before!
      *  
@@ -1095,9 +1100,15 @@ public class Stock extends DispatchAction {
         return bf.toString();
     }
 
-	public static char getDelimiter() {
-		return DELIMITER;
+	public static char getDelimiterCsv() {
+		return DELIMITER_CSV;
 	}
+
+	public static char getDelimiterTxt() {
+		return DELIMITER_TXT;
+	}
+
+
 	
 	
 

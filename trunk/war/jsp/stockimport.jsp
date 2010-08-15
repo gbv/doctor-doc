@@ -126,7 +126,12 @@
 		<th id="th-left">Suppl&nbsp;</th>
 		<td><bean:message key="stockimport.supplements" /></td>
 	</tr>
+	</tr>
 		<tr>
+		<th id="th-left">remarks&nbsp;</th>
+		<td><bean:message key="stockimport.remarks" /></td>
+	</tr>
+	<tr>
 		<th id="th-left">eissue&nbsp;</th>
 		<td><bean:message key="stockimport.eissue" /></td>
 	</tr>

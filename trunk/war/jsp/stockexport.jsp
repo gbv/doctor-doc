@@ -50,13 +50,25 @@
 
 <h3><bean:message key="stockexport.heading" /></h3>
 
-<b><bean:message key="stockexport.export" /></b>
+<p><b><bean:message key="stockexport.export" /></b></p>
+
+<table>
+	<tr>
+		<td>OpenOffice:</td>
+		<td><a href="export-holdings.do" target="_blank">CSV</a></td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>MS-Excel:</td>
+		<td><a href="export-holdings.do?filetype=txt" target="_blank">TXT</a></td>
+		<td>(<bean:message key="stockexport.excel" />)</td>
+	</tr>
+</table>
  
 <h4><bean:message key="stockexport.subheader1" /></h4>
 
 <ol>
 	<li><bean:message key="stockexport.list1.one" /></li>
-	<li><bean:message key="stockexport.list1.two" /></li>
 	<li><bean:message key="stockexport.list1.three" /></li>
 	<li><bean:message key="stockexport.list1.four" /></li>
 	<li><bean:message key="stockexport.list1.five" /></li>
