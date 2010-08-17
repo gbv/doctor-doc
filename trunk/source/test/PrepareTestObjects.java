@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import util.Encrypt;
 import ch.dbs.entity.AbstractBenutzer;
@@ -86,7 +85,7 @@ public class PrepareTestObjects {
 		kf.setPLZ("1234");
 		kf.setLand("Schweiz");
 		kf.setTelefon("12345678");
-		kf.setBibliotheksmail("eldor@gmx.ch");
+		kf.setBibliotheksmail("info@doctor-doc.com");
 		kf.setDbsmail("dbs@mail.bl");
 		kf.setUserlogin(false);
 		
@@ -139,24 +138,18 @@ public class PrepareTestObjects {
 	public static void clearTestObjects(){
 		// UserForm vorbereiten
 //		UserForm uf = PrepareTestObjects.getUserForm();
-		Konto k = new Konto();
 		ArrayList<Konto> oldkl = PrepareTestObjects.getTestkonto();
 		
-		Konto cn = k;
-		AbstractBenutzer b = new AbstractBenutzer();
-		
-		Iterator<Konto> i = oldkl.iterator();
-		while (i.hasNext()){
-			k = i.next();
+		Konto cn = new Konto();
+
+		for (Konto k : oldkl) {
 			System.out.println("Konto ID = " + k.getId());			
 			k.deleteSelf(cn.getSingleConnection());
 		}
 		
 		VKontoBenutzer vkb = new VKontoBenutzer();
-		ArrayList<AbstractBenutzer> alb = b.getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
-		Iterator<AbstractBenutzer> bi = alb.iterator();
-		while (bi.hasNext()){
-			b = bi.next();
+		ArrayList<AbstractBenutzer> alb = new AbstractBenutzer().getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
+		for (AbstractBenutzer b : alb) {
 			vkb.deleteAllKontoEntries(b, cn.getSingleConnection());
 			b.deleteUser(b, cn.getSingleConnection());			
 		}		

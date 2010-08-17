@@ -62,11 +62,11 @@ public final class PrepareUserAddAction extends Action {
     		UserInfo ui = (UserInfo)rq.getSession().getAttribute("userinfo");
     		
     		List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
-
             ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
-            for (int i=0;i<allPossKontos.size();i++){
+            
+            for (Konto k : allPossKontos) {
             	KontoForm kf = new KontoForm();
-            	kf.setKonto((Konto)allPossKontos.get(i));
+            	kf.setKonto(k);
             	lkf.add(kf);
             }
             

@@ -82,47 +82,47 @@ public String listHoldings(ArrayList<Bestand> bestaende, String rfr_id) {
 		
 		String urn = "urn:x-domain:" + getServerInstallation() + ":";
 		
-		for (int i=0;i<bestaende.size();i++) {
+		for (Bestand b : bestaende) {
 			// Document tag
 			atts.clear();
-			atts.addAttribute("","","id","CDATA", urn + "holding:" + bestaende.get(i).getHolding().getId().toString()); // Holding-ID
+			atts.addAttribute("","","id","CDATA", urn + "holding:" + b.getHolding().getId().toString()); // Holding-ID
 			hd.startElement("", "", "document", atts);
 			
 			// Message tag (hier benutzt für Titel)
 			atts.clear();
 			atts.addAttribute("","","lang","CDATA","de");
 			hd.startElement("", "", "message", atts);
-			text = StringEscapeUtils.escapeXml(bestaende.get(i).getHolding().getTitel());
+			text = StringEscapeUtils.escapeXml(b.getHolding().getTitel());
 			hd.characters(text.toCharArray(), 0, text.length());
 			hd.endElement("", "", "message");
 
 			// Item tag
 			atts.clear();
-			atts.addAttribute("","","id","CDATA", urn + "stock:" + bestaende.get(i).getId().toString()); // Stock-ID
+			atts.addAttribute("","","id","CDATA", urn + "stock:" + b.getId().toString()); // Stock-ID
 			hd.startElement("", "", "item", atts);
 			
 			// Message tag (hier benutzt für Feld 'Bemerkungen' eines Bestandes)
 			atts.clear();
 			atts.addAttribute("","","lang","CDATA","de");
 			hd.startElement("", "", "message", atts);
-			text = StringEscapeUtils.escapeXml(bestaende.get(i).getBemerkungen());
+			text = StringEscapeUtils.escapeXml(b.getBemerkungen());
 			hd.characters(text.toCharArray(), 0, text.length());
 			hd.endElement("", "", "message");
 			
 			// Label tag (Signatur = Shelfmark)
 			atts.clear();
 			hd.startElement("", "", "label", atts);
-			text = StringEscapeUtils.escapeXml(bestaende.get(i).getShelfmark());
+			text = StringEscapeUtils.escapeXml(b.getShelfmark());
 			hd.characters(text.toCharArray(), 0, text.length());
 			hd.endElement("", "", "label");
 			
 			// Department tag
 			atts.clear();
-			atts.addAttribute("","","id","CDATA", urn + "library:" + bestaende.get(i).getHolding().getKid().toString());
+			atts.addAttribute("","","id","CDATA", urn + "library:" + b.getHolding().getKid().toString());
 			hd.startElement("", "", "department", atts);
-			text = bestaende.get(i).getHolding().getKonto().getBibliotheksname() + "\040" +
-				   bestaende.get(i).getHolding().getKonto().getOrt() + "\040" + 
-				   bestaende.get(i).getHolding().getKonto().getLand();
+			text = b.getHolding().getKonto().getBibliotheksname() + "\040" +
+				   b.getHolding().getKonto().getOrt() + "\040" + 
+				   b.getHolding().getKonto().getLand();
 			text = StringEscapeUtils.escapeXml(text);
 			hd.characters(text.toCharArray(), 0, text.length());			
 			hd.endElement("","","department");
@@ -133,7 +133,7 @@ public String listHoldings(ArrayList<Bestand> bestaende, String rfr_id) {
 			// Zusatztag location
 			atts.clear();
 			hd.startElement("", "", "location", atts);
-			text = StringEscapeUtils.escapeXml(bestaende.get(i).getStandort().getInhalt());
+			text = StringEscapeUtils.escapeXml(b.getStandort().getInhalt());
 			hd.characters(text.toCharArray(), 0, text.length());
 			hd.endElement("", "", "location");
 //			// Zusatztag shelfmark

@@ -123,16 +123,15 @@ public final class HoldingsReport extends DispatchAction {
 	}
     
     private String getExportContent(Konto k, char delimiter) {
-    	Bestand b = new Bestand();
     	Text cn = new Text();
     	
     	// get a StringBuffer with a header describing the content of the fields
     	StringBuffer buf = initStringBuffer(delimiter);
 
-    	ArrayList<Bestand> stock = b.getAllKontoBestand(k.getId(), cn.getConnection());
+    	ArrayList<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), cn.getConnection());
     	
-    	for (int i=0;i<stock.size();i++) {
-    		buf.append(getExportLine(stock.get(i), delimiter));
+    	for (Bestand b : stock) {
+    		buf.append(getExportLine(b, delimiter));
     	}
     	
     	cn.close();
@@ -222,7 +221,7 @@ public final class HoldingsReport extends DispatchAction {
 		buf.append(delimiter);
 		buf.append("\"ZDB-ID\"");
 		buf.append(delimiter);
-		buf.append("\"Staryear\"");
+		buf.append("\"Startyear\"");
 		buf.append(delimiter);
 		buf.append("\"Startvolume\"");
 		buf.append(delimiter);

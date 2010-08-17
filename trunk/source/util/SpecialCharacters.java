@@ -17,7 +17,6 @@
 
 package util;
 
-import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -326,10 +325,7 @@ public class SpecialCharacters {
 //	  		 System.out.println(htmlHex);
 	  	  	}
 	  	  
-	  	  Iterator<String> i = set.iterator();
-	  	  
-	  	  while (i.hasNext()) {
-	  		  String htmlHex = i.next();
+	  	  for (String htmlHex : set) {
 	  		  String hex = htmlHex.substring(3, htmlHex.indexOf(";"));
 	  		  int c = Integer.parseInt(hex,16);
 			  char chr = (char)c;
@@ -355,11 +351,8 @@ public class SpecialCharacters {
 	  		 set.add(htmlDez);
 //	  		 System.out.println(htmlDez);
 	  	  	}
-	  	  
-	  	  Iterator<String> i = set.iterator();
-	  	  
-	  	  while (i.hasNext()) {
-	  		  String htmlDez = i.next();
+
+	  	  for (String htmlDez : set) {
 	  		  String dez = htmlDez.substring(2, htmlDez.indexOf(";"));
 	  		  int c = Integer.parseInt(dez,10);
 			  char chr = (char)c;

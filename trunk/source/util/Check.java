@@ -31,6 +31,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.grlea.log.SimpleLogger;
 
+import ch.dbs.entity.Text;
 import ch.dbs.form.OverviewForm;
 
 public class Check {
@@ -223,8 +224,8 @@ public class Check {
     	if (of.getFilter()!=null) { // grundsätzlich muss ein zu prüfendes Filterkriterium vorhanden sein
     		boolean validFilterCriteria = false;
         	if (of.getStatitexts().size()>0) { // Die kontoabhängigen Stati müssen vorgängig mittels of.setStati abgelegt werden
-        		for (int i=0;i<of.getStatitexts().size();i++) {
-        			if (of.getFilter().equals(of.getStatitexts().get(i).getInhalt()) || of.getFilter().equals("offen")) validFilterCriteria = true;        			
+        		for (Text status : of.getStatitexts()) {
+        			if (of.getFilter().equals(status.getInhalt()) || of.getFilter().equals("offen")) validFilterCriteria = true;        			
         		}
         	}
         	if (!validFilterCriteria) of.setFilter(null); // ungültige Filterkriterien löschen

@@ -99,7 +99,7 @@
 		<td><bean:message key="stockimport.zdbid" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
 	</tr>
 	<tr>
-		<th id="th-left">Staryear&nbsp;</th>
+		<th id="th-left">Startyear&nbsp;</th>
 		<td><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
 	</tr>
 	<tr>

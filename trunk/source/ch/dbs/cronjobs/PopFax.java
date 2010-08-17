@@ -17,7 +17,6 @@
 
 package ch.dbs.cronjobs;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,11 +48,8 @@ public final class PopFax extends Action {
         
 		Konto kto = new Konto();
 		List<Konto> kontos = kto.getFaxserverKontos();
-    	Iterator<Konto> i = kontos.iterator();
-    	Konto k = null;
     	FaxHelper fh = new FaxHelper();
-    	while (i.hasNext()){    		
-    		k = (Konto) i.next();
+    	for (Konto k : kontos) {
 //    		System.out.println("Zur zeit wird dieses Konto bearbeitet: " + k.getBibliotheksname());
     		fh.retrieveIncomingFaxList(k);
     	}

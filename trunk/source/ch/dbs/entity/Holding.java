@@ -270,10 +270,10 @@ public class Holding extends AbstractIdEntity {
 	  try {
           pstmt = cn.prepareStatement(sqlQuery.toString());
           int pos = 1;
-          for (int i=0;i<identifier.size();i++) {
-        	  pstmt.setString(pos, identifier.get(i));
-              pstmt.setString(pos+1, identifier.get(i));
-              pstmt.setString(pos+2, identifier.get(i));
+          for (String ident : identifier) {
+        	  pstmt.setString(pos, ident);
+              pstmt.setString(pos+1, ident);
+              pstmt.setString(pos+2, ident);
               pos = pos+3;
     	  }
 
@@ -384,10 +384,10 @@ public class Holding extends AbstractIdEntity {
           pstmt = cn.prepareStatement(sqlQuery.toString());
           	  pstmt.setLong(1, kid);
           int pos = 2;
-          for (int i=0;i<identifier.size();i++) {
-        	  pstmt.setString(pos, identifier.get(i));
-              pstmt.setString(pos+1, identifier.get(i));
-              pstmt.setString(pos+2, identifier.get(i));
+          for (String ident : identifier) {
+        	  pstmt.setString(pos, ident);
+              pstmt.setString(pos+1, ident);
+              pstmt.setString(pos+2, ident);
               pos = pos+3;
     	  }
 
@@ -446,10 +446,10 @@ public class Holding extends AbstractIdEntity {
 	  try {
           pstmt = cn.prepareStatement(sqlQuery.toString());
           int pos = 1;
-          for (int i=0;i<identifier.size();i++) {
-        	  pstmt.setString(pos, identifier.get(i));
-              pstmt.setString(pos+1, identifier.get(i));
-              pstmt.setString(pos+2, identifier.get(i));
+          for (String ident : identifier) {
+        	  pstmt.setString(pos, ident);
+              pstmt.setString(pos+1, ident);
+              pstmt.setString(pos+2, ident);
               pos = pos+3;
     	  }
 
@@ -512,10 +512,10 @@ public class Holding extends AbstractIdEntity {
           pstmt = cn.prepareStatement(sqlQuery.toString());
           	  pstmt.setLong(1, kid);
           int pos = 2;
-          for (int i=0;i<identifier.size();i++) {
-        	  pstmt.setString(pos, identifier.get(i));
-              pstmt.setString(pos+1, identifier.get(i));
-              pstmt.setString(pos+2, identifier.get(i));
+          for (String ident : identifier) {
+        	  pstmt.setString(pos, ident);
+              pstmt.setString(pos+1, ident);
+              pstmt.setString(pos+2, ident);
               pos = pos+3;
     	  }
 

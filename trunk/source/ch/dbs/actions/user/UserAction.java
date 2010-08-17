@@ -485,11 +485,11 @@ public final class UserAction extends DispatchAction {
       	    }
       	    
             List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
-
             ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
-            for (int i=0;i<allPossKontos.size();i++){
+            
+            for (Konto k : allPossKontos) {
             	KontoForm kf = new KontoForm();
-            	kf.setKonto((Konto)allPossKontos.get(i));
+            	kf.setKonto(k);
             	lkf.add(kf);
             }
             
@@ -546,20 +546,20 @@ public final class UserAction extends DispatchAction {
             // selektiert alle Konten unter denen ein Kunde angehängt ist
             List<Konto> kontolist = ui.getKonto().getKontosForBenutzer(u, cn.getConnection());
             List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn.getConnection());
-            for (int i=0;i<kontolist.size();i++){
-                Konto k = (Konto)kontolist.get(i);
-                for (int y=0;y<allPossKontos.size();y++){
-                	Konto uik = (Konto)allPossKontos.get(y);
+            for (Konto k : kontolist) {
+            	int y = 0;
+            	for (Konto uik : allPossKontos) {
                 	if (uik.getId().longValue()==k.getId().longValue()){
                 		uik.setSelected(true);
                 		allPossKontos.set(y, uik);
                 	}
+                	y++;
                 }
             }
             ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
-            for (int i=0;i<allPossKontos.size();i++){
+            for (Konto k : allPossKontos) {
             	KontoForm kf = new KontoForm();
-            	kf.setKonto((Konto)allPossKontos.get(i));
+            	kf.setKonto(k);
             	lkf.add(kf);
             }
             
@@ -1412,10 +1412,12 @@ public final class UserAction extends DispatchAction {
     		StringBuffer buf = new StringBuffer();
     		buf.append("");
     		
-    		for (int i=0;i<words.size();i++) {
-    			if (words.get(i).toString().length()>3) { // Ausschluss von Leerzeichen und Wörten kürzer als drei Buchstaben (min. 4 Buchstaben)
-    				buf.append("+" + words.get(i) + "*"); // Jedem Wort ein Plus-Zeichen voranstellen, und Trunkierung anhängen
-    				if (i+1<words.size()) buf.append("\040"); // ggf. ein Leerschlag dazwischen setzen
+    		int i = 0;
+    		for (String word : words) {
+    			i++;
+    			if (word.length()>3) { // Ausschluss von Leerzeichen und Wörten kürzer als drei Buchstaben (min. 4 Buchstaben)
+    				buf.append("+" + word + "*"); // Jedem Wort ein Plus-Zeichen voranstellen, und Trunkierung anhängen
+    				if (i<words.size()) buf.append("\040"); // ggf. ein Leerschlag dazwischen setzen
     			}
     		}
     		

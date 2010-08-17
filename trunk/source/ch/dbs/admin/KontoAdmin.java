@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -90,13 +89,10 @@ public final class KontoAdmin  {
 	    Connection cn = new Billing().getConnection();
 
 //		Alle Kontos holen
-	    Konto k = new Konto();
-		List<Konto> expKontos = k.getAllKontos(cn); 
+		List<Konto> expKontos = new Konto().getAllKontos(cn); 
 	    
 	    // Kontos abarbeiten, ob eine Rechnung erstelt und versendet werden muss
-        Iterator<Konto> i = expKontos.listIterator();
-        while (i.hasNext()) {
-			k = (Konto) i.next();
+        for (Konto k : expKontos) {
 			if (k.getKontotyp() > 0) {
 				if (k.getExpdate() != null) {
 					

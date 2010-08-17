@@ -18,7 +18,6 @@
 package ch.dbs.actions.openurl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,13 +48,9 @@ public class OpenUrl {
 		ConcurrentHashMap<String, String> params = new ConcurrentHashMap<String, String>();
 		params = getOpenUrlParameters(rq);
 		
-		Iterator<Map.Entry<String, String>> i = params.entrySet().iterator();
-		
 		ArrayList<String> uri_schemas = new ArrayList<String>();
-	    
-		while (i.hasNext()) {
-			
-		Map.Entry<String, String> pairs = (Map.Entry<String, String>)i.next();
+		
+		for (Map.Entry<String, String> pairs : params.entrySet()) {
 		
 		String key = pairs.getKey();
 		String value = pairs.getValue();
@@ -832,11 +827,7 @@ public class OpenUrl {
 		@SuppressWarnings("unchecked")
 		Map<String, String[]> paramMap = rq.getParameterMap();
 		
-		Iterator<Map.Entry<String, String[]>> x = paramMap.entrySet().iterator();
-
-		while (x.hasNext()) {
-			
-		Map.Entry<String, String[]> pairs = (Map.Entry<String, String[]>)x.next();
+		for (Map.Entry<String, String[]> pairs : paramMap.entrySet()) {
 			
 		String key = pairs.getKey();
 		String[] values = pairs.getValue();

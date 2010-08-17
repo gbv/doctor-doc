@@ -26,7 +26,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -456,29 +455,27 @@ public class Stock extends DispatchAction {
     	
     	for (int i=1;i<stockList.size();i++) { // start at position 1, thus ignoring the header
     		List<String> importLine = stockList.get(i);
-    	    ListIterator<String> elements = importLine.listIterator();
     	    int column = 0; // column number of element to check
-    	    String content = ""; // content of column
-    	    while (elements.hasNext()) {
+    	    for (String line : importLine) {
     	    	Message msg;
     	    	column++;
-    	    	content = (String) elements.next();
+    	    	if (line==null) line = "";
     	    	switch (column)
     	    	{
     	    	case 1: // Stock-ID
-    	    		msg = checkStockID(i, content);
+    	    		msg = checkStockID(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
     	    		break;
     	    	case 2: // Holding-ID
-    	    		msg = checkHoldingID(i, content);
+    	    		msg = checkHoldingID(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
     	    		break;
     	    	case 3: // Location-ID
-    	    		msg = checkLocationID(i, content);
+    	    		msg = checkLocationID(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -488,7 +485,7 @@ public class Stock extends DispatchAction {
     	    	case 5: // Shelfmark
     	    		break;
     	    	case 6: // Title
-    	    		msg = checkTitle(i, content);
+    	    		msg = checkTitle(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -500,7 +497,7 @@ public class Stock extends DispatchAction {
     	    	case 9: // Place
     	    		break;
     	    	case 10: // ISSN
-    	    		msg = checkISSN(i, content);
+    	    		msg = checkISSN(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -508,7 +505,7 @@ public class Stock extends DispatchAction {
     	    	case 11: // ZDB-ID
     	    		break;
     	    	case 12: // Startyear
-    	    		msg = checkStartyear(i, content);
+    	    		msg = checkStartyear(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -518,7 +515,7 @@ public class Stock extends DispatchAction {
     	    	case 14: // Startissue
     	    		break;
     	    	case 15: // Endyear
-    	    		msg = checkEndyear(i, content);
+    	    		msg = checkEndyear(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -528,7 +525,7 @@ public class Stock extends DispatchAction {
     	    	case 17: // Endissue
     	    		break;
     	    	case 18: // Supplement
-    	    		msg = checkSuppl(i, content);
+    	    		msg = checkSuppl(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -536,13 +533,13 @@ public class Stock extends DispatchAction {
     	    	case 19: // remarks
     	    		break;
     	    	case 20: // eissue
-    	    		msg = checkBoolean(i, content);
+    	    		msg = checkBoolean(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
     	    		break;
     	    	case 21: // internal
-    	    		msg = checkBoolean(i, content);
+    	    		msg = checkBoolean(i, line);
     	    		if (msg.getMessage()!=null) {
     	    			messageList.add(msg);
     	    		}
@@ -564,16 +561,16 @@ public class Stock extends DispatchAction {
      */
     private ArrayList<Message> checkColumns (ArrayList<List<String>> stockList) {
 
-    	ArrayList<Message> messageList = new ArrayList<Message>();
-        	
-        	for (int i=0;i<stockList.size();i++) {
-        		List<String> importLine = stockList.get(i);
-        		if (importLine.size()!=COLUMNS) {
-        			int lineCount = i+1;
-        			Message msg = new Message("error.import.separators", composeSystemMessage(lineCount, ""), "");
-        			messageList.add(msg);
-        		}
+    	ArrayList<Message> messageList = new ArrayList<Message>();        
+    	int lineCount = 0;
+    	
+    	for (List<String> importLine : stockList) {
+    		lineCount++; // Lines start at position 1
+        	if (importLine.size()!=COLUMNS) {
+        		Message msg = new Message("error.import.separators", composeSystemMessage(lineCount, ""), "");
+        		messageList.add(msg);
         	}
+        }
     	
     	return messageList;    	
     }
@@ -591,9 +588,7 @@ public class Stock extends DispatchAction {
     	HashSet<Long> uniqueSetStockID = new HashSet<Long>();
     	int lineCount = 0;
         	
-        	for (int i=0;i<bestandList.size();i++) {
-        		
-        		Bestand b = bestandList.get(i);
+    		for (Bestand b : bestandList) {
         		lineCount++;
         		
         		if (b.getId()!=null) {
@@ -726,99 +721,97 @@ public class Stock extends DispatchAction {
     private Bestand getBestand(List<String> list, long kid) {
     	Bestand b = new Bestand();
 
-	    ListIterator<String> elements = list.listIterator();
 	    int column = 0; // column number of CSV entry to check
-	    String content = ""; // content of column
-	    while (elements.hasNext()) {
+	    for (String line : list) {
 	    	column++;
-	    	content = (String) elements.next();
+	    	if (line == null) line = "";
 
 	    	switch (column)
 	    	{
 	    	case 1: // Stock-ID
-	    		if (!content.equals("")) { // If ID unknown, it should be null
-	    			b.setId(Long.valueOf(content));
+	    		if (!line.equals("")) { // If ID unknown, it should be null
+	    			b.setId(Long.valueOf(line));
 	    		}
 	    		break;
 	    	case 2: // Holding-ID
 	    		b.getHolding().setKid(kid); // set the kid from UserInfo
-	    		if (!content.equals("")) { // If ID unknown, it should be null
-	    			b.getHolding().setId(Long.valueOf(content));
+	    		if (!line.equals("")) { // If ID unknown, it should be null
+	    			b.getHolding().setId(Long.valueOf(line));
 	    		}
 	    		break;
 	    	case 3: // Location-ID
-	    		if (!content.equals("")) { // If ID unknown, it should be null
-	    			b.getStandort().setId(Long.valueOf(content));
+	    		if (!line.equals("")) { // If ID unknown, it should be null
+	    			b.getStandort().setId(Long.valueOf(line));
 	    		}
 	    		break;
 	    	case 4: // Location
-	    		b.getStandort().setInhalt(content);
+	    		b.getStandort().setInhalt(line);
 	    		break;
 	    	case 5: // Shelfmark
-	    		b.setShelfmark(content);
+	    		b.setShelfmark(line);
 	    		break;
 	    	case 6: // Title
-	    		b.getHolding().setTitel(content);
+	    		b.getHolding().setTitel(line);
 	    		break;
 	    	case 7: // Coden
-	    		if (content.equals("")) {
+	    		if (line.equals("")) {
 	    			b.getHolding().setCoden(null);
 	    		} else {
-	    			b.getHolding().setCoden(content);
+	    			b.getHolding().setCoden(line);
 	    		}
 	    		break;
 	    	case 8: // Publisher
-	    		b.getHolding().setVerlag(content);
+	    		b.getHolding().setVerlag(line);
 	    		break;
 	    	case 9: // Place
-	    		b.getHolding().setOrt(content);
+	    		b.getHolding().setOrt(line);
 	    		break;
 	    	case 10: // ISSN
-	    		b.getHolding().setIssn(content);
+	    		b.getHolding().setIssn(line);
 	    		break;
 	    	case 11: // ZDB-ID
-	    		if (content.equals("")) {
+	    		if (line.equals("")) {
 	    			b.getHolding().setZdbid(null);
 	    		} else {
-	    			b.getHolding().setZdbid(content);
+	    			b.getHolding().setZdbid(line);
 	    		}
 	    		break;
 	    	case 12: // Startyear
-	    		b.setStartyear(content);
+	    		b.setStartyear(line);
 	    		break;
 	    	case 13: // Startvolume
-	    		b.setStartvolume(content);
+	    		b.setStartvolume(line);
 	    		break;
 	    	case 14: // Startissue
-	    		b.setStartissue(content);
+	    		b.setStartissue(line);
 	    		break;
 	    	case 15: // Endyear
-	    		b.setEndyear(content);
+	    		b.setEndyear(line);
 	    		break;
 	    	case 16: // Endvolume
-	    		b.setEndvolume(content);
+	    		b.setEndvolume(line);
 	    		break;
 	    	case 17: // Endissue
-	    		b.setEndissue(content);
+	    		b.setEndissue(line);
 	    		break;
 	    	case 18: // Supplement
-	    		if (content.equals("")) {
+	    		if (line.equals("")) {
 	    			b.setSuppl(1); // Defaultvalue
 	    		} else {
-	    			b.setSuppl(Integer.valueOf(content));
+	    			b.setSuppl(Integer.valueOf(line));
 	    		}
 	    		break;
 	    	case 19: // remarks
-	    		b.setBemerkungen(content);
+	    		b.setBemerkungen(line);
 	    		break;
 	    	case 20: // eissue
-	    		if (!content.equals("")) { // Defaultvalue remains false
-	    			b.setEissue(Boolean.valueOf(content));
+	    		if (!line.equals("")) { // Defaultvalue remains false
+	    			b.setEissue(Boolean.valueOf(line));
 	    		}
 	    		break;
 	    	case 21: // internal
-	    		if (!content.equals("")) { // Defaultvalue remains false
-	    			b.setInternal(Boolean.valueOf(content));
+	    		if (!line.equals("")) { // Defaultvalue remains false
+	    			b.setInternal(Boolean.valueOf(line));
 	    		}
 	    		break;
 	    	}
@@ -1051,8 +1044,7 @@ public class Stock extends DispatchAction {
 		// delete all existing stock entries for this account
     	best.deleteAllKontoBestand(ui.getKonto(), cn);
     	
-    	for (int i=0;i<bestandList.size();i++) {
-    		Bestand b = bestandList.get(i);
+    	for (Bestand b : bestandList) {
 
     		// try to get an existing Holding for this account with
     		// the values specified in the Bestand, but without an ev. ID

@@ -396,10 +396,11 @@ public class Konto extends AbstractIdEntity {
   public List<Konto> getAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn) {
 	  List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn);
 	  try {
-      for (int y=0;y<allPossKontos.size();y++){
-          Konto uik = (Konto)allPossKontos.get(y);
+      int y = 0;
+	  for (Konto uik : allPossKontos) {
           if (uik.getId().equals(ui.getKonto().getId())) uik.setSelected(true); // selektiert das aktive Konto
          	allPossKontos.set(y, uik);
+         	y++;
       }
 	  } catch (Exception e) {
 		  log.error("etAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn): " + e.toString());

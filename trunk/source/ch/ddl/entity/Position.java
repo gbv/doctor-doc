@@ -65,7 +65,7 @@ public class Position extends AbstractIdEntity implements OrderHandler{
   
   //Debug
   // Erroremailadresse in properties File umstellen
-//  private String ERRORMAILADRESS = "eldor@gmx.ch";
+//  private String ERRORMAILADRESS = "info@doctor-doc.com";
 
   
   

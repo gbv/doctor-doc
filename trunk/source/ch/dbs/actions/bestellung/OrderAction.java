@@ -1712,16 +1712,16 @@ public final class OrderAction extends DispatchAction {
    		ArrayList<String> location = new ArrayList<String>();
    		ArrayList<String> shelfmark = new ArrayList<String>();
    		
-   		for (int i=0;internalHoldings.size()>i;i++) {
+   		for (Bestand b : internalHoldings) {
    			
-   			if (internalHoldings.get(i).getStandort().getInhalt()!=null) {
-   				location.add(internalHoldings.get(i).getStandort().getInhalt());
+   			if (b.getStandort().getInhalt()!=null) {
+   				location.add(b.getStandort().getInhalt());
    			} else {
    				location.add("");
    			}
    			
-   			if (internalHoldings.get(i).getShelfmark()!=null) {
-   				shelfmark.add(internalHoldings.get(i).getShelfmark());
+   			if (b.getShelfmark()!=null) {
+   				shelfmark.add(b.getShelfmark());
    			} else {
    				shelfmark.add("");
    			}
@@ -2858,10 +2858,10 @@ public final class OrderAction extends DispatchAction {
 		  
 		  try {
 			  
-			  for (int i=0;i<bestaende.size();i++) {
-				  if (bestaende.get(i).getHolding().getKid().equals(id)) {
-					  internalHoldings.add(bestaende.get(i));
-					  }
+			  for (Bestand b : bestaende) {
+				  if (b.getHolding().getKid().equals(id)) {
+					  internalHoldings.add(b);
+				  }
 			  }
 			  
 		  } catch(Exception e) {
@@ -2879,18 +2879,17 @@ public final class OrderAction extends DispatchAction {
 		  ArrayList<Bestand> externalHoldings = new ArrayList<Bestand>();
 		  
 		  try {
-			  
-			  for (int i=0;i<bestaende.size();i++) {
+			  for (Bestand b : bestaende) {
 				  
 				  // TODO: we need a better mechanism to manage the indication of external holdings
 				  // We make sure that the holdings are from the same country as the requester
-				  if (ui!=null && bestaende.get(i).getHolding().getKonto().getLand()!=null &&
-					  bestaende.get(i).getHolding().getKonto().getLand().equals(ui.getKonto().getLand())) {
+				  if (ui!=null && b.getHolding().getKonto().getLand()!=null &&
+					  b.getHolding().getKonto().getLand().equals(ui.getKonto().getLand())) {
 				  
 				  // add to list if it is not a holding from the own account
-				  if (!bestaende.get(i).getHolding().getKid().equals(id) && 
-					  !bestaende.get(i).isInternal()) {
-					  	externalHoldings.add(bestaende.get(i));
+				  if (!b.getHolding().getKid().equals(id) && 
+					  !b.isInternal()) {
+					  	externalHoldings.add(b);
 					  }
 				  }
 			  }

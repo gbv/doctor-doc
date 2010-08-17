@@ -58,9 +58,9 @@ public class IPChecker {
 			// Prüfung auf IP-Bereiche
 			ArrayList<Text> list = t.possibleIPRanges(ip, cn);
 			
-			for (int i=0;i<list.size();i++) { // zu prüfende IP-Bereiche				
-				if (compare(ip, list.get(i).getInhalt())) {
-					t = list.get(i);
+			for (Text ipToCheck : list) {			
+				if (compare(ip, ipToCheck.getInhalt())) {
+					t = ipToCheck;
 					return t;
 				}
 			}			

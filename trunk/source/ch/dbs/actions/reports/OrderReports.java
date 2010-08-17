@@ -27,7 +27,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -105,13 +104,13 @@ public final class OrderReports extends DispatchAction {
 				Bestellungen b = new Bestellungen();
 				try {				
 //					Reportdaten vorbereiten
-					List<Bestellungen> o = null;
+					List<Bestellungen> orders = null;
 					
 					if (searches.size() != 0) { // hier liegt Liste aus Suche vor...
 						UserAction userActionInstance = new UserAction();
 						PreparedStatement pstmt = null;
 						pstmt = userActionInstance.composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
-						o = b.searchOrdersPerKonto(pstmt);
+						orders = b.searchOrdersPerKonto(pstmt);
 				        	if (pstmt != null) {
 				        		try {
 				        			pstmt.close();
@@ -122,19 +121,17 @@ public final class OrderReports extends DispatchAction {
 					} else {
 						// normale Liste...
 						if (of.getFilter()==null) {
-							o = b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
+							orders = b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
 						} else {
-							o = b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(), of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false, cn.getConnection());
+							orders = b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(), of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false, cn.getConnection());
 						}
 						
 					}			
 					
 				    Collection<ConcurrentHashMap<String, String>> al = new ArrayList<ConcurrentHashMap<String, String>>();
-				    Iterator<Bestellungen> i = o.iterator();
 				    ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
 				    tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
-					while (i.hasNext()){						
-						Bestellungen order = (Bestellungen) i.next();
+				    for (Bestellungen order : orders) {
 						ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
 					    hm.put("orderdate", order.getOrderdate());
 //					    if (order.getBestellquelle()!=null)if (order.getBestellquelle().equals("0")) order.setBestellquelle("k. A.");
