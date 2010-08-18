@@ -58,12 +58,11 @@ public class TestPosition extends TestCase{
 	
 	@Test //@BeforeClass funzt nicht
 	public void testSetUp() {
-		AbstractBenutzer b = new AbstractBenutzer();
 		Konto tz = new Konto(); // we need this for setting a default timezone
 		Date d = new Date(); 
 		ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datum = fmt.format(d, tz.getTimezone());
-        b = PrepareTestObjects.getBibliothekar();
+        AbstractBenutzer b = PrepareTestObjects.getBibliothekar();
         b.setDatum(datum);
 		b.saveNewUser(b, tz, k.getSingleConnection());
 		k.close();		

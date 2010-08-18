@@ -526,7 +526,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
     
     public ArrayList <UserInfo> login(String email, String pw, Connection cn){
     	
-    	UserInfo u = new UserInfo();
+    	UserInfo u;
     	ArrayList<UserInfo> userinfolist = new ArrayList<UserInfo>();
     	    	
     	PreparedStatement pstmt = null;
@@ -544,7 +544,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
             pstmt.setString(1, email);
             pstmt.setString(2, pw);
             rs = pstmt.executeQuery();
-            ArrayList<Konto> kontolist = new ArrayList<Konto>();
+            ArrayList<Konto> kontolist;
             
             Administrator admin = new Administrator();
             while (rs.next()) {

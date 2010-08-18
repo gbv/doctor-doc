@@ -280,8 +280,7 @@ public class Holding extends AbstractIdEntity {
           rs = pstmt.executeQuery();
 
           while (rs.next()) {
-        	  Holding ho = new Holding();
-        	  ho = setRsstValues(cn, rs);
+        	  Holding ho = setRsstValues(cn, rs);
         	  list.add(ho);
           }
 
@@ -394,8 +393,7 @@ public class Holding extends AbstractIdEntity {
           rs = pstmt.executeQuery();
 
           while (rs.next()) {
-        	  Holding ho = new Holding();
-        	  ho = setRsstValues(cn, rs);
+        	  Holding ho = setRsstValues(cn, rs);
         	  list.add(ho);
           }
 

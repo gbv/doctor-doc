@@ -245,7 +245,7 @@ public class DefaultPreis extends AbstractIdEntity {
    */
   public List<DefaultPreis> getAllKontoDefaultPreise(Long kid, Connection cn){
       ArrayList<DefaultPreis> list = new ArrayList<DefaultPreis>();
-      DefaultPreis dp = new DefaultPreis();
+      DefaultPreis dp;
               
       PreparedStatement pstmt = null;
       ResultSet rs = null;

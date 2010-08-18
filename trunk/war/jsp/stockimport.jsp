@@ -53,6 +53,7 @@
 
 <h4><bean:message key="stockimport.subheader1" /></h4>
 
+<p><bean:message key="bestellform.required" /> (*)</p>
 <table border="1">
 	<tr>
 		<th id="th-left">Stock ID&nbsp;</th>
@@ -68,7 +69,7 @@
 	</tr>
 	<tr>
 		<th id="th-left">Location Name&nbsp;</th>
-		<td><bean:message key="stockimport.location" /></td>
+		<td><b><bean:message key="stockimport.location" />*</b></td>
 	</tr>
 	<tr>
 		<th id="th-left">Shelfmark&nbsp;</th>
@@ -76,7 +77,7 @@
 	</tr>
 	<tr>
 		<th id="th-left">Title&nbsp;</th>
-		<td><bean:message key="stockimport.title" /></td>
+		<td><b><bean:message key="stockimport.title" />*</b></td>
 	</tr>
 	<tr>
 		<th id="th-left">Coden&nbsp;</th>
@@ -100,7 +101,7 @@
 	</tr>
 	<tr>
 		<th id="th-left">Startyear&nbsp;</th>
-		<td><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+		<td><b><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" />*</b></td>
 	</tr>
 	<tr>
 		<th id="th-left">Starvolume&nbsp;</th>
@@ -137,7 +138,7 @@
 	</tr>
 	<tr>
 		<th id="th-left">internal&nbsp;</th>
-		<td><bean:message key="stockimport.internal" /></td>
+		<td><b><bean:message key="stockimport.internal" />*</b></td>
 	</tr>
 	
 </table>
