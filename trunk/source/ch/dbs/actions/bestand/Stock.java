@@ -170,11 +170,18 @@ public class Stock extends DispatchAction {
         if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")) { // must be tab delimited or csv file
         if (upload.getFileSize()<FILESIZELIMIT) { // limit file size to avoid OutOfMemory errors
         	
+        	// Excel is able to read UTF-8 encoded tab delimited files. But after editing the file,
+        	// it will save the file as ANSI CP1250. There is no option to save the file as UTF-8.
+        	// So we have to switch encoding if there has been uploaded a TXT file.
+        	String encoding = "UTF-8";
         	char delimiter = DELIMITER_CSV; // default value
-        	if (ck.isFiletypeExtension(fileName, ".txt")) delimiter = DELIMITER_TXT;
+        	if (ck.isFiletypeExtension(fileName, ".txt")) {
+        		delimiter = DELIMITER_TXT; // tab delimited file
+        		encoding = "CP1250"; // Windows ANSI encoding...
+        	}
             
         	// Get an ArrayList<List<String>> representation of the file
-            ArrayList<List<String>> stockList = readImport(upload, delimiter);
+            ArrayList<List<String>> stockList = readImport(upload, delimiter, encoding);
         	
         	// Check if the file contains the correct number of columns
             ArrayList<Message> messageList = checkColumns(stockList);
@@ -586,7 +593,7 @@ public class Stock extends DispatchAction {
 
     	ArrayList<Message> messageList = new ArrayList<Message>();
     	HashSet<Long> uniqueSetStockID = new HashSet<Long>();
-    	int lineCount = 0;
+    	int lineCount = 1; // the header of the ArrayList<Bestand> is already omitted
         	
     		for (Bestand b : bestandList) {
         		lineCount++;
@@ -638,7 +645,7 @@ public class Stock extends DispatchAction {
         				if (!b.getStandort().getInhalt().equals(control.getInhalt())) { // locations do not match...
         					Message msg = new Message();
             				msg.setMessage("error.import.locationsDoNotMatch");
-            	    		msg.setSystemMessage(composeSystemMessage(lineCount, b.getId().toString()));
+            	    		msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString() + "/" + b.getStandort().getInhalt()));
             	    		messageList.add(msg);
         				}
         			}
@@ -663,7 +670,7 @@ public class Stock extends DispatchAction {
      * @param char delimiter
      * @return ArrayList<List<String>> list
      */
-    private ArrayList<List<String>> readImport (FormFile upload, char delimiter) {
+    private ArrayList<List<String>> readImport (FormFile upload, char delimiter, String encoding) {
     	
     	ArrayList<List<String>> list = new ArrayList<List<String>>();    	
     	String line = "";
@@ -672,7 +679,7 @@ public class Stock extends DispatchAction {
     	
     	try {    		
     		fileStream = new BufferedInputStream(upload.getInputStream());
-        	br = new BufferedReader(new InputStreamReader(fileStream));
+        	br = new BufferedReader(new InputStreamReader(fileStream, encoding));
     	    
     	    while ((line = br.readLine())!=null && !line.equals("")) {
     	    	CSV importFile = new CSV(delimiter);
