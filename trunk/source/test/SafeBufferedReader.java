@@ -1,6 +1,8 @@
 package test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 
 public class SafeBufferedReader extends BufferedReader {
 
@@ -13,7 +15,7 @@ public class SafeBufferedReader extends BufferedReader {
   }
 
   private boolean lookingForLineFeed = false;
-  
+
   public String readLine() throws IOException {
     StringBuffer sb = new StringBuffer("");
     while (true) {
@@ -43,4 +45,3 @@ public class SafeBufferedReader extends BufferedReader {
   }
 
 }
-

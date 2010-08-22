@@ -3,13 +3,13 @@ package test;
 import java.net.URL;
 import java.util.Vector;
 
+import org.apache.soap.Constants;
 import org.apache.soap.encoding.SOAPMappingRegistry;
 import org.apache.soap.encoding.soapenc.StringDeserializer;
 import org.apache.soap.rpc.Call;
 import org.apache.soap.rpc.Parameter;
 import org.apache.soap.rpc.Response;
 import org.apache.soap.util.xml.QName;
-import org.apache.soap.Constants;
 
 public class SOAPTestClient {
   public static void main(String [] args) {
@@ -31,7 +31,7 @@ public class SOAPTestClient {
       call.setTargetObjectURI(namespaceUriString);
       call.setMethodName(methodNameString);
       call.setEncodingStyleURI(Constants.NS_URI_SOAP_ENC);
-      
+
       SOAPMappingRegistry soapMappingRegistry = new SOAPMappingRegistry();
       soapMappingRegistry.mapTypes(Constants.NS_URI_SOAP_ENC, new QName("", "sessionid"),
                                    null, null, new StringDeserializer());
@@ -50,7 +50,7 @@ public class SOAPTestClient {
       Response res = call.invoke(new URL(locationUrlString), soapActionString);
 
       // Ausgabe des Ergebnisses
-      if( res.generatedFault() ==false)
+      if ( res.generatedFault() ==false)
       {
         Parameter retValue = res.getReturnValue();
         Object value = retValue.getValue();
@@ -59,9 +59,9 @@ public class SOAPTestClient {
       } else {
         System.out.println("Fehler: "+res.getFault().getFaultString());
       }
-    } 
+    }
     catch (Exception e) {
      System.err.println(e.toString());
     }
-	}
+  }
 }

@@ -17,13 +17,13 @@ public class CyclicBarrierDemo {
       svc.execute(new Runnable() {
         public void run() {
           try {
-        	  
+
             String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%222006505-X%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
-            
+
             // 1. Methode
             log("At run()");
             barrier.await();
-            
+
             Http http = new Http();
             http.getWebcontent(link, 2000, 3);
             log("Content received!");
@@ -32,7 +32,7 @@ public class CyclicBarrierDemo {
             barrier.await();
 
             log("Done");
-            
+
             // Aufruf 2. Thread-Methode
 //            MyCallable c = new MyCallable(link);
 //            ExecutorService executor = Executors.newCachedThreadPool();
@@ -41,7 +41,7 @@ public class CyclicBarrierDemo {
 //            content.get(2, TimeUnit.SECONDS);
 //            System.out.println("hat geklappt!");
 //            } catch (TimeoutException e) {
-//            	System.out.println("TimeoutException!");
+//              System.out.println("TimeoutException!");
 //            }
           } catch (Exception e) {
             e.printStackTrace();
@@ -57,4 +57,3 @@ public class CyclicBarrierDemo {
         + Thread.currentThread().getId() + "  " + msg);
   }
 }
-

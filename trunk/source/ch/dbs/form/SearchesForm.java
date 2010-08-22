@@ -1,66 +1,64 @@
-//	Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
 //
-//	This program is free software; you can redistribute it and/or
-//	modify it under the terms of the GNU General Public License
-//	as published by the Free Software Foundation; version 2 of the License.
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; version 2 of the License.
 //
-//	This program is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
-//	You should have received a copy of the GNU General Public License
-//	along with this program; if not, write to the Free Software
-//	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//	Contact: info@doctor-doc.com
+//  Contact: info@doctor-doc.com
 
 package ch.dbs.form;
 
-public class SearchesForm extends OverviewForm{
+public class SearchesForm extends OverviewForm {
 
-	private static final long serialVersionUID = 1L;
-	private String field; // MYSQL-Zielfeld
-	private String condition; // ist gleich, enthält etc.
-	private String input; // Suchwert
-	private String bool; // Boolsche Verknüpfung
-    
-    public SearchesForm(){
-        
+  private static final long serialVersionUID = 1L;
+  private String field; // MYSQL-Zielfeld
+  private String condition; // ist gleich, enthält etc.
+  private String input; // Suchwert
+  private String bool; // Boolsche Verknüpfung
+
+    public SearchesForm() {
+
     }
 
-	public String getBool() {
-		return bool;
-	}
+  public String getBool() {
+    return bool;
+  }
 
-	public void setBool(String bool) {
-		this.bool = bool;
-	}
+  public void setBool(String bool) {
+    this.bool = bool;
+  }
 
-	public String getCondition() {
-		return condition;
-	}
+  public String getCondition() {
+    return condition;
+  }
 
-	public void setCondition(String condition) {
-		this.condition = condition;
-	}
+  public void setCondition(String condition) {
+    this.condition = condition;
+  }
 
-	public String getField() {
-		return field;
-	}
+  public String getField() {
+    return field;
+  }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+  public void setField(String field) {
+    this.field = field;
+  }
 
-	public String getInput() {
-		return input;
-	}
+  public String getInput() {
+    return input;
+  }
 
-	public void setInput(String input) {
-		this.input = input;
-	}
- 
-	
+  public void setInput(String input) {
+    this.input = input;
+  }
 
 }

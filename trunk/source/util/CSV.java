@@ -6,9 +6,9 @@
  * Excerpted from 'The Practice of Programming'
  * by Brian W. Kernighan and Rob Pike.
  * <p>
- * Included by permission of the http://tpop.awl.com/ web site, 
+ * Included by permission of the http://tpop.awl.com/ web site,
  * which says:
- * "You may use this code for any purpose, as long as you leave 
+ * "You may use this code for any purpose, as long as you leave
  * the copyright notice and book citation attached." I have done so.
  * @author Brian W. Kernighan and Rob Pike (C++ original)
  * @author Ian F. Darwin (translation into Java and removal of I/O)
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CSV {  
+public class CSV {
 
   public static final char DEFAULT_SEP = ',';
 
@@ -30,7 +30,7 @@ public class CSV {
     this(DEFAULT_SEP);
   }
 
-  /** Construct a CSV parser with a given separator. 
+  /** Construct a CSV parser with a given separator.
    * @param sep The single char for the separator (not a list of
    * separator characters)
    */
@@ -39,17 +39,16 @@ public class CSV {
   }
 
   /** The fields in the current String */
-  protected List<String> list = new ArrayList<String>();
+  private List<String> list = new ArrayList<String>();
 
   /** the separator char for this parser */
-  protected char fieldSep;
+  private char fieldSep;
 
   /** parse: break the input String into fields
-   * @return java.util.Iterator containing each field 
+   * @return java.util.Iterator containing each field
    * from the original as a trimmed String, in order.
    */
-  public List<String> parse(String line)
-  {
+  public List<String> parse(String line) {
     StringBuffer sb = new StringBuffer();
     list.clear();      // recycle to initial state
     int i = 0;
@@ -61,10 +60,11 @@ public class CSV {
 
     do {
             sb.setLength(0);
-            if (i < line.length() && line.charAt(i) == '"')
+            if (i < line.length() && line.charAt(i) == '"') {
                 i = advQuoted(line, sb, ++i);  // skip quote
-            else
+            } else {
                 i = advPlain(line, sb, i);
+            }
             list.add(sb.toString().trim());
       i++;
     } while (i < line.length());
@@ -73,19 +73,18 @@ public class CSV {
   }
 
   /** advQuoted: quoted field; return index of next separator */
-  protected int advQuoted(String s, StringBuffer sb, int i)
-  {
+  private int advQuoted(String s, StringBuffer sb, int i) {
     int j;
-    int len= s.length();
-        for (j=i; j<len; j++) {
-            if (s.charAt(j) == '"' && j+1 < len) {
-                if (s.charAt(j+1) == '"') {
+    int len = s.length();
+        for (j = i; j < len; j++) {
+            if (s.charAt(j) == '"' && j + 1 < len) {
+                if (s.charAt(j + 1) == '"') {
                     j++; // skip escape char
-                } else if (s.charAt(j+1) == fieldSep) { //next delimeter
+                } else if (s.charAt(j + 1) == fieldSep) { //next delimeter
                     j++; // skip end quotes
                     break;
                 }
-            } else if (s.charAt(j) == '"' && j+1 == len) { // end quotes at end of line
+            } else if (s.charAt(j) == '"' && j + 1 == len) { // end quotes at end of line
                 break; //done
       }
       sb.append(s.charAt(j));  // regular character.
@@ -94,8 +93,7 @@ public class CSV {
   }
 
   /** advPlain: unquoted field; return index of next separator */
-  protected int advPlain(String s, StringBuffer sb, int i)
-  {
+  private int advPlain(String s, StringBuffer sb, int i) {
     int j;
 
     j = s.indexOf(fieldSep, i); // look for separator

@@ -1,24 +1,26 @@
-//	Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
 //
-//	This program is free software; you can redistribute it and/or
-//	modify it under the terms of the GNU General Public License
-//	as published by the Free Software Foundation; version 2 of the License.
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; version 2 of the License.
 //
-//	This program is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
-//	You should have received a copy of the GNU General Public License
-//	along with this program; if not, write to the Free Software
-//	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//	Contact: info@doctor-doc.com
+//  Contact: info@doctor-doc.com
 
 package ch.ddl.form;
 
 import java.sql.Date;
+
 import org.apache.struts.action.ActionForm;
+
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Konto;
 import ch.dbs.form.OrderForm;
@@ -27,233 +29,226 @@ import ch.ddl.entity.Position;
 
 /**
  * PositionForm
- * 
+ *
  * @author Pascal Steiner
  *
  */
-public final class PositionForm extends ActionForm{	
+public final class PositionForm extends ActionForm {
 
-	private static final long serialVersionUID = 1L;
-	
-	private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
-	  private Konto konto; // Bibliothekskonto
-	  
-	  // Lieferinfos
-	  private String priority = ""; // Normal, Express
-	  private String deloptions = ""; // Online, Email, Postweg, Fax, Fax to PDF
-	  private String fileformat = ""; // HTML, PDF, Papierkopie,...
-	  private Date orderdate = null; // Datum der Bestellung
-	  
-	  // Produktinfos
-	  private String mediatype = ""; // Artikel, Teilkopie Buch oder Buch
-	  private String autor = "";
-	  private String zeitschrift_verlag = ""; // Zeitschrift / Verlag
-	  private String heft = ""; //
-	  private String jahrgang = "";
-	  private String jahr = "";  
-	  private String titel = ""; // Artikeltiel / Buchtitel
-	  private String kapitel = "";
-	  private String seiten = "";  
+  private static final long serialVersionUID = 1L;
 
-	  // Preis
-	  private String waehrung = "";
-	  private String preis = "";
-	  
-	  /**
-	   * New PositionForm
-	   * @author Pascal Steiner
-	   */
-	  public PositionForm(){
-		  super();
-	  }
-	  
-	  /**
-	   * New PositionForm from a Position	   * 
-	   * @param p Position
-	   * @author Pascal Steiner
-	   */
-	  public PositionForm(Position p){
-		  super();
-		  fill(p);
-	  }
-	  
-	  /**
-	   * New PositionForm from a OrderForm	   * 
-	   * @param p Position
-	   * @author Pascal Steiner
-	   */
-	  public PositionForm(OrderForm of){
-		  super();
-		  fill(of);
-		  
-	  }
-	  
-	  /**
-	   * kopiert die Werte eins OrderHandler (Konkret: Position oder Bestellung) in das Form
-	   * @param p
-	   * @author Pascal Steiner
-	   */
-	  private void fill(OrderHandler oh){
-		  this.setBenutzer(oh.getBenutzer());
-		  this.setKonto(oh.getKonto());
-		  this.setPriority(oh.getPriority());
-		  this.setDeloptions(oh.getDeloptions());
-		  this.setFileformat(oh.getFileformat());
-		  this.setOrderdate(oh.getOrderdate());
-		  this.setMediatype(oh.getMediatype());
-		  this.setAutor(oh.getAutor());
-		  this.setZeitschrift_verlag(oh.getZeitschrift_verlag());
-		  this.setHeft(oh.getHeft());
-		  this.setJahrgang(oh.getJahrgang());
-		  this.setJahr(oh.getJahr());
-		  this.setTitel(oh.getTitel());
-		  this.setKapitel(oh.getKapitel());
-		  this.setSeiten(oh.getSeiten());
-		  this.setWaehrung(oh.getWaehrung());
-		  this.setPreis(oh.getPreis());
-	  }
+  private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
+    private Konto konto; // Bibliothekskonto
 
-	public AbstractBenutzer getBenutzer() {
-		return benutzer;
-	}
+    // Lieferinfos
+    private String priority = ""; // Normal, Express
+    private String deloptions = ""; // Online, Email, Postweg, Fax, Fax to PDF
+    private String fileformat = ""; // HTML, PDF, Papierkopie,...
+    private Date orderdate = null; // Datum der Bestellung
 
-	public void setBenutzer(AbstractBenutzer benutzer) {
-		this.benutzer = benutzer;
-	}
+    // Produktinfos
+    private String mediatype = ""; // Artikel, Teilkopie Buch oder Buch
+    private String autor = "";
+    private String zeitschrift_verlag = ""; // Zeitschrift / Verlag
+    private String heft = ""; //
+    private String jahrgang = "";
+    private String jahr = "";
+    private String titel = ""; // Artikeltiel / Buchtitel
+    private String kapitel = "";
+    private String seiten = "";
 
-	public Konto getKonto() {
-		return konto;
-	}
+    // Preis
+    private String waehrung = "";
+    private String preis = "";
 
-	public void setKonto(Konto konto) {
-		this.konto = konto;
-	}
+    /**
+     * New PositionForm
+     * @author Pascal Steiner
+     */
+    public PositionForm() {
+      super();
+    }
 
-	public String getPriority() {
-		return priority;
-	}
+    /**
+     * New PositionForm from a Position     *
+     * @param p Position
+     * @author Pascal Steiner
+     */
+    public PositionForm(Position p) {
+      super();
+      fill(p);
+    }
 
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
+    /**
+     * New PositionForm from a OrderForm     *
+     * @param p Position
+     * @author Pascal Steiner
+     */
+    public PositionForm(OrderForm of) {
+      super();
+      fill(of);
 
-	public String getDeloptions() {
-		return deloptions;
-	}
+    }
 
-	public void setDeloptions(String deloptions) {
-		this.deloptions = deloptions;
-	}
+    /**
+     * kopiert die Werte eins OrderHandler (Konkret: Position oder Bestellung) in das Form
+     * @param p
+     * @author Pascal Steiner
+     */
+    private void fill(OrderHandler oh) {
+      this.setBenutzer(oh.getBenutzer());
+      this.setKonto(oh.getKonto());
+      this.setPriority(oh.getPriority());
+      this.setDeloptions(oh.getDeloptions());
+      this.setFileformat(oh.getFileformat());
+      this.setOrderdate(oh.getOrderdate());
+      this.setMediatype(oh.getMediatype());
+      this.setAutor(oh.getAutor());
+      this.setZeitschrift_verlag(oh.getZeitschrift_verlag());
+      this.setHeft(oh.getHeft());
+      this.setJahrgang(oh.getJahrgang());
+      this.setJahr(oh.getJahr());
+      this.setTitel(oh.getTitel());
+      this.setKapitel(oh.getKapitel());
+      this.setSeiten(oh.getSeiten());
+      this.setWaehrung(oh.getWaehrung());
+      this.setPreis(oh.getPreis());
+    }
 
-	public String getFileformat() {
-		return fileformat;
-	}
+  public AbstractBenutzer getBenutzer() {
+    return benutzer;
+  }
 
-	public void setFileformat(String fileformat) {
-		this.fileformat = fileformat;
-	}
+  public void setBenutzer(AbstractBenutzer benutzer) {
+    this.benutzer = benutzer;
+  }
 
-	public Date getOrderdate() {
-		return orderdate;
-	}
+  public Konto getKonto() {
+    return konto;
+  }
 
-	public void setOrderdate(Date orderdate) {
-		this.orderdate = orderdate;
-	}
+  public void setKonto(Konto konto) {
+    this.konto = konto;
+  }
 
-	public String getMediatype() {
-		return mediatype;
-	}
+  public String getPriority() {
+    return priority;
+  }
 
-	public void setMediatype(String mediatype) {
-		this.mediatype = mediatype;
-	}
+  public void setPriority(String priority) {
+    this.priority = priority;
+  }
 
-	public String getAutor() {
-		return autor;
-	}
+  public String getDeloptions() {
+    return deloptions;
+  }
 
-	public void setAutor(String autor) {
-		this.autor = autor;
-	}
+  public void setDeloptions(String deloptions) {
+    this.deloptions = deloptions;
+  }
 
-	public String getZeitschrift_verlag() {
-		return zeitschrift_verlag;
-	}
+  public String getFileformat() {
+    return fileformat;
+  }
 
-	public void setZeitschrift_verlag(String zeitschrift_verlag) {
-		this.zeitschrift_verlag = zeitschrift_verlag;
-	}
+  public void setFileformat(String fileformat) {
+    this.fileformat = fileformat;
+  }
 
-	public String getHeft() {
-		return heft;
-	}
+  public Date getOrderdate() {
+    return orderdate;
+  }
 
-	public void setHeft(String heft) {
-		this.heft = heft;
-	}
+  public void setOrderdate(Date orderdate) {
+    this.orderdate = orderdate;
+  }
 
-	public String getJahrgang() {
-		return jahrgang;
-	}
+  public String getMediatype() {
+    return mediatype;
+  }
 
-	public void setJahrgang(String jahrgang) {
-		this.jahrgang = jahrgang;
-	}
+  public void setMediatype(String mediatype) {
+    this.mediatype = mediatype;
+  }
 
-	public String getJahr() {
-		return jahr;
-	}
+  public String getAutor() {
+    return autor;
+  }
 
-	public void setJahr(String jahr) {
-		this.jahr = jahr;
-	}
+  public void setAutor(String autor) {
+    this.autor = autor;
+  }
 
-	public String getTitel() {
-		return titel;
-	}
+  public String getZeitschrift_verlag() {
+    return zeitschrift_verlag;
+  }
 
-	public void setTitel(String titel) {
-		this.titel = titel;
-	}
+  public void setZeitschrift_verlag(String zeitschrift_verlag) {
+    this.zeitschrift_verlag = zeitschrift_verlag;
+  }
 
-	public String getKapitel() {
-		return kapitel;
-	}
+  public String getHeft() {
+    return heft;
+  }
 
-	public void setKapitel(String kapitel) {
-		this.kapitel = kapitel;
-	}
+  public void setHeft(String heft) {
+    this.heft = heft;
+  }
 
-	public String getSeiten() {
-		return seiten;
-	}
+  public String getJahrgang() {
+    return jahrgang;
+  }
 
-	public void setSeiten(String seiten) {
-		this.seiten = seiten;
-	}
+  public void setJahrgang(String jahrgang) {
+    this.jahrgang = jahrgang;
+  }
 
-	public String getWaehrung() {
-		return waehrung;
-	}
+  public String getJahr() {
+    return jahr;
+  }
 
-	public void setWaehrung(String waehrung) {
-		this.waehrung = waehrung;
-	}
+  public void setJahr(String jahr) {
+    this.jahr = jahr;
+  }
 
-	public String getPreis() {
-		return preis;
-	}
+  public String getTitel() {
+    return titel;
+  }
 
-	public void setPreis(String preis) {
-		this.preis = preis;
-	}
-	  
-	  
-	  
-	
-	
-	
-    
+  public void setTitel(String titel) {
+    this.titel = titel;
+  }
+
+  public String getKapitel() {
+    return kapitel;
+  }
+
+  public void setKapitel(String kapitel) {
+    this.kapitel = kapitel;
+  }
+
+  public String getSeiten() {
+    return seiten;
+  }
+
+  public void setSeiten(String seiten) {
+    this.seiten = seiten;
+  }
+
+  public String getWaehrung() {
+    return waehrung;
+  }
+
+  public void setWaehrung(String waehrung) {
+    this.waehrung = waehrung;
+  }
+
+  public String getPreis() {
+    return preis;
+  }
+
+  public void setPreis(String preis) {
+    this.preis = preis;
+  }
 
 }
