@@ -6,20 +6,20 @@
 <?xml version="1.0" standalone="yes"?>
 
 <VFL_RETURN>
-	<message_type><bean:write name="illform" property="message_type" /></message_type>
-	<status><bean:write name="illform" property="status" /></status>
-	<return_value></return_value>
-	<return_comment><bean:write name="illform" property="comment" /></return_comment>
-	<nr_of_trial>1</nr_of_trial>
+  <message_type><bean:write name="illform" property="message_type" /></message_type>
+  <status><bean:write name="illform" property="status" /></status>
+  <return_value></return_value>
+  <return_comment><bean:write name="illform" property="comment" /></return_comment>
+  <nr_of_trial>1</nr_of_trial>
 <sender>
-	<sender_id><bean:message bundle="systemConfig" key="myServer.gbvRequesterID"/></sender_id>
+  <sender_id><bean:message bundle="systemConfig" key="myServer.gbvRequesterID"/></sender_id>
 </sender>
 <receiver>
-	<receiver_url>http://www.doctor-doc.com/version1.0/illform.do</receiver_url>
-	<repeat_data_to>http://www.doctor-doc.com/version1.0/illform.do</repeat_data_to>
+  <receiver_url>http://www.doctor-doc.com/version1.0/illform.do</receiver_url>
+  <repeat_data_to>http://www.doctor-doc.com/version1.0/illform.do</repeat_data_to>
 <send_fatal_to>
-	<url></url>
-	<email><bean:message bundle="systemConfig" key="systemEmail.email"/></email>
+  <url></url>
+  <email><bean:message bundle="systemConfig" key="systemEmail.email"/></email>
 </send_fatal_to>
 </receiver>
 <data>

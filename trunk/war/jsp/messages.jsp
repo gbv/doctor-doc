@@ -4,7 +4,7 @@
 <%@ page import="ch.dbs.form.*" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
@@ -23,11 +23,11 @@
 
 <!-- This is the overall general, single message to be displayed as title of the page -->
 
-<bean:define id="translationKey" name="singleMessage" property="message" type="java.lang.String"/>      				
+<bean:define id="translationKey" name="singleMessage" property="message" type="java.lang.String"/>              
 <h3><bean:message key="<%=translationKey%>" /></h3>
 
 <logic:present name="singleMessage" property="systemMessage">
-	<p><pre><bean:write name="message" property="systemMessage" /></pre></p>
+  <p><pre><bean:write name="message" property="systemMessage" /></pre></p>
 </logic:present>
 
 
@@ -35,12 +35,12 @@
 
 <logic:iterate id="msgs" name="messageList">
 
-	<bean:define id="translationKey" name="msgs" property="message" type="java.lang.String"/>      				
-	<p><bean:message key="<%=translationKey%>" />:
+  <bean:define id="translationKey" name="msgs" property="message" type="java.lang.String"/>              
+  <p><bean:message key="<%=translationKey%>" />:
 
-	<logic:present name="msgs" property="systemMessage">
-		<bean:write name="msgs" property="systemMessage" /></p>
-	</logic:present>
+  <logic:present name="msgs" property="systemMessage">
+    <bean:write name="msgs" property="systemMessage" /></p>
+  </logic:present>
 
 </logic:iterate>
 
@@ -48,7 +48,7 @@
 
 <br></br>
 <logic:present name="singleMessage" property="link">
-	<a href="<bean:write name="singleMessage" property="link" />"><bean:message key="error.back" /></a>
+  <a href="<bean:write name="singleMessage" property="link" />"><bean:message key="error.back" /></a>
 </logic:present>
  </body>
 </html>

@@ -8,7 +8,7 @@
 <%@ page import="java.util.*" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
@@ -29,19 +29,19 @@
  
 <div class="content">
 <logic:present name="userinfo" property="benutzer">
-			<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
+      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
 <table
-	style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
-	<tr>
-		<td id="submenuactive" nowrap title="<bean:message key="menu.export_explain" />"><a
-			href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
-		<td id="submenu" nowrap
-			title="<bean:message key="menu.import_explain" />"><a
-			href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
-		<td id="submenu" nowrap
-			title="<bean:message key="menu.locations_explain" />"><a
-			href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
-	</tr>
+  style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
+  <tr>
+    <td id="submenuactive" nowrap title="<bean:message key="menu.export_explain" />"><a
+      href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
+    <td id="submenu" nowrap
+      title="<bean:message key="menu.import_explain" />"><a
+      href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
+    <td id="submenu" nowrap
+      title="<bean:message key="menu.locations_explain" />"><a
+      href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
+  </tr>
 </table>
 </logic:notEqual>
 </logic:present>
@@ -53,29 +53,29 @@
 <p><b><bean:message key="stockexport.export" /></b></p>
 
 <table>
-	<tr>
-		<td>OpenOffice:</td>
-		<td><a href="export-holdings.do" target="_blank">CSV</a></td>
-		<td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td>MS-Excel:</td>
-		<td><a href="export-holdings.do?filetype=txt" target="_blank">TXT</a></td>
-		<td>(<bean:message key="stockexport.excel" />)</td>
-	</tr>
+  <tr>
+    <td>OpenOffice:</td>
+    <td><a href="export-holdings.do" target="_blank">CSV</a></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>MS-Excel:</td>
+    <td><a href="export-holdings.do?filetype=txt" target="_blank">TXT</a></td>
+    <td>(<bean:message key="stockexport.excel" />)</td>
+  </tr>
 </table>
  
 <h4><bean:message key="stockexport.subheader1" /></h4>
 
 <ol>
-	<li><bean:message key="stockexport.list1.one" /></li>
-	<li><bean:message key="stockexport.list1.three" /></li>
-	<li><bean:message key="stockexport.list1.four" /></li>
-	<li><bean:message key="stockexport.list1.five" /></li>
+  <li><bean:message key="stockexport.list1.one" /></li>
+  <li><bean:message key="stockexport.list1.three" /></li>
+  <li><bean:message key="stockexport.list1.four" /></li>
+  <li><bean:message key="stockexport.list1.five" /></li>
 </ol>
 
 <p>
-	<bean:message key="stockexport.tip1" />&nbsp;<bean:message key="stockexport.tip2" />
+  <bean:message key="stockexport.tip1" />&nbsp;<bean:message key="stockexport.tip2" />
 </p>
 
 <h4><bean:message key="stockexport.subheader2" /></h4>
@@ -98,7 +98,7 @@
 </li></p>
 </ul>
 <p>
-	<bean:message key="stockexport.list2.fifteen" />
+  <bean:message key="stockexport.list2.fifteen" />
 </p>
 <p><br /></p>
 

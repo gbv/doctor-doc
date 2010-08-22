@@ -37,7 +37,7 @@
     
    --> 
 
-	
+  
   <property name="classes.dir"       value="${webinf.dir}/classes"/>
   <property name="version.string"    value="version ${version} (${TODAY})"/>
   <property name="version.file"      value="${webinf.dir}/VERSION"/>
@@ -73,7 +73,7 @@
       war         : Invokes the compilation, then builds the deployable war file.
       clean       : Cleans all files compiled with ant including deployable archives, reports and javadoc.
       javadoc     : Creates the full javadoc of the whole project source, including private.
-    	
+      
     </echo>
   </target>
 

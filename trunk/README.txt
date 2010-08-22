@@ -1,24 +1,24 @@
-	README - 31.10.2010
-	
-	Doctor-Doc is a webbased and a easy-to-use tracking and
-	managing system for scientific literature
-	
-	Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+  README - 31.10.2010
+  
+  Doctor-Doc is a webbased and a easy-to-use tracking and
+  managing system for scientific literature
+  
+  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; version 2 of the License.
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; version 2 of the License.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-	Contact: info@doctor-doc.com
+  Contact: info@doctor-doc.com
 
 
 There are two mailing lists available for Doctor-Doc:
@@ -26,8 +26,8 @@ There are two mailing lists available for Doctor-Doc:
 https://sourceforge.net/projects/doctor-doc/support
 
 We strongly encourage you to get involved!
-	
-	
+  
+  
 Requirements:
 
 ---
@@ -74,20 +74,20 @@ Place in your $CATALINA_HOME/conf/server.xml of your Tomcat-Installation the fol
 code between <Context path=...> and </Context>
 
 <Resource name="jdbc/pooledDS" auth="Container" type="com.mchange.v2.c3p0.ComboPooledDataSource" />
-	<!-- Tomcat 5.0 -->
-	<ResourceParams name="jdbc/pooledDS">
-	   <parameter><name>factory</name><value>org.apache.naming.factory.BeanFactory</value></parameter>  
-	   <parameter><name>driverClass</name><value>com.mysql.jdbc.Driver</value></parameter>  
-	   <parameter><name>jdbcUrl</name><value>jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false</value></parameter>  
-	   <parameter><name>user</name><value>username</value></parameter>  
-	   <parameter><name>password</name><value>password</value></parameter>  
-	   <parameter><name>minPoolSize</name><value>0</value></parameter>  
-	   <parameter><name>maxPoolSize</name><value>30</value></parameter>
-	   <parameter><name>acquireIncrement</name><value>5</value></parameter>
-	   <parameter><name>maxIdleTimeExcessConnections</name><value>1800</value></parameter>
-	   <parameter><name>automaticTestTable</name><value>c3p0TestTable</value></parameter>
-	   <parameter><name>testConnectionOnCheckin</name><value>true</value></parameter>
-	   <parameter><name>idleConnectionTestPeriod</name><value>240</value></parameter>
+  <!-- Tomcat 5.0 -->
+  <ResourceParams name="jdbc/pooledDS">
+     <parameter><name>factory</name><value>org.apache.naming.factory.BeanFactory</value></parameter>  
+     <parameter><name>driverClass</name><value>com.mysql.jdbc.Driver</value></parameter>  
+     <parameter><name>jdbcUrl</name><value>jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false</value></parameter>  
+     <parameter><name>user</name><value>username</value></parameter>  
+     <parameter><name>password</name><value>password</value></parameter>  
+     <parameter><name>minPoolSize</name><value>0</value></parameter>  
+     <parameter><name>maxPoolSize</name><value>30</value></parameter>
+     <parameter><name>acquireIncrement</name><value>5</value></parameter>
+     <parameter><name>maxIdleTimeExcessConnections</name><value>1800</value></parameter>
+     <parameter><name>automaticTestTable</name><value>c3p0TestTable</value></parameter>
+     <parameter><name>testConnectionOnCheckin</name><value>true</value></parameter>
+     <parameter><name>idleConnectionTestPeriod</name><value>240</value></parameter>
 </ResourceParams>
 
 Tomcat 5.5
@@ -99,21 +99,21 @@ code:
 <Context>
     <!-- Tomcat 5.5 -->
     <Resource auth="Container" 
-	description="DB Connection" 
-	driverClass="com.mysql.jdbc.Driver" 
-	maxPoolSize="30" 
-	minPoolSize="0" 
-	acquireIncrement="5" 
-	maxIdleTimeExcessConnections="1800"
-	automaticTestTable="c3p0TestTable"
-	testConnectionOnCheckin="true"
-	idleConnectionTestPeriod="240"
-	name="jdbc/pooledDS" 
-	user="username" 
-	password="password" 
-	factory="org.apache.naming.factory.BeanFactory" 
-	type="com.mchange.v2.c3p0.ComboPooledDataSource" 
-	jdbcUrl="jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+  description="DB Connection" 
+  driverClass="com.mysql.jdbc.Driver" 
+  maxPoolSize="30" 
+  minPoolSize="0" 
+  acquireIncrement="5" 
+  maxIdleTimeExcessConnections="1800"
+  automaticTestTable="c3p0TestTable"
+  testConnectionOnCheckin="true"
+  idleConnectionTestPeriod="240"
+  name="jdbc/pooledDS" 
+  user="username" 
+  password="password" 
+  factory="org.apache.naming.factory.BeanFactory" 
+  type="com.mchange.v2.c3p0.ComboPooledDataSource" 
+  jdbcUrl="jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
 </Context>
 
 ---

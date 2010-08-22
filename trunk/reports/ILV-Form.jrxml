@@ -2,822 +2,822 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="ILV-Form"
-		 columnCount="1"
-		 printOrder="Vertical"
-		 orientation="Portrait"
-		 pageWidth="595"
-		 pageHeight="842"
-		 columnWidth="540"
-		 columnSpacing="0"
-		 leftMargin="30"
-		 rightMargin="25"
-		 topMargin="20"
-		 bottomMargin="20"
-		 whenNoDataType="NoPages"
-		 isTitleNewPage="false"
-		 isSummaryNewPage="false"
-		 isIgnorePagination="true">
-	<property name="ireport.scriptlethandling" value="0" />
-	<property name="ireport.encoding" value="UTF-8" />
-	<import value="java.util.*" />
-	<import value="net.sf.jasperreports.engine.*" />
-	<import value="net.sf.jasperreports.engine.data.*" />
+     name="ILV-Form"
+     columnCount="1"
+     printOrder="Vertical"
+     orientation="Portrait"
+     pageWidth="595"
+     pageHeight="842"
+     columnWidth="540"
+     columnSpacing="0"
+     leftMargin="30"
+     rightMargin="25"
+     topMargin="20"
+     bottomMargin="20"
+     whenNoDataType="NoPages"
+     isTitleNewPage="false"
+     isSummaryNewPage="false"
+     isIgnorePagination="true">
+  <property name="ireport.scriptlethandling" value="0" />
+  <property name="ireport.encoding" value="UTF-8" />
+  <import value="java.util.*" />
+  <import value="net.sf.jasperreports.engine.*" />
+  <import value="net.sf.jasperreports.engine.data.*" />
 
-	<parameter name="from" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelfrom" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelto" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="to" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="isil" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="reporttitle" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="signatur" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labeljournaltitel" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="journaltitel" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelcustomer" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelname" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="name" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="librarycard" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labellibrarycard" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelissn" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="issn" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="pmid" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelpmid" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="year" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelyear" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelvolumevintage" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelbooklet" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="booklet" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="volumevintage" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelphone" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="phonekonto" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelfax" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="fax" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="adresse" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelsendto" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelclinicinstitutedepartment" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="phone" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="clinicinstitutedepartment" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelpages" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="pages" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelauthorofessay" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="authorofessay" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labeltitleofessay" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="titleofessay" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="notesfromrequestinglibrary" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelnotesfromrequestinglibrary" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="labelendorsementsofdeliveringlibrary" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="footer" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="from" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelfrom" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelto" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="to" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="isil" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="reporttitle" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="signatur" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labeljournaltitel" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="journaltitel" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelcustomer" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelname" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="name" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="librarycard" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labellibrarycard" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelissn" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="issn" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="pmid" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelpmid" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="year" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelyear" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelvolumevintage" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelbooklet" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="booklet" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="volumevintage" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelphone" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="phonekonto" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelfax" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="fax" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="adresse" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelsendto" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelclinicinstitutedepartment" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="phone" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="clinicinstitutedepartment" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelpages" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="pages" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelauthorofessay" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="authorofessay" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labeltitleofessay" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="titleofessay" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="notesfromrequestinglibrary" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelnotesfromrequestinglibrary" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="labelendorsementsofdeliveringlibrary" isForPrompting="false" class="java.lang.String"/>
+  <parameter name="footer" isForPrompting="false" class="java.lang.String"/>
 
-		<background>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</background>
-		<title>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</title>
-		<pageHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</pageHeader>
-		<columnHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</columnHeader>
-		<detail>
-			<band height="802"  isSplitAllowed="true" >
-				<rectangle>
-					<reportElement
-						x="0"
-						y="52"
-						width="185"
-						height="44"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="185"
-						y="52"
-						width="181"
-						height="44"
-						key="rectangle-2"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="366"
-						y="52"
-						width="169"
-						height="44"
-						key="rectangle-3"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="96"
-						width="366"
-						height="66"
-						key="rectangle-4"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="366"
-						y="96"
-						width="169"
-						height="101"
-						key="rectangle-5"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="185"
-						y="162"
-						width="181"
-						height="35"
-						key="rectangle-6"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="162"
-						width="185"
-						height="35"
-						key="rectangle-7"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="197"
-						width="366"
-						height="43"
-						key="rectangle-8"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="366"
-						y="197"
-						width="169"
-						height="93"
-						key="rectangle-9"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="240"
-						width="366"
-						height="50"
-						key="rectangle-10"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="366"
-						y="290"
-						width="169"
-						height="155"
-						key="rectangle-11"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="338"
-						width="366"
-						height="107"
-						key="rectangle-12"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="290"
-						width="366"
-						height="48"
-						key="rectangle-13"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="366"
-						y="445"
-						width="169"
-						height="156"
-						key="rectangle-15"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="0"
-						y="445"
-						width="366"
-						height="156"
-						key="rectangle-16"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="16"
-						width="511"
-						height="28"
-						key="textField"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="16" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{reporttitle}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="3"
-						y="54"
-						width="48"
-						height="16"
-						key="textField"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelfrom}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="187"
-						y="54"
-						width="26"
-						height="16"
-						key="textField"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelto}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement
-						x="370"
-						y="54"
-						width="57"
-						height="16"
-						key="staticText-1"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
-					</textElement>
-				<text><![CDATA[Signatur:]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="3"
-						y="71"
-						width="177"
-						height="25"
-						key="textField-1"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{from}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="213"
-						y="54"
-						width="146"
-						height="42"
-						key="textField-2"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{to}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="70"
-						width="160"
-						height="16"
-						key="textField-3"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{signatur}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="51"
-						y="54"
-						width="93"
-						height="18"
-						key="textField-4"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{isil}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="98"
-						width="278"
-						height="16"
-						key="textField-5"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labeljournaltitel}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="114"
-						width="357"
-						height="48"
-						key="textField-6"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{journaltitel}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="98"
-						width="160"
-						height="16"
-						key="textField-7"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelcustomer}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="121"
-						width="160"
-						height="16"
-						key="textField-8"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelname}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="137"
-						width="160"
-						height="16"
-						key="textField-9"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{name}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="162"
-						width="160"
-						height="16"
-						key="textField-10"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labellibrarycard}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="178"
-						width="160"
-						height="16"
-						key="textField-11"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{librarycard}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="164"
-						width="178"
-						height="16"
-						key="textField-12"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelissn}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="180"
-						width="178"
-						height="16"
-						key="textField-13"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{issn}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="187"
-						y="164"
-						width="172"
-						height="16"
-						key="textField-14"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelpmid}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="187"
-						y="180"
-						width="172"
-						height="16"
-						key="textField-15"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{pmid}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="203"
-						width="111"
-						height="16"
-						key="textField-16"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelyear}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="130"
-						y="203"
-						width="111"
-						height="16"
-						key="textField-17"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelvolumevintage}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="257"
-						y="203"
-						width="102"
-						height="16"
-						key="textField-18"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelbooklet}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="221"
-						width="111"
-						height="16"
-						key="textField-19"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{year}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="130"
-						y="221"
-						width="111"
-						height="16"
-						key="textField-20"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{volumevintage}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="257"
-						y="221"
-						width="102"
-						height="16"
-						key="textField-21"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{booklet}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="292"
-						width="111"
-						height="14"
-						key="textField-22"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelphone}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="303"
-						width="160"
-						height="14"
-						key="textField-23"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{phonekonto}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="318"
-						width="102"
-						height="14"
-						key="textField-24"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelfax}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="330"
-						width="160"
-						height="14"
-						key="textField-25"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{fax}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="359"
-						width="160"
-						height="81"
-						key="textField-26"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{adresse}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="346"
-						width="102"
-						height="14"
-						key="textField-27"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelsendto}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="200"
-						width="160"
-						height="14"
-						key="textField-28"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelclinicinstitutedepartment}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="215"
-						width="165"
-						height="43"
-						key="textField-29"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{clinicinstitutedepartment}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="259"
-						width="160"
-						height="14"
-						key="textField-30"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelphone}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="273"
-						width="160"
-						height="14"
-						key="textField-31"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{phone}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="242"
-						width="111"
-						height="16"
-						key="textField-32"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelpages}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="258"
-						width="357"
-						height="27"
-						key="textField-33"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{pages}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="292"
-						width="255"
-						height="16"
-						key="textField-34"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelauthorofessay}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="308"
-						width="357"
-						height="24"
-						key="textField-35"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{authorofessay}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="359"
-						width="357"
-						height="81"
-						key="textField-36"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{titleofessay}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="340"
-						width="255"
-						height="16"
-						key="textField-37"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labeltitleofessay}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="447"
-						width="160"
-						height="26"
-						key="textField-38"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelnotesfromrequestinglibrary}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="2"
-						y="447"
-						width="357"
-						height="14"
-						key="textField-40"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{labelendorsementsofdeliveringlibrary}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="370"
-						y="473"
-						width="160"
-						height="123"
-						key="textField-41"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" size="11"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{notesfromrequestinglibrary}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="3"
-						y="615"
-						width="527"
-						height="14"
-						key="textField-42"/>
-					<box></box>
-					<textElement>
-						<font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{footer}]]></textFieldExpression>
-				</textField>
-			</band>
-		</detail>
-		<columnFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</columnFooter>
-		<pageFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</pageFooter>
-		<summary>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-		</summary>
+    <background>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </background>
+    <title>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </title>
+    <pageHeader>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </pageHeader>
+    <columnHeader>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </columnHeader>
+    <detail>
+      <band height="802"  isSplitAllowed="true" >
+        <rectangle>
+          <reportElement
+            x="0"
+            y="52"
+            width="185"
+            height="44"
+            key="rectangle-1"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="185"
+            y="52"
+            width="181"
+            height="44"
+            key="rectangle-2"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="366"
+            y="52"
+            width="169"
+            height="44"
+            key="rectangle-3"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="96"
+            width="366"
+            height="66"
+            key="rectangle-4"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="366"
+            y="96"
+            width="169"
+            height="101"
+            key="rectangle-5"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="185"
+            y="162"
+            width="181"
+            height="35"
+            key="rectangle-6"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="162"
+            width="185"
+            height="35"
+            key="rectangle-7"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="197"
+            width="366"
+            height="43"
+            key="rectangle-8"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="366"
+            y="197"
+            width="169"
+            height="93"
+            key="rectangle-9"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="240"
+            width="366"
+            height="50"
+            key="rectangle-10"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="366"
+            y="290"
+            width="169"
+            height="155"
+            key="rectangle-11"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="338"
+            width="366"
+            height="107"
+            key="rectangle-12"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="290"
+            width="366"
+            height="48"
+            key="rectangle-13"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="366"
+            y="445"
+            width="169"
+            height="156"
+            key="rectangle-15"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <rectangle>
+          <reportElement
+            x="0"
+            y="445"
+            width="366"
+            height="156"
+            key="rectangle-16"/>
+          <graphicElement stretchType="NoStretch"/>
+        </rectangle>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="16"
+            width="511"
+            height="28"
+            key="textField"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="16" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{reporttitle}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="3"
+            y="54"
+            width="48"
+            height="16"
+            key="textField"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelfrom}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="187"
+            y="54"
+            width="26"
+            height="16"
+            key="textField"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelto}]]></textFieldExpression>
+        </textField>
+        <staticText>
+          <reportElement
+            x="370"
+            y="54"
+            width="57"
+            height="16"
+            key="staticText-1"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+          </textElement>
+        <text><![CDATA[Signatur:]]></text>
+        </staticText>
+        <textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="3"
+            y="71"
+            width="177"
+            height="25"
+            key="textField-1"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{from}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="213"
+            y="54"
+            width="146"
+            height="42"
+            key="textField-2"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{to}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="70"
+            width="160"
+            height="16"
+            key="textField-3"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{signatur}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="51"
+            y="54"
+            width="93"
+            height="18"
+            key="textField-4"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{isil}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="98"
+            width="278"
+            height="16"
+            key="textField-5"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labeljournaltitel}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="114"
+            width="357"
+            height="48"
+            key="textField-6"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{journaltitel}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="98"
+            width="160"
+            height="16"
+            key="textField-7"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelcustomer}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="121"
+            width="160"
+            height="16"
+            key="textField-8"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelname}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="137"
+            width="160"
+            height="16"
+            key="textField-9"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{name}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="162"
+            width="160"
+            height="16"
+            key="textField-10"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labellibrarycard}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="178"
+            width="160"
+            height="16"
+            key="textField-11"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{librarycard}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="164"
+            width="178"
+            height="16"
+            key="textField-12"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelissn}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="180"
+            width="178"
+            height="16"
+            key="textField-13"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{issn}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="187"
+            y="164"
+            width="172"
+            height="16"
+            key="textField-14"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelpmid}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="187"
+            y="180"
+            width="172"
+            height="16"
+            key="textField-15"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{pmid}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="203"
+            width="111"
+            height="16"
+            key="textField-16"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelyear}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="130"
+            y="203"
+            width="111"
+            height="16"
+            key="textField-17"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelvolumevintage}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="257"
+            y="203"
+            width="102"
+            height="16"
+            key="textField-18"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelbooklet}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="221"
+            width="111"
+            height="16"
+            key="textField-19"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{year}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="130"
+            y="221"
+            width="111"
+            height="16"
+            key="textField-20"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{volumevintage}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="257"
+            y="221"
+            width="102"
+            height="16"
+            key="textField-21"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{booklet}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="292"
+            width="111"
+            height="14"
+            key="textField-22"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelphone}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="303"
+            width="160"
+            height="14"
+            key="textField-23"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{phonekonto}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="318"
+            width="102"
+            height="14"
+            key="textField-24"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelfax}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="330"
+            width="160"
+            height="14"
+            key="textField-25"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{fax}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="359"
+            width="160"
+            height="81"
+            key="textField-26"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{adresse}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="346"
+            width="102"
+            height="14"
+            key="textField-27"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelsendto}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="200"
+            width="160"
+            height="14"
+            key="textField-28"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelclinicinstitutedepartment}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="215"
+            width="165"
+            height="43"
+            key="textField-29"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{clinicinstitutedepartment}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="259"
+            width="160"
+            height="14"
+            key="textField-30"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelphone}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="273"
+            width="160"
+            height="14"
+            key="textField-31"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{phone}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="242"
+            width="111"
+            height="16"
+            key="textField-32"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelpages}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="258"
+            width="357"
+            height="27"
+            key="textField-33"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{pages}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="292"
+            width="255"
+            height="16"
+            key="textField-34"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelauthorofessay}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="308"
+            width="357"
+            height="24"
+            key="textField-35"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{authorofessay}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="359"
+            width="357"
+            height="81"
+            key="textField-36"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{titleofessay}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="340"
+            width="255"
+            height="16"
+            key="textField-37"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labeltitleofessay}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="447"
+            width="160"
+            height="26"
+            key="textField-38"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelnotesfromrequestinglibrary}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="2"
+            y="447"
+            width="357"
+            height="14"
+            key="textField-40"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{labelendorsementsofdeliveringlibrary}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="370"
+            y="473"
+            width="160"
+            height="123"
+            key="textField-41"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" size="11"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{notesfromrequestinglibrary}]]></textFieldExpression>
+        </textField>
+        <textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+          <reportElement
+            x="3"
+            y="615"
+            width="527"
+            height="14"
+            key="textField-42"/>
+          <box></box>
+          <textElement>
+            <font fontName="Arial" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+          </textElement>
+        <textFieldExpression   class="java.lang.String"><![CDATA[$P{footer}]]></textFieldExpression>
+        </textField>
+      </band>
+    </detail>
+    <columnFooter>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </columnFooter>
+    <pageFooter>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </pageFooter>
+    <summary>
+      <band height="0"  isSplitAllowed="true" >
+      </band>
+    </summary>
 </jasperReport>

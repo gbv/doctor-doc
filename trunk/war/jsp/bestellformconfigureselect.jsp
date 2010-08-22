@@ -8,7 +8,7 @@
 <%@ page import="java.util.*" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
@@ -26,10 +26,10 @@
 <div class="content">
 
 <table style="position:absolute; text-align:left; left:<bean:message key="submenupos.konto" />px; z-index:2;">
-	<tr>
-		<td id="submenu" nowrap title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
-		<td id="submenuactive" nowrap title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
-	</tr>
+  <tr>
+    <td id="submenu" nowrap title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
+    <td id="submenuactive" nowrap title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
+  </tr>
 </table>
 
 <br />
@@ -39,26 +39,26 @@
 <p><bean:message key="bestellformconfigureselect.noconfig" /></p>
 <p><bean:message key="bestellformconfigureselect.possibleconfig" /></p>
 <table border="1" cellspacing="0px">
-	<tr>
-		<th id="th-left"><bean:message key="bestellformconfigureselect.zugriff" /></th>
-		<th id="th-left"><bean:message key="bestellformconfigureselect.szenario" /></th>
-	</tr>
-	<tr>
-		<td><bean:message key="bestellformconfigureselect.ip" />&nbsp;</td>
-		<td><bean:message key="bestellformconfigureselect.ip_explain" /></td>
-	</tr>
-	<tr>
-		<td><bean:message key="bestellformconfigureselect.eingeloggt" />&nbsp;</td>
-		<td><bean:message key="bestellformconfigureselect.eingeloggt_explain" /></td>
-	</tr>
-	<tr>
-		<td><bean:message key="bestellformconfigureselect.kkid" />&nbsp;</td>
-		<td><bean:message key="bestellformconfigureselect.kkid_explain" /></td>
-	</tr>
-	<tr>
-		<td><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
-		<td><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
-	</tr>
+  <tr>
+    <th id="th-left"><bean:message key="bestellformconfigureselect.zugriff" /></th>
+    <th id="th-left"><bean:message key="bestellformconfigureselect.szenario" /></th>
+  </tr>
+  <tr>
+    <td><bean:message key="bestellformconfigureselect.ip" />&nbsp;</td>
+    <td><bean:message key="bestellformconfigureselect.ip_explain" /></td>
+  </tr>
+  <tr>
+    <td><bean:message key="bestellformconfigureselect.eingeloggt" />&nbsp;</td>
+    <td><bean:message key="bestellformconfigureselect.eingeloggt_explain" /></td>
+  </tr>
+  <tr>
+    <td><bean:message key="bestellformconfigureselect.kkid" />&nbsp;</td>
+    <td><bean:message key="bestellformconfigureselect.kkid_explain" /></td>
+  </tr>
+  <tr>
+    <td><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
+    <td><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
+  </tr>
 <table>
 
 <p><bean:message key="bestellformconfigureselect.kontakt" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message bundle="systemConfig" key="systemEmail.email"/></a></p>
@@ -77,22 +77,22 @@
 
 <logic:present name="kkid">
 <p>
-	<logic:iterate id="k" name="kkid">
-		<a href="bfconfigure.do?method=modify&id=-2&kennung=<bean:write name="k" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_kkid" />: <bean:write name="k" property="inhalt" /></a><br>
-	</logic:iterate>
+  <logic:iterate id="k" name="kkid">
+    <a href="bfconfigure.do?method=modify&id=-2&kennung=<bean:write name="k" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_kkid" />: <bean:write name="k" property="inhalt" /></a><br>
+  </logic:iterate>
 </p>
 </logic:present>
 
 <logic:present name="bkid">
 <p>
-	<logic:iterate id="b" name="bkid">
-		<a href="bfconfigure.do?method=modify&id=-3&kennung=<bean:write name="b" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_bkid" />: <bean:write name="b" property="inhalt" /></a><br>
-	</logic:iterate>
+  <logic:iterate id="b" name="bkid">
+    <a href="bfconfigure.do?method=modify&id=-3&kennung=<bean:write name="b" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_bkid" />: <bean:write name="b" property="inhalt" /></a><br>
+  </logic:iterate>
 </p>
 </logic:present>
 
 <p><bean:message arg0="<%=appName%>" key="bestellformconfigureselect.sprache" /></p>
- 			
+       
 </div>
 
 

@@ -7,7 +7,7 @@
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
@@ -19,19 +19,19 @@
  <body>
  
 <table border="0" width="100%" id="header_table" cellpadding="0" cellspacing="0">
-	<tr style="background-image:url(img/verlauf.png); background-repeat:repeat-x; ">
-		<td class="logo"><a href="<bean:message bundle="systemConfig" key="server.welcomepage"/>"><img class="logo" src='img/sp.gif' alt='<bean:message bundle="systemConfig" key="application.name"/>'  /></a></td>
-		<td><h1><bean:message bundle="systemConfig" key="application.name"/></h1><p></p>
-		</td>
-		<td class="kontoinfos"><tiles:insert page="import/kontoinfo.jsp" flush="true" /></td>
-    	<td width="20%" style="text-align:right;">
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td colspan="3">
-		</td>
-	</tr>
+  <tr style="background-image:url(img/verlauf.png); background-repeat:repeat-x; ">
+    <td class="logo"><a href="<bean:message bundle="systemConfig" key="server.welcomepage"/>"><img class="logo" src='img/sp.gif' alt='<bean:message bundle="systemConfig" key="application.name"/>'  /></a></td>
+    <td><h1><bean:message bundle="systemConfig" key="application.name"/></h1><p></p>
+    </td>
+    <td class="kontoinfos"><tiles:insert page="import/kontoinfo.jsp" flush="true" /></td>
+      <td width="20%" style="text-align:right;">
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td colspan="3">
+    </td>
+  </tr>
 </table>
 
  

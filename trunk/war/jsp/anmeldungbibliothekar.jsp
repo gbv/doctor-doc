@@ -4,7 +4,7 @@
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
@@ -22,26 +22,26 @@
 <div class="content">
 <br />
 
-      				
+              
 <h3><bean:message key="register.header" /></h3>
 
   <html:form action="anmeldungbibliothekar_.do" method="post" focus="anrede">
   <table>
     <tr><td><bean:message key="register.step2" /></td><td><bean:message key="register.step2_text" /></td></tr>
     
-	<logic:present name="errormessage" property="error">
-		<bean:define id="em"><bean:write name="errormessage" property="error"/></bean:define>
-		<tr><td colspan="2"><font color=red><bean:message key="<%=em%>" /></font></td></tr>
-	</logic:present>    
-  	  	
+  <logic:present name="errormessage" property="error">
+    <bean:define id="em"><bean:write name="errormessage" property="error"/></bean:define>
+    <tr><td colspan="2"><font color=red><bean:message key="<%=em%>" /></font></td></tr>
+  </logic:present>    
+        
     <tr>
       <td><bean:message key="adressen.anrede" /></td>
       <td><select name="anrede" size="1">
-    			<option value="Frau" ><bean:message key="adressen.anrede_frau" /></option>
-    			<option value="Herr" ><bean:message key="adressen.anrede_herr" /></option>
-    			<font color="red"><html:errors property="anrede" /></font>
-  			</select>	
-  		</td>
+          <option value="Frau" ><bean:message key="adressen.anrede_frau" /></option>
+          <option value="Herr" ><bean:message key="adressen.anrede_herr" /></option>
+          <font color="red"><html:errors property="anrede" /></font>
+        </select>  
+      </td>
     </tr>
     <tr>
       <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text"<logic:present name="userform" property="vorname"> value="<bean:write name="userform" property="vorname" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="vorname" /></font></td>
@@ -59,10 +59,10 @@
       <td><b><bean:message arg0="<%=appName%>" key="register.dd_pw" />*</b>&nbsp;</td><td><html:password property="password" size="50" maxlength="50" /> <bean:message key="register.dd_pw_min" /></td>
     </tr>
     <tr>
-    	<td><br /></td>
+      <td><br /></td>
     </tr>
     <tr>
-    	<td><b>*<bean:message key="modifykonto.required" /></b></td><td></td>
+      <td><b>*<bean:message key="modifykonto.required" /></b></td><td></td>
     </tr>    
      
      <input name="institut" type="hidden" value="<logic:present name="kontoform" property="biblioname"><bean:write name="kontoform" property="biblioname" /></logic:present>" />
@@ -72,12 +72,12 @@
      <input name="ort" type="hidden" value="<logic:present name="kontoform" property="ort"><bean:write name="kontoform" property="ort" /></logic:present>" />
      <input name="land" type="hidden" value="<logic:present name="kontoform" property="land"><bean:write name="kontoform" property="land" /></logic:present>" />
     
-    	<tr>
-    	  <td><br><input type="submit" value="<bean:message key="register.submit" />"></input></br></td>   	  
+      <tr>
+        <td><br><input type="submit" value="<bean:message key="register.submit" />"></input></br></td>       
           <input name="method" type="hidden" value="addNewBibliothekar">
         </tr>
   </table>
- 			
+       
   </html:form>
   
   <tiles:insert page="import/footer.jsp" flush="true" />
