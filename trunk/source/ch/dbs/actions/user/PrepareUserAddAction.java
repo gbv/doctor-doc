@@ -43,33 +43,33 @@ public final class PrepareUserAddAction extends Action {
     public ActionForward execute(ActionMapping mp, ActionForm form,
             HttpServletRequest rq, HttpServletResponse rp) {
 
-      UserForm uf = (UserForm) form;
-      Countries countriesInstance = new Countries();
-      Konto kontoInstance = new Konto();
-      UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // nach Login
-      if (ufLoginAction != null) {
-        uf = ufLoginAction;
-      }
-      String forward = "failure";
-      Text cn = new Text();
-      Auth auth = new Auth();
+        UserForm uf = (UserForm) form;
+        Countries countriesInstance = new Countries();
+        Konto kontoInstance = new Konto();
+        UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // nach Login
+        if (ufLoginAction != null) {
+            uf = ufLoginAction;
+        }
+        String forward = "failure";
+        Text cn = new Text();
+        Auth auth = new Auth();
 
 
-      if (auth.isLogin(rq)) {
-      // bereits eingeloggt => direkt zu modifykontousers.do
-        forward = "adduser";
-        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        if (auth.isLogin(rq)) {
+            // bereits eingeloggt => direkt zu modifykontousers.do
+            forward = "adduser";
+            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-        List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+            List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
             ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
 
             for (Konto k : allPossKontos) {
-              KontoForm kf = new KontoForm();
-              kf.setKonto(k);
-              lkf.add(kf);
+                KontoForm kf = new KontoForm();
+                kf.setKonto(k);
+                lkf.add(kf);
             }
 
-            List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
 
             AbstractBenutzer b = new AbstractBenutzer(uf);
             uf.setUser(b);
@@ -80,14 +80,14 @@ public final class PrepareUserAddAction extends Action {
             ui.setCountries(allPossCountries);
             rq.setAttribute("ui", ui);
 
-      } else {
-      // nicht eingeloggt => zu LoginAction
-        forward = "login";
-      }
+        } else {
+            // nicht eingeloggt => zu LoginAction
+            forward = "login";
+        }
 
-      rq.setAttribute("userform", uf);
-      cn.close();
-      return mp.findForward(forward);
+        rq.setAttribute("userform", uf);
+        cn.close();
+        return mp.findForward(forward);
 
     }
 

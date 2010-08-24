@@ -100,7 +100,7 @@ public class Issn extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<ISSN> issn
      */
-    public ArrayList<String> getAllIssnsFromOneIssn(String issn, Connection cn) {
+    public ArrayList<String> getAllIssnsFromOneIssn(String iss, Connection cn) {
 
         ArrayList<String> is = new ArrayList<String>();
 
@@ -109,7 +109,7 @@ public class Issn extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT DISTINCT b.issn FROM `issn` AS a JOIN issn AS b "
                     + "ON a.identifier_id = b.identifier_id AND a.identifier = b.identifier WHERE a.issn = ?");
-            pstmt.setString(1, issn);
+            pstmt.setString(1, iss);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -147,7 +147,7 @@ public class Issn extends AbstractIdEntity {
      */
     public ArrayList<String> getAllIssnsFromOneIdentifierID(String ident_id, Connection cn) {
 
-        ArrayList<String> issn = new ArrayList<String>();
+        ArrayList<String> iss = new ArrayList<String>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -158,7 +158,7 @@ public class Issn extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                issn.add(rs.getString("issn"));
+                iss.add(rs.getString("issn"));
             }
 
         } catch (Exception e) {
@@ -179,7 +179,7 @@ public class Issn extends AbstractIdEntity {
                 }
             }
         }
-        return issn;
+        return iss;
     }
 
     /**

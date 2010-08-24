@@ -32,366 +32,366 @@ import org.grlea.log.SimpleLogger;
 
 public abstract class AbstractReadSystemConfigurations {
 
-  private static final SimpleLogger LOG = new SimpleLogger(AbstractReadSystemConfigurations.class);
+    private static final SimpleLogger LOG = new SimpleLogger(AbstractReadSystemConfigurations.class);
 
-  static final String SYSTEM_TIMEZONE = readSystemTimezone();
+    static final String SYSTEM_TIMEZONE = readSystemTimezone();
 
-  static final String SYSTEM_EMAIL = readSystemEmail();
-  static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
-  static final String SYSTEM_EMAIL_ACCOUNTNAME = readSystemEmailAccountname();
-  static final String SYSTEM_EMAIL_PASSWORD = readSystemEmailPassword();
-  static final String ERROR_EMAIL = readErrorEmail();
+    static final String SYSTEM_EMAIL = readSystemEmail();
+    static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
+    static final String SYSTEM_EMAIL_ACCOUNTNAME = readSystemEmailAccountname();
+    static final String SYSTEM_EMAIL_PASSWORD = readSystemEmailPassword();
+    static final String ERROR_EMAIL = readErrorEmail();
 
-  static final String DATABASE_SERVERADDRESS = readDatabaseServerAddress();
-  static final String DATABASE_NAME = readDatabaseName();
-  static final String DATABASE_USER = readDatabaseUser();
-  static final String DATABASE_PASSWORD = readDatabasePassword();
-  static final boolean DATABASE_POOLED_CONNECTIONS = readDatabasePooledConnections();
+    static final String DATABASE_SERVERADDRESS = readDatabaseServerAddress();
+    static final String DATABASE_NAME = readDatabaseName();
+    static final String DATABASE_USER = readDatabaseUser();
+    static final String DATABASE_PASSWORD = readDatabasePassword();
+    static final boolean DATABASE_POOLED_CONNECTIONS = readDatabasePooledConnections();
 
-  static final String SERVER_WELCOMEPAGE = readServerWelcomepage();
-  static final String SERVER_INSTALLATION = readServerInstallation();
-  static final String APPLICATION_NAME = readApplicationName();
+    static final String SERVER_WELCOMEPAGE = readServerWelcomepage();
+    static final String SERVER_INSTALLATION = readServerInstallation();
+    static final String APPLICATION_NAME = readApplicationName();
 
-  static final boolean ALLOW_REGISTER_LIBRARY_ACCOUNTS = readAllowRegisterLibraryAccounts();
-  static final boolean ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH = readAllowPatronAutomaticGoogleSearch();
-  static final boolean ACTIVATE_GTC = readActivateGTC();
+    static final boolean ALLOW_REGISTER_LIBRARY_ACCOUNTS = readAllowRegisterLibraryAccounts();
+    static final boolean ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH = readAllowPatronAutomaticGoogleSearch();
+    static final boolean ACTIVATE_GTC = readActivateGTC();
 
-  static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
-  static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
+    static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
+    static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
 
-  static final boolean SEARCH_CARELIT = searchCarelit();
-  static final boolean USE_DAIA = readUseDaia();
-  static final String DAIA_HOST = readDaiaHost();
+    static final boolean SEARCH_CARELIT = searchCarelit();
+    static final boolean USE_DAIA = readUseDaia();
+    static final String DAIA_HOST = readDaiaHost();
 
-  private static final String readSystemTimezone() {
+    private static String readSystemTimezone() {
 
-    String systemTimezone = "";
+        String systemTimezone = "";
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      systemTimezone = config.getString("system.timezone");
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            systemTimezone = config.getString("system.timezone");
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
+
+        return systemTimezone;
     }
 
-    return systemTimezone;
-  }
+    private static String readSystemEmail() {
 
-  private static final String readSystemEmail() {
+        String systemEmail = "";
 
-    String systemEmail = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            systemEmail = config.getString("systemEmail.email");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      systemEmail = config.getString("systemEmail.email");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return systemEmail;
     }
 
-    return systemEmail;
-  }
+    private static String readSystemEmailHost() {
 
-  private static final String readSystemEmailHost() {
+        String host = "";
 
-    String host = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            host = config.getString("systemEmail.host");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      host = config.getString("systemEmail.host");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return host;
     }
 
-    return host;
-  }
+    private static String readSystemEmailAccountname() {
 
-  private static final String readSystemEmailAccountname() {
+        String accountname = "";
 
-    String accountname = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            accountname = config.getString("systemEmail.accountname");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      accountname = config.getString("systemEmail.accountname");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return accountname;
     }
 
-    return accountname;
-  }
+    private static String readSystemEmailPassword() {
 
-  private static final String readSystemEmailPassword() {
+        String password = "";
 
-    String password = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            password = config.getString("systemEmail.password");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      password = config.getString("systemEmail.password");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return password;
     }
 
-    return password;
-  }
+    private static String readErrorEmail() {
 
-  private static final String readErrorEmail() {
+        String errorEmail = "";
 
-    String errorEmail = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            errorEmail = config.getString("errorEmail.email");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      errorEmail = config.getString("errorEmail.email");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return errorEmail;
     }
 
-    return errorEmail;
-  }
+    private static String readDatabaseServerAddress() {
 
-  private static final String readDatabaseServerAddress() {
+        String databaseServerAdress = "";
 
-    String databaseServerAdress = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            databaseServerAdress = config.getString("mysql.serveraddress");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      databaseServerAdress = config.getString("mysql.serveraddress");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return databaseServerAdress;
     }
 
-    return databaseServerAdress;
-  }
+    private static String readDatabaseName() {
 
-  private static final String readDatabaseName() {
+        String databaseName = "";
 
-    String databaseName = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            databaseName = config.getString("mysql.databaseName");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      databaseName = config.getString("mysql.databaseName");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return databaseName;
     }
 
-    return databaseName;
-  }
+    private static String readDatabaseUser() {
 
-  private static final String readDatabaseUser() {
+        String databaseUser = "";
 
-    String databaseUser = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            databaseUser = config.getString("mysql.user");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      databaseUser = config.getString("mysql.user");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return databaseUser;
     }
 
-    return databaseUser;
-  }
+    private static String readDatabasePassword() {
 
-  private static final String readDatabasePassword() {
+        String databasePassword = "";
 
-    String databasePassword = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            databasePassword = config.getString("mysql.password");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      databasePassword = config.getString("mysql.password");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return databasePassword;
     }
 
-    return databasePassword;
-  }
+    private static boolean readDatabasePooledConnections() {
 
-  private static final boolean readDatabasePooledConnections() {
+        boolean activated = false;
 
-    boolean activated = false;
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            activated = config.getBoolean("mysql.pooledConnections");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      activated = config.getBoolean("mysql.pooledConnections");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return activated;
     }
 
-    return activated;
-  }
+    private static String readServerWelcomepage() {
 
-  private static final String readServerWelcomepage() {
+        String serverAddress = "";
 
-    String serverAddress = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            serverAddress = config.getString("server.welcomepage");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      serverAddress = config.getString("server.welcomepage");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return serverAddress;
     }
 
-    return serverAddress;
-  }
+    private static String readServerInstallation() {
 
-  private static final String readServerInstallation() {
+        String serverInstallation = "";
 
-    String serverInstallation = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            serverInstallation = config.getString("server.installation");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      serverInstallation = config.getString("server.installation");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return serverInstallation;
     }
 
-    return serverInstallation;
-  }
+    private static String readApplicationName() {
 
-  private static final String readApplicationName() {
+        String applicationName = "";
 
-    String applicationName = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            applicationName = config.getString("application.name");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      applicationName = config.getString("application.name");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return applicationName;
     }
 
-    return applicationName;
-  }
+    private static boolean readAllowRegisterLibraryAccounts() {
 
-private static final boolean readAllowRegisterLibraryAccounts() {
+        boolean allow = false;
 
-    boolean allow = false;
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            allow = config.getBoolean("allow.registerLibraryAccounts");
 
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      allow = config.getBoolean("allow.registerLibraryAccounts");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return allow;
     }
 
-    return allow;
-  }
+    private static boolean readAllowPatronAutomaticGoogleSearch() {
 
-private static final boolean readAllowPatronAutomaticGoogleSearch() {
+        boolean allow = false;
 
-  boolean allow = false;
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            allow = config.getBoolean("allow.patronAutomaticGoogleSearch");
 
-  try {
-    Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-    allow = config.getBoolean("allow.patronAutomaticGoogleSearch");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-  } catch (ConfigurationException e) {
-    LOG.error(e.toString());
-  }
-
-  return allow;
-}
-
-private static final boolean readActivateGTC() {
-
-  boolean activate = false;
-
-  try {
-    Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-    activate = config.getBoolean("activate.gtc");
-
-  } catch (ConfigurationException e) {
-    LOG.error(e.toString());
-  }
-
-  return activate;
-}
-
-private static final boolean readAnonymizationActivated() {
-
-    boolean activated = false;
-
-    try {
-      Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-      activated = config.getBoolean("anonymization.activated");
-
-    } catch (ConfigurationException e) {
-      LOG.error(e.toString());
+        return allow;
     }
 
-    return activated;
-  }
+    private static boolean readActivateGTC() {
 
-private static final int readAnonymizationAfterMonths() {
+        boolean activate = false;
 
-  int months = 3; // Default, if in the configuration file a not valid value was specified
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            activate = config.getBoolean("activate.gtc");
 
-  try {
-    Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-    months = config.getInt("anonymization.after.months");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-  } catch (ConfigurationException e) {
-    LOG.error(e.toString());
-  }
+        return activate;
+    }
 
-  return months;
-}
+    private static boolean readAnonymizationActivated() {
 
-private static final boolean searchCarelit() {
+        boolean activated = false;
 
-  boolean searchCarelit = false;
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            activated = config.getBoolean("anonymization.activated");
 
-  try {
-    Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-    searchCarelit = config.getBoolean("searchCarelit");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-  } catch (ConfigurationException e) {
-    LOG.error(e.toString());
-  }
+        return activated;
+    }
 
-  return searchCarelit;
-}
+    private static int readAnonymizationAfterMonths() {
 
-private static final boolean readUseDaia() {
+        int months = 3; // Default, if in the configuration file a not valid value was specified
 
-  boolean useDaia = false;
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            months = config.getInt("anonymization.after.months");
 
-  try {
-    Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-    useDaia = config.getBoolean("useDaia");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-  } catch (ConfigurationException e) {
-    LOG.error(e.toString());
-  }
+        return months;
+    }
 
-  return useDaia;
-}
+    private static boolean searchCarelit() {
 
-private static final String readDaiaHost() {
+        boolean searchCarelit = false;
 
-  String daiaHost = "";
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            searchCarelit = config.getBoolean("searchCarelit");
 
-  try {
-    Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
-    daiaHost = config.getString("daiaHost");
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
 
-  } catch (ConfigurationException e) {
-    LOG.error(e.toString());
-  }
+        return searchCarelit;
+    }
 
-  return daiaHost;
-}
+    private static boolean readUseDaia() {
+
+        boolean useDaia = false;
+
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            useDaia = config.getBoolean("useDaia");
+
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
+
+        return useDaia;
+    }
+
+    private static String readDaiaHost() {
+
+        String daiaHost = "";
+
+        try {
+            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            daiaHost = config.getString("daiaHost");
+
+        } catch (ConfigurationException e) {
+            LOG.error(e.toString());
+        }
+
+        return daiaHost;
+    }
 
 
 }

@@ -31,20 +31,20 @@ public final class Message extends ActionForm {
     public Message() {
 
     }
-    public Message(String message, String link) {
-        this.message = message;
-        this.link = link;
+    public Message(String msg, String mLink) {
+        this.message = msg;
+        this.link = mLink;
     }
 
-    public Message(String message, String systemMessage, String link) {
-        this.message = message;
-        this.systemMessage = systemMessage;
-        this.link = link;
+    public Message(String msg, String systemMsg, String mLink) {
+        this.message = msg;
+        this.systemMessage = systemMsg;
+        this.link = mLink;
     }
 
 
-    public Message(String message) {
-        this.message = message;
+    public Message(String msg) {
+        this.message = msg;
     }
     public String getMessage() {
         return message;

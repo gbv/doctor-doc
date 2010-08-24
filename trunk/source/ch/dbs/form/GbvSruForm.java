@@ -100,7 +100,7 @@ public class GbvSruForm extends ActionForm {
     private String verknuepfung_groessere_einheit_039B_multipel; // *
     private String verknuepfung_kleinere_einheit_039C_multipel; // *
     private String verknuepfung_horizontal_039D_multipel; // *
-    private int anzahl_039D = 0; // Kontroller für die Anzahl Verknüpfungen
+    private int anzahl_039D; // Kontroller für die Anzahl Verknüpfungen
     private String verknuepfung_zdbid_horizontal;
     private String verknuepfung_zdbid_groesser;
     private String verknuepfung_ppn_horizontal;

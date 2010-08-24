@@ -64,6 +64,9 @@ import ch.dbs.form.UserInfo;
 public final class KontoAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(KontoAction.class);
+    // This link is used to check if, the GBV credentials are valid
+    private static final String GBV_LINK = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=";
+    private static final String GBV_REDIRECT =  "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2FCOPY%3FPPN%3D185280552%26LANGCODE%3DDU";
 
     /**
      * Hinzufügen eines neuen Benutzers vorbereiten
@@ -83,7 +86,7 @@ public final class KontoAction extends DispatchAction {
         KontoForm kf = new KontoForm();
         Countries countriesInstance = new Countries();
 
-        List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
         kf.setCountries(allPossCountries);
         forward = "success";
         rq.setAttribute("kontoform", kf);
@@ -133,10 +136,12 @@ public final class KontoAction extends DispatchAction {
 
                 // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
                 if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
-                    String gbvlink = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
-                        + kf.getGbvbenutzername() + "&PASSWORD=" + kf.getGbvpasswort()
-                        + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2FCOPY%3FPPN%3D185280552%26LANGCODE%3DDU";
-                    gbvthread.setLink(gbvlink);
+                    StringBuffer gbvLink = new StringBuffer(GBV_LINK);
+                    gbvLink.append(kf.getGbvbenutzername());
+                    gbvLink.append("&PASSWORD=");
+                    gbvLink.append(kf.getGbvpasswort());
+                    gbvLink.append(GBV_REDIRECT);
+                    gbvthread.setLink(gbvLink.toString());
                     gbvcontent = executor.submit(gbvthread);
                 }
 
@@ -168,7 +173,7 @@ public final class KontoAction extends DispatchAction {
                         TimeZones tz = new TimeZones();
                         TreeSet<String> setTZ = tz.getTimeZonesAsString();
                         rq.setAttribute("timezones", setTZ);
-                        List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                 .getConnection());
                         kf.setCountries(allPossCountries);
                         rq.setAttribute("kontoform", kf);
@@ -197,7 +202,7 @@ public final class KontoAction extends DispatchAction {
                 TreeSet<String> setTZ = tz.getTimeZonesAsString();
                 rq.setAttribute("timezones", setTZ);
 
-                List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
                 kf.setCountries(allPossCountries);
 
                 rq.setAttribute("kontoform", kf);
@@ -211,7 +216,7 @@ public final class KontoAction extends DispatchAction {
             TreeSet<String> setTZ = tz.getTimeZonesAsString();
             rq.setAttribute("timezones", setTZ);
 
-            List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
 
             rq.setAttribute("kontoform", kf);
@@ -565,7 +570,7 @@ public final class KontoAction extends DispatchAction {
             rq.setAttribute("errormessage", em);
         }
 
-        List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
         kf.setCountries(allPossCountries);
 
         rq.setAttribute("kontoform", kf);
@@ -613,10 +618,12 @@ public final class KontoAction extends DispatchAction {
 
                         // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
                         if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
-                            String gbvlink = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
-                                + kf.getGbvbenutzername() + "&PASSWORD=" + kf.getGbvpasswort()
-                                + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2FCOPY%3FPPN%3D185280552%26LANGCODE%3DDU";
-                            gbvthread.setLink(gbvlink);
+                            StringBuffer gbvLink = new StringBuffer(GBV_LINK);
+                            gbvLink.append(kf.getGbvbenutzername());
+                            gbvLink.append("&PASSWORD=");
+                            gbvLink.append(kf.getGbvpasswort());
+                            gbvLink.append(GBV_REDIRECT);
+                            gbvthread.setLink(gbvLink.toString());
                             gbvcontent = executor.submit(gbvthread);
                         }
 
@@ -636,7 +643,7 @@ public final class KontoAction extends DispatchAction {
                                     TimeZones tz = new TimeZones();
                                     TreeSet<String> setTZ = tz.getTimeZonesAsString();
                                     rq.setAttribute("timezones", setTZ);
-                                    List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                                    List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                             .getConnection());
                                     kf.setCountries(allPossCountries);
                                 }
@@ -647,7 +654,7 @@ public final class KontoAction extends DispatchAction {
                                 TimeZones tz = new TimeZones();
                                 TreeSet<String> setTZ = tz.getTimeZonesAsString();
                                 rq.setAttribute("timezones", setTZ);
-                                List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                                List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                         .getConnection());
                                 kf.setCountries(allPossCountries);
                             } catch (Exception e) {
@@ -766,7 +773,7 @@ public final class KontoAction extends DispatchAction {
                         TimeZones tz = new TimeZones();
                         TreeSet<String> setTZ = tz.getTimeZonesAsString();
                         rq.setAttribute("timezones", setTZ);
-                        List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                 .getConnection());
                         kf.setCountries(allPossCountries);
                     }
@@ -777,7 +784,7 @@ public final class KontoAction extends DispatchAction {
                     TimeZones tz = new TimeZones();
                     TreeSet<String> setTZ = tz.getTimeZonesAsString();
                     rq.setAttribute("timezones", setTZ);
-                    List <Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
                     kf.setCountries(allPossCountries);
                 }
 

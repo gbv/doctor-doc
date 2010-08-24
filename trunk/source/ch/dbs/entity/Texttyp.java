@@ -82,14 +82,14 @@ public class Texttyp extends AbstractIdEntity {
   /**
    * Erstellt einen Texttyp anhand seines Inhaltes
    * @param cn
-   * @param inhalt
+   * @param tInhalt
    */
-  public Texttyp(String inhalt, Connection cn) {
+  public Texttyp(String tInhalt, Connection cn) {
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     try {
         pstmt = cn.prepareStatement("SELECT * FROM `texttyp` WHERE `inhalt`=?");
-        pstmt.setString(1, inhalt);
+        pstmt.setString(1, tInhalt);
         rs = pstmt.executeQuery();
         while (rs.next()) {
               this.setId(rs.getLong("TYID"));

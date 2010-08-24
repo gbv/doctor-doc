@@ -66,7 +66,7 @@ public class Lieferanten extends AbstractIdEntity {
         this.setLand_allgemein(rs.getBoolean("allgemein"));
     }
 
-    public ArrayList<Lieferanten> getListForKontoAndCountry(String land, Long kid, Connection cn) {
+    public ArrayList<Lieferanten> getListForKontoAndCountry(String land, Long kId, Connection cn) {
 
         if (land != null) {
             if (land.equals("Schweiz")) { land = "CH"; }
@@ -84,7 +84,7 @@ public class Lieferanten extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? OR `allgemein`='1' OR `"
                     + land + "`='1' ORDER BY siegel ASC, lieferant ASC");
-            pstmt.setLong(1, kid);
+            pstmt.setLong(1, kId);
 
             rs = pstmt.executeQuery();
 
@@ -115,7 +115,7 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten getLieferantFromName(String name, Connection cn) {
+    public Lieferanten getLieferantFromName(String lName, Connection cn) {
 
         Lieferanten l = new Lieferanten();
 
@@ -123,7 +123,7 @@ public class Lieferanten extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `lieferant`=?");
-            pstmt.setString(1, name);
+            pstmt.setString(1, lName);
 
             rs = pstmt.executeQuery();
 
@@ -154,7 +154,7 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten getLieferantFromLid(String lid, Connection cn) {
+    public Lieferanten getLieferantFromLid(String lId, Connection cn) {
 
         Lieferanten l = new Lieferanten();
 
@@ -162,7 +162,7 @@ public class Lieferanten extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `LID`=?");
-            pstmt.setLong(1, Long.valueOf(lid));
+            pstmt.setLong(1, Long.valueOf(lId));
 
             rs = pstmt.executeQuery();
 

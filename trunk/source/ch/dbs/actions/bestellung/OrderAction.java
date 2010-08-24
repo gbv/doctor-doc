@@ -640,7 +640,7 @@ public final class OrderAction extends DispatchAction {
                         ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelEncoded,
                                 artikeltitelEncoded, pageForm, concurrentCopyZeitschriftentitel);
                         ExecutorService executor = Executors.newCachedThreadPool();
-                        Future<ArrayList <JournalDetails>> journalseekResult = null;
+                        Future<ArrayList<JournalDetails>> journalseekResult = null;
                         boolean jsThread = false;
 
                         if ((pageForm.getIssn().length() == 0)
@@ -985,8 +985,8 @@ public final class OrderAction extends DispatchAction {
                         && content.contains("warpto")) {
                     // Zeitschriftentitel extrahieren
                     int start = content.indexOf("warpto");
-                    String zeitschriftentitelRB = content.substring((content.indexOf(">", start) + 1),
-                            (content.indexOf("<", start)));
+                    String zeitschriftentitelRB = content.substring(content.indexOf(">", start) + 1,
+                            content.indexOf("<", start));
                     pageForm.setZeitschriftentitel(zeitschriftentitelRB);
                 }
 
@@ -1374,7 +1374,7 @@ public final class OrderAction extends DispatchAction {
 
                     String issn = getIssnRegensburg(linkRB);
 
-                    if (issn != "") { // nur Treffer mit ISSN zulassen
+                    if (!issn.equals("")) { // nur Treffer mit ISSN zulassen
 
                         JournalDetails jdRB = new JournalDetails();
                         jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
@@ -2017,7 +2017,7 @@ public final class OrderAction extends DispatchAction {
             try {
 
                 int start = content.indexOf("warpto");
-                link = "http://ezb.uni-regensburg.de/ezeit/" + content.substring(start, (content.indexOf("\"", start)));
+                link = "http://ezb.uni-regensburg.de/ezeit/" + content.substring(start, content.indexOf("\"", start));
 
             } catch (Exception e) {
                 LOG.error("getOnlineLinkFromEzbVascoda warpto in OrderAction: " + e.toString() + "\012" + content);

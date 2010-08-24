@@ -57,15 +57,15 @@ public class Fax extends AbstractIdEntity {
      * @param the popfaxid
      * @return a {@link Fax}
      */
-    public Fax getFax(String popfaxid, String kid) {
+    public Fax getFax(String popfaxId, String kId) {
         DBConn cn = new DBConn();
         Fax f = new Fax();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.getConnection().prepareStatement("SELECT * FROM fax WHERE popfaxid = ? AND KID = ?");
-            pstmt.setString(1, popfaxid);
-            pstmt.setString(2, kid);
+            pstmt.setString(1, popfaxId);
+            pstmt.setString(2, kId);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -175,16 +175,16 @@ public class Fax extends AbstractIdEntity {
      * Löscht alle Einträge in der DB der entsprechenden popfaxid.
      *
      * @param cn
-     * @param popfaxid
+     * @param popfaxId
      * @return rowsdeleted Anzahl gelöschter Einträge (Zeilen)
      */
-    public int deletePopfaxId(Connection cn, String popfaxid) {
+    public int deletePopfaxId(Connection cn, String popfaxId) {
 
         int rowsdeleted = 0;
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE FROM fax WHERE popfaxid = ?");
-            pstmt.setString(1, popfaxid);
+            pstmt.setString(1, popfaxId);
 
             rowsdeleted = pstmt.executeUpdate();
 

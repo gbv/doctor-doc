@@ -135,7 +135,9 @@ public final class OrderReports extends DispatchAction {
 
                     }
 
-                    Collection<ConcurrentHashMap<String, String>> al = new ArrayList<ConcurrentHashMap<String, String>>();
+                    Collection<ConcurrentHashMap<String, String>> al =
+                        new ArrayList<ConcurrentHashMap<String, String>>();
+
                     ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
                     tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
                     for (Bestellungen order : orders) {

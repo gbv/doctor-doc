@@ -34,8 +34,8 @@ public class ThreadedWebcontent implements Callable<String> {
     public ThreadedWebcontent() {
       }
 
-    public ThreadedWebcontent(String link) {
-      this.link = link;
+    public ThreadedWebcontent(String threadLink) {
+      this.link = threadLink;
     }
     public String call() {
       Http http = new Http();

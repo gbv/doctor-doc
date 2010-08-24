@@ -154,15 +154,15 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param Text lieferant, Long kid
      */
-    private Long getDefaultPreisID(Long lid, Long kid, Connection cn) {
+    private Long getDefaultPreisID(Long lId, Long kId, Connection cn) {
         Long dpid = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT DPID FROM `default_preise` WHERE `lid`=? AND `KID`=?");
-            pstmt.setString(1, lid.toString());
-            pstmt.setString(2, kid.toString());
+            pstmt.setString(1, lId.toString());
+            pstmt.setString(2, kId.toString());
 
             rs = pstmt.executeQuery();
 
@@ -196,14 +196,14 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param String lieferant Long kid
      */
-    public DefaultPreis getDefaultPreis(String lieferant, Long kid, Connection cn) {
+    public DefaultPreis getDefaultPreis(String lieferant, Long kId, Connection cn) {
         DefaultPreis dp = new DefaultPreis();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `default_preise` WHERE `KID`=? AND `bezeichnung`=?");
-            pstmt.setString(1, kid.toString());
+            pstmt.setString(1, kId.toString());
             pstmt.setString(2, lieferant);
 
             rs = pstmt.executeQuery();
@@ -243,7 +243,7 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param Long kid
      */
-    public List<DefaultPreis> getAllKontoDefaultPreise(Long kid, Connection cn) {
+    public List<DefaultPreis> getAllKontoDefaultPreise(Long kId, Connection cn) {
         ArrayList<DefaultPreis> list = new ArrayList<DefaultPreis>();
         DefaultPreis dp;
 
@@ -251,7 +251,7 @@ public class DefaultPreis extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `default_preise` WHERE `KID`=?");
-            pstmt.setString(1, kid.toString());
+            pstmt.setString(1, kId.toString());
 
             rs = pstmt.executeQuery();
 

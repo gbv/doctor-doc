@@ -50,7 +50,7 @@ public class Billing extends AbstractIdEntity {
     private String rechnungsnummer;
     private Date rechnungsdatum;
     private Date zahlungseingang;
-    private boolean storniert = false;
+    private boolean storniert;
 
     public Billing() {
     }
@@ -58,16 +58,16 @@ public class Billing extends AbstractIdEntity {
     /**
      * Erstellt für ein Konto ein Rechnungsobjekt
      * @param k Konto
-     * @param rechnungsgrund
-     * @param betrag
-     * @param waehrung
+     * @param invoiceReason
+     * @param betr
+     * @param waehr
      */
-    public Billing(Konto k, Text rechnungsgrund, double betrag, String waehrung) {
+    public Billing(Konto k, Text invoiceReason, double betr, String waehr) {
         this.konto = k;
-        this.rechnungsgrund = rechnungsgrund;
+        this.rechnungsgrund = invoiceReason;
         this.rechnungsnummer = generateBillingNumber(k);
-        this.betrag = betrag;
-        this.waehrung = waehrung;
+        this.betrag = betr;
+        this.waehrung = waehr;
         this.rechnungsdatum = new Date(Calendar.getInstance().getTimeInMillis());
     }
 

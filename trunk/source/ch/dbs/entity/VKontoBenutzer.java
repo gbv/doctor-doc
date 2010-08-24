@@ -50,15 +50,15 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @return boolean success
      *
      */
-    public boolean deleteSingleKontoEntry(AbstractBenutzer u, Konto k, Connection cn) {
+    public boolean deleteSingleKontoEntry(AbstractBenutzer user, Konto k, Connection cn) {
 
         boolean success = false;
 
-        if (u != null && k != null) {
+        if (user != null && k != null) {
             PreparedStatement pstmt = null;
             try {
                 pstmt = cn.prepareStatement("DELETE FROM `v_konto_benutzer` WHERE `UID` =? and `KID` =?");
-                pstmt.setLong(1, u.getId());
+                pstmt.setLong(1, user.getId());
                 pstmt.setLong(2, k.getId());
                 pstmt.executeUpdate();
                 success = true;
@@ -85,11 +85,11 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @param AbstractBenutzer
      * @param Connection cn
      */
-    public void deleteAllKontoEntries(AbstractBenutzer u, Connection cn) {
+    public void deleteAllKontoEntries(AbstractBenutzer user, Connection cn) {
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE FROM `v_konto_benutzer` WHERE `UID` =?");
-            pstmt.setLong(1, u.getId());
+            pstmt.setLong(1, user.getId());
             pstmt.executeUpdate();
 
         } catch (Exception e) {
@@ -109,16 +109,16 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * Erstell eine Konto-Benutzer Verknüpfung
      *
      */
-    public boolean save(AbstractBenutzer u, Konto k, Connection cn) {
+    public boolean save(AbstractBenutzer user, Konto k, Connection cn) {
 
         boolean success = false;
 
-        if (u != null && k != null) {
+        if (user != null && k != null) {
             PreparedStatement pstmt = null;
             try {
                 pstmt = cn.prepareStatement("INSERT INTO `v_konto_benutzer` (`UID` , "
                         + "`KID`) VALUES (?, ?)");
-                pstmt.setLong(1, u.getId());
+                pstmt.setLong(1, user.getId());
                 pstmt.setLong(2, k.getId());
                 pstmt.executeUpdate();
                 success = true;
@@ -283,7 +283,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
 
     // nötig beim Neuanlegen eines Bibliothekars aus der Registrierungsseite
     // (wird nicht von einem bestehenden User / Admin angelegt, deshalb nicht setUserValues)
-    private PreparedStatement setBibliothekarValues(PreparedStatement pstmt, AbstractBenutzer u, Connection cn)
+    private PreparedStatement setBibliothekarValues(PreparedStatement pstmt, AbstractBenutzer user, Connection cn)
     throws Exception {
         String berechtigung = "2";
         String userBestellung = "0";
@@ -292,54 +292,54 @@ public class VKontoBenutzer extends AbstractIdEntity {
         String kontoVal = "0";
         String kontoStatus = "0";
 
-        if (u.isKontovalidation()) { kontoStatus = "1"; }
-        if (u.isLoginopt()) { loginOpt = "1"; }
-        if (u.isUserbestellung()) { userBestellung = "1"; }
-        if (u.isGbvbestellung()) { gbvBestellung = "1"; }
-        if (u.isKontostatus()) { kontoStatus = "1"; }
-        if (u.isUserbestellung()) { userBestellung = "1"; }
-        if (u.isGbvbestellung()) { gbvBestellung = "1"; }
-        if (u.isLoginopt()) { loginOpt = "1"; }
-        if (u.isKontovalidation()) { kontoVal = "1"; }
+        if (user.isKontovalidation()) { kontoStatus = "1"; }
+        if (user.isLoginopt()) { loginOpt = "1"; }
+        if (user.isUserbestellung()) { userBestellung = "1"; }
+        if (user.isGbvbestellung()) { gbvBestellung = "1"; }
+        if (user.isKontostatus()) { kontoStatus = "1"; }
+        if (user.isUserbestellung()) { userBestellung = "1"; }
+        if (user.isGbvbestellung()) { gbvBestellung = "1"; }
+        if (user.isLoginopt()) { loginOpt = "1"; }
+        if (user.isKontovalidation()) { kontoVal = "1"; }
 
-        if (u.getInstitut() != null) { pstmt.setString(1, u.getInstitut()); } else { pstmt.setString(1, ""); }
-        if (u.getAbteilung() != null) { pstmt.setString(2, u.getAbteilung()); } else { pstmt.setString(2, ""); }
-        if (u.getAnrede() != null) { pstmt.setString(3, u.getAnrede()); } else { pstmt.setString(3, ""); }
-        if (u.getVorname() != null) { pstmt.setString(4, u.getVorname()); } else { pstmt.setString(4, ""); }
-        if (u.getName() != null) { pstmt.setString(5, u.getName()); } else { pstmt.setString(5, ""); }
-        if (u.getAdresse() != null) { pstmt.setString(6, u.getAdresse()); } else { pstmt.setString(6, ""); }
-        if (u.getAdresszusatz() != null) { pstmt.setString(7, u.getAdresszusatz()); } else { pstmt.setString(7, ""); }
-        if (u.getTelefonnrp() != null) { pstmt.setString(8, u.getTelefonnrp()); } else { pstmt.setString(8, ""); }
-        if (u.getTelefonnrg() != null) { pstmt.setString(9, u.getTelefonnrg()); } else { pstmt.setString(9, ""); }
-        if (u.getPlz() != null) { pstmt.setString(10, u.getPlz()); } else { pstmt.setString(10, ""); }
-        if (u.getOrt() != null) { pstmt.setString(11, u.getOrt()); } else { pstmt.setString(11, ""); }
-        if (u.getLand() != null) { pstmt.setString(12, u.getLand()); } else { pstmt.setString(12, ""); }
-        if (u.getEmail() != null) { pstmt.setString(13, u.getEmail()); } else { pstmt.setString(13, ""); }
-        if (u.getPassword() != null) {
+        if (user.getInstitut() != null) { pstmt.setString(1, user.getInstitut()); } else { pstmt.setString(1, ""); }
+        if (user.getAbteilung() != null) { pstmt.setString(2, user.getAbteilung()); } else { pstmt.setString(2, ""); }
+        if (user.getAnrede() != null) { pstmt.setString(3, user.getAnrede()); } else { pstmt.setString(3, ""); }
+        if (user.getVorname() != null) { pstmt.setString(4, user.getVorname()); } else { pstmt.setString(4, ""); }
+        if (user.getName() != null) { pstmt.setString(5, user.getName()); } else { pstmt.setString(5, ""); }
+        if (user.getAdresse() != null) { pstmt.setString(6, user.getAdresse()); } else { pstmt.setString(6, ""); }
+        if (user.getAdresszusatz() != null) { pstmt.setString(7, user.getAdresszusatz()); } else { pstmt.setString(7, ""); }
+        if (user.getTelefonnrp() != null) { pstmt.setString(8, user.getTelefonnrp()); } else { pstmt.setString(8, ""); }
+        if (user.getTelefonnrg() != null) { pstmt.setString(9, user.getTelefonnrg()); } else { pstmt.setString(9, ""); }
+        if (user.getPlz() != null) { pstmt.setString(10, user.getPlz()); } else { pstmt.setString(10, ""); }
+        if (user.getOrt() != null) { pstmt.setString(11, user.getOrt()); } else { pstmt.setString(11, ""); }
+        if (user.getLand() != null) { pstmt.setString(12, user.getLand()); } else { pstmt.setString(12, ""); }
+        if (user.getEmail() != null) { pstmt.setString(13, user.getEmail()); } else { pstmt.setString(13, ""); }
+        if (user.getPassword() != null) {
             // Falls das Passwort "" wäre, ist anzunehmen dass das PW bereits gesetzt ist und
             // beim Updaten nicht geändert werden soll
-            if (u.getPassword().equals("da39a3ee5e6b4bd3255bfef95601890afd879") && u.getId() != null) {
+            if (user.getPassword().equals("da39a3ee5e6b4bd3255bfef95601890afd879") && user.getId() != null) {
                 AbstractBenutzer userpw = new AbstractBenutzer();
-                userpw = userpw.getUser(u.getId(), cn);
+                userpw = userpw.getUser(user.getId(), cn);
                 pstmt.setString(14, userpw.getPassword());
-            } else { pstmt.setString(14, u.getPassword()); }
+            } else { pstmt.setString(14, user.getPassword()); }
         } else { pstmt.setString(14, ""); } // must not be null
         pstmt.setString(15, loginOpt);
         pstmt.setString(16, userBestellung);
         pstmt.setString(17, gbvBestellung);
-        if (u.getBilling() != null) {
-            pstmt.setString(18, u.getBilling().toString());
+        if (user.getBilling() != null) {
+            pstmt.setString(18, user.getBilling().toString());
         } else {
             pstmt.setString(18, "");
         }
         pstmt.setString(19, kontoVal);
         pstmt.setString(20, kontoStatus);
         pstmt.setString(21, berechtigung);
-        if (u.getGtc() != null) { pstmt.setString(22, u.getGtc()); } else { pstmt.setString(22, ""); }
-        if (u.getGtcdate() == null || u.getGtcdate().equals("")) {
+        if (user.getGtc() != null) { pstmt.setString(22, user.getGtc()); } else { pstmt.setString(22, ""); }
+        if (user.getGtcdate() == null || user.getGtcdate().equals("")) {
             pstmt.setString(23, "0000:00:00 00:00:00");
         } else {
-            pstmt.setString(23, u.getGtcdate());
+            pstmt.setString(23, user.getGtcdate());
         }
 
         return pstmt;

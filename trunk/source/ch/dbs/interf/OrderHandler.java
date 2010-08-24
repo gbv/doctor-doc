@@ -28,22 +28,22 @@ import ch.dbs.entity.Konto;
  */
 public interface OrderHandler {
 
-  public abstract AbstractBenutzer getBenutzer();
-  public abstract Konto getKonto();
-  public abstract String getPriority();
-  public abstract String getDeloptions();
-  public abstract String getFileformat();
-  public abstract Date getOrderdate();
-  public abstract String getMediatype();
-  public abstract String getAutor();
-  public abstract String getZeitschrift_verlag();
-  public abstract String getHeft();
-  public abstract String getJahrgang();
-  public abstract String getJahr();
-  public abstract String getTitel();
-  public abstract String getKapitel();
-  public abstract String getSeiten();
-  public abstract String getWaehrung();
-  public abstract String getPreis();
+    AbstractBenutzer getBenutzer();
+    Konto getKonto();
+    String getPriority();
+    String getDeloptions();
+    String getFileformat();
+    Date getOrderdate();
+    String getMediatype();
+    String getAutor();
+    String getZeitschrift_verlag();
+    String getHeft();
+    String getJahrgang();
+    String getJahr();
+    String getTitel();
+    String getKapitel();
+    String getSeiten();
+    String getWaehrung();
+    String getPreis();
 
 }

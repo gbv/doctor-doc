@@ -55,7 +55,7 @@ public class OrderState extends AbstractIdEntity {
     }
 
     // History Bestellungen eröffnen, Status, Statusdatum sowie Bestelldatum eintragen
-    public void setNewOrderState(Bestellungen b, Konto k, Text t, String bemerkungen, String bearbeiter,
+    public void setNewOrderState(Bestellungen b, Konto k, Text t, String bemerk, String bearb,
             Connection cn) {
 
         PreparedStatement pstmt = null;
@@ -65,8 +65,8 @@ public class OrderState extends AbstractIdEntity {
                     + "`TID` , `bemerkungen` , `bearbeiter` , `date`) VALUES (?, ?, ?, ?, ?)");
             pstmt.setLong(1, b.getId());
             pstmt.setLong(2, t.getId());
-            pstmt.setString(3, bemerkungen);
-            pstmt.setString(4, bearbeiter);
+            pstmt.setString(3, bemerk);
+            pstmt.setString(4, bearb);
 
             Date dt = new Date();
             ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -100,7 +100,7 @@ public class OrderState extends AbstractIdEntity {
     }
 
     // History Bestellungen eröffnen, Status, Statusdatum (now) sowie Bestelldatum eintragen
-    public void changeOrderState(Bestellungen b, String timezone, Text t, String bemerkungen, String bearbeiter,
+    public void changeOrderState(Bestellungen b, String timezone, Text t, String bemerk, String bearb,
             Connection cn) {
 
         PreparedStatement pstmt = null;
@@ -109,8 +109,8 @@ public class OrderState extends AbstractIdEntity {
                     + "`TID` , `bemerkungen` , `bearbeiter` , `date`) VALUES (?, ?, ?, ?, ?)");
             pstmt.setLong(1, b.getId());
             pstmt.setLong(2, t.getId());
-            pstmt.setString(3, bemerkungen);
-            pstmt.setString(4, bearbeiter);
+            pstmt.setString(3, bemerk);
+            pstmt.setString(4, bearb);
 
             Date dt = new Date();
             ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -183,7 +183,7 @@ public class OrderState extends AbstractIdEntity {
     }
 
     // History der Bestellungen, Status, Statusdatum (aktuelles) sowie Bestelldatum eintragen
-    public void updateOrderState(Bestellungen b, Text t, String bemerkungen, String bearbeiter, String datum,
+    public void updateOrderState(Bestellungen b, Text t, String bemerk, String bearb, String datum,
             Connection cn) {
 
         PreparedStatement pstmt = null;
@@ -192,8 +192,8 @@ public class OrderState extends AbstractIdEntity {
                     + "`TID` , `bemerkungen` , `bearbeiter` , `date`) VALUES (?, ?, ?, ?, ?)");
             pstmt.setLong(1, b.getId());
             pstmt.setLong(2, t.getId());
-            pstmt.setString(3, bemerkungen);
-            pstmt.setString(4, bearbeiter);
+            pstmt.setString(3, bemerk);
+            pstmt.setString(4, bearb);
 
             pstmt.setString(5, datum); // muss im Format "yyyy-MM-dd HH:mm:ss" sein!
 

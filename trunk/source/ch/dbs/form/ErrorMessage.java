@@ -31,19 +31,19 @@ public final class ErrorMessage extends ActionForm {
     public ErrorMessage() {
 
     }
-    public ErrorMessage(String error, String link) {
-        this.error = error;
-        this.link = link;
+    public ErrorMessage(String err, String errLink) {
+        this.error = err;
+        this.link = errLink;
     }
 
-    public ErrorMessage(String error, String error_specific, String link) {
-        this.error = error;
-        this.error_specific = error_specific;
-        this.link = link;
+    public ErrorMessage(String err, String error_spec, String errlink) {
+        this.error = err;
+        this.error_specific = error_spec;
+        this.link = errlink;
     }
 
-    public ErrorMessage(String error) {
-        this.error = error;
+    public ErrorMessage(String err) {
+        this.error = err;
     }
 
 

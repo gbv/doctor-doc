@@ -206,14 +206,14 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String gbvnr
      * @return Bestellungen b
      */
-    public Bestellungen(Connection cn, String trackingnr, String gbvnr) {
+    public Bestellungen(Connection cn, String trackingNumber, String gbvNumber) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellungen WHERE trackingnr=? AND gbvnr=?");
-            pstmt.setString(1, trackingnr);
-            pstmt.setString(2, gbvnr);
+            pstmt.setString(1, trackingNumber);
+            pstmt.setString(2, gbvNumber);
 
             rs = pstmt.executeQuery();
 
@@ -1211,7 +1211,7 @@ public class Bestellungen extends AbstractIdEntity {
         this.setStatustext(rs.getString("state"));
         this.setStatusdate(removeMilliseconds(rs.getString("statedate")));
         this.setOrderdate(removeMilliseconds(rs.getString("orderdate")));
-        this.setErledigt((rs.getBoolean("erledigt")));
+        this.setErledigt(rs.getBoolean("erledigt"));
         this.setKaufpreis(rs.getBigDecimal("kaufpreis")); // Achtung kann NULL sein...
         this.setWaehrung(rs.getString("waehrung"));
         this.setDoi(rs.getString("doi"));
@@ -1293,7 +1293,7 @@ public class Bestellungen extends AbstractIdEntity {
     public OrderStatistikForm countOrdersPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
 
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         PreparedStatement pstmt = null;
@@ -1349,7 +1349,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countLieferantPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         PreparedStatement pstmt = null;
@@ -1413,7 +1413,7 @@ public class Bestellungen extends AbstractIdEntity {
     public OrderStatistikForm countGratisKostenpflichtigPerKonto(Long kid, String dateFrom, String dateTo,
             Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
 
         int gratis = 0;
         int kostenpflichtig = 0;
@@ -1508,7 +1508,7 @@ public class Bestellungen extends AbstractIdEntity {
             Connection cn) {
 
         OrderStatistikForm cost = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1567,7 +1567,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countLieferartPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         PreparedStatement pstmt = null;
@@ -1627,7 +1627,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countMediatypePerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         PreparedStatement pstmt = null;
@@ -1687,7 +1687,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countFileformatPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         PreparedStatement pstmt = null;
@@ -1748,7 +1748,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countPriorityPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         int unknown = 0;
@@ -1821,7 +1821,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countGenderPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int bestellungen = 0;
         int totalbestellungen = 0;
@@ -1908,7 +1908,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countInstPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int bestellungen = 0;
         int totalbestellungen = 0;
@@ -1998,7 +1998,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countAbteilungPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int bestellungen = 0;
         int totalbestellungen = 0;
@@ -2085,7 +2085,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countPLZPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int bestellungen = 0;
         int totalbestellungen = 0;
@@ -2173,7 +2173,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countLandPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int bestellungen = 0;
         int totalbestellungen = 0;
@@ -2258,7 +2258,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countISSNPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         int andere = 0;
@@ -2501,7 +2501,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countRowsUID(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2554,7 +2554,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String issn Connection cn
      * @return int anzahl
      */
-    public int countRowsUIDPerISSN(Long kid, String dateFrom, String dateTo, String issn, Connection cn) {
+    public int countRowsUIDPerISSN(Long kid, String dateFrom, String dateTo, String iss, Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2563,7 +2563,7 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT COUNT(*) FROM ( SELECT UID, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND issn = ? AND orderdate >= ? AND orderdate <= ? GROUP BY UID ) AS temp");
             pstmt.setString(1, kid.toString());
-            pstmt.setString(2, issn);
+            pstmt.setString(2, iss);
             pstmt.setString(3, dateFrom);
             pstmt.setString(4, dateTo);
 
@@ -2581,7 +2581,7 @@ public class Bestellungen extends AbstractIdEntity {
             bf.append("KID:\040" + kid + "\n");
             bf.append("dateFrom:\040" + dateFrom + "\n");
             bf.append("dateTo:\040" + dateTo + "\n");
-            bf.append("ISSN:\040" + issn + "\n");
+            bf.append("ISSN:\040" + iss + "\n");
             LOG.error(bf.toString());
         } finally {
             if (rs != null) {
@@ -2672,7 +2672,7 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public OrderStatistikForm countOrderYears(Long kid, String dateFrom, String dateTo, Connection cn) {
         OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList <OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         int unknown = 0;

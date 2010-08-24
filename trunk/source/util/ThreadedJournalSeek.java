@@ -29,7 +29,7 @@ import ch.dbs.form.OrderForm;
  *
  * @author Markus Fischer
  */
-public class ThreadedJournalSeek implements Callable<ArrayList <JournalDetails>> {
+public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> {
 
     private String zeitschriftentitel_encoded;
     private String artikeltitel_encoded;
@@ -39,12 +39,12 @@ public class ThreadedJournalSeek implements Callable<ArrayList <JournalDetails>>
     public ThreadedJournalSeek() {
     }
 
-    public ThreadedJournalSeek(String zeitschriftentitel_encoded, String artikeltitel_encoded, OrderForm pageForm,
-            String concurrentCopyZeitschriftentitel) {
-        this.zeitschriftentitel_encoded = zeitschriftentitel_encoded;
-        this.artikeltitel_encoded = artikeltitel_encoded;
-        this.pageForm = pageForm;
-        this.concurrentCopyZeitschriftentitel = concurrentCopyZeitschriftentitel;
+    public ThreadedJournalSeek(String zeitschriftentitel_enc, String artikeltitel_enc, OrderForm of,
+            String concurrentCopyZeitschriftentit) {
+        this.zeitschriftentitel_encoded = zeitschriftentitel_enc;
+        this.artikeltitel_encoded = artikeltitel_enc;
+        this.pageForm = of;
+        this.concurrentCopyZeitschriftentitel = concurrentCopyZeitschriftentit;
     }
     public ArrayList<JournalDetails> call() {
         OrderAction oa = new OrderAction();

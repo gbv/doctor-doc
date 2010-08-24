@@ -106,7 +106,7 @@ public class BestellParam extends ValidatorForm {
 
     // logical parameters without DB entry
     private Message message;
-    private boolean back = false;
+    private boolean back;
     private String link_back;
 
 
@@ -122,13 +122,13 @@ public class BestellParam extends ValidatorForm {
      * @param Connection cn
      * @return BestellParam bp
      */
-    public BestellParam(Long id, Connection cn) {
+    public BestellParam(Long pbId, Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE BPID = ?");
-            pstmt.setLong(1, id);
+            pstmt.setLong(1, pbId);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -163,14 +163,14 @@ public class BestellParam extends ValidatorForm {
      * @param Connection cn
      * @return BestellParam bp
      */
-    public BestellParam(String kennung, Long id, Connection cn) {
+    public BestellParam(String kenn, Long pbId, Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE kennung = ? AND KID = ?");
-            pstmt.setString(1, kennung);
-            pstmt.setLong(2, id);
+            pstmt.setString(1, kenn);
+            pstmt.setLong(2, pbId);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -296,7 +296,7 @@ public class BestellParam extends ValidatorForm {
      */
     public Long save(BestellParam bp, Connection cn) {
 
-        Long id = null;
+        Long pbId = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -319,7 +319,7 @@ public class BestellParam extends ValidatorForm {
             //            ID des gerade gespeicherten Benutzers ermitteln und hinterlegen
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
             if (rs.next()) {
-                id = rs.getLong("LAST_INSERT_ID()");
+                pbId = rs.getLong("LAST_INSERT_ID()");
             }
 
         } catch (Exception e) {
@@ -341,7 +341,7 @@ public class BestellParam extends ValidatorForm {
             }
         }
 
-        return id;
+        return pbId;
     }
 
     /**

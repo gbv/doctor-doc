@@ -65,7 +65,7 @@ public class Konto extends AbstractIdEntity {
     private String ezbid;
     private String instlogolink; // Link to a logo/image on a remote server
     // gibt an, ob die Bibliothek seinen Bestand in der ZDB eingepflegt hat (Verfügbarkeitsprüfung)
-    private boolean zdb = false;
+    private boolean zdb;
     // Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den
     // Wert welcher beim User hinterlegt ist überschrieben werden.
     private Text billing;
@@ -73,22 +73,22 @@ public class Konto extends AbstractIdEntity {
     // Text mit dem Texttyp Billingtype
     private Text billingtype;
     // Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll in Fr.-
-    private int accounting_rhythmvalue = 0;
+    private int accounting_rhythmvalue;
     // Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll. (in Tagen)
-    private int accounting_rhythmday = 0;
+    private int accounting_rhythmday;
     // Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach .... trotzdem eine Rechnung
     // gestellt. Feld leer oder 0 = kein Schwellwert
-    private int accounting_rhythmtimeout = 0;
-    private int threshold_value = 0; /* Verrechnungsschwellwert Sammelrechnungen in Tagen */
-    private int maxordersu = 0; // Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-    private int maxordersutotal = 0; // Begrenzung möglicher Bestellungen durch einen Benutzer pro Jahr
-    private int maxordersj = 0; // Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
+    private int accounting_rhythmtimeout;
+    private int threshold_value; /* Verrechnungsschwellwert Sammelrechnungen in Tagen */
+    private int maxordersu; // Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
+    private int maxordersutotal; // Begrenzung möglicher Bestellungen durch einen Benutzer pro Jahr
+    private int maxordersj; // Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
     // Boolean. Bei True gelten die Beschrnkungen in maxordersj, maxordersutotal und maxordersu
-    private int orderlimits = 0;
-    private boolean userlogin = false; // Dürfen sich "Nichtbibliothekare" einloggen
-    private boolean userbestellung = false; // Dürfen "Nichtbibliothekare" bei SUBITO Bestellungen tätigen?
-    private boolean gbvbestellung = false; // Dürfen "Nichtbibliothekare" beim GBV Bestellungen tätigen?
-    private boolean selected = false; // Benutzer hat rechte bei diesem Konto angemeldet (Useraction.changeuserdetails)
+    private int orderlimits;
+    private boolean userlogin; // Dürfen sich "Nichtbibliothekare" einloggen
+    private boolean userbestellung; // Dürfen "Nichtbibliothekare" bei SUBITO Bestellungen tätigen?
+    private boolean gbvbestellung; // Dürfen "Nichtbibliothekare" beim GBV Bestellungen tätigen?
+    private boolean selected; // Benutzer hat rechte bei diesem Konto angemeldet (Useraction.changeuserdetails)
     private boolean kontostatus; // Aktiv / Inaktiv
     // Konto Basic = 0 / 1 Jahr Konto Enhanced = 1 /
     // 1 Jahr Konto Enhanced plus Fax = 2 / 3 Monate Konto Enhanced plus Fax = 3

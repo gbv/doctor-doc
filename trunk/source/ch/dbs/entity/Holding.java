@@ -151,7 +151,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return Holding holding
      */
-    public Holding getHolding(Long kid, String identifier, Connection cn) {
+    public Holding getHolding(Long kId, String identifier, Connection cn) {
 
         Holding ho = new Holding();
 
@@ -160,7 +160,7 @@ public class Holding extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ? "
                     + "AND (issn = ? OR coden = ? OR zdbid = ?)");
-            pstmt.setString(1, kid.toString());
+            pstmt.setString(1, kId.toString());
             pstmt.setString(2, identifier);
             pstmt.setString(3, identifier);
             pstmt.setString(4, identifier);
@@ -323,7 +323,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldingsForKonto(Long kid, Connection cn) {
+    public ArrayList<Holding> getAllHoldingsForKonto(Long kId, Connection cn) {
 
         ArrayList<Holding> list = new ArrayList<Holding>();
 
@@ -331,7 +331,7 @@ public class Holding extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ?");
-            pstmt.setLong(1, kid);
+            pstmt.setLong(1, kId);
 
             rs = pstmt.executeQuery();
 
@@ -372,7 +372,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldingsForKonto(ArrayList<String> identifier, Long kid, Connection cn) {
+    public ArrayList<Holding> getAllHoldingsForKonto(ArrayList<String> identifier, Long kId, Connection cn) {
 
         ArrayList<Holding> list = new ArrayList<Holding>();
 
@@ -391,7 +391,7 @@ public class Holding extends AbstractIdEntity {
             ResultSet rs = null;
             try {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
-                pstmt.setLong(1, kid);
+                pstmt.setLong(1, kId);
                 int pos = 2;
                 for (String ident : identifier) {
                     pstmt.setString(pos, ident);
@@ -503,7 +503,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<String> HOIDs
      */
-    public ArrayList<String> getAllHOIDsForKonto(ArrayList<String> identifier, Long kid, Connection cn) {
+    public ArrayList<String> getAllHOIDsForKonto(ArrayList<String> identifier, Long kId, Connection cn) {
 
         ArrayList<String> list = new ArrayList<String>();
 
@@ -522,7 +522,7 @@ public class Holding extends AbstractIdEntity {
             ResultSet rs = null;
             try {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
-                pstmt.setLong(1, kid);
+                pstmt.setLong(1, kId);
                 int pos = 2;
                 for (String ident : identifier) {
                     pstmt.setString(pos, ident);

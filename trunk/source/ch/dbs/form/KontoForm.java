@@ -61,23 +61,23 @@ public final class KontoForm extends ValidatorForm {
     private String gbvrequesterid; // ID jeder einzelnen Bibliothek beim GBV
     private String ezbid;
     private String instlogolink; // Link to a logo/image on a remote server
-    private boolean zdb = false;
+    private boolean zdb;
     private Text billing;
     private Text billingtype;
-    private int accounting_rhythmvalue = 0;
-    private int accounting_rhythmday = 0;
-    private int accounting_rhythmtimeout = 0;
-    private int threshold_value = 0; /* Verrechnungsschwellwert Sammelrechnungen in Tagen */
-    private int maxordersu = 0; // Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-    private int maxordersutotal = 0; // Begrenzung mglicher Bestellungen durch einen Benutzer pro Kalenderjahr
-    private int maxordersj = 0; // Legt die maximale Artikelanzahl eines Kontos pro Kalenderjahr fest
-    private int orderlimits = 0;
-    private boolean userlogin = false; // Dürfen sich "Nichtbibliothekare" einloggen
-    private boolean userbestellung = false; // Dürfen "Nichtbibliothekare" bei SUBITO Bestellungen tätigen?
-    private boolean gbvbestellung = false; // Dürfen "Nichtbibliothekare" beim GBV Bestellungen tätigen?
-    private boolean selected = false; // Benutzer hat rechte bei diesem Konto angemeldet (Useraction.changeuserdetails)
+    private int accounting_rhythmvalue;
+    private int accounting_rhythmday;
+    private int accounting_rhythmtimeout;
+    private int threshold_value; /* Verrechnungsschwellwert Sammelrechnungen in Tagen */
+    private int maxordersu; // Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
+    private int maxordersutotal; // Begrenzung mglicher Bestellungen durch einen Benutzer pro Kalenderjahr
+    private int maxordersj; // Legt die maximale Artikelanzahl eines Kontos pro Kalenderjahr fest
+    private int orderlimits;
+    private boolean userlogin; // Dürfen sich "Nichtbibliothekare" einloggen
+    private boolean userbestellung; // Dürfen "Nichtbibliothekare" bei SUBITO Bestellungen tätigen?
+    private boolean gbvbestellung; // Dürfen "Nichtbibliothekare" beim GBV Bestellungen tätigen?
+    private boolean selected; // Benutzer hat rechte bei diesem Konto angemeldet (Useraction.changeuserdetails)
     private boolean kontostatus = true; // Aktiv / Inaktiv
-    private int kontotyp = 0;
+    private int kontotyp;
     private String default_deloptions = "post"; // Konto-Default Einstellung für deloptions
     private java.sql.Date paydate; // Zahlungseingangsdatum. Basis Berechnung wann das Konto abläuft
     private java.sql.Date expdate;
@@ -88,7 +88,7 @@ public final class KontoForm extends ValidatorForm {
 
     // dient dazu die Bestellangaben nicht zu verlieren bei Übergabe aus Linkresolver
 
-    private boolean resolver = false;
+    private boolean resolver;
     private String artikeltitel = "";
     private String artikeltitel_encoded = "";
     private String heft = "";

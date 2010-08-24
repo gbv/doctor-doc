@@ -1258,7 +1258,7 @@ public final class OrderGbvAction extends DispatchAction {
                 String untertitel = getSruSubfield("d", contentCopy);
                 String anmerkungen = getSruSubfield("h", contentCopy);
                 if (!untertitel.equals("") && !titel.equals("")) { titel = titel + "\040:\040" + untertitel; }
-                if (!anmerkungen.equals("") && !(titel).equals("")) { titel = titel + "\040" + anmerkungen; }
+                if (!anmerkungen.equals("") && !titel.equals("")) { titel = titel + "\040" + anmerkungen; }
                 record.setHauptsachtitel_021A(titel);
                 if (record.getHauptsachtitel_021A().equals("")) { record.setHauptsachtitel_021A(null); } // Anzeigelogik
             }

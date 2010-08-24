@@ -134,7 +134,7 @@ public ZDBIDObject(String ident, String ident_id, Connection cn) {
  * @param Connection cn
  * @return ZDBIDObject zo
  */
-public ZDBIDObject getZdbidObjectFromZdbid(String zdbid, Connection cn) {
+public ZDBIDObject getZdbidObjectFromZdbid(String zdbId, Connection cn) {
 
     ZDBIDObject zo = new ZDBIDObject();
 
@@ -142,7 +142,7 @@ public ZDBIDObject getZdbidObjectFromZdbid(String zdbid, Connection cn) {
   ResultSet rs = null;
   try {
         pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE zdbid = ?");
-        pstmt.setString(1, zdbid);
+        pstmt.setString(1, zdbId);
         rs = pstmt.executeQuery();
 
         while (rs.next()) {

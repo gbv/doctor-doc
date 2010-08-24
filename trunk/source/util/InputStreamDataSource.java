@@ -31,9 +31,9 @@ public class InputStreamDataSource implements DataSource {
     private String contentType;
     private ByteArrayOutputStream baos;
 
-    InputStreamDataSource(String name, String contentType, InputStream inputStream) throws IOException {
-        this.name = name;
-        this.contentType = contentType;
+    InputStreamDataSource(String stName, String contentTyp, InputStream inputStream) throws IOException {
+        this.name = stName;
+        this.contentType = contentTyp;
 
         baos = new ByteArrayOutputStream();
 

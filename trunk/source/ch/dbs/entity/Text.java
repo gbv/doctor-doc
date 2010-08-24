@@ -47,14 +47,14 @@ public class Text extends AbstractIdEntity {
     /**
      * Erstellt einen Text anhand seines Inhaltes
      * @param cn
-     * @param inhalt
+     * @param tInhalt
      */
-    public Text(Connection cn, String inhalt) {
+    public Text(Connection cn, String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `inhalt`=?");
-            pstmt.setString(1, inhalt);
+            pstmt.setString(1, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
@@ -88,15 +88,15 @@ public class Text extends AbstractIdEntity {
      *
      * @param cn Connection
      * @param typ Texttyp
-     * @param inhalt String
+     * @param tInhalt String
      */
-    public Text(Connection cn, Texttyp typ, String inhalt) {
+    public Text(Connection cn, Texttyp typ, String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `inhalt`=?");
             pstmt.setLong(1, typ.getId());
-            pstmt.setString(2, inhalt);
+            pstmt.setString(2, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
@@ -131,16 +131,16 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param Texttyp typ
      * @param Long KID
-     * @param inhalt String
+     * @param tInhalt String
      */
-    public Text(Connection cn, Texttyp typ, Long kid, String inhalt) {
+    public Text(Connection cn, Texttyp typ, Long kid, String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `KID`=? AND `inhalt`=?");
             pstmt.setLong(1, typ.getId());
             pstmt.setLong(2, kid);
-            pstmt.setString(3, inhalt);
+            pstmt.setString(3, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
@@ -216,15 +216,15 @@ public class Text extends AbstractIdEntity {
      *
      * @param cn Connection
      * @param tyid Long
-     * @param inhalt String
+     * @param tInhalt String
      */
-    public Text(Connection cn, Long tyid, String inhalt) {
+    public Text(Connection cn, Long tyid, String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `inhalt`=?");
             pstmt.setString(1, tyid.toString());
-            pstmt.setString(2, inhalt);
+            pstmt.setString(2, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));

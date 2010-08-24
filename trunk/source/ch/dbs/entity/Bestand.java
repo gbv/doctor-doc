@@ -428,7 +428,7 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return ArrayList<Bestand> listBestand
      */
-    public ArrayList<Bestand> getAllBestandForHoldings(ArrayList<String> hoids, OrderForm pageForm, boolean internal,
+    public ArrayList<Bestand> getAllBestandForHoldings(ArrayList<String> hoids, OrderForm pageForm, boolean intern,
             Connection cn) {
         ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
 
@@ -454,16 +454,16 @@ public class Bestand extends AbstractIdEntity {
 
                     switch (searchMode) {
                     case 1: // everything without a year and at least an ISSN
-                        pstmt.setBoolean(1, internal);
+                        pstmt.setBoolean(1, intern);
                         break;
                     case 2: // ISSN, Year
-                        pstmt.setBoolean(1, internal);
+                        pstmt.setBoolean(1, intern);
                         pstmt.setString(2, pageForm.getJahr());
                         pstmt.setString(3, pageForm.getJahr());
                         positionHoid = 4;
                         break;
                     case 3: // ISSN, Year, Volume
-                        pstmt.setBoolean(1, internal);
+                        pstmt.setBoolean(1, intern);
                         pstmt.setString(2, pageForm.getJahr());
                         pstmt.setString(3, pageForm.getJahr());
                         pstmt.setString(4, pageForm.getJahrgang());
@@ -471,7 +471,7 @@ public class Bestand extends AbstractIdEntity {
                         positionHoid = 6;
                         break;
                     case 4: // ISSN, Year, Volume, Issue
-                        pstmt.setBoolean(1, internal);
+                        pstmt.setBoolean(1, intern);
                         pstmt.setString(2, pageForm.getJahr());
                         pstmt.setString(3, pageForm.getJahr());
                         pstmt.setString(4, pageForm.getJahrgang());
@@ -491,7 +491,7 @@ public class Bestand extends AbstractIdEntity {
                         positionHoid = 18;
                         break;
                     case 5: // ISSN, Year, Issue
-                        pstmt.setBoolean(1, internal);
+                        pstmt.setBoolean(1, intern);
                         pstmt.setString(2, pageForm.getJahr());
                         pstmt.setString(3, pageForm.getJahr());
                         pstmt.setString(4, pageForm.getHeft());
@@ -504,6 +504,9 @@ public class Bestand extends AbstractIdEntity {
                         pstmt.setString(11, pageForm.getJahr());
                         positionHoid = 12;
                         break;
+                    default:
+                        LOG.error("Bestand getAllBestandForHoldings - Unpredicted switch case in default: "
+                                + searchMode);
                     }
 
                     for (int i = 0; i < hoids.size(); i++) {
@@ -586,6 +589,8 @@ public class Bestand extends AbstractIdEntity {
                 + "(startyear < ? AND ((endyear = ? AND (endissue >= ? OR endissue = '')) OR "
                 + "(endyear > ? OR endyear = ''))) ) AND (HOID = ?";
             break;
+        default:
+            LOG.error("Bestand get SQL - Unpredicted switch case in default: " + mode);
         }
 
         return sql;

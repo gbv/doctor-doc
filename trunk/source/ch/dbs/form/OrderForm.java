@@ -666,10 +666,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return author_encoded;
     }
 
-    public void setAutor_encoded(String author_encoded) {
-        this.author_encoded = author_encoded;
-    }
-
     public String getSeiten() {
         return seiten;
     }

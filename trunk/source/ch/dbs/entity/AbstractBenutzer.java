@@ -45,173 +45,173 @@ import ch.dbs.form.UserInfo;
 
 public class AbstractBenutzer extends AbstractIdEntity {
 
-  private static final SimpleLogger LOG = new SimpleLogger(AbstractBenutzer.class);
+    private static final SimpleLogger LOG = new SimpleLogger(AbstractBenutzer.class);
 
-  private Long billing;
-  private String institut;
-  private String abteilung;
-  private String anrede = "";
-  private String vorname;
-  private String name;
-  private String adresse;
-  private String adresszusatz;
-  private String telefonnrp;
-  private String telefonnrg;
-  private String plz;
-  private String ort;
-  private String land;
-  private String email;
-  private String password;
-  private String librarycard = "";
-  private boolean validation;
-  private boolean loginopt; // Darf sich der Benutzer einloggen?
-  private boolean userbestellung; // darf bei SUBITO bestellen
-  private boolean gbvbestellung; // darf bei GBV bestellen
-  private boolean kontostatus;
-  private boolean kontovalidation;
-  private String datum;
-  private Date lastuse;
-  private int rechte;
-  private String gtc;
-  private String gtcdate;
+    private Long billing;
+    private String institut;
+    private String abteilung;
+    private String anrede = "";
+    private String vorname;
+    private String name;
+    private String adresse;
+    private String adresszusatz;
+    private String telefonnrp;
+    private String telefonnrg;
+    private String plz;
+    private String ort;
+    private String land;
+    private String email;
+    private String password;
+    private String librarycard = "";
+    private boolean validation;
+    private boolean loginopt; // Darf sich der Benutzer einloggen?
+    private boolean userbestellung; // darf bei SUBITO bestellen
+    private boolean gbvbestellung; // darf bei GBV bestellen
+    private boolean kontostatus;
+    private boolean kontovalidation;
+    private String datum;
+    private Date lastuse;
+    private int rechte;
+    private String gtc;
+    private String gtcdate;
 
-  public AbstractBenutzer() {
-  }
+    public AbstractBenutzer() {
+    }
 
-  public AbstractBenutzer(UserForm uf) {
+    public AbstractBenutzer(UserForm uf) {
 
-    if (uf.getInstitut() != null) {
-      institut = uf.getInstitut().trim();
-    } else {
-      institut = uf.getInstitut();
-    }
-    if (uf.getAbteilung() != null) {
-      abteilung = uf.getAbteilung().trim();
-    } else {
-      abteilung = uf.getAbteilung();
-    }
-    anrede = uf.getAnrede();
-    if (uf.getVorname() != null) {
-      vorname = uf.getVorname().trim();
-    } else {
-      vorname = uf.getVorname();
-    }
-    if (uf.getName() != null) {
-      name = uf.getName().trim();
-    } else {
-      name = uf.getName();
-    }
-    if (uf.getAdresse() != null) {
-      adresse = uf.getAdresse().trim();
-    } else {
-      adresse = uf.getAdresse();
-    }
-    if (uf.getAdresszusatz() != null) {
-      adresszusatz = uf.getAdresszusatz().trim();
-    } else {
-      adresszusatz = uf.getAdresszusatz();
-    }
-    if (uf.getTelefonnrp() != null) {
-      telefonnrp = uf.getTelefonnrp().trim();
-    } else {
-      telefonnrp = uf.getTelefonnrp();
-    }
-    if (uf.getTelefonnrg() != null) {
-      telefonnrg = uf.getTelefonnrg().trim();
-    } else {
-      telefonnrg = uf.getTelefonnrg();
-    }
-    if (uf.getPlz() != null) {
-      plz = uf.getPlz().trim();
-    } else {
-      plz = uf.getPlz();
-    }
-    if (uf.getOrt() != null) {
-      ort = uf.getOrt().trim();
-    } else {
-      ort = uf.getOrt();
-    }
-    land = uf.getLand();
-    if (uf.getEmail() != null) {
-      email = uf.getEmail().trim();
-    } else {
-      email = uf.getEmail();
-    }
-    password = uf.getPassword();
-    validation = uf.getValidation();
-    kontostatus = uf.isKontostatus();
-    loginopt = uf.getLoginopt(); // Darf sich der Benutzer einloggen?
-    userbestellung = uf.getUserbestellung();
-    gbvbestellung = uf.isGbvbestellung();
-    kontovalidation = uf.getKontovalidation();
-    gtc = uf.getGtc();
-    gtcdate = uf.getGtcdate();
+        if (uf.getInstitut() != null) {
+            institut = uf.getInstitut().trim();
+        } else {
+            institut = uf.getInstitut();
+        }
+        if (uf.getAbteilung() != null) {
+            abteilung = uf.getAbteilung().trim();
+        } else {
+            abteilung = uf.getAbteilung();
+        }
+        anrede = uf.getAnrede();
+        if (uf.getVorname() != null) {
+            vorname = uf.getVorname().trim();
+        } else {
+            vorname = uf.getVorname();
+        }
+        if (uf.getName() != null) {
+            name = uf.getName().trim();
+        } else {
+            name = uf.getName();
+        }
+        if (uf.getAdresse() != null) {
+            adresse = uf.getAdresse().trim();
+        } else {
+            adresse = uf.getAdresse();
+        }
+        if (uf.getAdresszusatz() != null) {
+            adresszusatz = uf.getAdresszusatz().trim();
+        } else {
+            adresszusatz = uf.getAdresszusatz();
+        }
+        if (uf.getTelefonnrp() != null) {
+            telefonnrp = uf.getTelefonnrp().trim();
+        } else {
+            telefonnrp = uf.getTelefonnrp();
+        }
+        if (uf.getTelefonnrg() != null) {
+            telefonnrg = uf.getTelefonnrg().trim();
+        } else {
+            telefonnrg = uf.getTelefonnrg();
+        }
+        if (uf.getPlz() != null) {
+            plz = uf.getPlz().trim();
+        } else {
+            plz = uf.getPlz();
+        }
+        if (uf.getOrt() != null) {
+            ort = uf.getOrt().trim();
+        } else {
+            ort = uf.getOrt();
+        }
+        land = uf.getLand();
+        if (uf.getEmail() != null) {
+            email = uf.getEmail().trim();
+        } else {
+            email = uf.getEmail();
+        }
+        password = uf.getPassword();
+        validation = uf.getValidation();
+        kontostatus = uf.isKontostatus();
+        loginopt = uf.getLoginopt(); // Darf sich der Benutzer einloggen?
+        userbestellung = uf.getUserbestellung();
+        gbvbestellung = uf.isGbvbestellung();
+        kontovalidation = uf.getKontovalidation();
+        gtc = uf.getGtc();
+        gtcdate = uf.getGtcdate();
 
-  }
+    }
 
-  public AbstractBenutzer(OrderForm of) {
-    if (of.getKundenvorname() != null) {
-      this.vorname = of.getKundenvorname().trim();
-    } else {
-      this.vorname = of.getKundenvorname();
+    public AbstractBenutzer(OrderForm of) {
+        if (of.getKundenvorname() != null) {
+            this.vorname = of.getKundenvorname().trim();
+        } else {
+            this.vorname = of.getKundenvorname();
+        }
+        if (of.getKundenname() != null) {
+            this.name = of.getKundenname().trim();
+        } else {
+            this.name = of.getKundenname();
+        }
+        if (of.getKundenmail() != null) {
+            this.email = of.getKundenmail().trim();
+        } else {
+            this.email = of.getKundenmail();
+        }
+        if (of.getKundeninstitution() != null) {
+            this.institut = of.getKundeninstitution().trim();
+        } else {
+            this.institut = of.getKundeninstitution();
+        }
+        if (of.getKundenabteilung() != null) {
+            this.abteilung = of.getKundenabteilung().trim();
+        } else {
+            this.abteilung = of.getKundenabteilung();
+        }
+        if (of.getKundenadresse() != null) { // this may contain street, zip and place!
+            this.adresszusatz = of.getKundenadresse().trim();
+        } else {
+            this.adresszusatz = of.getKundenadresse();
+        }
+        if (of.getKundenstrasse() != null) {
+            this.adresse = of.getKundenstrasse().trim();
+        } else {
+            this.adresse = of.getKundenstrasse();
+        }
+        if (of.getKundenplz() != null) {
+            this.plz = of.getKundenplz().trim();
+        } else {
+            this.plz = of.getKundenplz();
+        }
+        if (of.getKundenort() != null) {
+            this.ort = of.getKundenort().trim();
+        } else {
+            this.ort = of.getKundenort();
+        }
+        if (of.getKundenland() != null) {
+            this.land = of.getKundenland().trim();
+        } else {
+            this.land = of.getKundenland();
+        }
+        if (of.getKundentelefon() != null) {
+            this.telefonnrg = of.getKundentelefon().trim();
+        } else {
+            this.telefonnrg = of.getKundentelefon();
+        }
+        if (of.getKundenbenutzernr() != null) {
+            this.librarycard = of.getKundenbenutzernr().trim();
+        } else {
+            this.librarycard = of.getKundenbenutzernr();
+        }
+        this.setKontostatus(true);
     }
-    if (of.getKundenname() != null) {
-      this.name = of.getKundenname().trim();
-    } else {
-      this.name = of.getKundenname();
-    }
-    if (of.getKundenmail() != null) {
-      this.email = of.getKundenmail().trim();
-    } else {
-      this.email = of.getKundenmail();
-    }
-    if (of.getKundeninstitution() != null) {
-      this.institut = of.getKundeninstitution().trim();
-    } else {
-      this.institut = of.getKundeninstitution();
-    }
-    if (of.getKundenabteilung() != null) {
-      this.abteilung = of.getKundenabteilung().trim();
-    } else {
-      this.abteilung = of.getKundenabteilung();
-    }
-    if (of.getKundenadresse() != null) { // this may contain street, zip and place!
-      this.adresszusatz = of.getKundenadresse().trim();
-    } else {
-      this.adresszusatz = of.getKundenadresse();
-    }
-    if (of.getKundenstrasse() != null) {
-      this.adresse = of.getKundenstrasse().trim();
-    } else {
-      this.adresse = of.getKundenstrasse();
-    }
-    if (of.getKundenplz() != null) {
-      this.plz = of.getKundenplz().trim();
-    } else {
-      this.plz = of.getKundenplz();
-    }
-    if (of.getKundenort() != null) {
-      this.ort = of.getKundenort().trim();
-    } else {
-      this.ort = of.getKundenort();
-    }
-    if (of.getKundenland() != null) {
-      this.land = of.getKundenland().trim();
-    } else {
-      this.land = of.getKundenland();
-    }
-    if (of.getKundentelefon() != null) {
-      this.telefonnrg = of.getKundentelefon().trim();
-    } else {
-      this.telefonnrg = of.getKundentelefon();
-    }
-    if (of.getKundenbenutzernr() != null) {
-      this.librarycard = of.getKundenbenutzernr().trim();
-    } else {
-      this.librarycard = of.getKundenbenutzernr();
-    }
-    this.setKontostatus(true);
-  }
 
     /**
      * Sucht anhand einer Userid UID einen User heraus
@@ -221,36 +221,36 @@ public class AbstractBenutzer extends AbstractIdEntity {
      */
     public AbstractBenutzer getUser(Long uid, Connection cn) {
 
-      AbstractBenutzer u = null;
+        AbstractBenutzer u = null;
 
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement(
             "SELECT * FROM benutzer WHERE uid=?");
-                        pstmt.setString(1, uid.toString());
-                        rs = pstmt.executeQuery();
+            pstmt.setString(1, uid.toString());
+            rs = pstmt.executeQuery();
             while (rs.next()) {
-              u = getUser(rs);
+                u = getUser(rs);
             }
 
         } catch (Exception e) {
-          LOG.error("getUser(Long uid, Connection cn): " + e.toString());
+            LOG.error("getUser(Long uid, Connection cn): " + e.toString());
         }  finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getUser(Long uid, Connection cn): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getUser(Long uid, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getUser(Long uid, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getUser(Long uid, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
         return u;
@@ -262,13 +262,13 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param Konto k
      * @return List<AbstractBenutzer> ul
      */
-     public List<AbstractBenutzer> getKontoUser(Konto k, Connection cn) {
+    public List<AbstractBenutzer> getKontoUser(Konto k, Connection cn) {
         ArrayList<AbstractBenutzer> ul = new ArrayList<AbstractBenutzer>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) "
-                                        + "ON (b.UID=vkb.UID) WHERE vkb.KID = ? order by name, vorname");
+                    + "ON (b.UID=vkb.UID) WHERE vkb.KID = ? order by name, vorname");
             pstmt.setLong(1, k.getId());
             rs = pstmt.executeQuery();
 
@@ -277,22 +277,22 @@ public class AbstractBenutzer extends AbstractIdEntity {
             }
 
         } catch (Exception e) {
-          LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
+            LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
         } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
         return ul;
@@ -305,42 +305,42 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param String email
      * @return ArrayList (Benutzer, Bibliothekar oder Administrator)
      */
-    public ArrayList<AbstractBenutzer> getUserListFromEmailAndKonto(Konto k, String email, Connection cn) {
+    public ArrayList<AbstractBenutzer> getUserListFromEmailAndKonto(Konto k, String mail, Connection cn) {
 
-      ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
-      AbstractBenutzer u = null;
+        ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
+        AbstractBenutzer u = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-      try {
+        try {
             pstmt = cn.prepareStatement(
-            "SELECT * FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) "
-            + "ON (b.UID=vkb.UID) WHERE vkb.KID = ? AND b.mail=?");
-                pstmt.setLong(1, k.getId());
-              pstmt.setString(2, email);
-                rs = pstmt.executeQuery();
+                    "SELECT * FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) "
+                    + "ON (b.UID=vkb.UID) WHERE vkb.KID = ? AND b.mail=?");
+            pstmt.setLong(1, k.getId());
+            pstmt.setString(2, mail);
+            rs = pstmt.executeQuery();
             while (rs.next()) {
-              u = getUser(rs);
-              benutzerlist.add(u);
+                u = getUser(rs);
+                benutzerlist.add(u);
             }
 
         } catch (Exception e) {
-          LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+            LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
         }  finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
         return benutzerlist;
@@ -349,41 +349,41 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * Sucht anhand einer Email alle User heraus und liefert einen davon zurück
      * <p></p>
-     * @param email
+     * @param mail
      * @return AbstractUser (Benutzer, Bibliothekar oder Administrator)
      */
-    public AbstractBenutzer getUserFromEmail(String email, Connection cn) {
+    public AbstractBenutzer getUserFromEmail(String mail, Connection cn) {
 
-      AbstractBenutzer u = null;
+        AbstractBenutzer u = null;
 
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement(
             "SELECT * FROM benutzer WHERE mail=?");
-                        pstmt.setString(1, email);
-                        rs = pstmt.executeQuery();
+            pstmt.setString(1, mail);
+            rs = pstmt.executeQuery();
             while (rs.next()) {
-              u = getUser(rs); // gibt nur den letzten Treffer zurück
+                u = getUser(rs); // gibt nur den letzten Treffer zurück
             }
 
         } catch (Exception e) {
-          LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+            LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
         }  finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
         return u;
@@ -392,43 +392,43 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * Sucht anhand einer Email alle User heraus
      * <p></p>
-     * @param email
+     * @param mail
      * @return AbstractUser (Benutzer, Bibliothekar oder Administrator)
      */
-    public ArrayList <AbstractBenutzer> getAllUserFromEmail(String email, Connection cn) {
+    public ArrayList<AbstractBenutzer> getAllUserFromEmail(String mail, Connection cn) {
 
-      ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
-      AbstractBenutzer u = null;
+        ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
+        AbstractBenutzer u = null;
 
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement(
             "SELECT * FROM benutzer WHERE mail=?");
-                        pstmt.setString(1, email);
-                        rs = pstmt.executeQuery();
+            pstmt.setString(1, mail);
+            rs = pstmt.executeQuery();
             while (rs.next()) {
-              u = getUser(rs);
-              benutzerlist.add(u);
+                u = getUser(rs);
+                benutzerlist.add(u);
             }
 
         } catch (Exception e) {
-          LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
+            LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
         } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
         return benutzerlist;
@@ -437,113 +437,113 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * @return Alle Kontos bei welchen der {@link AbstractBenutzer} hinterlegt ist in einer {@link ArrayList}
      */
-    public ArrayList <Konto> getKontosDeposited(AbstractBenutzer u, Connection cn) {
-      ArrayList <Konto> kontos = new ArrayList<Konto>();
+    public ArrayList<Konto> getKontosDeposited(AbstractBenutzer u, Connection cn) {
+        ArrayList<Konto> kontos = new ArrayList<Konto>();
 
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
-      try {
-      pstmt = cn.prepareStatement(
-          "SELECT * FROM `benutzer` AS b "
-          + "INNER JOIN (`v_konto_benutzer` AS vkb ) ON (b.UID=vkb.UID) "
-          + "INNER JOIN (`konto` AS k ) ON (k.KID=vkb.KID)WHERE vkb.UID = ?");
-      pstmt.setLong(1, u.getId());
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement(
+                    "SELECT * FROM `benutzer` AS b "
+                    + "INNER JOIN (`v_konto_benutzer` AS vkb ) ON (b.UID=vkb.UID) "
+                    + "INNER JOIN (`konto` AS k ) ON (k.KID=vkb.KID)WHERE vkb.UID = ?");
+            pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 kontos.add(new Konto(rs));
             }
 
-    } catch (Exception e) {
-      LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
-    } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+        } catch (Exception e) {
+            LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
-      return kontos;
+        return kontos;
     }
 
     /**
      * @return Alle Kontos bei welchen der {@link AbstractBenutzer} hinterlegt und bei welchen er sich auch einloggen
      * darf in einer {@link ArrayList}
      */
-    public ArrayList <Konto> getKontosAlowedLogin(AbstractBenutzer u, Connection cn) {
-      ArrayList <Konto> kontos = new ArrayList<Konto>();
+    public ArrayList<Konto> getKontosAlowedLogin(AbstractBenutzer u, Connection cn) {
+        ArrayList<Konto> kontos = new ArrayList<Konto>();
 
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
-      try {
-      pstmt = cn.prepareStatement(
-          "SELECT * FROM `benutzer` AS b "
-          + "INNER JOIN v_konto_benutzer AS vkb USING ( UID ) "
-          + "INNER JOIN konto AS k USING ( KID ) "
-          + "WHERE b.UID = ? "
-          + "AND b.kontostatus = 1 "
-          + "AND k.kontostatus = 1 "
-          + "AND ((`loginopt` = 1 AND `userlogin` = 1 ) OR `rechte` > 1)");
-      pstmt.setLong(1, u.getId());
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement(
+                    "SELECT * FROM `benutzer` AS b "
+                    + "INNER JOIN v_konto_benutzer AS vkb USING ( UID ) "
+                    + "INNER JOIN konto AS k USING ( KID ) "
+                    + "WHERE b.UID = ? "
+                    + "AND b.kontostatus = 1 "
+                    + "AND k.kontostatus = 1 "
+                    + "AND ((`loginopt` = 1 AND `userlogin` = 1 ) OR `rechte` > 1)");
+            pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 kontos.add(new Konto(rs));
             }
 
-    } catch (Exception e) {
-      LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
-    } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+        } catch (Exception e) {
+            LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
+                }
             }
-          }
         }
-      return kontos;
+        return kontos;
     }
 
     /**
      * Login
      */
 
-    public ArrayList <UserInfo> login(String email, String pw, Connection cn) {
+    public ArrayList<UserInfo> login(String mail, String pw, Connection cn) {
 
-      UserInfo u;
-      ArrayList<UserInfo> userinfolist = new ArrayList<UserInfo>();
+        UserInfo u;
+        ArrayList<UserInfo> userinfolist = new ArrayList<UserInfo>();
 
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
-      try {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
             pstmt = cn.prepareStatement(
-              "SELECT * FROM `benutzer` AS b "
-              + "INNER JOIN v_konto_benutzer AS vkb USING(UID)"
-              + "INNER JOIN konto AS k USING(KID) "
-              + "WHERE b.mail = ? AND b.pw = ? "
-              + "AND k.kontostatus = 1 "
-              + "AND b.kontostatus = 1 "
-              + "GROUP BY b.UID");
+                    "SELECT * FROM `benutzer` AS b "
+                    + "INNER JOIN v_konto_benutzer AS vkb USING(UID)"
+                    + "INNER JOIN konto AS k USING(KID) "
+                    + "WHERE b.mail = ? AND b.pw = ? "
+                    + "AND k.kontostatus = 1 "
+                    + "AND b.kontostatus = 1 "
+                    + "GROUP BY b.UID");
 
-            pstmt.setString(1, email);
+            pstmt.setString(1, mail);
             pstmt.setString(2, pw);
             rs = pstmt.executeQuery();
             ArrayList<Konto> kontolist;
@@ -552,107 +552,107 @@ public class AbstractBenutzer extends AbstractIdEntity {
             while (rs.next()) {
                 // Wenn Userlogin in Konto erlaubt ist, UserInfo erstellen
                 if (rs.getBoolean("userlogin") && rs.getBoolean("loginopt") || rs.getInt("rechte") >= 2) {
-                  u = new UserInfo();
-                  AbstractBenutzer benutzer = getUser(rs);
-                  if (benutzer.getClass().isInstance(admin)) {
-                    Konto k = new Konto();
-                    kontolist = k.getAllKontos(cn);
-                  } else {
-                    kontolist = getKontosAlowedLogin(benutzer, cn);
-                  }
-                  u.setBenutzer(benutzer);
-                  u.setKontos(kontolist);
-//                   Bei nur einer Kontozugehrigkeit, diese gleich setzen
+                    u = new UserInfo();
+                    AbstractBenutzer benutzer = getUser(rs);
+                    if (benutzer.getClass().isInstance(admin)) {
+                        Konto k = new Konto();
+                        kontolist = k.getAllKontos(cn);
+                    } else {
+                        kontolist = getKontosAlowedLogin(benutzer, cn);
+                    }
+                    u.setBenutzer(benutzer);
+                    u.setKontos(kontolist);
+                    //                   Bei nur einer Kontozugehrigkeit, diese gleich setzen
                     if (kontolist.size() == 1) {
                         u.setKonto(kontolist.get(0));
                     }
-                  userinfolist.add(u);
+                    userinfolist.add(u);
                 }
 
             }
 
         } catch (Exception e) {
-          LOG.error("login(String email, String pw, Connection cn): " + e.toString());
+            LOG.error("login(String email, String pw, Connection cn): " + e.toString());
         } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("login(String email, String pw, Connection cn): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("login(String email, String pw, Connection cn): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("login(String email, String pw, Connection cn): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("login(String email, String pw, Connection cn): " + e.toString());
+                }
             }
-          }
         }
 
         return userinfolist;
     }
 
-  /**
-   * Füllt ein Userobjekt mit einer Zeile aus der Datenbank
-   */
-  public AbstractBenutzer getUser(ResultSet rs) {
+    /**
+     * Füllt ein Userobjekt mit einer Zeile aus der Datenbank
+     */
+    public AbstractBenutzer getUser(ResultSet rs) {
 
-    AbstractBenutzer u = new AbstractBenutzer();
+        AbstractBenutzer u = new AbstractBenutzer();
 
-    try {
-      if (rs.getString("rechte").equals("3")) {
-        u = new Administrator();
-      }
-      if (rs.getString("rechte").equals("2")) {
-        u = new Bibliothekar();
-      }
-      if (rs.getString("rechte").equals("1")) {
-        u = new Benutzer();
-      }
+        try {
+            if (rs.getString("rechte").equals("3")) {
+                u = new Administrator();
+            }
+            if (rs.getString("rechte").equals("2")) {
+                u = new Bibliothekar();
+            }
+            if (rs.getString("rechte").equals("1")) {
+                u = new Benutzer();
+            }
 
-      u.setId(rs.getLong("UID"));
-      u.setInstitut((rs.getString("institut")));
-      u.setAbteilung(rs.getString("abteilung"));
-      u.setAnrede(rs.getString("anrede"));
-      u.setVorname(rs.getString("vorname"));
-      u.setName(rs.getString("name"));
-      u.setAdresse(rs.getString("adr"));
-      u.setAdresszusatz(rs.getString("adrzus"));
-      u.setValidation(rs.getBoolean("kontoval"));
-      u.setKontostatus(rs.getBoolean("kontostatus"));
-      u.setTelefonnrp(rs.getString("telp"));
-      u.setTelefonnrg(rs.getString("telg"));
-      u.setPlz(rs.getString("plz"));
-      u.setOrt(rs.getString("ort"));
-      u.setLand(rs.getString("land"));
-      u.setEmail(rs.getString("mail"));
-      u.setPassword(rs.getString("pw"));
-      u.setLoginopt(rs.getBoolean("loginopt"));
-      u.setUserbestellung(rs.getBoolean("userbestellung"));
-      u.setGbvbestellung(rs.getBoolean("gbvbestellung"));
-      u.setBilling(rs.getLong("billing"));
-      u.setRechte(rs.getInt("rechte"));
+            u.setId(rs.getLong("UID"));
+            u.setInstitut(rs.getString("institut"));
+            u.setAbteilung(rs.getString("abteilung"));
+            u.setAnrede(rs.getString("anrede"));
+            u.setVorname(rs.getString("vorname"));
+            u.setName(rs.getString("name"));
+            u.setAdresse(rs.getString("adr"));
+            u.setAdresszusatz(rs.getString("adrzus"));
+            u.setValidation(rs.getBoolean("kontoval"));
+            u.setKontostatus(rs.getBoolean("kontostatus"));
+            u.setTelefonnrp(rs.getString("telp"));
+            u.setTelefonnrg(rs.getString("telg"));
+            u.setPlz(rs.getString("plz"));
+            u.setOrt(rs.getString("ort"));
+            u.setLand(rs.getString("land"));
+            u.setEmail(rs.getString("mail"));
+            u.setPassword(rs.getString("pw"));
+            u.setLoginopt(rs.getBoolean("loginopt"));
+            u.setUserbestellung(rs.getBoolean("userbestellung"));
+            u.setGbvbestellung(rs.getBoolean("gbvbestellung"));
+            u.setBilling(rs.getLong("billing"));
+            u.setRechte(rs.getInt("rechte"));
 
-      Date d = rs.getTimestamp("datum");
-      SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      if (d != null) {
-        u.setDatum(fmt.format(d));
-      } else {
-        u.setDatum("0000-00-00 00:00:00");
-      }
+            Date d = rs.getTimestamp("datum");
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if (d != null) {
+                u.setDatum(fmt.format(d));
+            } else {
+                u.setDatum("0000-00-00 00:00:00");
+            }
 
-      u.setLastuse(rs.getTimestamp("lastuse"));
-      u.setGtc(rs.getString("gtc"));
-      u.setGtcdate(rs.getString("gtcdate"));
+            u.setLastuse(rs.getTimestamp("lastuse"));
+            u.setGtc(rs.getString("gtc"));
+            u.setGtcdate(rs.getString("gtcdate"));
 
-    } catch (SQLException e) {
-      LOG.error("getUser(ResultSet rs): " + e.toString());
+        } catch (SQLException e) {
+            LOG.error("getUser(ResultSet rs): " + e.toString());
+        }
+
+        return u;
+
     }
-
-    return u;
-
-  }
 
     /**
      * Speichert einen neuen Benutzer in der Datenbank
@@ -661,11 +661,11 @@ public class AbstractBenutzer extends AbstractIdEntity {
      */
     public Long saveNewUser(AbstractBenutzer u, Konto k, Connection cn) {
 
-      Long uid = null;
+        Long uid = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-      try {
+        try {
             pstmt = setUserValues(cn.prepareStatement("INSERT INTO `benutzer` (`institut` , "
                     + "`abteilung` , `anrede` , `vorname` , `name` , `adr` , `adrzus` , `telp` , `telg` , `plz` , "
                     + "`ort` , `land` , `mail` , `pw` , `loginopt` , `userbestellung` , `gbvbestellung` , `billing` , "
@@ -674,29 +674,29 @@ public class AbstractBenutzer extends AbstractIdEntity {
             pstmt.setString(25, u.getDatum());
             pstmt.executeUpdate();
 
-//          ID des gerade gespeicherten Benutzers ermitteln und hinterlegen
+            //          ID des gerade gespeicherten Benutzers ermitteln und hinterlegen
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
-           if (rs.next()) {
-             uid = rs.getLong("LAST_INSERT_ID()");
-           }
+            if (rs.next()) {
+                uid = rs.getLong("LAST_INSERT_ID()");
+            }
 
         } catch (Exception e) {
-          LOG.error("saveNewUser(): " + e.toString());
+            LOG.error("saveNewUser(): " + e.toString());
         } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              LOG.error("saveNewUser(): " + e.toString());
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error("saveNewUser(): " + e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("saveNewUser(): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("saveNewUser(): " + e.toString());
+                }
             }
-          }
         }
 
         return uid;
@@ -710,38 +710,39 @@ public class AbstractBenutzer extends AbstractIdEntity {
     public void updateUser(AbstractBenutzer u, Konto k, Connection cn) {
 
         PreparedStatement pstmt = null;
-      try {
-      pstmt = setUserValues(cn.prepareStatement("UPDATE `benutzer` SET "
-          + "`institut` = ?, `abteilung` = ?, `anrede` = ?, `vorname` = ?, `name` = ?, `adr` = ?,`adrzus` = ?,"
-          + "`telp` = ?, `telg` = ?, `plz` = ?, `ort` = ?, `land` = ?, `mail` = ?, `pw` = ?,`loginopt` = ?, "
-          + "`userbestellung` = ?, `gbvbestellung` = ?, `billing` = ?, `kontoval` = ?, `kontostatus` = ?, "
-          + "`rechte` = ?, `gtc` = ?, `gtcdate` = ?, `lastuse` = ? WHERE `UID` =?"),
-          u, k, cn);
+        try {
+            pstmt = setUserValues(cn.prepareStatement("UPDATE `benutzer` SET "
+                    + "`institut` = ?, `abteilung` = ?, `anrede` = ?, `vorname` = ?, `name` = ?, `adr` = ?,"
+                    + "`adrzus` = ?,`telp` = ?, `telg` = ?, `plz` = ?, `ort` = ?, `land` = ?, `mail` = ?, "
+                    + "`pw` = ?,`loginopt` = ?, `userbestellung` = ?, `gbvbestellung` = ?, `billing` = ?, "
+                    + "`kontoval` = ?, `kontostatus` = ?, `rechte` = ?, `gtc` = ?, `gtcdate` = ?, "
+                    + "`lastuse` = ? WHERE `UID` =?"),
+                    u, k, cn);
             pstmt.setLong(25, u.getId());
             pstmt.executeUpdate();
 
         } catch (Exception e) {
-          LOG.error("updateUser(): " + e.toString());
+            LOG.error("updateUser(): " + e.toString());
         } finally {
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("updateUser(): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("updateUser(): " + e.toString());
+                }
             }
-          }
         }
     }
 
     /**
-   * setzt das Lastuse-Datum bei einem AbstractBenutzer
-   */
-  public void updateLastuse(AbstractBenutzer u, Konto k, Connection cn) {
-      Calendar cal = new GregorianCalendar();
-      cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
-      u.setLastuse(cal.getTime());
-      u.updateUser(u, k, cn);
-  }
+     * setzt das Lastuse-Datum bei einem AbstractBenutzer
+     */
+    public void updateLastuse(AbstractBenutzer u, Konto k, Connection cn) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
+        u.setLastuse(cal.getTime());
+        u.updateUser(u, k, cn);
+    }
 
     /**
      * Löscht einen vorhandenen Benutzerin aus der DB
@@ -750,10 +751,10 @@ public class AbstractBenutzer extends AbstractIdEntity {
      */
     public boolean deleteUser(AbstractBenutzer u, Connection cn) {
 
-      boolean success = false;
+        boolean success = false;
 
         PreparedStatement pstmt = null;
-      try {
+        try {
             pstmt = cn.prepareStatement("DELETE FROM `benutzer` WHERE `UID` =?");
             pstmt.setLong(1, u.getId());
             pstmt.executeUpdate();
@@ -761,26 +762,26 @@ public class AbstractBenutzer extends AbstractIdEntity {
             success = true;
 
         } catch (Exception e) {
-          LOG.error("deleteUser(): " + e.toString());
+            LOG.error("deleteUser(): " + e.toString());
         } finally {
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              LOG.error("deleteUser(): " + e.toString());
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error("deleteUser(): " + e.toString());
+                }
             }
-          }
         }
 
         return success;
     }
 
 
-  /*
+    /*
      * Setzt die Werte im Preparestatement der Methoden updateUser() sowie saveNewUser()
      * Funktionniert auch für Bibliothekare sowie Administratoren
      */
-     public PreparedStatement setUserValues(PreparedStatement pstmt,
+    public PreparedStatement setUserValues(PreparedStatement pstmt,
             AbstractBenutzer u, Konto k, Connection cn) throws Exception {
         String berechtigung = "";
         String userBestellung = "0";
@@ -827,16 +828,16 @@ public class AbstractBenutzer extends AbstractIdEntity {
         if (u.getLand() != null) { pstmt.setString(12, u.getLand()); } else { pstmt.setString(12, ""); }
         if (u.getEmail() != null) { pstmt.setString(13, u.getEmail()); } else { pstmt.setString(13, ""); }
         if (u.getPassword() != null) {
-        // If the passsword is "": it shall not be changed / updated
-        if (u.getPassword().equals("da39a3ee5e6b4bd3255bfef95601890afd879") && u.getId() != null) {
-            AbstractBenutzer userpw = new AbstractBenutzer();
-            userpw = userpw.getUser(u.getId(), cn);
-            pstmt.setString(14, userpw.getPassword());
-          } else {
-            pstmt.setString(14, u.getPassword());
+            // If the passsword is "": it shall not be changed / updated
+            if (u.getPassword().equals("da39a3ee5e6b4bd3255bfef95601890afd879") && u.getId() != null) {
+                AbstractBenutzer userpw = new AbstractBenutzer();
+                userpw = userpw.getUser(u.getId(), cn);
+                pstmt.setString(14, userpw.getPassword());
+            } else {
+                pstmt.setString(14, u.getPassword());
             }
         } else {
-          pstmt.setString(14, "");
+            pstmt.setString(14, "");
         }
         pstmt.setString(15, loginOpt);
         pstmt.setString(16, userBestellung);
@@ -844,7 +845,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         if (u.getBilling() != null) {
             pstmt.setString(18, u.getBilling().toString());
         } else {
-          pstmt.setString(18, "0");
+            pstmt.setString(18, "0");
         }
         pstmt.setString(19, kontoVal);
         pstmt.setString(20, kontoStatus);
@@ -865,390 +866,390 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return pstmt;
     }
 
-  /**
-   * @return Returns the abteilung.
-   */
-  public String getAbteilung() {
-    return abteilung;
-  }
+    /**
+     * @return Returns the abteilung.
+     */
+    public String getAbteilung() {
+        return abteilung;
+    }
 
-  /**
-   * @param abteilung
-   *            The abteilung to set.
-   */
-  public void setAbteilung(String abteilung) {
-    this.abteilung = abteilung;
-  }
+    /**
+     * @param abteilung
+     *            The abteilung to set.
+     */
+    public void setAbteilung(String abteilung) {
+        this.abteilung = abteilung;
+    }
 
-  /**
-   * @return Returns the adresse.
-   */
-  public String getAdresse() {
-    return adresse;
-  }
+    /**
+     * @return Returns the adresse.
+     */
+    public String getAdresse() {
+        return adresse;
+    }
 
-  /**
-   * @param adresse
-   *            The adresse to set.
-   */
-  public void setAdresse(String adresse) {
-    this.adresse = adresse;
-  }
+    /**
+     * @param adresse
+     *            The adresse to set.
+     */
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
 
-  /**
-   * @return Returns the adresszusatz.
-   */
-  public String getAdresszusatz() {
-    return adresszusatz;
-  }
+    /**
+     * @return Returns the adresszusatz.
+     */
+    public String getAdresszusatz() {
+        return adresszusatz;
+    }
 
-  /**
-   * @param adresszusatz
-   *            The adresszusatz to set.
-   */
-  public void setAdresszusatz(String adresszusatz) {
-    this.adresszusatz = adresszusatz;
-  }
+    /**
+     * @param adresszusatz
+     *            The adresszusatz to set.
+     */
+    public void setAdresszusatz(String adresszusatz) {
+        this.adresszusatz = adresszusatz;
+    }
 
-  /**
-   * @return Returns the anrede.
-   */
-  public String getAnrede() {
-    return anrede;
-  }
+    /**
+     * @return Returns the anrede.
+     */
+    public String getAnrede() {
+        return anrede;
+    }
 
-  /**
-   * @param anrede
-   *            The anrede to set.
-   */
-  public void setAnrede(String anrede) {
-    this.anrede = anrede;
-  }
+    /**
+     * @param anrede
+     *            The anrede to set.
+     */
+    public void setAnrede(String anrede) {
+        this.anrede = anrede;
+    }
 
-  /**
-   * @return Returns the billing.
-   */
-  public Long getBilling() {
-    return billing;
-  }
+    /**
+     * @return Returns the billing.
+     */
+    public Long getBilling() {
+        return billing;
+    }
 
-  /**
-   * @param billing
-   *            The billing to set.
-   */
-  public void setBilling(Long billing) {
-    this.billing = billing;
-  }
+    /**
+     * @param billing
+     *            The billing to set.
+     */
+    public void setBilling(Long billing) {
+        this.billing = billing;
+    }
 
-  public String getDatum() {
-    return datum;
-  }
+    public String getDatum() {
+        return datum;
+    }
 
-  public void setDatum(String datum) {
-    this.datum = datum;
-  }
+    public void setDatum(String datum) {
+        this.datum = datum;
+    }
 
-  /**
-   * @return Returns the email.
-   */
-  public String getEmail() {
-    return email;
-  }
+    /**
+     * @return Returns the email.
+     */
+    public String getEmail() {
+        return email;
+    }
 
-  /**
-   * @param email
-   *            The email to set.
-   */
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    /**
+     * @param email
+     *            The email to set.
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  /**
-   * @return Returns the institut.
-   */
-  public String getInstitut() {
-    return institut;
-  }
+    /**
+     * @return Returns the institut.
+     */
+    public String getInstitut() {
+        return institut;
+    }
 
-  /**
-   * @param institut
-   *            The institut to set.
-   */
-  public void setInstitut(String institut) {
-    this.institut = institut;
-  }
+    /**
+     * @param institut
+     *            The institut to set.
+     */
+    public void setInstitut(String institut) {
+        this.institut = institut;
+    }
 
-  /**
-   * @return Returns the kontovalidation.
-   */
-  public boolean isKontovalidation() {
-    return kontovalidation;
-  }
+    /**
+     * @return Returns the kontovalidation.
+     */
+    public boolean isKontovalidation() {
+        return kontovalidation;
+    }
 
-  /**
-   * @param kontovalidation
-   *            The kontovalidation to set.
-   */
-  public void setKontovalidation(boolean kontovalidation) {
-    this.kontovalidation = kontovalidation;
-  }
+    /**
+     * @param kontovalidation
+     *            The kontovalidation to set.
+     */
+    public void setKontovalidation(boolean kontovalidation) {
+        this.kontovalidation = kontovalidation;
+    }
 
-  /**
-   * @return Returns the land.
-   */
-  public String getLand() {
-    return land;
-  }
+    /**
+     * @return Returns the land.
+     */
+    public String getLand() {
+        return land;
+    }
 
-  /**
-   * @param land
-   *            The land to set.
-   */
-  public void setLand(String land) {
-    this.land = land;
-  }
+    /**
+     * @param land
+     *            The land to set.
+     */
+    public void setLand(String land) {
+        this.land = land;
+    }
 
-  /**
-   * @return Returns the lastuse.
-   */
-  public Date getLastuse() {
-    return lastuse;
-  }
+    /**
+     * @return Returns the lastuse.
+     */
+    public Date getLastuse() {
+        return lastuse;
+    }
 
-  /**
-   * @param lastuse
-   *            The lastuse to set.
-   */
-  public void setLastuse(Date lastuse) {
-    this.lastuse = lastuse;
-  }
+    /**
+     * @param lastuse
+     *            The lastuse to set.
+     */
+    public void setLastuse(Date lastuse) {
+        this.lastuse = lastuse;
+    }
 
-  /**
-   * @return Returns the loginopt.
-   */
-  public boolean isLoginopt() {
-    return loginopt;
-  }
+    /**
+     * @return Returns the loginopt.
+     */
+    public boolean isLoginopt() {
+        return loginopt;
+    }
 
-  /**
-   * @param loginopt
-   *            The loginopt to set.
-   */
-  public void setLoginopt(boolean loginopt) {
-    this.loginopt = loginopt;
-  }
+    /**
+     * @param loginopt
+     *            The loginopt to set.
+     */
+    public void setLoginopt(boolean loginopt) {
+        this.loginopt = loginopt;
+    }
 
-  /**
-   * @return Returns the name.
-   */
-  public String getName() {
-    return name;
-  }
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
 
-  /**
-   * @param name
-   *            The name to set.
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
+    /**
+     * @param name
+     *            The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  /**
-   * @return Returns the plz.
-   */
-  public String getPlz() {
-    return plz;
-  }
+    /**
+     * @return Returns the plz.
+     */
+    public String getPlz() {
+        return plz;
+    }
 
-  /**
-   * @param plz
-   *            The plz to set.
-   */
-  public void setPlz(String plz) {
-    this.plz = plz;
-  }
+    /**
+     * @param plz
+     *            The plz to set.
+     */
+    public void setPlz(String plz) {
+        this.plz = plz;
+    }
 
-  /**
-   * @return Returns the ort.
-   */
-  public String getOrt() {
-    return ort;
-  }
+    /**
+     * @return Returns the ort.
+     */
+    public String getOrt() {
+        return ort;
+    }
 
-  /**
-   * @param ort
-   *            The ort to set.
-   */
-  public void setOrt(String ort) {
-    this.ort = ort;
-  }
+    /**
+     * @param ort
+     *            The ort to set.
+     */
+    public void setOrt(String ort) {
+        this.ort = ort;
+    }
 
-  /**
-   * @return Returns the password.
-   */
-  public String getPassword() {
-    return password;
-  }
+    /**
+     * @return Returns the password.
+     */
+    public String getPassword() {
+        return password;
+    }
 
-  /**
-   * @param password
-   *            The password to set.
-   */
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    /**
+     * @param password
+     *            The password to set.
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-  /**
-   * Telefonnummer geschftlich
-   *
-   * @return Returns the telefonnrg.
-   */
-  public String getTelefonnrg() {
-    return telefonnrg;
-  }
+    /**
+     * Telefonnummer geschftlich
+     *
+     * @return Returns the telefonnrg.
+     */
+    public String getTelefonnrg() {
+        return telefonnrg;
+    }
 
-  /**
-   * Telefonnummer geschftlich
-   *
-   * @param telefonnrg
-   *            The telefonnrg to set.
-   */
-  public void setTelefonnrg(String telefonnrg) {
-    this.telefonnrg = telefonnrg;
-  }
+    /**
+     * Telefonnummer geschftlich
+     *
+     * @param telefonnrg
+     *            The telefonnrg to set.
+     */
+    public void setTelefonnrg(String telefonnrg) {
+        this.telefonnrg = telefonnrg;
+    }
 
-  /**
-   * Telefonnummer privat
-   *
-   * @return Returns the telefonnrp.
-   */
-  public String getTelefonnrp() {
-    return telefonnrp;
-  }
+    /**
+     * Telefonnummer privat
+     *
+     * @return Returns the telefonnrp.
+     */
+    public String getTelefonnrp() {
+        return telefonnrp;
+    }
 
-  /**
-   * Telefonnummer privat
-   *
-   * @param telefonnrp
-   *            The telefonnrp to set.
-   */
-  public void setTelefonnrp(String telefonnrp) {
-    this.telefonnrp = telefonnrp;
-  }
+    /**
+     * Telefonnummer privat
+     *
+     * @param telefonnrp
+     *            The telefonnrp to set.
+     */
+    public void setTelefonnrp(String telefonnrp) {
+        this.telefonnrp = telefonnrp;
+    }
 
-  /**
-   * Darf ein Benutzer bei SUBITO Bestellungen tätigen?
-   *
-   * @return Returns the userbestellung.
-   */
-  public boolean isUserbestellung() {
-    return userbestellung;
-  }
+    /**
+     * Darf ein Benutzer bei SUBITO Bestellungen tätigen?
+     *
+     * @return Returns the userbestellung.
+     */
+    public boolean isUserbestellung() {
+        return userbestellung;
+    }
 
-  /**
-   * Darf ein Benutzer bei SUBITO Bestellungen tätigen?
-   *
-   * @param userbestellung
-   *            The userbestellung to set.
-   */
-  public void setUserbestellung(boolean userbestellung) {
-    this.userbestellung = userbestellung;
-  }
+    /**
+     * Darf ein Benutzer bei SUBITO Bestellungen tätigen?
+     *
+     * @param userbestellung
+     *            The userbestellung to set.
+     */
+    public void setUserbestellung(boolean userbestellung) {
+        this.userbestellung = userbestellung;
+    }
 
-  /**
-   * Darf ein Benutzer beim GBV Bestellungen tätigen?
-   *
-   * @param gbvbestellung
-   *            The gbvbestellung to set.
-   */
-  public boolean isGbvbestellung() {
-    return gbvbestellung;
-  }
+    /**
+     * Darf ein Benutzer beim GBV Bestellungen tätigen?
+     *
+     * @param gbvbestellung
+     *            The gbvbestellung to set.
+     */
+    public boolean isGbvbestellung() {
+        return gbvbestellung;
+    }
 
-  /**
-   * Darf ein Benutzer beim GBV Bestellungen tätigen?
-   *
-   * @param gbvbestellung
-   *            The gbvbestellung to set.
-   */
-  public void setGbvbestellung(boolean gbvbestellung) {
-    this.gbvbestellung = gbvbestellung;
-  }
+    /**
+     * Darf ein Benutzer beim GBV Bestellungen tätigen?
+     *
+     * @param gbvbestellung
+     *            The gbvbestellung to set.
+     */
+    public void setGbvbestellung(boolean gbvbestellung) {
+        this.gbvbestellung = gbvbestellung;
+    }
 
-  /**
-   * Stimmt die Mailadresse?
-   *
-   * @return Returns the validation.
-   */
-  public boolean isValidation() {
-    return validation;
-  }
+    /**
+     * Stimmt die Mailadresse?
+     *
+     * @return Returns the validation.
+     */
+    public boolean isValidation() {
+        return validation;
+    }
 
-  /**
-   * Stimmt die Mailadresse?
-   *
-   * @param validation
-   *            The validation to set.
-   */
-  public void setValidation(boolean validation) {
-    this.validation = validation;
-  }
+    /**
+     * Stimmt die Mailadresse?
+     *
+     * @param validation
+     *            The validation to set.
+     */
+    public void setValidation(boolean validation) {
+        this.validation = validation;
+    }
 
-  /**
-   * @return Returns the vorname.
-   */
-  public String getVorname() {
-    return vorname;
-  }
+    /**
+     * @return Returns the vorname.
+     */
+    public String getVorname() {
+        return vorname;
+    }
 
-  /**
-   * @param vorname
-   *            The vorname to set.
-   */
-  public void setVorname(String vorname) {
-    this.vorname = vorname;
-  }
+    /**
+     * @param vorname
+     *            The vorname to set.
+     */
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
 
-  public boolean isKontostatus() {
-    return kontostatus;
-  }
+    public boolean isKontostatus() {
+        return kontostatus;
+    }
 
-  public void setKontostatus(boolean kontostatus) {
-    this.kontostatus = kontostatus;
-  }
+    public void setKontostatus(boolean kontostatus) {
+        this.kontostatus = kontostatus;
+    }
 
-  public int getRechte() {
-    return rechte;
-  }
+    public int getRechte() {
+        return rechte;
+    }
 
-  public void setRechte(int rechte) {
-    this.rechte = rechte;
-  }
+    public void setRechte(int rechte) {
+        this.rechte = rechte;
+    }
 
-  public String getGtc() {
-    return gtc;
-  }
+    public String getGtc() {
+        return gtc;
+    }
 
-  public void setGtc(String gtc) {
-    this.gtc = gtc;
-  }
+    public void setGtc(String gtc) {
+        this.gtc = gtc;
+    }
 
-  public String getGtcdate() {
-    return gtcdate;
-  }
+    public String getGtcdate() {
+        return gtcdate;
+    }
 
-  public void setGtcdate(String gtcdate) {
-    this.gtcdate = gtcdate;
-  }
+    public void setGtcdate(String gtcdate) {
+        this.gtcdate = gtcdate;
+    }
 
-  public String getLibrarycard() {
-    return librarycard;
-  }
+    public String getLibrarycard() {
+        return librarycard;
+    }
 
-  public void setLibrarycard(String librarycard) {
-    if (librarycard.length() > 50) { librarycard = librarycard.substring(0, 49); }
-    this.librarycard = librarycard;
-  }
+    public void setLibrarycard(String librarycard) {
+        if (librarycard.length() > 50) { librarycard = librarycard.substring(0, 49); }
+        this.librarycard = librarycard;
+    }
 
 
 }
