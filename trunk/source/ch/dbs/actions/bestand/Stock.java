@@ -562,6 +562,8 @@ public class Stock extends DispatchAction {
                         messageList.add(msg);
                     }
                     break;
+                default:
+                    LOG.error("Stock ckeck BasicParsability - Unpredicted switch case in default: " + column);
                 }
             }
             System.out.println();
@@ -835,6 +837,8 @@ public class Stock extends DispatchAction {
                     b.setInternal(Boolean.valueOf(line));
                 }
                 break;
+            default:
+                LOG.error("Stock getBestand - Unpredicted switch case in default: " + column);
             }
         }
 
@@ -1086,6 +1090,8 @@ public class Stock extends DispatchAction {
                 Text loc = new Text(cn, new Texttyp("Standorte", cn),
                         ui.getKonto().getId(), b.getStandort().getInhalt());
                 if (loc.getId() == null) { // save a new location for this account
+                    b.getStandort().setKonto(ui.getKonto());
+                    b.getStandort().setTexttyp(new Texttyp("Standorte", cn));
                     loc.saveNewText(cn, b.getStandort());
                     // get back the saved location
                     loc = new Text(cn, new Texttyp("Standorte", cn),
