@@ -32,7 +32,7 @@ public class SimpleLineReader {
      *
      * @param anIS InputStream
      */
-    public SimpleLineReader(InputStream anIS) {
+    public SimpleLineReader(final InputStream anIS) {
         s = new DataInputStream(anIS);
     }
 
@@ -43,7 +43,7 @@ public class SimpleLineReader {
      * @throws IOException
      */
     public String readLine() throws IOException {
-        char[] buffer = new char[100];
+        final char[] buffer = new char[100];
         int offset = 0;
         byte thisByte;
 
@@ -67,7 +67,7 @@ public class SimpleLineReader {
                     break;
                 }
             }
-        } catch (EOFException e) {
+        } catch (final EOFException e) {
             if (offset == 0) { return null; }
         }
 

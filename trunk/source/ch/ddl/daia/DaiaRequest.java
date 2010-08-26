@@ -50,11 +50,11 @@ public class DaiaRequest {
             final NodeList listOfInstitution = doc.getElementsByTagName("institution");
             final Element institutionElement = (Element) listOfInstitution.item(0);
             final String institution = institutionElement.getAttribute("href");
-            //            System.out.println("Orderlink: " + institution);
+            System.out.println("Orderlink: " + institution);
 
             final NodeList listOfHoldings = doc.getElementsByTagName("document");
             final int totalHoldings = listOfHoldings.getLength();
-            //            System.out.println("Total no of holdings: " + totalHoldings);
+            System.out.println("Total no of holdings: " + totalHoldings);
 
             for (int s = 0; s < listOfHoldings.getLength(); s++) {
 
@@ -78,7 +78,7 @@ public class DaiaRequest {
 
                     final NodeList listOfItems = firstHoldingElement.getElementsByTagName("item");
                     final int totalItems = listOfItems.getLength();
-                    //                    System.out.println("Total no of items: " + totalItems);
+                    System.out.println("Total no of items: " + totalItems);
 
                     for (int n = 0; n < listOfItems.getLength(); n++) {
 
@@ -185,7 +185,7 @@ public class DaiaRequest {
                                 // ------
                                 final NodeList availableLimitationList = availableElement.getElementsByTagName("limitation");
                                 final int totalLimitations = availableLimitationList.getLength();
-                                //                                System.out.println("Total no of limitations: " + totalLimitations);
+                                System.out.println("Total no of limitations: " + totalLimitations);
 
                                 // for (int m = 0; m < availableLimitationList.getLength(); m++) {
                                 //   String deliveryway = "";
@@ -212,15 +212,15 @@ public class DaiaRequest {
                 }
             }
 
-        } catch (SAXParseException e) {
+        } catch (final SAXParseException e) {
             LOG.error(e.toString());
 
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             LOG.error(e.toString());
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.toString());
-        } catch (ParserConfigurationException e) {
+        } catch (final ParserConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -234,7 +234,7 @@ public class DaiaRequest {
         if (urn.contains(":")) {
             try {
                 id = Long.valueOf(urn.substring(urn.lastIndexOf(':') + 1));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("resolveUrn(String urn): " + e.toString());
             }
         }

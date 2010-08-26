@@ -42,11 +42,11 @@ public class RemoveNullValuesFromObject {
     public Object remove(final Object o) {
 
         final Method[] methods = o.getClass().getMethods();
-        Object[] setvalue = new Object[1];
+        final Object[] setvalue = new Object[1];
         setvalue[0] = "";
 
         // Alle Methoden der Klasse durchlaufen
-        for (Method m : methods) {
+        for (final Method m : methods) {
             // Alle getter welche einen String zurückgeben behandeln
             if (m.getGenericReturnType() ==  "".getClass()) {
                 try {
@@ -59,7 +59,7 @@ public class RemoveNullValuesFromObject {
                         final Method methode = o.getClass().getMethod("set" + membervar, "".getClass());
                         methode.invoke(o, setvalue);
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("RemoveNullvaluesFrom.simplyGettterSetterMethods: " + e.toString());
                 }
             }

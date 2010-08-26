@@ -46,7 +46,7 @@ public class TimeZones {
         return timeZonesAsString;
     }
 
-    private static final void initTimeZones() {
+    private static void initTimeZones() {
         timeZs = new ArrayList<TimeZone>();
         final String[] timeZoneIds = TimeZone.getAvailableIDs();
         for (final String id : timeZoneIds) {
@@ -61,7 +61,7 @@ public class TimeZones {
         });
     }
 
-    private static final void initTimeZonesAsStrings() {
+    private static void initTimeZonesAsStrings() {
         timeZonesAsString = new TreeSet<String>();
         final String[] timeZoneIds = TimeZone.getAvailableIDs();
         for (final String id : timeZoneIds) {

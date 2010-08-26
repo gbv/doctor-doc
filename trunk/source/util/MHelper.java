@@ -61,7 +61,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
 
     public void sendErrorMail(final String subject, final String message) {
-        String[] recipients = new String[1];
+        final String[] recipients = new String[1];
         recipients[0] = ERROR_EMAIL;
         final String from = SYSTEM_EMAIL;
         sendMail(recipients, subject, message, from, PRIORITY);
@@ -83,7 +83,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     public void sendMail(final String[] to, final Message msg, final String prio) {
         // set the from and to address
         try {
-            InternetAddress[] addressTo = new InternetAddress[to.length];
+            final InternetAddress[] addressTo = new InternetAddress[to.length];
             for (int i = 0; i < to.length; i++) {
                 addressTo[i] = new InternetAddress(to[i]);
             }
@@ -119,13 +119,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
             bus.sendMessage(m, addressTo); // An diese Adressen senden
             bus.close();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("sendMail(String[] to, Message msg, String prio): " + e.toString());
             // Critical Error-Message
             String msgText = null; // versucht zu übermitteln in welchen Situationen Versendfehler auftreten
             try {
                 msgText = "sendMail(String[] to, Message msg, String prio)" + "\n" + msg.getContent().toString();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOG.error("coudn't send additional errormessage by email: " + ex.toString());
             }
             sendError(e + "\n" + msgText);
@@ -144,7 +144,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     public void sendMailReplyTo(final String[] to, final Message msg, final String replyto, final String prio) {
         // set the from and to address
         try {
-            InternetAddress[] addressTo = new InternetAddress[to.length];
+            final InternetAddress[] addressTo = new InternetAddress[to.length];
             for (int i = 0; i < to.length; i++) {
                 addressTo[i] = new InternetAddress(to[i]);
             }
@@ -181,14 +181,14 @@ public class MHelper extends AbstractReadSystemConfigurations {
             bus.sendMessage(m, addressTo); // An diese Adressen senden
             bus.close();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String[] to, Message msg, String replyto, String prio): " + e.toString());
             // Critical Error-Message
             String msgText = null; // versucht zu übermitteln in welchen Situationen Versendfehler auftreten
             try {
                 msgText = "sendMailReplyTo(String[] to, Message msg, String replyto, String prio)"
                     + "\n" + msg.getContent().toString();
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOG.error("coudn't send additional errormessage by email: " + ex.toString());
             }
             sendError(e + "\n" + msgText);
@@ -234,7 +234,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             msg.setContent(message, "text/plain");
 
             sendMail(recipients , msg, prio);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("String recipients[], String subject, String message, String from, String prio: " + e.toString());
             // Critical Error-Message
             sendError(e + "\n" + "sendMail(String recipients[], String subject, "
@@ -273,7 +273,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
             // set the from and to address
             final InternetAddress addressFrom = new InternetAddress(SYSTEM_EMAIL);
-            InternetAddress[] addressReplyTo = new InternetAddress[1];
+            final InternetAddress[] addressReplyTo = new InternetAddress[1];
             addressReplyTo[0] = new InternetAddress(replyto);
             msg.setFrom(addressFrom);
             msg.setReplyTo(addressReplyTo);
@@ -284,7 +284,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             msg.setContent(message, "text/plain");
 
             sendMailReplyTo(recipients , msg, replyto, prio);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String recipients[], String subject, String message, "
                     + "String replyto, String prio: " + e.toString());
             // Critical Error-Message
@@ -303,11 +303,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
      */
     public void sendError(final Exception e) {
         try {
-            String[] to = new String[1];
+            final String[] to = new String[1];
             to[0] = ERROR_EMAIL;
             final String subject = "!!! In " + APPLICATION_NAME + " ist ein Fehler aufgetreten !!! ";
             sendMail(to, subject, e.toString());
-        } catch (Exception ee) {
+        } catch (final Exception ee) {
             LOG.error("sendError(Exception e): " + ee.toString());
         }
     }
@@ -322,11 +322,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
      */
     public void sendError(final String e) {
         try {
-            String[] to = new String[1];
+            final String[] to = new String[1];
             to[0] = ERROR_EMAIL;
             final String subject = "!!! In " + APPLICATION_NAME + " ist ein Fehler aufgetreten !!! ";
             sendMail(to, subject, e);
-        } catch (Exception ee) {
+        } catch (final Exception ee) {
             LOG.error("sendError(String e): " + ee.toString());
         }
     }
@@ -340,10 +340,10 @@ public class MHelper extends AbstractReadSystemConfigurations {
      */
     public void sendError(final String subject, final Exception e) {
         try {
-            String[] to = new String[1];
+            final String[] to = new String[1];
             to[0] = ERROR_EMAIL;
             sendMail(to, subject, e.toString());
-        } catch (Exception ee) {
+        } catch (final Exception ee) {
             LOG.error("sendError(String subject, Exception e): " + ee.toString());
         }
     }
@@ -375,7 +375,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
             folder = store.getFolder(folder_);
             folder.open(Folder.READ_ONLY);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getPop3Folder(String host, String bn, String pw, String folder_): " + e.toString());
             sendError(e);
         }
@@ -395,14 +395,14 @@ public class MHelper extends AbstractReadSystemConfigurations {
                 //                System.out.println("Subject: " + m.getSubject());
                 //                System.out.println("Contenttype: " + m.getContentType());
 
-                String[] to = new String[1];
+                final String[] to = new String[1];
                 to[0] = SYSTEM_EMAIL;
                 sendMail(to, m);
                 System.out.println("\012Die Mail mit dem Betreff " + m.getSubject()
                         + " wurde erfolgreich an " + to[0] + " versendet\012\012");
             }
             inbox.close(true);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("process(): " + e.toString());
             sendError(e);
         }

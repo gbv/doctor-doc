@@ -83,10 +83,10 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
      * @param k
      * @param faxId
      */
-    public void forwardFaxToMail(Konto k, String faxId) throws FaxHelperException {
+    public void forwardFaxToMail(final Konto k, final String faxId) throws FaxHelperException {
         //      //Post Methode vorbereiten um einen Fax abzuholen
 
-        String link = "https://api.popfax.com/api-server.php";
+        final String link = "https://api.popfax.com/api-server.php";
         String data = "";
         URLConnection conn = null;
         OutputStreamWriter wr = null;
@@ -104,7 +104,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
 
             DisableSSLCertificateCheckUtil.disableChecks();
             //       Send data
-            URL url = new URL(link);
+            final URL url = new URL(link);
             conn = url.openConnection();
             conn.setDoOutput(true);
             wr = new OutputStreamWriter(conn
@@ -112,14 +112,14 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             wr.write(data);
             wr.flush();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // Critical Error-Message
-            MHelper m = new MHelper();
-            String f = "Beim Fax weiterleiten ist ein Fehler während dem Kontaktieren von Popfax aufgetreten: \n"
+            final MHelper m = new MHelper();
+            final String f = "Beim Fax weiterleiten ist ein Fehler während dem Kontaktieren von Popfax aufgetreten: \n"
                 + e.toString();
             m.sendError(f);
         } finally {
-            try { wr.close(); } catch (IOException e) {
+            try { wr.close(); } catch (final IOException e) {
                 LOG.error("forwardFaxToMail, while closing OutputStreamWriter: " + e.toString());
             }
         }
@@ -134,23 +134,23 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
         //    </API_RESULT>
 
         //Mail vorbereiten
-        InternetAddress[] addressTo = new InternetAddress[1];
+        final InternetAddress[] addressTo = new InternetAddress[1];
         try {
             addressTo[0] = new InternetAddress(k.getDbsmail());
             InternetAddress[] addressFrom = null;
             addressFrom = InternetAddress.parse(SYSTEM_EMAIL);
 
             //          Nachricht erstellen
-            MHelper mh = new MHelper();
-            Session session = mh.getSession();
-            Message m = new MimeMessage(session);
+            final MHelper mh = new MHelper();
+            final Session session = mh.getSession();
+            final Message m = new MimeMessage(session);
             m.setFrom(addressFrom[0]); // From setzen
             m.setRecipients(Message.RecipientType.TO, addressTo);
 
-            MimeMultipart mcontent = new MimeMultipart("multipart"); //Definition dass Mail Anhänge hat
+            final MimeMultipart mcontent = new MimeMultipart("multipart"); //Definition dass Mail Anhänge hat
 
             //Text der Nachricht
-            MimeBodyPart text = new MimeBodyPart();
+            final MimeBodyPart text = new MimeBodyPart();
             text.setText("Sehr geehrter Kunde\nSehr geehrte Kundin\n\nAnbei ein von Ihnen per Fax bestellter Artikel "
                     + "im PDF-Format." + "\n\nFuer Reklamationen wenden Sie sich bitte direkt an den Lieferanten "
                     + "(z.B. Subito) oder an Ihre zustaendige Bibliothek: " + k.getBibliotheksmail() + "\n\nFuer die "
@@ -166,9 +166,9 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             mcontent.addBodyPart(text);
 
             //Fax anhängen
-            InputStreamDataSource isds = new InputStreamDataSource(faxId + ".pdf", "application/pdf", conn
+            final InputStreamDataSource isds = new InputStreamDataSource(faxId + ".pdf", "application/pdf", conn
                     .getInputStream());
-            BodyPart faxattachement = new MimeBodyPart();
+            final BodyPart faxattachement = new MimeBodyPart();
             faxattachement.setDataHandler(new DataHandler(isds));
             faxattachement.setHeader("MIME-Version" , "1.0");
             faxattachement.setHeader("Content-Type" , "application/pdf");
@@ -182,19 +182,19 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             m.setHeader("Content-Type" , mcontent.getContentType());
             m.setHeader("X-Mailer", "Java-Mailer V 1.60217733");
             m.setSentDate(new Date()); // Sendedatum setzen
-            String subject = "Artikellieferung Nr. " + faxId + " - Fax to Email";
+            final String subject = "Artikellieferung Nr. " + faxId + " - Fax to Email";
             m.setSubject(subject); // Betreff setzen
             m.saveChanges();
 
 
-            SimpleLineReader slr = new SimpleLineReader(mcontent.getBodyPart(1).getDataHandler().getInputStream());
+            final SimpleLineReader slr = new SimpleLineReader(mcontent.getBodyPart(1).getDataHandler().getInputStream());
 
             if (!slr.readLine().contains("<?xml version=\"1.0\" encoding=\"utf-8\"?>")) {
                 // bei gültigem Fax ist erste Zeile: %PDF-1.2
                 //              System.out.println("gültiger Fax");
 
                 //          Mail versenden
-                Transport bus = session.getTransport("smtp");
+                final Transport bus = session.getTransport("smtp");
                 bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
                 bus.sendMessage(m, addressTo); // An diese Adressen senden
                 bus.close();
@@ -202,21 +202,21 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             } else {
                 // bei Fehler kommt ein XML zurück
                 System.out.println("ungültiger Fax");
-                FaxHelperException ex = new FaxHelperException();
+                final FaxHelperException ex = new FaxHelperException();
                 throw ex;
             }
 
-        } catch (AddressException e) {
+        } catch (final AddressException e) {
             // Critical Error-Message
-            MHelper mh = new MHelper();
+            final MHelper mh = new MHelper();
             mh.sendError("Fehler in der Mailadresse des Kontos " + k.getBibliotheksname(), e);
-        } catch (MessagingException e) {
+        } catch (final MessagingException e) {
             // Critical Error-Message
-            MHelper mh = new MHelper();
+            final MHelper mh = new MHelper();
             mh.sendError("Fehler beim im FaxHelper.forwardFaxToMail des Kontos " + k.getBibliotheksname(), e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // Critical Error-Message
-            MHelper mh = new MHelper();
+            final MHelper mh = new MHelper();
             mh.sendError("Fehler beim Fax als Attachement anhängen. Kunde: " + k.getBibliotheksname(), e);
         }
     }
@@ -227,7 +227,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
      * @param
      * @return
      */
-    public void retrieveIncomingFaxList(Konto k) {
+    public void retrieveIncomingFaxList(final Konto k) {
 
         // action=retrieve_incoming_fax_list [int?]
         // username=email [popfax-email | String]
@@ -249,9 +249,9 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
         // specified period, the system will return corresponding error. In such cases we
         // recommend to decrease the time interval and try again.
 
-        Fax f = new Fax();
+        final Fax f = new Fax();
 
-        String link = "https://api.popfax.com/api-server.php";
+        final String link = "https://api.popfax.com/api-server.php";
         String data = "";
         try {
             data = URLEncoder.encode("action", "UTF-8") + "="
@@ -264,17 +264,17 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             + URLEncoder.encode("2009-10-01 00:00:00", "UTF-8");
             data += "&" + URLEncoder.encode("dateTo", "UTF-8") + "="
             + URLEncoder.encode("2010-12-31 00:00:00", "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
+        } catch (final UnsupportedEncodingException e1) {
             // Critical Error-Message
             e1.printStackTrace();
-            MHelper mh = new MHelper();
+            final MHelper mh = new MHelper();
             mh.sendErrorMail("Faxserver Abfrage-URL konnte nicht erstellt werden", "retrieve_incoming_fax_list:  - "
                     + e1.toString() + " KID: " + k.getId() + "Konto: " + k.getBibliotheksname());
 
         }
 
 
-        Http http = new Http();
+        final Http http = new Http();
 
         String contents = http.getWebcontent(link, data);
 
@@ -320,8 +320,8 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
                     //Fax per Mail weiterleiten, wenn kein Spam von Popfax (+33170447011 und +4969975392378)
                     if (!f.getFrom().equalsIgnoreCase("Popfax.com") && !f.getFrom().contains("+331704")
                             && !f.getFrom().contains("+4969975392378")) {
-                        FaxHelper fh = new FaxHelper();
-                        Lock lock = new ReentrantLock();
+                        final FaxHelper fh = new FaxHelper();
+                        final Lock lock = new ReentrantLock();
                         lock.lock();
                         try {
                             synchronized (fh) {
@@ -332,11 +332,11 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
                                 try {
                                     fh.forwardFaxToMail(k, f.getPopfaxid());
                                     f.saveNewFax();
-                                } catch (FaxHelperException e) {
+                                } catch (final FaxHelperException e) {
                                     // Critical Error-Message
                                     LOG.error(e.toString());
-                                    MHelper mh = new MHelper();
-                                    StringBuffer bf = new StringBuffer();
+                                    final MHelper mh = new MHelper();
+                                    final StringBuffer bf = new StringBuffer();
                                     bf.append("Fehler Faxserver - ");
                                     bf.append(e.toString());
                                     bf.append(" KID: ");
@@ -349,11 +349,11 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
 
 
                             }
-                        } catch (InterruptedException e) {
+                        } catch (final InterruptedException e) {
                             // Critical Error-Message
                             LOG.error(e.toString());
-                            MHelper mh = new MHelper();
-                            StringBuffer bf = new StringBuffer();
+                            final MHelper mh = new MHelper();
+                            final StringBuffer bf = new StringBuffer();
                             bf.append("Fehler Faxserver - ");
                             bf.append(e.toString());
                             bf.append(" KID: ");
@@ -379,7 +379,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             f.setState("24"); // Faxserver Verbindungsfehler!
             f.saveFaxRunStati(f);
 
-            MHelper mh = new MHelper();
+            final MHelper mh = new MHelper();
             mh.sendErrorMail("!!!Fehler auf Faxserver!!! - Verbindung fehlgeschlagen", "Fehler Faxserver - "
                     + "retrieveIncomingFaxList. API-Antwort:\012" + contents);
         }

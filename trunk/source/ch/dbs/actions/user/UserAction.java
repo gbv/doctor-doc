@@ -1223,14 +1223,21 @@ public final class UserAction extends DispatchAction {
 
             // Suche zusammenstellen
             if (composeSearchLogicTable(sf.getField(), sf.getCondition()).contains("MATCH (artikeltitel,autor,")) {
-                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()) + "AGAINST (? IN BOOLEAN MODE) ");
+                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()));
+                sql.append("AGAINST (? IN BOOLEAN MODE) ");
             } else {
-                sql.append("`" + composeSearchLogicTable(sf.getField(), sf.getCondition()) + "`\040"
-                        + composeSearchLogicCondition(sf.getCondition()) + "\040" + "?" + "\040");
+                sql.append('`');
+                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()));
+                sql.append("`\040");
+                sql.append(composeSearchLogicCondition(sf.getCondition()));
+                sql.append("\040?\040");
             }
 
             // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
-            if (i + 1 < searches.size()) { sql.append(composeSearchLogicBoolean(sf.getBool()) + "\040"); }
+            if (i + 1 < searches.size()) {
+                sql.append(composeSearchLogicBoolean(sf.getBool()));
+                sql.append("\040");
+            }
 
         }
 
@@ -1298,14 +1305,21 @@ public final class UserAction extends DispatchAction {
             // Suche zusammenstellen
             if (composeSearchLogicTable(sf.getField(), sf.getCondition()).contains("MATCH (artikeltitel,autor,")) {
                 // Achtung ist immer als "contains" trunkiert...
-                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()) + "AGAINST (? IN BOOLEAN MODE) ");
+                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()));
+                sql.append("AGAINST (? IN BOOLEAN MODE) ");
             } else {
-                sql.append("`" + composeSearchLogicTable(sf.getField(), sf.getCondition()) + "`\040"
-                        + composeSearchLogicCondition(sf.getCondition()) + "\040" + "?" + "\040");
+                sql.append('`');
+                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()));
+                sql.append("`\040");
+                sql.append(composeSearchLogicCondition(sf.getCondition()));
+                sql.append("\040?\040");
             }
 
             // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
-            if (i + 1 < searches.size()) { sql.append(composeSearchLogicBoolean(sf.getBool()) + "\040"); }
+            if (i + 1 < searches.size()) {
+                sql.append(composeSearchLogicBoolean(sf.getBool()));
+                sql.append("\040");
+            }
 
         }
 

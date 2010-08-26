@@ -44,7 +44,7 @@ public class DaiaXMLResponse {
             of.setIndent(1);
             of.setIndenting(true);
             //    of.setDoctype(null,"daia.dtd");
-            XMLSerializer serializer = new XMLSerializer(out, of);
+            final XMLSerializer serializer = new XMLSerializer(out, of);
 
             // SAX2.0 ContentHandler
             final ContentHandler hd = serializer.asContentHandler();
@@ -83,7 +83,7 @@ public class DaiaXMLResponse {
 
             final String urn = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + ":";
 
-            for (Bestand b : bestaende) {
+            for (final Bestand b : bestaende) {
                 // Document tag
                 atts.clear();
                 atts.addAttribute("", "", "id", CDATA, urn + "holding:" + b.getHolding().getId().toString()); // Holding-ID
@@ -185,11 +185,11 @@ public class DaiaXMLResponse {
             xml = new String(out.toByteArray(), UTF8);
             out.close();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.toString());
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             LOG.error(e.toString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error(e.toString());
         }
 
@@ -303,11 +303,11 @@ public class DaiaXMLResponse {
             xml = new String(out.toByteArray(), UTF8);
             out.close();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.toString());
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             LOG.error(e.toString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error(e.toString());
         }
 

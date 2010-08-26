@@ -61,7 +61,7 @@ public final class DisableSSLCertificateCheckUtil {
      * Host name verifier that does not perform nay checks.
      */
     private static class NullHostnameVerifier implements HostnameVerifier {
-        public boolean verify(String hostname, SSLSession session) {
+        public boolean verify(final String hostname, final SSLSession session) {
             return true;
         }
     }
@@ -74,13 +74,13 @@ public final class DisableSSLCertificateCheckUtil {
 
         try {
             new URL("https://0.0.0.0/").getContent();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // This invocation will always fail, but it will register the
             // default SSL provider to the URL class.
         }
 
-        SSLContext context = SSLContext.getInstance("SSLv3");
-        TrustManager[] trustManagerArray = {new NullX509TrustManager()};
+        final SSLContext context = SSLContext.getInstance("SSLv3");
+        final TrustManager[] trustManagerArray = {new NullX509TrustManager()};
         context.init(null, trustManagerArray, null);
 
         HttpsURLConnection.setDefaultSSLSocketFactory(context

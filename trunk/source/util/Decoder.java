@@ -42,7 +42,7 @@ public class Decoder {
                 try {
                     sb.append((char) Integer.parseInt(s.substring(i + 1, i + 3), 16));
                     i += 2;
-                } catch (Throwable t) {
+                } catch (final Throwable t) {
                     sb.append(c);
                 }
                 break;
@@ -123,7 +123,7 @@ public class Decoder {
 
     public static final String utf8Convert(final String utf8String)
     throws java.io.UnsupportedEncodingException {
-        byte[] bytes = new byte[utf8String.length()];
+        final byte[] bytes = new byte[utf8String.length()];
         for (int i = 0; i < utf8String.length(); i++) {
             bytes[i] = (byte) utf8String.charAt(i);
         }

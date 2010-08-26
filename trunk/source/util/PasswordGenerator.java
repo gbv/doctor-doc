@@ -27,7 +27,7 @@ public class PasswordGenerator {
 
     private static java.util.Random rnd;
 
-    private int passwordLength;
+    private final int passwordLength;
 
     public PasswordGenerator() {
         this(DEFAULT_PW_LENGTH);
@@ -53,7 +53,7 @@ public class PasswordGenerator {
      * @return
      */
     public String getRandomString() {
-        char[] pwd = new char[passwordLength];
+        final char[] pwd = new char[passwordLength];
         for (int i = 0; i < pwd.length; i++) {
             if (rnd.nextInt(36) < 10) {
                 pwd[i] = (char) (48 + rnd.nextInt(10)); // zufällige Zahlenziffer erzeugen
