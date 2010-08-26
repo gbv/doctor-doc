@@ -40,8 +40,6 @@ public class VKontoBenutzer extends AbstractIdEntity {
     private Konto konto;
     private AbstractBenutzer u;
 
-    public VKontoBenutzer() {
-    }
 
     /**
      * Löscht die Kontoverknüpfung eines Benutzers zu einem bestimmten Konto
@@ -50,7 +48,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @return boolean success
      *
      */
-    public boolean deleteSingleKontoEntry(AbstractBenutzer user, Konto k, Connection cn) {
+    public boolean deleteSingleKontoEntry(final AbstractBenutzer user, final Konto k, final Connection cn) {
 
         boolean success = false;
 
@@ -63,14 +61,14 @@ public class VKontoBenutzer extends AbstractIdEntity {
                 pstmt.executeUpdate();
                 success = true;
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("deleteSingleKontoEntry(AbstractBenutzer u, Konto k, Connection cn): " + e.toString());
             } finally {
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -85,21 +83,21 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @param AbstractBenutzer
      * @param Connection cn
      */
-    public void deleteAllKontoEntries(AbstractBenutzer user, Connection cn) {
+    public void deleteAllKontoEntries(final AbstractBenutzer user, final Connection cn) {
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE FROM `v_konto_benutzer` WHERE `UID` =?");
             pstmt.setLong(1, user.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("deleteAllKontoEntries(AbstractBenutzer u, Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -109,7 +107,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * Erstell eine Konto-Benutzer Verknüpfung
      *
      */
-    public boolean save(AbstractBenutzer user, Konto k, Connection cn) {
+    public boolean save(final AbstractBenutzer user, final Konto k, final Connection cn) {
 
         boolean success = false;
 
@@ -123,14 +121,14 @@ public class VKontoBenutzer extends AbstractIdEntity {
                 pstmt.executeUpdate();
                 success = true;
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("save(): " + e.toString());
             } finally {
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -146,7 +144,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @param Long kid
      * @return boolean check
      */
-    public boolean isUserFromKonto(Long kid, Long uid, Connection cn) {
+    public boolean isUserFromKonto(final Long kid, final Long uid, final Connection cn) {
         boolean check = false;
         int anzahl = 0;
 
@@ -164,21 +162,21 @@ public class VKontoBenutzer extends AbstractIdEntity {
 
             if (anzahl > 0) { check = true; }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("isUserFromKonto(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -192,7 +190,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @param AbstractBenutzer b
      * @param Konto k
      */
-    public void setKontoUser(AbstractBenutzer b, Konto k, Connection cn) {
+    public void setKontoUser(AbstractBenutzer b, final Konto k, final Connection cn) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -214,21 +212,21 @@ public class VKontoBenutzer extends AbstractIdEntity {
             pstmt.setLong(2, k.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("setKontoUser(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -240,7 +238,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
      * @param AbstractBenutzer b
      * @param Konto k
      */
-    public void setKontoBibliothekar(AbstractBenutzer b, Konto k, Connection cn) {
+    public void setKontoBibliothekar(AbstractBenutzer b, final Konto k, final Connection cn) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -261,21 +259,21 @@ public class VKontoBenutzer extends AbstractIdEntity {
             pstmt.setLong(2, k.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("setKontoBibliothekar(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -283,9 +281,9 @@ public class VKontoBenutzer extends AbstractIdEntity {
 
     // nötig beim Neuanlegen eines Bibliothekars aus der Registrierungsseite
     // (wird nicht von einem bestehenden User / Admin angelegt, deshalb nicht setUserValues)
-    private PreparedStatement setBibliothekarValues(PreparedStatement pstmt, AbstractBenutzer user, Connection cn)
+    private PreparedStatement setBibliothekarValues(final PreparedStatement pstmt, final AbstractBenutzer user, final Connection cn)
     throws Exception {
-        String berechtigung = "2";
+        final String berechtigung = "2";
         String userBestellung = "0";
         String gbvBestellung = "0";
         String loginOpt = "0";
@@ -349,7 +347,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         return BID;
     }
 
-    public void setBID(Long bid) {
+    public void setBID(final Long bid) {
         BID = bid;
     }
 
@@ -357,7 +355,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         return KID;
     }
 
-    public void setKID(Long kid) {
+    public void setKID(final Long kid) {
         KID = kid;
     }
 
@@ -365,7 +363,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -373,7 +371,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         return u;
     }
 
-    public void setU(AbstractBenutzer u) {
+    public void setU(final AbstractBenutzer u) {
         this.u = u;
     }
 

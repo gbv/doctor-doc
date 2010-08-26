@@ -34,196 +34,196 @@ import org.grlea.log.SimpleLogger;
  */
 public class ZDBIDObject extends AbstractIdEntity {
 
-  private static final SimpleLogger LOG = new SimpleLogger(ZDBIDObject.class);
+    private static final SimpleLogger LOG = new SimpleLogger(ZDBIDObject.class);
 
-private String identifier;
-private String identifier_id;
-private String zdbid;
-private ArrayList<String> issn;
+    private String identifier;
+    private String identifier_id;
+    private String zdbid;
+    private ArrayList<String> issn;
 
-public ZDBIDObject() {
+    public ZDBIDObject() {
 
-}
-
-/**
- * Creates a ZDBID-Object from a connection and and ID
- *
- * @param Long zid
- * @param Connection cn
- * @return ZDBIDObject zo
- */
-public ZDBIDObject(Long zid, Connection cn) {
-
-  PreparedStatement pstmt = null;
-  ResultSet rs = null;
-  try {
-        pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE ZID = ?");
-        pstmt.setLong(1, zid);
-        rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-           this.setRsValues(cn, rs);
-        }
-
-    } catch (Exception e) {
-      LOG.error("ZDBIDObject (Long zid, Connection cn)" + e.toString());
-    } finally {
-      if (rs != null) {
-        try {
-          rs.close();
-        } catch (SQLException e) {
-          System.out.println(e);
-        }
-      }
-      if (pstmt != null) {
-        try {
-          pstmt.close();
-        } catch (SQLException e) {
-          System.out.println(e);
-        }
-      }
-    }
-}
-
-/**
- * Creates a ZDBID-Object from a connection, an identifier and an identifier_id
- *
- * @param String ident
- * @param String ident_id
- * @param Connection cn
- * @return ZDBIDObject zo
- */
-public ZDBIDObject(String ident, String ident_id, Connection cn) {
-
-  PreparedStatement pstmt = null;
-  ResultSet rs = null;
-  try {
-        pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE identifier = ? AND identifier_id = ?");
-        pstmt.setString(1, ident);
-        pstmt.setString(2, ident_id);
-        rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-           this.setRsValues(cn, rs);
-        }
-
-    } catch (Exception e) {
-      LOG.error("ZDBIDObject (String ident, String ident_id, Connection cn)" + e.toString());
-    } finally {
-      if (rs != null) {
-        try {
-          rs.close();
-        } catch (SQLException e) {
-          System.out.println(e);
-        }
-      }
-      if (pstmt != null) {
-        try {
-          pstmt.close();
-        } catch (SQLException e) {
-          System.out.println(e);
-        }
-      }
-    }
-}
-
-/**
- * Creates a ZDBID-Object from a connection and a zdbid
- *
- * @param String zdbid
- * @param Connection cn
- * @return ZDBIDObject zo
- */
-public ZDBIDObject getZdbidObjectFromZdbid(String zdbId, Connection cn) {
-
-    ZDBIDObject zo = new ZDBIDObject();
-
-  PreparedStatement pstmt = null;
-  ResultSet rs = null;
-  try {
-        pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE zdbid = ?");
-        pstmt.setString(1, zdbId);
-        rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-          zo = new ZDBIDObject(cn, rs);
-        }
-
-    } catch (Exception e) {
-      LOG.error("getZdbidObjectFromZdbid (String zdbid, Connection cn): " + e.toString());
-    } finally {
-      if (rs != null) {
-        try {
-          rs.close();
-        } catch (SQLException e) {
-          System.out.println(e);
-        }
-      }
-      if (pstmt != null) {
-        try {
-          pstmt.close();
-        } catch (SQLException e) {
-          System.out.println(e);
-        }
-      }
     }
 
-    return zo;
-}
+    /**
+     * Creates a ZDBID-Object from a connection and and ID
+     *
+     * @param Long zid
+     * @param Connection cn
+     * @return ZDBIDObject zo
+     */
+    public ZDBIDObject(final Long zid, final Connection cn) {
 
-public ZDBIDObject(Connection cn, ResultSet rs) {
-  Issn issnInstance = new Issn();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE ZID = ?");
+            pstmt.setLong(1, zid);
+            rs = pstmt.executeQuery();
 
-  try {
-      this.setId(rs.getLong("ZID"));
-      this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
-      this.setIdentifier(rs.getString("identifier"));
-      this.setIdentifier_id(rs.getString("identifier_id"));
-      this.setZdbid(rs.getString("zdbid"));
-  } catch (Exception e) {
-    LOG.error("ZDBIDObject (Connection cn, ResultSet rs)" + e.toString());
-      }
-}
+            while (rs.next()) {
+                this.setRsValues(cn, rs);
+            }
 
-private void setRsValues(Connection cn, ResultSet rs) throws Exception {
-  Issn issnInstance = new Issn();
-    this.setId(rs.getLong("ZID"));
-    this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
-    this.setIdentifier(rs.getString("identifier"));
-    this.setIdentifier_id(rs.getString("identifier_id"));
-    this.setZdbid(rs.getString("zdbid"));
-}
+        } catch (final Exception e) {
+            LOG.error("ZDBIDObject (Long zid, Connection cn)" + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
 
-public String getIdentifier() {
-  return identifier;
-}
+    /**
+     * Creates a ZDBID-Object from a connection, an identifier and an identifier_id
+     *
+     * @param String ident
+     * @param String ident_id
+     * @param Connection cn
+     * @return ZDBIDObject zo
+     */
+    public ZDBIDObject(final String ident, final String ident_id, final Connection cn) {
 
-public void setIdentifier(String identifier) {
-  this.identifier = identifier;
-}
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE identifier = ? AND identifier_id = ?");
+            pstmt.setString(1, ident);
+            pstmt.setString(2, ident_id);
+            rs = pstmt.executeQuery();
 
-public String getIdentifier_id() {
-  return identifier_id;
-}
+            while (rs.next()) {
+                this.setRsValues(cn, rs);
+            }
 
-public void setIdentifier_id(String identifierId) {
-  identifier_id = identifierId;
-}
+        } catch (final Exception e) {
+            LOG.error("ZDBIDObject (String ident, String ident_id, Connection cn)" + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
 
-public String getZdbid() {
-  return zdbid;
-}
+    /**
+     * Creates a ZDBID-Object from a connection and a zdbid
+     *
+     * @param String zdbid
+     * @param Connection cn
+     * @return ZDBIDObject zo
+     */
+    public ZDBIDObject getZdbidObjectFromZdbid(final String zdbId, final Connection cn) {
 
-public void setZdbid(String zdbid) {
-  this.zdbid = zdbid;
-}
+        ZDBIDObject zo = new ZDBIDObject();
 
-public ArrayList<String> getIssn() {
-  return issn;
-}
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE zdbid = ?");
+            pstmt.setString(1, zdbId);
+            rs = pstmt.executeQuery();
 
-public void setIssn(ArrayList<String> issn) {
-  this.issn = issn;
-}
+            while (rs.next()) {
+                zo = new ZDBIDObject(cn, rs);
+            }
+
+        } catch (final Exception e) {
+            LOG.error("getZdbidObjectFromZdbid (String zdbid, Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return zo;
+    }
+
+    public ZDBIDObject(final Connection cn, final ResultSet rs) {
+        final Issn issnInstance = new Issn();
+
+        try {
+            this.setId(rs.getLong("ZID"));
+            this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
+            this.setIdentifier(rs.getString("identifier"));
+            this.setIdentifier_id(rs.getString("identifier_id"));
+            this.setZdbid(rs.getString("zdbid"));
+        } catch (final Exception e) {
+            LOG.error("ZDBIDObject (Connection cn, ResultSet rs)" + e.toString());
+        }
+    }
+
+    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
+        final Issn issnInstance = new Issn();
+        this.setId(rs.getLong("ZID"));
+        this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
+        this.setIdentifier(rs.getString("identifier"));
+        this.setIdentifier_id(rs.getString("identifier_id"));
+        this.setZdbid(rs.getString("zdbid"));
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(final String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getIdentifier_id() {
+        return identifier_id;
+    }
+
+    public void setIdentifier_id(final String identifierId) {
+        identifier_id = identifierId;
+    }
+
+    public String getZdbid() {
+        return zdbid;
+    }
+
+    public void setZdbid(final String zdbid) {
+        this.zdbid = zdbid;
+    }
+
+    public ArrayList<String> getIssn() {
+        return issn;
+    }
+
+    public void setIssn(final ArrayList<String> issn) {
+        this.issn = issn;
+    }
 
 }

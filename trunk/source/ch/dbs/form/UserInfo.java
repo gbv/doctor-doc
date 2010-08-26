@@ -51,11 +51,11 @@ public final class UserInfo extends ValidatorForm {
         return kontoanz;
     }
 
-    public void setKontoanz(int kontoanz) {
+    public void setKontoanz(final int kontoanz) {
         this.kontoanz = kontoanz;
     }
 
-    public UserInfo(AbstractBenutzer u, Konto k) {
+    public UserInfo(final AbstractBenutzer u, final Konto k) {
         benutzer = u;
         konto = k;
     }
@@ -64,7 +64,7 @@ public final class UserInfo extends ValidatorForm {
         return benutzer;
     }
 
-    public void setBenutzer(AbstractBenutzer benutzer) {
+    public void setBenutzer(final AbstractBenutzer benutzer) {
         this.benutzer = benutzer;
     }
 
@@ -72,7 +72,7 @@ public final class UserInfo extends ValidatorForm {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
         biblioname = konto.getBibliotheksname();
     }
@@ -81,7 +81,7 @@ public final class UserInfo extends ValidatorForm {
         return kontos;
     }
 
-    public void setKontos(List<Konto> kontos) {
+    public void setKontos(final List<Konto> kontos) {
         this.kontos = kontos;
     }
 
@@ -89,7 +89,7 @@ public final class UserInfo extends ValidatorForm {
         return searches;
     }
 
-    public void setSearches(ArrayList<SearchesForm> searches) {
+    public void setSearches(final ArrayList<SearchesForm> searches) {
         this.searches = searches;
     }
 
@@ -97,7 +97,7 @@ public final class UserInfo extends ValidatorForm {
         return biblioname;
     }
 
-    public void setBiblioname(String biblioname) {
+    public void setBiblioname(final String biblioname) {
         this.biblioname = biblioname;
     }
 
@@ -105,7 +105,7 @@ public final class UserInfo extends ValidatorForm {
         return countries;
     }
 
-    public void setCountries(List<Countries> countries) {
+    public void setCountries(final List<Countries> countries) {
         this.countries = countries;
     }
 
@@ -113,7 +113,7 @@ public final class UserInfo extends ValidatorForm {
         return keepordervalues;
     }
 
-    public void setKeepordervalues(boolean keepordervalues) {
+    public void setKeepordervalues(final boolean keepordervalues) {
         this.keepordervalues = keepordervalues;
     }
 
@@ -121,7 +121,7 @@ public final class UserInfo extends ValidatorForm {
         return keepordervalues2;
     }
 
-    public void setKeepordervalues2(boolean keepordervalues2) {
+    public void setKeepordervalues2(final boolean keepordervalues2) {
         this.keepordervalues2 = keepordervalues2;
     }
 
@@ -129,7 +129,7 @@ public final class UserInfo extends ValidatorForm {
         return defaultstandortid;
     }
 
-    public void setDefaultstandortid(Long defaultstandortid) {
+    public void setDefaultstandortid(final Long defaultstandortid) {
         this.defaultstandortid = defaultstandortid;
     }
 

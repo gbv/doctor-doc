@@ -64,30 +64,30 @@ public final class ILVReport extends DispatchAction {
     /**
      * ILV-Report Formular Daten vorbereiten
      */
-    public ActionForward prepareFormIlv(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward prepareFormIlv(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        OrderForm pageForm = (OrderForm) fm;
-        Auth auth = new Auth();
+        final OrderForm pageForm = (OrderForm) fm;
+        final Auth auth = new Auth();
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         String forward = "failure";
         if (auth.isLogin(rq)) {
             forward = "success";
 
-            Text cn = new Text();
+            final Text cn = new Text();
 
             try {
 
                 rq.setAttribute("orderform", pageForm);
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("uebersicht");
                 rq.setAttribute("ActiveMenus", mf);
 
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 forward = "failure";
 
-                ErrorMessage em = new ErrorMessage();
+                final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute("errormessage", em);
@@ -97,10 +97,10 @@ public final class ILVReport extends DispatchAction {
                 cn.close();
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
         return mp.findForward(forward);
@@ -109,30 +109,30 @@ public final class ILVReport extends DispatchAction {
     /**
      * Erstelt ein PDF- Report (ILV-Bestellung)
      */
-    public ActionForward ilv(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward ilv(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         String forward = "failure";
-        Auth auth = new Auth();
+        final Auth auth = new Auth();
 
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
                 // Klassen vorbereiten
-                IlvReportForm ilvf = (IlvReportForm) fm;
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                ServletOutputStream servletOutputStream = null;
-                RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
-                Konto k = (Konto) nullValues.remove(ui.getKonto());
+                final IlvReportForm ilvf = (IlvReportForm) fm;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                ServletOutputStream out = null;
+                final RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
+                final Konto k = (Konto) nullValues.remove(ui.getKonto());
 
-                ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
+                final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
                 tf.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
-                Calendar cal = new GregorianCalendar();
+                final Calendar cal = new GregorianCalendar();
                 cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
 
                 // Labels vorbereiten
-                ConcurrentHashMap<String, String> values = new ConcurrentHashMap<String, String>();
+                final ConcurrentHashMap<String, String> values = new ConcurrentHashMap<String, String>();
                 values.put("reporttitle", ilvf.getReporttitle() + " "
                         + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
                 values.put("labelfrom", ilvf.getLabelfrom());
@@ -182,46 +182,46 @@ public final class ILVReport extends DispatchAction {
                         + ": " + ReadSystemConfigurations.getServerWelcomepage());
 
                 //Reportauswahl, Verbindung zum Report aufbauen
-                InputStream reportStream = this.getServlet().getServletContext().getResourceAsStream(
+                final InputStream reportStream = this.getServlet().getServletContext().getResourceAsStream(
                 "reports/ILV-Form.jasper");
 
                 //Ausgabestream vorbereiten
                 rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
                 try {
-                    servletOutputStream = rp.getOutputStream();
+                    out = rp.getOutputStream();
                     //Daten dem Report übergeben
-                    ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
-                    HashMap<String, String> hm = new HashMap<String, String>();
+                    final ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
+                    final HashMap<String, String> hm = new HashMap<String, String>();
                     hm.put("Fake", "Daten damit Report nicht leer wird..");
                     al.add(hm);
-                    JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
+                    final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
 
-                    JasperRunManager.runReportToPdfStream(reportStream, servletOutputStream, values, ds);
-                } catch (Exception e) {
+                    JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);
+                } catch (final Exception e) {
                     // ServletOutputStream konnte nicht erstellt werden
                     LOG.error("ILV-Report konnte nicht erstellt werden: " + e.toString());
                 } finally {
                     // Report an den Browser senden
                     try {
-                        servletOutputStream.flush();
-                        servletOutputStream.close();
-                    } catch (IOException e) {
+                        out.flush();
+                        out.close();
+                    } catch (final IOException e) {
                         LOG.error("orderspdf: " + e.toString());
                     }
                     forward = null;
                 }
 
             } else {
-                ErrorMessage em = new ErrorMessage(
+                final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
                 "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage(
+            final ErrorMessage em = new ErrorMessage(
                     "error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }

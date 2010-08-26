@@ -31,37 +31,37 @@ public final class Message extends ActionForm {
     public Message() {
 
     }
-    public Message(String msg, String mLink) {
+    public Message(final String msg, final String mLink) {
         this.message = msg;
         this.link = mLink;
     }
 
-    public Message(String msg, String systemMsg, String mLink) {
+    public Message(final String msg, final String systemMsg, final String mLink) {
         this.message = msg;
         this.systemMessage = systemMsg;
         this.link = mLink;
     }
 
 
-    public Message(String msg) {
+    public Message(final String msg) {
         this.message = msg;
     }
     public String getMessage() {
         return message;
     }
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
     public String getLink() {
         return link;
     }
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
     public String getSystemMessage() {
         return systemMessage;
     }
-    public void setSystemMessage(String systemMessage) {
+    public void setSystemMessage(final String systemMessage) {
         this.systemMessage = systemMessage;
     }
 

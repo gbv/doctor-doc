@@ -44,28 +44,28 @@ public final class GtcAction extends DispatchAction {
      *
      * @author Markus Fischer
      */
-    public ActionForward accept(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward accept(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        OrderForm pageForm = (OrderForm) form; // falls Artikelangaben aus Linkresolver vorhanden
+        final OrderForm pageForm = (OrderForm) form; // falls Artikelangaben aus Linkresolver vorhanden
 
         String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        final Text cn = new Text();
+        final Auth auth = new Auth();
         // Sicherstellen, dass die Action nur von Benutzern nach Prüfung aufgerufen wird
         if (auth.isLogin(rq)) {
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            Gtc gtc = new Gtc();
-            Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
+            final Gtc gtc = new Gtc();
+            final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
 
-            Date d = new Date(); // aktuelles Datum setzen
-            ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String datum = fmt.format(d, ui.getKonto().getTimezone());
+            final Date d = new Date(); // aktuelles Datum setzen
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String datum = fmt.format(d, ui.getKonto().getTimezone());
 
             ui.getBenutzer().setGtc(t.getInhalt());
             ui.getBenutzer().setGtcdate(datum);
-            AbstractBenutzer b = new AbstractBenutzer();
+            final AbstractBenutzer b = new AbstractBenutzer();
             b.updateUser(ui.getBenutzer(), ui.getKonto(), cn.getConnection());
             rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
 
@@ -78,10 +78,10 @@ public final class GtcAction extends DispatchAction {
 
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
 
@@ -94,7 +94,7 @@ public final class GtcAction extends DispatchAction {
             if (forward.equals("success") && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
         }
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
         rq.setAttribute("ActiveMenus", mf);
 
@@ -102,21 +102,21 @@ public final class GtcAction extends DispatchAction {
         return mp.findForward(forward);
     }
 
-    public ActionForward decline(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward decline(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         String forward = "failure";
-        Auth auth = new Auth();
+        final Auth auth = new Auth();
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
 
         if (auth.isLogin(rq)) {
             forward = "decline";
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
         return mp.findForward(forward);

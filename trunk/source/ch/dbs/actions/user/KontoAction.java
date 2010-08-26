@@ -67,36 +67,41 @@ public final class KontoAction extends DispatchAction {
     // This link is used to check if, the GBV credentials are valid
     private static final String GBV_LINK = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=";
     private static final String GBV_REDIRECT =  "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2FCOPY%3FPPN%3D185280552%26LANGCODE%3DDU";
+    private static final String FAILURE = "failure";
+    private static final String SUCCESS = "success";
+    private static final String ACTIVEMENUS = "ActiveMenus";
+    private static final String TIMEZONES = "timezones";
+    private static final String ERRORMESSAGE = "errormessage";
 
     /**
      * Hinzufügen eines neuen Benutzers vorbereiten
      */
-    public ActionForward prepareNewKonto(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward prepareNewKonto(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
+        String forward = FAILURE;
+        final Text cn = new Text();
 
-        TimeZones tz = new TimeZones();
-        TreeSet<String> setTZ = tz.getTimeZonesAsString();
-        rq.setAttribute("timezones", setTZ);
+        final TimeZones tz = new TimeZones();
+        final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+        rq.setAttribute(TIMEZONES, setTZ);
 
-        KontoForm kf = new KontoForm();
-        Countries countriesInstance = new Countries();
+        final KontoForm kf = new KontoForm();
+        final Countries countriesInstance = new Countries();
 
-        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
         kf.setCountries(allPossCountries);
-        forward = "success";
+        forward = SUCCESS;
         rq.setAttribute("kontoform", kf);
 
         cn.close();
 
         //Navigation: Tab Neues Konto aktiv schalten
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("newkonto");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
         return mp.findForward(forward);
     }
@@ -104,22 +109,22 @@ public final class KontoAction extends DispatchAction {
     /**
      * neues Konto anlegen
      */
-    public ActionForward addNewKonto(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward addNewKonto(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("newkonto");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
-        String forward = "success";
-        KontoForm kf = (KontoForm) fm;
-        Konto k = new Konto(kf); //Konto erstellen und mit Values aus KontoForm abfuellen
-        Check check = new Check();
-        Text cn = new Text();
-        Countries countriesInstance = new Countries();
+        String forward = SUCCESS;
+        final KontoForm kf = (KontoForm) fm;
+        final Konto k = new Konto(kf); //Konto erstellen und mit Values aus KontoForm abfuellen
+        final Check check = new Check();
+        final Text cn = new Text();
+        final Countries countriesInstance = new Countries();
         // GBV-Thread-Management
-        ThreadedWebcontent gbvthread = new ThreadedWebcontent();
-        ExecutorService executor = Executors.newCachedThreadPool();
+        final ThreadedWebcontent gbvthread = new ThreadedWebcontent();
+        final ExecutorService executor = Executors.newCachedThreadPool();
         Future<String> gbvcontent = null;
 
         if (ReadSystemConfigurations.isAllowRegisterLibraryAccounts()) {
@@ -136,7 +141,7 @@ public final class KontoAction extends DispatchAction {
 
                 // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
                 if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
-                    StringBuffer gbvLink = new StringBuffer(GBV_LINK);
+                    final StringBuffer gbvLink = new StringBuffer(GBV_LINK);
                     gbvLink.append(kf.getGbvbenutzername());
                     gbvLink.append("&PASSWORD=");
                     gbvLink.append(kf.getGbvpasswort());
@@ -158,26 +163,26 @@ public final class KontoAction extends DispatchAction {
                         } else {
                             forward = "subitofailed"; // Pfad i.O.
                             kf.setMessage("error.gbv_values");
-                            TimeZones tz = new TimeZones();
-                            TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                            rq.setAttribute("timezones", setTZ);
-                            List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                            final TimeZones tz = new TimeZones();
+                            final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                            rq.setAttribute(TIMEZONES, setTZ);
+                            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                     .getConnection());
                             kf.setCountries(allPossCountries);
                             rq.setAttribute("kontoform", kf);
                         }
-                    } catch (TimeoutException e) {
+                    } catch (final TimeoutException e) {
                         LOG.info("GBV-Timeout: " + e.toString());
                         forward = "subitofailed"; // Pfad i.O.
                         kf.setMessage("error.gbv_timeout");
-                        TimeZones tz = new TimeZones();
-                        TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                        rq.setAttribute("timezones", setTZ);
-                        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                        final TimeZones tz = new TimeZones();
+                        final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                        rq.setAttribute(TIMEZONES, setTZ);
+                        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                 .getConnection());
                         kf.setCountries(allPossCountries);
                         rq.setAttribute("kontoform", kf);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         LOG.error("GBV-Thread failed in modifykonto: " + e.toString());
                     } finally {
                         // ungefährlich, falls der Task schon beendet ist.
@@ -198,11 +203,11 @@ public final class KontoAction extends DispatchAction {
                 forward = "subitofailed";
                 kf.setMessage("error.values");
 
-                TimeZones tz = new TimeZones();
-                TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                rq.setAttribute("timezones", setTZ);
+                final TimeZones tz = new TimeZones();
+                final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                rq.setAttribute(TIMEZONES, setTZ);
 
-                List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
                 kf.setCountries(allPossCountries);
 
                 rq.setAttribute("kontoform", kf);
@@ -212,11 +217,11 @@ public final class KontoAction extends DispatchAction {
             forward = "subitofailed";
             kf.setMessage("error.berechtigung");
 
-            TimeZones tz = new TimeZones();
-            TreeSet<String> setTZ = tz.getTimeZonesAsString();
-            rq.setAttribute("timezones", setTZ);
+            final TimeZones tz = new TimeZones();
+            final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+            rq.setAttribute(TIMEZONES, setTZ);
 
-            List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
 
             rq.setAttribute("kontoform", kf);
@@ -229,32 +234,32 @@ public final class KontoAction extends DispatchAction {
     /**
      * Neuen Bibliothekar anlegen und mit Konto verknüpfen
      */
-    public ActionForward addNewBibliothekar(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward addNewBibliothekar(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Check check = new Check();
-        Bibliothekar u = new Bibliothekar();
-        UserForm uf = (UserForm) fm;
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Check check = new Check();
+        final Bibliothekar u = new Bibliothekar();
+        final UserForm uf = (UserForm) fm;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("newkonto");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
         // Seite kann nur aufgerufen werden, wenn vorher ein Konto angelegt wurde und kein userinfo im rq ist...
         if (auth.isKontoform(rq)
                 && ReadSystemConfigurations.isAllowRegisterLibraryAccounts()) {
 
-            KontoForm kf = (KontoForm) rq.getSession().getAttribute("kontoform");   // Konto aus Kontoform holen
-            Konto k = new Konto(kf);
+            final KontoForm kf = (KontoForm) rq.getSession().getAttribute("kontoform");   // Konto aus Kontoform holen
+            final Konto k = new Konto(kf);
 
             if (kf.getEzbid().contains("bibid=")) { // Prüfung, ob EZB-ID vorhanden
-                String ezb = kf.getEzbid().substring(
+                final String ezb = kf.getEzbid().substring(
                         kf.getEzbid().indexOf("bibid=") + 6);
                 if (ezb.contains("&")) { // falls EZB-ID mitten im String
-                    k.setEzbid(ezb.substring(0, ezb.indexOf("&")));
+                    k.setEzbid(ezb.substring(0, ezb.indexOf('&')));
                 } else { // falls EZB-ID am Ende des Strings
                     k.setEzbid(ezb);
                 }
@@ -329,28 +334,28 @@ public final class KontoAction extends DispatchAction {
                 u.setLand(uf.getLand());
                 u.setLoginopt(true); // Login erlaubt
                 u.setKontostatus(true); // Userkonto aktiv
-                Encrypt e = new Encrypt();
+                final Encrypt e = new Encrypt();
                 u.setPassword(e.makeSHA(uf.getPassword()));
                 u.setUserbestellung(true); // Bestellungen bei Subito erlaubt
                 u.setGbvbestellung(true); // Bestellungen beim GBV erlaubt
-                u.setKontovalidation(uf.getKontovalidation());
+                u.setKontovalidation(uf.isKontovalidation());
                 u.setRechte(2); // Berechtigung Bibliothekar
 
-                Date d = new Date();
-                ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String datum = fmt.format(d, k.getTimezone());
+                final Date d = new Date();
+                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                final String datum = fmt.format(d, k.getTimezone());
                 u.setDatum(datum);
 
                 // Konto abspeichern und wieder holen wegen KID
                 k.setId(k.save(cn.getConnection()));
-                AbstractBenutzer b = new AbstractBenutzer();
+                final AbstractBenutzer b = new AbstractBenutzer();
                 b.saveNewUser(u, k, cn.getConnection());
-                VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
+                final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
                 vKontoBenutzer.setKontoBibliothekar(u, k, cn.getConnection());
                 forward = "weiter";
 
                 // Nachricht über neues Konto abschicken
-                StringBuffer message = new StringBuffer(
+                final StringBuffer message = new StringBuffer(
                         "There has been registered a new library account in "
                         + ReadSystemConfigurations.getApplicationName() + "\012\012");
                 message.append("Library account: " + k.getBibliotheksname() + "\012");
@@ -361,13 +366,13 @@ public final class KontoAction extends DispatchAction {
                         + "3 = 3 months faxserver): " + k.getKontotyp() + "\012");
                 message.append("Librarian: " + u.getVorname() + "\040" + u.getName() + "\012");
                 message.append("Librarian email: " + u.getEmail() + "\012");
-                String[] to = new String[1];
+                final String[] to = new String[1];
                 to[0] = ReadSystemConfigurations.getSystemEmail();
-                MHelper mh = new MHelper();
+                final MHelper mh = new MHelper();
                 mh.sendMail(to, "New library account!", message.toString());
 
                 // Bestätigungsemail mit Angaben zu den nächsten Schritten und Möglichkeiten
-                StringBuffer mg = new StringBuffer("Dear\040");
+                final StringBuffer mg = new StringBuffer("Dear\040");
                 if (u.getAnrede().equals("Frau")) {
                     mg.append("Ms\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
                 }
@@ -411,33 +416,33 @@ public final class KontoAction extends DispatchAction {
                 mg.append("Get in contact with us if you have any questions!\012\012");
                 mg.append("Best regards\012");
                 mg.append("Your team " + ReadSystemConfigurations.getApplicationName() + "\012");
-                String[] sendto = new String[1];
+                final String[] sendto = new String[1];
                 sendto[0] = u.getEmail();
-                MHelper mailh = new MHelper();
+                final MHelper mailh = new MHelper();
                 mailh.sendMail(sendto, "Your account at "
                         + ReadSystemConfigurations.getApplicationName(), mg.toString());
 
                 // Kontoform in Session leeren
                 rq.getSession().setAttribute("kontoform", null);
 
-                LoginForm lf = new LoginForm();
+                final LoginForm lf = new LoginForm();
                 lf.setEmail(uf.getEmail());
                 lf.setPassword(uf.getPassword());
 
                 rq.setAttribute("loginform", lf); // um Kunde nach Registration gleich einzuloggen
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.values");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.values");
+                rq.setAttribute(ERRORMESSAGE, em);
                 forward = "userfailed";
                 rq.setAttribute("kontoform", kf);
                 rq.setAttribute("userform", uf);
             }
 
         } else {
-            ErrorMessage em = new ErrorMessage("error.berechtigung");
+            final ErrorMessage em = new ErrorMessage("error.berechtigung");
             em.setLink("anmeldungkonto.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         cn.close();
@@ -447,28 +452,28 @@ public final class KontoAction extends DispatchAction {
     /**
      * ändern eines Kontos vorbereiten
      */
-    public ActionForward prepareModifyKonto(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward prepareModifyKonto(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = FAILURE;
 
-        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        KontoForm kf = (KontoForm) fm;
-        Text cn = new Text();
-        Countries countriesInstance = new Countries();
-        Auth auth = new Auth();
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final KontoForm kf = (KontoForm) fm;
+        final Text cn = new Text();
+        final Countries countriesInstance = new Countries();
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
 
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
-                TimeZones tz = new TimeZones();
-                TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                rq.setAttribute("timezones", setTZ);
+                final TimeZones tz = new TimeZones();
+                final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                rq.setAttribute(TIMEZONES, setTZ);
 
-                Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
+                final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
 
-                forward = "success";
+                forward = SUCCESS;
 
                 if (auth.isAdmin(rq)) {
                     kf.setFaxusername(k.getFaxusername());
@@ -562,15 +567,15 @@ public final class KontoAction extends DispatchAction {
                 kf.setGtcdate(k.getGtcdate()); // Alle nur Leserecht!
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
-        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
         kf.setCountries(allPossCountries);
 
         rq.setAttribute("kontoform", kf);
@@ -583,20 +588,20 @@ public final class KontoAction extends DispatchAction {
     /**
      * Kontoangaben ändern
      */
-    public ActionForward modifyKonto(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward modifyKonto(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = FAILURE;
 
-        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        KontoForm kf = (KontoForm) fm;
-        Check check = new Check();
-        Auth auth = new Auth();
-        Text cn = new Text();
-        Countries countriesInstance = new Countries();
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final KontoForm kf = (KontoForm) fm;
+        final Check check = new Check();
+        final Auth auth = new Auth();
+        final Text cn = new Text();
+        final Countries countriesInstance = new Countries();
         // GBV-Thread-Management
-        ThreadedWebcontent gbvthread = new ThreadedWebcontent();
-        ExecutorService executor = Executors.newCachedThreadPool();
+        final ThreadedWebcontent gbvthread = new ThreadedWebcontent();
+        final ExecutorService executor = Executors.newCachedThreadPool();
         Future<String> gbvcontent = null;
 
         if (auth.isLogin(rq)) {
@@ -611,14 +616,14 @@ public final class KontoAction extends DispatchAction {
                         && check.isMinLength(kf.getLand(), 2) && check.isMinLength(kf.getTelefon(), 4)
                         && check.isEmail(kf.getBibliotheksmail()) && check.isEmail(kf.getDbsmail())) {
 
-                    String[] allowedFiletypes = {"jpg", "jpeg", "gif", "png"};
+                    final String[] allowedFiletypes = {"jpg", "jpeg", "gif", "png"};
 
                     if (kf.getInstlogolink() == null || kf.getInstlogolink().equals("") || // no entry is valid
                             check.isUrlAndFiletype(kf.getInstlogolink(), allowedFiletypes)) {
 
                         // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
                         if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
-                            StringBuffer gbvLink = new StringBuffer(GBV_LINK);
+                            final StringBuffer gbvLink = new StringBuffer(GBV_LINK);
                             gbvLink.append(kf.getGbvbenutzername());
                             gbvLink.append("&PASSWORD=");
                             gbvLink.append(kf.getGbvpasswort());
@@ -640,24 +645,24 @@ public final class KontoAction extends DispatchAction {
                                 } else {
                                     forward = "subitofailed"; // Pfad i.O.
                                     kf.setMessage("error.gbv_values");
-                                    TimeZones tz = new TimeZones();
-                                    TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                                    rq.setAttribute("timezones", setTZ);
-                                    List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                                    final TimeZones tz = new TimeZones();
+                                    final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                                    rq.setAttribute(TIMEZONES, setTZ);
+                                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                             .getConnection());
                                     kf.setCountries(allPossCountries);
                                 }
-                            } catch (TimeoutException e) {
+                            } catch (final TimeoutException e) {
                                 LOG.info("GBV-Timeout: " + e.toString());
                                 forward = "subitofailed"; // Pfad i.O.
                                 kf.setMessage("error.gbv_timeout");
-                                TimeZones tz = new TimeZones();
-                                TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                                rq.setAttribute("timezones", setTZ);
-                                List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                                final TimeZones tz = new TimeZones();
+                                final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                                rq.setAttribute(TIMEZONES, setTZ);
+                                final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                         .getConnection());
                                 kf.setCountries(allPossCountries);
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 LOG.error("GBV-Thread failed in modifykonto: " + e.toString());
                             } finally {
                                 // ungefährlich, falls der Task schon beendet ist.
@@ -669,9 +674,9 @@ public final class KontoAction extends DispatchAction {
 
                         if (checkgbv) {
 
-                            forward = "success";
+                            forward = SUCCESS;
 
-                            Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
+                            final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
 
                             if (auth.isAdmin(rq)) {
                                 // Faxno == null => Deaktivierung von Faxserver-Cronjob
@@ -760,7 +765,7 @@ public final class KontoAction extends DispatchAction {
 
                             // veränderte Kontos in Session legen, damit neue Angaben angezeigt werden. Z.B. kontochange
                             ui.setKonto(k);
-                            List<Konto> kontolist = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn.getConnection());
+                            final List<Konto> kontolist = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn.getConnection());
                             ui.setKontoanz(kontolist.size()); // Anzahl Kontos im UserInfo hinterlegen
                             ui.setKontos(kontolist);
                             rq.getSession().setAttribute("userinfo", ui);
@@ -770,10 +775,10 @@ public final class KontoAction extends DispatchAction {
                     } else {
                         forward = "missingvalues";
                         kf.setMessage("error.url");
-                        TimeZones tz = new TimeZones();
-                        TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                        rq.setAttribute("timezones", setTZ);
-                        List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                        final TimeZones tz = new TimeZones();
+                        final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                        rq.setAttribute(TIMEZONES, setTZ);
+                        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
                                 .getConnection());
                         kf.setCountries(allPossCountries);
                     }
@@ -781,21 +786,21 @@ public final class KontoAction extends DispatchAction {
                 } else {
                     forward = "missingvalues";
                     kf.setMessage("error.values");
-                    TimeZones tz = new TimeZones();
-                    TreeSet<String> setTZ = tz.getTimeZonesAsString();
-                    rq.setAttribute("timezones", setTZ);
-                    List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    final TimeZones tz = new TimeZones();
+                    final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                    rq.setAttribute(TIMEZONES, setTZ);
+                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
                     kf.setCountries(allPossCountries);
                 }
 
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
 
@@ -809,45 +814,45 @@ public final class KontoAction extends DispatchAction {
     /**
      * Sich eine Faxlieferung erneut per Mail zustellen lassen
      */
-    public ActionForward resendfaxtomail(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward resendfaxtomail(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        FileForm fileForm = (FileForm) fm;
-        String fileName = fileForm.getFile().getFileName().toLowerCase(); // make case insensitive
+        String forward = FAILURE;
+        final FileForm fileForm = (FileForm) fm;
+        final String fileName = fileForm.getFile().getFileName().toLowerCase(); // make case insensitive
 
-        Auth auth = new Auth();
-        Check ck = new Check();
+        final Auth auth = new Auth();
+        final Check ck = new Check();
 
         if (auth.isLogin(rq)) {
             if (auth.isAdmin(rq)) {
                 //        Wird ein Fax-to Mail File übertragen (PDF)?
                 if (ck.isFiletypeExtension(fileName, ".pdf")) {
-                    String popfaxid = fileName.substring(0, fileName.indexOf(".pdf"));
+                    final String popfaxid = fileName.substring(0, fileName.indexOf(".pdf"));
 
-                    Fax f = new Fax();
+                    final Fax f = new Fax();
                     //Wird ein Eintrag der Popfaxid in der DB gefunden und kann auch gelöscht werden?
                     if (f.deletePopfaxId(f.getConnection(), popfaxid) == 0) {
-                        ErrorMessage em = new ErrorMessage("error.resendfax", "searchfree.do");
-                        rq.setAttribute("errormessage", em);
+                        final ErrorMessage em = new ErrorMessage("error.resendfax", "searchfree.do");
+                        rq.setAttribute(ERRORMESSAGE, em);
                     } else {
-                        Message m = new Message("message.resendfax", fileForm.getFile().getFileName(), "searchfree.do");
+                        final Message m = new Message("message.resendfax", fileForm.getFile().getFileName(), "searchfree.do");
                         rq.setAttribute("message", m);
-                        forward = "success";
+                        forward = SUCCESS;
                     }
                     // Kein PDF!
                 } else {
-                    ErrorMessage em = new ErrorMessage("error.faxfile", "searchfree.do");
-                    rq.setAttribute("errormessage", em);
+                    final ErrorMessage em = new ErrorMessage("error.faxfile", "searchfree.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
                 }
                 // Nicht Administrator!
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
         return mp.findForward(forward);
     }
@@ -856,34 +861,34 @@ public final class KontoAction extends DispatchAction {
     /**
      * Auflistung Kontos fuer Admins zum Kontos deaktivieren oder reaktivieren
      */
-    public ActionForward listKontos(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward listKontos(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
 
             if (auth.isAdmin(rq)) {
-                KontoForm kf = new KontoForm();
-                Konto k = new Konto();
+                final KontoForm kf = new KontoForm();
+                final Konto k = new Konto();
                 kf.setKontos(k.getAllKontos(k.getConnection()));
                 k.close();
                 rq.setAttribute("kontoform", kf);
                 if (kf.getKontos() == null) {
-                    ErrorMessage em = new ErrorMessage("error.missingaccounts", "searchfree.do");
-                    rq.setAttribute("errormessage", em);
+                    final ErrorMessage em = new ErrorMessage("error.missingaccounts", "searchfree.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } else {
-                    forward = "success";
+                    forward = SUCCESS;
                 }
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
 
@@ -894,42 +899,42 @@ public final class KontoAction extends DispatchAction {
      * Admins können einen Kontotypen ändern Beim Wechsel auf den typ Gratis wird das Kontoablaufdatum auf null gesetzt
      *
      */
-    public ActionForward changeKontoTyp(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward changeKontoTyp(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
             if (auth.isAdmin(rq)) {
                 try {
-                    KontoForm kf = (KontoForm) fm;
-                    Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final KontoForm kf = (KontoForm) fm;
+                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
                     k.setKontotyp(kf.getKontotyp());
                     if (k.getKontotyp() == 0) { k.setExpdate(null); } // Gratiskontos laufen nicht ab!
                     k.update(cn.getConnection());
 
-                    Message em = new Message("message.changekontotyp",
+                    final Message em = new Message("message.changekontotyp",
                             k.getBibliotheksname(), "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = "success";
-                } catch (Exception e) {
+                    forward = SUCCESS;
+                } catch (final Exception e) {
                     LOG.error("changeKonto" + e.toString());
-                    ErrorMessage em = new ErrorMessage("error.changetype",
+                    final ErrorMessage em = new ErrorMessage("error.changetype",
                             e.getMessage(), "kontoadmin.do?method=listKontos");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } finally {
                     cn.close();
                 }
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);
@@ -938,41 +943,41 @@ public final class KontoAction extends DispatchAction {
     /**
      * Admins können Kontostatus ändern
      */
-    public ActionForward changeKontoState(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward changeKontoState(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
             if (auth.isAdmin(rq)) {
                 try {
-                    KontoForm kf = (KontoForm) fm;
-                    Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final KontoForm kf = (KontoForm) fm;
+                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
                     k.setKontostatus(kf.isKontostatus());
                     k.update(cn.getConnection());
 
-                    Message em = new Message("message.changekontostatus",
+                    final Message em = new Message("message.changekontostatus",
                             k.getBibliotheksname(), "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = "success";
+                    forward = SUCCESS;
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("changeKontoState: " + e.toString());
-                    ErrorMessage em = new ErrorMessage("error.changestate",
+                    final ErrorMessage em = new ErrorMessage("error.changestate",
                             e.getMessage(), "kontoadmin.do?method=listKontos");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } finally {
                     cn.close();
                 }
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);
@@ -981,41 +986,41 @@ public final class KontoAction extends DispatchAction {
     /**
      * Admins können Expdate setzen
      */
-    public ActionForward setExpDate(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward setExpDate(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
             if (auth.isAdmin(rq)) {
                 try {
-                    KontoForm kf = (KontoForm) fm;
-                    Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final KontoForm kf = (KontoForm) fm;
+                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
                     k.setExpdate(kf.getExpdate());
                     k.update(cn.getConnection());
 
-                    Message em = new Message("message.changeexpdate",
+                    final Message em = new Message("message.changeexpdate",
                             k.getBibliotheksname(), "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = "success";
+                    forward = SUCCESS;
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("setExpdate: " + e.toString());
-                    ErrorMessage em = new ErrorMessage("error.timeperiode",
+                    final ErrorMessage em = new ErrorMessage("error.timeperiode",
                             e.getMessage(), "kontoadmin.do?method=listKontos");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } finally {
                     cn.close();
                 }
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);
@@ -1024,41 +1029,41 @@ public final class KontoAction extends DispatchAction {
     /**
      * Admins können ExpDateServer setzen
      */
-    public ActionForward setExpDateServer(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward setExpDateServer(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
             if (auth.isAdmin(rq)) {
                 try {
-                    KontoForm kf = (KontoForm) fm;
-                    Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final KontoForm kf = (KontoForm) fm;
+                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
                     k.setPopfaxend(kf.getPopfaxend());
                     k.update(cn.getConnection());
 
-                    Message em = new Message("message.changeexpdatefax",
+                    final Message em = new Message("message.changeexpdatefax",
                             k.getBibliotheksname(), "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = "success";
+                    forward = SUCCESS;
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("setExpDate: " + e.toString());
-                    ErrorMessage em = new ErrorMessage("error.timeperiodefax",
+                    final ErrorMessage em = new ErrorMessage("error.timeperiodefax",
                             e.getMessage(), "kontoadmin.do?method=listKontos");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } finally {
                     cn.close();
                 }
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);
@@ -1067,12 +1072,12 @@ public final class KontoAction extends DispatchAction {
     /**
      * Admins können Rechnungen vorbereiten
      */
-    public ActionForward prepareBillingText(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward prepareBillingText(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
         // Benutzer eingeloggt?
         if (auth.isLogin(rq)) {
@@ -1080,30 +1085,30 @@ public final class KontoAction extends DispatchAction {
             if (auth.isAdmin(rq)) {
                 try {
                     BillingForm bf = (BillingForm) fm;
-                    Konto k = new Konto(bf.getKontoid(), cn.getConnection());
+                    final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
 
                     // Rechnung vorbereiten
-                    KontoAdmin ka = new KontoAdmin();
+                    final KontoAdmin ka = new KontoAdmin();
                     bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
                     bf.setKonto(k);
 
                     rq.setAttribute("billingform", bf);
 
-                    forward = "success";
+                    forward = SUCCESS;
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("prepareBilling: " + e.toString());
-                    ErrorMessage em = new ErrorMessage(
+                    final ErrorMessage em = new ErrorMessage(
                             "error.preparebilling", e.getMessage(), "kontoadmin.do?method=listKontos");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } finally {
                     cn.close();
                 }
             } else {
-                ErrorMessage em = new ErrorMessage(
+                final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
                 "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         }
 
@@ -1113,27 +1118,27 @@ public final class KontoAction extends DispatchAction {
     /**
      * Admins können Rechnungen versenden
      */
-    public ActionForward sendBill(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward sendBill(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
         // Benutzer eingeloggt?
         if (auth.isLogin(rq)) {
 
             if (auth.isAdmin(rq)) {
                 try {
                     BillingForm bf = (BillingForm) fm;
-                    MHelper mh = new MHelper();
+                    final MHelper mh = new MHelper();
 
-                    Konto k = new Konto(bf.getKontoid(), cn.getConnection());
+                    final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
 
-                    String[] to = new String[1];
+                    final String[] to = new String[1];
                     to[0] = k.getBibliotheksmail();
 
                     // Rechnung speichern
-                    KontoAdmin ka = new KontoAdmin();
+                    final KontoAdmin ka = new KontoAdmin();
                     bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
                     bf.getBill().save(cn.getConnection());
 
@@ -1143,32 +1148,32 @@ public final class KontoAction extends DispatchAction {
                             .getBillingtext());
 
                     // Meldung verfassen
-                    Message m = new Message("message.sendbill", k.getBibliotheksname() + "\n\n"
+                    final Message m = new Message("message.sendbill", k.getBibliotheksname() + "\n\n"
                             + bf.getBillingtext(), "listbillings.do?method=listBillings&kid=" + k.getId());
                     rq.setAttribute("message", m);
 
-                    forward = "success";
+                    forward = SUCCESS;
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("sendBilling: " + e.toString());
-                    ErrorMessage em = new ErrorMessage(
+                    final ErrorMessage em = new ErrorMessage(
                             "error.sendbilling", e.getMessage(), "kontoadmin.do?method=listKontos");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 } finally {
                     cn.close();
                 }
             } else {
-                ErrorMessage em = new ErrorMessage(
+                final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
                 "searchfree.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);

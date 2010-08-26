@@ -62,7 +62,7 @@ public class Billing extends AbstractIdEntity {
      * @param betr
      * @param waehr
      */
-    public Billing(Konto k, Text invoiceReason, double betr, String waehr) {
+    public Billing(final Konto k, final Text invoiceReason, final double betr, final String waehr) {
         this.konto = k;
         this.rechnungsgrund = invoiceReason;
         this.rechnungsnummer = generateBillingNumber(k);
@@ -77,7 +77,7 @@ public class Billing extends AbstractIdEntity {
      * @param rs ResultSet
      * @return Billing
      */
-    public Billing(Long id, Connection cn) {
+    public Billing(final Long id, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -90,21 +90,21 @@ public class Billing extends AbstractIdEntity {
                 this.setRsValues(rs, cn);
             }
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("Billing(Long, Connection): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -117,13 +117,13 @@ public class Billing extends AbstractIdEntity {
      * @param Connection
      * @return Billing
      */
-    private Billing(ResultSet rs, Connection cn) {
+    private Billing(final ResultSet rs, final Connection cn) {
         this.setRsValues(rs, cn);
     }
 
-    private void setRsValues(ResultSet rs, Connection cn) {
+    private void setRsValues(final ResultSet rs, final Connection cn) {
         try {
-            AbstractBenutzer b = new AbstractBenutzer();
+            final AbstractBenutzer b = new AbstractBenutzer();
             this.setId(rs.getLong("ID"));
             this.setUser(b.getUser(rs.getLong("UID"), cn));
             this.setKonto(new Konto(rs.getLong("KID"), cn));
@@ -134,7 +134,7 @@ public class Billing extends AbstractIdEntity {
             this.setRechnungsdatum(rs.getDate("rechnungsdatum"));
             this.setZahlungseingang(rs.getDate("zahlungseingang"));
             this.setStorniert(rs.getBoolean("storniert"));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("RsValues(ResultSet rs): " + e.toString());
         }
     }
@@ -145,12 +145,12 @@ public class Billing extends AbstractIdEntity {
      * @param rs
      * @return Billing
      */
-    public Billing getBilling(BillingForm bf) {
+    public Billing getBilling(final BillingForm bf) {
 
-        Billing b = new Billing();
+        final Billing b = new Billing();
 
         try {
-            AbstractBenutzer ab = new AbstractBenutzer();
+            final AbstractBenutzer ab = new AbstractBenutzer();
             b.setId(bf.getBillid());
             b.setUser(ab.getUser(bf.getUserid(), b.getConnection()));
             b.setKonto(new Konto(bf.getKontoid(), b.getConnection()));
@@ -160,7 +160,7 @@ public class Billing extends AbstractIdEntity {
             b.setRechnungsnummer(bf.getRechnungsnummer());
             b.setRechnungsdatum(bf.getRechnungsdatum());
             b.setZahlungseingang(bf.getZahlungseingang());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getBilling(BillingForm bf): " + e.toString());
         } finally {
             b.close();
@@ -176,11 +176,11 @@ public class Billing extends AbstractIdEntity {
      * @param Konto k
      * @return String Rechnungsnummer
      */
-    public String generateBillingNumber(Konto k) {
+    public String generateBillingNumber(final Konto k) {
         String rn = "";
         //aktuelles Jahr zum String erstellen
-        Date d = new Date(Calendar.getInstance().getTimeInMillis());
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-");
+        final Date d = new Date(Calendar.getInstance().getTimeInMillis());
+        final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-");
         rn = fmt.format(d);
         //Kundennummer zur Rechnungsummer hinzufügen
         rn = rn + k.getId().toString() + "-";
@@ -192,7 +192,7 @@ public class Billing extends AbstractIdEntity {
     /**
      * Speichert / Veraendert dieses Rechnungsobjekt in der Datenbank
      */
-    public void save(Connection cn) {
+    public void save(final Connection cn) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -218,29 +218,29 @@ public class Billing extends AbstractIdEntity {
 
                 pstmt.execute();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
     }
 
-    public List<Billing> getBillings(Konto k, Connection cn) {
+    public List<Billing> getBillings(final Konto k, final Connection cn) {
 
-        ArrayList<Billing> bl = new ArrayList<Billing>();
+        final ArrayList<Billing> bl = new ArrayList<Billing>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -250,31 +250,31 @@ public class Billing extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                Billing b = new Billing(rs, cn);
+                final Billing b = new Billing(rs, cn);
                 bl.add(b);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getBillings(Konto k, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
         return bl;
     }
 
-    public void update(Connection cn) {
+    public void update(final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -284,14 +284,14 @@ public class Billing extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("update(Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -304,7 +304,7 @@ public class Billing extends AbstractIdEntity {
      * @param Connection
      * @return Billing oder null wenn Konto noch keine offenen Rechnungen hat
      */
-    public Billing getLastBilling(Konto k, Connection cn) {
+    public Billing getLastBilling(final Konto k, final Connection cn) {
         Billing b = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -327,21 +327,21 @@ public class Billing extends AbstractIdEntity {
                 b = new Billing(rs, cn);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getLastBilling(Konto k, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -353,8 +353,8 @@ public class Billing extends AbstractIdEntity {
      * @param k
      * @return
      */
-    private int countBillings(Konto k) {
-        DBConn cn = new DBConn();
+    private int countBillings(final Konto k) {
+        final DBConn cn = new DBConn();
         int z = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -368,21 +368,21 @@ public class Billing extends AbstractIdEntity {
                 z = rs.getInt("anzahl");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countBillings(Konto k): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             cn.close();
@@ -395,7 +395,7 @@ public class Billing extends AbstractIdEntity {
      * @param pstmt
      * @return pstmt
      */
-    private PreparedStatement setBillingValues(PreparedStatement pstmt) {
+    private PreparedStatement setBillingValues(final PreparedStatement pstmt) {
         try {
             if (this.getUser() != null) { pstmt.setLong(1, this.getUser().getId()); } else { pstmt.setString(1, null); }
             if (this.getKonto() != null) {
@@ -417,7 +417,7 @@ public class Billing extends AbstractIdEntity {
             } else {
                 pstmt.setString(8, null);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("setBillingValues(PreparedStatement pstmt): " + e.toString());
         }
         return pstmt;
@@ -427,7 +427,7 @@ public class Billing extends AbstractIdEntity {
         return user;
     }
 
-    public void setUser(AbstractBenutzer user) {
+    public void setUser(final AbstractBenutzer user) {
         this.user = user;
     }
 
@@ -435,7 +435,7 @@ public class Billing extends AbstractIdEntity {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -443,7 +443,7 @@ public class Billing extends AbstractIdEntity {
         return rechnungsgrund;
     }
 
-    public void setRechnungsgrund(Text rechnungsgrund) {
+    public void setRechnungsgrund(final Text rechnungsgrund) {
         this.rechnungsgrund = rechnungsgrund;
     }
 
@@ -451,7 +451,7 @@ public class Billing extends AbstractIdEntity {
         return betrag;
     }
 
-    public void setBetrag(double betrag) {
+    public void setBetrag(final double betrag) {
         this.betrag = betrag;
     }
 
@@ -462,7 +462,7 @@ public class Billing extends AbstractIdEntity {
         return rechnungsnummer;
     }
 
-    public void setRechnungsnummer(String rechnungsnummer) {
+    public void setRechnungsnummer(final String rechnungsnummer) {
         this.rechnungsnummer = rechnungsnummer;
     }
 
@@ -470,7 +470,7 @@ public class Billing extends AbstractIdEntity {
         return rechnungsdatum;
     }
 
-    public void setRechnungsdatum(Date rechnungsdatum) {
+    public void setRechnungsdatum(final Date rechnungsdatum) {
         this.rechnungsdatum = rechnungsdatum;
     }
 
@@ -478,7 +478,7 @@ public class Billing extends AbstractIdEntity {
         return zahlungseingang;
     }
 
-    public void setZahlungseingang(Date zahlungseingang) {
+    public void setZahlungseingang(final Date zahlungseingang) {
         this.zahlungseingang = zahlungseingang;
     }
 
@@ -486,7 +486,7 @@ public class Billing extends AbstractIdEntity {
         return waehrung;
     }
 
-    public void setWaehrung(String waehrung) {
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
@@ -494,7 +494,7 @@ public class Billing extends AbstractIdEntity {
         return storniert;
     }
 
-    public void setStorniert(boolean storniert) {
+    public void setStorniert(final boolean storniert) {
         this.storniert = storniert;
     }
 

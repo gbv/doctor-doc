@@ -37,39 +37,39 @@ import ch.dbs.form.IllForm;
  */
 public final class GetIllFormatRequest extends Action {
 
-  private static final SimpleLogger LOG = new SimpleLogger(GetIllFormatRequest.class);
+    private static final SimpleLogger LOG = new SimpleLogger(GetIllFormatRequest.class);
 
-  /**
-   * empfängt Ill-Requests und stellt ein IllForm her
-   */
-  public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    /**
+     * empfängt Ill-Requests und stellt ein IllForm her
+     */
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-    Text cn = new Text();
-    String forward = "failure";
-    IllHandler illHandlerInstance = new IllHandler();
+        final Text cn = new Text();
+        String forward = "failure";
+        final IllHandler ihInstance = new IllHandler();
 
-    try {
+        try {
 
-      forward = "success";
+            forward = "success";
 
-      IllForm ill = illHandlerInstance.readIllRequest(rq);
-          String returnvalue = illHandlerInstance.updateOrderState(ill, cn.getConnection());
+            final IllForm ill = ihInstance.readIllRequest(rq);
+            final String returnvalue = ihInstance.updateOrderState(ill, cn.getConnection());
 
-          if (returnvalue.equals("OK")) {
-            ill.setStatus("OK");
-          } else {
-            ill.setStatus("ERROR");
-            ill.setComment(returnvalue);
-          }
+            if ("OK".equals(returnvalue)) {
+                ill.setStatus("OK");
+            } else {
+                ill.setStatus("ERROR");
+                ill.setComment(returnvalue);
+            }
 
-          rq.setAttribute("illform", ill);
+            rq.setAttribute("illform", ill);
 
-    } catch (Exception e) {
-      LOG.error("getIllFormatRequest - execute: " + e.toString());
-      } finally {
-        cn.close();
-      }
+        } catch (final Exception e) {
+            LOG.error("getIllFormatRequest - execute: " + e.toString());
+        } finally {
+            cn.close();
+        }
 
         return mp.findForward(forward);
     }

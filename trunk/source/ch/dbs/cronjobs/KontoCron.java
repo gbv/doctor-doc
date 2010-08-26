@@ -35,13 +35,13 @@ public final class KontoCron extends DispatchAction {
      * 10 Tage vor Ablauf wird eine Warnung inklusive Rechnungsinformationen versendet
      *
      */
-    public void autoBilling(ActionMapping mp,
-                              ActionForm form,
-                              HttpServletRequest rq,
-                              HttpServletResponse rp) {
+    public void autoBilling(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-      KontoAdmin k = new KontoAdmin();
-      k.autoBillExpdate();
+        final KontoAdmin k = new KontoAdmin();
+        k.autoBillExpdate();
 
     }
 

@@ -22,23 +22,23 @@ import org.apache.struts.validator.ValidatorForm;
 
 public final class ActiveMenusForm extends ValidatorForm {
 
-  private static final long serialVersionUID = 1L;
-  private String activemenu = "login";
-  private String activesubmenu = "OpenURL";
+    private static final long serialVersionUID = 1L;
+    private String activemenu = "login";
+    private String activesubmenu = "OpenURL";
 
 
-  public String getActivemenu() {
-    return activemenu;
-  }
-  public void setActivemenu(String activemenu) {
-    this.activemenu = activemenu;
-  }
-  public String getActivesubmenu() {
-    return activesubmenu;
-  }
-  public void setActivesubmenu(String activesubmenu) {
-    this.activesubmenu = activesubmenu;
-  }
+    public String getActivemenu() {
+        return activemenu;
+    }
+    public void setActivemenu(final String activemenu) {
+        this.activemenu = activemenu;
+    }
+    public String getActivesubmenu() {
+        return activesubmenu;
+    }
+    public void setActivesubmenu(final String activesubmenu) {
+        this.activesubmenu = activesubmenu;
+    }
 
 
 

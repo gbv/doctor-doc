@@ -40,15 +40,14 @@ import org.grlea.log.SimpleLogger;
 public class MHelper extends AbstractReadSystemConfigurations {
 
     private static final SimpleLogger LOG = new SimpleLogger(MHelper.class);
-
     private static final String PRIORITY = "3"; // normal
+    private static final String XPRIO = "X-Priority";
+    private static final String SMTP_AUTH = "mail.smtp.auth";
+    private static final String TRUE = "true";
+    private static final String CHARSET = "charset";
+    private static final String UTF8 = "UTF-8";
 
-
-    public MHelper() {
-
-    }
-
-    public void sendMail(String[] to, Message msg) {
+    public void sendMail(final String[] to, final Message msg) {
         sendMail(to, msg, PRIORITY);
     }
 
@@ -56,20 +55,20 @@ public class MHelper extends AbstractReadSystemConfigurations {
     //      sendMailReplyTo(to, msg, replyto, PRIORITY);
     //    }
 
-    public void sendMail(String[] recipients, String subject, String message) {
-        String from = SYSTEM_EMAIL;
+    public void sendMail(final String[] recipients, final String subject, final String message) {
+        final String from = SYSTEM_EMAIL;
         sendMail(recipients, subject, message, from, PRIORITY);
     }
 
-    public void sendErrorMail(String subject, String message) {
+    public void sendErrorMail(final String subject, final String message) {
         String[] recipients = new String[1];
         recipients[0] = ERROR_EMAIL;
-        String from = SYSTEM_EMAIL;
+        final String from = SYSTEM_EMAIL;
         sendMail(recipients, subject, message, from, PRIORITY);
     }
 
-    public void sendMailReplyTo(String[] recipients, String subject,
-            String message, String replyto) {
+    public void sendMailReplyTo(final String[] recipients, final String subject,
+            final String message, final String replyto) {
         sendMailReplyTo(recipients, subject, message, replyto, PRIORITY);
     }
 
@@ -81,7 +80,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * </P></P>
      * @author Pascal Steiner
      * */
-    public void sendMail(String[] to, Message msg, String prio) {
+    public void sendMail(final String[] to, final Message msg, final String prio) {
         // set the from and to address
         try {
             InternetAddress[] addressTo = new InternetAddress[to.length];
@@ -92,30 +91,30 @@ public class MHelper extends AbstractReadSystemConfigurations {
             addressFrom = InternetAddress.parse(SYSTEM_EMAIL);
 
             // SMPT Authentifizierung einschalten
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
+            final Properties props = new Properties();
+            props.put(SMTP_AUTH, TRUE);
 
             // create some properties and get the default Session
-            Session session = Session.getInstance(props, null);
+            final Session session = Session.getInstance(props, null);
             session.setDebug(false);
 
             //          create a message
-            MimeMessage m = new MimeMessage(session);
+            final MimeMessage m = new MimeMessage(session);
             m.setFrom(addressFrom[0]); // From setzen
             m.setRecipients(Message.RecipientType.TO, addressTo); /* Damit Adressen TO sichtbar sind */
-            m.addHeader("charset", "UTF-8"); // Header setzen
+            m.addHeader(CHARSET, UTF8); // Header setzen
             //            m.setHeader("Content-Type","text/plain; charset=\"utf-8\"");
-            m.addHeader("X-Priority", prio);
+            m.addHeader(XPRIO, prio);
             m.setSentDate(new Date()); // Sendedatum setzen
             String subject = "";
             if (msg.getSubject() != null) { subject = msg.getSubject(); }
             m.setSubject(subject); // Betreff setzen
-            m.setText(msg.getContent().toString(), "UTF-8");
+            m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
 
             // Mail versenden
-            Transport bus = session.getTransport("smtp");
+            final Transport bus = session.getTransport("smtp");
             bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
             bus.sendMessage(m, addressTo); // An diese Adressen senden
             bus.close();
@@ -142,7 +141,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * </P></P>
      * @author Pascal Steiner
      * */
-    public void sendMailReplyTo(String[] to, Message msg, String replyto, String prio) {
+    public void sendMailReplyTo(final String[] to, final Message msg, final String replyto, final String prio) {
         // set the from and to address
         try {
             InternetAddress[] addressTo = new InternetAddress[to.length];
@@ -153,31 +152,31 @@ public class MHelper extends AbstractReadSystemConfigurations {
             addressFrom = InternetAddress.parse(SYSTEM_EMAIL);
 
             // SMPT Authentifizierung einschalten
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
+            final Properties props = new Properties();
+            props.put(SMTP_AUTH, TRUE);
 
             // create some properties and get the default Session
-            Session session = Session.getInstance(props, null);
+            final Session session = Session.getInstance(props, null);
             session.setDebug(false);
 
             //          create a message
-            MimeMessage m = new MimeMessage(session);
+            final MimeMessage m = new MimeMessage(session);
             m.setFrom(addressFrom[0]); // From setzen
             m.setReplyTo(new InternetAddress[] {new InternetAddress(replyto)}); // ReplyTo setzen
             m.setRecipients(Message.RecipientType.TO, addressTo); /* Damit Adressen TO sichtbar sind */
-            m.addHeader("charset", "UTF-8"); // Header setzen
+            m.addHeader(CHARSET, UTF8); // Header setzen
             //            m.setHeader("Content-Type","text/plain; charset=\"utf-8\"");
-            m.addHeader("X-Priority", prio);
+            m.addHeader(XPRIO, prio);
             m.setSentDate(new Date()); // Sendedatum setzen
             String subject = "";
             if (msg.getSubject() != null) { subject = msg.getSubject(); }
             m.setSubject(subject); // Betreff setzen
-            m.setText(msg.getContent().toString(), "UTF-8");
+            m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
 
             // Mail versenden
-            Transport bus = session.getTransport("smtp");
+            final Transport bus = session.getTransport("smtp");
             bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
             bus.sendMessage(m, addressTo); // An diese Adressen senden
             bus.close();
@@ -207,26 +206,26 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * </P></P>
      * @author Pascal Steiner
      */
-    public void sendMail(String[] recipients, String subject, String message,
-            String from, String prio) {
+    public void sendMail(final String[] recipients, final String subject, final String message,
+            final String from, final String prio) {
 
         try {
             // Set the host smtp address
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
+            final Properties props = new Properties();
+            props.put(SMTP_AUTH, TRUE);
 
             // create some properties and get the default Session
-            Session session = Session.getInstance(props, null);
+            final Session session = Session.getInstance(props, null);
             session.setDebug(false);
 
             // create a message
-            Message msg = new MimeMessage(session);
+            final Message msg = new MimeMessage(session);
 
-            msg.addHeader("charset", "UTF-8");
-            msg.addHeader("X-Priority", prio);
+            msg.addHeader(CHARSET, UTF8);
+            msg.addHeader(XPRIO, prio);
 
             // set the from and to address
-            InternetAddress addressFrom = new InternetAddress(from);
+            final InternetAddress addressFrom = new InternetAddress(from);
             msg.setFrom(addressFrom);
 
             // Setting the Subject and Content Type
@@ -254,28 +253,26 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * </P></P>
      * @author Pascal Steiner
      */
-    public void sendMailReplyTo(String[] recipients, String subject, String message,
-            String replyto, String prio) {
-
-        String from = SYSTEM_EMAIL;
+    public void sendMailReplyTo(final String[] recipients, final String subject, final String message,
+            final String replyto, final String prio) {
 
         try {
             // Set the host smtp address
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
+            final Properties props = new Properties();
+            props.put(SMTP_AUTH, TRUE);
 
             // create some properties and get the default Session
-            Session session = Session.getInstance(props, null);
+            final Session session = Session.getInstance(props, null);
             session.setDebug(false);
 
             // create a message
-            Message msg = new MimeMessage(session);
+            final Message msg = new MimeMessage(session);
 
-            msg.addHeader("charset", "UTF-8");
-            msg.addHeader("X-Priority", prio);
+            msg.addHeader(CHARSET, UTF8);
+            msg.addHeader(XPRIO, prio);
 
             // set the from and to address
-            InternetAddress addressFrom = new InternetAddress(from);
+            final InternetAddress addressFrom = new InternetAddress(SYSTEM_EMAIL);
             InternetAddress[] addressReplyTo = new InternetAddress[1];
             addressReplyTo[0] = new InternetAddress(replyto);
             msg.setFrom(addressFrom);
@@ -304,11 +301,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * <p></p>
      * @author Pascal Steiner
      */
-    public void sendError(Exception e) {
+    public void sendError(final Exception e) {
         try {
             String[] to = new String[1];
             to[0] = ERROR_EMAIL;
-            String subject = "!!! In " + APPLICATION_NAME + " ist ein Fehler aufgetreten !!! ";
+            final String subject = "!!! In " + APPLICATION_NAME + " ist ein Fehler aufgetreten !!! ";
             sendMail(to, subject, e.toString());
         } catch (Exception ee) {
             LOG.error("sendError(Exception e): " + ee.toString());
@@ -323,11 +320,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * <p></p>
      * @author Pascal Steiner
      */
-    public void sendError(String e) {
+    public void sendError(final String e) {
         try {
             String[] to = new String[1];
             to[0] = ERROR_EMAIL;
-            String subject = "!!! In " + APPLICATION_NAME + " ist ein Fehler aufgetreten !!! ";
+            final String subject = "!!! In " + APPLICATION_NAME + " ist ein Fehler aufgetreten !!! ";
             sendMail(to, subject, e);
         } catch (Exception ee) {
             LOG.error("sendError(String e): " + ee.toString());
@@ -341,7 +338,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * <p></p>
      * @author Pascal Steiner
      */
-    public void sendError(String subject, Exception e) {
+    public void sendError(final String subject, final Exception e) {
         try {
             String[] to = new String[1];
             to[0] = ERROR_EMAIL;
@@ -362,17 +359,17 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * </P></P>
      * @author Pascal Steiner
      */
-    public Folder getPop3Folder(String host, String bn, String pw, String folder_) {
+    public Folder getPop3Folder(final String host, final String bn, final String pw, final String folder_) {
         Folder folder = null;
         try {
 
             //          SMPT Authentifizierung einschalten
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
+            final Properties props = new Properties();
+            props.put(SMTP_AUTH, TRUE);
 
-            Session session = Session.getInstance(props, null);
+            final Session session = Session.getInstance(props, null);
 
-            Store store = session.getStore("pop3");
+            final Store store = session.getStore("pop3");
             store.connect(host, bn, pw);
 
 
@@ -387,12 +384,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
 
     private void process() {
-        Folder inbox = getPop3Folder(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD, "INBOX");
+        final Folder inbox = getPop3Folder(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD, "INBOX");
 
         try {
-            Message[] message = inbox.getMessages();
+            final Message[] message = inbox.getMessages();
             for (int i = 0; i < message.length; i++) { // was passiert wenn Inbox leer ist?
-                Message m = message[i];
+                final Message m = message[i];
                 //                System.out.println("Nachricht: " + i);
                 //                System.out.println("From: " + m.getFrom()[0]);
                 //                System.out.println("Subject: " + m.getSubject());
@@ -418,18 +415,18 @@ public class MHelper extends AbstractReadSystemConfigurations {
      */
     public Session getSession() {
         //       SMPT Authentifizierung einschalten
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
+        final Properties props = new Properties();
+        props.put(SMTP_AUTH, TRUE);
 
         // create some properties and get the default Session
-        Session session = Session.getInstance(props, null);
+        final Session session = Session.getInstance(props, null);
         session.setDebug(false);
 
         return session;
     }
 
-    public static void main(String[] args) throws Exception {
-        MHelper mail = new MHelper();
+    public static void main(final String[] args) throws Exception {
+        final MHelper mail = new MHelper();
         mail.process();
     }
 

@@ -22,9 +22,9 @@ import org.apache.struts.action.ActionForm;
 
 public final class IlvReportForm extends ActionForm {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String lieferant = "";
+    private String lieferant = "";
     private String signatur = "";
     private String titleofessay = "";
     private String name = "";
@@ -45,342 +45,338 @@ public final class IlvReportForm extends ActionForm {
 
 
     private String reporttitle = "";
-  private String labelfrom = "";
-  private String labelto = "";
-  private String labeljournaltitel = "";
-  private String labelcustomer = "";
-  private String labelname = "";
-  private String labellibrarycard = "";
-  private String labelissn = "";
-  private String labelpmid = "";
-  private String labelyear = "";
-  private String labelvolumevintage = "";
-  private String labelbooklet = "";
-  private String labelclinicinstitutedepartment = "";
-  private String labelphone = "";
-  private String labelfax = "";
-  private String labelsendto   = "";
-  private String labelpages = "";
-  private String labelauthorofessay = "";
-  private String labeltitleofessay = "";
-  private String labelendorsementsofdeliveringlibrary = "";
-  private String labelnotesfromrequestinglibrary = "";
+    private String labelfrom = "";
+    private String labelto = "";
+    private String labeljournaltitel = "";
+    private String labelcustomer = "";
+    private String labelname = "";
+    private String labellibrarycard = "";
+    private String labelissn = "";
+    private String labelpmid = "";
+    private String labelyear = "";
+    private String labelvolumevintage = "";
+    private String labelbooklet = "";
+    private String labelclinicinstitutedepartment = "";
+    private String labelphone = "";
+    private String labelfax = "";
+    private String labelsendto   = "";
+    private String labelpages = "";
+    private String labelauthorofessay = "";
+    private String labeltitleofessay = "";
+    private String labelendorsementsofdeliveringlibrary = "";
+    private String labelnotesfromrequestinglibrary = "";
 
 
 
-    public IlvReportForm() {
-
+    public String getTitleofessay() {
+        return titleofessay;
     }
 
-  public String getTitleofessay() {
-    return titleofessay;
-  }
-
-  public void setTitleofessay(String titleofessay) {
-    this.titleofessay = titleofessay;
-  }
-
-  public String getLieferant() {
-    return lieferant;
-  }
-
-  public void setLieferant(String lieferant) {
-    this.lieferant = lieferant;
-  }
-
-  public String getSignatur() {
-    return signatur;
-  }
-
-  public void setSignatur(String signatur) {
-    this.signatur = signatur;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getLibrarycard() {
-    return librarycard;
-  }
-
-  public void setLibrarycard(String librarycard) {
-    this.librarycard = librarycard;
-  }
+    public void setTitleofessay(final String titleofessay) {
+        this.titleofessay = titleofessay;
+    }
+
+    public String getLieferant() {
+        return lieferant;
+    }
+
+    public void setLieferant(final String lieferant) {
+        this.lieferant = lieferant;
+    }
+
+    public String getSignatur() {
+        return signatur;
+    }
+
+    public void setSignatur(final String signatur) {
+        this.signatur = signatur;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getLibrarycard() {
+        return librarycard;
+    }
+
+    public void setLibrarycard(final String librarycard) {
+        this.librarycard = librarycard;
+    }
 
-  public String getIssn() {
-    return issn;
-  }
+    public String getIssn() {
+        return issn;
+    }
 
-  public void setIssn(String issn) {
-    this.issn = issn;
-  }
+    public void setIssn(final String issn) {
+        this.issn = issn;
+    }
 
-  public String getPmid() {
-    return pmid;
-  }
+    public String getPmid() {
+        return pmid;
+    }
 
-  public void setPmid(String pmid) {
-    this.pmid = pmid;
-  }
+    public void setPmid(final String pmid) {
+        this.pmid = pmid;
+    }
 
-  public String getVolumevintage() {
-    return volumevintage;
-  }
+    public String getVolumevintage() {
+        return volumevintage;
+    }
 
-  public void setVolumevintage(String volumevintage) {
-    this.volumevintage = volumevintage;
-  }
+    public void setVolumevintage(final String volumevintage) {
+        this.volumevintage = volumevintage;
+    }
 
-  public String getBooklet() {
-    return booklet;
-  }
+    public String getBooklet() {
+        return booklet;
+    }
 
-  public void setBooklet(String booklet) {
-    this.booklet = booklet;
-  }
+    public void setBooklet(final String booklet) {
+        this.booklet = booklet;
+    }
 
-  public String getPages() {
-    return pages;
-  }
+    public String getPages() {
+        return pages;
+    }
 
-  public void setPages(String pages) {
-    this.pages = pages;
-  }
+    public void setPages(final String pages) {
+        this.pages = pages;
+    }
 
-  public String getAuthorofessay() {
-    return authorofessay;
-  }
+    public String getAuthorofessay() {
+        return authorofessay;
+    }
 
-  public void setAuthorofessay(String authorofessay) {
-    this.authorofessay = authorofessay;
-  }
+    public void setAuthorofessay(final String authorofessay) {
+        this.authorofessay = authorofessay;
+    }
 
-  public String getJournaltitel() {
-    return journaltitel;
-  }
+    public String getJournaltitel() {
+        return journaltitel;
+    }
 
-  public void setJournaltitel(String journaltitel) {
-    this.journaltitel = journaltitel;
-  }
+    public void setJournaltitel(final String journaltitel) {
+        this.journaltitel = journaltitel;
+    }
 
-  public String getNotesfromrequestinglibrary() {
-    return notesfromrequestinglibrary;
-  }
+    public String getNotesfromrequestinglibrary() {
+        return notesfromrequestinglibrary;
+    }
 
-  public void setNotesfromrequestinglibrary(String notesfromrequestinglibrary) {
-    this.notesfromrequestinglibrary = notesfromrequestinglibrary;
-  }
+    public void setNotesfromrequestinglibrary(final String notesfromrequestinglibrary) {
+        this.notesfromrequestinglibrary = notesfromrequestinglibrary;
+    }
 
-  public String getYear() {
-    return year;
-  }
+    public String getYear() {
+        return year;
+    }
 
-  public void setYear(String year) {
-    this.year = year;
-  }
+    public void setYear(final String year) {
+        this.year = year;
+    }
 
-  public String getPhone() {
-    return phone;
-  }
+    public String getPhone() {
+        return phone;
+    }
 
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
+    public void setPhone(final String phone) {
+        this.phone = phone;
+    }
 
-  public String getClinicinstitutedepartment() {
-    return clinicinstitutedepartment;
-  }
+    public String getClinicinstitutedepartment() {
+        return clinicinstitutedepartment;
+    }
 
-  public void setClinicinstitutedepartment(String clinicinstitutedepartment) {
-    this.clinicinstitutedepartment = clinicinstitutedepartment;
-  }
+    public void setClinicinstitutedepartment(final String clinicinstitutedepartment) {
+        this.clinicinstitutedepartment = clinicinstitutedepartment;
+    }
 
-  public String getPost() {
-    return post;
-  }
+    public String getPost() {
+        return post;
+    }
 
-  public void setPost(String post) {
-    this.post = post;
-  }
+    public void setPost(final String post) {
+        this.post = post;
+    }
 
 
 
 
-  public String getReporttitle() {
-    return reporttitle;
-  }
+    public String getReporttitle() {
+        return reporttitle;
+    }
 
-  public void setReporttitle(String reporttitle) {
-    this.reporttitle = reporttitle;
-  }
+    public void setReporttitle(final String reporttitle) {
+        this.reporttitle = reporttitle;
+    }
 
-  public String getLabelfrom() {
-    return labelfrom;
-  }
+    public String getLabelfrom() {
+        return labelfrom;
+    }
 
-  public void setLabelfrom(String labelfrom) {
-    this.labelfrom = labelfrom;
-  }
+    public void setLabelfrom(final String labelfrom) {
+        this.labelfrom = labelfrom;
+    }
 
-  public String getLabelto() {
-    return labelto;
-  }
+    public String getLabelto() {
+        return labelto;
+    }
 
-  public void setLabelto(String labelto) {
-    this.labelto = labelto;
-  }
+    public void setLabelto(final String labelto) {
+        this.labelto = labelto;
+    }
 
-  public String getLabeljournaltitel() {
-    return labeljournaltitel;
-  }
+    public String getLabeljournaltitel() {
+        return labeljournaltitel;
+    }
 
-  public void setLabeljournaltitel(String labeljournaltitel) {
-    this.labeljournaltitel = labeljournaltitel;
-  }
+    public void setLabeljournaltitel(final String labeljournaltitel) {
+        this.labeljournaltitel = labeljournaltitel;
+    }
 
-  public String getLabelcustomer() {
-    return labelcustomer;
-  }
+    public String getLabelcustomer() {
+        return labelcustomer;
+    }
 
-  public void setLabelcustomer(String labelcustomer) {
-    this.labelcustomer = labelcustomer;
-  }
+    public void setLabelcustomer(final String labelcustomer) {
+        this.labelcustomer = labelcustomer;
+    }
 
-  public String getLabelname() {
-    return labelname;
-  }
+    public String getLabelname() {
+        return labelname;
+    }
 
-  public void setLabelname(String labelname) {
-    this.labelname = labelname;
-  }
+    public void setLabelname(final String labelname) {
+        this.labelname = labelname;
+    }
 
-  public String getLabellibrarycard() {
-    return labellibrarycard;
-  }
+    public String getLabellibrarycard() {
+        return labellibrarycard;
+    }
 
-  public void setLabellibrarycard(String labellibrarycard) {
-    this.labellibrarycard = labellibrarycard;
-  }
+    public void setLabellibrarycard(final String labellibrarycard) {
+        this.labellibrarycard = labellibrarycard;
+    }
 
-  public String getLabelissn() {
-    return labelissn;
-  }
+    public String getLabelissn() {
+        return labelissn;
+    }
 
-  public void setLabelissn(String labelissn) {
-    this.labelissn = labelissn;
-  }
+    public void setLabelissn(final String labelissn) {
+        this.labelissn = labelissn;
+    }
 
-  public String getLabelpmid() {
-    return labelpmid;
-  }
+    public String getLabelpmid() {
+        return labelpmid;
+    }
 
-  public void setLabelpmid(String labelpmid) {
-    this.labelpmid = labelpmid;
-  }
+    public void setLabelpmid(final String labelpmid) {
+        this.labelpmid = labelpmid;
+    }
 
-  public String getLabelyear() {
-    return labelyear;
-  }
+    public String getLabelyear() {
+        return labelyear;
+    }
 
-  public void setLabelyear(String labelyear) {
-    this.labelyear = labelyear;
-  }
+    public void setLabelyear(final String labelyear) {
+        this.labelyear = labelyear;
+    }
 
-  public String getLabelvolumevintage() {
-    return labelvolumevintage;
-  }
+    public String getLabelvolumevintage() {
+        return labelvolumevintage;
+    }
 
-  public void setLabelvolumevintage(String labelvolumevintage) {
-    this.labelvolumevintage = labelvolumevintage;
-  }
+    public void setLabelvolumevintage(final String labelvolumevintage) {
+        this.labelvolumevintage = labelvolumevintage;
+    }
 
-  public String getLabelbooklet() {
-    return labelbooklet;
-  }
+    public String getLabelbooklet() {
+        return labelbooklet;
+    }
 
-  public void setLabelbooklet(String labelbooklet) {
-    this.labelbooklet = labelbooklet;
-  }
+    public void setLabelbooklet(final String labelbooklet) {
+        this.labelbooklet = labelbooklet;
+    }
 
-  public String getLabelclinicinstitutedepartment() {
-    return labelclinicinstitutedepartment;
-  }
+    public String getLabelclinicinstitutedepartment() {
+        return labelclinicinstitutedepartment;
+    }
 
-  public void setLabelclinicinstitutedepartment(
-      String labelclinicinstitutedepartment) {
-    this.labelclinicinstitutedepartment = labelclinicinstitutedepartment;
-  }
+    public void setLabelclinicinstitutedepartment(
+            final String labelclinicinstitutedepartment) {
+        this.labelclinicinstitutedepartment = labelclinicinstitutedepartment;
+    }
 
-  public String getLabelphone() {
-    return labelphone;
-  }
+    public String getLabelphone() {
+        return labelphone;
+    }
 
-  public void setLabelphone(String labelphone) {
-    this.labelphone = labelphone;
-  }
+    public void setLabelphone(final String labelphone) {
+        this.labelphone = labelphone;
+    }
 
-  public String getLabelfax() {
-    return labelfax;
-  }
+    public String getLabelfax() {
+        return labelfax;
+    }
 
-  public void setLabelfax(String labelfax) {
-    this.labelfax = labelfax;
-  }
+    public void setLabelfax(final String labelfax) {
+        this.labelfax = labelfax;
+    }
 
-  public String getLabelsendto() {
-    return labelsendto;
-  }
+    public String getLabelsendto() {
+        return labelsendto;
+    }
 
-  public void setLabelsendto(String labelsendto) {
-    this.labelsendto = labelsendto;
-  }
+    public void setLabelsendto(final String labelsendto) {
+        this.labelsendto = labelsendto;
+    }
 
-  public String getLabelpages() {
-    return labelpages;
-  }
+    public String getLabelpages() {
+        return labelpages;
+    }
 
-  public void setLabelpages(String labelpages) {
-    this.labelpages = labelpages;
-  }
+    public void setLabelpages(final String labelpages) {
+        this.labelpages = labelpages;
+    }
 
-  public String getLabelauthorofessay() {
-    return labelauthorofessay;
-  }
+    public String getLabelauthorofessay() {
+        return labelauthorofessay;
+    }
 
-  public void setLabelauthorofessay(String labelauthorofessay) {
-    this.labelauthorofessay = labelauthorofessay;
-  }
+    public void setLabelauthorofessay(final String labelauthorofessay) {
+        this.labelauthorofessay = labelauthorofessay;
+    }
 
-  public String getLabeltitleofessay() {
-    return labeltitleofessay;
-  }
+    public String getLabeltitleofessay() {
+        return labeltitleofessay;
+    }
 
-  public void setLabeltitleofessay(String labeltitleofessay) {
-    this.labeltitleofessay = labeltitleofessay;
-  }
+    public void setLabeltitleofessay(final String labeltitleofessay) {
+        this.labeltitleofessay = labeltitleofessay;
+    }
 
-  public String getLabelendorsementsofdeliveringlibrary() {
-    return labelendorsementsofdeliveringlibrary;
-  }
+    public String getLabelendorsementsofdeliveringlibrary() {
+        return labelendorsementsofdeliveringlibrary;
+    }
 
-  public void setLabelendorsementsofdeliveringlibrary(
-      String labelendorsementsofdeliveringlibrary) {
-    this.labelendorsementsofdeliveringlibrary = labelendorsementsofdeliveringlibrary;
-  }
+    public void setLabelendorsementsofdeliveringlibrary(
+            final String labelendorsementsofdeliveringlibrary) {
+        this.labelendorsementsofdeliveringlibrary = labelendorsementsofdeliveringlibrary;
+    }
 
-  public String getLabelnotesfromrequestinglibrary() {
-    return labelnotesfromrequestinglibrary;
-  }
+    public String getLabelnotesfromrequestinglibrary() {
+        return labelnotesfromrequestinglibrary;
+    }
 
-  public void setLabelnotesfromrequestinglibrary(
-      String labelnotesfromrequestinglibrary) {
-    this.labelnotesfromrequestinglibrary = labelnotesfromrequestinglibrary;
-  }
+    public void setLabelnotesfromrequestinglibrary(
+            final String labelnotesfromrequestinglibrary) {
+        this.labelnotesfromrequestinglibrary = labelnotesfromrequestinglibrary;
+    }
 
 
 }

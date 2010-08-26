@@ -176,7 +176,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
     }
 
-    public OrderForm(Bestellungen b) {
+    public OrderForm(final Bestellungen b) {
         this.setBid(b.getId());
 
         this.setMediatype(b.getMediatype());
@@ -219,14 +219,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         if (b.getWaehrung() != null) { this.setKaufpreis(b.getKaufpreis()); }
         this.setAnmerkungen(b.getSystembemerkung());
 
-        OrderForm of = bigDecimalToString(this);
+        final OrderForm of = bigDecimalToString(this);
         this.setPreisvorkomma(of.getPreisvorkomma());
         this.setPreisnachkomma(of.getPreisnachkomma());
 
 
     }
 
-    public OrderForm(LoginForm lf) {
+    public OrderForm(final LoginForm lf) {
         this.setResolver(lf.isResolver());
         this.setIssn(lf.getIssn());
         this.setMediatype(lf.getMediatype());
@@ -253,7 +253,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.setForuser(lf.getForuser());
     }
 
-    public OrderForm(KontoForm kf) {
+    public OrderForm(final KontoForm kf) {
         this.setResolver(kf.isResolver());
         this.setIssn(kf.getIssn());
         this.setMediatype(kf.getMediatype());
@@ -287,7 +287,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
      *
      * @return OrderForm tocomplete
      */
-    public OrderForm completeOrderForm(OrderForm tocomplete, OrderForm tocompare) {
+    public OrderForm completeOrderForm(final OrderForm tocomplete, final OrderForm tocompare) {
 
         // TODO: systematisch auscodieren...
 
@@ -306,7 +306,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
                 tocomplete.setZeitschriftentitel(tocompare.getZeitschriftentitel());
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("completeOrderForm: " + e.toString());
         }
 
@@ -321,9 +321,9 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
      *
      * @return OrderForm of
      */
-    public OrderForm encodeOrderForm(OrderForm of) {
+    public OrderForm encodeOrderForm(final OrderForm of) {
 
-        CodeUrl codeUrl = new CodeUrl();
+        final CodeUrl codeUrl = new CodeUrl();
 
         try {
             of.setArtikeltitel_encoded(codeUrl.encodeLatin1(of.getArtikeltitel()));
@@ -334,7 +334,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
             of.setKapitel_encoded(codeUrl.encodeLatin1(of.getKapitel()));
             of.setBuchtitel_encoded(codeUrl.encodeLatin1(of.getBuchtitel()));
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("encodeOrderForm(OrderForm of): " + e.toString());
         }
 
@@ -354,7 +354,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return submit;
     }
 
-    public void setSubmit(String submit) {
+    public void setSubmit(final String submit) {
         this.submit = submit;
     }
 
@@ -362,7 +362,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return states;
     }
 
-    public void setStates(List<OrderState> states) {
+    public void setStates(final List<OrderState> states) {
         this.states = states;
     }
 
@@ -370,7 +370,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return statitexts;
     }
 
-    public void setStatitexts(List<Text> statitexts) {
+    public void setStatitexts(final List<Text> statitexts) {
         this.statitexts = statitexts;
     }
 
@@ -378,7 +378,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return defaultpreise;
     }
 
-    public void setDefaultpreise(List<DefaultPreis> defaultpreise) {
+    public void setDefaultpreise(final List<DefaultPreis> defaultpreise) {
         this.defaultpreise = defaultpreise;
     }
 
@@ -386,7 +386,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
@@ -394,7 +394,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return lid;
     }
 
-    public void setLid(String lid) {
+    public void setLid(final String lid) {
         this.lid = lid;
     }
 
@@ -402,7 +402,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return quellen;
     }
 
-    public void setQuellen(List<Lieferanten> quellen) {
+    public void setQuellen(final List<Lieferanten> quellen) {
         this.quellen = quellen;
     }
 
@@ -410,7 +410,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return lieferant;
     }
 
-    public void setLieferant(Lieferanten lieferant) {
+    public void setLieferant(final Lieferanten lieferant) {
         this.lieferant = lieferant;
     }
 
@@ -418,7 +418,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return bestellquelle;
     }
 
-    public void setBestellquelle(String bestellquelle) {
+    public void setBestellquelle(final String bestellquelle) {
         this.bestellquelle = bestellquelle;
     }
 
@@ -426,7 +426,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return rfr_id;
     }
 
-    public void setRfr_id(String rfr_id) {
+    public void setRfr_id(final String rfr_id) {
         this.rfr_id = rfr_id;
     }
 
@@ -434,7 +434,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return orderlink;
     }
 
-    public void setOrderlink(String orderlink) {
+    public void setOrderlink(final String orderlink) {
         this.orderlink = orderlink;
     }
 
@@ -442,7 +442,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
@@ -450,7 +450,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return contents;
     }
 
-    public void setContents(String contents) {
+    public void setContents(final String contents) {
         this.contents = contents;
     }
 
@@ -458,7 +458,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return links;
     }
 
-    public void setLinks(List<ErrorMessage> links) {
+    public void setLinks(final List<ErrorMessage> links) {
         this.links = links;
     }
 
@@ -466,7 +466,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return zeitschriftentitel;
     }
 
-    public void setZeitschriftentitel(String zeitschriftentitel) {
+    public void setZeitschriftentitel(final String zeitschriftentitel) {
         this.zeitschriftentitel = zeitschriftentitel;
     }
 
@@ -474,7 +474,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return zeitschriftentitel_encoded;
     }
 
-    public void setZeitschriftentitel_encoded(String zeitschriftentitel_encoded) {
+    public void setZeitschriftentitel_encoded(final String zeitschriftentitel_encoded) {
         this.zeitschriftentitel_encoded = zeitschriftentitel_encoded;
     }
 
@@ -482,7 +482,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return sigel;
     }
 
-    public void setSigel(String sigel) {
+    public void setSigel(final String sigel) {
         this.sigel = sigel;
     }
 
@@ -490,7 +490,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return faxno;
     }
 
-    public void setFaxno(String faxno) {
+    public void setFaxno(final String faxno) {
         this.faxno = faxno;
     }
 
@@ -498,7 +498,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return bibliothek;
     }
 
-    public void setBibliothek(String bibliothek) {
+    public void setBibliothek(final String bibliothek) {
         this.bibliothek = bibliothek;
     }
 
@@ -506,25 +506,25 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return subitonr;
     }
 
-    public void setSubitonr(String subitonr) {
+    public void setSubitonr(final String subitonr) {
         this.subitonr = subitonr;
     }
     public String getSessionid() {
         return sessionid;
     }
-    public void setSessionid(String sessionid) {
+    public void setSessionid(final String sessionid) {
         this.sessionid = sessionid;
     }
     public String getForuser() {
         return foruser;
     }
-    public void setForuser(String foruser) {
+    public void setForuser(final String foruser) {
         this.foruser = foruser;
     }
     public Bestellungen getBestellung() {
         return bestellung;
     }
-    public void setBestellung(Bestellungen bestellung) {
+    public void setBestellung(final Bestellungen bestellung) {
         this.bestellung = bestellung;
     }
 
@@ -532,7 +532,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return bestellungen;
     }
 
-    public void setBestellungen(List<Bestellungen> bestellungen) {
+    public void setBestellungen(final List<Bestellungen> bestellungen) {
         this.bestellungen = bestellungen;
     }
 
@@ -540,7 +540,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(final String genre) {
         this.genre = genre;
     }
 
@@ -548,7 +548,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
@@ -556,7 +556,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return waehrungen;
     }
 
-    public void setWaehrungen(List<Text> waehrungen) {
+    public void setWaehrungen(final List<Text> waehrungen) {
         this.waehrungen = waehrungen;
     }
 
@@ -564,7 +564,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return fileformat;
     }
 
-    public void setFileformat(String fileformat) {
+    public void setFileformat(final String fileformat) {
         this.fileformat = fileformat;
     }
 
@@ -572,7 +572,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return deloptions;
     }
 
-    public void setDeloptions(String deloptions) {
+    public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
@@ -581,7 +581,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -590,7 +590,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return issn;
     }
 
-    public void setIssn(String issn) {
+    public void setIssn(final String issn) {
         this.issn = issn;
     }
 
@@ -598,7 +598,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return zdbid;
     }
 
-    public void setZdbid(String zdbid) {
+    public void setZdbid(final String zdbid) {
         this.zdbid = zdbid;
     }
 
@@ -606,7 +606,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return ppn;
     }
 
-    public void setPpn(String ppn) {
+    public void setPpn(final String ppn) {
         this.ppn = ppn;
     }
 
@@ -618,7 +618,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return captcha_id;
     }
 
-    public void setCaptcha_id(String captcha_id) {
+    public void setCaptcha_id(final String captcha_id) {
         this.captcha_id = captcha_id;
     }
 
@@ -626,11 +626,11 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return captcha_text;
     }
 
-    public void setCaptcha_text(String captcha_text) {
+    public void setCaptcha_text(final String captcha_text) {
         this.captcha_text = captcha_text;
     }
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -640,7 +640,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
 
-    public void setPrio(String prio) {
+    public void setPrio(final String prio) {
         this.prio = prio;
     }
 
@@ -650,7 +650,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
@@ -658,7 +658,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return author;
     }
 
-    public void setAuthor_encoded(String author_encoded) {
+    public void setAuthor_encoded(final String author_encoded) {
         this.author_encoded = author_encoded;
     }
 
@@ -671,7 +671,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -681,7 +681,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -691,7 +691,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
 
-    public void setBid(Long bid) {
+    public void setBid(final Long bid) {
         this.bid = bid;
     }
 
@@ -699,7 +699,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(final String uid) {
         this.uid = uid;
     }
 
@@ -707,7 +707,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return artikeltitel;
     }
 
-    public void setArtikeltitel(String artikeltitel) {
+    public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
     }
 
@@ -715,7 +715,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return artikeltitel_encoded;
     }
 
-    public void setArtikeltitel_encoded(String artikeltitel_encoded) {
+    public void setArtikeltitel_encoded(final String artikeltitel_encoded) {
         this.artikeltitel_encoded = artikeltitel_encoded;
     }
 
@@ -723,14 +723,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return artikeltitel_encodedUTF8;
     }
 
-    public void setArtikeltitel_encodedUTF8(String artikeltitelEncodedUTF8) {
+    public void setArtikeltitel_encodedUTF8(final String artikeltitelEncodedUTF8) {
         artikeltitel_encodedUTF8 = artikeltitelEncodedUTF8;
     }
 
     public List<AbstractBenutzer> getKontouser() {
         return kontouser;
     }
-    public void setKontouser(List<AbstractBenutzer> kontouser) {
+    public void setKontouser(final List<AbstractBenutzer> kontouser) {
         this.kontouser = kontouser;
     }
 
@@ -738,7 +738,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return anmerkungen;
     }
 
-    public void setAnmerkungen(String anmerkungen) {
+    public void setAnmerkungen(final String anmerkungen) {
         this.anmerkungen = anmerkungen;
     }
 
@@ -746,7 +746,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return didYouMean;
     }
 
-    public void setDidYouMean(String didYouMean) {
+    public void setDidYouMean(final String didYouMean) {
         this.didYouMean = didYouMean;
     }
 
@@ -754,7 +754,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return notizen;
     }
 
-    public void setNotizen(String notizen) {
+    public void setNotizen(final String notizen) {
         this.notizen = notizen;
     }
 
@@ -762,7 +762,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(final String origin) {
         this.origin = origin;
     }
 
@@ -770,7 +770,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return mediatype;
     }
 
-    public void setMediatype(String mediatype) {
+    public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
 
@@ -778,7 +778,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return verlag;
     }
 
-    public void setVerlag(String verlag) {
+    public void setVerlag(final String verlag) {
         this.verlag = verlag;
     }
 
@@ -786,7 +786,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenmail;
     }
 
-    public void setKundenmail(String kundenmail) {
+    public void setKundenmail(final String kundenmail) {
         this.kundenmail = kundenmail;
     }
 
@@ -794,7 +794,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenname;
     }
 
-    public void setKundenname(String kundenname) {
+    public void setKundenname(final String kundenname) {
         this.kundenname = kundenname;
     }
 
@@ -802,7 +802,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenvorname;
     }
 
-    public void setKundenvorname(String kundenvorname) {
+    public void setKundenvorname(final String kundenvorname) {
         this.kundenvorname = kundenvorname;
     }
 
@@ -810,7 +810,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return preisnachkomma;
     }
 
-    public void setPreisnachkomma(String preisnachkomma) {
+    public void setPreisnachkomma(final String preisnachkomma) {
         this.preisnachkomma = preisnachkomma;
     }
 
@@ -818,7 +818,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return preisvorkomma;
     }
 
-    public void setPreisvorkomma(String preisvorkomma) {
+    public void setPreisvorkomma(final String preisvorkomma) {
         this.preisvorkomma = preisvorkomma;
     }
 
@@ -826,7 +826,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return waehrung;
     }
 
-    public void setWaehrung(String waehrung) {
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
@@ -834,7 +834,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return runs_autocomplete;
     }
 
-    public void setRuns_autocomplete(int runs_autocomplete) {
+    public void setRuns_autocomplete(final int runs_autocomplete) {
         this.runs_autocomplete = runs_autocomplete;
     }
 
@@ -842,7 +842,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kaufpreis;
     }
 
-    public void setKaufpreis(BigDecimal kaufpreis) {
+    public void setKaufpreis(final BigDecimal kaufpreis) {
         this.kaufpreis = kaufpreis;
     }
 
@@ -850,7 +850,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return doi;
     }
 
-    public void setDoi(String doi) {
+    public void setDoi(final String doi) {
         this.doi = doi;
     }
 
@@ -858,7 +858,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public void setIsbn(final String isbn) {
         this.isbn = isbn;
     }
 
@@ -866,7 +866,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return pmid;
     }
 
-    public void setPmid(String pmid) {
+    public void setPmid(final String pmid) {
         this.pmid = pmid;
     }
 
@@ -874,7 +874,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return lccn;
     }
 
-    public void setLccn(String lccn) {
+    public void setLccn(final String lccn) {
         this.lccn = lccn;
     }
 
@@ -882,7 +882,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return sici;
     }
 
-    public void setSici(String sici) {
+    public void setSici(final String sici) {
         this.sici = sici;
     }
 
@@ -890,7 +890,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenadresse;
     }
 
-    public void setKundenadresse(String kundenadresse) {
+    public void setKundenadresse(final String kundenadresse) {
         this.kundenadresse = kundenadresse;
     }
 
@@ -898,7 +898,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return buchtitel;
     }
 
-    public void setBuchtitel(String buchtitel) {
+    public void setBuchtitel(final String buchtitel) {
         this.buchtitel = buchtitel;
     }
 
@@ -906,7 +906,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kapitel;
     }
 
-    public void setKapitel(String kapitel) {
+    public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
 
@@ -914,7 +914,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kkid;
     }
 
-    public void setKkid(String kkid) {
+    public void setKkid(final String kkid) {
         this.kkid = kkid;
     }
 
@@ -922,7 +922,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return bkid;
     }
 
-    public void setBkid(String bkid) {
+    public void setBkid(final String bkid) {
         this.bkid = bkid;
     }
 
@@ -930,7 +930,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return gbvsearch;
     }
 
-    public void setGbvsearch(String gbvsearch) {
+    public void setGbvsearch(final String gbvsearch) {
         this.gbvsearch = gbvsearch;
     }
 
@@ -938,7 +938,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return gbvfield;
     }
 
-    public void setGbvfield(String gbvfield) {
+    public void setGbvfield(final String gbvfield) {
         this.gbvfield = gbvfield;
     }
 
@@ -946,7 +946,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return treffer_total;
     }
 
-    public void setTreffer_total(int treffer_total) {
+    public void setTreffer_total(final int treffer_total) {
         this.treffer_total = treffer_total;
     }
 
@@ -954,7 +954,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return forwrd;
     }
 
-    public void setForwrd(int forwrd) {
+    public void setForwrd(final int forwrd) {
         this.forwrd = forwrd;
     }
 
@@ -962,7 +962,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return back;
     }
 
-    public void setBack(int back) {
+    public void setBack(final int back) {
         this.back = back;
     }
 
@@ -970,7 +970,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return maximum_cost;
     }
 
-    public void setMaximum_cost(String maximum_cost) {
+    public void setMaximum_cost(final String maximum_cost) {
         this.maximum_cost = maximum_cost;
     }
 
@@ -978,7 +978,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return gbvnr;
     }
 
-    public void setGbvnr(String gbvnr) {
+    public void setGbvnr(final String gbvnr) {
         this.gbvnr = gbvnr;
     }
 
@@ -986,7 +986,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return interne_bestellnr;
     }
 
-    public void setInterne_bestellnr(String interne_bestellnr) {
+    public void setInterne_bestellnr(final String interne_bestellnr) {
         this.interne_bestellnr = interne_bestellnr;
     }
 
@@ -994,7 +994,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return trackingnr;
     }
 
-    public void setTrackingnr(String trackingnr) {
+    public void setTrackingnr(final String trackingnr) {
         this.trackingnr = trackingnr;
     }
 
@@ -1002,7 +1002,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(final String language) {
         this.language = language;
     }
 
@@ -1010,7 +1010,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundeninstitution;
     }
 
-    public void setKundeninstitution(String kundeninstitution) {
+    public void setKundeninstitution(final String kundeninstitution) {
         this.kundeninstitution = kundeninstitution;
     }
 
@@ -1018,7 +1018,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenabteilung;
     }
 
-    public void setKundenabteilung(String kundenabteilung) {
+    public void setKundenabteilung(final String kundenabteilung) {
         this.kundenabteilung = kundenabteilung;
     }
 
@@ -1026,7 +1026,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return freitxt1_label;
     }
 
-    public void setFreitxt1_label(String freitxt1_label) {
+    public void setFreitxt1_label(final String freitxt1_label) {
         this.freitxt1_label = freitxt1_label;
     }
 
@@ -1034,7 +1034,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return freitxt1_inhalt;
     }
 
-    public void setFreitxt1_inhalt(String freitxt1_inhalt) {
+    public void setFreitxt1_inhalt(final String freitxt1_inhalt) {
         this.freitxt1_inhalt = freitxt1_inhalt;
     }
 
@@ -1042,7 +1042,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenstrasse;
     }
 
-    public void setKundenstrasse(String kundenstrasse) {
+    public void setKundenstrasse(final String kundenstrasse) {
         this.kundenstrasse = kundenstrasse;
     }
 
@@ -1050,7 +1050,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return freitxt2_label;
     }
 
-    public void setFreitxt2_label(String freitxt2_label) {
+    public void setFreitxt2_label(final String freitxt2_label) {
         this.freitxt2_label = freitxt2_label;
     }
 
@@ -1058,7 +1058,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return freitxt2_inhalt;
     }
 
-    public void setFreitxt2_inhalt(String freitxt2_inhalt) {
+    public void setFreitxt2_inhalt(final String freitxt2_inhalt) {
         this.freitxt2_inhalt = freitxt2_inhalt;
     }
 
@@ -1066,7 +1066,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenplz;
     }
 
-    public void setKundenplz(String kundenplz) {
+    public void setKundenplz(final String kundenplz) {
         this.kundenplz = kundenplz;
     }
 
@@ -1074,7 +1074,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenort;
     }
 
-    public void setKundenort(String kundenort) {
+    public void setKundenort(final String kundenort) {
         this.kundenort = kundenort;
     }
 
@@ -1082,7 +1082,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundentelefon;
     }
 
-    public void setKundentelefon(String kundentelefon) {
+    public void setKundentelefon(final String kundentelefon) {
         this.kundentelefon = kundentelefon;
     }
 
@@ -1090,7 +1090,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenbenutzernr;
     }
 
-    public void setKundenbenutzernr(String kundenbenutzernr) {
+    public void setKundenbenutzernr(final String kundenbenutzernr) {
         this.kundenbenutzernr = kundenbenutzernr;
     }
 
@@ -1098,7 +1098,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return freitxt3_label;
     }
 
-    public void setFreitxt3_label(String freitxt3_label) {
+    public void setFreitxt3_label(final String freitxt3_label) {
         this.freitxt3_label = freitxt3_label;
     }
 
@@ -1106,7 +1106,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return freitxt3_inhalt;
     }
 
-    public void setFreitxt3_inhalt(String freitxt3_inhalt) {
+    public void setFreitxt3_inhalt(final String freitxt3_inhalt) {
         this.freitxt3_inhalt = freitxt3_inhalt;
     }
 
@@ -1114,7 +1114,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return radiobutton;
     }
 
-    public void setRadiobutton(String radiobutton) {
+    public void setRadiobutton(final String radiobutton) {
         this.radiobutton = radiobutton;
     }
 
@@ -1122,7 +1122,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return radiobutton_name;
     }
 
-    public void setRadiobutton_name(String radiobutton_name) {
+    public void setRadiobutton_name(final String radiobutton_name) {
         this.radiobutton_name = radiobutton_name;
     }
 
@@ -1130,7 +1130,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenlieferart1;
     }
 
-    public void setKundenlieferart1(String kundenlieferart1) {
+    public void setKundenlieferart1(final String kundenlieferart1) {
         this.kundenlieferart1 = kundenlieferart1;
     }
 
@@ -1138,7 +1138,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenlieferart2;
     }
 
-    public void setKundenlieferart2(String kundenlieferart2) {
+    public void setKundenlieferart2(final String kundenlieferart2) {
         this.kundenlieferart2 = kundenlieferart2;
     }
 
@@ -1146,7 +1146,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenlieferart3;
     }
 
-    public void setKundenlieferart3(String kundenlieferart3) {
+    public void setKundenlieferart3(final String kundenlieferart3) {
         this.kundenlieferart3 = kundenlieferart3;
     }
 
@@ -1154,7 +1154,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kundenland;
     }
 
-    public void setKundenland(String kundenland) {
+    public void setKundenland(final String kundenland) {
         this.kundenland = kundenland;
     }
 
@@ -1162,7 +1162,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return countries;
     }
 
-    public void setCountries(List<Countries> countries) {
+    public void setCountries(final List<Countries> countries) {
         this.countries = countries;
     }
 
@@ -1170,7 +1170,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return gebuehren;
     }
 
-    public void setGebuehren(String gebuehren) {
+    public void setGebuehren(final String gebuehren) {
         this.gebuehren = gebuehren;
     }
 
@@ -1178,7 +1178,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return agb;
     }
 
-    public void setAgb(String agb) {
+    public void setAgb(final String agb) {
         this.agb = agb;
     }
 
@@ -1191,15 +1191,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
     public Date getOrderdate() {
-        Date d = Date.valueOf(bestellung.getOrderdate());
-        return d;
+        return Date.valueOf(bestellung.getOrderdate());
     }
 
     public String getPreis() {
         return Preis;
     }
 
-    public void setPreis(String preis) {
+    public void setPreis(final String preis) {
         Preis = preis;
     }
 
@@ -1211,7 +1210,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return verlag_encoded;
     }
 
-    public void setVerlag_encoded(String verlag_encoded) {
+    public void setVerlag_encoded(final String verlag_encoded) {
         this.verlag_encoded = verlag_encoded;
     }
 
@@ -1219,7 +1218,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return kapitel_encoded;
     }
 
-    public void setKapitel_encoded(String kapitel_encoded) {
+    public void setKapitel_encoded(final String kapitel_encoded) {
         this.kapitel_encoded = kapitel_encoded;
     }
 
@@ -1227,7 +1226,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return buchtitel_encoded;
     }
 
-    public void setBuchtitel_encoded(String buchtitel_encoded) {
+    public void setBuchtitel_encoded(final String buchtitel_encoded) {
         this.buchtitel_encoded = buchtitel_encoded;
     }
 
@@ -1235,7 +1234,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return preisdefault;
     }
 
-    public void setPreisdefault(boolean preisdefault) {
+    public void setPreisdefault(final boolean preisdefault) {
         this.preisdefault = preisdefault;
     }
 
@@ -1243,7 +1242,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return checkDidYouMean;
     }
 
-    public void setCheckDidYouMean(boolean checkDidYouMean) {
+    public void setCheckDidYouMean(final boolean checkDidYouMean) {
         this.checkDidYouMean = checkDidYouMean;
     }
 
@@ -1251,7 +1250,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return autocomplete;
     }
 
-    public void setAutocomplete(boolean autocomplete) {
+    public void setAutocomplete(final boolean autocomplete) {
         this.autocomplete = autocomplete;
     }
 
@@ -1259,7 +1258,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return flag_noissn;
     }
 
-    public void setFlag_noissn(boolean flag_noissn) {
+    public void setFlag_noissn(final boolean flag_noissn) {
         this.flag_noissn = flag_noissn;
     }
 
@@ -1267,7 +1266,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return manuell;
     }
 
-    public void setManuell(boolean manuell) {
+    public void setManuell(final boolean manuell) {
         this.manuell = manuell;
     }
 
@@ -1275,7 +1274,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return erledigt;
     }
 
-    public void setErledigt(boolean erledigt) {
+    public void setErledigt(final boolean erledigt) {
         this.erledigt = erledigt;
     }
 
@@ -1283,7 +1282,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return delete;
     }
 
-    public void setDelete(boolean delete) {
+    public void setDelete(final boolean delete) {
         this.delete = delete;
     }
 
@@ -1291,7 +1290,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return resolve;
     }
 
-    public void setResolve(boolean resolve) {
+    public void setResolve(final boolean resolve) {
         this.resolve = resolve;
     }
 
@@ -1299,7 +1298,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return resolver;
     }
 
-    public void setResolver(boolean resolver) {
+    public void setResolver(final boolean resolver) {
         this.resolver = resolver;
     }
 
@@ -1307,7 +1306,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return carelit;
     }
 
-    public void setCarelit(boolean carelit) {
+    public void setCarelit(final boolean carelit) {
         this.carelit = carelit;
     }
 
@@ -1315,7 +1314,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return fromstock;
     }
 
-    public void setFromstock(boolean fromstock) {
+    public void setFromstock(final boolean fromstock) {
         this.fromstock = fromstock;
     }
 
@@ -1329,10 +1328,10 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
      */
     public String getTitel() {
         String titel = null;
-        if (mediatype.equals("book")) {
+        if ("book".equals(mediatype)) {
             titel = getBuchtitel();
         }
-        if (mediatype.equals("journal")) {
+        if ("journal".equals(mediatype)) {
             titel = getArtikeltitel();
         }
         return titel;
@@ -1348,24 +1347,24 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
      */
     public String getZeitschrift_verlag() {
         String zeitschriftVerlag = null;
-        if (mediatype.equals("book")) {
+        if ("book".equals(mediatype)) {
             zeitschriftVerlag = getVerlag();
         }
-        if (mediatype.equals("journal")) {
+        if ("journal".equals(mediatype)) {
             zeitschriftVerlag = getZeitschriftentitel();
         }
         return zeitschriftVerlag;
     }
 
-    public OrderForm bigDecimalToString(OrderForm pageForm) {
+    public OrderForm bigDecimalToString(final OrderForm pageForm) {
 
         if (pageForm.getKaufpreis() != null) {
-            BigDecimal bd = pageForm.getKaufpreis();
+            final BigDecimal bd = pageForm.getKaufpreis();
 
-            int vorkomma = bd.intValue();
+            final int vorkomma = bd.intValue();
 
             String nachkomma = bd.toString();
-            nachkomma = nachkomma.substring(nachkomma.indexOf(".") + 1);
+            nachkomma = nachkomma.substring(nachkomma.indexOf('.') + 1);
             if (nachkomma.length() == 1) { nachkomma = nachkomma + "0"; }
 
             pageForm.setPreisvorkomma(Integer.toString(vorkomma));

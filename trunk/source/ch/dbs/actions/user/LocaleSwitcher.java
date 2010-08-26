@@ -32,23 +32,23 @@ import util.Auth;
 
 public final class LocaleSwitcher extends Action {
 
-  /**
+    /**
      * Enables the user to switch manually the Locale
      *
      * @author Markus Fischer
      */
 
-    public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-      String forward = "loggedout";
-      Auth auth = new Auth();
+        String forward = "loggedout";
+        final Auth auth = new Auth();
 
-      String loc = rq.getParameter("request_locale");
+        String loc = rq.getParameter("request_locale");
 
-      if (loc == null || loc.equals("")) { loc = "en"; } // Setting  a standardvalue
+        if (loc == null || loc.equals("")) { loc = "en"; } // Setting  a standardvalue
 
-      rq.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(loc));
+        rq.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(loc));
 
         if (auth.isLogin(rq)) { // User is logged in
             forward = "loggedin";

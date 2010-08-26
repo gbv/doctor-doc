@@ -42,97 +42,97 @@ import ch.dbs.form.Message;
  */
 public final class BillingAction extends DispatchAction {
 
-  /**
+    /**
      * Listet die Rechnungen zu einem Konto sortiert nach Offenen Rechnungen, Rechnungsdatum
      * auf
      */
-    public ActionForward listBillings(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
-      String forward = "failure";
-      Auth auth = new Auth();
+    public ActionForward listBillings(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+        String forward = "failure";
+        final Auth auth = new Auth();
 
-      // Ist der Benutzer noch angemeldet oder Session Timeout
-      if (auth.isLogin(rq)) {
+        // Ist der Benutzer noch angemeldet oder Session Timeout
+        if (auth.isLogin(rq)) {
 
-        // Darf der Benutzer Rechnungen sehen? NUR SEINE EIGENEN... ;-)
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+            // Darf der Benutzer Rechnungen sehen? NUR SEINE EIGENEN... ;-)
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
-          // Rechnungen zum Konto auflisten
-          KontoForm kf = (KontoForm) fm;
-          Billing b = new Billing();
+                // Rechnungen zum Konto auflisten
+                final KontoForm kf = (KontoForm) fm;
+                final Billing b = new Billing();
 
-          BillingForm bf = new BillingForm();
-          Konto k = new Konto(kf.getKid(), b.getConnection());
-          bf.setKonto(k);
-          bf.setBillings(b.getBillings(k, b.getConnection()));
+                final BillingForm bf = new BillingForm();
+                final Konto k = new Konto(kf.getKid(), b.getConnection());
+                bf.setKonto(k);
+                bf.setBillings(b.getBillings(k, b.getConnection()));
 
-          rq.setAttribute("billingform", bf);
+                rq.setAttribute("billingform", bf);
 
-          b.close();
+                b.close();
 
-          forward = "success";
+                forward = "success";
 
-        } else {
-            ErrorMessage em = new ErrorMessage(
+            } else {
+                final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung", "searchfree.do");
                 rq.setAttribute("errormessage", em);
-              }
+            }
 
-      } else {
-        ActiveMenusForm mf = new ActiveMenusForm();
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-        ErrorMessage em = new ErrorMessage(
-                "error.timeout", "login.do");
-        rq.setAttribute("errormessage", em);
-      }
+            final ErrorMessage em = new ErrorMessage(
+                    "error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
 
-      return mp.findForward(forward);
+        return mp.findForward(forward);
     }
 
 
     /**
      * Admins können Paydate setzen
      */
-    public ActionForward setPayDate(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward setPayDate(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-      String forward = "failure";
-      Auth auth = new Auth();
+        String forward = "failure";
+        final Auth auth = new Auth();
 
-      // Benutzer eingeloggt
-      if (auth.isLogin(rq)) {
+        // Benutzer eingeloggt
+        if (auth.isLogin(rq)) {
 
-      // Benutzer ein Admin?
-      if (auth.isAdmin(rq)) {
+            // Benutzer ein Admin?
+            if (auth.isAdmin(rq)) {
 
-          BillingForm bf = (BillingForm) fm;
-          Billing cn = new Billing();
-          Billing b = new Billing(bf.getBillid(), cn.getConnection());
-          b.setZahlungseingang(bf.getZahlungseingang());
-          b.update(cn.getConnection());
+                final BillingForm bf = (BillingForm) fm;
+                final Billing cn = new Billing();
+                final Billing b = new Billing(bf.getBillid(), cn.getConnection());
+                b.setZahlungseingang(bf.getZahlungseingang());
+                b.update(cn.getConnection());
 
-          cn.close();
+                cn.close();
 
-          Message em = new Message("message.setpaydate", b.getKonto().getBibliotheksname() + "\n\n"
-              + b.getRechnungsgrund().getInhalt(), "kontoadmin.do?method=listKontos");
-          rq.setAttribute("message", em);
-          forward = "success";
+                final Message em = new Message("message.setpaydate", b.getKonto().getBibliotheksname() + "\n\n"
+                        + b.getRechnungsgrund().getInhalt(), "kontoadmin.do?method=listKontos");
+                rq.setAttribute("message", em);
+                forward = "success";
 
-      } else {
-        ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-        rq.setAttribute("errormessage", em);
-      }
+            } else {
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+                rq.setAttribute("errormessage", em);
+            }
 
-    } else {
-      ActiveMenusForm mf = new ActiveMenusForm();
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-      ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-      rq.setAttribute("errormessage", em);
-    }
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
 
 
-      return mp.findForward(forward);
+        return mp.findForward(forward);
     }
 }

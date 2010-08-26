@@ -107,19 +107,13 @@ public class GbvSruForm extends ActionForm {
     private String verknuepfung_ppn_groesser;
 
 
-
-    public GbvSruForm() {
-
-    }
-
-
     public int getTreffer_total() {
         return treffer_total;
     }
 
 
 
-    public void setTreffer_total(int treffer_total) {
+    public void setTreffer_total(final int treffer_total) {
         this.treffer_total = treffer_total;
     }
 
@@ -131,7 +125,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setPpn_003AT(String ppn_003AT) {
+    public void setPpn_003AT(final String ppn_003AT) {
         this.ppn_003AT = ppn_003AT;
     }
 
@@ -142,7 +136,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setTyp_002AT(String typ_002AT) {
+    public void setTyp_002AT(final String typ_002AT) {
         this.typ_002AT = typ_002AT;
     }
 
@@ -154,7 +148,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setErscheinungsjahr_011AT(String erscheinungsjahr_011AT) {
+    public void setErscheinungsjahr_011AT(final String erscheinungsjahr_011AT) {
         this.erscheinungsjahr_011AT = erscheinungsjahr_011AT;
     }
 
@@ -166,7 +160,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setMaterialbenennung_allg_016H(String materialbenennung_allg_016H) {
+    public void setMaterialbenennung_allg_016H(final String materialbenennung_allg_016H) {
         this.materialbenennung_allg_016H = materialbenennung_allg_016H;
     }
 
@@ -178,7 +172,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setSprache_010AT(String sprache_010AT) {
+    public void setSprache_010AT(final String sprache_010AT) {
         this.sprache_010AT = sprache_010AT;
     }
 
@@ -190,7 +184,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setErscheinungsland_019AT(String erscheinungsland_019AT) {
+    public void setErscheinungsland_019AT(final String erscheinungsland_019AT) {
         this.erscheinungsland_019AT = erscheinungsland_019AT;
     }
 
@@ -202,7 +196,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setIsbn_004A_multipel(String isbn_004A_multipel) {
+    public void setIsbn_004A_multipel(final String isbn_004A_multipel) {
         this.isbn_004A_multipel = isbn_004A_multipel;
     }
 
@@ -214,7 +208,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setIssn_005A_multipel(String issn_005A_multipel) {
+    public void setIssn_005A_multipel(final String issn_005A_multipel) {
         this.issn_005A_multipel = issn_005A_multipel;
     }
 
@@ -226,7 +220,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setIsmn_004F(String ismn_004F) {
+    public void setIsmn_004F(final String ismn_004F) {
         this.ismn_004F = ismn_004F;
     }
 
@@ -238,7 +232,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setLoc_num_006A(String loc_num_006A) {
+    public void setLoc_num_006A(final String loc_num_006A) {
         this.loc_num_006A = loc_num_006A;
     }
 
@@ -250,7 +244,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setDoi_004V_multipel(String doi_004V_multipel) {
+    public void setDoi_004V_multipel(final String doi_004V_multipel) {
         this.doi_004V_multipel = doi_004V_multipel;
     }
 
@@ -262,7 +256,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setDnb_num_006G(String dnb_num_006G) {
+    public void setDnb_num_006G(final String dnb_num_006G) {
         this.dnb_num_006G = dnb_num_006G;
     }
 
@@ -274,7 +268,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setCip_num_db_006T_multipel(String cip_num_db_006T_multipel) {
+    public void setCip_num_db_006T_multipel(final String cip_num_db_006T_multipel) {
         this.cip_num_db_006T_multipel = cip_num_db_006T_multipel;
     }
 
@@ -286,7 +280,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setZdbid_006Z_multipel(String zdbid_006Z_multipel) {
+    public void setZdbid_006Z_multipel(final String zdbid_006Z_multipel) {
         this.zdbid_006Z_multipel = zdbid_006Z_multipel;
     }
 
@@ -298,7 +292,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setEan_004L_multipel(String ean_004L_multipel) {
+    public void setEan_004L_multipel(final String ean_004L_multipel) {
         this.ean_004L_multipel = ean_004L_multipel;
     }
 
@@ -310,7 +304,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setHochschulschriften_num_007E(String hochschulschriften_num_007E) {
+    public void setHochschulschriften_num_007E(final String hochschulschriften_num_007E) {
         this.hochschulschriften_num_007E = hochschulschriften_num_007E;
     }
 
@@ -322,7 +316,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setVerfasser_erster_028A(String verfasser_erster_028A) {
+    public void setVerfasser_erster_028A(final String verfasser_erster_028A) {
         this.verfasser_erster_028A = verfasser_erster_028A;
     }
 
@@ -335,7 +329,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setVerfasser_zweiter_und_weitere_028B(
-            String verfasser_zweiter_und_weitere_028B) {
+            final String verfasser_zweiter_und_weitere_028B) {
         this.verfasser_zweiter_und_weitere_028B = verfasser_zweiter_und_weitere_028B;
     }
 
@@ -347,7 +341,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setInterpreten_028E_multipel(String interpreten_028E_multipel) {
+    public void setInterpreten_028E_multipel(final String interpreten_028E_multipel) {
         this.interpreten_028E_multipel = interpreten_028E_multipel;
     }
 
@@ -359,7 +353,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setGefeierte_personen_028F(String gefeierte_personen_028F) {
+    public void setGefeierte_personen_028F(final String gefeierte_personen_028F) {
         this.gefeierte_personen_028F = gefeierte_personen_028F;
     }
 
@@ -371,7 +365,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setKoerperschaft_erste_029A(String koerperschaft_erste_029A) {
+    public void setKoerperschaft_erste_029A(final String koerperschaft_erste_029A) {
         this.koerperschaft_erste_029A = koerperschaft_erste_029A;
     }
 
@@ -383,7 +377,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setKoerperschaft_zweite_029F(String koerperschaft_zweite_029F) {
+    public void setKoerperschaft_zweite_029F(final String koerperschaft_zweite_029F) {
         this.koerperschaft_zweite_029F = koerperschaft_zweite_029F;
     }
 
@@ -396,7 +390,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setKoerperschaft_als_interpret_029E_multipel(
-            String koerperschaft_als_interpret_029E_multipel) {
+            final String koerperschaft_als_interpret_029E_multipel) {
         this.koerperschaft_als_interpret_029E_multipel = koerperschaft_als_interpret_029E_multipel;
     }
 
@@ -409,7 +403,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setKoerperschaft_sonstige_029K_multipel(
-            String koerperschaft_sonstige_029K_multipel) {
+            final String koerperschaft_sonstige_029K_multipel) {
         this.koerperschaft_sonstige_029K_multipel = koerperschaft_sonstige_029K_multipel;
     }
 
@@ -421,7 +415,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setKongresse_030F(String kongresse_030F) {
+    public void setKongresse_030F(final String kongresse_030F) {
         this.kongresse_030F = kongresse_030F;
     }
 
@@ -433,7 +427,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setHauptsachtitel_021A(String hauptsachtitel_021A) {
+    public void setHauptsachtitel_021A(final String hauptsachtitel_021A) {
         this.hauptsachtitel_021A = hauptsachtitel_021A;
     }
 
@@ -446,7 +440,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setHauptsachtitel_alternativ_021B(
-            String hauptsachtitel_alternativ_021B) {
+            final String hauptsachtitel_alternativ_021B) {
         this.hauptsachtitel_alternativ_021B = hauptsachtitel_alternativ_021B;
     }
 
@@ -458,7 +452,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setUnterreihe_021C_multipel(String unterreihe_021C_multipel) {
+    public void setUnterreihe_021C_multipel(final String unterreihe_021C_multipel) {
         this.unterreihe_021C_multipel = unterreihe_021C_multipel;
     }
 
@@ -470,7 +464,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setRezensierteswerk_021G_multipel(
-            String rezensierteswerk_021G_multipel) {
+            final String rezensierteswerk_021G_multipel) {
         this.rezensierteswerk_021G_multipel = rezensierteswerk_021G_multipel;
     }
 
@@ -481,7 +475,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setZusatzwerk_021M_multipel(String zusatzwerk_021M_multipel) {
+    public void setZusatzwerk_021M_multipel(final String zusatzwerk_021M_multipel) {
         this.zusatzwerk_021M_multipel = zusatzwerk_021M_multipel;
     }
 
@@ -493,7 +487,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setZusaetze_und_verfasser_021N(String zusaetze_und_verfasser_021N) {
+    public void setZusaetze_und_verfasser_021N(final String zusaetze_und_verfasser_021N) {
         this.zusaetze_und_verfasser_021N = zusaetze_und_verfasser_021N;
     }
 
@@ -505,7 +499,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setBand_021V_multipel(String band_021V_multipel) {
+    public void setBand_021V_multipel(final String band_021V_multipel) {
         this.band_021V_multipel = band_021V_multipel;
     }
 
@@ -517,7 +511,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setAusgabe_032AT(String ausgabe_032AT) {
+    public void setAusgabe_032AT(final String ausgabe_032AT) {
         this.ausgabe_032AT = ausgabe_032AT;
     }
 
@@ -529,7 +523,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setReprintvermerk_032B(String reprintvermerk_032B) {
+    public void setReprintvermerk_032B(final String reprintvermerk_032B) {
         this.reprintvermerk_032B = reprintvermerk_032B;
     }
 
@@ -542,7 +536,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setErscheinungsverlauf_normiert_031N(
-            String erscheinungsverlauf_normiert_031N) {
+            final String erscheinungsverlauf_normiert_031N) {
         this.erscheinungsverlauf_normiert_031N = erscheinungsverlauf_normiert_031N;
     }
 
@@ -552,7 +546,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setUmfang_031A(String umfang_031A) {
+    public void setUmfang_031A(final String umfang_031A) {
         this.umfang_031A = umfang_031A;
     }
 
@@ -563,7 +557,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setErscheinungsverlauf_031AT(String erscheinungsverlauf_031AT) {
+    public void setErscheinungsverlauf_031AT(final String erscheinungsverlauf_031AT) {
         this.erscheinungsverlauf_031AT = erscheinungsverlauf_031AT;
     }
 
@@ -575,7 +569,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setOrt_verlag_033A_multipel(String ort_verlag_033A_multipel) {
+    public void setOrt_verlag_033A_multipel(final String ort_verlag_033A_multipel) {
         this.ort_verlag_033A_multipel = ort_verlag_033A_multipel;
     }
 
@@ -588,7 +582,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setMaterialbenennung_spezifisch_034D(
-            String materialbenennung_spezifisch_034D) {
+            final String materialbenennung_spezifisch_034D) {
         this.materialbenennung_spezifisch_034D = materialbenennung_spezifisch_034D;
     }
 
@@ -600,7 +594,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setIllustration_034M(String illustration_034M) {
+    public void setIllustration_034M(final String illustration_034M) {
         this.illustration_034M = illustration_034M;
     }
 
@@ -612,7 +606,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setFormat_034I(String format_034I) {
+    public void setFormat_034I(final String format_034I) {
         this.format_034I = format_034I;
     }
 
@@ -624,7 +618,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setBegleitmaterial_034K(String begleitmaterial_034K) {
+    public void setBegleitmaterial_034K(final String begleitmaterial_034K) {
         this.begleitmaterial_034K = begleitmaterial_034K;
     }
 
@@ -637,7 +631,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setGesamtheit_abteilungen_vorlage_036C(
-            String gesamtheit_abteilungen_vorlage_036C) {
+            final String gesamtheit_abteilungen_vorlage_036C) {
         this.gesamtheit_abteilungen_vorlage_036C = gesamtheit_abteilungen_vorlage_036C;
     }
 
@@ -650,7 +644,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setGesamtheit_ansetzungsform_036D(
-            String gesamtheit_ansetzungsform_036D) {
+            final String gesamtheit_ansetzungsform_036D) {
         this.gesamtheit_ansetzungsform_036D = gesamtheit_ansetzungsform_036D;
     }
 
@@ -663,7 +657,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setGesamtheit_vorlage_036E_multipel(
-            String gesamtheit_vorlage_036E_multipel) {
+            final String gesamtheit_vorlage_036E_multipel) {
         this.gesamtheit_vorlage_036E_multipel = gesamtheit_vorlage_036E_multipel;
     }
 
@@ -676,7 +670,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setGesamtheit_ansetzungsform_036F_multipel(
-            String gesamtheit_ansetzungsform_036F_multipel) {
+            final String gesamtheit_ansetzungsform_036F_multipel) {
         this.gesamtheit_ansetzungsform_036F_multipel = gesamtheit_ansetzungsform_036F_multipel;
     }
 
@@ -689,7 +683,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setFussnoten_unaufgegliedert_037A_multipel(
-            String fussnoten_unaufgegliedert_037A_multipel) {
+            final String fussnoten_unaufgegliedert_037A_multipel) {
         this.fussnoten_unaufgegliedert_037A_multipel = fussnoten_unaufgegliedert_037A_multipel;
     }
 
@@ -702,7 +696,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setHochschulschriftenvermerk_037C_multipel(
-            String hochschulschriftenvermerk_037C_multipel) {
+            final String hochschulschriftenvermerk_037C_multipel) {
         this.hochschulschriftenvermerk_037C_multipel = hochschulschriftenvermerk_037C_multipel;
     }
 
@@ -714,7 +708,7 @@ public class GbvSruForm extends ActionForm {
 
 
 
-    public void setEnthaltene_werke_046Q(String enthaltene_werke_046Q) {
+    public void setEnthaltene_werke_046Q(final String enthaltene_werke_046Q) {
         this.enthaltene_werke_046Q = enthaltene_werke_046Q;
     }
 
@@ -727,7 +721,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setVerknuepfung_groessere_einheit_039B_multipel(
-            String verknuepfung_groessere_einheit_039B_multipel) {
+            final String verknuepfung_groessere_einheit_039B_multipel) {
         this.verknuepfung_groessere_einheit_039B_multipel = verknuepfung_groessere_einheit_039B_multipel;
     }
 
@@ -740,7 +734,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setVerknuepfung_kleinere_einheit_039C_multipel(
-            String verknuepfung_kleinere_einheit_039C_multipel) {
+            final String verknuepfung_kleinere_einheit_039C_multipel) {
         this.verknuepfung_kleinere_einheit_039C_multipel = verknuepfung_kleinere_einheit_039C_multipel;
     }
 
@@ -753,7 +747,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setVerknuepfung_horizontal_039D_multipel(
-            String verknuepfung_horizontal_039D_multipel) {
+            final String verknuepfung_horizontal_039D_multipel) {
         this.verknuepfung_horizontal_039D_multipel = verknuepfung_horizontal_039D_multipel;
     }
 
@@ -763,7 +757,7 @@ public class GbvSruForm extends ActionForm {
 
 
     public void setVerknuepfung_zdbid_horizontal(
-            String verknuepfung_zdbid_horizontal) {
+            final String verknuepfung_zdbid_horizontal) {
         this.verknuepfung_zdbid_horizontal = verknuepfung_zdbid_horizontal;
     }
 
@@ -773,7 +767,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setVerknuepfung_ppn_groesser(String verknuepfung_ppn_groesser) {
+    public void setVerknuepfung_ppn_groesser(final String verknuepfung_ppn_groesser) {
         this.verknuepfung_ppn_groesser = verknuepfung_ppn_groesser;
     }
 
@@ -782,7 +776,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setVerknuepfung_zdbid_groesser(String verknuepfung_zdbid_groesser) {
+    public void setVerknuepfung_zdbid_groesser(final String verknuepfung_zdbid_groesser) {
         this.verknuepfung_zdbid_groesser = verknuepfung_zdbid_groesser;
     }
 
@@ -791,7 +785,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setVerknuepfung_ppn_horizontal(String verknuepfung_ppn_horizontal) {
+    public void setVerknuepfung_ppn_horizontal(final String verknuepfung_ppn_horizontal) {
         this.verknuepfung_ppn_horizontal = verknuepfung_ppn_horizontal;
     }
 
@@ -800,7 +794,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setLink_009P_multiple(String link_009P_multiple) {
+    public void setLink_009P_multiple(final String link_009P_multiple) {
         this.link_009P_multiple = link_009P_multiple;
     }
 
@@ -809,7 +803,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setBandzaehlung(String bandzaehlung) {
+    public void setBandzaehlung(final String bandzaehlung) {
         this.bandzaehlung = bandzaehlung;
     }
 
@@ -817,7 +811,7 @@ public class GbvSruForm extends ActionForm {
         return start_record;
     }
 
-    public void setStart_record(int start_record) {
+    public void setStart_record(final int start_record) {
         this.start_record = start_record;
     }
 
@@ -827,7 +821,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setMaximum_record(int maximum_record) {
+    public void setMaximum_record(final int maximum_record) {
         this.maximum_record = maximum_record;
     }
 
@@ -836,7 +830,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setRecord_number(int record_number) {
+    public void setRecord_number(final int record_number) {
         this.record_number = record_number;
     }
 
@@ -846,7 +840,7 @@ public class GbvSruForm extends ActionForm {
     }
 
 
-    public void setAnzahl_039D(int anzahl_039D) {
+    public void setAnzahl_039D(final int anzahl_039D) {
         this.anzahl_039D = anzahl_039D;
     }
 

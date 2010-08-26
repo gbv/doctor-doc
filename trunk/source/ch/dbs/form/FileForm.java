@@ -23,30 +23,30 @@ import org.apache.struts.upload.FormFile;
 
 public final class FileForm extends ActionForm {
 
-  /**
-   * FileForm used to upload a file
-   *
-   */
+    /**
+     * FileForm used to upload a file
+     *
+     */
 
-  private static final long serialVersionUID = 1L;
-  private FormFile file;
-  private boolean condition;
+    private static final long serialVersionUID = 1L;
+    private FormFile file;
+    private boolean condition;
 
 
-  public FormFile getFile() {
-    return file;
-  }
+    public FormFile getFile() {
+        return file;
+    }
 
-  public void setFile(FormFile file) {
-    this.file = file;
-  }
+    public void setFile(final FormFile file) {
+        this.file = file;
+    }
 
-  public boolean isCondition() {
-    return condition;
-  }
+    public boolean isCondition() {
+        return condition;
+    }
 
-  public void setCondition(boolean condition) {
-    this.condition = condition;
-  }
+    public void setCondition(final boolean condition) {
+        this.condition = condition;
+    }
 
 }

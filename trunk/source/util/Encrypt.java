@@ -23,29 +23,29 @@ import org.grlea.log.SimpleLogger;
 
 public class Encrypt {
 
-  private static final SimpleLogger LOG = new SimpleLogger(Encrypt.class);
+    private static final SimpleLogger LOG = new SimpleLogger(Encrypt.class);
 
-  /**
+    /**
      * Erstellt aus einem String den SHA-1 Hash
      * @param s
      * @return
      */
-    public String makeSHA(String s) {
+    public String makeSHA(final String s) {
 
-      StringBuffer encoded = new StringBuffer();
+        final StringBuffer encoded = new StringBuffer();
 
-      try {
+        try {
 
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-      byte[] digest = md.digest(s.getBytes());
+            final MessageDigest md = MessageDigest.getInstance("SHA-1");
+            final byte[] digest = md.digest(s.getBytes());
 
-      for (byte d : digest) { encoded.append(Integer.toHexString(d & 0xFF)); }
+            for (byte d : digest) { encoded.append(Integer.toHexString(d & 0xFF)); }
 
-      } catch (Exception e) {
-        LOG.error("makeSHA: " + e.toString());
-    }
+        } catch (Exception e) {
+            LOG.error("makeSHA: " + e.toString());
+        }
 
-      return encoded.toString();
+        return encoded.toString();
 
     }
 

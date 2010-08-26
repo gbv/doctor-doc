@@ -38,6 +38,7 @@ public class Http {
 
     private static final int TIMEOUT = 2000; //Timeout in ms
     private static final int RETRYS = 3; // Anzahl versuche zum Website auslesen
+    private static final String LOC = "location";
 
 
     /**
@@ -45,7 +46,7 @@ public class Http {
      * @param link
      * @return Website als String mit fixem nicht einstellbarem timeout sowie mit 3 versuchen bei Fehler
      */
-    public String getWebcontent(String link) {
+    public String getWebcontent(final String link) {
         return getWebcontent(link, TIMEOUT, RETRYS);
     }
 
@@ -53,7 +54,7 @@ public class Http {
      * @param method
      * @return Website als String mit fixem nicht einstellbarem timeout sowie mit 3 versuchen bei Fehler
      */
-    public String getWebcontent(PostMethod method) {
+    public String getWebcontent(final PostMethod method) {
         return getWebcontent(method, TIMEOUT, RETRYS);
     }
 
@@ -64,10 +65,10 @@ public class Http {
      * @param int retrys
      * @return Liefert den inhalt einer Website als String zurück
      */
-    public String getWebcontent(String link, int timeout_ms, int retrys) {
-        HttpClientParams params = new HttpClientParams();
-        HttpClient client = new HttpClient(params);
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeout_ms); // funzt!
+    public String getWebcontent(final String link, final int timeoutMs, final int retrys) {
+        final HttpClientParams params = new HttpClientParams();
+        final HttpClient client = new HttpClient(params);
+        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeoutMs); // funzt!
         String contents = "";
         String redirectLocation = "";
         int trys = 0;
@@ -77,12 +78,12 @@ public class Http {
             try {
                 int statusCode = client.executeMethod(gmethod);
                 if (statusCode != -1) {
-                    Header locationHeader = gmethod.getResponseHeader("location");
+                    Header locationHeader = gmethod.getResponseHeader(LOC);
                     while (locationHeader != null) {
                         redirectLocation = locationHeader.getValue();
                         gmethod = new GetMethod(redirectLocation);
                         statusCode = client.executeMethod(gmethod);
-                        locationHeader = gmethod.getResponseHeader("location");
+                        locationHeader = gmethod.getResponseHeader(LOC);
                     }
                     // Diese Methode bringt content ohne Umbrüche
                     // d.h. content.substring+fixeZahl funktioniert nicht mehr...
@@ -129,7 +130,7 @@ public class Http {
      * @param PostMethod method
      * @return Liefert den inhalt einer Website als String zurück
      */
-    public String getWebcontent(PostMethod method, int timeout_ms, int retrys) {
+    public String getWebcontent(PostMethod method, final int timeoutMs, final int retrys) {
 
         String content = "";
         String f = "";
@@ -142,20 +143,20 @@ public class Http {
 
         //        Protocol myhttps = new Protocol("https", new SSLSocketFactory(), 443);
 
-        HttpClient client = new HttpClient();
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeout_ms); // funzt!
+        final HttpClient client = new HttpClient();
+        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeoutMs); // funzt!
         boolean connection = false;
         int trys = 0;
         while (!connection && trys < retrys) {
             try {
                 int statusCode = client.executeMethod(method);
                 if (statusCode != -1) {
-                    Header locationHeader = method.getResponseHeader("location");
+                    Header locationHeader = method.getResponseHeader(LOC);
                     while (locationHeader != null) {
                         redirectLocation = locationHeader.getValue();
                         method = new PostMethod(redirectLocation);
                         statusCode = client.executeMethod(method);
-                        locationHeader = method.getResponseHeader("location");
+                        locationHeader = method.getResponseHeader(LOC);
                         //                        System.out.println("Location: " + redirectLocation);
                     }
                     // Diese Methode bringt content ohne Umbrüche
@@ -197,26 +198,27 @@ public class Http {
      * @param postdata
      * @return
      */
-    public String getWebcontent(String link, String postdata) {
+    public String getWebcontent(final String link, final String postdata) {
 
-        StringBuffer response = new StringBuffer();
+        final StringBuffer response = new StringBuffer();
         try {
             DisableSSLCertificateCheckUtil.disableChecks();
             // Send data
-            URL url = new URL(link);
-            URLConnection conn = url.openConnection();
+            final URL url = new URL(link);
+            final URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn
+            final OutputStreamWriter wr = new OutputStreamWriter(conn
                     .getOutputStream());
             wr.write(postdata);
             wr.flush();
 
             // Get the response
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn
+            final BufferedReader rd = new BufferedReader(new InputStreamReader(conn
                     .getInputStream()));
             String content = "";
             while ((content = rd.readLine()) != null) {
-                response.append(content + "\n");
+                response.append(content);
+                response.append('\n');
             }
             wr.close();
             rd.close();

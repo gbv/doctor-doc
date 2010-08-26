@@ -28,13 +28,14 @@ import ch.dbs.form.UserForm;
  */
 public class Bibliothekar extends AbstractBenutzer {
 
-  // Leerer Konstruktor
-  public Bibliothekar() {
-    super();
-  }
+    // Leerer Konstruktor
+    public Bibliothekar() {
+        super();
+    }
 
-  // Bibliothekare aus UserForm erstellen
-  public Bibliothekar(UserForm uf) {
-    super(uf);
-  }
+    // Bibliothekare aus UserForm erstellen
+    public Bibliothekar(final UserForm uf) {
+        super(uf);
+    }
+
 }

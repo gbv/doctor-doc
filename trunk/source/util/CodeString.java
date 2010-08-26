@@ -23,7 +23,7 @@ import org.grlea.log.SimpleLogger;
 
 public class CodeString {
 
-  private static final SimpleLogger LOG = new SimpleLogger(CodeString.class);
+    private static final SimpleLogger LOG = new SimpleLogger(CodeString.class);
 
     /**
      * Codiert und DeCodiert einen String mit Base64. Keine Verschlüsselung sondern nur
@@ -31,25 +31,25 @@ public class CodeString {
      * @param args
      */
 
-  // wird zum Maskieren der Benutzerangaben im Cookie des Bestellformulares benötigt.
-  // Besserer Datenschutz!
+    // wird zum Maskieren der Benutzerangaben im Cookie des Bestellformulares benötigt.
+    // Besserer Datenschutz!
 
-  public String encodeString(String psString) {
-    if (psString == null) { return ""; }
+    public String encodeString(final String psString) {
+        if (psString == null) { return ""; }
 
-    return (new sun.misc.BASE64Encoder()).encode(psString.getBytes());
-  }
-
-  public String decodeString(String psString) {
-    if (psString == null || psString.equals("")) { return null; }
-
-    try {
-      return new String((new sun.misc.BASE64Decoder())
-          .decodeBuffer(psString));
-    } catch (IOException e) {
-      LOG.error("decodeString: " + psString + "\040" + e.toString());
-      return null;
+        return new sun.misc.BASE64Encoder().encode(psString.getBytes());
     }
-  }
+
+    public String decodeString(final String psString) {
+        if (psString == null || psString.equals("")) { return null; }
+
+        try {
+            return new String(new sun.misc.BASE64Decoder()
+            .decodeBuffer(psString));
+        } catch (IOException e) {
+            LOG.error("decodeString: " + psString + "\040" + e.toString());
+            return null;
+        }
+    }
 
 }

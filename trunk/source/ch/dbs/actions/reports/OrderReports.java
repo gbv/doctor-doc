@@ -71,11 +71,11 @@ public final class OrderReports extends DispatchAction {
      * Erstelt ein PDF- Report wie die aktuelle Sicht der Bestellungen
      * inklusive Filterkriterien (Status) und Sortierfolge (Feld, Auf- oder Absteigend
      */
-    public ActionForward orderspdf(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward orderspdf(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         String forward = "failure";
-        Auth auth = new Auth();
+        final Auth auth = new Auth();
 
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
@@ -83,16 +83,16 @@ public final class OrderReports extends DispatchAction {
 
                 // Klassen vorbereiten
                 OverviewForm of = (OverviewForm) fm; //Parameter für Einschraenkungen
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                ServletOutputStream servletOutputStream = null;
-                Text cn = new Text();
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                ServletOutputStream out = null;
+                final Text cn = new Text();
 
                 // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
                 of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()),
                         ui.getKonto().getId(), cn.getConnection()));
 
                 //Eingaben Testen und Notfalls korrigieren mit defaultwerten
-                Check c = new Check();
+                final Check c = new Check();
                 of = c.checkDateRegion(of, 4, ui.getKonto().getTimezone());
                 of = c.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
                 of = c.checkOrdersSortCriterias(of);
@@ -105,21 +105,21 @@ public final class OrderReports extends DispatchAction {
                 }
 
                 // Daten holen
-                Bestellungen b = new Bestellungen();
+                final Bestellungen b = new Bestellungen();
                 try {
                     //          Reportdaten vorbereiten
                     List<Bestellungen> orders = null;
 
-                    if (searches.size() != 0) { // hier liegt Liste aus Suche vor...
-                        UserAction userActionInstance = new UserAction();
+                    if (!searches.isEmpty()) { // hier liegt Liste aus Suche vor...
+                        final UserAction uaInstance = new UserAction();
                         PreparedStatement pstmt = null;
-                        pstmt = userActionInstance.composeSearchLogic(searches, ui.getKonto(),
+                        pstmt = uaInstance.composeSearchLogic(searches, ui.getKonto(),
                                 of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
                         orders = b.searchOrdersPerKonto(pstmt);
                         if (pstmt != null) {
                             try {
                                 pstmt.close();
-                            } catch (SQLException e) {
+                            } catch (final SQLException e) {
                                 LOG.error("orderspdf: " + e.toString());
                             }
                         }
@@ -135,13 +135,13 @@ public final class OrderReports extends DispatchAction {
 
                     }
 
-                    Collection<ConcurrentHashMap<String, String>> al =
+                    final Collection<ConcurrentHashMap<String, String>> al =
                         new ArrayList<ConcurrentHashMap<String, String>>();
 
-                    ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
+                    final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
                     tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
-                    for (Bestellungen order : orders) {
-                        ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
+                    for (final Bestellungen order : orders) {
+                        final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
                         hm.put("orderdate", order.getOrderdate());
                         // if (order.getBestellquelle() != null)if (order.getBestellquelle().equals("0"))
                         // order.setBestellquelle("k. A.");
@@ -151,88 +151,92 @@ public final class OrderReports extends DispatchAction {
                         hm.put("format", order.getDeloptions());
                         hm.put("kunde", order.getBenutzer().getVorname() + " " + order.getBenutzer().getName());
                         hm.put("artikeltitel", order.getArtikeltitel() + order.getKapitel());
-                        String z = order.getZeitschrift() + order.getBuchtitel();
+                        final StringBuffer bf = new StringBuffer();
+                        bf.append(order.getZeitschrift());
+                        bf.append(order.getBuchtitel());
                         if ((order.getIssn() != null && !order.getIssn().equals(""))
                                 || (order.getIsbn() != null && !order.getIsbn().equals(""))) {
-                            z += ". - " + order.getIssn() + order.getIsbn();
+                            bf.append(". - ");
+                            bf.append(order.getIssn());
+                            bf.append(order.getIsbn());
                         }
-                        z += " | ";
-                        if (order.getJahr() != null && !order.getJahr().equals("")) { z += order.getJahr(); }
+                        bf.append(" | ");
+                        if (order.getJahr() != null && !order.getJahr().equals("")) { bf.append(order.getJahr()); }
                         if (order.getJahrgang() != null && !order.getJahrgang().equals("")) {
-                            z += ";" + order.getJahrgang();
+                            bf.append(';');
+                            bf.append(order.getJahrgang());
                         }
                         if (order.getHeft() != null && !order.getHeft().equals("")) {
-                            z += "(" + order.getHeft() + ")";
+                            bf.append('(');
+                            bf.append(order.getHeft());
+                            bf.append(')');
                         }
                         if (order.getSeiten() != null && !order.getSeiten().equals("")) {
-                            z += ":" + order.getSeiten();
+                            bf.append(':');
+                            bf.append(order.getSeiten());
                         }
-                        hm.put("zeitschrift", z);
+                        hm.put("zeitschrift", bf.toString());
 
                         // Hier werden die Notizen so aufbereitet, dass Bestellnummern immer am Anfang stehen
                         // und keine unnötigen Zeilenumbrüche enthalten.
                         String numbers = "";
-                        if (order.getSubitonr() != null) {
-                            if (!order.getSubitonr().equals("")) { numbers = order.getSubitonr(); }
+                        if (order.getSubitonr() != null && !order.getSubitonr().equals("")) {
+                            numbers = order.getSubitonr();
                         }
-                        if (order.getGbvnr() != null) {
-                            if (!order.getGbvnr().equals("")) {
-                                if (!numbers.equals("")) {
-                                    // bereits Bestellnummer vorhanden
-                                    numbers = numbers + "\nGBV-Nr.: " + order.getGbvnr();
-                                } else { numbers = "GBV-Nr.: " + order.getGbvnr(); } // keine Bestellnummer vorhanden
+                        if (order.getGbvnr() != null && !order.getGbvnr().equals("")) {
+                            if (!"".equals(numbers)) {
+                                // bereits Bestellnummer vorhanden
+                                numbers = numbers + "\nGBV-Nr.: " + order.getGbvnr();
+                            } else { numbers = "GBV-Nr.: " + order.getGbvnr(); } // keine Bestellnummer vorhanden
+                        }
+                        if (order.getInterne_bestellnr() != null && !order.getInterne_bestellnr().equals("")) {
+                            if (!"".equals(numbers)) {
+                                // bereits Bestellnummer vorhanden
+                                numbers = numbers + "\nInterne Nr.: " + order.getInterne_bestellnr();
+                            } else {
+                                // keine Bestellnummer vorhanden
+                                numbers = "Interne Nr.: " + order.getInterne_bestellnr();
                             }
                         }
-                        if (order.getInterne_bestellnr() != null) {
-                            if (!order.getInterne_bestellnr().equals("")) {
-                                if (!numbers.equals("")) {
-                                    // bereits Bestellnummer vorhanden
-                                    numbers = numbers + "\nInterne Nr.: " + order.getInterne_bestellnr();
-                                } else {
-                                    // keine Bestellnummer vorhanden
-                                    numbers = "Interne Nr.: " + order.getInterne_bestellnr();
-                                }
-                            }
-                        }
-                        if (!numbers.equals("")) { order.setNotizen(numbers + "\n" + order.getNotizen()); }
+                        if (!"".equals(numbers)) { order.setNotizen(numbers + "\n" + order.getNotizen()); }
 
                         hm.put("notes", order.getNotizen());
                         al.add(hm);
                     }
 
                     //Parameter abfüllen
-                    ConcurrentHashMap<String, String> param = new ConcurrentHashMap<String, String>();
-                    Date from = new SimpleDateFormat("yyyy-MM-dd").parse(of.getFromdate());
-                    Date to = new SimpleDateFormat("yyyy-MM-dd").parse(of.getTodate());
+                    final ConcurrentHashMap<String, String> param = new ConcurrentHashMap<String, String>();
+                    final Date from = new SimpleDateFormat("yyyy-MM-dd").parse(of.getFromdate());
+                    final Date to = new SimpleDateFormat("yyyy-MM-dd").parse(of.getTodate());
                     param.put("from", new SimpleDateFormat("dd.MM.yyyy").format(from));
                     param.put("to", new SimpleDateFormat("dd.MM.yyyy").format(to));
-                    Calendar cal = new GregorianCalendar();
+                    final Calendar cal = new GregorianCalendar();
                     cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
                     param.put("today", tf.format(cal.getTime(), ui.getKonto().getTimezone()));
 
                     //Reportauswahl, Verbindung zum Report aufbauen
                     if (of.getReport() == null) { of.setReport("reports/Orders.jasper"); }
-                    InputStream reportStream = this.getServlet().getServletContext()
+                    final InputStream reportStream = this.getServlet().getServletContext()
                     .getResourceAsStream(of.getReport());
 
                     //Ausgabestream vorbereiten
                     rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
-                    servletOutputStream = rp.getOutputStream();
+                    out = rp.getOutputStream();
 
                     //Daten zusammenstellen und abfüllen
-                    JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-                    JasperRunManager.runReportToPdfStream(reportStream, servletOutputStream,
+                    final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
+                    JasperRunManager.runReportToPdfStream(reportStream, out,
                             param, ds);
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     // ServletOutputStream konnte nicht erstellt werden
                     LOG.error("orderspdf: " + e.toString());
                 } finally {
                     // Report an den Browser senden
                     try {
-                        servletOutputStream.flush();
-                        servletOutputStream.close();
-                    } catch (IOException e) {
+                        out.flush();
+                        out.close();
+                    } catch (final IOException e) {
                         LOG.error("orderspdf: " + e.toString());
                     }
                     cn.close();
@@ -240,16 +244,16 @@ public final class OrderReports extends DispatchAction {
                 }
 
             } else {
-                ErrorMessage em = new ErrorMessage(
+                final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
                 "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage(
+            final ErrorMessage em = new ErrorMessage(
                     "error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
@@ -260,17 +264,16 @@ public final class OrderReports extends DispatchAction {
     /**
      * Bestellungen nach Lieferant gruppiert
      */
-    public ActionForward orderSourcePdf(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward orderSourcePdf(final ActionMapping mp, ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = null;
-        OverviewForm of = (OverviewForm) fm;
+        final OverviewForm of = (OverviewForm) fm;
         of.setReport("reports/AllOrdersOrdersource.jasper");
         of.setSort("bestellquelle");
         fm = of;
         orderspdf(mp, fm, rq, rp);
 
 
-        return mp.findForward(forward);
+        return mp.findForward(null);
     }
 }

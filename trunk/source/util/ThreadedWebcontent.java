@@ -26,29 +26,28 @@ import java.util.concurrent.Callable;
  */
 public class ThreadedWebcontent implements Callable<String> {
 
-  static final int TIMEOUT = 2000;
-  static final int RETRYS = 3;
+    static final int TIMEOUT = 2000;
+    static final int RETRYS = 3;
 
     private String link;
 
     public ThreadedWebcontent() {
-      }
+    }
 
-    public ThreadedWebcontent(String threadLink) {
-      this.link = threadLink;
+    public ThreadedWebcontent(final String threadLink) {
+        this.link = threadLink;
     }
     public String call() {
-      Http http = new Http();
-        String content = http.getWebcontent(link, TIMEOUT, RETRYS);
-      return content;
+        final Http http = new Http();
+        return http.getWebcontent(link, TIMEOUT, RETRYS);
     }
 
-  public String getLink() {
-    return link;
-  }
-  public void setLink(String link) {
-    this.link = link;
-  }
+    public String getLink() {
+        return link;
+    }
+    public void setLink(final String link) {
+        this.link = link;
+    }
 
 
-  }
+}

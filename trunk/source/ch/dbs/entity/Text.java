@@ -42,14 +42,16 @@ public class Text extends AbstractIdEntity {
     private String inhalt;
 
 
-    public Text() { }
+    public Text() {
+
+    }
 
     /**
      * Erstellt einen Text anhand seines Inhaltes
      * @param cn
      * @param tInhalt
      */
-    public Text(Connection cn, String tInhalt) {
+    public Text(final Connection cn, final String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -63,21 +65,21 @@ public class Text extends AbstractIdEntity {
                 this.setInhalt(rs.getString("inhalt"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, String inhalt): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -90,7 +92,7 @@ public class Text extends AbstractIdEntity {
      * @param typ Texttyp
      * @param tInhalt String
      */
-    public Text(Connection cn, Texttyp typ, String tInhalt) {
+    public Text(final Connection cn, final Texttyp typ, final String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -105,21 +107,21 @@ public class Text extends AbstractIdEntity {
                 this.setInhalt(rs.getString("inhalt"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Texttyp typ, String inhalt): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -133,7 +135,7 @@ public class Text extends AbstractIdEntity {
      * @param Long KID
      * @param tInhalt String
      */
-    public Text(Connection cn, Texttyp typ, Long kid, String tInhalt) {
+    public Text(final Connection cn, final Texttyp typ, final Long kid, final String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -149,21 +151,21 @@ public class Text extends AbstractIdEntity {
                 this.setInhalt(rs.getString("inhalt"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Texttyp typ, Long kid, String inhalt): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -176,7 +178,7 @@ public class Text extends AbstractIdEntity {
      * @param typ Texttyp
      * @param kid long
      */
-    public Text(Connection cn, Texttyp typ, long kid) {
+    public Text(final Connection cn, final Texttyp typ, final long kid) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -191,21 +193,21 @@ public class Text extends AbstractIdEntity {
                 this.setInhalt(rs.getString("inhalt"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Texttyp typ, long kid): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -218,7 +220,7 @@ public class Text extends AbstractIdEntity {
      * @param tyid Long
      * @param tInhalt String
      */
-    public Text(Connection cn, Long tyid, String tInhalt) {
+    public Text(final Connection cn, final Long tyid, final String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -232,21 +234,21 @@ public class Text extends AbstractIdEntity {
                 this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
                 this.setInhalt(rs.getString("inhalt"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Long tyid, String inhalt): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -259,8 +261,8 @@ public class Text extends AbstractIdEntity {
      * @param cn
      * @return List mit Textobjekten
      */
-    public List<Text> getText(Texttyp typ, Connection cn) {
-        ArrayList<Text> tl = new ArrayList<Text>();
+    public List<Text> getText(final Texttyp typ, final Connection cn) {
+        final ArrayList<Text> tl = new ArrayList<Text>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -270,25 +272,25 @@ public class Text extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Text text = new Text(cn, rs);
+                final Text text = new Text(cn, rs);
                 tl.add(text);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getText(Texttyp typ, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -301,14 +303,14 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public Text(Connection cn, ResultSet rs) {
+    public Text(final Connection cn, final ResultSet rs) {
 
         try {
             this.setId(rs.getLong("TID"));
             this.setInhalt(rs.getString("inhalt"));
             this.setKonto(new Konto(rs.getLong("KID"), cn));
             this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("Text(Connection cn, ResultSet rs): " + e.toString());
         }
     }
@@ -319,7 +321,7 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param id Long
      */
-    public Text(Connection cn, Long id) {
+    public Text(final Connection cn, final Long id) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -332,21 +334,21 @@ public class Text extends AbstractIdEntity {
                 this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
                 this.setInhalt(rs.getString("inhalt"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Long id): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -359,7 +361,7 @@ public class Text extends AbstractIdEntity {
      * @param id Long
      * @param kid Long
      */
-    public Text(Connection cn, Long id, Long kid) {
+    public Text(final Connection cn, final Long id, final Long kid) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -373,21 +375,21 @@ public class Text extends AbstractIdEntity {
                 this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
                 this.setInhalt(rs.getString("inhalt"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Long id, Long kid): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -401,7 +403,7 @@ public class Text extends AbstractIdEntity {
      * @param kid Long
      * @param tyid Long
      */
-    public Text(Connection cn, Long id, Long kid, Long tyid) {
+    public Text(final Connection cn, final Long id, final Long kid, final Long tyid) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -416,21 +418,21 @@ public class Text extends AbstractIdEntity {
                 this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
                 this.setInhalt(rs.getString("inhalt"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Text(Connection cn, Long id, Long kid, Long tyid): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -442,7 +444,7 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param t Text
      */
-    public void saveNewText(Connection cn, Text t) {
+    public void saveNewText(final Connection cn, final Text t) {
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("INSERT INTO `text` (`KID` , `TYID`, `inhalt`) VALUES (?, ?, ?)");
@@ -452,14 +454,14 @@ public class Text extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("saveNewText(Connection cn, Text t): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -471,7 +473,7 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param k Konto
      */
-    public boolean hasIP(Connection cn, Konto k) {
+    public boolean hasIP(final Connection cn, final Konto k) {
         boolean check = false;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -486,21 +488,21 @@ public class Text extends AbstractIdEntity {
                 check = true;
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("hasIP(Connection cn, Konto k): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -514,12 +516,12 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @return list ArrayList<Text>
      */
-    public ArrayList<Text> possibleIPRanges(String ip, Connection cn) {
-        ArrayList<Text> list = new ArrayList<Text>();
+    public ArrayList<Text> possibleIPRanges(final String ip, final Connection cn) {
+        final ArrayList<Text> list = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String ipPart = ip.substring(0, ip.indexOf(".", ip.indexOf(".") + 1) + 1);
+            final String ipPart = ip.substring(0, ip.indexOf(".", ip.indexOf(".") + 1) + 1);
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE  `inhalt` LIKE ? AND `TYID`=? "
                     + "AND (`inhalt` LIKE '%.*%' OR `inhalt` LIKE '%-%')");
             pstmt.setString(1, ipPart + "%");
@@ -528,7 +530,7 @@ public class Text extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Text txt = new Text();
+                final Text txt = new Text();
                 txt.setId(rs.getLong("TID"));
                 txt.setKonto(new Konto(rs.getLong("KID"), cn));
                 txt.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
@@ -536,21 +538,21 @@ public class Text extends AbstractIdEntity {
                 list.add(txt);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("possibleIPRanges(Connection cn, String ip): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -563,7 +565,7 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param t Text
      */
-    public void updateText(Connection cn, Text t) {
+    public void updateText(final Connection cn, final Text t) {
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("UPDATE `text` SET `KID` = ?, `TYID` = ?, `inhalt` = ? WHERE `TID` = ?");
@@ -574,14 +576,14 @@ public class Text extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("updateText(Connection cn, Text t): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -593,7 +595,7 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param t Text
      */
-    public void deleteText(Connection cn, Text t) {
+    public void deleteText(final Connection cn, final Text t) {
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE FROM `text` WHERE `TID` = ?");
@@ -601,14 +603,14 @@ public class Text extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("deleteText(Connection cn, Text t)" + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -620,8 +622,8 @@ public class Text extends AbstractIdEntity {
      *
      * @return List mit Text
      */
-    public List<Text> getAllKontoText(Texttyp t, Long kid, Connection cn) {
-        ArrayList<Text> sl = new ArrayList<Text>();
+    public List<Text> getAllKontoText(final Texttyp t, final Long kid, final Connection cn) {
+        final ArrayList<Text> sl = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -631,25 +633,25 @@ public class Text extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Text text = new Text(cn, rs);
+                final Text text = new Text(cn, rs);
                 sl.add(text);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("etAllKontoText(Texttyp t, Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -661,8 +663,8 @@ public class Text extends AbstractIdEntity {
      * Liefert generell alle Texte anhand eines Texttypes plus alle kontospezifischen Texte dieses Texttypes
      * @return ArrayList<Text> mit Stati-Texten
      */
-    public List<Text> getAllTextPlusKontoTexts(Texttyp t, Long kid, Connection cn) {
-        ArrayList<Text> sl = new ArrayList<Text>();
+    public List<Text> getAllTextPlusKontoTexts(final Texttyp t, final Long kid, final Connection cn) {
+        final ArrayList<Text> sl = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -672,25 +674,25 @@ public class Text extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Text text = new Text(cn, rs);
+                final Text text = new Text(cn, rs);
                 sl.add(text);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllTextPlusKontoTexts(Texttyp t, Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -702,7 +704,7 @@ public class Text extends AbstractIdEntity {
         return texttyp;
     }
 
-    public void setTexttyp(Texttyp texttyp) {
+    public void setTexttyp(final Texttyp texttyp) {
         this.texttyp = texttyp;
     }
 
@@ -710,7 +712,7 @@ public class Text extends AbstractIdEntity {
         return inhalt;
     }
 
-    public void setInhalt(String inhalt) {
+    public void setInhalt(final String inhalt) {
         this.inhalt = inhalt;
     }
 
@@ -718,7 +720,7 @@ public class Text extends AbstractIdEntity {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 

@@ -50,15 +50,15 @@ public class DefaultPreis extends AbstractIdEntity {
     private BigDecimal preis = new BigDecimal("0.00");
     private String vorkomma;
     private String nachkomma;
-    private Lieferanten l = null;
-    private Text waehrungstext = null;
+    private Lieferanten l;
+    private Text waehrungstext;
 
 
     public DefaultPreis() { }
 
-    public DefaultPreis(OrderForm of, UserInfo ui) {
-        Lieferanten lieferantenInstance = new Lieferanten();
-        this.l = lieferantenInstance.getLieferantFromLid(of.getLid(), this.getConnection());
+    public DefaultPreis(final OrderForm of, final UserInfo ui) {
+        final Lieferanten instance = new Lieferanten();
+        this.l = instance.getLieferantFromLid(of.getLid(), this.getConnection());
         this.setLid(l.getLid());
         this.setBezeichnung(l.getName());
         this.waehrungstext = new Text(this.getConnection(), of.getWaehrung());
@@ -73,7 +73,7 @@ public class DefaultPreis extends AbstractIdEntity {
     /**
      * Falls Defaultpreis bereits besteht wird dieser veraendert, ansonsten wird ein neuer erstellt
      */
-    public void saveOrUpdate(Connection cn) {
+    public void saveOrUpdate(final Connection cn) {
 
         this.setId(getDefaultPreisID(l.getLid(), kid, this.getConnection()));
 
@@ -88,7 +88,7 @@ public class DefaultPreis extends AbstractIdEntity {
      * Speichert ein neues Objekt
      * @param cn
      */
-    public void save(Connection cn) {
+    public void save(final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -104,12 +104,12 @@ public class DefaultPreis extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(): " + e.toString() + "\012" + pstmt.toString());
         } finally {
             try {
                 pstmt.close();
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 LOG.error("save(): " + e.toString());
             }
         }
@@ -121,7 +121,7 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param cn
      */
-    public void update(Connection cn) {
+    public void update(final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -138,12 +138,12 @@ public class DefaultPreis extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("update(): " + e.toString() + "\012" + pstmt.toString());
         } finally {
             try {
                 pstmt.close();
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 LOG.error("update(): " + e.toString());
             }
         }
@@ -154,7 +154,7 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param Text lieferant, Long kid
      */
-    private Long getDefaultPreisID(Long lId, Long kId, Connection cn) {
+    private Long getDefaultPreisID(final Long lId, final Long kId, final Connection cn) {
         Long dpid = null;
 
         PreparedStatement pstmt = null;
@@ -170,21 +170,21 @@ public class DefaultPreis extends AbstractIdEntity {
                 dpid = rs.getLong("DPID");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getDefaultPreisID(Long lid, Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -196,7 +196,7 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param String lieferant Long kid
      */
-    public DefaultPreis getDefaultPreis(String lieferant, Long kId, Connection cn) {
+    public DefaultPreis getDefaultPreis(final String lieferant, final Long kId, final Connection cn) {
         DefaultPreis dp = new DefaultPreis();
 
         PreparedStatement pstmt = null;
@@ -217,21 +217,21 @@ public class DefaultPreis extends AbstractIdEntity {
                 dp.setNachkomma(pageForm.getPreisnachkomma());
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getDefaultPreis(String lieferant, Long kid, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -243,8 +243,8 @@ public class DefaultPreis extends AbstractIdEntity {
      *
      * @param Long kid
      */
-    public List<DefaultPreis> getAllKontoDefaultPreise(Long kId, Connection cn) {
-        ArrayList<DefaultPreis> list = new ArrayList<DefaultPreis>();
+    public List<DefaultPreis> getAllKontoDefaultPreise(final Long kId, final Connection cn) {
+        final ArrayList<DefaultPreis> list = new ArrayList<DefaultPreis>();
         DefaultPreis dp;
 
         PreparedStatement pstmt = null;
@@ -265,21 +265,21 @@ public class DefaultPreis extends AbstractIdEntity {
                 list.add(dp);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllKontoDefaultPreise(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -289,8 +289,8 @@ public class DefaultPreis extends AbstractIdEntity {
     /*
      * Füllt ein Defaultpreis-Objekt mit einer Zeile aus der Datenbank
      */
-    private DefaultPreis getDefaultPreis(ResultSet rs) throws Exception {
-        DefaultPreis dp = new DefaultPreis();
+    private DefaultPreis getDefaultPreis(final ResultSet rs) throws Exception {
+        final DefaultPreis dp = new DefaultPreis();
         dp.setId(rs.getLong("DPID"));
         dp.setLid(rs.getLong("lid"));
         dp.setBezeichnung(rs.getString("bezeichnung"));
@@ -309,7 +309,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setBezeichnung(String bezeichnung) {
+    public void setBezeichnung(final String bezeichnung) {
         this.bezeichnung = bezeichnung;
     }
 
@@ -319,7 +319,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setDeloptions(String deloptions) {
+    public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
@@ -329,7 +329,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setKid(Long kid) {
+    public void setKid(final Long kid) {
         this.kid = kid;
     }
 
@@ -337,7 +337,7 @@ public class DefaultPreis extends AbstractIdEntity {
         return lid;
     }
 
-    public void setLid(Long lid) {
+    public void setLid(final Long lid) {
         this.lid = lid;
     }
 
@@ -346,7 +346,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setTid_waehrung(Long tid_waehrung) {
+    public void setTid_waehrung(final Long tid_waehrung) {
         this.tid_waehrung = tid_waehrung;
     }
 
@@ -356,7 +356,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setWaehrung(String waehrung) {
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
@@ -364,7 +364,7 @@ public class DefaultPreis extends AbstractIdEntity {
         return preis;
     }
 
-    public void setPreis(BigDecimal preis) {
+    public void setPreis(final BigDecimal preis) {
         this.preis = preis;
     }
 
@@ -373,7 +373,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setNachkomma(String nachkomma) {
+    public void setNachkomma(final String nachkomma) {
         this.nachkomma = nachkomma;
     }
 
@@ -383,7 +383,7 @@ public class DefaultPreis extends AbstractIdEntity {
     }
 
 
-    public void setVorkomma(String vorkomma) {
+    public void setVorkomma(final String vorkomma) {
         this.vorkomma = vorkomma;
     }
 
@@ -391,7 +391,7 @@ public class DefaultPreis extends AbstractIdEntity {
         return l;
     }
 
-    public void setL(Lieferanten l) {
+    public void setL(final Lieferanten l) {
         this.l = l;
     }
 
@@ -399,7 +399,7 @@ public class DefaultPreis extends AbstractIdEntity {
         return waehrungstext;
     }
 
-    public void setWaehrungstext(Text waehrungstext) {
+    public void setWaehrungstext(final Text waehrungstext) {
         this.waehrungstext = waehrungstext;
     }
 

@@ -35,16 +35,16 @@ import ch.ddl.entity.Position;
  */
 public final class PositionForm extends ActionForm {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
+    private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
     private Konto konto; // Bibliothekskonto
 
     // Lieferinfos
     private String priority = ""; // Normal, Express
     private String deloptions = ""; // Online, Email, Postweg, Fax, Fax to PDF
     private String fileformat = ""; // HTML, PDF, Papierkopie,...
-    private Date orderdate = null; // Datum der Bestellung
+    private Date orderdate; // Datum der Bestellung
 
     // Produktinfos
     private String mediatype = ""; // Artikel, Teilkopie Buch oder Buch
@@ -66,7 +66,7 @@ public final class PositionForm extends ActionForm {
      * @author Pascal Steiner
      */
     public PositionForm() {
-      super();
+        super();
     }
 
     /**
@@ -74,9 +74,9 @@ public final class PositionForm extends ActionForm {
      * @param p Position
      * @author Pascal Steiner
      */
-    public PositionForm(Position p) {
-      super();
-      fill(p);
+    public PositionForm(final Position p) {
+        super();
+        fill(p);
     }
 
     /**
@@ -84,9 +84,9 @@ public final class PositionForm extends ActionForm {
      * @param p Position
      * @author Pascal Steiner
      */
-    public PositionForm(OrderForm of) {
-      super();
-      fill(of);
+    public PositionForm(final OrderForm of) {
+        super();
+        fill(of);
 
     }
 
@@ -95,160 +95,160 @@ public final class PositionForm extends ActionForm {
      * @param p
      * @author Pascal Steiner
      */
-    private void fill(OrderHandler oh) {
-      this.setBenutzer(oh.getBenutzer());
-      this.setKonto(oh.getKonto());
-      this.setPriority(oh.getPriority());
-      this.setDeloptions(oh.getDeloptions());
-      this.setFileformat(oh.getFileformat());
-      this.setOrderdate(oh.getOrderdate());
-      this.setMediatype(oh.getMediatype());
-      this.setAutor(oh.getAutor());
-      this.setZeitschrift_verlag(oh.getZeitschrift_verlag());
-      this.setHeft(oh.getHeft());
-      this.setJahrgang(oh.getJahrgang());
-      this.setJahr(oh.getJahr());
-      this.setTitel(oh.getTitel());
-      this.setKapitel(oh.getKapitel());
-      this.setSeiten(oh.getSeiten());
-      this.setWaehrung(oh.getWaehrung());
-      this.setPreis(oh.getPreis());
+    private void fill(final OrderHandler oh) {
+        this.setBenutzer(oh.getBenutzer());
+        this.setKonto(oh.getKonto());
+        this.setPriority(oh.getPriority());
+        this.setDeloptions(oh.getDeloptions());
+        this.setFileformat(oh.getFileformat());
+        this.setOrderdate(oh.getOrderdate());
+        this.setMediatype(oh.getMediatype());
+        this.setAutor(oh.getAutor());
+        this.setZeitschrift_verlag(oh.getZeitschrift_verlag());
+        this.setHeft(oh.getHeft());
+        this.setJahrgang(oh.getJahrgang());
+        this.setJahr(oh.getJahr());
+        this.setTitel(oh.getTitel());
+        this.setKapitel(oh.getKapitel());
+        this.setSeiten(oh.getSeiten());
+        this.setWaehrung(oh.getWaehrung());
+        this.setPreis(oh.getPreis());
     }
 
-  public AbstractBenutzer getBenutzer() {
-    return benutzer;
-  }
+    public AbstractBenutzer getBenutzer() {
+        return benutzer;
+    }
 
-  public void setBenutzer(AbstractBenutzer benutzer) {
-    this.benutzer = benutzer;
-  }
+    public void setBenutzer(AbstractBenutzer benutzer) {
+        this.benutzer = benutzer;
+    }
 
-  public Konto getKonto() {
-    return konto;
-  }
+    public Konto getKonto() {
+        return konto;
+    }
 
-  public void setKonto(Konto konto) {
-    this.konto = konto;
-  }
+    public void setKonto(Konto konto) {
+        this.konto = konto;
+    }
 
-  public String getPriority() {
-    return priority;
-  }
+    public String getPriority() {
+        return priority;
+    }
 
-  public void setPriority(String priority) {
-    this.priority = priority;
-  }
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
 
-  public String getDeloptions() {
-    return deloptions;
-  }
+    public String getDeloptions() {
+        return deloptions;
+    }
 
-  public void setDeloptions(String deloptions) {
-    this.deloptions = deloptions;
-  }
+    public void setDeloptions(String deloptions) {
+        this.deloptions = deloptions;
+    }
 
-  public String getFileformat() {
-    return fileformat;
-  }
+    public String getFileformat() {
+        return fileformat;
+    }
 
-  public void setFileformat(String fileformat) {
-    this.fileformat = fileformat;
-  }
+    public void setFileformat(String fileformat) {
+        this.fileformat = fileformat;
+    }
 
-  public Date getOrderdate() {
-    return orderdate;
-  }
+    public Date getOrderdate() {
+        return orderdate;
+    }
 
-  public void setOrderdate(Date orderdate) {
-    this.orderdate = orderdate;
-  }
+    public void setOrderdate(Date orderdate) {
+        this.orderdate = orderdate;
+    }
 
-  public String getMediatype() {
-    return mediatype;
-  }
+    public String getMediatype() {
+        return mediatype;
+    }
 
-  public void setMediatype(String mediatype) {
-    this.mediatype = mediatype;
-  }
+    public void setMediatype(String mediatype) {
+        this.mediatype = mediatype;
+    }
 
-  public String getAutor() {
-    return autor;
-  }
+    public String getAutor() {
+        return autor;
+    }
 
-  public void setAutor(String autor) {
-    this.autor = autor;
-  }
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
 
-  public String getZeitschrift_verlag() {
-    return zeitschrift_verlag;
-  }
+    public String getZeitschrift_verlag() {
+        return zeitschrift_verlag;
+    }
 
-  public void setZeitschrift_verlag(String zeitschrift_verlag) {
-    this.zeitschrift_verlag = zeitschrift_verlag;
-  }
+    public void setZeitschrift_verlag(String zeitschrift_verlag) {
+        this.zeitschrift_verlag = zeitschrift_verlag;
+    }
 
-  public String getHeft() {
-    return heft;
-  }
+    public String getHeft() {
+        return heft;
+    }
 
-  public void setHeft(String heft) {
-    this.heft = heft;
-  }
+    public void setHeft(String heft) {
+        this.heft = heft;
+    }
 
-  public String getJahrgang() {
-    return jahrgang;
-  }
+    public String getJahrgang() {
+        return jahrgang;
+    }
 
-  public void setJahrgang(String jahrgang) {
-    this.jahrgang = jahrgang;
-  }
+    public void setJahrgang(String jahrgang) {
+        this.jahrgang = jahrgang;
+    }
 
-  public String getJahr() {
-    return jahr;
-  }
+    public String getJahr() {
+        return jahr;
+    }
 
-  public void setJahr(String jahr) {
-    this.jahr = jahr;
-  }
+    public void setJahr(String jahr) {
+        this.jahr = jahr;
+    }
 
-  public String getTitel() {
-    return titel;
-  }
+    public String getTitel() {
+        return titel;
+    }
 
-  public void setTitel(String titel) {
-    this.titel = titel;
-  }
+    public void setTitel(String titel) {
+        this.titel = titel;
+    }
 
-  public String getKapitel() {
-    return kapitel;
-  }
+    public String getKapitel() {
+        return kapitel;
+    }
 
-  public void setKapitel(String kapitel) {
-    this.kapitel = kapitel;
-  }
+    public void setKapitel(String kapitel) {
+        this.kapitel = kapitel;
+    }
 
-  public String getSeiten() {
-    return seiten;
-  }
+    public String getSeiten() {
+        return seiten;
+    }
 
-  public void setSeiten(String seiten) {
-    this.seiten = seiten;
-  }
+    public void setSeiten(String seiten) {
+        this.seiten = seiten;
+    }
 
-  public String getWaehrung() {
-    return waehrung;
-  }
+    public String getWaehrung() {
+        return waehrung;
+    }
 
-  public void setWaehrung(String waehrung) {
-    this.waehrung = waehrung;
-  }
+    public void setWaehrung(String waehrung) {
+        this.waehrung = waehrung;
+    }
 
-  public String getPreis() {
-    return preis;
-  }
+    public String getPreis() {
+        return preis;
+    }
 
-  public void setPreis(String preis) {
-    this.preis = preis;
-  }
+    public void setPreis(String preis) {
+        this.preis = preis;
+    }
 
 }

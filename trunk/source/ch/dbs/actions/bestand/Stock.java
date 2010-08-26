@@ -69,34 +69,39 @@ public class Stock extends DispatchAction {
     //Delimiter for Tab delimited txt-Export (Excel can't read UTF-8 in CSV...)
     private static final char DELIMITER_TXT = '\t';
 
+    private static final String FAILURE = "failure";
+    private static final String SUCCESS = "success";
+    private static final String ACTIVEMENUS = "ActiveMenus";
+    private static final String ERRORMESSAGE = "errormessage";
+
     /**
      * Access control for the holdings export page
      */
-    public ActionForward prepareExport(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward prepareExport(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
 
         // Access control
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                forward = "success";
+                forward = SUCCESS;
 
 
             } else {
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
 
@@ -106,22 +111,21 @@ public class Stock extends DispatchAction {
     /**
      * Access control for the holdings import page
      */
-    public ActionForward prepareImport(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward prepareImport(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text t = new Text();
-        Texttyp ty = new Texttyp();
-        final long id = 10; // TextTyp ID for holding locations
-        ty.setId(id);
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text t = new Text();
+        final Texttyp ty = new Texttyp();
+        ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
+        final Auth auth = new Auth();
 
         // Access control
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                forward = "success";
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                HoldingForm hf = (HoldingForm) fm;
+                forward = SUCCESS;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final HoldingForm hf = (HoldingForm) fm;
 
                 hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
 
@@ -129,18 +133,18 @@ public class Stock extends DispatchAction {
 
 
             } else {
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         t.close();
@@ -150,20 +154,20 @@ public class Stock extends DispatchAction {
     /**
      * Import a file with holdings information
      */
-    public ActionForward importHoldings(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward importHoldings(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         // Prepare classes
-        String forward = "failure";
-        Auth auth = new Auth();
-        Check ck = new Check();
-        Text cn = new Text();
-        FileForm fileForm = (FileForm) fm;
-        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        String forward = FAILURE;
+        final Auth auth = new Auth();
+        final Check ck = new Check();
+        final Text cn = new Text();
+        final FileForm fileForm = (FileForm) fm;
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
         // get uploaded File
-        FormFile upload = fileForm.getFile();
-        String fileName = upload.getFileName();
+        final FormFile upload = fileForm.getFile();
+        final String fileName = upload.getFileName();
 
         // Access control
         if (auth.isLogin(rq)) {
@@ -184,29 +188,29 @@ public class Stock extends DispatchAction {
                             }
 
                             // Get an ArrayList<List<String>> representation of the file
-                            ArrayList<List<String>> stockList = readImport(upload, delimiter, encoding);
+                            final ArrayList<List<String>> stockList = readImport(upload, delimiter, encoding);
 
                             // Check if the file contains the correct number of columns
                             ArrayList<Message> messageList = checkColumns(stockList);
-                            if (messageList.size() == 0) {
+                            if (messageList.isEmpty()) {
 
                                 // Basic checks and make sure all entries in stockList are parsable
                                 messageList = checkBasicParsability(stockList);
-                                if (messageList.size() == 0) {
+                                if (messageList.isEmpty()) {
 
                                     // Convert to ArrayList<Bestand>
-                                    ArrayList<Bestand> bestandList = convertToBestand(stockList, ui);
+                                    final ArrayList<Bestand> bestandList = convertToBestand(stockList, ui);
 
                                     // Check integrity of Bestand()
                                     messageList = checkBestandIntegrity(bestandList, ui, cn.getConnection());
-                                    if (messageList.size() == 0) {
+                                    if (messageList.isEmpty()) {
 
                                         // save or update holdings, delete all other holdings
-                                        String successMessage = update(bestandList, ui, cn.getConnection());
+                                        final String successMessage = update(bestandList, ui, cn.getConnection());
 
-                                        forward = "success";
+                                        forward = SUCCESS;
 
-                                        Message msg = new Message("import.success", successMessage,
+                                        final Message msg = new Message("import.success", successMessage,
                                         "allstock.do?method=prepareExport&activemenu=stock");
 
                                         rq.setAttribute("message", msg);
@@ -214,72 +218,72 @@ public class Stock extends DispatchAction {
 
                                     } else { // detailed errors while checking integrity of Bestand() objects
                                         forward = "importError";
-                                        ActiveMenusForm mf = new ActiveMenusForm();
+                                        final ActiveMenusForm mf = new ActiveMenusForm();
                                         mf.setActivemenu("stock");
-                                        rq.setAttribute("ActiveMenus", mf);
+                                        rq.setAttribute(ACTIVEMENUS, mf);
                                         rq.setAttribute("messageList", messageList);
-                                        Message em = new Message("error.import.heading",
+                                        final Message em = new Message("error.import.heading",
                                         "stock.do?method=prepareImport&activemenu=stock");
                                         rq.setAttribute("singleMessage", em);
                                     }
                                 } else { // basic errors before parsing to Bestand() objects
                                     forward = "importError";
-                                    ActiveMenusForm mf = new ActiveMenusForm();
+                                    final ActiveMenusForm mf = new ActiveMenusForm();
                                     mf.setActivemenu("stock");
-                                    rq.setAttribute("ActiveMenus", mf);
+                                    rq.setAttribute(ACTIVEMENUS, mf);
                                     rq.setAttribute("messageList", messageList);
-                                    Message em = new Message("error.import.heading",
+                                    final Message em = new Message("error.import.heading",
                                     "stock.do?method=prepareImport&activemenu=stock");
                                     rq.setAttribute("singleMessage", em);
                                 }
                             } else { // Wrong number of columns
                                 forward = "importError";
-                                ActiveMenusForm mf = new ActiveMenusForm();
+                                final ActiveMenusForm mf = new ActiveMenusForm();
                                 mf.setActivemenu("stock");
-                                rq.setAttribute("ActiveMenus", mf);
+                                rq.setAttribute(ACTIVEMENUS, mf);
                                 rq.setAttribute("messageList", messageList);
-                                Message em = new Message("error.import.heading",
+                                final Message em = new Message("error.import.heading",
                                 "stock.do?method=prepareImport&activemenu=stock");
                                 rq.setAttribute("singleMessage", em);
                             }
 
                         } else { // Filesize limit
-                            ActiveMenusForm mf = new ActiveMenusForm();
+                            final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("stock");
-                            rq.setAttribute("ActiveMenus", mf);
-                            ErrorMessage em = new ErrorMessage("error.filesize",
+                            rq.setAttribute(ACTIVEMENUS, mf);
+                            final ErrorMessage em = new ErrorMessage("error.filesize",
                             "stock.do?method=prepareImport&activemenu=stock");
-                            rq.setAttribute("errormessage", em);
+                            rq.setAttribute(ERRORMESSAGE, em);
                         }
                     } else { // Filetype error
-                        ActiveMenusForm mf = new ActiveMenusForm();
+                        final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("stock");
-                        rq.setAttribute("ActiveMenus", mf);
-                        ErrorMessage em = new ErrorMessage("error.filetype",
+                        rq.setAttribute(ACTIVEMENUS, mf);
+                        final ErrorMessage em = new ErrorMessage("error.filetype",
                         "stock.do?method=prepareImport&activemenu=stock");
-                        rq.setAttribute("errormessage", em);
+                        rq.setAttribute(ERRORMESSAGE, em);
                     }
                 } else { // Did not accept conditions
-                    ActiveMenusForm mf = new ActiveMenusForm();
+                    final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("stock");
-                    rq.setAttribute("ActiveMenus", mf);
-                    ErrorMessage em = new ErrorMessage("error.import.condition",
+                    rq.setAttribute(ACTIVEMENUS, mf);
+                    final ErrorMessage em = new ErrorMessage("error.import.condition",
                     "stock.do?method=prepareImport&activemenu=stock");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                 }
             } else { // User is not allowed to access this function
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else { // Timeout
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         cn.close();
@@ -290,22 +294,21 @@ public class Stock extends DispatchAction {
     /**
      * Gets all holding locations for a given library
      */
-    public ActionForward listStockplaces(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward listStockplaces(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text t = new Text();
-        Texttyp ty = new Texttyp();
-        final long id = 10; // TextTyp ID for holding locations
-        ty.setId(id);
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text t = new Text();
+        final Texttyp ty = new Texttyp();
+        ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
+        final Auth auth = new Auth();
 
         // Access control
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                forward = "success";
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                HoldingForm hf = (HoldingForm) fm;
+                forward = SUCCESS;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final HoldingForm hf = (HoldingForm) fm;
 
                 hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
 
@@ -316,18 +319,18 @@ public class Stock extends DispatchAction {
                 rq.setAttribute("holdingform", hf);
 
             } else {
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         t.close();
@@ -338,30 +341,29 @@ public class Stock extends DispatchAction {
     /**
      * Prepares and changes a given holding location
      */
-    public ActionForward changeStockplace(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward changeStockplace(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Text t = new Text();
-        Texttyp ty = new Texttyp();
-        final long id = 10; // TextTyp ID for holding locations
-        ty.setId(id);
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Text t = new Text();
+        final Texttyp ty = new Texttyp();
+        ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
+        final Auth auth = new Auth();
 
         // Access control
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                HoldingForm hf = (HoldingForm) fm;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final HoldingForm hf = (HoldingForm) fm;
 
                 // Make sure the Text() and the location belongs to the given account
-                Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), ty.getId());
+                final Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), ty.getId());
                 if (txt.getId() != null) {
-                    forward = "success";
+                    forward = SUCCESS;
 
                     if (!hf.isMod() && !hf.isDel()) { // Prepares for changing a location
                         hf.setMod(true); // flags a location to be changed for the JSP
-                        ArrayList<Text> sl = new ArrayList<Text>();
+                        final ArrayList<Text> sl = new ArrayList<Text>();
                         sl.add(txt);
                         hf.setStandorte(sl);
                     } else if (hf.isMod()) { // update the given Text() / location
@@ -371,10 +373,10 @@ public class Stock extends DispatchAction {
                         hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
                     } else if (hf.isDel()) { // delete the given Text() / location
                         // Check if there still exist holdings for this location
-                        Bestand bestandInstance = new Bestand();
-                        ArrayList<Bestand> sl = new ArrayList<Bestand>(bestandInstance.getAllBestandForStandortId(
+                        final Bestand bestandInstance = new Bestand();
+                        final ArrayList<Bestand> sl = new ArrayList<Bestand>(bestandInstance.getAllBestandForStandortId(
                                 txt.getId(), t.getConnection()));
-                        if (sl == null || sl.size() == 0) {
+                        if (sl == null || sl.isEmpty()) {
                             txt.deleteText(t.getConnection(), txt);
                             hf.setMod(false);
                             hf.setDel(false);
@@ -388,25 +390,25 @@ public class Stock extends DispatchAction {
                     rq.setAttribute("holdingform", hf);
 
                 } else { // URL-hacking
-                    ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-                    rq.setAttribute("errormessage", em);
+                    final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
                     LOG.info("changeStandort: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
 
             } else {
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         t.close();
@@ -416,19 +418,19 @@ public class Stock extends DispatchAction {
     /**
      * Gets a list of all holdings from all libraries
      */
-    public ArrayList<Bestand> checkGeneralStockAvailability(OrderForm pageForm, boolean internal) {
+    public ArrayList<Bestand> checkGeneralStockAvailability(final OrderForm pageForm, final boolean internal) {
 
         ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
 
         if (pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
-            Text cn = new Text();
+            final Text cn = new Text();
 
-            ArrayList<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn.getConnection());
+            final ArrayList<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn.getConnection());
 
-            Holding ho = new Holding();
-            ArrayList<String> hoids = ho.getAllHOIDs(setIssn, cn.getConnection());
+            final Holding ho = new Holding();
+            final ArrayList<String> hoids = ho.getAllHOIDs(setIssn, cn.getConnection());
 
-            Bestand be = new Bestand();
+            final Bestand be = new Bestand();
             bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn.getConnection());
 
             cn.close();
@@ -441,19 +443,19 @@ public class Stock extends DispatchAction {
     /**
      * Gets a list of all holdings for a given library from an IP
      */
-    public ArrayList<Bestand> checkStockAvailabilityForIP(OrderForm pageForm, Text tip, boolean internal,
-            Connection cn) {
+    public ArrayList<Bestand> checkStockAvailabilityForIP(final OrderForm pageForm, final Text tip, final boolean internal,
+            final Connection cn) {
 
         ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
 
-        Bestand be = new Bestand();
-        Holding ho = new Holding();
+        final Bestand be = new Bestand();
+        final Holding ho = new Holding();
 
         if (tip.getKonto() != null && tip.getKonto().getId() != null) { // Nur prüfen, falls Konto vorhanden
 
-            ArrayList<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn);
+            final ArrayList<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn);
 
-            ArrayList<String> hoids = ho.getAllHOIDsForKonto(setIssn, tip.getKonto().getId(), cn);
+            final ArrayList<String> hoids = ho.getAllHOIDsForKonto(setIssn, tip.getKonto().getId(), cn);
 
             bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn);
         }
@@ -468,12 +470,12 @@ public class Stock extends DispatchAction {
      * @param ArrayList<List<String> stocklist
      * @return ArrayList<Message> messageList
      */
-    private ArrayList<Message> checkBasicParsability(ArrayList<List<String>> stockList) {
+    private ArrayList<Message> checkBasicParsability(final ArrayList<List<String>> stockList) {
 
-        ArrayList<Message> messageList = new ArrayList<Message>();
+        final ArrayList<Message> messageList = new ArrayList<Message>();
 
         for (int i = 1; i < stockList.size(); i++) { // start at position 1, thus ignoring the header
-            List<String> importLine = stockList.get(i);
+            final List<String> importLine = stockList.get(i);
             int column = 0; // column number of element to check
             for (String line : importLine) {
                 Message msg;
@@ -579,15 +581,15 @@ public class Stock extends DispatchAction {
      * @param ArrayList<List<String>> stockList
      * @return ArrayList<Message> messageList
      */
-    private ArrayList<Message> checkColumns(ArrayList<List<String>> stockList) {
+    private ArrayList<Message> checkColumns(final ArrayList<List<String>> stockList) {
 
-        ArrayList<Message> messageList = new ArrayList<Message>();
+        final ArrayList<Message> messageList = new ArrayList<Message>();
         int lineCount = 0;
 
-        for (List<String> importLine : stockList) {
+        for (final List<String> importLine : stockList) {
             lineCount++; // Lines start at position 1
             if (importLine.size() != COLUMNS) {
-                Message msg = new Message("error.import.separators", composeSystemMessage(lineCount, ""), "");
+                final Message msg = new Message("error.import.separators", composeSystemMessage(lineCount, ""), "");
                 messageList.add(msg);
             }
         }
@@ -602,20 +604,20 @@ public class Stock extends DispatchAction {
      * @param ArrayList<Bestand> bestandList
      * @return ArrayList<Message> messageList
      */
-    private ArrayList<Message> checkBestandIntegrity(ArrayList<Bestand> bestandList, UserInfo ui, Connection cn) {
+    private ArrayList<Message> checkBestandIntegrity(final ArrayList<Bestand> bestandList, final UserInfo ui, final Connection cn) {
 
-        ArrayList<Message> messageList = new ArrayList<Message>();
-        HashSet<Long> uniqueSetStockID = new HashSet<Long>();
+        final ArrayList<Message> messageList = new ArrayList<Message>();
+        final HashSet<Long> uniqueSetStockID = new HashSet<Long>();
         int lineCount = 1; // the header of the ArrayList<Bestand> is already omitted
 
-        for (Bestand b : bestandList) {
+        for (final Bestand b : bestandList) {
             lineCount++;
 
             if (b.getId() != null) {
 
                 // check for unique Stock-ID
                 if (uniqueSetStockID.contains(b.getId())) {
-                    Message msg = new Message();
+                    final Message msg = new Message();
                     msg.setMessage("error.import.stid.notUnique");
                     msg.setSystemMessage(composeSystemMessage(lineCount, b.getId().toString()));
                     messageList.add(msg);
@@ -624,20 +626,20 @@ public class Stock extends DispatchAction {
                 }
 
                 // check if Bestand is from account
-                Bestand control = new Bestand(b.getId(), cn); // get control Bestand from specified ID
+                final Bestand control = new Bestand(b.getId(), cn); // get control Bestand from specified ID
 
                 // check if KID from Bestand matches KID from ui
                 if (control.getHolding() != null && control.getHolding().getKid().equals(ui.getKonto().getId())) {
 
                     // check if Holding-ID from control matches Holding-ID specified
                     if (!control.getHolding().getId().equals(b.getHolding().getId())) {
-                        Message msg = new Message();
+                        final Message msg = new Message();
                         msg.setMessage("error.import.hoid.doesNotMatchStid");
                         msg.setSystemMessage(composeSystemMessage(lineCount, b.getHolding().getId().toString()));
                         messageList.add(msg);
                     }
                 } else { // KID from Bestand does not match KID from ui!
-                    Message msg = new Message();
+                    final Message msg = new Message();
                     msg.setMessage("error.import.stid.notFromAccount");
                     msg.setSystemMessage(composeSystemMessage(lineCount, b.getId().toString()));
                     messageList.add(msg);
@@ -648,10 +650,10 @@ public class Stock extends DispatchAction {
             if (b.getStandort().getId() != null) {
                 // check if location-ID is from account
                 // get control location from specified ID
-                Text control = new Text(cn, b.getStandort().getId(), ui.getKonto().getId());
+                final Text control = new Text(cn, b.getStandort().getId(), ui.getKonto().getId());
 
                 if (control.getId() == null) { // Location-ID does not belong to account
-                    Message msg = new Message();
+                    final Message msg = new Message();
                     msg.setMessage("error.import.locationid");
                     msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString()));
                     messageList.add(msg);
@@ -659,7 +661,7 @@ public class Stock extends DispatchAction {
                     // Location-ID belongs to account, but do the locations match?
                 } else if (!b.getStandort().getInhalt().equals("")) {
                     if (!b.getStandort().getInhalt().equals(control.getInhalt())) { // locations do not match...
-                        Message msg = new Message();
+                        final Message msg = new Message();
                         msg.setMessage("error.import.locationsDoNotMatch");
                         msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString()
                                 + "/" + b.getStandort().getInhalt()));
@@ -667,7 +669,7 @@ public class Stock extends DispatchAction {
                     }
                 }
             } else if (b.getStandort().getInhalt().equals("")) { // check if location is present
-                Message msg = new Message();
+                final Message msg = new Message();
                 msg.setMessage("error.import.location");
                 msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getInhalt()));
                 messageList.add(msg);
@@ -687,9 +689,9 @@ public class Stock extends DispatchAction {
      * @param char delimiter
      * @return ArrayList<List<String>> list
      */
-    private ArrayList<List<String>> readImport(FormFile upload, char delimiter, String encoding) {
+    private ArrayList<List<String>> readImport(final FormFile upload, final char delimiter, final String encoding) {
 
-        ArrayList<List<String>> list = new ArrayList<List<String>>();
+        final ArrayList<List<String>> list = new ArrayList<List<String>>();
         String line = "";
         BufferedInputStream fileStream = null;
         BufferedReader br = null;
@@ -699,18 +701,18 @@ public class Stock extends DispatchAction {
             br = new BufferedReader(new InputStreamReader(fileStream, encoding));
 
             while ((line = br.readLine()) != null && !line.equals("")) {
-                CSV importFile = new CSV(delimiter);
+                final CSV importFile = new CSV(delimiter);
                 list.add(importFile.parse(line));
             }
 
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (final Exception e) {
+            LOG.error(e.toString());
         } finally {
             try {
                 br.close();
                 fileStream.close();
-            } catch (IOException e) {
-                System.out.println(e);
+            } catch (final IOException e) {
+                LOG.error(e.toString());
             }
         }
 
@@ -723,9 +725,9 @@ public class Stock extends DispatchAction {
      * @param ArrayList<List<String>> stockList
      * @return ArrayList<Bestand> bestandList
      */
-    private ArrayList<Bestand> convertToBestand(ArrayList<List<String>> stockList, UserInfo ui) {
+    private ArrayList<Bestand> convertToBestand(final ArrayList<List<String>> stockList, final UserInfo ui) {
 
-        ArrayList<Bestand> bestandList = new ArrayList<Bestand>();
+        final ArrayList<Bestand> bestandList = new ArrayList<Bestand>();
 
         for (int i = 1; i < stockList.size(); i++) { // start at position 1, thus ignoring the header
             bestandList.add(getBestand(stockList.get(i), ui.getKonto().getId()));
@@ -742,8 +744,8 @@ public class Stock extends DispatchAction {
      * @param ArrayList<List<String>> stockList
      * @return ArrayList<Bestand> bestandList
      */
-    private Bestand getBestand(List<String> list, long kid) {
-        Bestand b = new Bestand();
+    private Bestand getBestand(final List<String> list, final long kid) {
+        final Bestand b = new Bestand();
 
         int column = 0; // column number of CSV entry to check
         for (String line : list) {
@@ -752,18 +754,18 @@ public class Stock extends DispatchAction {
 
             switch (column) {
             case 1: // Stock-ID
-                if (!line.equals("")) { // If ID unknown, it should be null
+                if (!"".equals(line)) { // If ID unknown, it should be null
                     b.setId(Long.valueOf(line));
                 }
                 break;
             case 2: // Holding-ID
                 b.getHolding().setKid(kid); // set the kid from UserInfo
-                if (!line.equals("")) { // If ID unknown, it should be null
+                if (!"".equals(line)) { // If ID unknown, it should be null
                     b.getHolding().setId(Long.valueOf(line));
                 }
                 break;
             case 3: // Location-ID
-                if (!line.equals("")) { // If ID unknown, it should be null
+                if (!"".equals(line)) { // If ID unknown, it should be null
                     b.getStandort().setId(Long.valueOf(line));
                 }
                 break;
@@ -777,7 +779,7 @@ public class Stock extends DispatchAction {
                 b.getHolding().setTitel(line);
                 break;
             case 7: // Coden
-                if (line.equals("")) {
+                if ("".equals(line)) {
                     b.getHolding().setCoden(null);
                 } else {
                     b.getHolding().setCoden(line);
@@ -793,7 +795,7 @@ public class Stock extends DispatchAction {
                 b.getHolding().setIssn(line);
                 break;
             case 11: // ZDB-ID
-                if (line.equals("")) {
+                if ("".equals(line)) {
                     b.getHolding().setZdbid(null);
                 } else {
                     b.getHolding().setZdbid(line);
@@ -818,7 +820,7 @@ public class Stock extends DispatchAction {
                 b.setEndissue(line);
                 break;
             case 18: // Supplement
-                if (line.equals("")) {
+                if ("".equals(line)) {
                     b.setSuppl(1); // Defaultvalue
                 } else {
                     b.setSuppl(Integer.valueOf(line));
@@ -828,12 +830,12 @@ public class Stock extends DispatchAction {
                 b.setBemerkungen(line);
                 break;
             case 20: // eissue
-                if (!line.equals("")) { // Defaultvalue remains false
+                if (!"".equals(line)) { // Defaultvalue remains false
                     b.setEissue(Boolean.valueOf(line));
                 }
                 break;
             case 21: // internal
-                if (!line.equals("")) { // Defaultvalue remains false
+                if (!"".equals(line)) { // Defaultvalue remains false
                     b.setInternal(Boolean.valueOf(line));
                 }
                 break;
@@ -849,13 +851,13 @@ public class Stock extends DispatchAction {
     /**
      * Gets from an ISSN a TreeSet<String> list of all 'related' ISSNs to map them
      */
-    private ArrayList<String> getRelatedIssn(String issn, Connection cn) {
+    private ArrayList<String> getRelatedIssn(final String issn, final Connection cn) {
 
-        Issn issnInstance = new Issn();
+        final Issn issnInstance = new Issn();
 
-        ArrayList<String> issns = issnInstance.getAllIssnsFromOneIssn(issn, cn);
+        final ArrayList<String> issns = issnInstance.getAllIssnsFromOneIssn(issn, cn);
 
-        if (issns.size() == 0) { issns.add(issn); } // if there has been no hit, return the ISSN from the input
+        if (issns.isEmpty()) { issns.add(issn); } // if there has been no hit, return the ISSN from the input
 
         return issns;
     }
@@ -863,11 +865,11 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the string is a parsable Stock-ID
      */
-    private Message checkStockID(int lineCount, String content) {
+    private Message checkStockID(int lineCount, final String content) {
 
-        Message msg = new Message();
+        final Message msg = new Message();
 
-        if (!content.equals("")) { // the ID may be empty
+        if (!"".equals(content)) { // the ID may be empty
             lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid number
             if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
@@ -882,11 +884,11 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the string is a parsable Holding-ID
      */
-    private Message checkHoldingID(int lineCount, String content) {
+    private Message checkHoldingID(int lineCount, final String content) {
 
-        Message msg = new Message();
+        final Message msg = new Message();
 
-        if (!content.equals("")) { // the ID may be empty
+        if (!"".equals(content)) { // the ID may be empty
             lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid number
             if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
@@ -901,11 +903,11 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the string is a parsable Location-ID
      */
-    private Message checkLocationID(int lineCount, String content) {
+    private Message checkLocationID(int lineCount, final String content) {
 
-        Message msg = new Message();
+        final Message msg = new Message();
 
-        if (!content.equals("")) { // the ID may be empty
+        if (!"".equals(content)) { // the ID may be empty
             lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid number
             if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
@@ -920,10 +922,10 @@ public class Stock extends DispatchAction {
     /**
      * Checks if there has been specified a title
      */
-    private Message checkTitle(int lineCount, String content) {
+    private Message checkTitle(int lineCount, final String content) {
 
-        Message msg = new Message();
-        Check ck = new Check();
+        final Message msg = new Message();
+        final Check ck = new Check();
 
         lineCount++; // raise lineCount +1, because List starts at 0
         // if not empty it must be a valid number
@@ -938,16 +940,15 @@ public class Stock extends DispatchAction {
     /**
      * If an ISSN has been specified, checks that the string specified is a valid ISSN
      */
-    private Message checkISSN(int lineCount, String content) {
+    private Message checkISSN(int lineCount, final String content) {
 
-        Message msg = new Message();
-        Check ck = new Check();
-        final int issnLenght = 9;
+        final Message msg = new Message();
+        final Check ck = new Check();
 
-        if (!content.equals("")) { // the ISSN may be empty
+        if (!"".equals(content)) { // the ISSN may be empty
             lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid ISSN
-            if (!ck.isExactLength(content, issnLenght)) { // length must be 9 characters
+            if (!ck.isExactLength(content, 9)) { // length must be 9 characters
                 msg.setMessage("error.import.issn.length");
                 msg.setSystemMessage(composeSystemMessage(lineCount, content));
             } else if (!ck.isValidIssn(content)) { // check for typos...
@@ -963,10 +964,10 @@ public class Stock extends DispatchAction {
      * Checks if there has been specified a startyear and
      *  the string is a valid year
      */
-    private Message checkStartyear(int lineCount, String content) {
+    private Message checkStartyear(int lineCount, final String content) {
 
-        Message msg = new Message();
-        Check ck = new Check();
+        final Message msg = new Message();
+        final Check ck = new Check();
 
         if (!ck.isYear(content)) {
             lineCount++; // raise lineCount +1, because List starts at 0
@@ -980,12 +981,12 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the string is a valid (end)year
      */
-    private Message checkEndyear(int lineCount, String content) {
+    private Message checkEndyear(int lineCount, final String content) {
 
-        Message msg = new Message();
-        Check ck = new Check();
+        final Message msg = new Message();
+        final Check ck = new Check();
 
-        if (!content.equals("")) { // the endyear may be empty
+        if (!"".equals(content)) { // the endyear may be empty
             lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid year
             if (!ck.isYear(content)) {
@@ -1000,15 +1001,15 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the string is a valid Supplement (0 / 1 / 2)
      */
-    private Message checkSuppl(int lineCount, String content) {
+    private Message checkSuppl(final int lineCount, final String content) {
 
-        Message msg = new Message();
+        final Message msg = new Message();
 
-        if (!content.equals("")) { // may be empty => we will use default value
+        if (!"".equals(content)) { // may be empty => we will use default value
 
-            if (!content.equals("0")
-                    && !content.equals("1")
-                    && !content.equals("2")) {
+            if (!"0".equals(content)
+                    && !"1".equals(content)
+                    && !"2".equals(content)) {
                 msg.setMessage("error.import.suppl");
                 msg.setSystemMessage(composeSystemMessage(lineCount, content));
             }
@@ -1020,14 +1021,14 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the string is a valid boolean value
      */
-    private Message checkBoolean(int lineCount, String content) {
+    private Message checkBoolean(final int lineCount, final String content) {
 
-        Message msg = new Message();
+        final Message msg = new Message();
 
-        if (!content.equals("")) { // may be empty => we will use default value
+        if (!"".equals(content)) { // may be empty => we will use default value
 
-            if (!content.equals("true")
-                    && !content.equals("false")) {
+            if (!"true".equals(content)
+                    && !"false".equals(content)) {
                 msg.setMessage("error.import.boolean");
                 msg.setSystemMessage(composeSystemMessage(lineCount, content));
             }
@@ -1040,9 +1041,9 @@ public class Stock extends DispatchAction {
      * Uses a StringBuffer to compose a String in the form:
      * Row x: text...
      */
-    private String composeSystemMessage(int lineCount, String element) {
+    private String composeSystemMessage(final int lineCount, final String element) {
 
-        StringBuffer bf = new StringBuffer();
+        final StringBuffer bf = new StringBuffer();
 
         bf.append("Row ");
         bf.append(lineCount);
@@ -1058,23 +1059,23 @@ public class Stock extends DispatchAction {
      * etc. have been run before!
      *
      */
-    private String update(ArrayList<Bestand> bestandList, UserInfo ui, Connection cn) {
+    private String update(final ArrayList<Bestand> bestandList, final UserInfo ui, final Connection cn) {
 
-        StringBuffer bf = new StringBuffer();
+        final StringBuffer bf = new StringBuffer(32);
         int countUpdate = 0;
         int countInsert = 0;
 
-        Holding hold = new Holding();
-        Bestand best = new Bestand();
+        final Holding hold = new Holding();
+        final Bestand best = new Bestand();
 
         // delete all existing stock entries for this account
         best.deleteAllKontoBestand(ui.getKonto(), cn);
 
-        for (Bestand b : bestandList) {
+        for (final Bestand b : bestandList) {
 
             // try to get an existing Holding for this account with
             // the values specified in the Bestand, but without an ev. ID
-            Holding h = new Holding(b.getHolding(), cn);
+            final Holding h = new Holding(b.getHolding(), cn);
 
             // here we replace the holding from Bestand with the holding found in the DB
             // this will deduplicate and centralize the holdings for each account
@@ -1115,8 +1116,7 @@ public class Stock extends DispatchAction {
 
         bf.append("Updated: ");
         bf.append(countUpdate);
-        bf.append("\n");
-        bf.append("Inserted: ");
+        bf.append("\nInserted: ");
         bf.append(countInsert);
 
         return bf.toString();
@@ -1129,9 +1129,6 @@ public class Stock extends DispatchAction {
     public static char getDelimiterTxt() {
         return DELIMITER_TXT;
     }
-
-
-
 
 
 }

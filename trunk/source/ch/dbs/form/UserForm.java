@@ -61,7 +61,7 @@ public final class UserForm extends ValidatorForm {
     private String gtc;
     private String gtcdate;
 
-    private AbstractBenutzer user = null;
+    private AbstractBenutzer user;
 
     private Long bid;
     private boolean delete;
@@ -76,7 +76,7 @@ public final class UserForm extends ValidatorForm {
 
     }
 
-    public UserForm(LoginForm lf) {
+    public UserForm(final LoginForm lf) {
 
         if (lf.getKundeninstitution() != null) { institut = lf.getKundeninstitution().trim(); }
         if (lf.getKundenabteilung() != null) { abteilung = lf.getKundenabteilung().trim(); }
@@ -90,7 +90,7 @@ public final class UserForm extends ValidatorForm {
         if (lf.getKundenemail() != null) { email = lf.getKundenemail().trim(); }
     }
 
-    public UserForm(KontoForm kf) {
+    public UserForm(final KontoForm kf) {
 
         if (kf.getKundeninstitution() != null) { institut = kf.getKundeninstitution().trim(); }
         if (kf.getKundenabteilung() != null) { abteilung = kf.getKundenabteilung().trim(); }
@@ -108,7 +108,7 @@ public final class UserForm extends ValidatorForm {
         return uid;
     }
 
-    public void setUid(Long uid) {
+    public void setUid(final Long uid) {
         this.uid = uid;
     }
 
@@ -117,7 +117,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setBestellungen(List<Bestellungen> bestellungen) {
+    public void setBestellungen(final List<Bestellungen> bestellungen) {
         this.bestellungen = bestellungen;
     }
 
@@ -126,7 +126,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setKontos(String[] kontos) {
+    public void setKontos(final String[] kontos) {
         this.kontos = kontos;
     }
 
@@ -136,7 +136,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setKid(int kid) {
+    public void setKid(final int kid) {
         this.kid = kid;
     }
 
@@ -146,7 +146,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setUsers(List<AbstractBenutzer> users) {
+    public void setUsers(final List<AbstractBenutzer> users) {
         this.users = users;
     }
 
@@ -156,7 +156,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setAbteilung(String abteilung) {
+    public void setAbteilung(final String abteilung) {
         this.abteilung = abteilung;
     }
 
@@ -166,7 +166,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setAdresse(String adresse) {
+    public void setAdresse(final String adresse) {
         this.adresse = adresse;
     }
 
@@ -176,7 +176,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setAdresszusatz(String adresszusatz) {
+    public void setAdresszusatz(final String adresszusatz) {
         this.adresszusatz = adresszusatz;
     }
 
@@ -186,7 +186,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setAnrede(String anrede) {
+    public void setAnrede(final String anrede) {
         this.anrede = anrede;
     }
 
@@ -196,7 +196,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setBilling(Long billing) {
+    public void setBilling(final Long billing) {
         this.billing = billing;
     }
 
@@ -206,7 +206,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -216,17 +216,17 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setInstitut(String institut) {
+    public void setInstitut(final String institut) {
         this.institut = institut;
     }
 
 
-    public boolean getKontovalidation() {
+    public boolean isKontovalidation() {
         return kontovalidation;
     }
 
 
-    public void setKontovalidation(boolean kontovalidation) {
+    public void setKontovalidation(final boolean kontovalidation) {
         this.kontovalidation = kontovalidation;
     }
 
@@ -236,17 +236,17 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setLand(String land) {
+    public void setLand(final String land) {
         this.land = land;
     }
 
 
-    public boolean getLoginopt() {
+    public boolean isLoginopt() {
         return loginopt;
     }
 
 
-    public void setLoginopt(boolean loginopt) {
+    public void setLoginopt(final boolean loginopt) {
         this.loginopt = loginopt;
     }
 
@@ -256,7 +256,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -266,7 +266,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setOrt(String ort) {
+    public void setOrt(final String ort) {
         this.ort = ort;
     }
 
@@ -276,7 +276,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -286,7 +286,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setPlz(String plz) {
+    public void setPlz(final String plz) {
         this.plz = plz;
     }
 
@@ -296,7 +296,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setTelefonnrg(String telefonnrg) {
+    public void setTelefonnrg(final String telefonnrg) {
         this.telefonnrg = telefonnrg;
     }
 
@@ -306,7 +306,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setTelefonnrp(String telefonnrp) {
+    public void setTelefonnrp(final String telefonnrp) {
         this.telefonnrp = telefonnrp;
     }
 
@@ -314,15 +314,15 @@ public final class UserForm extends ValidatorForm {
         return submit;
     }
 
-    public void setSubmit(String submit) {
+    public void setSubmit(final String submit) {
         this.submit = submit;
     }
 
-    public boolean getUserbestellung() {
+    public boolean isUserbestellung() {
         return userbestellung;
     }
 
-    public void setUserbestellung(boolean userbestellung) {
+    public void setUserbestellung(final boolean userbestellung) {
         this.userbestellung = userbestellung;
     }
 
@@ -330,16 +330,16 @@ public final class UserForm extends ValidatorForm {
         return gbvbestellung;
     }
 
-    public void setGbvbestellung(boolean gbvbestellung) {
+    public void setGbvbestellung(final boolean gbvbestellung) {
         this.gbvbestellung = gbvbestellung;
     }
 
-    public boolean getValidation() {
+    public boolean isValidation() {
         return validation;
     }
 
 
-    public void setValidation(boolean validation) {
+    public void setValidation(final boolean validation) {
         this.validation = validation;
     }
 
@@ -349,7 +349,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setVorname(String vorname) {
+    public void setVorname(final String vorname) {
         this.vorname = vorname;
     }
 
@@ -359,7 +359,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setKontostatus(boolean kontostatus) {
+    public void setKontostatus(final boolean kontostatus) {
         this.kontostatus = kontostatus;
     }
 
@@ -368,7 +368,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setBid(Long bid) {
+    public void setBid(final Long bid) {
         this.bid = bid;
     }
 
@@ -378,7 +378,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setMethod(String method) {
+    public void setMethod(final String method) {
         this.method = method;
     }
 
@@ -388,7 +388,7 @@ public final class UserForm extends ValidatorForm {
     }
 
 
-    public void setUser(AbstractBenutzer user) {
+    public void setUser(final AbstractBenutzer user) {
         this.user = user;
     }
 
@@ -396,7 +396,7 @@ public final class UserForm extends ValidatorForm {
         return delete;
     }
 
-    public void setDelete(boolean delete) {
+    public void setDelete(final boolean delete) {
         this.delete = delete;
     }
 
@@ -404,7 +404,7 @@ public final class UserForm extends ValidatorForm {
         return countries;
     }
 
-    public void setCountries(List<Countries> countries) {
+    public void setCountries(final List<Countries> countries) {
         this.countries = countries;
     }
 
@@ -412,7 +412,7 @@ public final class UserForm extends ValidatorForm {
         return countryid;
     }
 
-    public void setCountryid(String countryid) {
+    public void setCountryid(final String countryid) {
         this.countryid = countryid;
     }
 
@@ -420,7 +420,7 @@ public final class UserForm extends ValidatorForm {
         return keepordervalues;
     }
 
-    public void setKeepordervalues(boolean keepordervalues) {
+    public void setKeepordervalues(final boolean keepordervalues) {
         this.keepordervalues = keepordervalues;
     }
 
@@ -428,7 +428,7 @@ public final class UserForm extends ValidatorForm {
         return keepordervalues2;
     }
 
-    public void setKeepordervalues2(boolean keepordervalues2) {
+    public void setKeepordervalues2(final boolean keepordervalues2) {
         this.keepordervalues2 = keepordervalues2;
     }
 
@@ -436,7 +436,7 @@ public final class UserForm extends ValidatorForm {
         return gtc;
     }
 
-    public void setGtc(String gtc) {
+    public void setGtc(final String gtc) {
         this.gtc = gtc;
     }
 
@@ -444,7 +444,7 @@ public final class UserForm extends ValidatorForm {
         return gtcdate;
     }
 
-    public void setGtcdate(String gtcdate) {
+    public void setGtcdate(final String gtcdate) {
         this.gtcdate = gtcdate;
     }
 
@@ -452,7 +452,7 @@ public final class UserForm extends ValidatorForm {
         return addFromBestellformEmail;
     }
 
-    public void setAddFromBestellformEmail(boolean addFromBestellformEmail) {
+    public void setAddFromBestellformEmail(final boolean addFromBestellformEmail) {
         this.addFromBestellformEmail = addFromBestellformEmail;
     }
 

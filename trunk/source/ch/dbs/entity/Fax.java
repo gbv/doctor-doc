@@ -48,17 +48,14 @@ public class Fax extends AbstractIdEntity {
     private String state;
     private String statedate;
 
-
-    public Fax() { }
-
     /**
      * Sucht einen Fax anhand der popfaxid
      * <p></p>
      * @param the popfaxid
      * @return a {@link Fax}
      */
-    public Fax getFax(String popfaxId, String kId) {
-        DBConn cn = new DBConn();
+    public Fax getFax(final String popfaxId, final String kId) {
+        final DBConn cn = new DBConn();
         Fax f = new Fax();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -72,21 +69,21 @@ public class Fax extends AbstractIdEntity {
                 f = getFax(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getFax(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             cn.close();
@@ -100,7 +97,7 @@ public class Fax extends AbstractIdEntity {
      * @param cn
      */
     public void saveNewFax() {
-        Connection cn = getConnection();
+        final Connection cn = getConnection();
         saveNewFax(cn);
         close();
     }
@@ -108,28 +105,28 @@ public class Fax extends AbstractIdEntity {
      * Erstellt einen neuen Datenbankeintrag dieses Fax Objecktes
      * @param cn
      */
-    private void saveNewFax(Connection cn) {
+    private void saveNewFax(final Connection cn) {
         PreparedStatement pstmt = null;
         try {
             pstmt = setFaxValues(cn.prepareStatement("INSERT INTO `fax` (`KID` , "
                     + "`popfaxid` , `fromnr` , `popfaxdate` , `pages` , `state` , `statedate`) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?)"), this);
 
-            Date d = new Date(); // aktuelles Datum setzen
-            ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
+            final Date d = new Date(); // aktuelles Datum setzen
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
             pstmt.setString(7, datum);
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("saveNewFax(Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -140,8 +137,8 @@ public class Fax extends AbstractIdEntity {
      *
      * @param Fax f
      */
-    public void saveFaxRunStati(Fax f) {
-        DBConn cn = new DBConn();
+    public void saveFaxRunStati(final Fax f) {
+        final DBConn cn = new DBConn();
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.getConnection().prepareStatement("INSERT INTO `faxrun` (`KID` , `state`, `statedate`) "
@@ -149,22 +146,22 @@ public class Fax extends AbstractIdEntity {
             pstmt.setString(1, f.getKid());
             pstmt.setString(2, f.getState());
 
-            Date d = new Date();
-            ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String datum = sdf.format(d, ReadSystemConfigurations.getSystemTimezone());
+            final Date d = new Date();
+            final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String datum = sdf.format(d, ReadSystemConfigurations.getSystemTimezone());
 
             pstmt.setString(3, datum);
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("saveFaxRunStati(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             cn.close();
@@ -178,7 +175,7 @@ public class Fax extends AbstractIdEntity {
      * @param popfaxId
      * @return rowsdeleted Anzahl gelöschter Einträge (Zeilen)
      */
-    public int deletePopfaxId(Connection cn, String popfaxId) {
+    public int deletePopfaxId(final Connection cn, final String popfaxId) {
 
         int rowsdeleted = 0;
         PreparedStatement pstmt = null;
@@ -188,14 +185,14 @@ public class Fax extends AbstractIdEntity {
 
             rowsdeleted = pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("deletePopfaxId(Connection cn, String popfaxid): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -206,8 +203,8 @@ public class Fax extends AbstractIdEntity {
     /*
      * Füllt ein Faxobjekt mit einer Zeile aus der Datenbank
      */
-    private Fax getFax(ResultSet rs) throws Exception {
-        Fax f = new Fax();
+    private Fax getFax(final ResultSet rs) throws Exception {
+        final Fax f = new Fax();
         f.setId(Long.getLong("", rs.getLong("FID")));
         f.setKid(rs.getString("KID"));
         f.setPopfaxid(rs.getString("popfaxid"));
@@ -226,7 +223,7 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setFrom(String from) {
+    public void setFrom(final String from) {
         this.from = from;
     }
 
@@ -236,7 +233,7 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setKid(String kid) {
+    public void setKid(final String kid) {
         this.kid = kid;
     }
 
@@ -245,7 +242,7 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setPages(String pages) {
+    public void setPages(final String pages) {
         this.pages = pages;
     }
 
@@ -255,7 +252,7 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setPopfaxdate(String popfaxdate) {
+    public void setPopfaxdate(final String popfaxdate) {
         this.popfaxdate = popfaxdate;
     }
 
@@ -265,7 +262,7 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setPopfaxid(String popfaxid) {
+    public void setPopfaxid(final String popfaxid) {
         this.popfaxid = popfaxid;
     }
 
@@ -275,7 +272,7 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setState(String state) {
+    public void setState(final String state) {
         this.state = state;
     }
 
@@ -285,14 +282,14 @@ public class Fax extends AbstractIdEntity {
     }
 
 
-    public void setStatedate(String statedate) {
+    public void setStatedate(final String statedate) {
         this.statedate = statedate;
     }
 
     /*
      * Setzt die Werte im Preparestatement der Methode saveNewFax()
      */
-    private PreparedStatement setFaxValues(PreparedStatement pstmt, Fax f) throws Exception {
+    private PreparedStatement setFaxValues(final PreparedStatement pstmt, final Fax f) throws Exception {
 
 
         if (f.getKid() != null) { pstmt.setString(1, f.getKid()); } else { pstmt.setString(1, ""); }

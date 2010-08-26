@@ -17,7 +17,12 @@
 
 package util;
 
-public class UniqueID {
+public final class UniqueID {
+
+    // private constructor so no one else can instantiate objects
+    private UniqueID() {
+
+    }
 
     // Since the granulaty of a PC can be as high as 55ms (down to 10ms), you can't use
     // the System time to generate a unique ID because of the risk of getting duplicated IDs.
@@ -30,7 +35,7 @@ public class UniqueID {
     public static synchronized long get() {
 
         if (String.valueOf(current).length() > 15) {
-            MHelper mh = new MHelper();
+            final MHelper mh = new MHelper();
             mh.sendErrorMail("GBV-Trackingnummer hat maximale Anzahl Stellen erreicht oder überschritten!!!",
                     "Util - UniqueID: Es wurden 16 oder mehr Stellen erreicht!:\012"
                     + String.valueOf(current).length());

@@ -122,7 +122,7 @@ public class BestellParam extends ValidatorForm {
      * @param Connection cn
      * @return BestellParam bp
      */
-    public BestellParam(Long pbId, Connection cn) {
+    public BestellParam(final Long pbId, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -135,21 +135,21 @@ public class BestellParam extends ValidatorForm {
                 this.setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("BestellParam (Long id, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -163,7 +163,7 @@ public class BestellParam extends ValidatorForm {
      * @param Connection cn
      * @return BestellParam bp
      */
-    public BestellParam(String kenn, Long pbId, Connection cn) {
+    public BestellParam(final String kenn, final Long pbId, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -177,21 +177,21 @@ public class BestellParam extends ValidatorForm {
                 this.setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("BestellParam (String kennung, Long id, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -204,7 +204,7 @@ public class BestellParam extends ValidatorForm {
      * @param Connection cn
      * @return BestellParam bp
      */
-    public BestellParam(Text t, Connection cn) {
+    public BestellParam(final Text t, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -225,21 +225,21 @@ public class BestellParam extends ValidatorForm {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -254,7 +254,7 @@ public class BestellParam extends ValidatorForm {
      * @param Connection cn
      * @return BestellParam bp
      */
-    public BestellParam(Konto k, Connection cn) {
+    public BestellParam(final Konto k, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -269,21 +269,21 @@ public class BestellParam extends ValidatorForm {
                 this.setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -294,7 +294,7 @@ public class BestellParam extends ValidatorForm {
      *
      * @param BestellParam bp
      */
-    public Long save(BestellParam bp, Connection cn) {
+    public Long save(final BestellParam bp, final Connection cn) {
 
         Long pbId = null;
 
@@ -322,21 +322,21 @@ public class BestellParam extends ValidatorForm {
                 pbId = rs.getLong("LAST_INSERT_ID()");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(BestellParam bp, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -349,7 +349,7 @@ public class BestellParam extends ValidatorForm {
      *
      * @param BestellParam bp
      */
-    public void update(BestellParam bp, Connection cn) {
+    public void update(final BestellParam bp, final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -368,20 +368,20 @@ public class BestellParam extends ValidatorForm {
             pstmt.setLong(51, bp.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("bei update(BestellParam bp, Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
     }
 
-    private void setRsValues(Connection cn, ResultSet rs) throws Exception {
+    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
         this.setTyid(rs.getLong("TYID"));
@@ -440,7 +440,7 @@ public class BestellParam extends ValidatorForm {
      * Setzt die Werte im Preparestatement der Methoden update() sowie save()
      *
      */
-    public PreparedStatement setBestellParamValues(PreparedStatement pstmt, BestellParam bp, Connection cn)
+    public PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp, final Connection cn)
     throws Exception {
 
         pstmt.setLong(1, bp.getKid());
@@ -569,7 +569,7 @@ public class BestellParam extends ValidatorForm {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -577,7 +577,7 @@ public class BestellParam extends ValidatorForm {
         return kid;
     }
 
-    public void setKid(Long kid) {
+    public void setKid(final Long kid) {
         this.kid = kid;
     }
 
@@ -585,7 +585,7 @@ public class BestellParam extends ValidatorForm {
         return tyid;
     }
 
-    public void setTyid(Long tyid) {
+    public void setTyid(final Long tyid) {
         this.tyid = tyid;
     }
 
@@ -593,7 +593,7 @@ public class BestellParam extends ValidatorForm {
         return kennung;
     }
 
-    public void setKennung(String kennung) {
+    public void setKennung(final String kennung) {
         this.kennung = kennung;
     }
 
@@ -601,7 +601,7 @@ public class BestellParam extends ValidatorForm {
         return saveorder;
     }
 
-    public void setSaveorder(boolean saveorder) {
+    public void setSaveorder(final boolean saveorder) {
         this.saveorder = saveorder;
     }
 
@@ -611,7 +611,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setInstitution(boolean institution) {
+    public void setInstitution(final boolean institution) {
         this.institution = institution;
     }
 
@@ -623,7 +623,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setAbteilung(boolean abteilung) {
+    public void setAbteilung(final boolean abteilung) {
         this.abteilung = abteilung;
     }
 
@@ -635,7 +635,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setAdresse(boolean adresse) {
+    public void setAdresse(final boolean adresse) {
         this.adresse = adresse;
     }
 
@@ -647,7 +647,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setStrasse(boolean strasse) {
+    public void setStrasse(final boolean strasse) {
         this.strasse = strasse;
     }
 
@@ -659,7 +659,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setPlz(boolean plz) {
+    public void setPlz(final boolean plz) {
         this.plz = plz;
     }
 
@@ -671,7 +671,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOrt(boolean ort) {
+    public void setOrt(final boolean ort) {
         this.ort = ort;
     }
 
@@ -683,7 +683,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setLand(boolean land) {
+    public void setLand(final boolean land) {
         this.land = land;
     }
 
@@ -695,7 +695,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setTelefon(boolean telefon) {
+    public void setTelefon(final boolean telefon) {
         this.telefon = telefon;
     }
 
@@ -707,7 +707,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setBenutzernr(boolean benutzernr) {
+    public void setBenutzernr(final boolean benutzernr) {
         this.benutzernr = benutzernr;
     }
 
@@ -716,7 +716,7 @@ public class BestellParam extends ValidatorForm {
         return prio;
     }
 
-    public void setPrio(boolean prio) {
+    public void setPrio(final boolean prio) {
         this.prio = prio;
     }
 
@@ -724,7 +724,7 @@ public class BestellParam extends ValidatorForm {
         return lieferart;
     }
 
-    public void setLieferart(boolean lieferart) {
+    public void setLieferart(final boolean lieferart) {
         this.lieferart = lieferart;
     }
 
@@ -732,7 +732,7 @@ public class BestellParam extends ValidatorForm {
         return lieferart_value1;
     }
 
-    public void setLieferart_value1(String lieferart_value1) {
+    public void setLieferart_value1(final String lieferart_value1) {
         this.lieferart_value1 = lieferart_value1;
     }
 
@@ -740,7 +740,7 @@ public class BestellParam extends ValidatorForm {
         return lieferart_value2;
     }
 
-    public void setLieferart_value2(String lieferart_value2) {
+    public void setLieferart_value2(final String lieferart_value2) {
         this.lieferart_value2 = lieferart_value2;
     }
 
@@ -748,7 +748,7 @@ public class BestellParam extends ValidatorForm {
         return lieferart_value3;
     }
 
-    public void setLieferart_value3(String lieferart_value3) {
+    public void setLieferart_value3(final String lieferart_value3) {
         this.lieferart_value3 = lieferart_value3;
     }
 
@@ -758,7 +758,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt1(boolean freitxt1) {
+    public void setFreitxt1(final boolean freitxt1) {
         this.freitxt1 = freitxt1;
     }
 
@@ -770,7 +770,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt2(boolean freitxt2) {
+    public void setFreitxt2(final boolean freitxt2) {
         this.freitxt2 = freitxt2;
     }
 
@@ -782,7 +782,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt3(boolean freitxt3) {
+    public void setFreitxt3(final boolean freitxt3) {
         this.freitxt3 = freitxt3;
     }
 
@@ -794,7 +794,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt1_name(String freitxt1_name) {
+    public void setFreitxt1_name(final String freitxt1_name) {
         this.freitxt1_name = freitxt1_name;
     }
 
@@ -806,7 +806,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt2_name(String freitxt2_name) {
+    public void setFreitxt2_name(final String freitxt2_name) {
         this.freitxt2_name = freitxt2_name;
     }
 
@@ -818,7 +818,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt3_name(String freitxt3_name) {
+    public void setFreitxt3_name(final String freitxt3_name) {
         this.freitxt3_name = freitxt3_name;
     }
 
@@ -826,7 +826,7 @@ public class BestellParam extends ValidatorForm {
         return comment1;
     }
 
-    public void setComment1(String comment1) {
+    public void setComment1(final String comment1) {
         this.comment1 = comment1;
     }
 
@@ -834,7 +834,7 @@ public class BestellParam extends ValidatorForm {
         return comment2;
     }
 
-    public void setComment2(String comment2) {
+    public void setComment2(final String comment2) {
         this.comment2 = comment2;
     }
 
@@ -844,7 +844,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setInst_required(boolean inst_required) {
+    public void setInst_required(final boolean inst_required) {
         this.inst_required = inst_required;
     }
 
@@ -856,7 +856,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setAbt_required(boolean abt_required) {
+    public void setAbt_required(final boolean abt_required) {
         this.abt_required = abt_required;
     }
 
@@ -868,7 +868,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt1_required(boolean freitxt1_required) {
+    public void setFreitxt1_required(final boolean freitxt1_required) {
         this.freitxt1_required = freitxt1_required;
     }
 
@@ -880,7 +880,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt2_required(boolean freitxt2_required) {
+    public void setFreitxt2_required(final boolean freitxt2_required) {
         this.freitxt2_required = freitxt2_required;
     }
 
@@ -892,7 +892,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setFreitxt3_required(boolean freitxt3_required) {
+    public void setFreitxt3_required(final boolean freitxt3_required) {
         this.freitxt3_required = freitxt3_required;
     }
 
@@ -904,7 +904,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setAdr_required(boolean adr_required) {
+    public void setAdr_required(final boolean adr_required) {
         this.adr_required = adr_required;
     }
 
@@ -916,7 +916,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setStr_required(boolean str_required) {
+    public void setStr_required(final boolean str_required) {
         this.str_required = str_required;
     }
 
@@ -928,7 +928,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setPlz_required(boolean plz_required) {
+    public void setPlz_required(final boolean plz_required) {
         this.plz_required = plz_required;
     }
 
@@ -943,11 +943,11 @@ public class BestellParam extends ValidatorForm {
         return land_required;
     }
 
-    public void setLand_required(boolean land_required) {
+    public void setLand_required(final boolean land_required) {
         this.land_required = land_required;
     }
 
-    public void setOrt_required(boolean ort_required) {
+    public void setOrt_required(final boolean ort_required) {
         this.ort_required = ort_required;
     }
 
@@ -959,7 +959,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setTelefon_required(boolean telefon_required) {
+    public void setTelefon_required(final boolean telefon_required) {
         this.telefon_required = telefon_required;
     }
 
@@ -971,7 +971,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setBenutzernr_required(boolean benutzernr_required) {
+    public void setBenutzernr_required(final boolean benutzernr_required) {
         this.benutzernr_required = benutzernr_required;
     }
 
@@ -983,7 +983,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption(boolean option) {
+    public void setOption(final boolean option) {
         this.option = option;
     }
 
@@ -995,7 +995,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption_name(String option_name) {
+    public void setOption_name(final String option_name) {
         this.option_name = option_name;
     }
 
@@ -1007,7 +1007,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption_comment(String option_comment) {
+    public void setOption_comment(final String option_comment) {
         this.option_comment = option_comment;
     }
 
@@ -1019,7 +1019,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption_linkout(String option_linkout) {
+    public void setOption_linkout(final String option_linkout) {
         this.option_linkout = option_linkout;
     }
 
@@ -1028,7 +1028,7 @@ public class BestellParam extends ValidatorForm {
         return option_linkoutname;
     }
 
-    public void setOption_linkoutname(String option_linkoutname) {
+    public void setOption_linkoutname(final String option_linkoutname) {
         this.option_linkoutname = option_linkoutname;
     }
 
@@ -1038,7 +1038,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption_value1(String option_value1) {
+    public void setOption_value1(final String option_value1) {
         this.option_value1 = option_value1;
     }
 
@@ -1050,7 +1050,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption_value2(String option_value2) {
+    public void setOption_value2(final String option_value2) {
         this.option_value2 = option_value2;
     }
 
@@ -1062,7 +1062,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setOption_value3(String option_value3) {
+    public void setOption_value3(final String option_value3) {
         this.option_value3 = option_value3;
     }
 
@@ -1074,7 +1074,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setGebuehren(boolean gebuehren) {
+    public void setGebuehren(final boolean gebuehren) {
         this.gebuehren = gebuehren;
     }
 
@@ -1086,7 +1086,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setLink_gebuehren(String link_gebuehren) {
+    public void setLink_gebuehren(final String link_gebuehren) {
         this.link_gebuehren = link_gebuehren;
     }
 
@@ -1098,7 +1098,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setAgb(boolean agb) {
+    public void setAgb(final boolean agb) {
         this.agb = agb;
     }
 
@@ -1110,7 +1110,7 @@ public class BestellParam extends ValidatorForm {
 
 
 
-    public void setLink_agb(String link_agb) {
+    public void setLink_agb(final String link_agb) {
         this.link_agb = link_agb;
     }
 
@@ -1118,7 +1118,7 @@ public class BestellParam extends ValidatorForm {
         return message;
     }
 
-    public void setMessage(Message message) {
+    public void setMessage(final Message message) {
         this.message = message;
     }
 
@@ -1126,7 +1126,7 @@ public class BestellParam extends ValidatorForm {
         return back;
     }
 
-    public void setBack(boolean back) {
+    public void setBack(final boolean back) {
         this.back = back;
     }
 
@@ -1134,13 +1134,9 @@ public class BestellParam extends ValidatorForm {
         return link_back;
     }
 
-    public void setLink_back(String link_back) {
+    public void setLink_back(final String link_back) {
         this.link_back = link_back;
     }
 
 
-
-
 }
-
-

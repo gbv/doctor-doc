@@ -47,18 +47,18 @@ public final class GetOpenUrlRequest extends Action {
     /**
      * empfängt OpenURL-Requests und stellt ein OrderForm her
      */
-    public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        Auth auth = new Auth();
+        final Auth auth = new Auth();
         String forward = "failure";
         OrderForm of = (OrderForm) form;
-        BestellformAction bestellFormActionInstance = new BestellformAction();
+        final BestellformAction bfInstance = new BestellformAction();
         of.setResolver(true); // markiert, dass Angaben bereits aufgelöst wurden
-        ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-        OpenUrl openUrlInstance = new OpenUrl();
+        final ConvertOpenUrl ouInstance = new ConvertOpenUrl();
+        final OpenUrl openUrlInstance = new OpenUrl();
 
-        String query = rq.getQueryString();
+        final String query = rq.getQueryString();
 
         try {
 
@@ -67,7 +67,7 @@ public final class GetOpenUrlRequest extends Action {
             // 2. IP-basiert
             // 3. Broker-Kennung (z.B. Careum Explorer)
 
-            Text requester = auth.grantAccess(rq);
+            final Text requester = auth.grantAccess(rq);
 
             // Nicht eingeloggt. IP-basiert, Kontokennung oder Brokerkennung
             if (requester != null && requester.getInhalt() != null) {
@@ -82,47 +82,47 @@ public final class GetOpenUrlRequest extends Action {
                     String pmid = "";
                     if (query.contains("sid=Entrez:PubMed&id=pmid:")) {
                         pmid = query.substring(query.indexOf("sid=Entrez:PubMed&id=pmid:"));
-                        of = bestellFormActionInstance.resolvePmid(bestellFormActionInstance.extractPmid(pmid));
+                        of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
                         of.setRfr_id("Entrez:PubMed");
                     }
                     if (query.contains("sid=google&id=pmid:")) {
                         pmid = query.substring(query.indexOf("sid=google&id=pmid:"));
-                        of = bestellFormActionInstance.resolvePmid(bestellFormActionInstance.extractPmid(pmid));
+                        of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
                         of.setRfr_id("Google Scholar");
                     }
 
                 } else { // Übergabe aus Linkresolver
                     if (query != null) {
-                        ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
-                        of = convertOpenUrlInstance.makeOrderform(co);
+                        final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
+                        of = ouInstance.makeOrderform(co);
                         // nur bei Übergabe über OpenURL Rfr_id abfüllen. Nicht bei WorldCat!
                         // Deshalb hier nachträglich...
                         if (co.getRfr_id() != null && !co.getRfr_id().equals("")) { of.setRfr_id(co.getRfr_id()); }
 
                         // Falls Doi vorhanden aber wichtige Angaben fehlen...
                         if (of.getDoi() != null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")
-                                && bestellFormActionInstance.areArticleValuesMissing(of)) {
+                                && bfInstance.areArticleValuesMissing(of)) {
 
                             OrderForm ofDoi = new OrderForm();
-                            ofDoi = bestellFormActionInstance.resolveDoi(bestellFormActionInstance.extractDoi(of
+                            ofDoi = bfInstance.resolveDoi(bfInstance.extractDoi(of
                                     .getDoi()));
-                            if (of.getIssn().equals("") && !ofDoi.getIssn().equals("")) { of.setIssn(ofDoi.getIssn()); }
-                            if (of.getZeitschriftentitel().equals("") && !ofDoi.getZeitschriftentitel().equals("")) {
+                            if ("".equals(of.getIssn()) && !"".equals(ofDoi.getIssn())) { of.setIssn(ofDoi.getIssn()); }
+                            if ("".equals(of.getZeitschriftentitel()) && !"".equals(ofDoi.getZeitschriftentitel())) {
                                 of.setZeitschriftentitel(ofDoi.getZeitschriftentitel());
                             }
-                            if (of.getJahr().equals("") && !ofDoi.getJahr().equals("")) {
+                            if ("".equals(of.getJahr()) && !"".equals(ofDoi.getJahr())) {
                                 of.setJahr(ofDoi.getJahr());
                             }
-                            if (of.getJahrgang().equals("") && !ofDoi.getJahrgang().equals("")) {
+                            if ("".equals(of.getJahrgang()) && !"".equals(ofDoi.getJahrgang())) {
                                 of.setJahrgang(ofDoi.getJahrgang());
                             }
-                            if (of.getHeft().equals("") && !ofDoi.getHeft().equals("")) {
+                            if ("".equals(of.getHeft()) && !"".equals(ofDoi.getHeft())) {
                                 of.setHeft(ofDoi.getHeft());
                             }
-                            if (of.getSeiten().equals("") && !ofDoi.getSeiten().equals("")) {
+                            if ("".equals(of.getSeiten()) && !"".equals(ofDoi.getSeiten())) {
                                 of.setSeiten(ofDoi.getSeiten());
                             }
-                            if (of.getAuthor().equals("") && !ofDoi.getAuthor().equals("")) {
+                            if ("".equals(of.getAuthor()) && !"".equals(ofDoi.getAuthor())) {
                                 of.setAuthor(ofDoi.getAuthor());
                             }
 
@@ -132,13 +132,13 @@ public final class GetOpenUrlRequest extends Action {
                 }
 
                 if (of.getDeloptions() == null || // Defaultwert deloptions
-                        (!of.getDeloptions().equals("post") && !of.getDeloptions().equals("fax to pdf")
-                                && !of.getDeloptions().equals("urgent"))) {
+                        (!"post".equals(of.getDeloptions()) && !"fax to pdf".equals(of.getDeloptions())
+                                && !"urgent".equals(of.getDeloptions()))) {
                     of.setDeloptions("fax to pdf");
                 }
 
                 // Cookie auslesen
-                Cookie[] cookies = rq.getCookies();
+                final Cookie[] cookies = rq.getCookies();
 
                 if (cookies == null) {
                     LOG.ludicrous("Kein Cookie gesetzt!");
@@ -146,7 +146,7 @@ public final class GetOpenUrlRequest extends Action {
 
                     for (int i = 0; i < cookies.length; i++) {
 
-                        if (cookies[i].getName() != null && cookies[i].getName().equals("doctordoc-bestellform")) {
+                        if (cookies[i].getName() != null && "doctordoc-bestellform".equals(cookies[i].getName())) {
                             String cookietext = cookies[i].getValue();
                             if (cookietext != null && cookietext.contains("---")) {
                                 try {
@@ -155,7 +155,7 @@ public final class GetOpenUrlRequest extends Action {
                                     of.setKundenname(cookietext.substring(0, cookietext.indexOf("---")));
                                     cookietext = cookietext.substring(cookietext.indexOf("---") + 3);
                                     of.setKundenmail(cookietext);
-                                } catch (Exception e) { //
+                                } catch (final Exception e) { //
                                     LOG.error("Fehler beim Cookie auslesen!: " + e.toString());
                                     System.out.println("Fehler beim Cookie auslesen!: " + e.toString());
                                 }
@@ -165,7 +165,7 @@ public final class GetOpenUrlRequest extends Action {
                     }
                 }
 
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
                 rq.setAttribute("ActiveMenus", mf);
 
@@ -175,7 +175,7 @@ public final class GetOpenUrlRequest extends Action {
                 if (auth.isLogin(rq)) {
 
                     forward = "success";
-                    UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                     // Übergabe direkt von Pubmed...
                     if (query != null && (query.contains("sid=Entrez:PubMed&id=pmid:")
@@ -183,19 +183,19 @@ public final class GetOpenUrlRequest extends Action {
                         String pmid = "";
                         if (query.contains("sid=Entrez:PubMed&id=pmid:")) {
                             pmid = query.substring(query.indexOf("sid=Entrez:PubMed&id=pmid:"));
-                            of = bestellFormActionInstance.resolvePmid(bestellFormActionInstance.extractPmid(pmid));
+                            of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
                             of.setRfr_id("Entrez:PubMed");
                         }
                         if (query.contains("sid=google&id=pmid:")) {
                             pmid = query.substring(query.indexOf("sid=google&id=pmid:"));
-                            of = bestellFormActionInstance.resolvePmid(bestellFormActionInstance.extractPmid(pmid));
+                            of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
                             of.setRfr_id("Google Scholar");
                         }
 
                     } else { // Übergabe aus Linkresolver
                         if (query != null) {
-                            ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
-                            of = convertOpenUrlInstance.makeOrderform(co);
+                            final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
+                            of = ouInstance.makeOrderform(co);
                             // nur bei Übergabe über OpenURL Rfr_id abfüllen.
                             // Nicht bei WorldCat! Deshalb hier nachträglich...
                             if (co.getRfr_id() != null && !co.getRfr_id().equals("")) { of.setRfr_id(co.getRfr_id()); }
@@ -203,10 +203,10 @@ public final class GetOpenUrlRequest extends Action {
                             // Falls Doi vorhanden aber wichtige Angaben fehlen...
                             if (of.getDoi() != null && !of.getDoi().equals("")
                                     && of.getMediatype().equals("Artikel")
-                                    && bestellFormActionInstance.areArticleValuesMissing(of)) {
+                                    && bfInstance.areArticleValuesMissing(of)) {
 
                                 OrderForm ofDoi = new OrderForm();
-                                ofDoi = bestellFormActionInstance.resolveDoi(bestellFormActionInstance.extractDoi(of
+                                ofDoi = bfInstance.resolveDoi(bfInstance.extractDoi(of
                                         .getDoi()));
                                 if (of.getIssn().equals("") && !ofDoi.getIssn().equals("")) {
                                     of.setIssn(ofDoi.getIssn());
@@ -246,22 +246,22 @@ public final class GetOpenUrlRequest extends Action {
                     of.setKundenname(ui.getBenutzer().getName());
                     of.setKundenmail(ui.getBenutzer().getEmail());
 
-                    ActiveMenusForm mf = new ActiveMenusForm();
+                    final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
                     rq.setAttribute("ActiveMenus", mf);
 
 
                 } else {
-                    ErrorMessage em = new ErrorMessage("error.ip", "login.do");
+                    final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
                     rq.setAttribute("errormessage", em);
-                    ActiveMenusForm mf = new ActiveMenusForm();
+                    final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("bestellform");
                     rq.setAttribute("ActiveMenus", mf);
                 }
             }
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("execute: " + query + "\040" + e.toString());
         }
 

@@ -32,29 +32,29 @@ import ch.dbs.form.OrderForm;
 public final class PrepareLoginAction extends Action {
 
 
-    public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-      LoginForm lf = (LoginForm) form;
-      OrderForm pageForm = new OrderForm(lf);
-      String forward = "failure";
-      Auth auth = new Auth();
+        final LoginForm lf = (LoginForm) form;
+        final OrderForm pageForm = new OrderForm(lf);
+        String forward = "failure";
+        final Auth auth = new Auth();
 
-      if (auth.isLogin(rq)) {
-      // bereits eingeloggt => direkt zu den Verfügbarkeits-Prüfungen
-        forward = "checkavailability";
-        pageForm.setResolver(true); // verhindet, dass beim Sprachwechsel Bestellangaben verloren gehen
-        rq.setAttribute("orderform", pageForm);
+        if (auth.isLogin(rq)) {
+            // bereits eingeloggt => direkt zu den Verfügbarkeits-Prüfungen
+            forward = "checkavailability";
+            pageForm.setResolver(true); // verhindet, dass beim Sprachwechsel Bestellangaben verloren gehen
+            rq.setAttribute("orderform", pageForm);
 
-      } else {
-      // nicht eingeloggt => zu LoginAction
-        forward = "success";
-        rq.setAttribute("loginform", lf);
-        pageForm.setResolver(true); // verhindet, dass beim Sprachwechsel Bestellangaben verloren gehen
-        rq.setAttribute("orderform", pageForm);
-      }
+        } else {
+            // nicht eingeloggt => zu LoginAction
+            forward = "success";
+            rq.setAttribute("loginform", lf);
+            pageForm.setResolver(true); // verhindet, dass beim Sprachwechsel Bestellangaben verloren gehen
+            rq.setAttribute("orderform", pageForm);
+        }
 
-      return mp.findForward(forward);
+        return mp.findForward(forward);
 
     }
 

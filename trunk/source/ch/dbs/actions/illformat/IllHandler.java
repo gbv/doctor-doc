@@ -55,15 +55,15 @@ public class IllHandler {
      *
      * @author Markus Fischer
      */
-    public String sendIllRequest(IllForm ill, String baseurl) {
+    public String sendIllRequest(final IllForm ill, final String baseurl) {
         String content = "";
 
-        Http http = new Http();
+        final Http http = new Http();
 
         // falls ein Wert unvermittelt null ist wird ein Leerstring verwendet, um in jedem Fall sicherzustellen,
         // dass die Methode nicht kracht
 
-        PostMethod method = new PostMethod(baseurl);
+        final PostMethod method = new PostMethod(baseurl);
         if (ill.getMessage_type() != null) {
             method.addParameter("message-type", ill.getMessage_type());
         } else {
@@ -321,22 +321,22 @@ public class IllHandler {
      * @return IllForm gbv
      *
      */
-    public IllForm prepareGbvIllRequest(OrderForm of, Konto k, UserInfo ui) {
+    public IllForm prepareGbvIllRequest(final OrderForm of, final Konto k, final UserInfo ui) {
 
-        IllForm gbv = new IllForm();
+        final IllForm gbv = new IllForm();
 
         try {
 
-            ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyyMMddHHmmss");
-            Calendar calendar = new GregorianCalendar();
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyyMMddHHmmss");
+            final Calendar calendar = new GregorianCalendar();
             Date d = calendar.getTime();
-            String datum = fmt.format(d, k.getTimezone());
+            final String datum = fmt.format(d, k.getTimezone());
             //        System.out.println("Bestelldatum: " + datum);
 
-            ThreadSafeSimpleDateFormat ft = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
+            final ThreadSafeSimpleDateFormat ft = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
             calendar.add(Calendar.MONTH, +1);
             d = calendar.getTime();
-            String dateTo = ft.format(d, k.getTimezone());
+            final String dateTo = ft.format(d, k.getTimezone());
             //        System.out.println("Expiry: " + date_to);
 
             String deloptions = "POST"; // default
@@ -414,7 +414,7 @@ public class IllHandler {
             gbv.setItem_iSSN(of.getIssn());
             gbv.setItem_iSBN(of.getIsbn());
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("IllHandler - prepareGbvIllRequest: " + e.toString());
         }
 
@@ -429,7 +429,7 @@ public class IllHandler {
      * @return String gbvanswer
      *
      */
-    public String readGbvIllAnswer(String content) {
+    public String readGbvIllAnswer(final String content) {
         String gbvanswer = "Fehlende GBV-Antwort!"; // darf nicht null sein, da sonst jsp Anzeige nicht funzt!
 
         if (content == null) { return gbvanswer; }
@@ -448,7 +448,7 @@ public class IllHandler {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("IllHandler - readGbvIllAnswer: " + "\012" + content);
             // darf, nicht null sein! Hier ist grundsätzlich etwas fehlgeschlagen
             gbvanswer = "Fehler im Bestellablauf!";
@@ -465,8 +465,8 @@ public class IllHandler {
      * @return String gbvanswer
      *
      */
-    public IllForm readIllRequest(HttpServletRequest rq) {
-        IllForm ill = new IllForm();
+    public IllForm readIllRequest(final HttpServletRequest rq) {
+        final IllForm ill = new IllForm();
 
         try {
 
@@ -532,7 +532,7 @@ public class IllHandler {
             ill.setResponder_note(rq.getParameter("responder-note"));
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("IllHandler - readIllRequest(rq): " + e.toString());
         }
 
@@ -546,10 +546,10 @@ public class IllHandler {
      * @return String returnvalue
      *
      */
-    public String updateOrderState(IllForm ill, Connection cn) {
+    public String updateOrderState(final IllForm ill, final Connection cn) {
 
         String returnvalue = "ERROR";
-        OrderState orderstate = new OrderState();
+        final OrderState orderstate = new OrderState();
 
         try {
 
@@ -559,7 +559,7 @@ public class IllHandler {
             if (ill.getMessage_type().equals("SHIPPED")) {
                 returnvalue = "OK"; // wird immer mit OK quittiert, unabhängig, ob unten eine Bestellung gefunden wird
                 // hier wird versucht die Bestellung anhand der Trackinnr und der Gbvnr zu holens
-                Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(), ill
+                final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(), ill
                         .getTransaction_sub_transaction_qualifier());
                 if (b.getId() != null) {
 
@@ -572,9 +572,9 @@ public class IllHandler {
                         + ":" + date.substring(10, 12) + ":" + date.substring(12, 14);
                         //               System.out.println("Status-Datum: " + date);
                     } else { // ill enthält kein gültiges Datum
-                        ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Calendar calendar = new GregorianCalendar();
-                        Date d = calendar.getTime();
+                        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        final Calendar calendar = new GregorianCalendar();
+                        final Date d = calendar.getTime();
                         date = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
                         //                System.out.println("Status-Datum: " + date);
                     }
@@ -592,7 +592,7 @@ public class IllHandler {
             if (ill.getMessage_type().equals("ANSWER")) {
                 returnvalue = "OK";
                 // hier wird versucht die Bestellung anhand der Trackinnr und der Gbvnr zu holens
-                Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(), ill
+                final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(), ill
                         .getTransaction_sub_transaction_qualifier());
                 if (b.getId() != null) {
 
@@ -605,9 +605,9 @@ public class IllHandler {
                         + ":" + date.substring(10, 12) + ":" + date.substring(12, 14);
                         //               System.out.println("Status-Datum: " + date);
                     } else { // ill enthält kein gültiges Datum
-                        ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Calendar calendar = new GregorianCalendar();
-                        Date d = calendar.getTime();
+                        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        final Calendar calendar = new GregorianCalendar();
+                        final Date d = calendar.getTime();
                         date = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
                         //                System.out.println("Status-Datum: " + date);
                     }
@@ -628,7 +628,7 @@ public class IllHandler {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("IllHandler - updateOrderState:" + e.toString());
         }
 
@@ -642,7 +642,7 @@ public class IllHandler {
      * @return String sigel
      *
      */
-    private String isilToSigel(String isil) {
+    private String isilToSigel(final String isil) {
         String sigel = isil;
 
         try {
@@ -651,7 +651,7 @@ public class IllHandler {
                 sigel = sigel.substring(3); // entfernt deutschen Länderpräfix für GBV
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("IllHandler - isilToSigel: " + isil + "\040" + e.toString());
         }
 
@@ -665,7 +665,7 @@ public class IllHandler {
      * @return String fax
      *
      */
-    private String correctFaxnumber(String faxnumber) {
+    private String correctFaxnumber(final String faxnumber) {
         String fax = faxnumber;
 
         try {
@@ -674,7 +674,7 @@ public class IllHandler {
                 fax = "00" + fax.substring(1);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("correctFaxnumber: " + faxnumber + "\040" + e.toString());
         }
 

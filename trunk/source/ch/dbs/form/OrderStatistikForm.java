@@ -25,8 +25,8 @@ import org.apache.struts.validator.ValidatorForm;
 
 public final class OrderStatistikForm extends ValidatorForm {
 
-  private static final long serialVersionUID = 1L;
-  private List<OrderStatistikForm> auflistung;
+    private static final long serialVersionUID = 1L;
+    private List<OrderStatistikForm> auflistung;
     private ArrayList<OrderStatistikForm> statistik;
     private PreisWaehrungForm preiswaehrung;
     private String label;
@@ -39,115 +39,111 @@ public final class OrderStatistikForm extends ValidatorForm {
     private int total_two;
     private String konto;
 
-    public OrderStatistikForm() {
 
+    public ArrayList<OrderStatistikForm> getStatistik() {
+        return statistik;
     }
 
 
-  public ArrayList<OrderStatistikForm> getStatistik() {
-    return statistik;
-  }
+    public void setStatistik(final ArrayList<OrderStatistikForm> statistik) {
+        this.statistik = statistik;
+    }
+
+    public PreisWaehrungForm getPreiswaehrung() {
+        return preiswaehrung;
+    }
 
 
-  public void setStatistik(ArrayList<OrderStatistikForm> statistik) {
-    this.statistik = statistik;
-  }
-
-  public PreisWaehrungForm getPreiswaehrung() {
-    return preiswaehrung;
-  }
+    public void setPreiswaehrung(final PreisWaehrungForm preiswaehrung) {
+        this.preiswaehrung = preiswaehrung;
+    }
 
 
-  public void setPreiswaehrung(PreisWaehrungForm preiswaehrung) {
-    this.preiswaehrung = preiswaehrung;
-  }
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(final String label) {
+        this.label = label;
+    }
+
+    public String getLabel_two() {
+        return label_two;
+    }
 
 
-  public String getLabel() {
-    return label;
-  }
+    public void setLabel_two(final String label_two) {
+        this.label_two = label_two;
+    }
 
-  public void setLabel(String label) {
-    this.label = label;
-  }
+    public int getAnzahl() {
+        return anzahl;
+    }
 
-  public String getLabel_two() {
-    return label_two;
-  }
+    public void setAnzahl(final int anzahl) {
+        this.anzahl = anzahl;
+    }
 
+    public List<OrderStatistikForm> getAuflistung() {
+        return auflistung;
+    }
 
-  public void setLabel_two(String label_two) {
-    this.label_two = label_two;
-  }
+    public void setAuflistung(final List<OrderStatistikForm> auflistung) {
+        this.auflistung = auflistung;
+    }
 
-  public int getAnzahl() {
-    return anzahl;
-  }
+    public String getKonto() {
+        return konto;
+    }
 
-  public void setAnzahl(int anzahl) {
-    this.anzahl = anzahl;
-  }
+    public void setKonto(final String kono) {
+        this.konto = kono;
+    }
 
-  public List<OrderStatistikForm> getAuflistung() {
-    return auflistung;
-  }
+    public int getTotal() {
+        return total;
+    }
 
-  public void setAuflistung(List<OrderStatistikForm> auflistung) {
-    this.auflistung = auflistung;
-  }
+    public void setTotal(final int total) {
+        this.total = total;
+    }
 
-  public String getKonto() {
-    return konto;
-  }
-
-  public void setKonto(String kono) {
-    this.konto = kono;
-  }
-
-  public int getTotal() {
-    return total;
-  }
-
-  public void setTotal(int total) {
-    this.total = total;
-  }
-
-  public String getPreis() {
-    return preis;
-  }
+    public String getPreis() {
+        return preis;
+    }
 
 
-  public void setPreis(String preis) {
-    this.preis = preis;
-  }
+    public void setPreis(final String preis) {
+        this.preis = preis;
+    }
 
 
-  public String getPreis_two() {
-    return preis_two;
-  }
+    public String getPreis_two() {
+        return preis_two;
+    }
 
 
-  public void setPreis_two(String preis_two) {
-    this.preis_two = preis_two;
-  }
+    public void setPreis_two(final String preis_two) {
+        this.preis_two = preis_two;
+    }
 
 
-  public int getAnzahl_two() {
-    return anzahl_two;
-  }
+    public int getAnzahl_two() {
+        return anzahl_two;
+    }
 
 
-  public void setAnzahl_two(int anzahl_two) {
-    this.anzahl_two = anzahl_two;
-  }
+    public void setAnzahl_two(final int anzahl_two) {
+        this.anzahl_two = anzahl_two;
+    }
 
-  public int getTotal_two() {
-    return total_two;
-  }
+    public int getTotal_two() {
+        return total_two;
+    }
 
 
-  public void setTotal_two(int total_two) {
-    this.total_two = total_two;
-  }
+    public void setTotal_two(final int total_two) {
+        this.total_two = total_two;
+    }
 
 }

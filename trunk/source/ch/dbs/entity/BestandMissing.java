@@ -54,7 +54,7 @@ public class BestandMissing extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public BestandMissing(Connection cn, ResultSet rs) {
+    public BestandMissing(final Connection cn, final ResultSet rs) {
 
         try {
 
@@ -69,7 +69,7 @@ public class BestandMissing extends AbstractIdEntity {
             this.setSuppl(rs.getInt("suppl"));
             this.setBemerkungen(rs.getString("bemerkungen"));
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("BestandMissing (Connection cn, ResultSet rs)" + e.toString());
         }
     }
@@ -77,7 +77,7 @@ public class BestandMissing extends AbstractIdEntity {
     /*
      * Setzt die Werte im Preparestatement der Methoden save()
      */
-    private PreparedStatement setBestandMissingValues(PreparedStatement pstmt, BestandMissing be, Connection cn)
+    private PreparedStatement setBestandMissingValues(final PreparedStatement pstmt, final BestandMissing be, final Connection cn)
     throws Exception {
 
         pstmt.setLong(1, be.getBestand().getId());
@@ -99,7 +99,7 @@ public class BestandMissing extends AbstractIdEntity {
      * @param BestandMissing bm
      * @param Connection cn
      */
-    public void save(BestandMissing bm, Connection cn) {
+    public void save(final BestandMissing bm, final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -109,14 +109,14 @@ public class BestandMissing extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(BestandMissing bm, Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -128,7 +128,7 @@ public class BestandMissing extends AbstractIdEntity {
         return bestand;
     }
 
-    public void setBestand(Bestand bestand) {
+    public void setBestand(final Bestand bestand) {
         this.bestand = bestand;
     }
 
@@ -136,7 +136,7 @@ public class BestandMissing extends AbstractIdEntity {
         return startvolume;
     }
 
-    public void setStartvolume(String startvolume) {
+    public void setStartvolume(final String startvolume) {
         this.startvolume = startvolume;
     }
 
@@ -144,7 +144,7 @@ public class BestandMissing extends AbstractIdEntity {
         return startissue;
     }
 
-    public void setStartissue(String startissue) {
+    public void setStartissue(final String startissue) {
         this.startissue = startissue;
     }
 
@@ -152,7 +152,7 @@ public class BestandMissing extends AbstractIdEntity {
         return startyear;
     }
 
-    public void setStartyear(String startyear) {
+    public void setStartyear(final String startyear) {
         this.startyear = startyear;
     }
 
@@ -160,7 +160,7 @@ public class BestandMissing extends AbstractIdEntity {
         return endyear;
     }
 
-    public void setEndyear(String endyear) {
+    public void setEndyear(final String endyear) {
         this.endyear = endyear;
     }
 
@@ -168,7 +168,7 @@ public class BestandMissing extends AbstractIdEntity {
         return endvolume;
     }
 
-    public void setEndvolume(String endvolume) {
+    public void setEndvolume(final String endvolume) {
         this.endvolume = endvolume;
     }
 
@@ -176,7 +176,7 @@ public class BestandMissing extends AbstractIdEntity {
         return endissue;
     }
 
-    public void setEndissue(String endissue) {
+    public void setEndissue(final String endissue) {
         this.endissue = endissue;
     }
 
@@ -184,7 +184,7 @@ public class BestandMissing extends AbstractIdEntity {
         return suppl;
     }
 
-    public void setSuppl(int suppl) {
+    public void setSuppl(final int suppl) {
         this.suppl = suppl;
     }
 
@@ -192,12 +192,9 @@ public class BestandMissing extends AbstractIdEntity {
         return bemerkungen;
     }
 
-    public void setBemerkungen(String bemerkungen) {
+    public void setBemerkungen(final String bemerkungen) {
         this.bemerkungen = bemerkungen;
     }
 
 
-
 }
-
-

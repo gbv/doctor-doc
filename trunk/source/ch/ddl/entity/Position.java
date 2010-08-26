@@ -46,7 +46,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
     private String priority = ""; // Normal, Express
     private String deloptions = ""; // Online, Email, Postweg, Fax, Fax to PDF
     private String fileformat = ""; // HTML, PDF, Papierkopie,...
-    private Date orderdate = null; // Datum der Bestellung
+    private Date orderdate; // Datum der Bestellung
 
     // Produktinfos
     private String mediatype = ""; // Artikel, Teilkopie Buch oder Buch
@@ -71,12 +71,12 @@ public class Position extends AbstractIdEntity implements OrderHandler {
 
     public Position() { }
 
-    public Position(AbstractBenutzer user, Konto k) {
+    public Position(final AbstractBenutzer user, final Konto k) {
         this.setBenutzer(user);
         this.setKonto(k);
     }
 
-    public Position(Long id, Connection cn) {
+    public Position(final Long id, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -98,14 +98,14 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    System.out.println(e);
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
                 } catch (SQLException e) {
-                    System.out.println(e);
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -118,7 +118,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
      * @param cn
      * @author Pascal Steiner
      */
-    public void save(Connection cn) {
+    public void save(final Connection cn) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -140,14 +140,14 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    System.out.println(e);
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
                 } catch (SQLException e) {
-                    System.out.println(e);
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -158,7 +158,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
      * @param cn
      * @author Pascal Steiner
      */
-    public void update(Connection cn) {
+    public void update(final Connection cn) {
 
         PreparedStatement pstmt = null;
 
@@ -177,7 +177,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 try {
                     pstmt.close();
                 } catch (SQLException e) {
-                    System.out.println(e);
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -189,7 +189,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
      * @return Rückmeldung o das Objekt gelöscht werden konnte
      * @author Pascal Steiner
      */
-    public boolean deleteSelf(Connection cn) {
+    public boolean deleteSelf(final Connection cn) {
 
         boolean success = false;
         PreparedStatement pstmt = null;
@@ -207,7 +207,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 try {
                     pstmt.close();
                 } catch (SQLException e) {
-                    System.out.println(e);
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -220,11 +220,11 @@ public class Position extends AbstractIdEntity implements OrderHandler {
      * @param rs
      * @author Pascal Steiner
      */
-    private void getPositionen(ResultSet rs) {
+    private void getPositionen(final ResultSet rs) {
         try {
             this.setId(rs.getLong("pid"));
             // Benutzer abfüllen
-            AbstractBenutzer b = new AbstractBenutzer();
+            final AbstractBenutzer b = new AbstractBenutzer();
             try {
                 rs.findColumn("vorname");
                 this.setBenutzer(b.getUser(rs));
@@ -307,7 +307,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return benutzer;
     }
 
-    public void setBenutzer(AbstractBenutzer benutzer) {
+    public void setBenutzer(final AbstractBenutzer benutzer) {
         this.benutzer = benutzer;
     }
 
@@ -315,7 +315,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -323,7 +323,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(final String priority) {
         this.priority = priority;
     }
 
@@ -331,7 +331,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return deloptions;
     }
 
-    public void setDeloptions(String deloptions) {
+    public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
@@ -339,7 +339,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return fileformat;
     }
 
-    public void setFileformat(String fileformat) {
+    public void setFileformat(final String fileformat) {
         this.fileformat = fileformat;
     }
 

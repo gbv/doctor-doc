@@ -48,15 +48,17 @@ public class OrderState extends AbstractIdEntity {
     private String bearbeiter;
 
 
-    public OrderState() { }
+    public OrderState() {
 
-    public OrderState(AbstractBenutzer user, Konto k) {
+    }
+
+    public OrderState(final AbstractBenutzer user, final Konto k) {
 
     }
 
     // History Bestellungen eröffnen, Status, Statusdatum sowie Bestelldatum eintragen
-    public void setNewOrderState(Bestellungen b, Konto k, Text t, String bemerk, String bearb,
-            Connection cn) {
+    public void setNewOrderState(final Bestellungen b, final Konto k, final Text t, final String bemerk, final String bearb,
+            final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -68,9 +70,9 @@ public class OrderState extends AbstractIdEntity {
             pstmt.setString(3, bemerk);
             pstmt.setString(4, bearb);
 
-            Date dt = new Date();
-            ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String datum = sdf.format(dt, k.getTimezone());
+            final Date dt = new Date();
+            final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String datum = sdf.format(dt, k.getTimezone());
 
             pstmt.setString(5, datum);
 
@@ -86,22 +88,22 @@ public class OrderState extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("setNewOrderState(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
     }
 
     // History Bestellungen eröffnen, Status, Statusdatum (now) sowie Bestelldatum eintragen
-    public void changeOrderState(Bestellungen b, String timezone, Text t, String bemerk, String bearb,
-            Connection cn) {
+    public void changeOrderState(final Bestellungen b, final String timezone, final Text t, final String bemerk, final String bearb,
+            final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -112,9 +114,9 @@ public class OrderState extends AbstractIdEntity {
             pstmt.setString(3, bemerk);
             pstmt.setString(4, bearb);
 
-            Date dt = new Date();
-            ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String datum = sdf.format(dt, timezone);
+            final Date dt = new Date();
+            final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String datum = sdf.format(dt, timezone);
 
             pstmt.setString(5, datum);
 
@@ -128,21 +130,21 @@ public class OrderState extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("changeOrderState(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
     }
 
-    public List<OrderState> getOrderState(Bestellungen b, Connection cn) {
-        ArrayList<OrderState> sl = new ArrayList<OrderState>();
+    public List<OrderState> getOrderState(final Bestellungen b, final Connection cn) {
+        final ArrayList<OrderState> sl = new ArrayList<OrderState>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -161,21 +163,21 @@ public class OrderState extends AbstractIdEntity {
                 sl.add(bs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getOrderState(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -183,8 +185,8 @@ public class OrderState extends AbstractIdEntity {
     }
 
     // History der Bestellungen, Status, Statusdatum (aktuelles) sowie Bestelldatum eintragen
-    public void updateOrderState(Bestellungen b, Text t, String bemerk, String bearb, String datum,
-            Connection cn) {
+    public void updateOrderState(final Bestellungen b, final Text t, final String bemerk, final String bearb, final String datum,
+            final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -207,14 +209,14 @@ public class OrderState extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("updateOrderState(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -226,13 +228,13 @@ public class OrderState extends AbstractIdEntity {
      * @param OrderState bs
      * @return true/false
      */
-    private boolean checkAnonymizeOrderState(OrderState bs) {
+    private boolean checkAnonymizeOrderState(final OrderState bs) {
         boolean check = false;
-        Bestellungen b = new Bestellungen();
+        final Bestellungen b = new Bestellungen();
 
         if (bs.getBearbeiter() != null && ReadSystemConfigurations.isAnonymizationActivated()) {
-            Calendar cal = b.stringFromMysqlToCal(bs.getDate());
-            Calendar limit = Calendar.getInstance();
+            final Calendar cal = b.stringFromMysqlToCal(bs.getDate());
+            final Calendar limit = Calendar.getInstance();
             limit.setTimeZone(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
             limit.add(Calendar.MONTH, -ReadSystemConfigurations.getAnonymizationAfterMonths());
             limit.add(Calendar.DAY_OF_MONTH, -1);
@@ -250,7 +252,7 @@ public class OrderState extends AbstractIdEntity {
      * @param OrderState bs
      * @return OrderState bs
      */
-    private OrderState anonymizeOrderState(OrderState bs) {
+    private OrderState anonymizeOrderState(final OrderState bs) {
 
         if (bs.getBearbeiter() != null && ReadSystemConfigurations.isAnonymizationActivated()) {
             bs.setBearbeiter("anonymized");
@@ -265,7 +267,7 @@ public class OrderState extends AbstractIdEntity {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(final String date) {
         this.date = date;
     }
 
@@ -273,7 +275,7 @@ public class OrderState extends AbstractIdEntity {
         return orderstate;
     }
 
-    public void setOrderstate(String orderstate) {
+    public void setOrderstate(final String orderstate) {
         this.orderstate = orderstate;
     }
 
@@ -281,7 +283,7 @@ public class OrderState extends AbstractIdEntity {
         return bearbeiter;
     }
 
-    public void setBearbeiter(String bearbeiter) {
+    public void setBearbeiter(final String bearbeiter) {
         this.bearbeiter = bearbeiter;
     }
 
@@ -289,11 +291,9 @@ public class OrderState extends AbstractIdEntity {
         return bemerkungen;
     }
 
-    public void setBemerkungen(String bemerkungen) {
+    public void setBemerkungen(final String bemerkungen) {
         this.bemerkungen = bemerkungen;
     }
-
-
 
 
 }

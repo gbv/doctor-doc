@@ -41,29 +41,29 @@ import ch.dbs.form.Message;
  */
 public final class PopFax extends Action {
 
-  /**
-   * Ceckt für alle Kontos welche Popfax aboniert haben, ob ein neuer Fax eingetroffen ist.
-   * Der Fax wird dann per Mail an die im Konto konfigurierte Adresse gesendet.
-   */
-  public ActionForward execute(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    /**
+     * Ceckt für alle Kontos welche Popfax aboniert haben, ob ein neuer Fax eingetroffen ist.
+     * Der Fax wird dann per Mail an die im Konto konfigurierte Adresse gesendet.
+     */
+    public ActionForward execute(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-    Konto kto = new Konto();
-    List<Konto> kontos = kto.getFaxserverKontos();
-      FaxHelper fh = new FaxHelper();
-      for (Konto k : kontos) {
-//        System.out.println("Zur zeit wird dieses Konto bearbeitet: " + k.getBibliotheksname());
-        fh.retrieveIncomingFaxList(k);
-      }
-      // Verhindert endlose Fehlermeldungen in catalina.out
-      ActiveMenusForm mf = new ActiveMenusForm();
+        final Konto kto = new Konto();
+        final List<Konto> kontos = kto.getFaxserverKontos();
+        final FaxHelper fh = new FaxHelper();
+        for (final Konto k : kontos) {
+            //        System.out.println("Zur zeit wird dieses Konto bearbeitet: " + k.getBibliotheksname());
+            fh.retrieveIncomingFaxList(k);
+        }
+        // Verhindert endlose Fehlermeldungen in catalina.out
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("login");
         rq.setAttribute("ActiveMenus", mf);
 
-      Message msg = new Message("success.heading");
-      rq.setAttribute("message", msg);
+        final Message msg = new Message("success.heading");
+        rq.setAttribute("message", msg);
 
-      return mp.findForward("success");
+        return mp.findForward("success");
     }
 
 

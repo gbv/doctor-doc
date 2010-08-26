@@ -45,18 +45,15 @@ public class Countries extends AbstractIdEntity {
     private String phoneprefix;
 
 
-    public Countries() {
-
-    }
 
     /**
      * Listet alle aktivierten Länder auf (in DB mit locale 'de' versehen)
      * <p></p>
      * @return a {@link Countries}
      */
-    public List<Countries> getAllActivatedCountries(Connection cn) {
+    public List<Countries> getAllActivatedCountries(final Connection cn) {
 
-        ArrayList<Countries> cl = new ArrayList<Countries>();
+        final ArrayList<Countries> cl = new ArrayList<Countries>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -67,21 +64,21 @@ public class Countries extends AbstractIdEntity {
                 cl.add(getCountries(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllActivatedCountries: " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -92,8 +89,8 @@ public class Countries extends AbstractIdEntity {
     /*
      * Füllt ein Countries-Objekt mit einer Zeile aus der Datenbank
      */
-    private Countries getCountries(ResultSet rs) throws Exception {
-        Countries country = new Countries();
+    private Countries getCountries(final ResultSet rs) throws Exception {
+        final Countries country = new Countries();
         country.setRowid(rs.getString("rowId"));
         country.setCountryid(rs.getString("countryId"));
         country.setLocale(rs.getString("locale"));
@@ -108,41 +105,39 @@ public class Countries extends AbstractIdEntity {
     public String getCountrycode() {
         return countrycode;
     }
-    public void setCountrycode(String countrycode) {
+    public void setCountrycode(final String countrycode) {
         this.countrycode = countrycode;
     }
     public String getCountryid() {
         return countryid;
     }
-    public void setCountryid(String countryid) {
+    public void setCountryid(final String countryid) {
         this.countryid = countryid;
     }
     public String getCountryname() {
         return countryname;
     }
-    public void setCountryname(String countryname) {
+    public void setCountryname(final String countryname) {
         this.countryname = countryname;
     }
     public String getLocale() {
         return locale;
     }
-    public void setLocale(String locale) {
+    public void setLocale(final String locale) {
         this.locale = locale;
     }
     public String getPhoneprefix() {
         return phoneprefix;
     }
-    public void setPhoneprefix(String phoneprefix) {
+    public void setPhoneprefix(final String phoneprefix) {
         this.phoneprefix = phoneprefix;
     }
     public String getRowid() {
         return rowid;
     }
-    public void setRowid(String rowid) {
+    public void setRowid(final String rowid) {
         this.rowid = rowid;
     }
-
-
 
 
 }

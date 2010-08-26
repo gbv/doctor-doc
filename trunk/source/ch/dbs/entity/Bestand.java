@@ -60,7 +60,7 @@ public class Bestand extends AbstractIdEntity {
         this.setStandort(new Text());
     }
 
-    public Bestand(HoldingForm hf) {
+    public Bestand(final HoldingForm hf) {
         this.setHolding(hf.getHolding());
         this.setStartyear(hf.getStartyear());
         this.setStartvolume(hf.getStartvolume());
@@ -76,7 +76,7 @@ public class Bestand extends AbstractIdEntity {
         this.setInternal(hf.isInternal());
     }
 
-    public Bestand(Bestand be) {
+    public Bestand(final Bestand be) {
         this.setHolding(be.getHolding());
         this.setStartyear(be.getStartyear());
         this.setStartvolume(be.getStartvolume());
@@ -99,7 +99,7 @@ public class Bestand extends AbstractIdEntity {
      * @param Connection cn
      * @return Bestand bestand
      */
-    public Bestand(Long stid, Connection cn) {
+    public Bestand(final Long stid, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -112,27 +112,27 @@ public class Bestand extends AbstractIdEntity {
                 this.setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Bestand (Long stid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
     }
 
-    private void setRsValues(Connection cn, ResultSet rs) throws Exception {
+    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
         this.setId(rs.getLong("STID"));
         this.setHolding(new Holding(rs.getLong("HOID"), cn));
         this.setStartyear(rs.getString("startyear"));
@@ -155,7 +155,7 @@ public class Bestand extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public Bestand(Connection cn, ResultSet rs) {
+    public Bestand(final Connection cn, final ResultSet rs) {
 
         try {
 
@@ -174,7 +174,7 @@ public class Bestand extends AbstractIdEntity {
             this.setBemerkungen(rs.getString("bemerkungen"));
             this.setInternal(rs.getBoolean("internal"));
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("Bestand(Connection cn, ResultSet rs): " + e.toString());
         }
     }
@@ -183,7 +183,7 @@ public class Bestand extends AbstractIdEntity {
      * Sets the values for the PreparedStatement. Leaves the ID blank and lets
      * MySQL autoincrement the STID.
      */
-    private PreparedStatement setBestandValuesAutoincrement(PreparedStatement pstmt, Bestand be, Connection cn)
+    private PreparedStatement setBestandValuesAutoincrement(final PreparedStatement pstmt, final Bestand be, final Connection cn)
     throws Exception {
 
         pstmt.setLong(1, be.getHolding().getId());
@@ -207,7 +207,7 @@ public class Bestand extends AbstractIdEntity {
      * Sets the values for the PreparedStatement. Specifies the ID and sets
      * a given STID for MySQL.
      */
-    private PreparedStatement setAllBestandValues(PreparedStatement pstmt, Bestand be, Connection cn) throws Exception {
+    private PreparedStatement setAllBestandValues(final PreparedStatement pstmt, final Bestand be) throws Exception {
 
         pstmt.setLong(1, be.getId());
         pstmt.setLong(2, be.getHolding().getId());
@@ -233,7 +233,7 @@ public class Bestand extends AbstractIdEntity {
      * @param Bestand be
      * @param Connection cn
      */
-    public void saveWithoutID(Bestand be, Connection cn) {
+    public void saveWithoutID(final Bestand be, final Connection cn) {
 
         // if there is no Holding specified, save one first
         if (be.getHolding().getId() == null) {
@@ -251,14 +251,14 @@ public class Bestand extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("saveWithoutID(Bestand be, Connection cn)" + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -270,7 +270,7 @@ public class Bestand extends AbstractIdEntity {
      * @param Bestand be
      * @param Connection cn
      */
-    public void saveWithID(Bestand be, Connection cn) {
+    public void saveWithID(final Bestand be, final Connection cn) {
 
         // if there is no Holding specified, save one first
         if (be.getHolding().getId() == null) {
@@ -284,18 +284,18 @@ public class Bestand extends AbstractIdEntity {
             pstmt = setAllBestandValues(cn.prepareStatement("INSERT INTO `stock` (`STID` , `HOID` , "
                     + "`startyear` , `startvolume` , `startissue` , `endyear` , `endvolume` , `endissue` , "
                     + "`suppl` , `eissue` , `standort` , `shelfmark` , `bemerkungen` , `internal`) VALUES "
-                    + "(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be, cn);
+                    + "(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be);
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("saveWithID(Bestand be, Connection cn)" + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -307,7 +307,7 @@ public class Bestand extends AbstractIdEntity {
      * @param Konto k
      * @param Connection cn
      */
-    public void deleteAllKontoBestand(Konto k, Connection cn) {
+    public void deleteAllKontoBestand(final Konto k, final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -316,14 +316,14 @@ public class Bestand extends AbstractIdEntity {
             pstmt.setLong(1, k.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("deleteAllKontoBestand(Konto k, Connection cn)" + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -337,8 +337,8 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return ArrayList<Bestand> listBestand
      */
-    public ArrayList<Bestand> getAllKontoBestand(Long kid, Connection cn) {
-        ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
+    public ArrayList<Bestand> getAllKontoBestand(final Long kid, final Connection cn) {
+        final ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -349,25 +349,25 @@ public class Bestand extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Bestand be = new Bestand(cn, rs);
+                final Bestand be = new Bestand(cn, rs);
                 listBestand.add(be);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("ArrayList<Bestand> getAllKontoBestand(Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -383,8 +383,8 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return List mit Bestand
      */
-    public ArrayList<Bestand> getAllBestandForStandortId(Long tid, Connection cn) {
-        ArrayList<Bestand> sl = new ArrayList<Bestand>();
+    public ArrayList<Bestand> getAllBestandForStandortId(final Long tid, final Connection cn) {
+        final ArrayList<Bestand> sl = new ArrayList<Bestand>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -393,25 +393,25 @@ public class Bestand extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Bestand be = new Bestand(cn, rs);
+                final Bestand be = new Bestand(cn, rs);
                 sl.add(be);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllBestandForStandortId(Long tid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -428,22 +428,22 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return ArrayList<Bestand> listBestand
      */
-    public ArrayList<Bestand> getAllBestandForHoldings(ArrayList<String> hoids, OrderForm pageForm, boolean intern,
-            Connection cn) {
-        ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
+    public ArrayList<Bestand> getAllBestandForHoldings(final ArrayList<String> hoids, final OrderForm pageForm, final boolean intern,
+            final Connection cn) {
+        final ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
 
-        if (hoids.size() > 0) {
+        if (!hoids.isEmpty()) {
 
-            int searchMode = getSearchMode(pageForm);
+            final int searchMode = getSearchMode(pageForm);
 
             if (searchMode > 0) { // only proceed if there has been found a search modus (at least an ISSN)
 
-                StringBuffer sqlQuery = new StringBuffer(getSQL(searchMode));
+                final StringBuffer sqlQuery = new StringBuffer(getSQL(searchMode));
 
                 for (int i = 1; i < hoids.size(); i++) { // only append if there are several holdings
                     sqlQuery.append(" OR HOID = ?");
                 }
-                sqlQuery.append(")"); // close SQL Syntax with a parenthesis
+                sqlQuery.append(')'); // close SQL Syntax with a parenthesis
 
                 PreparedStatement pstmt = null;
                 ResultSet rs = null;
@@ -516,32 +516,32 @@ public class Bestand extends AbstractIdEntity {
                     rs = pstmt.executeQuery();
 
                     // Controls that only one matching stock per location will be shown
-                    HashSet<Long> uniqueSetLocationID = new HashSet<Long>();
+                    final HashSet<Long> uniqueLocationID = new HashSet<Long>();
 
                     while (rs.next()) {
-                        Bestand be = new Bestand(cn, rs);
-                        if (!uniqueSetLocationID.contains(be.getStandort().getId())) {
+                        final Bestand be = new Bestand(cn, rs);
+                        if (!uniqueLocationID.contains(be.getStandort().getId())) {
                             listBestand.add(be); // add only one stock for a given location
-                            uniqueSetLocationID.add(be.getStandort().getId());
+                            uniqueLocationID.add(be.getStandort().getId());
                         }
 
                     }
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("ArrayList<Bestand> getAllBestandForHoldings: " + e.toString());
                 } finally {
                     if (rs != null) {
                         try {
                             rs.close();
-                        } catch (SQLException e) {
-                            System.out.println(e);
+                        } catch (final SQLException e) {
+                            LOG.error(e.toString());
                         }
                     }
                     if (pstmt != null) {
                         try {
                             pstmt.close();
-                        } catch (SQLException e) {
-                            System.out.println(e);
+                        } catch (final SQLException e) {
+                            LOG.error(e.toString());
                         }
                     }
                 }
@@ -557,7 +557,7 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return String sql
      */
-    private String getSQL(int mode) {
+    private String getSQL(final int mode) {
         String sql = "";
 
         switch (mode) {
@@ -602,7 +602,7 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return int mode
      */
-    private int getSearchMode(OrderForm of) {
+    private int getSearchMode(final OrderForm of) {
         int mode = 0;
 
         if (!of.getIssn().equals("")) { // cases with an ISSN!
@@ -628,7 +628,7 @@ public class Bestand extends AbstractIdEntity {
         return holding;
     }
 
-    public void setHolding(Holding holding) {
+    public void setHolding(final Holding holding) {
         this.holding = holding;
     }
 
@@ -636,7 +636,7 @@ public class Bestand extends AbstractIdEntity {
         return startvolume;
     }
 
-    public void setStartvolume(String startvolume) {
+    public void setStartvolume(final String startvolume) {
         this.startvolume = startvolume;
     }
 
@@ -644,7 +644,7 @@ public class Bestand extends AbstractIdEntity {
         return startissue;
     }
 
-    public void setStartissue(String startissue) {
+    public void setStartissue(final String startissue) {
         this.startissue = startissue;
     }
 
@@ -652,7 +652,7 @@ public class Bestand extends AbstractIdEntity {
         return startyear;
     }
 
-    public void setStartyear(String startyear) {
+    public void setStartyear(final String startyear) {
         this.startyear = startyear;
     }
 
@@ -660,7 +660,7 @@ public class Bestand extends AbstractIdEntity {
         return endyear;
     }
 
-    public void setEndyear(String endyear) {
+    public void setEndyear(final String endyear) {
         this.endyear = endyear;
     }
 
@@ -668,7 +668,7 @@ public class Bestand extends AbstractIdEntity {
         return endvolume;
     }
 
-    public void setEndvolume(String endvolume) {
+    public void setEndvolume(final String endvolume) {
         this.endvolume = endvolume;
     }
 
@@ -676,7 +676,7 @@ public class Bestand extends AbstractIdEntity {
         return endissue;
     }
 
-    public void setEndissue(String endissue) {
+    public void setEndissue(final String endissue) {
         this.endissue = endissue;
     }
 
@@ -684,7 +684,7 @@ public class Bestand extends AbstractIdEntity {
         return standort;
     }
 
-    public void setStandort(Text standort) {
+    public void setStandort(final Text standort) {
         this.standort = standort;
     }
 
@@ -692,7 +692,7 @@ public class Bestand extends AbstractIdEntity {
         return shelfmark;
     }
 
-    public void setShelfmark(String shelfmark) {
+    public void setShelfmark(final String shelfmark) {
         this.shelfmark = shelfmark;
     }
 
@@ -700,7 +700,7 @@ public class Bestand extends AbstractIdEntity {
         return suppl;
     }
 
-    public void setSuppl(int suppl) {
+    public void setSuppl(final int suppl) {
         this.suppl = suppl;
     }
 
@@ -708,7 +708,7 @@ public class Bestand extends AbstractIdEntity {
         return bemerkungen;
     }
 
-    public void setBemerkungen(String bemerkungen) {
+    public void setBemerkungen(final String bemerkungen) {
         this.bemerkungen = bemerkungen;
     }
 
@@ -716,7 +716,7 @@ public class Bestand extends AbstractIdEntity {
         return eissue;
     }
 
-    public void setEissue(boolean eissue) {
+    public void setEissue(final boolean eissue) {
         this.eissue = eissue;
     }
 
@@ -724,12 +724,9 @@ public class Bestand extends AbstractIdEntity {
         return internal;
     }
 
-    public void setInternal(boolean internal) {
+    public void setInternal(final boolean internal) {
         this.internal = internal;
     }
 
 
-
 }
-
-

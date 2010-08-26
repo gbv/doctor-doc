@@ -30,10 +30,10 @@ public class Decoder {
      * @param s the <code>String</code> to decode
      * @return the newly decoded <code>String</code>
      */
-    public String urlDecode(String s, String charset) throws UnsupportedEncodingException {
-        StringBuffer sb = new StringBuffer();
+    public String urlDecode(final String s, final String charset) throws UnsupportedEncodingException {
+        final StringBuffer sb = new StringBuffer();
         for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
+            final char c = s.charAt(i);
             switch (c) {
             case '+':
                 sb.append(' ');
@@ -67,14 +67,14 @@ public class Decoder {
      * @param s the <code>String</code> to decode
      * @return the newly decoded <code>String</code>
      */
-    public String htmlEntityDecode(String s) {
+    public String htmlEntityDecode(final String s) {
 
         int i = 0, j = 0, pos = 0;
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         while ((i = s.indexOf("&#", pos)) != -1 && (j = s.indexOf(';', i)) != -1) {
             int n = -1;
             for (i += 2; i < j; ++i) {
-                char c = s.charAt(i);
+                final char c = s.charAt(i);
                 if ('0' <= c && c <= '9') {
                     n = (n == -1 ? 0 : n * 10) + c - '0';
                 } else {
@@ -100,19 +100,19 @@ public class Decoder {
     }
 
 
-    public static void decodeQueryString(String qs, String charset, Map<String, String> m)
+    public static void decodeQueryString(final String qs, final String charset, final Map<String, String> m)
     throws UnsupportedEncodingException {
 
         if (qs == null) {
             return;
         }
 
-        StringTokenizer st = new StringTokenizer(qs, "&");
-        Decoder decode = new Decoder();
+        final StringTokenizer st = new StringTokenizer(qs, "&");
+        final Decoder decode = new Decoder();
         while (st.hasMoreTokens()) {
-            String param = st.nextToken();
-            StringTokenizer pst = new StringTokenizer(param, "=");
-            String name = decode.urlDecode(pst.nextToken(), charset);
+            final String param = st.nextToken();
+            final StringTokenizer pst = new StringTokenizer(param, "=");
+            final String name = decode.urlDecode(pst.nextToken(), charset);
             String val = "";
             if (pst.hasMoreTokens()) {
                 val = decode.urlDecode(pst.nextToken(), charset);
@@ -121,7 +121,7 @@ public class Decoder {
         }
     }
 
-    public static final String utf8Convert(String utf8String)
+    public static final String utf8Convert(final String utf8String)
     throws java.io.UnsupportedEncodingException {
         byte[] bytes = new byte[utf8String.length()];
         for (int i = 0; i < utf8String.length(); i++) {

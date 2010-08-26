@@ -43,25 +43,25 @@ public class Check {
      * @param email
      * @return
      */
-    public boolean isEmail(String email) {
+    public boolean isEmail(final String email) {
         boolean check = false;
         try {
-            InternetAddress  ia = new InternetAddress();
+            final InternetAddress  ia = new InternetAddress();
             ia.setAddress(email);
             try {
                 ia.validate(); // wirft bei grundsätzlich ungültigen Adressen eine AdressException
                 // info@doctor-doc ohne .com wird noch als gültig angesehen...
-                Pattern p = Pattern
+                final Pattern p = Pattern
                 .compile("[A-Za-z0-9._-]+@[A-Za-z0-9][A-Za-z0-9.-]{0,61}[A-Za-z0-9]\\.[A-Za-z.]{2,6}");
-                Matcher m = p.matcher(email);
+                final Matcher m = p.matcher(email);
                 if (m.find()) {
                     check = true;
                 }
             } catch (AddressException e1) {
-                LOG.info("isEmail: " + email + "" + e1.toString());
+                LOG.info("isEmail: " + email + " " + e1.toString());
             }
         } catch (Exception e) {
-            LOG.error("isEmail: "  + email + "" + e.toString());
+            LOG.error("isEmail: "  + email + " " + e.toString());
         }
 
         return check;
@@ -73,12 +73,10 @@ public class Check {
      * @param l
      * @return
      */
-    public boolean isMinLength(String s, int l) {
+    public boolean isMinLength(final String s, final int l) {
         boolean check = false;
-        if (s != null) {
-            if (s.length() >= l) {
-                check = true;
-            }
+        if (s != null && s.length() >= l) {
+            check = true;
         }
         return check;
     }
@@ -89,12 +87,10 @@ public class Check {
      * @param l
      * @return
      */
-    public boolean isExactLength(String s, int l) {
+    public boolean isExactLength(final String s, final int l) {
         boolean check = false;
-        if (s != null) {
-            if (s.length() == l) {
-                check = true;
-            }
+        if (s != null && s.length() == l) {
+            check = true;
         }
         return check;
     }
@@ -108,12 +104,10 @@ public class Check {
      * @param max
      * @return
      */
-    public boolean isLengthInMinMax(String s, int min, int max) {
+    public boolean isLengthInMinMax(final String s, final int min, final int max) {
         boolean check = false;
-        if (s != null) {
-            if ((min <= s.length()) && (s.length() <= max)) {
-                check = true;
-            }
+        if (s != null && (min <= s.length()) && (s.length() <= max)) {
+            check = true;
         }
         return check;
     }
@@ -124,7 +118,7 @@ public class Check {
      * @param of
      * @return
      */
-    public OverviewForm checkDateRegion(OverviewForm of, int defaultPeriod, String defaultTimezone) {
+    public OverviewForm checkDateRegion(final OverviewForm of, final int defaultPeriod, final String defaultTimezone) {
 
         //Längen Sicherstellen
         if (this.isExactLength(of.getYfrom(), 4) && this.isExactLength(of.getYto(), 4)
@@ -132,13 +126,13 @@ public class Check {
                 && this.isLengthInMinMax(of.getDfrom(), 1, 2) && this.isLengthInMinMax(of.getDto(), 1, 2)) {
 
             try {
-                Calendar calTo = Calendar.getInstance();
-                Calendar calFrom = Calendar.getInstance();
+                final Calendar calTo = Calendar.getInstance();
+                final Calendar calFrom = Calendar.getInstance();
                 calTo.set(Integer.parseInt(of.getYto()), Integer.parseInt(of.getMto()) - 1, Integer.parseInt(of
                         .getDto()), 0, 0, 0);
                 calFrom.set(Integer.parseInt(of.getYfrom()), Integer.parseInt(of.getMfrom()) - 1, Integer.parseInt(of
                         .getDfrom()), 0, 0, 0);
-                long time = calTo.getTime().getTime() - calFrom.getTime().getTime();
+                final long time = calTo.getTime().getTime() - calFrom.getTime().getTime();
 
                 if (time < 0) { // Überprüfung ob eine negativer Zeitbereicg vorliegt...
                     of.setYfrom(null); // zurückstellen, damit im nächsten Schritt die Default-Werte zum Zug kommen...
@@ -170,9 +164,9 @@ public class Check {
                 || of.getMfrom() == null || of.getMto() == null
                 || of.getDfrom() == null || of.getDto() == null) {
 
-            Calendar calTo = Calendar.getInstance();
+            final Calendar calTo = Calendar.getInstance();
             calTo.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
-            Calendar calFrom = Calendar.getInstance();
+            final Calendar calFrom = Calendar.getInstance();
             calFrom.setTimeZone(TimeZone.getTimeZone(defaultTimezone));
             calFrom.add(Calendar.MONTH, -defaultPeriod); // bessere Verständlichkeit wenn Monatsbereiche vorliegen...
 
@@ -198,7 +192,7 @@ public class Check {
      * @param of OverviewForm
      * @return OverviewForm
      */
-    public OverviewForm checkSortOrderValues(OverviewForm of) {
+    public OverviewForm checkSortOrderValues(final OverviewForm of) {
 
         //Check, damit nur gültige Sortierkriterien daherkommen (asc/desc)
         if (of.getSort() == null) {
@@ -225,18 +219,18 @@ public class Check {
      * @param of OverviewForm
      * @return of OverviewForm
      */
-    public OverviewForm checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(OverviewForm of) {
+    public OverviewForm checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(final OverviewForm of) {
         if (of.getFilter() != null) { // grundsätzlich muss ein zu prüfendes Filterkriterium vorhanden sein
-            boolean validFilterCriteria = false;
+            boolean validCriteria = false;
             // Die kontoabhängigen Stati müssen vorgängig mittels of.setStati abgelegt werden
             if (of.getStatitexts().size() > 0) {
                 for (Text status : of.getStatitexts()) {
                     if (of.getFilter().equals(status.getInhalt()) || of.getFilter().equals("offen")) {
-                        validFilterCriteria = true;
+                        validCriteria = true;
                     }
                 }
             }
-            if (!validFilterCriteria) { of.setFilter(null); } // ungültige Filterkriterien löschen
+            if (!validCriteria) { of.setFilter(null); } // ungültige Filterkriterien löschen
         }
 
         return of;
@@ -247,7 +241,7 @@ public class Check {
      * @param of OverviewForm
      * @return of OverviewForm
      */
-    public OverviewForm checkOrdersSortCriterias(OverviewForm of) {
+    public OverviewForm checkOrdersSortCriterias(final OverviewForm of) {
         if (of.getSort().equals("mail") || of.getSort().equals("artikeltitel") || of.getSort().equals("zeitschrift")
                 || of.getSort().equals("inhalt") || of.getSort().equals("orderdate") || of.getSort().equals("statedate")
                 || of.getSort().equals("state") || of.getSort().equals("deloptions") || of.getSort().equals("name")
@@ -266,12 +260,12 @@ public class Check {
     /**
      * This method checks if a String is a valid URL
      */
-    public boolean isUrl(String link) {
+    public boolean isUrl(final String link) {
 
         boolean check = true;
 
         try {
-            URL url = new URL(link);
+            final URL url = new URL(link);
             System.out.println("Gültige URL: " + url); // unterdrückt Warnung, dass url nie gebraucht wird
         } catch (MalformedURLException e) {
             LOG.info("isUrl: " + link + "\040" + e.toString());
@@ -284,12 +278,12 @@ public class Check {
     /**
      * This method checks if a String is a valid URL and from a specific filetype
      */
-    public boolean isUrlAndFiletype(String link, String[] filetypes) {
+    public boolean isUrlAndFiletype(final String link, final String[] filetypes) {
 
         boolean check = false;
 
         try {
-            String extension = link.substring(link.lastIndexOf(".") + 1); // may throw exception
+            final String extension = link.substring(link.lastIndexOf('.') + 1); // may throw exception
 
             // check for specified filetypes
             for (int i = 0; i < filetypes.length; i++) {
@@ -346,15 +340,15 @@ public class Check {
      * @param s
      * @return ArrayList words
      */
-    public ArrayList<String> getAlphanumericWordCharacters(String s) {
+    public ArrayList<String> getAlphanumericWordCharacters(final String s) {
 
-        ArrayList<String> words = new ArrayList<String>();
+        final ArrayList<String> words = new ArrayList<String>();
 
         if (s != null) {
 
             // Regexp: \w   A word character: [a-zA-Z_0-9]
-            Pattern p = Pattern.compile("([\\p{L}||\\P{Alpha}&&[^\\p{Punct}]&&[^\\p{Space}]])*");
-            Matcher m = p.matcher(s);
+            final Pattern p = Pattern.compile("([\\p{L}||\\P{Alpha}&&[^\\p{Punct}]&&[^\\p{Space}]])*");
+            final Matcher m = p.matcher(s);
 
             while (m.find()) {
                 words.add(s.substring(m.start(), m.end()));
@@ -367,14 +361,14 @@ public class Check {
     /**
      * Counts the occurence of a character in a string
      */
-    public int countCharacterInString(String input, String countString) {
+    public int countCharacterInString(final String input, final String countString) {
         return input.split("\\Q" + countString + "\\E", -1).length - 1;
     }
 
     /**
      * This method checks if a String contains only numbers
      */
-    public boolean containsOnlyNumbers(String str) {
+    public boolean containsOnlyNumbers(final String str) {
 
         //It can't contain only numbers if it's null or empty...
         if (str == null || str.length() == 0) { return false; }
@@ -393,7 +387,7 @@ public class Check {
      * @param content
      * @return boolean check
      */
-    public boolean containsGoogleCaptcha(String content) {
+    public boolean containsGoogleCaptcha(final String content) {
 
         boolean check = false;
 
@@ -409,7 +403,7 @@ public class Check {
      * @param String issn
      * @return boolean check
      */
-    public boolean isValidIssn(String issn) {
+    public boolean isValidIssn(final String issn) {
 
         boolean check = false;
         String kontrollziffer = "";
@@ -417,17 +411,17 @@ public class Check {
         try {
 
             if (issn.length() == 9 && issn.substring(4, 5).equals("-")) {
-                int pos8 = Integer.valueOf(issn.substring(0, 1));
-                int pos7 = Integer.valueOf(issn.substring(1, 2));
-                int pos6 = Integer.valueOf(issn.substring(2, 3));
-                int pos5 = Integer.valueOf(issn.substring(3, 4));
-                int pos4 = Integer.valueOf(issn.substring(5, 6));
-                int pos3 = Integer.valueOf(issn.substring(6, 7));
-                int pos2 = Integer.valueOf(issn.substring(7, 8));
-                String pos1 = issn.substring(8);
+                final int pos8 = Integer.valueOf(issn.substring(0, 1));
+                final int pos7 = Integer.valueOf(issn.substring(1, 2));
+                final int pos6 = Integer.valueOf(issn.substring(2, 3));
+                final int pos5 = Integer.valueOf(issn.substring(3, 4));
+                final int pos4 = Integer.valueOf(issn.substring(5, 6));
+                final int pos3 = Integer.valueOf(issn.substring(6, 7));
+                final int pos2 = Integer.valueOf(issn.substring(7, 8));
+                final String pos1 = issn.substring(8);
 
-                int sum = pos8 * 8 + pos7 * 7 + pos6 * 6 + pos5 * 5 + pos4 * 4 + pos3 * 3 + pos2 * 2;
-                int checksum = 11 - (sum - (sum / 11) * 11);
+                final int sum = pos8 * 8 + pos7 * 7 + pos6 * 6 + pos5 * 5 + pos4 * 4 + pos3 * 3 + pos2 * 2;
+                final int checksum = 11 - (sum - (sum / 11) * 11);
                 if (checksum == 10 || checksum == 11) {
                     if (checksum == 10) { kontrollziffer = "X"; }
                     if (checksum == 11) { kontrollziffer = "0"; }
@@ -455,16 +449,16 @@ public class Check {
      * @param String year
      * @return boolean check
      */
-    public boolean isYear(String year) {
+    public boolean isYear(final String year) {
 
         boolean check = false;
 
         // check if length = 4 and string contains only digits
         if (isExactLength(year, 4) && org.apache.commons.lang.StringUtils.isNumeric(year)) {
             // Search pattern works from 14th century till 22th century. This sould be usable for some time...
-            Pattern p = Pattern.compile(
+            final Pattern p = Pattern.compile(
             "13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
-            Matcher m = p.matcher(year);
+            final Matcher m = p.matcher(year);
             try {
                 if (m.find()) {
                     check = true;

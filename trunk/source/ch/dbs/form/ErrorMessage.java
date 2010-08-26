@@ -22,27 +22,28 @@ import org.apache.struts.action.ActionForm;
 
 public final class ErrorMessage extends ActionForm {
 
-  private static final long serialVersionUID = 1L;
-  private String error; // steuert MessageRessources an
-  private String error_specific; // dient für spezifische, genauere Fehlermeldung
+    private static final long serialVersionUID = 1L;
+    private String error; // steuert MessageRessources an
+    private String error_specific; // dient für spezifische, genauere Fehlermeldung
     private String link;
 
 
     public ErrorMessage() {
 
     }
-    public ErrorMessage(String err, String errLink) {
+
+    public ErrorMessage(final String err, final String errLink) {
         this.error = err;
         this.link = errLink;
     }
 
-    public ErrorMessage(String err, String error_spec, String errlink) {
+    public ErrorMessage(final String err, final String error_spec, final String errlink) {
         this.error = err;
         this.error_specific = error_spec;
         this.link = errlink;
     }
 
-    public ErrorMessage(String err) {
+    public ErrorMessage(final String err) {
         this.error = err;
     }
 
@@ -52,7 +53,7 @@ public final class ErrorMessage extends ActionForm {
     }
 
 
-    public void setError(String error) {
+    public void setError(final String error) {
         this.error = error;
     }
 
@@ -62,17 +63,17 @@ public final class ErrorMessage extends ActionForm {
     }
 
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
-  public String getError_specific() {
-    return error_specific;
-  }
+    public String getError_specific() {
+        return error_specific;
+    }
 
-  public void setError_specific(String error_specific) {
-    this.error_specific = error_specific;
-  }
+    public void setError_specific(final String error_specific) {
+        this.error_specific = error_specific;
+    }
 
 
 

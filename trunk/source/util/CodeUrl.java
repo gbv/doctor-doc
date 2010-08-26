@@ -19,63 +19,58 @@ package util;
 
 import org.grlea.log.SimpleLogger;
 
-
+/**
+ * Hilft URLs sicher zu entcodieren
+ * @param args
+ */
 public class CodeUrl {
 
-  private static final SimpleLogger LOG = new SimpleLogger(CodeUrl.class);
+    private static final SimpleLogger LOG = new SimpleLogger(CodeUrl.class);
 
     /**
-     * Hilft URLs sicher zu entcodieren
-     * @param args
+     * Decodier-Methode
      */
-    public CodeUrl() {
+    public String decode(String input) {
 
+        try {
+            if (input != null) { input = java.net.URLDecoder.decode(input, "UTF-8"); }
+
+        } catch (Exception e) {
+            LOG.error("decode in UrlCode: " + input + "\040" + e.toString());
+        }
+
+        return input;
     }
 
-  /**
-   * Decodier-Methode
-   */
-  public String decode(String input) {
+    /**
+     * Encoding in ISO-8859-1
+     */
+    public String encodeLatin1(String input) {
 
-    try {
-      if (input != null) { input = java.net.URLDecoder.decode(input, "UTF-8"); }
+        try {
+            if (input != null) { input = java.net.URLEncoder.encode(input, "ISO-8859-1"); }
 
-    } catch (Exception e) {
-      LOG.error("decode in UrlCode: " + input + "\040" + e.toString());
-      }
+        } catch (Exception e) {
+            LOG.error("encode in UrlCode: " + input + "\040" + e.toString());
+        }
 
-    return input;
-  }
+        return input;
+    }
 
-  /**
-   * Encoding in ISO-8859-1
-   */
-  public String encodeLatin1(String input) {
+    /**
+     * Encoding in UTF-8
+     */
+    public String encodeUTF8(String input) {
 
-    try {
-      if (input != null) { input = java.net.URLEncoder.encode(input, "ISO-8859-1"); }
+        try {
+            if (input != null) { input = java.net.URLEncoder.encode(input, "UTF-8"); }
 
-    } catch (Exception e) {
-      LOG.error("encode in UrlCode: " + input + "\040" + e.toString());
-      }
+        } catch (Exception e) {
+            LOG.error("encode in UrlCode: " + input + "\040" + e.toString());
+        }
 
-    return input;
-  }
-
-  /**
-   * Encoding in UTF-8
-   */
-  public String encodeUTF8(String input) {
-
-    try {
-      if (input != null) { input = java.net.URLEncoder.encode(input, "UTF-8"); }
-
-    } catch (Exception e) {
-      LOG.error("encode in UrlCode: " + input + "\040" + e.toString());
-      }
-
-    return input;
-  }
+        return input;
+    }
 
 }
 

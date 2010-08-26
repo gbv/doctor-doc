@@ -25,29 +25,29 @@ import java.util.TimeZone;
 
 public class ThreadSafeSimpleDateFormat {
 
-   private DateFormat df;
-//   private static final String TIMEZONE = "GTM+01";
+    private final DateFormat df;
+    //   private static final String TIMEZONE = "GTM+01";
 
-   public ThreadSafeSimpleDateFormat(String format) {
-       this.df = new SimpleDateFormat(format);
-   }
+    public ThreadSafeSimpleDateFormat(final String format) {
+        this.df = new SimpleDateFormat(format);
+    }
 
-   public synchronized String format(Date date, String timezone) {
-     df.setTimeZone(TimeZone.getTimeZone(timezone));
-       return df.format(date);
-   }
+    public synchronized String format(final Date date, final String timezone) {
+        df.setTimeZone(TimeZone.getTimeZone(timezone));
+        return df.format(date);
+    }
 
-   public synchronized Date parse(String string) throws ParseException {
-       return df.parse(string);
-   }
+    public synchronized Date parse(final String string) throws ParseException {
+        return df.parse(string);
+    }
 
-   public synchronized void setTimeZone(TimeZone tz) {
-       df.setTimeZone(tz);
-   }
+    public synchronized void setTimeZone(final TimeZone tz) {
+        df.setTimeZone(tz);
+    }
 
-//  public static String getTIMEZONE() {
-//    return TIMEZONE;
-//  }
+    //  public static String getTIMEZONE() {
+    //    return TIMEZONE;
+    //  }
 
 
-  }
+}

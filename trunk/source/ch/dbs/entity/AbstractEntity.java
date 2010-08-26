@@ -33,14 +33,14 @@ import util.DBConn;
  */
 public abstract class AbstractEntity extends DBConn {
 
-  private Timestamp lastModification = new Timestamp(new Date().getTime());
+    private Timestamp lastModification = new Timestamp(new Date().getTime());
 
-  public Timestamp getLastModification() {
-    return lastModification;
-  }
+    public Timestamp getLastModification() {
+        return lastModification;
+    }
 
-  public void setLastModification(Timestamp lastModification) {
-    this.lastModification = lastModification;
-  }
+    public void setLastModification(final Timestamp lastModification) {
+        this.lastModification = lastModification;
+    }
 
 }

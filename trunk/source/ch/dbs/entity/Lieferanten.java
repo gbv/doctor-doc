@@ -50,11 +50,11 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten(AbstractBenutzer user, Konto k) {
+    public Lieferanten(final AbstractBenutzer user, final Konto k) {
 
     }
 
-    public Lieferanten(ResultSet rs) throws Exception {
+    public Lieferanten(final ResultSet rs) throws Exception {
 
         this.setLid(rs.getLong("LID"));
         this.setKid(rs.getLong("kid"));
@@ -66,18 +66,15 @@ public class Lieferanten extends AbstractIdEntity {
         this.setLand_allgemein(rs.getBoolean("allgemein"));
     }
 
-    public ArrayList<Lieferanten> getListForKontoAndCountry(String land, Long kId, Connection cn) {
+    public ArrayList<Lieferanten> getListForKontoAndCountry(String land, final Long kId, final Connection cn) {
 
-        if (land != null) {
-            if (land.equals("Schweiz")) { land = "CH"; }
-            if (land.equals("Deutschland")) { land = "D"; }
-            if (land.equals("Österreich")) { land = "A"; }
-            if (!land.equals("CH") && !land.equals("D") && !land.equals("A")) { land = "CH"; } // falls kein Ländercode
-        } else {
-            land = "CH"; // falls kein Ländercode
-        }
+        if ("Schweiz".equals(land)) { land = "CH"; }
+        if ("Deutschland".equals(land)) { land = "D"; }
+        if ("Österreich".equals(land)) { land = "A"; }
+        // if we couldn't set a country code, use a default
+        if (!"CH".equals(land) && !"D".equals(land) && !"A".equals(land)) { land = "CH"; }
 
-        ArrayList<Lieferanten> list = new ArrayList<Lieferanten>();
+        final ArrayList<Lieferanten> list = new ArrayList<Lieferanten>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -92,21 +89,21 @@ public class Lieferanten extends AbstractIdEntity {
                 list.add(getLieferanten(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getListForKontoAndCountry(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -115,7 +112,7 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten getLieferantFromName(String lName, Connection cn) {
+    public Lieferanten getLieferantFromName(final String lName, final Connection cn) {
 
         Lieferanten l = new Lieferanten();
 
@@ -131,21 +128,21 @@ public class Lieferanten extends AbstractIdEntity {
                 l = getLieferanten(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getLieferantFromName(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -154,7 +151,7 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten getLieferantFromLid(String lId, Connection cn) {
+    public Lieferanten getLieferantFromLid(final String lId, final Connection cn) {
 
         Lieferanten l = new Lieferanten();
 
@@ -170,21 +167,21 @@ public class Lieferanten extends AbstractIdEntity {
                 l = getLieferanten(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getLieferantFromLid: " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -193,9 +190,9 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    private Lieferanten getLieferanten(ResultSet rs) throws Exception {
+    private Lieferanten getLieferanten(final ResultSet rs) throws Exception {
 
-        Lieferanten l = new Lieferanten();
+        final Lieferanten l = new Lieferanten();
 
         try {
 
@@ -208,7 +205,7 @@ public class Lieferanten extends AbstractIdEntity {
             l.setLand_ch(rs.getBoolean("CH"));
             l.setLand_allgemein(rs.getBoolean("allgemein"));
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getLieferanten(ResultSet rs): " + e.toString());
         }
 
@@ -221,7 +218,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setKid(Long kid) {
+    public void setKid(final Long kid) {
         this.kid = kid;
     }
 
@@ -231,7 +228,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setLand_a(boolean land_a) {
+    public void setLand_a(final boolean land_a) {
         this.land_a = land_a;
     }
 
@@ -241,7 +238,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setLand_allgemein(boolean land_allgemein) {
+    public void setLand_allgemein(final boolean land_allgemein) {
         this.land_allgemein = land_allgemein;
     }
 
@@ -251,7 +248,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setLand_ch(boolean land_ch) {
+    public void setLand_ch(final boolean land_ch) {
         this.land_ch = land_ch;
     }
 
@@ -261,7 +258,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setLand_d(boolean land_d) {
+    public void setLand_d(final boolean land_d) {
         this.land_d = land_d;
     }
 
@@ -271,7 +268,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setLid(Long lid) {
+    public void setLid(final Long lid) {
         this.lid = lid;
     }
 
@@ -281,7 +278,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -291,7 +288,7 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
 
-    public void setSigel(String sigel) {
+    public void setSigel(final String sigel) {
         this.sigel = sigel;
     }
 

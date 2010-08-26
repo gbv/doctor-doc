@@ -22,76 +22,72 @@ import org.apache.struts.action.ActionForm;
 
 public final class FaxForm extends ActionForm {
 
-  private static final long serialVersionUID = 1L;
-  private String popfaxid;
-  private String from;
-  private String popfaxdate;
-  private String pages;
-  private String state;
-  private String statedate;
+    private static final long serialVersionUID = 1L;
+    private String popfaxid;
+    private String from;
+    private String popfaxdate;
+    private String pages;
+    private String state;
+    private String statedate;
 
 
-    public FaxForm() {
-
+    public String getFrom() {
+        return from;
     }
 
-  public String getFrom() {
-    return from;
-  }
+
+    public void setFrom(final String from) {
+        this.from = from;
+    }
 
 
-  public void setFrom(String from) {
-    this.from = from;
-  }
+    public String getPages() {
+        return pages;
+    }
 
 
-  public String getPages() {
-    return pages;
-  }
+    public void setPages(final String pages) {
+        this.pages = pages;
+    }
 
 
-  public void setPages(String pages) {
-    this.pages = pages;
-  }
+    public String getPopfaxdate() {
+        return popfaxdate;
+    }
 
 
-  public String getPopfaxdate() {
-    return popfaxdate;
-  }
+    public void setPopfaxdate(final String popfaxdate) {
+        this.popfaxdate = popfaxdate;
+    }
 
 
-  public void setPopfaxdate(String popfaxdate) {
-    this.popfaxdate = popfaxdate;
-  }
+    public String getPopfaxid() {
+        return popfaxid;
+    }
 
 
-  public String getPopfaxid() {
-    return popfaxid;
-  }
+    public void setPopfaxid(final String popfaxid) {
+        this.popfaxid = popfaxid;
+    }
 
 
-  public void setPopfaxid(String popfaxid) {
-    this.popfaxid = popfaxid;
-  }
+    public String getState() {
+        return state;
+    }
 
 
-  public String getState() {
-    return state;
-  }
+    public void setState(final String state) {
+        this.state = state;
+    }
 
 
-  public void setState(String state) {
-    this.state = state;
-  }
+    public String getStatedate() {
+        return statedate;
+    }
 
 
-  public String getStatedate() {
-    return statedate;
-  }
-
-
-  public void setStatedate(String statedate) {
-    this.statedate = statedate;
-  }
+    public void setStatedate(final String statedate) {
+        this.statedate = statedate;
+    }
 
 }

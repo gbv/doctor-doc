@@ -50,210 +50,210 @@ import ch.dbs.form.UserInfo;
  */
 public final class HoldingsReport extends DispatchAction {
 
-  private static final SimpleLogger LOG = new SimpleLogger(HoldingsReport.class);
+    private static final SimpleLogger LOG = new SimpleLogger(HoldingsReport.class);
 
     /**
      * Gets all holdings of a given library and creates an Export-File
      */
-    public ActionForward execute(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-      String forward = "failure";
-      Auth auth = new Auth();
+        String forward = "failure";
+        final Auth auth = new Auth();
 
-      // Get export filetype for export as either CSV with semicolon delimiter or TXT as tab delimited file
-      String filetype = rq.getParameter("filetype");
-      if (filetype == null || !filetype.equals("txt")) { filetype = "csv"; } // set default value csv
+        // Get export filetype for export as either CSV with semicolon delimiter or TXT as tab delimited file
+        String filetype = rq.getParameter("filetype");
+        if (filetype == null || !filetype.equals("txt")) { filetype = "csv"; } // set default value csv
 
-      // Check if the user is logged in and is librarian or admin
-      if (auth.isLogin(rq)) {
-      if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+        // Check if the user is logged in and is librarian or admin
+        if (auth.isLogin(rq)) {
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
 
-        // Prepare classes
-        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-            Date date = new Date();
+                // Prepare classes
+                final  UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+                final Date date = new Date();
 
-        try {
-          // Compose filename with date and time
-          StringBuffer filename = new StringBuffer("holdings-");
-          filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
-          filename.append(".");
-          filename.append(filetype);
+                try {
+                    // Compose filename with date and time
+                    final StringBuffer filename = new StringBuffer("holdings-");
+                    filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
+                    filename.append('.');
+                    filename.append(filetype);
 
-          // define delimiter
-          char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // default value
-          if (filetype.equals("txt")) { delimiter = ch.dbs.actions.bestand.Stock.getDelimiterTxt(); }
+                    // define delimiter
+                    char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // default value
+                    if ("txt".equals(filetype)) { delimiter = ch.dbs.actions.bestand.Stock.getDelimiterTxt(); }
 
-          // Prepare Output
-          rp.setContentType("text/txt;charset=UTF-8"); // Set ContentType in the response for the Browser
-          rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
-          rp.setCharacterEncoding("UTF-8");
+                    // Prepare Output
+                    rp.setContentType("text/txt;charset=UTF-8"); // Set ContentType in the response for the Browser
+                    rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
+                    rp.setCharacterEncoding("UTF-8");
 
-          rp.flushBuffer();
+                    rp.flushBuffer();
 
-          // Use writer to render text
-          PrintWriter pw = rp.getWriter();
-            pw.write(getExportContent(ui.getKonto(), delimiter));
-            pw.flush();
-            pw.close();
+                    // Use writer to render text
+                    final PrintWriter pw = rp.getWriter();
+                    pw.write(getExportContent(ui.getKonto(), delimiter));
+                    pw.flush();
+                    pw.close();
 
-        } catch (IOException e) {
-          // Output failed
-          LOG.error("Failure in HoldingsReport.execute: " + e.toString());
-        } finally {
-            forward = null;
-          }
+                } catch (final IOException e) {
+                    // Output failed
+                    LOG.error("Failure in HoldingsReport.execute: " + e.toString());
+                } finally {
+                    forward = null;
+                }
 
-      } else {
-        ErrorMessage em = new ErrorMessage(
-            "error.berechtigung",
-            "login.do");
-        rq.setAttribute("errormessage", em);
-      }
-    } else {
-      ActiveMenusForm mf = new ActiveMenusForm();
+            } else {
+                final ErrorMessage em = new ErrorMessage(
+                        "error.berechtigung",
+                "login.do");
+                rq.setAttribute("errormessage", em);
+            }
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-      ErrorMessage em = new ErrorMessage(
-          "error.timeout", "login.do");
-      rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage(
+                    "error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
+
+        return mp.findForward(forward);
     }
 
-    return mp.findForward(forward);
-  }
+    private String getExportContent(final Konto k, final char delimiter) {
+        final Text cn = new Text();
 
-    private String getExportContent(Konto k, char delimiter) {
-      Text cn = new Text();
+        // get a StringBuffer with a header describing the content of the fields
+        final StringBuffer buf = initStringBuffer(delimiter);
 
-      // get a StringBuffer with a header describing the content of the fields
-      StringBuffer buf = initStringBuffer(delimiter);
+        final ArrayList<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), cn.getConnection());
 
-      ArrayList<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), cn.getConnection());
+        for (final Bestand b : stock) {
+            buf.append(getExportLine(b, delimiter));
+        }
 
-      for (Bestand b : stock) {
-        buf.append(getExportLine(b, delimiter));
-      }
+        cn.close();
 
-      cn.close();
-
-      return buf.toString();
+        return buf.toString();
     }
 
 
 
-  private String getExportLine(Bestand b, char delimiter) {
+    private String getExportLine(Bestand b, final char delimiter) {
 
-    StringBuffer buf = new StringBuffer();
-    RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
+        final StringBuffer buf = new StringBuffer(336);
+        final RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
 
-    b = (Bestand) nullValues.remove(b);
-    b.setHolding((Holding) nullValues.remove(b.getHolding()));
+        b = (Bestand) nullValues.remove(b);
+        b.setHolding((Holding) nullValues.remove(b.getHolding()));
 
-    buf.append("\"" + b.getId() + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + b.getHolding().getId() + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + b.getStandort().getId() + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + b.getStandort().getInhalt() + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getShelfmark()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getHolding().getTitel()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getHolding().getCoden()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getHolding().getVerlag()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getHolding().getOrt()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getHolding().getIssn()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getHolding().getZdbid()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getStartyear()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getStartvolume()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getStartissue()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getEndyear()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getEndvolume()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getEndissue()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + b.getSuppl() + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + removeSpecialCharacters(b.getBemerkungen()) + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + b.isEissue() + "\"");
-    buf.append(delimiter);
-    buf.append("\"" + b.isInternal() + "\"");
-    buf.append("\n");
+        buf.append("\"" + b.getId() + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + b.getHolding().getId() + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + b.getStandort().getId() + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + b.getStandort().getInhalt() + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getShelfmark()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getHolding().getTitel()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getHolding().getCoden()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getHolding().getVerlag()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getHolding().getOrt()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getHolding().getIssn()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getHolding().getZdbid()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getStartyear()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getStartvolume()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getStartissue()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getEndyear()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getEndvolume()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getEndissue()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + b.getSuppl() + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + removeSpecialCharacters(b.getBemerkungen()) + "\"");
+        buf.append(delimiter);
+        buf.append("\"" + b.isEissue() + "\"");
+        buf.append(delimiter);
+        buf.append('"');
+        buf.append(b.isInternal());
+        buf.append("\"\n");
 
-    return buf.toString();
-  }
-
-  private StringBuffer initStringBuffer(char delimiter) {
-
-    StringBuffer buf = new StringBuffer();
-
-    buf.append("\"Stock ID\"");
-    buf.append(delimiter);
-    buf.append("\"Holding ID\"");
-    buf.append(delimiter);
-    buf.append("\"Location ID\"");
-    buf.append(delimiter);
-    buf.append("\"Location Name\"");
-    buf.append(delimiter);
-    buf.append("\"Shelfmark\"");
-    buf.append(delimiter);
-    buf.append("\"Title\"");
-    buf.append(delimiter);
-    buf.append("\"Coden\"");
-    buf.append(delimiter);
-    buf.append("\"Publisher\"");
-    buf.append(delimiter);
-    buf.append("\"Place\"");
-    buf.append(delimiter);
-    buf.append("\"ISSN\"");
-    buf.append(delimiter);
-    buf.append("\"ZDB-ID\"");
-    buf.append(delimiter);
-    buf.append("\"Startyear\"");
-    buf.append(delimiter);
-    buf.append("\"Startvolume\"");
-    buf.append(delimiter);
-    buf.append("\"Startissue\"");
-    buf.append(delimiter);
-    buf.append("\"Endyear\"");
-    buf.append(delimiter);
-    buf.append("\"Endvolume\"");
-    buf.append(delimiter);
-    buf.append("\"Endissue\"");
-    buf.append(delimiter);
-    buf.append("\"Suppl\"");
-    buf.append(delimiter);
-    buf.append("\"remarks\"");
-    buf.append(delimiter);
-    buf.append("\"eissue\"");
-    buf.append(delimiter);
-    buf.append("\"internal\"");
-    buf.append("\n");
-
-    return buf;
-  }
-
-  private String removeSpecialCharacters(String str) {
-
-    if (str != null) {
-      str = str.replaceAll("\012", "\040").trim();
+        return buf.toString();
     }
 
-    return str;
-  }
+    private StringBuffer initStringBuffer(final char delimiter) {
+
+        final StringBuffer buf = new StringBuffer(227);
+
+        buf.append("\"Stock ID\"");
+        buf.append(delimiter);
+        buf.append("\"Holding ID\"");
+        buf.append(delimiter);
+        buf.append("\"Location ID\"");
+        buf.append(delimiter);
+        buf.append("\"Location Name\"");
+        buf.append(delimiter);
+        buf.append("\"Shelfmark\"");
+        buf.append(delimiter);
+        buf.append("\"Title\"");
+        buf.append(delimiter);
+        buf.append("\"Coden\"");
+        buf.append(delimiter);
+        buf.append("\"Publisher\"");
+        buf.append(delimiter);
+        buf.append("\"Place\"");
+        buf.append(delimiter);
+        buf.append("\"ISSN\"");
+        buf.append(delimiter);
+        buf.append("\"ZDB-ID\"");
+        buf.append(delimiter);
+        buf.append("\"Startyear\"");
+        buf.append(delimiter);
+        buf.append("\"Startvolume\"");
+        buf.append(delimiter);
+        buf.append("\"Startissue\"");
+        buf.append(delimiter);
+        buf.append("\"Endyear\"");
+        buf.append(delimiter);
+        buf.append("\"Endvolume\"");
+        buf.append(delimiter);
+        buf.append("\"Endissue\"");
+        buf.append(delimiter);
+        buf.append("\"Suppl\"");
+        buf.append(delimiter);
+        buf.append("\"remarks\"");
+        buf.append(delimiter);
+        buf.append("\"eissue\"");
+        buf.append(delimiter);
+        buf.append("\"internal\"\n");
+
+        return buf;
+    }
+
+    private String removeSpecialCharacters(String str) {
+
+        if (str != null) {
+            str = str.replaceAll("\012", "\040").trim();
+        }
+
+        return str;
+    }
 
 
 }

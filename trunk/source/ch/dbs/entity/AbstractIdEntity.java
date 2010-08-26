@@ -23,26 +23,22 @@ package ch.dbs.entity;
  * @author Pascal Steiner
  */
 public class AbstractIdEntity extends AbstractEntity {
-  /**
-   * The unique identifier of the entity.
-   */
-  private Long id;
+    /**
+     * The unique identifier of the entity.
+     */
+    private Long id;
 
-  /**
-   * Default constructor which is only package visible for hibernate reasons.
-   */
-  public AbstractIdEntity() { }
 
-  /**
-   * @return The unique identifier of the entity.
-   */
-  public Long getId() {
-    return id;
-  }
-  /**
-   * @param id The unique identifier of the entity.
-   */
-  public void setId(Long id) {
-    this.id = id;
-  }
+    /**
+     * @return The unique identifier of the entity.
+     */
+    public Long getId() {
+        return id;
+    }
+    /**
+     * @param id The unique identifier of the entity.
+     */
+    public void setId(final Long id) {
+        this.id = id;
+    }
 }

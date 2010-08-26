@@ -106,7 +106,7 @@ public class Konto extends AbstractIdEntity {
 
     }
 
-    public Konto(KontoForm kf) {
+    public Konto(final KontoForm kf) {
         if (kf.getBiblioname() != null) { this.bibliotheksname = kf.getBiblioname().trim(); }
         if (kf.getIsil() != null && !kf.getIsil().equals("")) {
             this.isil = kf.getIsil().trim();
@@ -164,13 +164,13 @@ public class Konto extends AbstractIdEntity {
     /*
      * Füllt ein Kontoobjekt mit einer Zeile aus der Datenbank
      */
-    public Konto(ResultSet rs) throws Exception {
+    public Konto(final ResultSet rs) throws Exception {
 
         this.setRsValues(rs);
     }
 
 
-    private void setRsValues(ResultSet rs) throws Exception {
+    private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("KID"));
         this.setBibliotheksname(rs.getString("biblioname"));
         this.setIsil(rs.getString("isil"));
@@ -179,7 +179,7 @@ public class Konto extends AbstractIdEntity {
         try {  rs.findColumn("k.plz");
         this.setPLZ(rs.getString("k.plz"));
         this.setOrt(rs.getString("k.ort"));
-        } catch (SQLException se) {
+        } catch (final SQLException se) {
             this.setPLZ(rs.getString("plz"));
             this.setOrt(rs.getString("ort"));
         }
@@ -228,7 +228,7 @@ public class Konto extends AbstractIdEntity {
      * @param Connection cn
      * @return
      */
-    public Konto(Long kid, Connection cn) {
+    public Konto(final Long kid, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -241,21 +241,21 @@ public class Konto extends AbstractIdEntity {
                 this.setRsValues(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Konto (Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -265,9 +265,9 @@ public class Konto extends AbstractIdEntity {
      * Listet alle Kontos auf, sortiert nach Bibliotheksnamen
      * @return Kontolist
      */
-    public ArrayList<Konto> getAllKontos(Connection cn) {
+    public ArrayList<Konto> getAllKontos(final Connection cn) {
 
-        ArrayList<Konto> kontos = new ArrayList<Konto>();
+        final ArrayList<Konto> kontos = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -278,21 +278,21 @@ public class Konto extends AbstractIdEntity {
                 kontos.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Konto (Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -304,12 +304,12 @@ public class Konto extends AbstractIdEntity {
      *
      * @param cn
      */
-    public Long save(Connection cn) {
+    public Long save(final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            Konto kontoInstance = new Konto();
+            final Konto kontoInstance = new Konto();
             pstmt = kontoInstance.setKontoValues(cn.prepareStatement("INSERT INTO `konto` (`biblioname` , `isil` , "
                     + "`adresse` , `adresszusatz` , `plz` , `ort` , `land` , `timezone` , `telefon` , `faxno` , "
                     + "`faxusername` , `faxpassword` , `popfaxend` , `fax2` , `bibliomail` , `dbsmail` , "
@@ -329,21 +329,21 @@ public class Konto extends AbstractIdEntity {
                 this.setId(rs.getLong("LAST_INSERT_ID()"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -356,7 +356,7 @@ public class Konto extends AbstractIdEntity {
      *
      * @param cn
      */
-    public void update(Connection cn) {
+    public void update(final Connection cn) {
         PreparedStatement pstmt = null;
         try {
             pstmt = setKontoValues(cn.prepareStatement("UPDATE `konto` SET biblioname=?, isil=?, "
@@ -371,14 +371,14 @@ public class Konto extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("update(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -390,7 +390,7 @@ public class Konto extends AbstractIdEntity {
      *
      * @return Rückmeldung o das Konto gelöscht werden konnte
      */
-    public boolean deleteSelf(Connection cn) {
+    public boolean deleteSelf(final Connection cn) {
 
         boolean success = false;
 
@@ -402,14 +402,14 @@ public class Konto extends AbstractIdEntity {
 
             success = true;
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("deleteSelf(Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -420,16 +420,16 @@ public class Konto extends AbstractIdEntity {
     /*
      * holt alle für einen User erlaubte Kontos und selecktiert dasjenige unter dem er eingeloggt ist
      */
-    public List<Konto> getAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn) {
-        List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn);
+    public List<Konto> getAllAllowedKontosAndSelectActive(final UserInfo ui, final Connection cn) {
+        final List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn);
         try {
             int y = 0;
-            for (Konto uik : allPossKontos) {
+            for (final Konto uik : allPossKontos) {
                 if (uik.getId().equals(ui.getKonto().getId())) { uik.setSelected(true); } // selektiert das aktive Konto
                 allPossKontos.set(y, uik);
                 y++;
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("etAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn): " + e.toString());
         }
 
@@ -442,9 +442,9 @@ public class Konto extends AbstractIdEntity {
      * @param the expiredays
      * @return a {@link Konto}
      */
-    public ArrayList<Konto> getExpireKontos(int expiredays) {
-        DBConn cn = new DBConn();
-        ArrayList<Konto> kl = new ArrayList<Konto>();
+    public ArrayList<Konto> getExpireKontos(final int expiredays) {
+        final DBConn cn = new DBConn();
+        final ArrayList<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -456,21 +456,21 @@ public class Konto extends AbstractIdEntity {
                 kl.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getExpireKontos(int expiredays): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             cn.close();
@@ -486,8 +486,8 @@ public class Konto extends AbstractIdEntity {
      * @return a {@link Konto}
      */
     public List<Konto> getFaxserverKontos() {
-        DBConn cn = new DBConn();
-        ArrayList<Konto> kl = new ArrayList<Konto>();
+        final DBConn cn = new DBConn();
+        final ArrayList<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -498,21 +498,21 @@ public class Konto extends AbstractIdEntity {
                 kl.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getFaxServerKontos(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             cn.close();
@@ -527,8 +527,8 @@ public class Konto extends AbstractIdEntity {
      * @param AbstractBenutzer
      * @return ArrayList<Konto> kl
      */
-    public List<Konto> getKontosForBenutzer(AbstractBenutzer u, Connection cn) {
-        ArrayList<Konto> kl = new ArrayList<Konto>();
+    public List<Konto> getKontosForBenutzer(final AbstractBenutzer u, final Connection cn) {
+        final ArrayList<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -541,21 +541,21 @@ public class Konto extends AbstractIdEntity {
                 kl.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getKontosForBenutzer(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -568,8 +568,8 @@ public class Konto extends AbstractIdEntity {
      * @param AbstractBenutzer
      * @return
      */
-    public List<Konto> getLoginKontos(AbstractBenutzer u, Connection cn) {
-        ArrayList<Konto> kl = new ArrayList<Konto>();
+    public List<Konto> getLoginKontos(final AbstractBenutzer u, final Connection cn) {
+        final ArrayList<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -590,21 +590,21 @@ public class Konto extends AbstractIdEntity {
                 kl.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getLoginKontos(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -614,7 +614,7 @@ public class Konto extends AbstractIdEntity {
     /*
      * Setzt die Werte im Preparestatement der Methoden updateKonto() sowie saveNewKonto()
      */
-    private PreparedStatement setKontoValues(PreparedStatement pstmt, Konto k) throws Exception {
+    private PreparedStatement setKontoValues(final PreparedStatement pstmt, final Konto k) throws Exception {
 
         if (k.getBibliotheksname() != null) {
             pstmt.setString(1, k.getBibliotheksname());
@@ -757,10 +757,10 @@ public class Konto extends AbstractIdEntity {
         } else {
             pstmt.setString(29, "1");
         }
-        pstmt.setString(30, Integer.valueOf(k.getMaxordersu()).toString());
-        pstmt.setString(31, Integer.valueOf(k.getMaxordersutotal()).toString());
-        pstmt.setString(32, Integer.valueOf(k.getMaxordersj()).toString());
-        pstmt.setString(33, Integer.valueOf(k.getOrderlimits()).toString());
+        pstmt.setInt(30, k.getMaxordersu());
+        pstmt.setInt(31, k.getMaxordersutotal());
+        pstmt.setInt(32, k.getMaxordersj());
+        pstmt.setInt(33, k.getOrderlimits());
         if (!k.isUserlogin()) {
             pstmt.setString(34, "0");
         } else {
@@ -800,7 +800,7 @@ public class Konto extends AbstractIdEntity {
         return expdate;
     }
 
-    public void setExpdate(java.sql.Date expdate) {
+    public void setExpdate(final java.sql.Date expdate) {
         this.expdate = expdate;
     }
 
@@ -817,7 +817,7 @@ public class Konto extends AbstractIdEntity {
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll. (in Tagen)
      * @param accounting_rhythmday The accounting_rhythmday to set.
      */
-    public void setAccounting_rhythmday(int accounting_rhythmday) {
+    public void setAccounting_rhythmday(final int accounting_rhythmday) {
         this.accounting_rhythmday = accounting_rhythmday;
     }
 
@@ -836,7 +836,7 @@ public class Konto extends AbstractIdEntity {
      * trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
      * @param accounting_rhythmtimeout The accounting_rhythmtimeout to set.
      */
-    public void setAccounting_rhythmtimeout(int accounting_rhythmtimeout) {
+    public void setAccounting_rhythmtimeout(final int accounting_rhythmtimeout) {
         this.accounting_rhythmtimeout = accounting_rhythmtimeout;
     }
 
@@ -845,7 +845,7 @@ public class Konto extends AbstractIdEntity {
         return zdb;
     }
 
-    public void setZdb(boolean zdb) {
+    public void setZdb(final boolean zdb) {
         this.zdb = zdb;
     }
 
@@ -863,7 +863,7 @@ public class Konto extends AbstractIdEntity {
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll in Fr.-
      * @param accounting_rhythmvalue The accounting_rhythmvalue to set.
      */
-    public void setAccounting_rhythmvalue(int accounting_rhythmvalue) {
+    public void setAccounting_rhythmvalue(final int accounting_rhythmvalue) {
         this.accounting_rhythmvalue = accounting_rhythmvalue;
     }
 
@@ -871,7 +871,7 @@ public class Konto extends AbstractIdEntity {
         return Adresse;
     }
 
-    public void setAdresse(String adresse) {
+    public void setAdresse(final String adresse) {
         Adresse = adresse;
     }
 
@@ -879,7 +879,7 @@ public class Konto extends AbstractIdEntity {
         return Adressenzusatz;
     }
 
-    public void setAdressenzusatz(String adressenzusatz) {
+    public void setAdressenzusatz(final String adressenzusatz) {
         Adressenzusatz = adressenzusatz;
     }
 
@@ -887,7 +887,7 @@ public class Konto extends AbstractIdEntity {
         return Bibliotheksmail;
     }
 
-    public void setBibliotheksmail(String bibliotheksmail) {
+    public void setBibliotheksmail(final String bibliotheksmail) {
         Bibliotheksmail = bibliotheksmail;
     }
 
@@ -895,7 +895,7 @@ public class Konto extends AbstractIdEntity {
         return bibliotheksname;
     }
 
-    public void setBibliotheksname(String bibname) {
+    public void setBibliotheksname(final String bibname) {
         bibliotheksname = bibname;
     }
 
@@ -913,7 +913,7 @@ public class Konto extends AbstractIdEntity {
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
      * @param billing The billing to set.
      */
-    public void setBilling(Text billing) {
+    public void setBilling(final Text billing) {
         this.billing = billing;
     }
 
@@ -926,7 +926,7 @@ public class Konto extends AbstractIdEntity {
         return billingtype;
     }
 
-    public void setBillingtype(Text billingtype) {
+    public void setBillingtype(final Text billingtype) {
         this.billingtype = billingtype;
     }
 
@@ -942,7 +942,7 @@ public class Konto extends AbstractIdEntity {
      * This is the email that receives ILL deliveries
      * @param dbsmail The dbsmail to set.
      */
-    public void setDbsmail(String dbsmail) {
+    public void setDbsmail(final String dbsmail) {
         this.dbsmail = dbsmail;
     }
 
@@ -950,7 +950,7 @@ public class Konto extends AbstractIdEntity {
         return dbsmailpw;
     }
 
-    public void setDbsmailpw(String dbsmailpw) {
+    public void setDbsmailpw(final String dbsmailpw) {
         this.dbsmailpw = dbsmailpw;
     }
 
@@ -958,7 +958,7 @@ public class Konto extends AbstractIdEntity {
         return edatum;
     }
 
-    public void setEdatum(Date edatum) {
+    public void setEdatum(final Date edatum) {
         this.edatum = edatum;
     }
 
@@ -967,7 +967,7 @@ public class Konto extends AbstractIdEntity {
     }
 
 
-    public void setKontostatus(boolean kontostatus) {
+    public void setKontostatus(final boolean kontostatus) {
         this.kontostatus = kontostatus;
     }
 
@@ -975,7 +975,7 @@ public class Konto extends AbstractIdEntity {
         return default_deloptions;
     }
 
-    public void setDefault_deloptions(String default_deloptions) {
+    public void setDefault_deloptions(final String default_deloptions) {
         this.default_deloptions = default_deloptions;
     }
 
@@ -983,7 +983,7 @@ public class Konto extends AbstractIdEntity {
         return gtc;
     }
 
-    public void setGtc(String gtc) {
+    public void setGtc(final String gtc) {
         this.gtc = gtc;
     }
 
@@ -991,7 +991,7 @@ public class Konto extends AbstractIdEntity {
         return gtcdate;
     }
 
-    public void setGtcdate(String gtcdate) {
+    public void setGtcdate(final String gtcdate) {
         this.gtcdate = gtcdate;
     }
 
@@ -999,7 +999,7 @@ public class Konto extends AbstractIdEntity {
         return Land;
     }
 
-    public void setLand(String land) {
+    public void setLand(final String land) {
         Land = land;
     }
 
@@ -1007,7 +1007,7 @@ public class Konto extends AbstractIdEntity {
         return timezone;
     }
 
-    public void setTimezone(String timezone) {
+    public void setTimezone(final String timezone) {
         this.timezone = timezone;
     }
 
@@ -1023,7 +1023,7 @@ public class Konto extends AbstractIdEntity {
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
      * @param maxordersj The maxordersj to set.
      */
-    public void setMaxordersj(int maxordersj) {
+    public void setMaxordersj(final int maxordersj) {
         this.maxordersj = maxordersj;
     }
 
@@ -1039,7 +1039,7 @@ public class Konto extends AbstractIdEntity {
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
      * @param maxordersu The maxordersu to set.
      */
-    public void setMaxordersu(int maxordersu) {
+    public void setMaxordersu(final int maxordersu) {
         this.maxordersu = maxordersu;
     }
 
@@ -1055,7 +1055,7 @@ public class Konto extends AbstractIdEntity {
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
      * @param maxordersutotal The maxordersutotal to set.
      */
-    public void setMaxordersutotal(int maxordersutotal) {
+    public void setMaxordersutotal(final int maxordersutotal) {
         this.maxordersutotal = maxordersutotal;
     }
 
@@ -1063,7 +1063,7 @@ public class Konto extends AbstractIdEntity {
         return orderlimits;
     }
 
-    public void setOrderlimits(int orderlimits) {
+    public void setOrderlimits(final int orderlimits) {
         this.orderlimits = orderlimits;
     }
 
@@ -1071,7 +1071,7 @@ public class Konto extends AbstractIdEntity {
         return Ort;
     }
 
-    public void setOrt(String ort) {
+    public void setOrt(final String ort) {
         Ort = ort;
     }
 
@@ -1079,7 +1079,7 @@ public class Konto extends AbstractIdEntity {
         return PLZ;
     }
 
-    public void setPLZ(String plz) {
+    public void setPLZ(final String plz) {
         PLZ = plz;
     }
 
@@ -1087,7 +1087,7 @@ public class Konto extends AbstractIdEntity {
         return gbvbenutzername;
     }
 
-    public void setGbvbenutzername(String gbvbenutzername) {
+    public void setGbvbenutzername(final String gbvbenutzername) {
         this.gbvbenutzername = gbvbenutzername;
     }
 
@@ -1095,7 +1095,7 @@ public class Konto extends AbstractIdEntity {
         return gbvpasswort;
     }
 
-    public void setGbvpasswort(String gbvpasswort) {
+    public void setGbvpasswort(final String gbvpasswort) {
         this.gbvpasswort = gbvpasswort;
     }
 
@@ -1103,7 +1103,7 @@ public class Konto extends AbstractIdEntity {
         return gbvrequesterid;
     }
 
-    public void setGbvrequesterid(String gbvrequesterid) {
+    public void setGbvrequesterid(final String gbvrequesterid) {
         this.gbvrequesterid = gbvrequesterid;
     }
 
@@ -1112,7 +1112,7 @@ public class Konto extends AbstractIdEntity {
     }
 
 
-    public void setEzbid(String ezbid) {
+    public void setEzbid(final String ezbid) {
         this.ezbid = ezbid;
     }
 
@@ -1121,7 +1121,7 @@ public class Konto extends AbstractIdEntity {
         return instlogolink;
     }
 
-    public void setInstlogolink(String instlogolink) {
+    public void setInstlogolink(final String instlogolink) {
         this.instlogolink = instlogolink;
     }
 
@@ -1137,7 +1137,7 @@ public class Konto extends AbstractIdEntity {
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
      * @param threshold_value The threshold_value to set.
      */
-    public void setThreshold_value(int threshold_value) {
+    public void setThreshold_value(final int threshold_value) {
         this.threshold_value = threshold_value;
     }
 
@@ -1151,7 +1151,7 @@ public class Konto extends AbstractIdEntity {
     /**
      * @param userbestellung The userbestellung to set.
      */
-    public void setUserbestellung(boolean userbestellung) {
+    public void setUserbestellung(final boolean userbestellung) {
         this.userbestellung = userbestellung;
     }
 
@@ -1160,7 +1160,7 @@ public class Konto extends AbstractIdEntity {
         return gbvbestellung;
     }
 
-    public void setGbvbestellung(boolean gbvbestellung) {
+    public void setGbvbestellung(final boolean gbvbestellung) {
         this.gbvbestellung = gbvbestellung;
     }
 
@@ -1168,7 +1168,7 @@ public class Konto extends AbstractIdEntity {
         return userlogin;
     }
 
-    public void setUserlogin(boolean userlogin) {
+    public void setUserlogin(final boolean userlogin) {
         this.userlogin = userlogin;
     }
 
@@ -1176,7 +1176,7 @@ public class Konto extends AbstractIdEntity {
         return selected;
     }
 
-    public void setSelected(boolean selected) {
+    public void setSelected(final boolean selected) {
         this.selected = selected;
     }
 
@@ -1184,7 +1184,7 @@ public class Konto extends AbstractIdEntity {
         return Telefon;
     }
 
-    public void setTelefon(String telefon) {
+    public void setTelefon(final String telefon) {
         Telefon = telefon;
     }
 
@@ -1193,7 +1193,7 @@ public class Konto extends AbstractIdEntity {
         return faxno;
     }
 
-    public void setFaxno(String faxno) {
+    public void setFaxno(final String faxno) {
         this.faxno = faxno;
     }
 
@@ -1201,7 +1201,7 @@ public class Konto extends AbstractIdEntity {
         return faxpassword;
     }
 
-    public void setFaxpassword(String faxpassword) {
+    public void setFaxpassword(final String faxpassword) {
         this.faxpassword = faxpassword;
     }
 
@@ -1209,7 +1209,7 @@ public class Konto extends AbstractIdEntity {
         return popfaxend;
     }
 
-    public void setPopfaxend(String popfaxend) {
+    public void setPopfaxend(final String popfaxend) {
         this.popfaxend = popfaxend;
     }
 
@@ -1217,7 +1217,7 @@ public class Konto extends AbstractIdEntity {
         return faxusername;
     }
 
-    public void setFaxusername(String faxusername) {
+    public void setFaxusername(final String faxusername) {
         this.faxusername = faxusername;
     }
 
@@ -1225,7 +1225,7 @@ public class Konto extends AbstractIdEntity {
         return fax_extern;
     }
 
-    public void setFax_extern(String fax_extern) {
+    public void setFax_extern(final String fax_extern) {
         this.fax_extern = fax_extern;
     }
 
@@ -1233,7 +1233,7 @@ public class Konto extends AbstractIdEntity {
         return kontotyp;
     }
 
-    public void setKontotyp(int kontotyp) {
+    public void setKontotyp(final int kontotyp) {
         this.kontotyp = kontotyp;
     }
 
@@ -1244,7 +1244,7 @@ public class Konto extends AbstractIdEntity {
         return paydate;
     }
 
-    public void setPaydate(java.sql.Date paydate) {
+    public void setPaydate(final java.sql.Date paydate) {
         this.paydate = paydate;
     }
 
@@ -1252,7 +1252,7 @@ public class Konto extends AbstractIdEntity {
         return isil;
     }
 
-    public void setIsil(String isil) {
+    public void setIsil(final String isil) {
         this.isil = isil;
     }
 

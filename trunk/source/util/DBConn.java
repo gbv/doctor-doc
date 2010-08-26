@@ -42,7 +42,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String SERVER = "jdbc:mysql://" + DATABASE_SERVERADDRESS + "/" + DATABASE_NAME
     + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false";
-    private Connection cn = null;
+    private Connection cn;
 
     /**
      * Stellt die Verbindung zur MySql DB her und speichert die Verbindung im Objekt
@@ -68,13 +68,13 @@ public class DBConn extends AbstractReadSystemConfigurations {
      * @param table (Tabelle)
      * @param field (Feld, in dem die Datei gespeichert wird)
      */
-    public void saveFile(File fl, String id, String table, String field) throws Exception {
+    public void saveFile(final File fl, final String id, final String table, final String field) throws Exception {
 
         Class.forName(DRIVER);
-        Connection        dbCon = DriverManager.getConnection(SERVER, DATABASE_USER, DATABASE_PASSWORD);
+        final Connection dbCon = DriverManager.getConnection(SERVER, DATABASE_USER, DATABASE_PASSWORD);
 
-        FileInputStream   fis   = new FileInputStream(fl);
-        PreparedStatement pstmt = dbCon.prepareStatement(
+        final FileInputStream fis = new FileInputStream(fl);
+        final PreparedStatement pstmt = dbCon.prepareStatement(
                 "update " + table + " set " + field + " = ? where did = " + id);
         pstmt.setBinaryStream(1, fis, (int) fl.length());
         pstmt.executeUpdate();
@@ -153,8 +153,8 @@ public class DBConn extends AbstractReadSystemConfigurations {
 
         if (cn == null) {
             try {
-                InitialContext ic = new InitialContext();
-                DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/pooledDS");
+                final InitialContext ic = new InitialContext();
+                final DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/pooledDS");
                 cn = ds.getConnection();
                 //              PooledDataSource pds = (PooledDataSource) ds;
                 //              System.err.println("num_connections: " + pds.getNumConnectionsDefaultUser());
@@ -165,15 +165,15 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 LOG.error("getPooledConnection: " + e.toString());
                 cn = getSingleConnection();
                 // Control to see if it works on remote server
-                MHelper mh = new MHelper();
+                final MHelper mh = new MHelper();
                 mh.sendErrorMail("Failure in getPooledConnection!!!", e.toString());
             }
         } else {
             try {
                 if (cn.isClosed()) {
                     try {
-                        InitialContext ic = new InitialContext();
-                        DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/pooledDS");
+                        final InitialContext ic = new InitialContext();
+                        final DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/pooledDS");
                         cn = ds.getConnection();
                         // PooledDataSource pds = (PooledDataSource) ds;
                         // System.err.println("num_connections: " + pds.getNumConnectionsDefaultUser());
@@ -184,7 +184,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                         LOG.error("getPooledConnection: " + e.toString());
                         cn = getSingleConnection();
                         // Control to see if it works on remote server
-                        MHelper mh = new MHelper();
+                        final MHelper mh = new MHelper();
                         mh.sendErrorMail("Failure in getPooledConnection!!!", e.toString());
                     }
                 }
@@ -196,7 +196,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
         return cn;
     }
 
-    public void setCn(Connection cn) {
+    public void setCn(final Connection cn) {
         this.cn = cn;
     }
 

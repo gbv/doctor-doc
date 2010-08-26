@@ -68,39 +68,42 @@ public final class OrderGbvAction extends DispatchAction {
     private static final SimpleLogger LOG = new SimpleLogger(OrderGbvAction.class);
     private static final int TIMEOUT = 3000;
     private static final int RETRYS = 2;
+    private static final String BASEURL = "http://cbs4.gbv.de:8080/cgi-bin/vuefl/vuefl_recv_data.pl";
+    private static final String FAILURE = "failure";
+    private static final String SUCCESS = "success";
+    private static final String ACTIVEMENUS = "ActiveMenus";
+    private static final String ERRORMESSAGE = "errormessage";
 
     /**
      * löst eine Bestellung beim GBV aus.
      */
-    public ActionForward order(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward order(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = FAILURE;
         OrderForm of = (OrderForm) fm;
-        OrderState orderstate = new OrderState();
-        OrderAction orderActionInstance = new OrderAction();
-        IllHandler illHandlerInstance = new IllHandler();
-        Lieferanten lieferantenInstance = new Lieferanten();
-        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        Text t = new Text();
-        Check ck = new Check();
-        Auth auth = new Auth();
+        final OrderState orderstate = new OrderState();
+        final OrderAction oaInstance = new OrderAction();
+        final IllHandler ihInstance = new IllHandler();
+        final Lieferanten lInstance = new Lieferanten();
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Text t = new Text();
+        final Check ck = new Check();
+        final Auth auth = new Auth();
         // URL Test-System des GBV
         //    String baseurl = "http://cbst.gbv.de:8080/cgi-bin/vuefl_0702/vuefl_recv_data.pl";
-        // URL Produktiv-System des GBV
-        String baseurl = "http://cbs4.gbv.de:8080/cgi-bin/vuefl/vuefl_recv_data.pl";
 
         if (auth.isLogin(rq)) { // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
 
             // Fileformat für Statistik aus gemachten Angaben schliessen
-            if (of.getMediatype().equals("Buch")) { of.setFileformat("Papierkopie");
+            if ("Buch".equals(of.getMediatype())) { of.setFileformat("Papierkopie");
             } else {
                 if (of.getDeloptions().equals("post")) { of.setFileformat("Papierkopie"); }
                 if (of.getDeloptions().equals("fax")) { of.setFileformat("Papierkopie"); }
                 if (of.getDeloptions().equals("fax to pdf")) { of.setFileformat("PDF"); }
             }
 
-            if (!of.getSubmit().equals("GBV-Suche")) {
+            if (!"GBV-Suche".equals(of.getSubmit())) {
 
                 // Bestellkunde darf nicht "deaktiviert" sein
                 if (auth.isUserAccount(of.getForuser(), t.getConnection())) {
@@ -112,7 +115,7 @@ public final class OrderGbvAction extends DispatchAction {
                             try {
 
                                 // *** Bestelltyp Copy
-                                if (of.getMediatype().equals("Artikel") || of.getMediatype().equals("Teilkopie Buch")) {
+                                if ("Artikel".equals(of.getMediatype()) || "Teilkopie Buch".equals(of.getMediatype())) {
 
                                     // noch keine PPN vorhanden, d.h. choosehits.do noch nicht durchlaufen
                                     if (of.getPpn() == null) {
@@ -129,9 +132,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                         "zdb", of.getZdbid(), 1));
                                                 of.setGbvfield("zdb");
                                                 of.setGbvsearch(of.getZdbid());
-                                            } catch (MyException e) {
+                                            } catch (final MyException e) {
                                                 LOG.info("GBV-Message: " + e.getMessage());
-                                                Message m = new Message();
+                                                final Message m = new Message();
                                                 m.setMessage(e.getMessage());
                                                 rq.setAttribute("gbvmessage", m);
                                             }
@@ -139,7 +142,7 @@ public final class OrderGbvAction extends DispatchAction {
                                             // ...ist das Bestellobjekt da und kein E-Journal?
                                             if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
                                                 // 2. Chance anhand der vorhandenen ISSN
-                                                of.setZdbid(orderActionInstance.getZdbidFromIssn(
+                                                of.setZdbid(oaInstance.getZdbidFromIssn(
                                                         of.getIssn(), t.getConnection()));
                                                 // hier kann es sein dass dbs keine zdbid liefert
                                                 // => ggf. Suche anhand ISSN
@@ -150,9 +153,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                         of.setGbvfield("zdb");
                                                         of.setGbvsearch(of.getZdbid());
                                                         gsf = getGbvOrderObject(matches, of, t.getConnection());
-                                                    } catch (MyException e) {
+                                                    } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
-                                                        Message m = new Message();
+                                                        final Message m = new Message();
                                                         m.setMessage(e.getMessage());
                                                         rq.setAttribute("gbvmessage", m);
                                                     }
@@ -166,9 +169,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                         of.setGbvfield("iss");
                                                         of.setGbvsearch(of.getIssn());
                                                         gsf = getGbvOrderObject(matches, of, t.getConnection());
-                                                    } catch (MyException e) {
+                                                    } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
-                                                        Message m = new Message();
+                                                        final Message m = new Message();
                                                         m.setMessage(e.getMessage());
                                                         rq.setAttribute("gbvmessage", m);
                                                     }
@@ -178,7 +181,7 @@ public final class OrderGbvAction extends DispatchAction {
                                         } else {
                                             // handelt es sich um eine Zeitschrift?
                                             if (ck.isMinLength(of.getIssn(), 2)) {
-                                                of.setZdbid(orderActionInstance.getZdbidFromIssn(
+                                                of.setZdbid(oaInstance.getZdbidFromIssn(
                                                         of.getIssn(), t.getConnection()));
                                                 // hier kann es sein dass dbs keine zdbid liefert
                                                 // => ggf. Suche anhand ISSN
@@ -189,9 +192,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                         of.setGbvfield("zdb");
                                                         of.setGbvsearch(of.getZdbid());
                                                         gsf = getGbvOrderObject(matches, of, t.getConnection());
-                                                    } catch (MyException e) {
+                                                    } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
-                                                        Message m = new Message();
+                                                        final Message m = new Message();
                                                         m.setMessage(e.getMessage());
                                                         rq.setAttribute("gbvmessage", m);
                                                     }
@@ -204,15 +207,15 @@ public final class OrderGbvAction extends DispatchAction {
                                                         of.setGbvfield("iss");
                                                         of.setGbvsearch(of.getIssn());
                                                         gsf = getGbvOrderObject(matches, of, t.getConnection());
-                                                    } catch (MyException e) {
+                                                    } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
-                                                        Message m = new Message();
+                                                        final Message m = new Message();
                                                         m.setMessage(e.getMessage());
                                                         rq.setAttribute("gbvmessage", m);
                                                     }
                                                 }
                                                 // falls Bestimmung anhand ISSN fehlgeschlagen ist => Titelsuche
-                                                if (matches.size() == 0
+                                                if (matches.isEmpty()
                                                         && ck.isMinLength(of.getZeitschriftentitel(), 2)) {
                                                     try { // allfällige SRU-Fehler-Codes abfangen
                                                         // erster Versuch eng, als Phrase
@@ -221,15 +224,15 @@ public final class OrderGbvAction extends DispatchAction {
                                                         of.setGbvfield("zti");
                                                         of.setGbvsearch(of.getZeitschriftentitel());
                                                         // zweiter Versuch als Stichwort-Suche
-                                                        if (matches.size() == 0) {
+                                                        if (matches.isEmpty()) {
                                                             matches = getGbvMatches(getGbvSrucontentSearch(
                                                                     "sha", of.getZeitschriftentitel(), 1));
                                                             of.setGbvfield("sha");
                                                             of.setGbvsearch(of.getZeitschriftentitel());
                                                         }
-                                                    } catch (MyException e) {
+                                                    } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
-                                                        Message m = new Message();
+                                                        final Message m = new Message();
                                                         m.setMessage(e.getMessage());
                                                         rq.setAttribute("gbvmessage", m);
                                                     }
@@ -245,9 +248,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                             of.setGbvfield("isb");
                                                             of.setGbvsearch(of.getIsbn());
                                                             gsf = getGbvOrderObject(matches, of, t.getConnection());
-                                                        } catch (MyException e) {
+                                                        } catch (final MyException e) {
                                                             LOG.info("GBV-Message: " + e.getMessage());
-                                                            Message m = new Message();
+                                                            final Message m = new Message();
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
@@ -260,22 +263,22 @@ public final class OrderGbvAction extends DispatchAction {
                                                             of.setGbvfield("tit");
                                                             of.setGbvsearch(of.getBuchtitel());
                                                             // zweiter Versuch als Stichwort-Suche
-                                                            if (matches.size() == 0) {
+                                                            if (matches.isEmpty()) {
                                                                 matches = getGbvMatches(getGbvSrucontentSearch(
                                                                         "tit", of.getBuchtitel(), 1));
                                                                 of.setGbvfield("tit");
                                                                 of.setGbvsearch(of.getBuchtitel());
                                                             }
                                                             // dritter Versuch über alle Wörter
-                                                            if (matches.size() == 0) {
+                                                            if (matches.isEmpty()) {
                                                                 matches = getGbvMatches(getGbvSrucontentSearch(
                                                                         "all", of.getBuchtitel(), 1));
                                                                 of.setGbvfield("all");
                                                                 of.setGbvsearch(of.getBuchtitel());
                                                             }
-                                                        } catch (MyException e) {
+                                                        } catch (final MyException e) {
                                                             LOG.info("GBV-Message: " + e.getMessage());
-                                                            Message m = new Message();
+                                                            final Message m = new Message();
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
@@ -290,15 +293,15 @@ public final class OrderGbvAction extends DispatchAction {
                                                             of.setGbvfield("zti");
                                                             of.setGbvsearch(of.getZeitschriftentitel());
                                                             // zweiter Versuch als Stichwort-Suche
-                                                            if (matches.size() == 0) {
+                                                            if (matches.isEmpty()) {
                                                                 matches = getGbvMatches(getGbvSrucontentSearch(
                                                                         "sha", of.getZeitschriftentitel(), 1));
                                                                 of.setGbvfield("sha");
                                                                 of.setGbvsearch(of.getZeitschriftentitel());
                                                             }
-                                                        } catch (MyException e) {
+                                                        } catch (final MyException e) {
                                                             LOG.info("GBV-Message: " + e.getMessage());
-                                                            Message m = new Message();
+                                                            final Message m = new Message();
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
@@ -326,14 +329,14 @@ public final class OrderGbvAction extends DispatchAction {
                                             } else { // *** automatische Bestellung
                                                 of.setPpn(gsf.getPpn_003AT());
                                                 IllForm gbv = new IllForm();
-                                                gbv = illHandlerInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                                String gbvanswer = illHandlerInstance.sendIllRequest(gbv, baseurl);
-                                                String returnValue = illHandlerInstance.readGbvIllAnswer(gbvanswer);
+                                                gbv = ihInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                                final String gbvanswer = ihInstance.sendIllRequest(gbv, BASEURL);
+                                                final String returnValue = ihInstance.readGbvIllAnswer(gbvanswer);
                                                 forward = "ordersuccess";
                                                 if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
                                                     AbstractBenutzer kunde = new AbstractBenutzer();
-                                                    kunde = kunde.getUser(new Long(of.getForuser()), t.getConnection());
-                                                    of.setLieferant(lieferantenInstance.getLieferantFromName(
+                                                    kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
+                                                    of.setLieferant(lInstance.getLieferantFromName(
                                                             "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
                                                     // doppelter Eintrag um Sortieren und Suche zu ermöglichen
                                                     of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
@@ -342,7 +345,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                     of.setWaehrung("EUR");
                                                     of.setTrackingnr(gbv.getTransaction_group_qualifier());
                                                     of.setGbvnr(returnValue);
-                                                    Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
+                                                    final Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
                                                     if (of.getBid() == null) {
                                                         b.save(t.getConnection());
                                                     } else {
@@ -357,11 +360,11 @@ public final class OrderGbvAction extends DispatchAction {
                                                     }
 
                                                 } else {
-                                                    ErrorMessage em = new ErrorMessage();
+                                                    final ErrorMessage em = new ErrorMessage();
                                                     em.setError("error.gbvorder");
                                                     em.setError_specific(returnValue);
                                                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                    rq.setAttribute("errormessage", em);
+                                                    rq.setAttribute(ERRORMESSAGE, em);
                                                     // Für die manuelle Bestellung
                                                     of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" + ui.getKonto().getGbvbenutzername() + "&PASSWORD="
                                                             + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
@@ -373,12 +376,12 @@ public final class OrderGbvAction extends DispatchAction {
                                             }
                                             // *** keine (0), keine eindeutigen (>1) oder nur ein E-Journal (1) erhalten
                                         } else {
-                                            if (matches.size() > 0) { // Teilkopie oder E-Journal kann 1 sein
+                                            if (!matches.isEmpty()) { // Teilkopie oder E-Journal kann 1 sein
                                                 // Pfad auf Trefferauswahl
                                                 forward = "trefferauswahl";
                                                 of.setTreffer_total(matches.get(0).getTreffer_total());
-                                                int start = matches.get(0).getStart_record();
-                                                int max = matches.get(0).getMaximum_record();
+                                                final int start = matches.get(0).getStart_record();
+                                                final int max = matches.get(0).getMaximum_record();
                                                 if (of.getTreffer_total() - (start + max - 1) > 0) {
                                                     of.setForwrd(start + max);
                                                 }
@@ -395,7 +398,7 @@ public final class OrderGbvAction extends DispatchAction {
 
                                         if (of.isManuell()) { // manuelle Bestellung
                                             forward = "redirect";
-                                            if (!of.getMediatype().equals("Artikel")) { // Bei Büchern und Teilkopien...
+                                            if (!"Artikel".equals(of.getMediatype())) { // Bei Büchern und Teilkopien...
                                                 of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" + ui.getKonto().getGbvbenutzername() + "&PASSWORD="
                                                         + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                         + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
@@ -407,14 +410,14 @@ public final class OrderGbvAction extends DispatchAction {
                                             }
                                         } else { // *** automatische Bestellung
                                             IllForm gbv = new IllForm();
-                                            gbv = illHandlerInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                            String gbvanswer = illHandlerInstance.sendIllRequest(gbv, baseurl);
-                                            String returnValue = illHandlerInstance.readGbvIllAnswer(gbvanswer);
+                                            gbv = ihInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                            final String gbvanswer = ihInstance.sendIllRequest(gbv, BASEURL);
+                                            final String returnValue = ihInstance.readGbvIllAnswer(gbvanswer);
                                             forward = "ordersuccess";
                                             if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
                                                 AbstractBenutzer kunde = new AbstractBenutzer();
-                                                kunde = kunde.getUser(new Long(of.getForuser()), t.getConnection());
-                                                of.setLieferant(lieferantenInstance.getLieferantFromName(
+                                                kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
+                                                of.setLieferant(lInstance.getLieferantFromName(
                                                         "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
                                                 // doppelter Eintrag um Sortieren und Suche zu ermöglichen
                                                 of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
@@ -423,7 +426,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                 of.setWaehrung("EUR");
                                                 of.setTrackingnr(gbv.getTransaction_group_qualifier());
                                                 of.setGbvnr(returnValue);
-                                                Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
+                                                final Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
                                                 if (of.getBid() == null) {
                                                     b.save(t.getConnection());
                                                 } else {
@@ -438,11 +441,11 @@ public final class OrderGbvAction extends DispatchAction {
                                                 }
 
                                             } else {
-                                                ErrorMessage em = new ErrorMessage();
+                                                final ErrorMessage em = new ErrorMessage();
                                                 em.setError("error.gbvorder");
                                                 em.setError_specific(returnValue);
                                                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                rq.setAttribute("errormessage", em);
+                                                rq.setAttribute(ERRORMESSAGE, em);
                                                 // Für die manuelle Bestellung
                                                 of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" + ui.getKonto().getGbvbenutzername() + "&PASSWORD="
                                                         + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
@@ -470,9 +473,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                         "isb", of.getIsbn(), 1));
                                                 of.setGbvfield("isb");
                                                 of.setGbvsearch(of.getIsbn());
-                                            } catch (MyException e) {
+                                            } catch (final MyException e) {
                                                 LOG.info("GBV-Message: " + e.getMessage());
-                                                Message m = new Message();
+                                                final Message m = new Message();
                                                 m.setMessage(e.getMessage());
                                                 rq.setAttribute("gbvmessage", m);
                                             }
@@ -485,22 +488,22 @@ public final class OrderGbvAction extends DispatchAction {
                                                 of.setGbvfield("tit");
                                                 of.setGbvsearch(of.getBuchtitel());
                                                 // zweiter Versuch als Stichwort-Suche
-                                                if (matches.size() == 0) {
+                                                if (matches.isEmpty()) {
                                                     matches = getGbvMatches(getGbvSrucontentSearch(
                                                             "tit", of.getBuchtitel(), 1));
                                                     of.setGbvfield("tit");
                                                     of.setGbvsearch(of.getBuchtitel());
                                                 }
                                                 // dritter Versuch über alle Wörter
-                                                if (matches.size() == 0) {
+                                                if (matches.isEmpty()) {
                                                     matches = getGbvMatches(getGbvSrucontentSearch(
                                                             "all", of.getBuchtitel(), 1));
                                                     of.setGbvfield("all");
                                                     of.setGbvsearch(of.getBuchtitel());
                                                 }
-                                            } catch (MyException e) {
+                                            } catch (final MyException e) {
                                                 LOG.info("GBV-Message: " + e.getMessage());
-                                                Message m = new Message();
+                                                final Message m = new Message();
                                                 m.setMessage(e.getMessage());
                                                 rq.setAttribute("gbvmessage", m);
                                             }
@@ -521,8 +524,8 @@ public final class OrderGbvAction extends DispatchAction {
                                                 // Pfad auf Trefferauswahl
                                                 forward = "trefferauswahl";
                                                 of.setTreffer_total(matches.get(0).getTreffer_total());
-                                                int start = matches.get(0).getStart_record();
-                                                int max = matches.get(0).getMaximum_record();
+                                                final int start = matches.get(0).getStart_record();
+                                                final int max = matches.get(0).getMaximum_record();
                                                 if (of.getTreffer_total() - (start + max - 1) > 0) {
                                                     of.setForwrd(start + max);
                                                 }
@@ -535,8 +538,8 @@ public final class OrderGbvAction extends DispatchAction {
                                                 // Pfad auf Trefferauswahl
                                                 forward = "trefferauswahl";
                                                 of.setTreffer_total(matches.get(0).getTreffer_total());
-                                                int start = matches.get(0).getStart_record();
-                                                int max = matches.get(0).getMaximum_record();
+                                                final int start = matches.get(0).getStart_record();
+                                                final int max = matches.get(0).getMaximum_record();
                                                 if (of.getTreffer_total() - (start + max - 1) > 0) {
                                                     of.setForwrd(start + max);
                                                 }
@@ -557,14 +560,14 @@ public final class OrderGbvAction extends DispatchAction {
                                                     + "LOAN%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
                                         } else { // *** automatische Bestellung
                                             IllForm gbv = new IllForm();
-                                            gbv = illHandlerInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                            String gbvanswer = illHandlerInstance.sendIllRequest(gbv, baseurl);
-                                            String returnValue = illHandlerInstance.readGbvIllAnswer(gbvanswer);
+                                            gbv = ihInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                            final String gbvanswer = ihInstance.sendIllRequest(gbv, BASEURL);
+                                            final String returnValue = ihInstance.readGbvIllAnswer(gbvanswer);
                                             forward = "ordersuccess";
                                             if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
                                                 AbstractBenutzer kunde = new AbstractBenutzer();
-                                                kunde = kunde.getUser(new Long(of.getForuser()), t.getConnection());
-                                                of.setLieferant(lieferantenInstance.getLieferantFromName(
+                                                kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
+                                                of.setLieferant(lInstance.getLieferantFromName(
                                                         "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
                                                 // doppelter Eintrag um Sortieren und Suche zu ermöglichen
                                                 of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
@@ -573,7 +576,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                 of.setWaehrung("EUR");
                                                 of.setTrackingnr(gbv.getTransaction_group_qualifier());
                                                 of.setGbvnr(returnValue);
-                                                Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
+                                                final Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
                                                 if (of.getBid() == null) {
                                                     b.save(t.getConnection());
                                                 } else {
@@ -588,11 +591,11 @@ public final class OrderGbvAction extends DispatchAction {
                                                 }
 
                                             } else {
-                                                ErrorMessage em = new ErrorMessage();
+                                                final ErrorMessage em = new ErrorMessage();
                                                 em.setError("error.gbvorder");
                                                 em.setError_specific(returnValue);
                                                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                rq.setAttribute("errormessage", em);
+                                                rq.setAttribute(ERRORMESSAGE, em);
                                                 // Für die manuelle Bestellung
                                                 of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" + ui.getKonto().getGbvbenutzername() + "&PASSWORD="
                                                         + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
@@ -607,31 +610,31 @@ public final class OrderGbvAction extends DispatchAction {
 
                                 }
 
-                            } catch (Exception e) {
-                                ErrorMessage em = new ErrorMessage();
+                            } catch (final Exception e) {
+                                final ErrorMessage em = new ErrorMessage();
                                 em.setError("error.system");
                                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                rq.setAttribute("errormessage", em);
+                                rq.setAttribute(ERRORMESSAGE, em);
                                 LOG.error("order: " + e.toString());
                             }
 
                         } else {
                             of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                             rq.setAttribute("orderform", of);
-                            ErrorMessage em = new ErrorMessage("error.maxorder", "searchfree.do");
-                            rq.setAttribute("errormessage", em);
+                            final ErrorMessage em = new ErrorMessage("error.maxorder", "searchfree.do");
+                            rq.setAttribute(ERRORMESSAGE, em);
                         }
                     } else {
                         of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                         rq.setAttribute("orderform", of);
-                        ErrorMessage em = new ErrorMessage("error.maxorderyear", "searchfree.do");
-                        rq.setAttribute("errormessage", em);
+                        final ErrorMessage em = new ErrorMessage("error.maxorderyear", "searchfree.do");
+                        rq.setAttribute(ERRORMESSAGE, em);
                     }
                 } else {
                     of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                     rq.setAttribute("orderform", of);
-                    ErrorMessage em = new ErrorMessage("error.inactive", "searchfree.do");
-                    rq.setAttribute("errormessage", em);
+                    final ErrorMessage em = new ErrorMessage("error.inactive", "searchfree.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
                 }
 
             } else { // GBV-Suche
@@ -640,11 +643,11 @@ public final class OrderGbvAction extends DispatchAction {
 
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         of.setSubmit("GBV");
@@ -658,9 +661,9 @@ public final class OrderGbvAction extends DispatchAction {
 
         rq.setAttribute("orderform", of);
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
         t.close();
 
@@ -671,19 +674,19 @@ public final class OrderGbvAction extends DispatchAction {
     /**
      * führt eine GBV-Suche aus und holt die Treffer
      */
-    public ActionForward search(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward search(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        OrderForm of = (OrderForm) fm;
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final OrderForm of = (OrderForm) fm;
+        final Auth auth = new Auth();
 
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         if (auth.isLogin(rq)) {
 
             try {
 
-                Check ck = new Check();
+                final Check ck = new Check();
                 int startRecord = 1;
                 if (of.getBack() != 0) { startRecord = of.getBack(); } // in der Anzeige wurde zurück geblättert
                 if (of.getForwrd() != 0) { startRecord = of.getForwrd(); } // in der Anzeige wurde vorwärts geblättert
@@ -697,65 +700,65 @@ public final class OrderGbvAction extends DispatchAction {
                         ArrayList<GbvSruForm> matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
                                 of.getGbvfield(), of.getGbvsearch(), startRecord));
                         // zweite Suche als Stichwörter
-                        if (matches.size() == 0) {
+                        if (matches.isEmpty()) {
                             matches = getGbvMatches(getGbvSrucontentSearch(
                                     of.getGbvfield(), of.getGbvsearch(), startRecord));
                         }
 
-                        if (matches.size() > 0) {
+                        if (!matches.isEmpty()) {
                             // Pfad auf Trefferauswahl
                             forward = "trefferauswahl";
                             of.setTreffer_total(matches.get(0).getTreffer_total());
-                            int start = matches.get(0).getStart_record();
-                            int max = matches.get(0).getMaximum_record();
+                            final int start = matches.get(0).getStart_record();
+                            final int max = matches.get(0).getMaximum_record();
                             if (of.getTreffer_total() - (start + max - 1) > 0) { of.setForwrd(start + max); }
                             if (start - max > 0) { of.setBack(start - max); }
                             rq.setAttribute("matches", matches);
                         } else {
                             // Pfad auf Suche
                             forward = "search";
-                            Message m = new Message();
+                            final Message m = new Message();
                             m.setMessage("Keine Treffer!");
                             rq.setAttribute("gbvmessage", m);
                         }
 
-                    } catch (MyException e) {
+                    } catch (final MyException e) {
                         LOG.info("GBV-Message: " + e.getMessage());
                         forward = "search";
-                        Message m = new Message();
+                        final Message m = new Message();
                         m.setMessage(e.getMessage());
                         rq.setAttribute("gbvmessage", m);
                     }
 
                 } else { // keine Eingabe erfolgt => zurück zur Suche
                     forward = "search";
-                    Message m = new Message();
+                    final Message m = new Message();
                     m.setMessage("Keine Treffer!");
                     rq.setAttribute("gbvmessage", m);
                 }
 
-            } catch (Exception e) {
-                forward = "failure";
-                ErrorMessage em = new ErrorMessage();
+            } catch (final Exception e) {
+                forward = FAILURE;
+                final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
                 LOG.error("search: " + e.toString());
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         of.setSubmit("GBV");
         rq.setAttribute("orderform", of);
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
         return mp.findForward(forward);
 
@@ -764,32 +767,32 @@ public final class OrderGbvAction extends DispatchAction {
     /**
      * validiert die Mussfelder
      */
-    public ActionForward validate(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward validate(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        OrderForm of = (OrderForm) fm;
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final OrderForm of = (OrderForm) fm;
+        final Auth auth = new Auth();
 
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         if (auth.isLogin(rq)) {
 
-            Texttyp t = new Texttyp();
+            final Texttyp t = new Texttyp();
             try {
 
-                if (!of.getSubmit().equals("GBV-Suche")) {
+                if (!"GBV-Suche".equals(of.getSubmit())) {
 
                     if (!gbvOrderValues(of)) {
 
                         forward = "missingvalues";
-                        Message m = new Message("Fehlende Mussfelder oder zuwenig Angaben für eine Bestellung.");
+                        final Message m = new Message("Fehlende Mussfelder oder zuwenig Angaben für eine Bestellung.");
                         rq.setAttribute("gbvmessage", m);
 
-                        UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                         if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
-                            List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                            AbstractBenutzer b = ui.getBenutzer();
+                            final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
+                            final AbstractBenutzer b = ui.getBenutzer();
                             kontouser.add(b);
                             of.setKontouser(kontouser);
                         } else {
@@ -797,7 +800,7 @@ public final class OrderGbvAction extends DispatchAction {
                         }
 
                     } else {
-                        forward = "success";
+                        forward = SUCCESS;
                     }
 
                 } else { // zur GBV-Suche
@@ -807,28 +810,28 @@ public final class OrderGbvAction extends DispatchAction {
                 of.setSubmit("GBV");
                 rq.setAttribute("orderform", of);
 
-            } catch (Exception e) {
-                forward = "failure";
-                ErrorMessage em = new ErrorMessage();
+            } catch (final Exception e) {
+                forward = FAILURE;
+                final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
                 LOG.error("validate: " + e.toString());
 
             } finally {
                 t.close();
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
         return mp.findForward(forward);
 
@@ -839,24 +842,24 @@ public final class OrderGbvAction extends DispatchAction {
      * Ändert den angezeigten Medientyp für eine GBV-Bestellung.
      *
      */
-    public ActionForward changeMediatypeGbv(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward changeMediatypeGbv(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        OrderForm of = (OrderForm) form;
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final OrderForm of = (OrderForm) form;
+        final Auth auth = new Auth();
 
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         if (auth.isLogin(rq)) {
 
-            forward = "success";
-            Texttyp t = new Texttyp();
+            forward = SUCCESS;
+            final Texttyp t = new Texttyp();
             try {
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                 if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
-                    List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                    AbstractBenutzer b = ui.getBenutzer();
+                    final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
+                    final AbstractBenutzer b = ui.getBenutzer();
                     kontouser.add(b);
                     of.setKontouser(kontouser);
                 } else {
@@ -881,27 +884,27 @@ public final class OrderGbvAction extends DispatchAction {
 
                 rq.setAttribute("orderform", of);
 
-            } catch (Exception e) {
-                forward = "failure";
-                ErrorMessage em = new ErrorMessage();
+            } catch (final Exception e) {
+                forward = FAILURE;
+                final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
                 LOG.error("changeMediaType: " + e.toString());
             } finally {
                 t.close();
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
-        ActiveMenusForm mf = new ActiveMenusForm();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
 
         return mp.findForward(forward);
     }
@@ -912,7 +915,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param OrderForm of
      * @return GbvSruForm
      */
-    private GbvSruForm getGbvOrderObject(ArrayList<GbvSruForm> matches, OrderForm of, Connection cn) {
+    private GbvSruForm getGbvOrderObject(ArrayList<GbvSruForm> matches, final OrderForm of, final Connection cn) {
 
         GbvSruForm gsf = new GbvSruForm();
 
@@ -944,7 +947,7 @@ public final class OrderGbvAction extends DispatchAction {
                 return gsf;
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getGbvOrderObject(OrderForm of): " + e.getMessage());
         }
 
@@ -959,7 +962,7 @@ public final class OrderGbvAction extends DispatchAction {
      */
     private static ArrayList<GbvSruForm> getGbvMatches(String content) throws MyException {
 
-        ArrayList<GbvSruForm> matches = new ArrayList<GbvSruForm>();
+        final ArrayList<GbvSruForm> matches = new ArrayList<GbvSruForm>();
         int treffer = 0;
         int startRecord = 0;
         int maximumRecord = 0;
@@ -978,13 +981,13 @@ public final class OrderGbvAction extends DispatchAction {
 
                 while (content.contains("<srw:record>")) {
 
-                    GbvSruForm gsf = readSruRecord(content.substring(content.indexOf("<srw:record>"),
+                    final GbvSruForm gsf = readSruRecord(content.substring(content.indexOf("<srw:record>"),
                             content.indexOf("</srw:record>")));
                     gsf.setTreffer_total(treffer);
                     gsf.setStart_record(startRecord);
                     gsf.setMaximum_record(maximumRecord);
                     // rechne
-                    int i = matches.size();
+                    final int i = matches.size();
                     gsf.setRecord_number(startRecord + i);
                     matches.add(gsf);
                     content = content.substring(content.indexOf("</srw:record>") + 12);
@@ -992,14 +995,14 @@ public final class OrderGbvAction extends DispatchAction {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getGbvMatches: " + e.getMessage() + "\012" + content);
 
             // Hier wird ein allfälliger SRU-Fehler-Code gelesen um auf der JSP angezeigt zu werden
             // z.B. "GBV: System temporarily unavailable" (s. Liste:
             // http://www.loc.gov/standards/sru/resources/diagnostics-list.html)
             if (content != null && content.contains("<diag:message>")) {
-                String error = getSruErrorCode(content);
+                final String error = getSruErrorCode(content);
                 throw new MyException("GBV:\040" + error);
             }
 
@@ -1017,8 +1020,8 @@ public final class OrderGbvAction extends DispatchAction {
      */
     private static GbvSruForm readSruRecord(String content) {
 
-        GbvSruForm record = new GbvSruForm();
-        ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
+        final GbvSruForm record = new GbvSruForm();
+        final ConvertOpenUrl ouInstance = new ConvertOpenUrl();
 
         try {
 
@@ -1110,7 +1113,7 @@ public final class OrderGbvAction extends DispatchAction {
                 record.setIsmn_004F(getSruDatafield("004F", content));
             }
             if (content.contains("<datafield tag=\"005A\">")) {
-                record.setIssn_005A_multipel(convertOpenUrlInstance.normalizeIssn(getSruDatafield("005A", content)));
+                record.setIssn_005A_multipel(ouInstance.normalizeIssn(getSruDatafield("005A", content)));
             }
             if (content.contains("<datafield tag=\"029E\">")) {
                 record.setKoerperschaft_als_interpret_029E_multipel(getSruDatafield("029E", content));
@@ -1181,21 +1184,21 @@ public final class OrderGbvAction extends DispatchAction {
             if (content.contains("<datafield tag=\"039D\">")) {
                 String work = content; // Kopie für String Verkürzung
                 while (work.contains("<datafield tag=\"039D\">")) {
-                    String contentCopy = work.substring(work.indexOf("<datafield tag=\"039D\">") + 22,
+                    final String contentCopy = work.substring(work.indexOf("<datafield tag=\"039D\">") + 22,
                             work.indexOf("</datafield>", work.indexOf("<datafield tag=\"039D\">")));
-                    String titel = getSruSubfield("a", contentCopy);
-                    String vortext = getSruSubfield("c", contentCopy);
-                    String ident = getSruSubfield("C", contentCopy); // Identifier für Querverweis, normalerweise ZDB
+                    final String titel = getSruSubfield("a", contentCopy);
+                    final String vortext = getSruSubfield("c", contentCopy);
+                    final String ident = getSruSubfield("C", contentCopy); // Identifier für Querverweis, normalerweise ZDB
                     // in der Doku eigentlich Code 7, empirisch aber Code 6
-                    String zdbid = getSruSubfield("6", contentCopy);
-                    String titel2 = getSruSubfield("8", contentCopy); // kommt vermutlich nicht bis selten vor
-                    String ppn = getSruSubfield("9", contentCopy);
+                    final String zdbid = getSruSubfield("6", contentCopy);
+                    final String titel2 = getSruSubfield("8", contentCopy); // kommt vermutlich nicht bis selten vor
+                    final String ppn = getSruSubfield("9", contentCopy);
                     String text = "";
-                    if (!vortext.equals("")) { text = vortext + "\040"; }
+                    if (!"".equals(vortext)) { text = vortext + "\040"; }
                     text = text + titel + titel2;
                     record.setVerknuepfung_horizontal_039D_multipel(text);
-                    if (!ppn.equals("")) { record.setVerknuepfung_ppn_horizontal(ppn); }
-                    if (!zdbid.equals("") && ident.equals("ZDB")) { record.setVerknuepfung_zdbid_horizontal(zdbid); }
+                    if (!"".equals(ppn)) { record.setVerknuepfung_ppn_horizontal(ppn); }
+                    if (!"".equals(zdbid) && "ZDB".equals(ident)) { record.setVerknuepfung_zdbid_horizontal(zdbid); }
                     if (record.getVerknuepfung_horizontal_039D_multipel().equals("")) {
                         record.setVerknuepfung_horizontal_039D_multipel(null);  // Anzeigelogik
                     }
@@ -1204,145 +1207,145 @@ public final class OrderGbvAction extends DispatchAction {
                 }
             }
             if (content.contains("<datafield tag=\"039B\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"039B\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"039B\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"039B\">")));
-                String textSammelw = getSruSubfield("a", contentCopy); // fortlaufende Sammelwerke
-                String zdbid = getSruSubfield("7", contentCopy);
-                String vortext = getSruSubfield("c", contentCopy);
-                String textUselbst = getSruSubfield("8", contentCopy); // unselbständige Werke
-                String ppn = getSruSubfield("9", contentCopy);
+                final String textSammelw = getSruSubfield("a", contentCopy); // fortlaufende Sammelwerke
+                final String zdbid = getSruSubfield("7", contentCopy);
+                final String vortext = getSruSubfield("c", contentCopy);
+                final String textUselbst = getSruSubfield("8", contentCopy); // unselbständige Werke
+                final String ppn = getSruSubfield("9", contentCopy);
                 String text = "";
-                if (!vortext.equals("")) { text = vortext + "\040"; }
+                if (!"".equals(vortext)) { text = vortext + "\040"; }
                 text = text + textSammelw + textUselbst;
                 record.setVerknuepfung_groessere_einheit_039B_multipel(text);
-                if (!ppn.equals("")) { record.setVerknuepfung_ppn_groesser(ppn); }
-                if (!zdbid.equals("")) { record.setVerknuepfung_zdbid_groesser(zdbid); }
+                if (!"".equals(ppn)) { record.setVerknuepfung_ppn_groesser(ppn); }
+                if (!"".equals(zdbid)) { record.setVerknuepfung_zdbid_groesser(zdbid); }
                 if (record.getVerknuepfung_groessere_einheit_039B_multipel().equals("")) {
                     record.setVerknuepfung_groessere_einheit_039B_multipel(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"031A\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"031A\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"031A\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"031A\">")));
-                String band = getSruSubfield("d", contentCopy);
-                String jahr = getSruSubfield("j", contentCopy);
-                String heft = getSruSubfield("e", contentCopy);
+                final String band = getSruSubfield("d", contentCopy);
+                final String jahr = getSruSubfield("j", contentCopy);
+                final String heft = getSruSubfield("e", contentCopy);
                 //        String sonderheft = getSruSubfield("f", content_copy);
-                String seiten = getSruSubfield("h", contentCopy);
+                final String seiten = getSruSubfield("h", contentCopy);
                 String text = jahr;
-                if (!band.equals("")) {
-                    if (!jahr.equals("")) { text = text + ";" + band; } else { text = text + band; }
+                if (!"".equals(band)) {
+                    if (!"".equals(jahr)) { text = text + ";" + band; } else { text = text + band; }
                 }
-                if (!heft.equals("")) { text = text + "(" + heft + ")"; }
-                if (!seiten.equals("")) { text = text + ":" + seiten; }
+                if (!"".equals(heft)) { text = text + "(" + heft + ")"; }
+                if (!"".equals(seiten)) { text = text + ":" + seiten; }
                 record.setUmfang_031A(text);
                 if (record.getUmfang_031A().equals("")) { record.setUmfang_031A(null); } // Anzeigelogik
             }
             if (content.contains("<datafield tag=\"036C\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"036C\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"036C\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"036C\">")));
                 String sachtitel = getSruSubfield("a", contentCopy);
-                String zusatz = getSruSubfield("y", contentCopy);
-                String band = getSruSubfield("l", contentCopy);
-                if (!zusatz.equals("") && !sachtitel.equals("")) { sachtitel = sachtitel + "\040:\040" + zusatz; }
-                if (!band.equals("")) { record.setBandzaehlung(band + ":\040"); }
+                final String zusatz = getSruSubfield("y", contentCopy);
+                final String band = getSruSubfield("l", contentCopy);
+                if (!"".equals(zusatz) && !"".equals(sachtitel)) { sachtitel = sachtitel + "\040:\040" + zusatz; }
+                if (!"".equals(band)) { record.setBandzaehlung(band + ":\040"); }
                 record.setGesamtheit_abteilungen_vorlage_036C(sachtitel);
                 if (record.getGesamtheit_abteilungen_vorlage_036C().equals("")) {
                     record.setGesamtheit_abteilungen_vorlage_036C(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"021A\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"021A\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"021A\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"021A\">")));
                 String titel = getSruSubfield("a", contentCopy);
-                String untertitel = getSruSubfield("d", contentCopy);
-                String anmerkungen = getSruSubfield("h", contentCopy);
-                if (!untertitel.equals("") && !titel.equals("")) { titel = titel + "\040:\040" + untertitel; }
-                if (!anmerkungen.equals("") && !titel.equals("")) { titel = titel + "\040" + anmerkungen; }
+                final String untertitel = getSruSubfield("d", contentCopy);
+                final String anmerkungen = getSruSubfield("h", contentCopy);
+                if (!"".equals(untertitel) && !"".equals(titel)) { titel = titel + "\040:\040" + untertitel; }
+                if (!"".equals(anmerkungen) && !"".equals(titel)) { titel = titel + "\040" + anmerkungen; }
                 record.setHauptsachtitel_021A(titel);
                 if (record.getHauptsachtitel_021A().equals("")) { record.setHauptsachtitel_021A(null); } // Anzeigelogik
             }
             if (content.contains("<datafield tag=\"021G\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"021G\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"021G\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"021G\">")));
-                String titel = getSruSubfield("a", contentCopy);
-                String verfasser = getSruSubfield("g", contentCopy); // ...des Originals
-                String ausgabebezeichnung = getSruSubfield("d", contentCopy);
-                String rezensor = getSruSubfield("h", contentCopy); // rezensierende Person
-                String rezension = verfasser + ",\040" + titel + "\040:\040"
-                + ausgabebezeichnung + "\040/\040" + rezensor;
+                final String titel = getSruSubfield("a", contentCopy);
+                final String verfasser = getSruSubfield("g", contentCopy); // ...des Originals
+                final String ausgabebez = getSruSubfield("d", contentCopy);
+                final String rezensor = getSruSubfield("h", contentCopy); // rezensierende Person
+                final String rezension = verfasser + ",\040" + titel + "\040:\040"
+                + ausgabebez + "\040/\040" + rezensor;
                 record.setRezensierteswerk_021G_multipel(rezension);
                 if (record.getRezensierteswerk_021G_multipel().equals("")) {
                     record.setRezensierteswerk_021G_multipel(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"033A\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"033A\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"033A\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"033A\">")));
-                String ort = getSruSubfield("p", contentCopy);
+                final String ort = getSruSubfield("p", contentCopy);
                 String verlag = getSruSubfield("n", contentCopy);
-                if (!verlag.equals("") && !ort.equals("")) { verlag = "\040:\040" + verlag; }
+                if (!"".equals(verlag) && !"".equals(ort)) { verlag = "\040:\040" + verlag; }
                 record.setOrt_verlag_033A_multipel(ort + verlag);
                 if (record.getOrt_verlag_033A_multipel().equals("")) {
                     record.setOrt_verlag_033A_multipel(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"011@\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"011@\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"011@\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"011@\">")));
                 String jahr = getSruSubfield("a", contentCopy);
-                String serie = getSruSubfield("n", contentCopy);
-                if (!serie.equals("")) { jahr = serie; } // falls Verlauf vorhanden wird Verlauf genommen, sonst Jahr
+                final String serie = getSruSubfield("n", contentCopy);
+                if (!"".equals(serie)) { jahr = serie; } // falls Verlauf vorhanden wird Verlauf genommen, sonst Jahr
                 record.setErscheinungsjahr_011AT(jahr);
                 if (record.getErscheinungsjahr_011AT().equals("")) {
                     record.setErscheinungsjahr_011AT(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"028A\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"028A\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"028A\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"028A\">")));
                 String name = "";
-                String nachname = getSruSubfield("a", contentCopy);
-                String praefix = getSruSubfield("c", contentCopy);
-                String vorname = getSruSubfield("d", contentCopy);
-                String zusatzVorname = getSruSubfield("e", contentCopy);
-                String zusatzName = getSruSubfield("f", contentCopy);
-                String lebensdaten = getSruSubfield("h", contentCopy);
-                String ident = getSruSubfield("p", contentCopy); // weitere identifizierende Angaben
-                if (!praefix.equals("")) { name = praefix + "\040"; }
-                if (!zusatzVorname.equals("")) { name = name + zusatzVorname + "\040"; }
-                if (!vorname.equals("")) { name = name + vorname + "\040"; }
-                if (!zusatzName.equals("")) { name = name + zusatzName + "\040"; }
-                if (!nachname.equals("")) { name = name + nachname; }
-                if (!ident.equals("")) { name = name + "\040" + ident; }
-                if (!lebensdaten.equals("")) { name = name + "\040" + lebensdaten; }
+                final String nachname = getSruSubfield("a", contentCopy);
+                final String praefix = getSruSubfield("c", contentCopy);
+                final String vorname = getSruSubfield("d", contentCopy);
+                final String zusatzVorname = getSruSubfield("e", contentCopy);
+                final String zusatzName = getSruSubfield("f", contentCopy);
+                final String lebensdaten = getSruSubfield("h", contentCopy);
+                final String ident = getSruSubfield("p", contentCopy); // weitere identifizierende Angaben
+                if (!"".equals(praefix)) { name = praefix + "\040"; }
+                if (!"".equals(zusatzVorname)) { name = name + zusatzVorname + "\040"; }
+                if (!"".equals(vorname)) { name = name + vorname + "\040"; }
+                if (!"".equals(zusatzName)) { name = name + zusatzName + "\040"; }
+                if (!"".equals(nachname)) { name = name + nachname; }
+                if (!"".equals(ident)) { name = name + "\040" + ident; }
+                if (!"".equals(lebensdaten)) { name = name + "\040" + lebensdaten; }
                 record.setVerfasser_erster_028A(name);
                 if (record.getVerfasser_erster_028A().equals("")) {
                     record.setVerfasser_erster_028A(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"029A\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"029A\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"029A\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"029A\">")));
-                String koerperschaft = getSruSubfield("8", contentCopy);
+                final String koerperschaft = getSruSubfield("8", contentCopy);
                 record.setKoerperschaft_erste_029A(koerperschaft);
                 if (record.getKoerperschaft_erste_029A().equals("")) {
                     record.setKoerperschaft_erste_029A(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"037C\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"037C\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"037C\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"037C\">")));
-                String ort = getSruSubfield("b", contentCopy);
+                final String ort = getSruSubfield("b", contentCopy);
                 String vermerk = getSruSubfield("a", contentCopy);
-                if (!vermerk.equals("") && !ort.equals("")) { vermerk = ",\040" + vermerk; }
+                if (!"".equals(vermerk) && !"".equals(ort)) { vermerk = ",\040" + vermerk; }
                 record.setHochschulschriftenvermerk_037C_multipel(ort + vermerk);
                 if (record.getHochschulschriftenvermerk_037C_multipel().equals("")) {
                     record.setHochschulschriftenvermerk_037C_multipel(null); // Anzeigelogik
                 }
             }
             if (content.contains("<datafield tag=\"002@\">")) {
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"002@\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"002@\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"002@\">")));
                 String code = getSruSubfield("0", contentCopy);
                 code = resolveGbvMediatype(code);
@@ -1352,12 +1355,12 @@ public final class OrderGbvAction extends DispatchAction {
             if (content.contains("<datafield tag=\"009P\"")) {
                 String contentVerk = content;
                 while (contentVerk.contains("<datafield tag=\"009P\"")) {
-                    String contentCopy = contentVerk.substring(contentVerk.indexOf("<datafield tag=\"009P\"") + 22,
+                    final String contentCopy = contentVerk.substring(contentVerk.indexOf("<datafield tag=\"009P\"") + 22,
                             contentVerk.indexOf("</datafield>", contentVerk.indexOf("<datafield tag=\"009P\"")));
-                    String license = getSruSubfield("S", contentCopy);
+                    final String license = getSruSubfield("S", contentCopy);
                     // 1 == frei zugänglich ; 0 == kostenpflichtig
-                    if (license.equals("1") && contentCopy.contains("<subfield code=\"a\">")) {
-                        String url = getSruSubfield("a", contentCopy);
+                    if ("1".equals(license) && contentCopy.contains("<subfield code=\"a\">")) {
+                        final String url = getSruSubfield("a", contentCopy);
                         // momentan nicht aktiviert, da Auflösung unklar...
                         //        String urn = getSruSubfield("g", content_copy);
                         record.setLink_009P_multiple(url);
@@ -1367,7 +1370,7 @@ public final class OrderGbvAction extends DispatchAction {
             }
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("readSruRecord(String content): " + e.getMessage() + "\012" + content);
         }
 
@@ -1380,9 +1383,9 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String tag String content
      * @return String data
      */
-    private static String getSruDatafield(String tag, String content) {
+    private static String getSruDatafield(final String tag, String content) {
 
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer(128);
 
         try {
 
@@ -1405,7 +1408,7 @@ public final class OrderGbvAction extends DispatchAction {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getSruDatafield(String content): " + e.getMessage() + "\012" + content);
         }
 
@@ -1420,7 +1423,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String code String content
      * @return String data
      */
-    private static String getSruSubfield(String code, String content) {
+    private static String getSruSubfield(final String code, final String content) {
 
         String data = "";
 
@@ -1433,7 +1436,7 @@ public final class OrderGbvAction extends DispatchAction {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getSruSubfield(String code, String content): " + code + "\040"
                     + e.getMessage() + "\012" + content);
         }
@@ -1447,7 +1450,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String content
      * @return String error
      */
-    private static String getSruErrorCode(String content) {
+    private static String getSruErrorCode(final String content) {
 
         String error = "";
 
@@ -1460,7 +1463,7 @@ public final class OrderGbvAction extends DispatchAction {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getSruErrorCode(String content): " + e.getMessage() + "\012" + content);
         }
 
@@ -1476,15 +1479,15 @@ public final class OrderGbvAction extends DispatchAction {
      * @return String content
      *
      */
-    private String getGbvSrucontentSearchAsPhrase(String gbvfield, String gbvsearchterm, int start_record) {
-        Http http = new Http();
-        CodeUrl codeUrl = new CodeUrl();
-        SpecialCharacters specialCharacters = new SpecialCharacters();
+    private String getGbvSrucontentSearchAsPhrase(final String gbvfield, final String gbvsearchterm, final int start_record) {
+        final Http http = new Http();
+        final CodeUrl codeUrl = new CodeUrl();
+        final SpecialCharacters specialCharacters = new SpecialCharacters();
 
-        String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
+        final String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
             + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encodeLatin1(gbvsearchterm)
             + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord="
-            + String.valueOf(start_record);
+            + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link, TIMEOUT, RETRYS)));
 
@@ -1499,15 +1502,15 @@ public final class OrderGbvAction extends DispatchAction {
      * @return String content
      *
      */
-    private String getGbvSrucontentSearch(String gbvfield, String gbvsearchterm, int start_record) {
-        Http http = new Http();
-        CodeUrl codeUrl = new CodeUrl();
-        SpecialCharacters specialCharacters = new SpecialCharacters();
+    private String getGbvSrucontentSearch(final String gbvfield, final String gbvsearchterm, final int start_record) {
+        final Http http = new Http();
+        final CodeUrl codeUrl = new CodeUrl();
+        final SpecialCharacters specialCharacters = new SpecialCharacters();
 
-        String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
+        final String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
             + gbvfield.toLowerCase() + "%3D" + codeUrl.encodeLatin1(gbvsearchterm)
             + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord="
-            + String.valueOf(start_record);
+            + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link, TIMEOUT, RETRYS)));
 
@@ -1517,10 +1520,10 @@ public final class OrderGbvAction extends DispatchAction {
      * löscht alle @-Zeichen eines Strings
      *
      */
-    private static String deleteAT(String input) {
+    private static String deleteAT(final String input) {
         String output = input;
 
-        Check ck = new Check();
+        final Check ck = new Check();
 
         if (ck.isMinLength(input, 1)) {
 
@@ -1538,24 +1541,24 @@ public final class OrderGbvAction extends DispatchAction {
     private static String resolveGbvMediatype(String input) {
         String output = input;
 
-        Check ck = new Check();
+        final Check ck = new Check();
 
         if (ck.isMinLength(input, 3)) { // Typ kann bis 6-Stellen haben, 3 sind obligatorisch
 
             if (input.length() > 3) { input = input.substring(0, 3); }
 
-            String one = input.substring(0, 1);
-            String two = input.substring(1, 2);
-            String three = input.substring(2);
+            final String one = input.substring(0, 1);
+            final String two = input.substring(1, 2);
+            final String three = input.substring(2);
 
-            if (one.equals("A")) {
+            if ("A".equals(one)) {
                 output = decodePositionTwo(two);
-                String status = decodePositionThree(three);
-                if (!status.equals("")) { output = output + "\040-\040" + status; }
+                final String status = decodePositionThree(three);
+                if (!"".equals(status)) { output = output + "\040-\040" + status; }
             } else {
                 output = decodePositionOne(one);
-                String status = decodePositionThree(three);
-                if (!status.equals("")) { output = output + "\040-\040" + status; }
+                final String status = decodePositionThree(three);
+                if (!"".equals(status)) { output = output + "\040-\040" + status; }
             }
 
         }
@@ -1567,7 +1570,7 @@ public final class OrderGbvAction extends DispatchAction {
      * decodiert Position 1
      *
      */
-    private static String decodePositionOne(String input) {
+    private static String decodePositionOne(final String input) {
         String output = "";
 
         //    Position 1 (physikalische Form)
@@ -1586,17 +1589,17 @@ public final class OrderGbvAction extends DispatchAction {
         //    V Objekt (z. B. Spiele, Skulpturen, Gemälde)
         //    Z Materialkombination
 
-        if (input.equals("A")) { output = "Druckschrift"; }
-        if (input.equals("B")) { output = "Multimedia"; }
-        if (input.equals("C")) { output = "Blindenschrift"; }
-        if (input.equals("E")) { output = "Mikroform"; }
-        if (input.equals("G")) { output = "Tonträger"; }
-        if (input.equals("H")) { output = "Handschrift"; }
-        if (input.equals("K")) { output = "Kartenmaterial"; }
-        if (input.equals("O")) { output = "Elektronische Ressource Online"; }
-        if (input.equals("S")) { output = "Elektronische Ressource auf Datenträger"; }
-        if (input.equals("V")) { output = "Objekt (Spiele, Skulpturen, Gemälde etc,)"; }
-        if (input.equals("Z")) { output = "Materialkombination"; }
+        if ("A".equals(input)) { output = "Druckschrift"; }
+        if ("B".equals(input)) { output = "Multimedia"; }
+        if ("C".equals(input)) { output = "Blindenschrift"; }
+        if ("E".equals(input)) { output = "Mikroform"; }
+        if ("G".equals(input)) { output = "Tonträger"; }
+        if ("H".equals(input)) { output = "Handschrift"; }
+        if ("K".equals(input)) { output = "Kartenmaterial"; }
+        if ("O".equals(input)) { output = "Elektronische Ressource Online"; }
+        if ("S".equals(input)) { output = "Elektronische Ressource auf Datenträger"; }
+        if ("V".equals(input)) { output = "Objekt (Spiele, Skulpturen, Gemälde etc,)"; }
+        if ("Z".equals(input)) { output = "Materialkombination"; }
 
         return output;
     }
@@ -1605,7 +1608,7 @@ public final class OrderGbvAction extends DispatchAction {
      * decodiert Position 2
      *
      */
-    private static String decodePositionTwo(String input) {
+    private static String decodePositionTwo(final String input) {
         String output = "";
 
         //    Position 2 (bibliographische Erscheinungsform)
@@ -1627,20 +1630,20 @@ public final class OrderGbvAction extends DispatchAction {
         //    v Bandsatz bei Zeitschriften/zeitschriftenartigen Reihen
         //    z Keine Angabe
 
-        if (input.equals("a")) { output = "Buch"; }
-        if (input.equals("b")) { output = "Zeitschrift (Print)"; }
-        if (input.equals("c")) { output = "mehrbändiges Gesamtwerk"; }
-        if (input.equals("d")) { output = "Schriftenreihe"; }
-        if (input.equals("e")) { output = "Abteilung"; } // ?
-        if (input.equals("E")) { output = "Abteilung"; } // ?
-        if (input.equals("f")) { output = "Band eines Gesamtwerkes"; }
-        if (input.equals("F")) { output = "Band eines Gesamtwerkes"; }
-        if (input.equals("h")) { output = "Aufsatz"; }
-        if (input.equals("j")) { output = "Enthaltenes/beigefügtes Werk"; }
-        if (input.equals("o")) { output = "unselbstständiges Werk"; } // ?
-        if (input.equals("s")) { output = "Aufsatz"; }
-        if (input.equals("v")) { output = "Zeitschrift gebunden"; }
-        if (input.equals("z")) { output = "keine Angabe"; }
+        if ("a".equals(input)) { output = "Buch"; }
+        if ("b".equals(input)) { output = "Zeitschrift (Print)"; }
+        if ("c".equals(input)) { output = "mehrbändiges Gesamtwerk"; }
+        if ("d".equals(input)) { output = "Schriftenreihe"; }
+        if ("e".equals(input)) { output = "Abteilung"; } // ?
+        if ("E".equals(input)) { output = "Abteilung"; } // ?
+        if ("f".equals(input)) { output = "Band eines Gesamtwerkes"; }
+        if ("F".equals(input)) { output = "Band eines Gesamtwerkes"; }
+        if ("h".equals(input)) { output = "Aufsatz"; }
+        if ("j".equals(input)) { output = "Enthaltenes/beigefügtes Werk"; }
+        if ("o".equals(input)) { output = "unselbstständiges Werk"; } // ?
+        if ("s".equals(input)) { output = "Aufsatz"; }
+        if ("v".equals(input)) { output = "Zeitschrift gebunden"; }
+        if ("z".equals(input)) { output = "keine Angabe"; }
 
         return output;
     }
@@ -1649,7 +1652,7 @@ public final class OrderGbvAction extends DispatchAction {
      * decodiert Position 3
      *
      */
-    private static String decodePositionThree(String input) {
+    private static String decodePositionThree(final String input) {
         String output = "";
 
         //    Position 3 (Status der Beschreibung)
@@ -1669,20 +1672,20 @@ public final class OrderGbvAction extends DispatchAction {
         //    N Zunächst verdeckt eingespieltes Novum
         //    X Inhalt oder Struktur ist zu überprüfen
 
-        if (input.equals("k")) { output = "keine Ausleihe/Kopiebestellung"; }
-        if (input.equals("y")) { output = "Vorläufigkeitsstatus"; }
+        if ("k".equals(input)) { output = "keine Ausleihe/Kopiebestellung"; }
+        if ("y".equals(input)) { output = "Vorläufigkeitsstatus"; }
         // scheint nicht immer gesperrt zu sein...
         //      if (input.equals("B")) { output = "keine Ausleihe/Kopiebestellung"; }
 
         return output;
     }
 
-    private String convertStringFromLatin1ToUTF8(String stringForconversion) {
+    private String convertStringFromLatin1ToUTF8(final String stringForconversion) {
         try {
-            String stringToConvert = stringForconversion;
-            byte[] convertStringToByte = stringToConvert.getBytes("ISO-8859-1");
-            return new String(convertStringToByte, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+            final String stringToConvert = stringForconversion;
+            final byte[] stringToByte = stringToConvert.getBytes("ISO-8859-1");
+            return new String(stringToByte, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
             LOG.error("convertStringFromLatintoUTF8: " + stringForconversion + "\040" + e.getMessage());
             return stringForconversion;
         }
@@ -1692,21 +1695,21 @@ public final class OrderGbvAction extends DispatchAction {
      * Wandelt eine e-ZDB-ID in eine p-ZDB-ID um. Optimiert für die Abfrage von ausserhalb OrderGbvAction.
      *
      */
-    public static String getPrintZdbidIgnoreMultipleHits(String content) {
+    public static String getPrintZdbidIgnoreMultipleHits(final String content) {
         String pZdbid = null;
 
         try {
-            ArrayList<GbvSruForm> matches = getGbvMatches(content);
+            final ArrayList<GbvSruForm> matches = getGbvMatches(content);
 
-            if (matches.size() > 0) { // nur falls nicht keine Treffer! Sonst kracht es...
-                GbvSruForm gsf = (GbvSruForm) matches.get(0);
+            if (!matches.isEmpty()) { // nur falls nicht keine Treffer! Sonst kracht es...
+                final GbvSruForm gsf = (GbvSruForm) matches.get(0);
                 // bringt aus ggf. mehreren Umleitungen die letztmögliche
                 if (gbvIsEjournalRedirectableIgnoreMultipleHits(gsf)) {
                     pZdbid = gsf.getVerknuepfung_zdbid_horizontal();
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getPrintZdbid(String zdbid): " + e.toString() + "\012" + content);
         }
 
@@ -1718,10 +1721,10 @@ public final class OrderGbvAction extends DispatchAction {
      * @param OrderForm of
      * @return boolean check
      */
-    private boolean gbvOrderValues(OrderForm of) {
+    private boolean gbvOrderValues(final OrderForm of) {
 
         boolean check = false;
-        Check ck = new Check();
+        final Check ck = new Check();
 
         // falls manuelle Bestellung gelten weniger scharfe Mussfelder
         if (of.isManuell()
@@ -1771,7 +1774,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param GbvSruForm srf
      * @return boolean check
      */
-    private boolean gbvIsEjournalRedirectable(GbvSruForm gsf) {
+    private boolean gbvIsEjournalRedirectable(final GbvSruForm gsf) {
 
         boolean check = false;
 
@@ -1796,7 +1799,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param GbvSruForm srf
      * @return boolean check
      */
-    private static boolean gbvIsEjournalRedirectableIgnoreMultipleHits(GbvSruForm gsf) {
+    private static boolean gbvIsEjournalRedirectableIgnoreMultipleHits(final GbvSruForm gsf) {
 
         boolean check = false;
 
@@ -1819,7 +1822,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param GbvSruForm srf
      * @return boolean check
      */
-    private boolean gbvIsEjournal(GbvSruForm gsf) {
+    private boolean gbvIsEjournal(final GbvSruForm gsf) {
 
         boolean check = false;
 
@@ -1852,12 +1855,12 @@ public final class OrderGbvAction extends DispatchAction {
                 gbvanswer = gbvanswer.substring(gbvanswer.indexOf("<return_value>") + 14,
                         gbvanswer.indexOf("</return_value>", gbvanswer.indexOf("<return_value>")));
 
-                Pattern p = Pattern.compile("A[0-9]*");
-                Matcher m = p.matcher(gbvanswer);
+                final Pattern p = Pattern.compile("A[0-9]*");
+                final Matcher m = p.matcher(gbvanswer);
                 if (m.find()) {
                     check = true;
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("Check - gbvIsOrdernumber): " + e.toString() + "\012" + gbvanswer);
             }
         }

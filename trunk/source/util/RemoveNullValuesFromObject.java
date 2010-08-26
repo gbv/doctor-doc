@@ -23,16 +23,12 @@ import org.grlea.log.SimpleLogger;
 
 public class RemoveNullValuesFromObject {
 
-  private static final SimpleLogger LOG = new SimpleLogger(RemoveNullValuesFromObject.class);
+    private static final SimpleLogger LOG = new SimpleLogger(RemoveNullValuesFromObject.class);
 
     /**
 
      * @author Pascal Steiner
      */
-
-  public RemoveNullValuesFromObject() {
-
-  }
 
     /**
      * Replace all null values from an object in his .getters & .setters with String as GenericReturnType()
@@ -43,32 +39,32 @@ public class RemoveNullValuesFromObject {
      * @return Object o without null values in his getters and setters methods
      *
      */
-    public Object remove(Object o) {
+    public Object remove(final Object o) {
 
-        Method[] methods = o.getClass().getMethods();
+        final Method[] methods = o.getClass().getMethods();
         Object[] setvalue = new Object[1];
-    setvalue[0] = "";
+        setvalue[0] = "";
 
-    // Alle Methoden der Klasse durchlaufen
+        // Alle Methoden der Klasse durchlaufen
         for (Method m : methods) {
-          // Alle getter welche einen String zurückgeben behandeln
+            // Alle getter welche einen String zurückgeben behandeln
             if (m.getGenericReturnType() ==  "".getClass()) {
-              try {
-                // liefert get null? (getmethode ausführen)
-          if (m.invoke(o) == null) {
-            // Name der Membervariable heraussuchen
-                  String membervar = m.getName().substring(3);
+                try {
+                    // liefert get null? (getmethode ausführen)
+                    if (m.invoke(o) == null) {
+                        // Name der Membervariable heraussuchen
+                        final String membervar = m.getName().substring(3);
 
-                  // Falls es eine settermethode mit simplem String als Parameter gibt den wert null durch "" ersetzen
-                  Method methode = o.getClass().getMethod("set" + membervar, "".getClass());
-            methode.invoke(o, setvalue);
+                        // Falls es eine settermethode mit simplem String als Parameter gibt den wert null durch "" ersetzen
+                        final Method methode = o.getClass().getMethod("set" + membervar, "".getClass());
+                        methode.invoke(o, setvalue);
+                    }
+                } catch (Exception e) {
+                    LOG.error("RemoveNullvaluesFrom.simplyGettterSetterMethods: " + e.toString());
                 }
-        } catch (Exception e) {
-          LOG.error("RemoveNullvaluesFrom.simplyGettterSetterMethods: " + e.toString());
-        }
             }
         }
-      return o;
+        return o;
     }
 
 

@@ -27,18 +27,18 @@ import javax.activation.DataSource;
 
 public class InputStreamDataSource implements DataSource {
 
-    private String name;
-    private String contentType;
-    private ByteArrayOutputStream baos;
+    private final String name;
+    private final String contentType;
+    private final ByteArrayOutputStream baos;
 
-    InputStreamDataSource(String stName, String contentTyp, InputStream inputStream) throws IOException {
+    InputStreamDataSource(final String stName, final String contentTyp, final InputStream inputStream) throws IOException {
         this.name = stName;
         this.contentType = contentTyp;
 
         baos = new ByteArrayOutputStream();
 
         int read;
-        byte[] buff = new byte[256];
+        final byte[] buff = new byte[256];
         while ((read = inputStream.read(buff)) != -1) {
             baos.write(buff, 0, read);
         }

@@ -33,6 +33,7 @@ import org.grlea.log.SimpleLogger;
 public abstract class AbstractReadSystemConfigurations {
 
     private static final SimpleLogger LOG = new SimpleLogger(AbstractReadSystemConfigurations.class);
+    private static final String PATH = "resources/SystemConfiguration.properties";
 
     static final String SYSTEM_TIMEZONE = readSystemTimezone();
 
@@ -68,7 +69,7 @@ public abstract class AbstractReadSystemConfigurations {
         String systemTimezone = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             systemTimezone = config.getString("system.timezone");
 
         } catch (ConfigurationException e) {
@@ -83,7 +84,7 @@ public abstract class AbstractReadSystemConfigurations {
         String systemEmail = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             systemEmail = config.getString("systemEmail.email");
 
         } catch (ConfigurationException e) {
@@ -98,7 +99,7 @@ public abstract class AbstractReadSystemConfigurations {
         String host = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             host = config.getString("systemEmail.host");
 
         } catch (ConfigurationException e) {
@@ -113,7 +114,7 @@ public abstract class AbstractReadSystemConfigurations {
         String accountname = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             accountname = config.getString("systemEmail.accountname");
 
         } catch (ConfigurationException e) {
@@ -128,7 +129,7 @@ public abstract class AbstractReadSystemConfigurations {
         String password = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             password = config.getString("systemEmail.password");
 
         } catch (ConfigurationException e) {
@@ -143,7 +144,7 @@ public abstract class AbstractReadSystemConfigurations {
         String errorEmail = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             errorEmail = config.getString("errorEmail.email");
 
         } catch (ConfigurationException e) {
@@ -158,7 +159,7 @@ public abstract class AbstractReadSystemConfigurations {
         String databaseServerAdress = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             databaseServerAdress = config.getString("mysql.serveraddress");
 
         } catch (ConfigurationException e) {
@@ -173,7 +174,7 @@ public abstract class AbstractReadSystemConfigurations {
         String databaseName = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             databaseName = config.getString("mysql.databaseName");
 
         } catch (ConfigurationException e) {
@@ -188,7 +189,7 @@ public abstract class AbstractReadSystemConfigurations {
         String databaseUser = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             databaseUser = config.getString("mysql.user");
 
         } catch (ConfigurationException e) {
@@ -203,7 +204,7 @@ public abstract class AbstractReadSystemConfigurations {
         String databasePassword = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             databasePassword = config.getString("mysql.password");
 
         } catch (ConfigurationException e) {
@@ -218,7 +219,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean activated = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             activated = config.getBoolean("mysql.pooledConnections");
 
         } catch (ConfigurationException e) {
@@ -233,7 +234,7 @@ public abstract class AbstractReadSystemConfigurations {
         String serverAddress = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             serverAddress = config.getString("server.welcomepage");
 
         } catch (ConfigurationException e) {
@@ -248,7 +249,7 @@ public abstract class AbstractReadSystemConfigurations {
         String serverInstallation = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             serverInstallation = config.getString("server.installation");
 
         } catch (ConfigurationException e) {
@@ -263,7 +264,7 @@ public abstract class AbstractReadSystemConfigurations {
         String applicationName = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             applicationName = config.getString("application.name");
 
         } catch (ConfigurationException e) {
@@ -278,7 +279,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean allow = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             allow = config.getBoolean("allow.registerLibraryAccounts");
 
         } catch (ConfigurationException e) {
@@ -293,7 +294,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean allow = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             allow = config.getBoolean("allow.patronAutomaticGoogleSearch");
 
         } catch (ConfigurationException e) {
@@ -308,7 +309,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean activate = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             activate = config.getBoolean("activate.gtc");
 
         } catch (ConfigurationException e) {
@@ -323,7 +324,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean activated = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             activated = config.getBoolean("anonymization.activated");
 
         } catch (ConfigurationException e) {
@@ -338,7 +339,7 @@ public abstract class AbstractReadSystemConfigurations {
         int months = 3; // Default, if in the configuration file a not valid value was specified
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             months = config.getInt("anonymization.after.months");
 
         } catch (ConfigurationException e) {
@@ -353,7 +354,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean searchCarelit = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             searchCarelit = config.getBoolean("searchCarelit");
 
         } catch (ConfigurationException e) {
@@ -368,7 +369,7 @@ public abstract class AbstractReadSystemConfigurations {
         boolean useDaia = false;
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             useDaia = config.getBoolean("useDaia");
 
         } catch (ConfigurationException e) {
@@ -383,7 +384,7 @@ public abstract class AbstractReadSystemConfigurations {
         String daiaHost = "";
 
         try {
-            Configuration config = new PropertiesConfiguration("resources/SystemConfiguration.properties");
+            final Configuration config = new PropertiesConfiguration(PATH);
             daiaHost = config.getString("daiaHost");
 
         } catch (ConfigurationException e) {

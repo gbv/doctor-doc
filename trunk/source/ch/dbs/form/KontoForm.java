@@ -131,7 +131,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public KontoForm(Konto k) {
+    public KontoForm(final Konto k) {
         konto = k;
     }
 
@@ -140,7 +140,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKontoselect(String kontoselect) {
+    public void setKontoselect(final String kontoselect) {
         this.kontoselect = kontoselect;
     }
 
@@ -150,7 +150,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKid(Long kid) {
+    public void setKid(final Long kid) {
         this.kid = kid;
     }
 
@@ -160,7 +160,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -168,7 +168,7 @@ public final class KontoForm extends ValidatorForm {
         return kontos;
     }
 
-    public void setKontos(List<Konto> kontos) {
+    public void setKontos(final List<Konto> kontos) {
         this.kontos = kontos;
     }
 
@@ -177,7 +177,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setZdb(boolean zdb) {
+    public void setZdb(final boolean zdb) {
         this.zdb = zdb;
     }
 
@@ -187,7 +187,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAccounting_rhythmday(int accounting_rhythmday) {
+    public void setAccounting_rhythmday(final int accounting_rhythmday) {
         this.accounting_rhythmday = accounting_rhythmday;
     }
 
@@ -197,7 +197,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAccounting_rhythmtimeout(int accounting_rhythmtimeout) {
+    public void setAccounting_rhythmtimeout(final int accounting_rhythmtimeout) {
         this.accounting_rhythmtimeout = accounting_rhythmtimeout;
     }
 
@@ -207,7 +207,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAccounting_rhythmvalue(int accounting_rhythmvalue) {
+    public void setAccounting_rhythmvalue(final int accounting_rhythmvalue) {
         this.accounting_rhythmvalue = accounting_rhythmvalue;
     }
 
@@ -217,7 +217,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAdresse(String adresse) {
+    public void setAdresse(final String adresse) {
         Adresse = adresse;
     }
 
@@ -227,7 +227,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAdressenzusatz(String adressenzusatz) {
+    public void setAdressenzusatz(final String adressenzusatz) {
         Adressenzusatz = adressenzusatz;
     }
 
@@ -237,7 +237,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setBiblioname(String biblioname) {
+    public void setBiblioname(final String biblioname) {
         this.biblioname = biblioname;
     }
 
@@ -247,7 +247,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setBibliotheksmail(String bibliotheksmail) {
+    public void setBibliotheksmail(final String bibliotheksmail) {
         Bibliotheksmail = bibliotheksmail;
     }
 
@@ -257,7 +257,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setBilling(Text billing) {
+    public void setBilling(final Text billing) {
         this.billing = billing;
     }
 
@@ -267,7 +267,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setBillingtype(Text billingtype) {
+    public void setBillingtype(final Text billingtype) {
         this.billingtype = billingtype;
     }
 
@@ -277,7 +277,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setDbsmail(String dbsmail) {
+    public void setDbsmail(final String dbsmail) {
         this.dbsmail = dbsmail;
     }
 
@@ -287,7 +287,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setDbsmailpw(String dbsmailpw) {
+    public void setDbsmailpw(final String dbsmailpw) {
         this.dbsmailpw = dbsmailpw;
     }
 
@@ -297,7 +297,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setEdatum(Date edatum) {
+    public void setEdatum(final Date edatum) {
         this.edatum = edatum;
     }
 
@@ -306,7 +306,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGtc(String gtc) {
+    public void setGtc(final String gtc) {
         this.gtc = gtc;
     }
 
@@ -316,7 +316,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGtcdate(String gtcdate) {
+    public void setGtcdate(final String gtcdate) {
         this.gtcdate = gtcdate;
     }
 
@@ -326,7 +326,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setEzbid(String ezbid) {
+    public void setEzbid(final String ezbid) {
         this.ezbid = ezbid;
     }
 
@@ -336,7 +336,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setInstlogolink(String instlogolink) {
+    public void setInstlogolink(final String instlogolink) {
         this.instlogolink = instlogolink;
     }
 
@@ -346,7 +346,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setFaxno(String faxno) {
+    public void setFaxno(final String faxno) {
         this.faxno = faxno;
     }
 
@@ -355,7 +355,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setFaxpassword(String faxpassword) {
+    public void setFaxpassword(final String faxpassword) {
         this.faxpassword = faxpassword;
     }
 
@@ -364,7 +364,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setFaxusername(String faxusername) {
+    public void setFaxusername(final String faxusername) {
         this.faxusername = faxusername;
     }
 
@@ -378,12 +378,12 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setFax_extern(String fax_extern) {
+    public void setFax_extern(final String fax_extern) {
         this.fax_extern = fax_extern;
     }
 
 
-    public void setPopfaxend(String popfaxend) {
+    public void setPopfaxend(final String popfaxend) {
         this.popfaxend = popfaxend;
     }
 
@@ -393,7 +393,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKontostatus(boolean kontostatus) {
+    public void setKontostatus(final boolean kontostatus) {
         this.kontostatus = kontostatus;
     }
 
@@ -403,7 +403,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setLand(String land) {
+    public void setLand(final String land) {
         Land = land;
     }
 
@@ -413,7 +413,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setTimezone(String timezone) {
+    public void setTimezone(final String timezone) {
         this.timezone = timezone;
     }
 
@@ -423,7 +423,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setMaxordersj(int maxordersj) {
+    public void setMaxordersj(final int maxordersj) {
         this.maxordersj = maxordersj;
     }
 
@@ -433,7 +433,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setMaxordersu(int maxordersu) {
+    public void setMaxordersu(final int maxordersu) {
         this.maxordersu = maxordersu;
     }
 
@@ -443,7 +443,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setMaxordersutotal(int maxordersutotal) {
+    public void setMaxordersutotal(final int maxordersutotal) {
         this.maxordersutotal = maxordersutotal;
     }
 
@@ -453,7 +453,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setOrderlimits(int orderlimits) {
+    public void setOrderlimits(final int orderlimits) {
         this.orderlimits = orderlimits;
     }
 
@@ -463,7 +463,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setOrt(String ort) {
+    public void setOrt(final String ort) {
         Ort = ort;
     }
 
@@ -473,7 +473,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setPLZ(String plz) {
+    public void setPLZ(final String plz) {
         PLZ = plz;
     }
 
@@ -483,7 +483,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setSelected(boolean selected) {
+    public void setSelected(final boolean selected) {
         this.selected = selected;
     }
 
@@ -493,7 +493,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGbvbenutzername(String gbvbenutzername) {
+    public void setGbvbenutzername(final String gbvbenutzername) {
         this.gbvbenutzername = gbvbenutzername;
     }
 
@@ -503,7 +503,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGbvpasswort(String gbvpasswort) {
+    public void setGbvpasswort(final String gbvpasswort) {
         this.gbvpasswort = gbvpasswort;
     }
 
@@ -513,7 +513,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGbvrequesterid(String gbvrequesterid) {
+    public void setGbvrequesterid(final String gbvrequesterid) {
         this.gbvrequesterid = gbvrequesterid;
     }
 
@@ -523,7 +523,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setTelefon(String telefon) {
+    public void setTelefon(final String telefon) {
         Telefon = telefon;
     }
 
@@ -533,7 +533,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setThreshold_value(int threshold_value) {
+    public void setThreshold_value(final int threshold_value) {
         this.threshold_value = threshold_value;
     }
 
@@ -542,7 +542,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setUserbestellung(boolean userbestellung) {
+    public void setUserbestellung(final boolean userbestellung) {
         this.userbestellung = userbestellung;
     }
 
@@ -552,7 +552,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGbvbestellung(boolean gbvbestellung) {
+    public void setGbvbestellung(final boolean gbvbestellung) {
         this.gbvbestellung = gbvbestellung;
     }
 
@@ -562,7 +562,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setDefault_deloptions(String default_deloptions) {
+    public void setDefault_deloptions(final String default_deloptions) {
         this.default_deloptions = default_deloptions;
     }
 
@@ -572,7 +572,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setUserlogin(boolean userlogin) {
+    public void setUserlogin(final boolean userlogin) {
         this.userlogin = userlogin;
     }
 
@@ -582,7 +582,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
@@ -592,7 +592,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKontotyp(int kontotyp) {
+    public void setKontotyp(final int kontotyp) {
         this.kontotyp = kontotyp;
     }
 
@@ -602,7 +602,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setCountries(List<Countries> countries) {
+    public void setCountries(final List<Countries> countries) {
         this.countries = countries;
     }
 
@@ -612,7 +612,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setCountryid(String countryid) {
+    public void setCountryid(final String countryid) {
         this.countryid = countryid;
     }
 
@@ -622,7 +622,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setPaydate(java.sql.Date paydate) {
+    public void setPaydate(final java.sql.Date paydate) {
         this.paydate = paydate;
     }
 
@@ -632,7 +632,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setExpdate(java.sql.Date expdate) {
+    public void setExpdate(final java.sql.Date expdate) {
         this.expdate = expdate;
     }
 
@@ -642,7 +642,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setArtikeltitel(String artikeltitel) {
+    public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
     }
 
@@ -652,7 +652,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setArtikeltitel_encoded(String artikeltitel_encoded) {
+    public void setArtikeltitel_encoded(final String artikeltitel_encoded) {
         this.artikeltitel_encoded = artikeltitel_encoded;
     }
 
@@ -662,7 +662,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -672,7 +672,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -682,7 +682,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -692,7 +692,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setIssn(String issn) {
+    public void setIssn(final String issn) {
         this.issn = issn;
     }
 
@@ -702,7 +702,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setZdbid(String zdbid) {
+    public void setZdbid(final String zdbid) {
         this.zdbid = zdbid;
     }
 
@@ -712,7 +712,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
@@ -722,7 +722,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setAuthor_encoded(String author_encoded) {
+    public void setAuthor_encoded(final String author_encoded) {
         this.author_encoded = author_encoded;
     }
 
@@ -732,7 +732,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -742,7 +742,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setZeitschriftentitel(String zeitschriftentitel) {
+    public void setZeitschriftentitel(final String zeitschriftentitel) {
         this.zeitschriftentitel = zeitschriftentitel;
     }
 
@@ -752,7 +752,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setDoi(String doi) {
+    public void setDoi(final String doi) {
         this.doi = doi;
     }
 
@@ -762,7 +762,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setPmid(String pmid) {
+    public void setPmid(final String pmid) {
         this.pmid = pmid;
     }
 
@@ -772,7 +772,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setSici(String sici) {
+    public void setSici(final String sici) {
         this.sici = sici;
     }
 
@@ -782,7 +782,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setLccn(String lccn) {
+    public void setLccn(final String lccn) {
         this.lccn = lccn;
     }
 
@@ -792,7 +792,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setIsbn(String isbn) {
+    public void setIsbn(final String isbn) {
         this.isbn = isbn;
     }
 
@@ -802,7 +802,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setGenre(String genre) {
+    public void setGenre(final String genre) {
         this.genre = genre;
     }
 
@@ -812,7 +812,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setRfr_id(String rfr_id) {
+    public void setRfr_id(final String rfr_id) {
         this.rfr_id = rfr_id;
     }
 
@@ -822,7 +822,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setMediatype(String mediatype) {
+    public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
 
@@ -832,7 +832,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setVerlag(String verlag) {
+    public void setVerlag(final String verlag) {
         this.verlag = verlag;
     }
 
@@ -842,7 +842,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKapitel(String kapitel) {
+    public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
 
@@ -852,7 +852,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setBuchtitel(String buchtitel) {
+    public void setBuchtitel(final String buchtitel) {
         this.buchtitel = buchtitel;
     }
 
@@ -865,7 +865,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenname(String kundenname) {
+    public void setKundenname(final String kundenname) {
         this.kundenname = kundenname;
     }
 
@@ -875,7 +875,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenvorname(String kundenvorname) {
+    public void setKundenvorname(final String kundenvorname) {
         this.kundenvorname = kundenvorname;
     }
 
@@ -885,7 +885,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenemail(String kundenemail) {
+    public void setKundenemail(final String kundenemail) {
         this.kundenemail = kundenemail;
     }
 
@@ -895,7 +895,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundeninstitution(String kundeninstitution) {
+    public void setKundeninstitution(final String kundeninstitution) {
         this.kundeninstitution = kundeninstitution;
     }
 
@@ -905,7 +905,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenabteilung(String kundenabteilung) {
+    public void setKundenabteilung(final String kundenabteilung) {
         this.kundenabteilung = kundenabteilung;
     }
 
@@ -915,7 +915,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundentelefon(String kundentelefon) {
+    public void setKundentelefon(final String kundentelefon) {
         this.kundentelefon = kundentelefon;
     }
 
@@ -925,7 +925,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenadresse(String kundenadresse) {
+    public void setKundenadresse(final String kundenadresse) {
         this.kundenadresse = kundenadresse;
     }
 
@@ -935,7 +935,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenplz(String kundenplz) {
+    public void setKundenplz(final String kundenplz) {
         this.kundenplz = kundenplz;
     }
 
@@ -945,7 +945,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenort(String kundenort) {
+    public void setKundenort(final String kundenort) {
         this.kundenort = kundenort;
     }
 
@@ -955,7 +955,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setKundenland(String kundenland) {
+    public void setKundenland(final String kundenland) {
         this.kundenland = kundenland;
     }
 
@@ -964,7 +964,7 @@ public final class KontoForm extends ValidatorForm {
     }
 
 
-    public void setResolver(boolean resolver) {
+    public void setResolver(final boolean resolver) {
         this.resolver = resolver;
     }
 
@@ -985,7 +985,7 @@ public final class KontoForm extends ValidatorForm {
                 if (isil.equals("")) { isil = null; } // falls Leerstring, ISIL als null speichern
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("setIsil: " + e.toString());
         }
         this.isil = isil;

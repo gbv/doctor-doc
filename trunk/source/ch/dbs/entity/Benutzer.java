@@ -29,15 +29,15 @@ import ch.dbs.form.UserForm;
 public class Benutzer extends AbstractBenutzer {
 
 
-  //Leerer Konstruktor
-  public Benutzer() {
-    super();
-  }
+    //Leerer Konstruktor
+    public Benutzer() {
+        super();
+    }
 
-  //Benutzer aus UserForm erstellen
-  public Benutzer(UserForm uf) {
-    super(uf);
-  }
+    //Benutzer aus UserForm erstellen
+    public Benutzer(final UserForm uf) {
+        super(uf);
+    }
 
 
 }

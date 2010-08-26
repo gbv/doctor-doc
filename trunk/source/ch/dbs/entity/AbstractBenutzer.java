@@ -78,7 +78,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
     public AbstractBenutzer() {
     }
 
-    public AbstractBenutzer(UserForm uf) {
+    public AbstractBenutzer(final UserForm uf) {
 
         if (uf.getInstitut() != null) {
             institut = uf.getInstitut().trim();
@@ -138,18 +138,18 @@ public class AbstractBenutzer extends AbstractIdEntity {
             email = uf.getEmail();
         }
         password = uf.getPassword();
-        validation = uf.getValidation();
+        validation = uf.isValidation();
         kontostatus = uf.isKontostatus();
-        loginopt = uf.getLoginopt(); // Darf sich der Benutzer einloggen?
-        userbestellung = uf.getUserbestellung();
+        loginopt = uf.isLoginopt(); // Darf sich der Benutzer einloggen?
+        userbestellung = uf.isUserbestellung();
         gbvbestellung = uf.isGbvbestellung();
-        kontovalidation = uf.getKontovalidation();
+        kontovalidation = uf.isKontovalidation();
         gtc = uf.getGtc();
         gtcdate = uf.getGtcdate();
 
     }
 
-    public AbstractBenutzer(OrderForm of) {
+    public AbstractBenutzer(final OrderForm of) {
         if (of.getKundenvorname() != null) {
             this.vorname = of.getKundenvorname().trim();
         } else {
@@ -219,7 +219,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param uid
      * @return User (Benutzer, Bibliothekar oder Administrator)
      */
-    public AbstractBenutzer getUser(Long uid, Connection cn) {
+    public AbstractBenutzer getUser(final Long uid, final Connection cn) {
 
         AbstractBenutzer u = null;
 
@@ -234,20 +234,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 u = getUser(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getUser(Long uid, Connection cn): " + e.toString());
         }  finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getUser(Long uid, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getUser(Long uid, Connection cn): " + e.toString());
                 }
             }
@@ -262,8 +262,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param Konto k
      * @return List<AbstractBenutzer> ul
      */
-    public List<AbstractBenutzer> getKontoUser(Konto k, Connection cn) {
-        ArrayList<AbstractBenutzer> ul = new ArrayList<AbstractBenutzer>();
+    public List<AbstractBenutzer> getKontoUser(final Konto k, final Connection cn) {
+        final ArrayList<AbstractBenutzer> ul = new ArrayList<AbstractBenutzer>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -276,20 +276,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 ul.add(getUser(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getKontoUser(Konto k, Connection cn): " + e.toString());
                 }
             }
@@ -305,9 +305,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param String email
      * @return ArrayList (Benutzer, Bibliothekar oder Administrator)
      */
-    public ArrayList<AbstractBenutzer> getUserListFromEmailAndKonto(Konto k, String mail, Connection cn) {
+    public ArrayList<AbstractBenutzer> getUserListFromEmailAndKonto(final Konto k, final String mail, final Connection cn) {
 
-        ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
+        final ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
         AbstractBenutzer u = null;
 
         PreparedStatement pstmt = null;
@@ -324,20 +324,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 benutzerlist.add(u);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
         }  finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
                 }
             }
@@ -352,7 +352,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param mail
      * @return AbstractUser (Benutzer, Bibliothekar oder Administrator)
      */
-    public AbstractBenutzer getUserFromEmail(String mail, Connection cn) {
+    public AbstractBenutzer getUserFromEmail(final String mail, final Connection cn) {
 
         AbstractBenutzer u = null;
 
@@ -367,20 +367,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 u = getUser(rs); // gibt nur den letzten Treffer zurück
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
         }  finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
                 }
             }
@@ -395,9 +395,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param mail
      * @return AbstractUser (Benutzer, Bibliothekar oder Administrator)
      */
-    public ArrayList<AbstractBenutzer> getAllUserFromEmail(String mail, Connection cn) {
+    public ArrayList<AbstractBenutzer> getAllUserFromEmail(final String mail, final Connection cn) {
 
-        ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
+        final ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
         AbstractBenutzer u = null;
 
         PreparedStatement pstmt = null;
@@ -412,20 +412,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 benutzerlist.add(u);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getAllUserFromEmail(String email, Connection cn): " + e.toString());
                 }
             }
@@ -437,8 +437,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * @return Alle Kontos bei welchen der {@link AbstractBenutzer} hinterlegt ist in einer {@link ArrayList}
      */
-    public ArrayList<Konto> getKontosDeposited(AbstractBenutzer u, Connection cn) {
-        ArrayList<Konto> kontos = new ArrayList<Konto>();
+    public ArrayList<Konto> getKontosDeposited(final AbstractBenutzer u, final Connection cn) {
+        final ArrayList<Konto> kontos = new ArrayList<Konto>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -454,20 +454,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 kontos.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
                 }
             }
@@ -480,8 +480,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @return Alle Kontos bei welchen der {@link AbstractBenutzer} hinterlegt und bei welchen er sich auch einloggen
      * darf in einer {@link ArrayList}
      */
-    public ArrayList<Konto> getKontosAlowedLogin(AbstractBenutzer u, Connection cn) {
-        ArrayList<Konto> kontos = new ArrayList<Konto>();
+    public ArrayList<Konto> getKontosAlowedLogin(final AbstractBenutzer u, final Connection cn) {
+        final ArrayList<Konto> kontos = new ArrayList<Konto>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -501,20 +501,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 kontos.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("getKontosDeposited(AbstractBenutzer u, Connection cn): " + e.toString());
                 }
             }
@@ -526,10 +526,10 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * Login
      */
 
-    public ArrayList<UserInfo> login(String mail, String pw, Connection cn) {
+    public ArrayList<UserInfo> login(final String mail, final String pw, final Connection cn) {
 
         UserInfo u;
-        ArrayList<UserInfo> userinfolist = new ArrayList<UserInfo>();
+        final ArrayList<UserInfo> userinfolist = new ArrayList<UserInfo>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -548,14 +548,14 @@ public class AbstractBenutzer extends AbstractIdEntity {
             rs = pstmt.executeQuery();
             ArrayList<Konto> kontolist;
 
-            Administrator admin = new Administrator();
+            final Administrator admin = new Administrator();
             while (rs.next()) {
                 // Wenn Userlogin in Konto erlaubt ist, UserInfo erstellen
                 if (rs.getBoolean("userlogin") && rs.getBoolean("loginopt") || rs.getInt("rechte") >= 2) {
                     u = new UserInfo();
-                    AbstractBenutzer benutzer = getUser(rs);
+                    final AbstractBenutzer benutzer = getUser(rs);
                     if (benutzer.getClass().isInstance(admin)) {
-                        Konto k = new Konto();
+                        final Konto k = new Konto();
                         kontolist = k.getAllKontos(cn);
                     } else {
                         kontolist = getKontosAlowedLogin(benutzer, cn);
@@ -571,20 +571,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("login(String email, String pw, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("login(String email, String pw, Connection cn): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("login(String email, String pw, Connection cn): " + e.toString());
                 }
             }
@@ -596,7 +596,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * Füllt ein Userobjekt mit einer Zeile aus der Datenbank
      */
-    public AbstractBenutzer getUser(ResultSet rs) {
+    public AbstractBenutzer getUser(final ResultSet rs) {
 
         AbstractBenutzer u = new AbstractBenutzer();
 
@@ -634,8 +634,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
             u.setBilling(rs.getLong("billing"));
             u.setRechte(rs.getInt("rechte"));
 
-            Date d = rs.getTimestamp("datum");
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final Date d = rs.getTimestamp("datum");
+            final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if (d != null) {
                 u.setDatum(fmt.format(d));
             } else {
@@ -646,7 +646,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
             u.setGtc(rs.getString("gtc"));
             u.setGtcdate(rs.getString("gtcdate"));
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("getUser(ResultSet rs): " + e.toString());
         }
 
@@ -659,7 +659,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      *
      * @param AbstractBenutzer u
      */
-    public Long saveNewUser(AbstractBenutzer u, Konto k, Connection cn) {
+    public Long saveNewUser(final AbstractBenutzer u, final Konto k, final Connection cn) {
 
         Long uid = null;
 
@@ -680,20 +680,20 @@ public class AbstractBenutzer extends AbstractIdEntity {
                 uid = rs.getLong("LAST_INSERT_ID()");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("saveNewUser(): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("saveNewUser(): " + e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("saveNewUser(): " + e.toString());
                 }
             }
@@ -707,7 +707,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      *
      * @param AbstractBenutzer u
      */
-    public void updateUser(AbstractBenutzer u, Konto k, Connection cn) {
+    public void updateUser(final AbstractBenutzer u, final Konto k, final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -721,13 +721,13 @@ public class AbstractBenutzer extends AbstractIdEntity {
             pstmt.setLong(25, u.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("updateUser(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("updateUser(): " + e.toString());
                 }
             }
@@ -737,8 +737,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * setzt das Lastuse-Datum bei einem AbstractBenutzer
      */
-    public void updateLastuse(AbstractBenutzer u, Konto k, Connection cn) {
-        Calendar cal = new GregorianCalendar();
+    public void updateLastuse(final AbstractBenutzer u, final Konto k, final Connection cn) {
+        final Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
         u.setLastuse(cal.getTime());
         u.updateUser(u, k, cn);
@@ -749,7 +749,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      *
      * @param AbstractBenutzer u
      */
-    public boolean deleteUser(AbstractBenutzer u, Connection cn) {
+    public boolean deleteUser(final AbstractBenutzer u, final Connection cn) {
 
         boolean success = false;
 
@@ -761,13 +761,13 @@ public class AbstractBenutzer extends AbstractIdEntity {
 
             success = true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("deleteUser(): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error("deleteUser(): " + e.toString());
                 }
             }
@@ -781,8 +781,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * Setzt die Werte im Preparestatement der Methoden updateUser() sowie saveNewUser()
      * Funktionniert auch für Bibliothekare sowie Administratoren
      */
-    public PreparedStatement setUserValues(PreparedStatement pstmt,
-            AbstractBenutzer u, Konto k, Connection cn) throws Exception {
+    public PreparedStatement setUserValues(final PreparedStatement pstmt,
+            final AbstractBenutzer u, final Konto k, final Connection cn) throws Exception {
         String berechtigung = "";
         String userBestellung = "0";
         String gbvBestellung = "0";
@@ -856,7 +856,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         } else {
             pstmt.setString(23, u.getGtcdate());
         }
-        ThreadSafeSimpleDateFormat formater = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final ThreadSafeSimpleDateFormat formater = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (u.getLastuse() == null) {
             pstmt.setString(24, "0000-00-00 00:00:00");
         } else {
@@ -877,7 +877,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param abteilung
      *            The abteilung to set.
      */
-    public void setAbteilung(String abteilung) {
+    public void setAbteilung(final String abteilung) {
         this.abteilung = abteilung;
     }
 
@@ -892,7 +892,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param adresse
      *            The adresse to set.
      */
-    public void setAdresse(String adresse) {
+    public void setAdresse(final String adresse) {
         this.adresse = adresse;
     }
 
@@ -907,7 +907,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param adresszusatz
      *            The adresszusatz to set.
      */
-    public void setAdresszusatz(String adresszusatz) {
+    public void setAdresszusatz(final String adresszusatz) {
         this.adresszusatz = adresszusatz;
     }
 
@@ -922,7 +922,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param anrede
      *            The anrede to set.
      */
-    public void setAnrede(String anrede) {
+    public void setAnrede(final String anrede) {
         this.anrede = anrede;
     }
 
@@ -937,7 +937,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param billing
      *            The billing to set.
      */
-    public void setBilling(Long billing) {
+    public void setBilling(final Long billing) {
         this.billing = billing;
     }
 
@@ -945,7 +945,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return datum;
     }
 
-    public void setDatum(String datum) {
+    public void setDatum(final String datum) {
         this.datum = datum;
     }
 
@@ -960,7 +960,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param email
      *            The email to set.
      */
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -975,7 +975,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param institut
      *            The institut to set.
      */
-    public void setInstitut(String institut) {
+    public void setInstitut(final String institut) {
         this.institut = institut;
     }
 
@@ -990,7 +990,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param kontovalidation
      *            The kontovalidation to set.
      */
-    public void setKontovalidation(boolean kontovalidation) {
+    public void setKontovalidation(final boolean kontovalidation) {
         this.kontovalidation = kontovalidation;
     }
 
@@ -1005,7 +1005,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param land
      *            The land to set.
      */
-    public void setLand(String land) {
+    public void setLand(final String land) {
         this.land = land;
     }
 
@@ -1020,7 +1020,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param lastuse
      *            The lastuse to set.
      */
-    public void setLastuse(Date lastuse) {
+    public void setLastuse(final Date lastuse) {
         this.lastuse = lastuse;
     }
 
@@ -1035,7 +1035,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param loginopt
      *            The loginopt to set.
      */
-    public void setLoginopt(boolean loginopt) {
+    public void setLoginopt(final boolean loginopt) {
         this.loginopt = loginopt;
     }
 
@@ -1050,7 +1050,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param name
      *            The name to set.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -1065,7 +1065,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param plz
      *            The plz to set.
      */
-    public void setPlz(String plz) {
+    public void setPlz(final String plz) {
         this.plz = plz;
     }
 
@@ -1080,7 +1080,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param ort
      *            The ort to set.
      */
-    public void setOrt(String ort) {
+    public void setOrt(final String ort) {
         this.ort = ort;
     }
 
@@ -1095,7 +1095,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param password
      *            The password to set.
      */
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -1114,7 +1114,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param telefonnrg
      *            The telefonnrg to set.
      */
-    public void setTelefonnrg(String telefonnrg) {
+    public void setTelefonnrg(final String telefonnrg) {
         this.telefonnrg = telefonnrg;
     }
 
@@ -1133,7 +1133,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param telefonnrp
      *            The telefonnrp to set.
      */
-    public void setTelefonnrp(String telefonnrp) {
+    public void setTelefonnrp(final String telefonnrp) {
         this.telefonnrp = telefonnrp;
     }
 
@@ -1152,7 +1152,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param userbestellung
      *            The userbestellung to set.
      */
-    public void setUserbestellung(boolean userbestellung) {
+    public void setUserbestellung(final boolean userbestellung) {
         this.userbestellung = userbestellung;
     }
 
@@ -1172,7 +1172,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param gbvbestellung
      *            The gbvbestellung to set.
      */
-    public void setGbvbestellung(boolean gbvbestellung) {
+    public void setGbvbestellung(final boolean gbvbestellung) {
         this.gbvbestellung = gbvbestellung;
     }
 
@@ -1191,7 +1191,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param validation
      *            The validation to set.
      */
-    public void setValidation(boolean validation) {
+    public void setValidation(final boolean validation) {
         this.validation = validation;
     }
 
@@ -1206,7 +1206,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param vorname
      *            The vorname to set.
      */
-    public void setVorname(String vorname) {
+    public void setVorname(final String vorname) {
         this.vorname = vorname;
     }
 
@@ -1214,7 +1214,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return kontostatus;
     }
 
-    public void setKontostatus(boolean kontostatus) {
+    public void setKontostatus(final boolean kontostatus) {
         this.kontostatus = kontostatus;
     }
 
@@ -1222,7 +1222,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return rechte;
     }
 
-    public void setRechte(int rechte) {
+    public void setRechte(final int rechte) {
         this.rechte = rechte;
     }
 
@@ -1230,7 +1230,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return gtc;
     }
 
-    public void setGtc(String gtc) {
+    public void setGtc(final String gtc) {
         this.gtc = gtc;
     }
 
@@ -1238,7 +1238,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return gtcdate;
     }
 
-    public void setGtcdate(String gtcdate) {
+    public void setGtcdate(final String gtcdate) {
         this.gtcdate = gtcdate;
     }
 

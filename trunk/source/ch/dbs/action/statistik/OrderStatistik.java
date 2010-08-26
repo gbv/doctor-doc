@@ -55,27 +55,27 @@ public final class OrderStatistik extends DispatchAction {
     /**
      * Gets all statistics for an account of a specified period.
      */
-    public ActionForward kontoOrders(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward kontoOrders(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         OverviewForm of = (OverviewForm) fm; // contains the desired time period
         String forward = "failure";
-        Auth auth = new Auth();
+        final Auth auth = new Auth();
         if (auth.isLogin(rq)) { // is user logged in?
             // Only accessible for librarians and admins
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                 forward = "success";
-                Statistik st = new Statistik();
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final Statistik st = new Statistik();
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-                Check check = new Check();
+                final Check check = new Check();
 
                 // Set the default time period in select. Starting from the beginning of the actual year.
                 if (of.getYfrom() == null || of.getYto() == null
                         || of.getMfrom() == null || of.getMto() == null
                         || of.getDfrom() == null || of.getDto() == null) {
 
-                    Calendar calTo = Calendar.getInstance();
+                    final Calendar calTo = Calendar.getInstance();
                     calTo.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
 
                     of.setYfrom(new SimpleDateFormat("yyyy").format(calTo.getTime()));
@@ -92,13 +92,13 @@ public final class OrderStatistik extends DispatchAction {
                 of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
 
                 // define the possible range of years in select. Staring from FIRST_YEAR till the actual year.
-                Date now = new Date();
-                ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                String datum = fmt.format(now, ui.getKonto().getTimezone());
+                final Date now = new Date();
+                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
+                final String datum = fmt.format(now, ui.getKonto().getTimezone());
                 int yearNow = Integer.parseInt(datum);
                 int yearStart = FIRST_YEAR;
 
-                ArrayList<Integer> years = new ArrayList<Integer>();
+                final ArrayList<Integer> years = new ArrayList<Integer>();
                 yearNow++;
                 for (int j = 0; yearStart < yearNow; j++) {
                     years.add(j, yearStart);
@@ -110,9 +110,9 @@ public final class OrderStatistik extends DispatchAction {
 
                 // ***************** Statistics ******************
 
-                Long kid = ui.getKonto().getId();
+                final Long kid = ui.getKonto().getId();
 
-                Bestellungen b = new Bestellungen();
+                final Bestellungen b = new Bestellungen();
 
                 st.setKontoordersstat(b.countOrdersPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
                 st.setLieferantstat(b.countLieferantPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
@@ -139,22 +139,22 @@ public final class OrderStatistik extends DispatchAction {
                 b.close();
 
                 // Navigation: tab statistics
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("stats");
                 rq.setAttribute("ActiveMenus", mf);
 
 
             } else {
-                ErrorMessage m = new ErrorMessage("error.berechtigung");
+                final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute("errormessage", m);
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
         return mp.findForward(forward);

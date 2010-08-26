@@ -27,238 +27,235 @@ import ch.dbs.form.OrderStatistikForm;
  */
 public class Statistik  {
 
-  private OrderStatistikForm kontoordersstat; // Total aller Kontobestellungen
-  private OrderStatistikForm lieferantstat; // Anzahl pro Lieferant
-  private OrderStatistikForm gratis_kosten; // Anzahl pro Kostenart
-  private OrderStatistikForm sum_gratis_kosten; // Kosten pro Kostenart
-  private OrderStatistikForm lieferartstat; // Anzahl pro Lieferart
-  private OrderStatistikForm mediatype; // Anzahl pro Medientyp
-  private OrderStatistikForm fileformatstat; // Anzahl pro Fileformat
-  private OrderStatistikForm prioritystat; // Anzahl nach Priorität
-  private OrderStatistikForm statusstat; // Anzahl nach Status
-  private OrderStatistikForm lieferzeitstat; // durchschnittliche Lieferzeit
-  private OrderStatistikForm zeitschriftstat; // Anzahl Bestellungen pro Zeitschrift
-  private OrderStatistikForm jahrstat; // Anzahl pro Erscheinungsjahr
-  private OrderStatistikForm totuserwithordersstat; // Total Kunden mit Bestellungen
-  private OrderStatistikForm ordersperuserstat; // durchschnittliche Anzahl pro Kunde
-  private OrderStatistikForm genderstat; // Anzahl pro Gender
-  private OrderStatistikForm institutionstat; // Anzahl pro Institution
-  private OrderStatistikForm abteilungstat; // Anzahl pro Abteilung
-  private OrderStatistikForm ortstat; // Anzahl pro Ort
-  private OrderStatistikForm landstat; // Anzahl pro Land
-  private OrderStatistikForm bibliothekarordersstat; // Anzahl Bestellungen durch Bibliothekare
-  private OrderStatistikForm kundenordersstat; // Anzahl Bestellungen durch Kunden
+    private OrderStatistikForm kontoordersstat; // Total aller Kontobestellungen
+    private OrderStatistikForm lieferantstat; // Anzahl pro Lieferant
+    private OrderStatistikForm gratis_kosten; // Anzahl pro Kostenart
+    private OrderStatistikForm sum_gratis_kosten; // Kosten pro Kostenart
+    private OrderStatistikForm lieferartstat; // Anzahl pro Lieferart
+    private OrderStatistikForm mediatype; // Anzahl pro Medientyp
+    private OrderStatistikForm fileformatstat; // Anzahl pro Fileformat
+    private OrderStatistikForm prioritystat; // Anzahl nach Priorität
+    private OrderStatistikForm statusstat; // Anzahl nach Status
+    private OrderStatistikForm lieferzeitstat; // durchschnittliche Lieferzeit
+    private OrderStatistikForm zeitschriftstat; // Anzahl Bestellungen pro Zeitschrift
+    private OrderStatistikForm jahrstat; // Anzahl pro Erscheinungsjahr
+    private OrderStatistikForm totuserwithordersstat; // Total Kunden mit Bestellungen
+    private OrderStatistikForm ordersperuserstat; // durchschnittliche Anzahl pro Kunde
+    private OrderStatistikForm genderstat; // Anzahl pro Gender
+    private OrderStatistikForm institutionstat; // Anzahl pro Institution
+    private OrderStatistikForm abteilungstat; // Anzahl pro Abteilung
+    private OrderStatistikForm ortstat; // Anzahl pro Ort
+    private OrderStatistikForm landstat; // Anzahl pro Land
+    private OrderStatistikForm bibliothekarordersstat; // Anzahl Bestellungen durch Bibliothekare
+    private OrderStatistikForm kundenordersstat; // Anzahl Bestellungen durch Kunden
 
 
-  public Statistik() { }
+    public OrderStatistikForm getAbteilungstat() {
+        return abteilungstat;
+    }
 
 
-public OrderStatistikForm getAbteilungstat() {
-  return abteilungstat;
-}
+    public void setAbteilungstat(final OrderStatistikForm abteilungstat) {
+        this.abteilungstat = abteilungstat;
+    }
 
 
-public void setAbteilungstat(OrderStatistikForm abteilungstat) {
-  this.abteilungstat = abteilungstat;
-}
+    public OrderStatistikForm getBibliothekarordersstat() {
+        return bibliothekarordersstat;
+    }
 
 
-public OrderStatistikForm getBibliothekarordersstat() {
-  return bibliothekarordersstat;
-}
+    public void setBibliothekarordersstat(final OrderStatistikForm bibliothekarordersstat) {
+        this.bibliothekarordersstat = bibliothekarordersstat;
+    }
 
+    public OrderStatistikForm getMediatype() {
+        return mediatype;
+    }
 
-public void setBibliothekarordersstat(OrderStatistikForm bibliothekarordersstat) {
-  this.bibliothekarordersstat = bibliothekarordersstat;
-}
 
-public OrderStatistikForm getMediatype() {
-  return mediatype;
-}
+    public void setMediatype(final OrderStatistikForm mediatype) {
+        this.mediatype = mediatype;
+    }
 
 
-public void setMediatype(OrderStatistikForm mediatype) {
-  this.mediatype = mediatype;
-}
+    public OrderStatistikForm getFileformatstat() {
+        return fileformatstat;
+    }
 
 
-public OrderStatistikForm getFileformatstat() {
-  return fileformatstat;
-}
+    public void setFileformatstat(final OrderStatistikForm fileformatstat) {
+        this.fileformatstat = fileformatstat;
+    }
 
 
-public void setFileformatstat(OrderStatistikForm fileformatstat) {
-  this.fileformatstat = fileformatstat;
-}
+    public OrderStatistikForm getGenderstat() {
+        return genderstat;
+    }
 
 
-public OrderStatistikForm getGenderstat() {
-  return genderstat;
-}
+    public void setGenderstat(final OrderStatistikForm genderstat) {
+        this.genderstat = genderstat;
+    }
 
 
-public void setGenderstat(OrderStatistikForm genderstat) {
-  this.genderstat = genderstat;
-}
+    public OrderStatistikForm getGratis_kosten() {
+        return gratis_kosten;
+    }
 
 
-public OrderStatistikForm getGratis_kosten() {
-  return gratis_kosten;
-}
+    public void setGratis_kosten(final OrderStatistikForm gratis_kosten) {
+        this.gratis_kosten = gratis_kosten;
+    }
 
 
-public void setGratis_kosten(OrderStatistikForm gratis_kosten) {
-  this.gratis_kosten = gratis_kosten;
-}
+    public OrderStatistikForm getSum_gratis_kosten() {
+        return sum_gratis_kosten;
+    }
 
 
-public OrderStatistikForm getSum_gratis_kosten() {
-  return sum_gratis_kosten;
-}
+    public void setSum_gratis_kosten(final OrderStatistikForm sum_gratis_kosten) {
+        this.sum_gratis_kosten = sum_gratis_kosten;
+    }
 
 
-public void setSum_gratis_kosten(OrderStatistikForm sum_gratis_kosten) {
-  this.sum_gratis_kosten = sum_gratis_kosten;
-}
+    public OrderStatistikForm getInstitutionstat() {
+        return institutionstat;
+    }
 
 
-public OrderStatistikForm getInstitutionstat() {
-  return institutionstat;
-}
+    public void setInstitutionstat(final OrderStatistikForm institutionstat) {
+        this.institutionstat = institutionstat;
+    }
 
 
-public void setInstitutionstat(OrderStatistikForm institutionstat) {
-  this.institutionstat = institutionstat;
-}
+    public OrderStatistikForm getJahrstat() {
+        return jahrstat;
+    }
 
 
-public OrderStatistikForm getJahrstat() {
-  return jahrstat;
-}
+    public void setJahrstat(final OrderStatistikForm jahrstat) {
+        this.jahrstat = jahrstat;
+    }
 
 
-public void setJahrstat(OrderStatistikForm jahrstat) {
-  this.jahrstat = jahrstat;
-}
+    public OrderStatistikForm getKontoordersstat() {
+        return kontoordersstat;
+    }
 
 
-public OrderStatistikForm getKontoordersstat() {
-  return kontoordersstat;
-}
+    public void setKontoordersstat(final OrderStatistikForm kontoordersstat) {
+        this.kontoordersstat = kontoordersstat;
+    }
 
 
-public void setKontoordersstat(OrderStatistikForm kontoordersstat) {
-  this.kontoordersstat = kontoordersstat;
-}
+    public OrderStatistikForm getKundenordersstat() {
+        return kundenordersstat;
+    }
 
 
-public OrderStatistikForm getKundenordersstat() {
-  return kundenordersstat;
-}
+    public void setKundenordersstat(final OrderStatistikForm kundenordersstat) {
+        this.kundenordersstat = kundenordersstat;
+    }
 
 
-public void setKundenordersstat(OrderStatistikForm kundenordersstat) {
-  this.kundenordersstat = kundenordersstat;
-}
+    public OrderStatistikForm getLandstat() {
+        return landstat;
+    }
 
 
-public OrderStatistikForm getLandstat() {
-  return landstat;
-}
+    public void setLandstat(final OrderStatistikForm landstat) {
+        this.landstat = landstat;
+    }
 
 
-public void setLandstat(OrderStatistikForm landstat) {
-  this.landstat = landstat;
-}
+    public OrderStatistikForm getLieferantstat() {
+        return lieferantstat;
+    }
 
 
-public OrderStatistikForm getLieferantstat() {
-  return lieferantstat;
-}
+    public void setLieferantstat(final OrderStatistikForm lieferantstat) {
+        this.lieferantstat = lieferantstat;
+    }
 
 
-public void setLieferantstat(OrderStatistikForm lieferantstat) {
-  this.lieferantstat = lieferantstat;
-}
+    public OrderStatistikForm getLieferartstat() {
+        return lieferartstat;
+    }
 
 
-public OrderStatistikForm getLieferartstat() {
-  return lieferartstat;
-}
+    public void setLieferartstat(final OrderStatistikForm lieferartstat) {
+        this.lieferartstat = lieferartstat;
+    }
 
 
-public void setLieferartstat(OrderStatistikForm lieferartstat) {
-  this.lieferartstat = lieferartstat;
-}
+    public OrderStatistikForm getLieferzeitstat() {
+        return lieferzeitstat;
+    }
 
+    public void setLieferzeitstat(final OrderStatistikForm lieferzeitstat) {
+        this.lieferzeitstat = lieferzeitstat;
+    }
 
-public OrderStatistikForm getLieferzeitstat() {
-  return lieferzeitstat;
-}
 
-public void setLieferzeitstat(OrderStatistikForm lieferzeitstat) {
-  this.lieferzeitstat = lieferzeitstat;
-}
+    public OrderStatistikForm getOrdersperuserstat() {
+        return ordersperuserstat;
+    }
 
 
-public OrderStatistikForm getOrdersperuserstat() {
-  return ordersperuserstat;
-}
+    public void setOrdersperuserstat(final OrderStatistikForm ordersperuserstat) {
+        this.ordersperuserstat = ordersperuserstat;
+    }
 
 
-public void setOrdersperuserstat(OrderStatistikForm ordersperuserstat) {
-  this.ordersperuserstat = ordersperuserstat;
-}
+    public OrderStatistikForm getOrtstat() {
+        return ortstat;
+    }
 
 
-public OrderStatistikForm getOrtstat() {
-  return ortstat;
-}
+    public void setOrtstat(final OrderStatistikForm ortstat) {
+        this.ortstat = ortstat;
+    }
 
 
-public void setOrtstat(OrderStatistikForm ortstat) {
-  this.ortstat = ortstat;
-}
+    public OrderStatistikForm getPrioritystat() {
+        return prioritystat;
+    }
 
 
-public OrderStatistikForm getPrioritystat() {
-  return prioritystat;
-}
+    public void setPrioritystat(final OrderStatistikForm prioritystat) {
+        this.prioritystat = prioritystat;
+    }
 
 
-public void setPrioritystat(OrderStatistikForm prioritystat) {
-  this.prioritystat = prioritystat;
-}
+    public OrderStatistikForm getStatusstat() {
+        return statusstat;
+    }
 
 
-public OrderStatistikForm getStatusstat() {
-  return statusstat;
-}
+    public void setStatusstat(final OrderStatistikForm statusstat) {
+        this.statusstat = statusstat;
+    }
 
 
-public void setStatusstat(OrderStatistikForm statusstat) {
-  this.statusstat = statusstat;
-}
+    public OrderStatistikForm getTotuserwithordersstat() {
+        return totuserwithordersstat;
+    }
 
 
-public OrderStatistikForm getTotuserwithordersstat() {
-  return totuserwithordersstat;
-}
+    public void setTotuserwithordersstat(final OrderStatistikForm totuserwithordersstat) {
+        this.totuserwithordersstat = totuserwithordersstat;
+    }
 
 
-public void setTotuserwithordersstat(OrderStatistikForm totuserwithordersstat) {
-  this.totuserwithordersstat = totuserwithordersstat;
-}
+    public OrderStatistikForm getZeitschriftstat() {
+        return zeitschriftstat;
+    }
 
 
-public OrderStatistikForm getZeitschriftstat() {
-  return zeitschriftstat;
-}
-
-
-public void setZeitschriftstat(OrderStatistikForm zeitschriftstat) {
-  this.zeitschriftstat = zeitschriftstat;
-}
+    public void setZeitschriftstat(final OrderStatistikForm zeitschriftstat) {
+        this.zeitschriftstat = zeitschriftstat;
+    }
 
 
 

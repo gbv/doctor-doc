@@ -41,7 +41,7 @@ public class ConvertOpenUrl {
      * Interpretiert aus einem ContextObject ein OrderForm für Doctor-Doc.
      * Relativ komplex und hier mit Vereinfachungen und Anpassungen umgesetzt...
      */
-    public OrderForm makeOrderform(ContextObject co) {
+    public OrderForm makeOrderform(final ContextObject co) {
 
         OrderForm of = new OrderForm();
         // OpenURL V1.0 has clear identifiers, so no additional controls for mediatype "Artikel" are necessary
@@ -179,8 +179,8 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_date() != null && !co.getRft_date().equals("")) {
-            OrderAction orderActionInstance = new OrderAction();
-            of.setJahr(orderActionInstance.extractYear(co.getRft_date()));
+            final OrderAction oaInstance = new OrderAction();
+            of.setJahr(oaInstance.extractYear(co.getRft_date()));
         }
 
         if (co.getRft_volume() != null && !co.getRft_volume().equals("")) {
@@ -216,7 +216,7 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_aulast() != null && !co.getRft_aulast().equals("")) {
-            String authorCopy = of.getAuthor(); // bis jetzt bereits vorhandene Einträge kopieren
+            final String authorCopy = of.getAuthor(); // bis jetzt bereits vorhandene Einträge kopieren
             // Normalfall (auinit enthält sämtliche Initialen der Vornamen)
             if (co.getRft_auinit() != null && !co.getRft_auinit().equals("")) {
                 // falls Vorname vorhanden, hintansetzen...
@@ -262,16 +262,16 @@ public class ConvertOpenUrl {
             of.setMediatype("Teilkopie Buch");
             // Nach Umstellen auf Teilkopie sicherstellen dass Kapitel abgefüllt wird
             if (of.getKapitel() == null || of.getKapitel().equals("")) { of.setKapitel(co.getRft_atitle()); }
-            // ggf. Artikeltitel leeren
-            if (of.getArtikeltitel() != null || !of.getArtikeltitel().equals("")) { of.setArtikeltitel(""); }
+            // Artikeltitel leeren
+            of.setArtikeltitel("");
         }
         // Spezialfall E-Books von Springer
         if (of.getMediatype().equals("Artikel") && isSpringerBook(of) && !of.getDoi().contains("_")) {
             of.setMediatype("Buch");
             // Nach Umstellen auf Buch sicherstellen dass Buchtitel abgefüllt wird
             if (of.getBuchtitel() == null || of.getBuchtitel().equals("")) { of.setBuchtitel(co.getRft_atitle()); }
-            // ggf. Artikeltitel leeren
-            if (of.getArtikeltitel() != null || !of.getArtikeltitel().equals("")) { of.setArtikeltitel(""); }
+            // Artikeltitel leeren
+            of.setArtikeltitel("");
             if (of.getIsbn() == null || of.getIsbn().equals("")) { of.setIsbn(getIsbnSpringerBook(of.getDoi())); }
         }
         if (of.getMediatype().equals("Artikel") && isSpringerBook(of) && of.getDoi().contains("_")) {
@@ -280,8 +280,8 @@ public class ConvertOpenUrl {
             if (of.getKapitel() == null || of.getKapitel().equals("")) { of.setKapitel(co.getRft_atitle()); }
             // Nach Umstellen auf Teilkopie sicherstellen dass Buchtitel abgefüllt wird
             if (of.getBuchtitel() == null || of.getBuchtitel().equals("")) { of.setBuchtitel(co.getRft_title()); }
-            // ggf. Artikeltitel leeren
-            if (of.getArtikeltitel() != null || !of.getArtikeltitel().equals("")) { of.setArtikeltitel(""); }
+            // Artikeltitel leeren
+            of.setArtikeltitel("");
             if (of.getIsbn() == null || of.getIsbn().equals("")) { of.setIsbn(getIsbnSpringerBook(of.getDoi())); }
         }
 
@@ -299,10 +299,10 @@ public class ConvertOpenUrl {
      * Stellt aus einem Ordeform ein ContextObject her.
      *
      */
-    public ContextObject makeContextObject(OrderForm of) {
+    public ContextObject makeContextObject(final OrderForm of) {
 
-        ContextObject co = new ContextObject();
-        CodeUrl codeUrl = new CodeUrl();
+        final ContextObject co = new ContextObject();
+        final CodeUrl codeUrl = new CodeUrl();
 
         if (of.getMediatype().equals("Artikel")) {
             co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:journal"));
@@ -342,72 +342,93 @@ public class ConvertOpenUrl {
      * Stellt aus einem Orderform einen "Doctor-Doc-String" für interne Get-Methoden her.
      *
      */
-    public String makeGetMethodString(OrderForm of) {
+    public String makeGetMethodString(final OrderForm of) {
 
-        StringBuffer sb = new StringBuffer();
-        CodeUrl codeUrl = new CodeUrl();
-        sb.append("mediatype=" + codeUrl.encodeLatin1(of.getMediatype())); // Default "Artikel" (s.a. OrderForm)
+        final StringBuffer sb = new StringBuffer(800);
+        final CodeUrl codeUrl = new CodeUrl();
+        sb.append("mediatype="); // Default "Artikel" (s.a. OrderForm)
+        sb.append(codeUrl.encodeLatin1(of.getMediatype()));
         if (of.getIssn() != null && !of.getIssn().equals("")) {
-            sb.append("&issn=" + codeUrl.encodeLatin1(of.getIssn()));
+            sb.append("&issn=");
+            sb.append(codeUrl.encodeLatin1(of.getIssn()));
         }
         if (of.getJahr() != null && !of.getJahr().equals("")) {
-            sb.append("&jahr=" + codeUrl.encodeLatin1(of.getJahr()));
+            sb.append("&jahr=");
+            sb.append(codeUrl.encodeLatin1(of.getJahr()));
         }
         if (of.getJahrgang() != null && !of.getJahrgang().equals("")) {
-            sb.append("&jahrgang=" + codeUrl.encodeLatin1(of.getJahrgang()));
+            sb.append("&jahrgang=");
+            sb.append(codeUrl.encodeLatin1(of.getJahrgang()));
         } // könnte Leerschläge und Interpunktion enthalten
         if (of.getHeft() != null && !of.getHeft().equals("")) {
-            sb.append("&heft=" + codeUrl.encodeLatin1(of.getHeft()));
+            sb.append("&heft=");
+            sb.append(codeUrl.encodeLatin1(of.getHeft()));
         } // Leerschläge etc.
         if (of.getSeiten() != null && !of.getSeiten().equals("")) {
-            sb.append("&seiten=" + codeUrl.encodeLatin1(of.getSeiten()));
+            sb.append("&seiten=");
+            sb.append(codeUrl.encodeLatin1(of.getSeiten()));
         } // Leerschläge etc.
         if (of.getIsbn() != null && !of.getIsbn().equals("")) {
-            sb.append("&isbn=" + of.getIsbn());
+            sb.append("&isbn=");
+            sb.append(of.getIsbn());
         }
         if (of.getArtikeltitel() != null && !of.getArtikeltitel().equals("")) {
-            sb.append("&artikeltitel=" + codeUrl.encodeLatin1(of.getArtikeltitel()));
+            sb.append("&artikeltitel=");
+            sb.append(codeUrl.encodeLatin1(of.getArtikeltitel()));
         }
         if (of.getZeitschriftentitel() != null && !of.getZeitschriftentitel().equals("")) {
-            sb.append("&zeitschriftentitel=" + codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+            sb.append("&zeitschriftentitel=");
+            sb.append(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
         }
         if (of.getAuthor() != null && !of.getAuthor().equals("")) {
-            sb.append("&author=" + codeUrl.encodeLatin1(of.getAuthor()));
+            sb.append("&author=");
+            sb.append(codeUrl.encodeLatin1(of.getAuthor()));
         }
         if (of.getKapitel() != null && !of.getKapitel().equals("")) {
-            sb.append("&kapitel=" + codeUrl.encodeLatin1(of.getKapitel()));
+            sb.append("&kapitel=");
+            sb.append(codeUrl.encodeLatin1(of.getKapitel()));
         }
         if (of.getBuchtitel() != null && !of.getBuchtitel().equals("")) {
-            sb.append("&buchtitel=" + codeUrl.encodeLatin1(of.getBuchtitel()));
+            sb.append("&buchtitel=");
+            sb.append(codeUrl.encodeLatin1(of.getBuchtitel()));
         }
         if (of.getVerlag() != null && !of.getVerlag().equals("")) {
-            sb.append("&verlag=" + codeUrl.encodeLatin1(of.getVerlag()));
+            sb.append("&verlag=");
+            sb.append(codeUrl.encodeLatin1(of.getVerlag()));
         }
         if (of.getRfr_id() != null && !of.getRfr_id().equals("")) {
-            sb.append("&rfr_id=" + codeUrl.encodeLatin1(of.getRfr_id()));
+            sb.append("&rfr_id=");
+            sb.append(codeUrl.encodeLatin1(of.getRfr_id()));
         }
         if (of.getForuser() != null && !of.getForuser().equals("0")) {
             // falls in bestellform.sendOrder bereits ein User anhand der Email gefunden wurde
-            sb.append("&foruser=" + codeUrl.encodeLatin1(of.getForuser()));
+            sb.append("&foruser=");
+            sb.append(codeUrl.encodeLatin1(of.getForuser()));
         }
         if (of.getGenre() != null && !of.getGenre().equals("")) {
-            sb.append("&genre=" + codeUrl.encodeLatin1(of.getGenre()));
+            sb.append("&genre=");
+            sb.append(codeUrl.encodeLatin1(of.getGenre()));
         }
         if (of.getPmid() != null && !of.getPmid().equals("")) {
-            sb.append("&pmid=" + codeUrl.encodeLatin1(of.getPmid()));
+            sb.append("&pmid=");
+            sb.append(codeUrl.encodeLatin1(of.getPmid()));
         }
         if (of.getDoi() != null && !of.getDoi().equals("")) {
-            sb.append("&doi=" + codeUrl.encodeLatin1(of.getDoi()));
+            sb.append("&doi=");
+            sb.append(codeUrl.encodeLatin1(of.getDoi()));
         }
         if (of.getSici() != null && !of.getSici().equals("")) {
-            sb.append("&sici=" + codeUrl.encodeLatin1(of.getSici()));
+            sb.append("&sici=");
+            sb.append(codeUrl.encodeLatin1(of.getSici()));
         } // kann Sonderzeichen enthalten
         if (of.getZdbid() != null && !of.getZdbid().equals("")) {
-            sb.append("&zdbid=" + codeUrl.encodeLatin1(of.getZdbid()));
+            sb.append("&zdbid=");
+            sb.append(codeUrl.encodeLatin1(of.getZdbid()));
         }
         if (of.getLccn() != null && !of.getLccn().equals("")) {
             // http://www.info-uri.info/registry/
-            sb.append("&lccn=" + codeUrl.encodeLatin1(of.getLccn()));
+            sb.append("&lccn=");
+            sb.append(codeUrl.encodeLatin1(of.getLccn()));
         }
 
         return sb.toString();
@@ -416,7 +437,7 @@ public class ConvertOpenUrl {
     /**
      * Holt den Inhalt aus einem URI-Schema und legt ihn ins OrderForm
      */
-    private OrderForm resolveUriScheme(String input, OrderForm of) {
+    private OrderForm resolveUriScheme(final String input, final OrderForm of) {
 
         // http://www.info-uri.info/registry/
 
@@ -428,7 +449,7 @@ public class ConvertOpenUrl {
             if (input.contains("info:lccn/")) { of.setLccn(input.substring(input.indexOf("info:lccn/"))); }
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("resolveUriScheme: " + e.toString());
         }
 
@@ -438,9 +459,9 @@ public class ConvertOpenUrl {
     /**
      * Löst eine SICI-Number auf und legt die Angaben ins OrderForm
      */
-    private OrderForm resolveSiciNumber(String sici) {
+    private OrderForm resolveSiciNumber(final String sici) {
 
-        OrderForm of = new OrderForm();
+        final OrderForm of = new OrderForm();
 
         // http://en.wikipedia.org/wiki/SICI
         // ANSI/NISO Z39.56
@@ -450,26 +471,26 @@ public class ConvertOpenUrl {
         try {
 
             if (sici.contains("(")) {
-                int start = sici.indexOf("(");
+                final int start = sici.indexOf('(');
                 String tmp = "";
                 if (start > 0) { of.setIssn(normalizeIssn(sici.substring(0, start))); } // ISSN-Nummer steht am Anfang
-                if (sici.substring(start).contains(")")) { tmp = sici.substring(start, sici.indexOf(")")); }
+                if (sici.substring(start).contains(")")) { tmp = sici.substring(start, sici.indexOf(')')); }
                 // Jahreszahl sind die ersten vier Stellen in der Klammer
                 if (tmp.length() > 4) { of.setJahr(tmp.substring(1, 5)); }
             }
-            if (sici.contains(")") && sici.contains("<") && (sici.indexOf(")") < sici.indexOf("<"))) {
-                String segment = sici.substring(sici.indexOf(")") + 1, sici.indexOf("<")); // enthält Jg:Heft
+            if (sici.contains(")") && sici.contains("<") && (sici.indexOf(')') < sici.indexOf('<'))) {
+                final String segment = sici.substring(sici.indexOf(')') + 1, sici.indexOf('<')); // enthält Jg:Heft
                 if (segment.contains(":")) {
-                    of.setJahrgang(segment.substring(0, segment.indexOf(":")));
-                    of.setHeft(segment.substring(segment.indexOf(":") + 1));
+                    of.setJahrgang(segment.substring(0, segment.indexOf(':')));
+                    of.setHeft(segment.substring(segment.indexOf(':') + 1));
                 }
             }
-            if (sici.contains("<") && sici.substring(sici.indexOf("<")).contains(":")) {
+            if (sici.contains("<") && sici.substring(sici.indexOf('<')).contains(":")) {
                 // Seiten nach < bis :
-                of.setSeiten(sici.substring(sici.indexOf("<") + 1, sici.indexOf(":", sici.indexOf("<"))));
+                of.setSeiten(sici.substring(sici.indexOf('<') + 1, sici.indexOf(':', sici.indexOf('<'))));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("resolveSiciNumber: " + sici + "\040" + e.toString());
         }
 
@@ -479,7 +500,7 @@ public class ConvertOpenUrl {
     /**
      * Prüft, ob Bestellobjekt logischerweise ein Buch sein muss
      */
-    private boolean isBook(OrderForm of) {
+    private boolean isBook(final OrderForm of) {
 
         boolean check = false;
 
@@ -499,7 +520,7 @@ public class ConvertOpenUrl {
                 check = true;
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("isBook: " + e.toString());
         }
 
@@ -509,7 +530,7 @@ public class ConvertOpenUrl {
     /**
      * Prüft, ob das Bestellobjekt logischerweise eine Teilkopie Buch sein muss
      */
-    private boolean isBookItem(OrderForm of) {
+    private boolean isBookItem(final OrderForm of) {
 
         boolean check = false;
 
@@ -532,7 +553,7 @@ public class ConvertOpenUrl {
 
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("isBookItem: " + e.toString());
         }
 
@@ -542,7 +563,7 @@ public class ConvertOpenUrl {
     /**
      * Prüft, ob das Bestellobjekt ein Springer-Buch ist
      */
-    private boolean isSpringerBook(OrderForm of) {
+    private boolean isSpringerBook(final OrderForm of) {
 
         boolean check = false;
 
@@ -557,7 +578,7 @@ public class ConvertOpenUrl {
                 check = true;
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("isSpringerBook:" + e.toString());
         }
 
@@ -567,21 +588,21 @@ public class ConvertOpenUrl {
     /**
      * Holt aus einer doi von Springer die ISBN
      */
-    private String getIsbnSpringerBook(String doi) {
+    private String getIsbnSpringerBook(final String doi) {
 
         String isbn = "";
 
         try {
 
             if (doi.contains("_")) {
-                isbn = doi.substring(doi.indexOf("10.1007/") + 8, doi.indexOf("_"));
+                isbn = doi.substring(doi.indexOf("10.1007/") + 8, doi.indexOf('_'));
             } else {
                 isbn = doi.substring(doi.indexOf("10.1007/") + 8);
             }
 
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getIsbnSpringerBook: " + doi + "\040" + e.toString());
         }
 
@@ -601,17 +622,17 @@ public class ConvertOpenUrl {
             if (input != null && input.length() > 19
                     && (input.contains(";") || input.contains(","))) { // Separation character is comma or semicolon
                 if (input.contains(";")) {
-                    if (input.indexOf(";") > 8) { // must have a ISSN number before the separtion character
-                        input = input.substring(0, input.indexOf(";")).trim(); // take the first ISSN
+                    if (input.indexOf(';') > 8) { // must have a ISSN number before the separtion character
+                        input = input.substring(0, input.indexOf(';')).trim(); // take the first ISSN
                     }
                 } else if (input.contains(",")) {
-                    if (input.indexOf(",") > 8) { // must have a ISSN number before the separtion character
-                        input = input.substring(0, input.indexOf(",")).trim(); // take the first ISSN
+                    if (input.indexOf(',') > 8) { // must have a ISSN number before the separtion character
+                        input = input.substring(0, input.indexOf(',')).trim(); // take the first ISSN
                     }
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("extractFromSeveralIssns:\040" + input + "\040" + e.toString());
         }
 
@@ -629,7 +650,7 @@ public class ConvertOpenUrl {
                 input = input.substring(0, 4) + "-" + input.substring(4, 8);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("normalizeIssn:\040" + input + "\040" + e.toString());
         }
 
@@ -645,32 +666,32 @@ public class ConvertOpenUrl {
 
             if (input != null && !input.equals("") && input.endsWith(".")) {
 
-                int l = input.length();
+                final int l = input.length();
                 // falls letztes Zeichen "." => eliminieren
-                if (input.lastIndexOf(".") == l - 1) { input = input.substring(0, input.lastIndexOf(".")); }
+                if (input.lastIndexOf('.') == l - 1) { input = input.substring(0, input.lastIndexOf('.')); }
 
             }
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("removeEndDot: " + input + "\040" + e.toString());
         }
 
         return input;
     }
 
-    public String extractSpage(String seiten) {
+    public String extractSpage(final String seiten) {
         String spage = "";
         if (seiten != null && seiten.length() != 0) {
             try {
-                Pattern z = Pattern.compile("[0-9]*");
-                Matcher w = z.matcher(seiten);
+                final Pattern z = Pattern.compile("[0-9]*");
+                final Matcher w = z.matcher(seiten);
 
                 if (w.find()) { // Idee: nur erste Zahl abfüllen...
                     spage = seiten.substring(w.start(), w.end()); // hier wird nur der erste Treffer abgefüllt...
                 }
                 // if (spage.equals("")) spage = seiten;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("extractSpage: " + seiten + "\040" + e.toString());
             }
         }
@@ -687,14 +708,14 @@ public class ConvertOpenUrl {
 
         try {
 
-            if (input != null && input.length() != 0 && !testLowercase(input)) {
+            if (input != null && input.length() != 0 && !checkLowercase(input)) {
 
                 input = input.toLowerCase();
                 input = input.substring(0, 1).toUpperCase() + input.substring(1);
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("toNormalLetters: " + input + "\040" + e.toString());
         }
 
@@ -706,7 +727,7 @@ public class ConvertOpenUrl {
      * Testet ob ein String Kleinbuchstaben enthält
      *
      */
-    private boolean testLowercase(String input) {
+    private boolean checkLowercase(final String input) {
 
         boolean check = false;
 
@@ -714,22 +735,20 @@ public class ConvertOpenUrl {
 
             try {
 
-                Pattern z = Pattern.compile("\\p{Lower}");
-                Matcher w = z.matcher(input);
+                final Pattern z = Pattern.compile("\\p{Lower}");
+                final Matcher w = z.matcher(input);
 
                 if (w.find()) { // Testen, ob String Kleinbuchstaben enthält...
                     check = true;
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("testLowercase: " + input + "\040" + e.toString());
             }
         }
 
         return check;
     }
-
-
 
 
 }

@@ -32,45 +32,45 @@ import ch.dbs.form.Message;
 
 public final class AdminServerTest extends Action {
 
-  /**
-   * Class for Admins to test any methods on the server. Local behaviour may
-   * differ from the behaviour on a remote server...
-   *
-   * Path: test.do
-   *
-   * @author Markus Fischer
-   */
-  public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    /**
+     * Class for Admins to test any methods on the server. Local behaviour may
+     * differ from the behaviour on a remote server...
+     *
+     * Path: test.do
+     *
+     * @author Markus Fischer
+     */
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-    String forward = "failure";
-    Auth auth = new Auth();
-    ActiveMenusForm mf = new ActiveMenusForm();
+        String forward = "failure";
+        final Auth auth = new Auth();
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("login");
         rq.setAttribute("ActiveMenus", mf);
 
-    if (auth.isAdmin(rq)) {
-      forward = "success";
-      Message m = new Message();
-      m.setMessage("message.admintest");
-      m.setLink("test.do");
-      StringBuffer message = new StringBuffer();
-      // Testcode hier platzieren:
+        if (auth.isAdmin(rq)) {
+            forward = "success";
+            final Message m = new Message();
+            m.setMessage("message.admintest");
+            m.setLink("test.do");
+            final StringBuffer message = new StringBuffer();
+            // Testcode hier platzieren:
 
 
 
-      // Ende Testcode
+            // Ende Testcode
 
-      m.setSystemMessage(message.toString()); // place your output here
-      rq.setAttribute("message", m);
+            m.setSystemMessage(message.toString()); // place your output here
+            rq.setAttribute("message", m);
 
-    } else {
-      ErrorMessage m = new ErrorMessage("error.berechtigung");
-        m.setLink("login.do");
+        } else {
+            final ErrorMessage m = new ErrorMessage("error.berechtigung");
+            m.setLink("login.do");
             rq.setAttribute("errormessage", m);
-    }
+        }
 
-    return mp.findForward(forward);
+        return mp.findForward(forward);
     }
 
 }

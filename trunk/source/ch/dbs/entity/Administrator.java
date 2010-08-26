@@ -28,7 +28,9 @@ public class Administrator extends AbstractBenutzer {
 
 
 
-  public Administrator() { }
+    public Administrator() {
+
+    }
 
 
 }

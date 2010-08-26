@@ -34,22 +34,22 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
     private String zeitschriftentitel_encoded;
     private String artikeltitel_encoded;
     private OrderForm pageForm;
-    private String concurrentCopyZeitschriftentitel;
+    private String concurrCopyTitle;
 
     public ThreadedJournalSeek() {
     }
 
-    public ThreadedJournalSeek(String zeitschriftentitel_enc, String artikeltitel_enc, OrderForm of,
+    public ThreadedJournalSeek(final String zeitschriftentitel_enc, final String artikeltitel_enc, final OrderForm of,
             String concurrentCopyZeitschriftentit) {
         this.zeitschriftentitel_encoded = zeitschriftentitel_enc;
         this.artikeltitel_encoded = artikeltitel_enc;
         this.pageForm = of;
-        this.concurrentCopyZeitschriftentitel = concurrentCopyZeitschriftentit;
+        this.concurrCopyTitle = concurrentCopyZeitschriftentit;
     }
     public ArrayList<JournalDetails> call() {
-        OrderAction oa = new OrderAction();
-        ArrayList<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded,
-                artikeltitel_encoded, pageForm, concurrentCopyZeitschriftentitel);
+        final OrderAction oa = new OrderAction();
+        final ArrayList<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded,
+                artikeltitel_encoded, pageForm, concurrCopyTitle);
         return jd;
     }
 
@@ -78,12 +78,12 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
     }
 
     public String getConcurrentCopyZeitschriftentitel() {
-        return concurrentCopyZeitschriftentitel;
+        return concurrCopyTitle;
     }
 
     public void setConcurrentCopyZeitschriftentitel(
             String concurrentCopyZeitschriftentitel) {
-        this.concurrentCopyZeitschriftentitel = concurrentCopyZeitschriftentitel;
+        this.concurrCopyTitle = concurrentCopyZeitschriftentitel;
     }
 
 }

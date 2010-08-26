@@ -57,17 +57,12 @@ public final class FindFree extends ActionForm {
     private List<JournalDetails> zeitschriften;
 
 
-    public FindFree() {
-
-    }
-
-
     public String getLink_search() {
         return link_search;
     }
 
 
-    public void setLink_search(String link_search) {
+    public void setLink_search(final String link_search) {
         this.link_search = link_search;
     }
 
@@ -77,7 +72,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
@@ -87,7 +82,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
@@ -96,7 +91,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setZdb_link(String zdb_link) {
+    public void setZdb_link(final String zdb_link) {
         this.zdb_link = zdb_link;
     }
 
@@ -106,7 +101,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setZeitschriftentitel(String zeitschriftentitel) {
+    public void setZeitschriftentitel(final String zeitschriftentitel) {
         this.zeitschriftentitel = zeitschriftentitel;
     }
 
@@ -116,7 +111,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setArtikeltitel(String artikeltitel) {
+    public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
     }
 
@@ -125,7 +120,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
@@ -135,7 +130,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -145,7 +140,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -155,7 +150,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -165,7 +160,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -175,7 +170,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setZeitschriften(List<JournalDetails> zeitschriften) {
+    public void setZeitschriften(final List<JournalDetails> zeitschriften) {
         this.zeitschriften = zeitschriften;
     }
 
@@ -184,7 +179,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setLinktitle(String linktitle) {
+    public void setLinktitle(final String linktitle) {
         this.linktitle = linktitle;
     }
 
@@ -193,7 +188,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setLink_print(String link_print) {
+    public void setLink_print(final String link_print) {
         this.link_print = link_print;
     }
 
@@ -203,7 +198,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setLinktitle_print(String linktitle_print) {
+    public void setLinktitle_print(final String linktitle_print) {
         this.linktitle_print = linktitle_print;
     }
 
@@ -213,7 +208,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setMessage_print(String message_print) {
+    public void setMessage_print(final String message_print) {
         this.message_print = message_print;
     }
 
@@ -222,7 +217,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setLieferant(Lieferanten lieferant) {
+    public void setLieferant(final Lieferanten lieferant) {
         this.lieferant = lieferant;
     }
 
@@ -232,7 +227,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setDeloptions(String deloptions) {
+    public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
@@ -241,7 +236,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setE_ampel(String e_ampel) {
+    public void setE_ampel(final String e_ampel) {
         this.e_ampel = e_ampel;
     }
 
@@ -251,7 +246,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setP_ampel(String p_ampel) {
+    public void setP_ampel(final String p_ampel) {
         this.p_ampel = p_ampel;
     }
 
@@ -260,7 +255,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setInstitution_print(String institutionPrint) {
+    public void setInstitution_print(final String institutionPrint) {
         institution_print = institutionPrint;
     }
 
@@ -270,7 +265,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setLocation_print(ArrayList<String> locationPrint) {
+    public void setLocation_print(final ArrayList<String> locationPrint) {
         location_print = locationPrint;
     }
 
@@ -280,7 +275,7 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public void setShelfmark_print(ArrayList<String> shelfmarkPrint) {
+    public void setShelfmark_print(final ArrayList<String> shelfmarkPrint) {
         shelfmark_print = shelfmarkPrint;
     }
 

@@ -35,48 +35,44 @@ import ch.dbs.entity.Texttyp;
  */
 public class Gtc {
 
-  private static final SimpleLogger LOG = new SimpleLogger(Gtc.class);
+    private static final SimpleLogger LOG = new SimpleLogger(Gtc.class);
 
-  public Gtc() {
+    /**
+     * Checkt, ob der Benutzer die neueste Version der GTC abgesegnet hat
+     *
+     * @param AbstractBenutzer b
+     * @param Connection cn Datenbankverbindung
+     * @return boolean
+     */
+    public boolean isAccepted(final AbstractBenutzer b, final Connection cn) {
 
-  }
+        boolean isAccepted = false;
 
-  /**
-   * Checkt, ob der Benutzer die neueste Version der GTC abgesegnet hat
-   *
-   * @param AbstractBenutzer b
-   * @param Connection cn Datenbankverbindung
-   * @return boolean
-   */
-  public boolean isAccepted(AbstractBenutzer b, Connection cn) {
-
-    boolean isAccepted = false;
-
-    // Aktuellste GTC aus Datenbank holen
-    Text gtc = getCurrentGtc(cn);
+        // Aktuellste GTC aus Datenbank holen
+        final Text gtc = getCurrentGtc(cn);
 
         // Hat der Benutzer die aktuellste GTC hinterlegt?
-      if (b.getGtc() != null && b.getGtc().equals(gtc.getInhalt())) {
-        isAccepted = true;
+        if (b.getGtc() != null && b.getGtc().equals(gtc.getInhalt())) {
+            isAccepted = true;
         }
 
-    return isAccepted;
-  }
+        return isAccepted;
+    }
 
-  /**
-   * Holt die aktuellste GTC aus der Datenbank
-   * @param Connection cn
-   * @return Text GTC
-   */
-  public Text getCurrentGtc(Connection cn) {
+    /**
+     * Holt die aktuellste GTC aus der Datenbank
+     * @param Connection cn
+     * @return Text GTC
+     */
+    public Text getCurrentGtc(final Connection cn) {
 
-    Text gtc = null;
-    Texttyp tty = new Texttyp(Long.valueOf(6), cn); // Texttyp "GTC" erstellen
+        Text gtc = null;
+        final Texttyp tty = new Texttyp(Long.valueOf(6), cn); // Texttyp "GTC" erstellen
 
-    //Aktuellste GTC aus Datenbank holen
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    try {
+        //Aktuellste GTC aus Datenbank holen
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? ORDER BY TID ASC");
             pstmt.setString(1, "6");
             rs = pstmt.executeQuery();
@@ -89,24 +85,24 @@ public class Gtc {
             }
 
         } catch (Exception e) {
-          LOG.error("getCurrentGtc(Connection cn): " + e.toString());
+            LOG.error("getCurrentGtc(Connection cn): " + e.toString());
         } finally {
-          if (rs != null) {
-            try {
-              rs.close();
-            } catch (SQLException e) {
-              System.out.println(e);
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOG.error(e.toString());
+                }
             }
-          }
-          if (pstmt != null) {
-            try {
-              pstmt.close();
-            } catch (SQLException e) {
-              System.out.println(e);
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    LOG.error(e.toString());
+                }
             }
-          }
         }
-    return gtc;
-  }
+        return gtc;
+    }
 
 }

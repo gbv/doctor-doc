@@ -39,12 +39,12 @@ public final class OptimizeDB extends DispatchAction {
      * the tables will be locked, while optimizing and depending on the table size
      * this may take a while.
      */
-    public void optimizeDB(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public void optimizeDB(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        Text cn = new Text();
+        final Text cn = new Text();
         PreparedStatement pstmt = null;
 
         try {
@@ -52,14 +52,14 @@ public final class OptimizeDB extends DispatchAction {
                     + "`bestellungen` , `bestellstatus` , `default_preise` , `holdings` , `konto` , `lieferanten` , "
                     + "`stock` , `text` , `v_konto_benutzer`");
             pstmt.executeUpdate();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("public void optimize)" + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             cn.close();

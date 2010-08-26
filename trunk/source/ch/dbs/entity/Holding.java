@@ -50,7 +50,7 @@ public class Holding extends AbstractIdEntity {
         this.setKonto(new Konto());
     }
 
-    public Holding(Konto k) {
+    public Holding(final Konto k) {
         this.setKonto(k);
     }
 
@@ -60,7 +60,7 @@ public class Holding extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public Holding(Connection cn, ResultSet rs) {
+    public Holding(final Connection cn, final ResultSet rs) {
 
         try {
             this.setId(rs.getLong("HOID"));
@@ -72,12 +72,12 @@ public class Holding extends AbstractIdEntity {
             this.setOrt(rs.getString("ort"));
             this.setIssn(rs.getString("issn"));
             this.setZdbid(rs.getString("zdbid"));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("Holding(Connection cn, ResultSet rs: " + e.toString());
         }
     }
 
-    private void setRsValues(Connection cn, ResultSet rs) throws Exception {
+    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
         this.setId(rs.getLong("HOID"));
         this.setKid(rs.getLong("KID"));
         this.setKonto(new Konto(this.getKid(), cn));
@@ -89,8 +89,8 @@ public class Holding extends AbstractIdEntity {
         this.setZdbid(rs.getString("zdbid"));
     }
 
-    private Holding setRsstValues(Connection cn, ResultSet rs) throws Exception {
-        Holding ho = new Holding();
+    private Holding setRsstValues(final Connection cn, final ResultSet rs) throws Exception {
+        final Holding ho = new Holding();
         ho.setId(rs.getLong("HOID"));
         ho.setKid(rs.getLong("KID"));
         ho.setKonto(new Konto(ho.getKid(), cn));
@@ -110,7 +110,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return Holding holding
      */
-    public Holding(Long hoid, Connection cn) {
+    public Holding(final Long hoid, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -123,21 +123,21 @@ public class Holding extends AbstractIdEntity {
                 this.setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Holding (Long hoid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -151,7 +151,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return Holding holding
      */
-    public Holding getHolding(Long kId, String identifier, Connection cn) {
+    public Holding getHolding(final Long kId, final String identifier, final Connection cn) {
 
         Holding ho = new Holding();
 
@@ -170,21 +170,21 @@ public class Holding extends AbstractIdEntity {
                 ho = setRsstValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getHolding (Long kid, String identifier, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -200,12 +200,12 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return Holding holding
      */
-    public Holding(Holding h, Connection cn) {
+    public Holding(final Holding h, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        StringBuffer sql = new StringBuffer();
+        final StringBuffer sql = new StringBuffer(344);
         sql.append("SELECT * FROM holdings WHERE KID = ? AND titel = ? AND coden ");
         if (h.getCoden() == null || h.getCoden().equals("")) { sql.append("IS ? "); } else { sql.append("= ? "); }
         sql.append("AND verlag = ? AND ort = ? AND issn = ? AND zdbid ");
@@ -234,21 +234,21 @@ public class Holding extends AbstractIdEntity {
                 setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Holding (Holding h, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -262,13 +262,15 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldings(ArrayList<String> identifier, Connection cn) {
+    public ArrayList<Holding> getAllHoldings(final ArrayList<String> identifier, final Connection cn) {
 
-        ArrayList<Holding> list = new ArrayList<Holding>();
+        final ArrayList<Holding> list = new ArrayList<Holding>();
 
-        if (identifier.size() > 0) {
+        if (!identifier.isEmpty()) {
 
-            StringBuffer sqlQuery = new StringBuffer("SELECT * FROM holdings WHERE issn = ? OR coden = ? OR zdbid = ?");
+            final StringBuffer sqlQuery = new StringBuffer(226);
+
+            sqlQuery.append("SELECT * FROM holdings WHERE issn = ? OR coden = ? OR zdbid = ?");
 
             for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
@@ -279,7 +281,7 @@ public class Holding extends AbstractIdEntity {
             try {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 int pos = 1;
-                for (String ident : identifier) {
+                for (final String ident : identifier) {
                     pstmt.setString(pos, ident);
                     pstmt.setString(pos + 1, ident);
                     pstmt.setString(pos + 2, ident);
@@ -289,25 +291,25 @@ public class Holding extends AbstractIdEntity {
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
-                    Holding ho = setRsstValues(cn, rs);
+                    final Holding ho = setRsstValues(cn, rs);
                     list.add(ho);
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("getAllHoldings (ArrayList<String> identifier, Connection cn): " + e.toString());
             } finally {
                 if (rs != null) {
                     try {
                         rs.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -323,9 +325,9 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldingsForKonto(Long kId, Connection cn) {
+    public ArrayList<Holding> getAllHoldingsForKonto(final Long kId, final Connection cn) {
 
-        ArrayList<Holding> list = new ArrayList<Holding>();
+        final ArrayList<Holding> list = new ArrayList<Holding>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -336,25 +338,25 @@ public class Holding extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Holding ho = setRsstValues(cn, rs);
+                final Holding ho = setRsstValues(cn, rs);
                 list.add(ho);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllHoldingsForKonto (Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -372,20 +374,20 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldingsForKonto(ArrayList<String> identifier, Long kId, Connection cn) {
+    public ArrayList<Holding> getAllHoldingsForKonto(final ArrayList<String> identifier, final Long kId, final Connection cn) {
 
-        ArrayList<Holding> list = new ArrayList<Holding>();
+        final ArrayList<Holding> list = new ArrayList<Holding>();
 
-        if (identifier.size() > 0) {
+        if (!identifier.isEmpty()) {
 
-            StringBuffer sqlQuery = new StringBuffer("SELECT * FROM holdings WHERE KID = ? "
-                    + "AND (issn = ? OR coden = ? OR zdbid = ?");
+            final StringBuffer sqlQuery = new StringBuffer(242);
+            sqlQuery.append("SELECT * FROM holdings WHERE KID = ? AND (issn = ? OR coden = ? OR zdbid = ?");
 
             for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
             }
 
-            sqlQuery.append(")");
+            sqlQuery.append(')');
 
             PreparedStatement pstmt = null;
             ResultSet rs = null;
@@ -393,7 +395,7 @@ public class Holding extends AbstractIdEntity {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 pstmt.setLong(1, kId);
                 int pos = 2;
-                for (String ident : identifier) {
+                for (final String ident : identifier) {
                     pstmt.setString(pos, ident);
                     pstmt.setString(pos + 1, ident);
                     pstmt.setString(pos + 2, ident);
@@ -403,26 +405,26 @@ public class Holding extends AbstractIdEntity {
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
-                    Holding ho = setRsstValues(cn, rs);
+                    final Holding ho = setRsstValues(cn, rs);
                     list.add(ho);
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("getAllHoldingsForKonto (ArrayList<String> identifier, Long kid, "
                         + "Connection cn): " + e.toString());
             } finally {
                 if (rs != null) {
                     try {
                         rs.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -438,14 +440,14 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<String> HOIDs
      */
-    public ArrayList<String> getAllHOIDs(ArrayList<String> identifier, Connection cn) {
+    public ArrayList<String> getAllHOIDs(final ArrayList<String> identifier, final Connection cn) {
 
-        ArrayList<String> list = new ArrayList<String>();
+        final ArrayList<String> list = new ArrayList<String>();
 
-        if (identifier.size() > 0) {
+        if (!identifier.isEmpty()) {
 
-            StringBuffer sqlQuery = new StringBuffer("SELECT HOID FROM holdings WHERE issn LIKE ? OR coden LIKE ? "
-                    + "OR zdbid LIKE ?");
+            final StringBuffer sqlQuery = new StringBuffer(264);
+            sqlQuery.append("SELECT HOID FROM holdings WHERE issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 
             for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
@@ -456,7 +458,7 @@ public class Holding extends AbstractIdEntity {
             try {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 int pos = 1;
-                for (String ident : identifier) {
+                for (final String ident : identifier) {
                     pstmt.setString(pos, ident);
                     pstmt.setString(pos + 1, ident);
                     pstmt.setString(pos + 2, ident);
@@ -469,22 +471,22 @@ public class Holding extends AbstractIdEntity {
                     list.add(rs.getString("HOID"));
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("ArrayList<String> getAllHOIDs(ArrayList<String> identifier, "
                         + "Connection cn): " + e.toString());
             } finally {
                 if (rs != null) {
                     try {
                         rs.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -503,20 +505,20 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<String> HOIDs
      */
-    public ArrayList<String> getAllHOIDsForKonto(ArrayList<String> identifier, Long kId, Connection cn) {
+    public ArrayList<String> getAllHOIDsForKonto(final ArrayList<String> identifier, final Long kId, final Connection cn) {
 
-        ArrayList<String> list = new ArrayList<String>();
+        final ArrayList<String> list = new ArrayList<String>();
 
-        if (identifier.size() > 0) {
+        if (!identifier.isEmpty()) {
 
-            StringBuffer sqlQuery = new StringBuffer("SELECT HOID FROM holdings "
-                    + "WHERE KID LIKE ? AND (issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
+            final StringBuffer sqlQuery = new StringBuffer(281);
+            sqlQuery.append("SELECT HOID FROM holdings WHERE KID LIKE ? AND (issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 
             for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
             }
 
-            sqlQuery.append(")");
+            sqlQuery.append(')');
 
             PreparedStatement pstmt = null;
             ResultSet rs = null;
@@ -524,7 +526,7 @@ public class Holding extends AbstractIdEntity {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 pstmt.setLong(1, kId);
                 int pos = 2;
-                for (String ident : identifier) {
+                for (final String ident : identifier) {
                     pstmt.setString(pos, ident);
                     pstmt.setString(pos + 1, ident);
                     pstmt.setString(pos + 2, ident);
@@ -537,22 +539,22 @@ public class Holding extends AbstractIdEntity {
                     list.add(rs.getString("HOID"));
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("ArrayList<String> getAllHOIDsForKonto(ArrayList<String> identifier, Long kid, "
                         + "Connection cn): " + e.toString());
             } finally {
                 if (rs != null) {
                     try {
                         rs.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -571,7 +573,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return Holding holding
      */
-    public Holding createHolding(Konto k, String identdescrip, String ident, Connection cn) {
+    public Holding createHolding(final Konto k, final String identdescrip, final String ident, final Connection cn) {
 
         Holding ho = new Holding();
 
@@ -581,12 +583,12 @@ public class Holding extends AbstractIdEntity {
             if (ho.getId() == null) {
                 ho.setKid(k.getId());
                 ho.setKonto(k);
-                if (identdescrip.equals("issn")) { ho.setIssn(ident); }
-                if (identdescrip.equals("zdbid")) { ho.setZdbid(ident); }
-                if (identdescrip.equals("coden")) { ho.setCoden(ident); }
+                if ("issn".equals(identdescrip)) { ho.setIssn(ident); }
+                if ("zdbid".equals(identdescrip)) { ho.setZdbid(ident); }
+                if ("coden".equals(identdescrip)) { ho.setCoden(ident); }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("createHolding (Konto k, String identdescrip, String ident, Connection cn): " + e.toString());
         }
 
@@ -600,7 +602,7 @@ public class Holding extends AbstractIdEntity {
      * @param Connection cn
      * @return Holding h
      */
-    public Holding save(Holding h, Connection cn) {
+    public Holding save(final Holding h, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -626,21 +628,21 @@ public class Holding extends AbstractIdEntity {
                 LOG.error("Didn't get an ID back at: save(Holding h, Connection cn)!");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Holding save(Holding h, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -653,7 +655,7 @@ public class Holding extends AbstractIdEntity {
      * @param Konto k
      * @param Connection cn
      */
-    public void purgeNotUsedKontoHoldings(Konto k, Connection cn) {
+    public void purgeNotUsedKontoHoldings(final Konto k, final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
@@ -662,14 +664,14 @@ public class Holding extends AbstractIdEntity {
             pstmt.setLong(1, k.getId());
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("purgeNotUsedKontoHoldings(Konto k, Connection cn)" + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -681,7 +683,7 @@ public class Holding extends AbstractIdEntity {
     }
 
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -690,7 +692,7 @@ public class Holding extends AbstractIdEntity {
         return kid;
     }
 
-    public void setKid(Long kid) {
+    public void setKid(final Long kid) {
         this.kid = kid;
     }
 
@@ -698,7 +700,7 @@ public class Holding extends AbstractIdEntity {
         return titel;
     }
 
-    public void setTitel(String titel) {
+    public void setTitel(final String titel) {
         this.titel = titel;
     }
 
@@ -706,7 +708,7 @@ public class Holding extends AbstractIdEntity {
         return coden;
     }
 
-    public void setCoden(String coden) {
+    public void setCoden(final String coden) {
         this.coden = coden;
     }
 
@@ -714,7 +716,7 @@ public class Holding extends AbstractIdEntity {
         return verlag;
     }
 
-    public void setVerlag(String verlag) {
+    public void setVerlag(final String verlag) {
         this.verlag = verlag;
     }
 
@@ -722,7 +724,7 @@ public class Holding extends AbstractIdEntity {
         return ort;
     }
 
-    public void setOrt(String ort) {
+    public void setOrt(final String ort) {
         this.ort = ort;
     }
 
@@ -731,7 +733,7 @@ public class Holding extends AbstractIdEntity {
     }
 
 
-    public void setIssn(String issn) {
+    public void setIssn(final String issn) {
         this.issn = issn;
     }
 
@@ -741,11 +743,9 @@ public class Holding extends AbstractIdEntity {
     }
 
 
-    public void setZdbid(String zdbid) {
+    public void setZdbid(final String zdbid) {
         this.zdbid = zdbid;
     }
-
-
 
 
 }

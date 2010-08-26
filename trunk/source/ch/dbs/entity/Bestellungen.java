@@ -88,18 +88,20 @@ public class Bestellungen extends AbstractIdEntity {
     private String kapitel = "";
     private String buchtitel = "";
 
-    public Bestellungen() { }
+    public Bestellungen() {
 
-    public Bestellungen(AbstractBenutzer user, Konto k) {
+    }
+
+    public Bestellungen(final AbstractBenutzer user, final Konto k) {
         this.setBenutzer(user);
         this.setKonto(k);
     }
 
-    public Bestellungen(OrderForm of, AbstractBenutzer user, Konto k) {
+    public Bestellungen(final OrderForm of, final AbstractBenutzer user, final Konto k) {
 
-        ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = new Date();
-        String datum = fmt.format(d, k.getTimezone());
+        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final Date d = new Date();
+        final String datum = fmt.format(d, k.getTimezone());
 
         this.setKonto(k);
         this.setBenutzer(user);
@@ -160,7 +162,7 @@ public class Bestellungen extends AbstractIdEntity {
     }
 
 
-    public Bestellungen(Connection cn, Long id) {
+    public Bestellungen(final Connection cn, final Long id) {
 
         if (id != null) {
 
@@ -177,21 +179,21 @@ public class Bestellungen extends AbstractIdEntity {
                     if (checkAnonymize(this)) { anonymize(this); }
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("Bestellungen(Connection cn, Long id): " + e.toString());
             } finally {
                 if (rs != null) {
                     try {
                         rs.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
                 if (pstmt != null) {
                     try {
                         pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e);
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
                     }
                 }
             }
@@ -206,7 +208,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String gbvnr
      * @return Bestellungen b
      */
-    public Bestellungen(Connection cn, String trackingNumber, String gbvNumber) {
+    public Bestellungen(final Connection cn, final String trackingNumber, final String gbvNumber) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -221,21 +223,21 @@ public class Bestellungen extends AbstractIdEntity {
                 getBestellung(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Bestellungen(Connection cn, String trackingnr, String gbvnr): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -249,7 +251,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param nachkomma
      * @return
      */
-    public BigDecimal stringToBigDecimal(String vorkomma, String nachkomma) {
+    public BigDecimal stringToBigDecimal(final String vorkomma, final String nachkomma) {
 
         BigDecimal bd = null;
 
@@ -259,9 +261,9 @@ public class Bestellungen extends AbstractIdEntity {
 
             bd = new BigDecimal("0.00");
 
-            if (!vorkomma.equals("")) { bd = new BigDecimal(vorkomma + ".00"); }
+            if (!"".equals(vorkomma)) { bd = new BigDecimal(vorkomma + ".00"); }
             // exp = 1 => Leerstring
-            if (!nachkomma.equals("")) { bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length())); }
+            if (!"".equals(nachkomma)) { bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length())); }
 
         }
 
@@ -272,7 +274,7 @@ public class Bestellungen extends AbstractIdEntity {
      * Speichert die Bestellung in der DB ab (hinterlegt die id im Bestellobjekt)
      * @param cn
      */
-    public void save(Connection cn) {
+    public void save(final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -291,27 +293,27 @@ public class Bestellungen extends AbstractIdEntity {
             if (rs.next()) {
                 this.setId(rs.getLong("LAST_INSERT_ID()"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
     }
 
-    public void update(Connection cn) {
+    public void update(final Connection cn) {
 
         PreparedStatement pstmt = null;
 
@@ -325,55 +327,91 @@ public class Bestellungen extends AbstractIdEntity {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
-            StringBuffer bf = new StringBuffer();
+        } catch (final Exception e) {
+            final StringBuffer bf = new StringBuffer(2400);
             bf.append("In Bestellung.update(Connection cn) trat folgender Fehler auf:\n");
             bf.append(e);
-            bf.append("\n");
-            bf.append("BID:\040" + this.getId() + "\n");
-            bf.append("KID:\040" + this.getKonto().getId() + "\n");
-            bf.append("UID:\040" + this.getBenutzer().getId() + "\n");
-            bf.append("LID:\040" + this.getLieferant().getId() + "\n");
-            bf.append("orderpriority:\040" + this.getPriority() + "\n");
-            bf.append("deloptions:\040" + this.getDeloptions() + "\n");
-            bf.append("fileformat:\040" + this.getFileformat() + "\n");
-            bf.append("heft:\040" + this.getHeft() + "\n");
-            bf.append("seiten:\040" + this.getSeiten() + "\n");
-            bf.append("issn:\040" + this.getIssn() + "\n");
-            bf.append("biblionr:\040" + this.getSigel() + "\n");
-            bf.append("bibliothek:\040" + this.getBibliothek() + "\n");
-            bf.append("autor:\040" + this.getAutor() + "\n");
-            bf.append("artikeltitel:\040" + this.getArtikeltitel() + "\n");
-            bf.append("jahrgang:\040" + this.getJahrgang() + "\n");
-            bf.append("zeitschrift:\040" + this.getZeitschrift() + "\n");
-            bf.append("jahr:\040" + this.getJahr() + "\n");
-            bf.append("subitonr:\040" + this.getSubitonr() + "\n");
-            bf.append("gbvnr:\040" + this.getGbvnr() + "\n");
-            bf.append("trackingnr:\040" + this.getTrackingnr() + "\n");
-            bf.append("internenr:\040" + this.getInterne_bestellnr() + "\n");
-            bf.append("systembemerkungen:\040" + this.getSystembemerkung() + "\n");
-            bf.append("notizen:\040" + this.getNotizen() + "\n");
-            bf.append("kaufpreis:\040" + this.getKaufpreis() + "\n");
-            bf.append("waehrung:\040" + this.getWaehrung() + "\n");
-            bf.append("doi:\040" + this.getDoi() + "\n");
-            bf.append("BID:\040" + this.getId() + "\n");
-            bf.append("PMID:\040" + this.getPmid() + "\n");
-            bf.append("isbn:\040" + this.getIsbn() + "\n");
-            bf.append("mediatype:\040" + this.getMediatype() + "\n");
-            bf.append("verlag:\040" + this.getVerlag() + "\n");
-            bf.append("buchkapitel:\040" + this.getKapitel() + "\n");
-            bf.append("buchtitel:\040" + this.getBuchtitel() + "\n");
-            bf.append("orderdate:\040" + this.getOrderdate() + "\n");
-            bf.append("statedate:\040" + this.getStatusdate() + "\n");
-            bf.append("state:\040" + this.getStatustext() + "\n");
-            bf.append("bestellquelle:\040" + this.getBestellquelle() + "\n");
+            bf.append("\nBID:\040");
+            bf.append(this.getId());
+            bf.append("\nKID:\040");
+            bf.append(this.getKonto().getId());
+            bf.append("\nUID:\040");
+            bf.append(this.getBenutzer().getId());
+            bf.append("\nLID:\040");
+            bf.append(this.getLieferant().getId());
+            bf.append("\norderpriority:\040");
+            bf.append(this.getPriority());
+            bf.append("\ndeloptions:\040");
+            bf.append(this.getDeloptions());
+            bf.append("\nfileformat:\040");
+            bf.append(this.getFileformat());
+            bf.append("\nheft:\040");
+            bf.append(this.getHeft());
+            bf.append("\nseiten:\040");
+            bf.append(this.getSeiten());
+            bf.append("\nissn:\040");
+            bf.append(this.getIssn());
+            bf.append("\nbiblionr:\040");
+            bf.append(this.getSigel());
+            bf.append("\nbibliothek:\040");
+            bf.append(this.getBibliothek());
+            bf.append("\nautor:\040");
+            bf.append(this.getAutor());
+            bf.append("\nartikeltitel:\040");
+            bf.append(this.getArtikeltitel());
+            bf.append("\njahrgang:\040");
+            bf.append(this.getJahrgang());
+            bf.append("\nzeitschrift:\040");
+            bf.append(this.getZeitschrift());
+            bf.append("\njahr:\040");
+            bf.append(this.getJahr());
+            bf.append("\nsubitonr:\040");
+            bf.append(this.getSubitonr());
+            bf.append("\ngbvnr:\040");
+            bf.append(this.getGbvnr());
+            bf.append("\ntrackingnr:\040");
+            bf.append(this.getTrackingnr());
+            bf.append("\ninternenr:\040");
+            bf.append(this.getInterne_bestellnr());
+            bf.append("\nsystembemerkungen:\040");
+            bf.append(this.getSystembemerkung());
+            bf.append("\nnotizen:\040");
+            bf.append(this.getNotizen());
+            bf.append("\nkaufpreis:\040");
+            bf.append(this.getKaufpreis());
+            bf.append("\nwaehrung:\040");
+            bf.append(this.getWaehrung());
+            bf.append("\ndoi:\040");
+            bf.append(this.getDoi());
+            bf.append("\nBID:\040");
+            bf.append(this.getId());
+            bf.append("\nPMID:\040");
+            bf.append(this.getPmid());
+            bf.append("\nisbn:\040");
+            bf.append(this.getIsbn());
+            bf.append("\nmediatype:\040");
+            bf.append(this.getMediatype());
+            bf.append("\nverlag:\040");
+            bf.append(this.getVerlag());
+            bf.append("\nbuchkapitel:\040");
+            bf.append(this.getKapitel());
+            bf.append("\nbuchtitel:\040");
+            bf.append(this.getBuchtitel());
+            bf.append("\norderdate:\040");
+            bf.append(this.getOrderdate());
+            bf.append("\nstatedate:\040");
+            bf.append(this.getStatusdate());
+            bf.append("\nstate:\040");
+            bf.append(this.getStatustext());
+            bf.append("\nbestellquelle:\040");
+            bf.append(this.getBestellquelle());
             LOG.error(bf.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -384,7 +422,7 @@ public class Bestellungen extends AbstractIdEntity {
      *
      * @param Bestellungen b
      */
-    public boolean deleteBestellung(Bestellungen b, Connection cn) {
+    public boolean deleteBestellung(final Bestellungen b, final Connection cn) {
 
         boolean success = false;
 
@@ -396,14 +434,14 @@ public class Bestellungen extends AbstractIdEntity {
 
             success = true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("deleteBestellung(Bestellungen b, Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -416,8 +454,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param PreparedStatememt pstmt
      * @return
      */
-    public List<Bestellungen> searchOrdersPerKonto(PreparedStatement pstmt) {
-        ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
+    public List<Bestellungen> searchOrdersPerKonto(final PreparedStatement pstmt) {
+        final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         ResultSet rs = null;
         try {
             rs = pstmt.executeQuery();
@@ -427,14 +465,14 @@ public class Bestellungen extends AbstractIdEntity {
                 bl.add(b);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("searchOrdersPerKonto(PreparedStatement pstmt)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -448,9 +486,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param the user {@link ch.dbs.entity.Benutzer}
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public List<Bestellungen> getAllUserOrders(AbstractBenutzer u, String sort, String sortorder, String dateFrom,
-            String dateTo, Connection cn) {
-        ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
+    public List<Bestellungen> getAllUserOrders(final AbstractBenutzer u, final String sort, final String sortorder, final String dateFrom,
+            final String dateTo, final Connection cn) {
+        final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -484,22 +522,22 @@ public class Bestellungen extends AbstractIdEntity {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllUserOrders(AbstractBenutzer u, String sort, String sortorder, String dateFrom, "
                     + "String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -518,9 +556,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param boolean subitocheck (true => nur Subitobestellungen)
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public List<Bestellungen> getAllUserOrdersPerStatus(AbstractBenutzer u, String status, String sort,
-            String sortorder, String dateFrom, String dateTo, boolean subitocheck, Connection cn) {
-        ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
+    public List<Bestellungen> getAllUserOrdersPerStatus(final AbstractBenutzer u, final String status, final String sort,
+            final String sortorder, final String dateFrom, final String dateTo, final boolean subitocheck, final Connection cn) {
+        final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -579,22 +617,22 @@ public class Bestellungen extends AbstractIdEntity {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllUserOrdersPerStatus(AbstractBenutzer u, String status, String sort, String sortorder, "
                     + "String dateFrom, String dateTo, boolean subitocheck, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -610,9 +648,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param sortorder Aufsteigend/Absteigend
      * @return
      */
-    public List<Bestellungen> getOrdersPerKonto(Konto k, String sort, String sortorder, String dateFrom, String dateTo,
-            Connection cn) {
-        ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
+    public List<Bestellungen> getOrdersPerKonto(final Konto k, final String sort, final String sortorder, final String dateFrom, final String dateTo,
+            final Connection cn) {
+        final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -631,22 +669,22 @@ public class Bestellungen extends AbstractIdEntity {
                 bl.add(b);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getOrdersPerKonto(Konto k, String sort, String sortorder, String dateFrom, String dateTo, "
                     + "Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -664,9 +702,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param boolean subitocheck (true => nur Subitobestellungen)
      * @return
      */
-    public List<Bestellungen> getOrdersPerKontoPerStatus(long KID, String status, String sort, String sortorder,
-            String dateFrom, String dateTo, boolean subitocheck, Connection cn) {
-        ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
+    public List<Bestellungen> getOrdersPerKontoPerStatus(final long KID, final String status, final String sort, final String sortorder,
+            final String dateFrom, final String dateTo, final boolean subitocheck, final Connection cn) {
+        final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -715,22 +753,22 @@ public class Bestellungen extends AbstractIdEntity {
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getOrdersPerKontoPerStatus(long KID, String status, String sort, String sortorder, "
                     + "String dateFrom, String dateTo, boolean subitocheck, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -743,7 +781,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param the user {@link ch.dbs.entity.Bestellungen}
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public Bestellungen getOrderSimpleWay(Bestellungen b, Connection cn) {
+    public Bestellungen getOrderSimpleWay(Bestellungen b, final Connection cn) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -779,21 +817,21 @@ public class Bestellungen extends AbstractIdEntity {
                 b = getBestellung(b, rs, cn);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getOrderSimpleWay(Bestellungen b, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -808,14 +846,14 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long uid, kid
      * @return int anzahl
      */
-    public int countOrdersPerUser(String uid, Konto k, Connection cn) {
+    public int countOrdersPerUser(final String uid, final Konto k, final Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            Calendar cal = Calendar.getInstance();
+            final Calendar cal = Calendar.getInstance();
             cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
-            String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
+            final String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
             // SQL ausführen
             pstmt = cn.prepareStatement(
             "SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
@@ -827,21 +865,21 @@ public class Bestellungen extends AbstractIdEntity {
                 anzahl = rs.getInt("count(bid)");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countOrdersPerUser(String uid, Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -862,9 +900,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String dateTo Ende Datumsbereich
      * @return
      */
-    public List<OrderStatistikForm> countOrdersPerKonto(Konto k, String sort,
-            String sortorder, String dateFrom, String dateTo, Connection cn) {
-        ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
+    public List<OrderStatistikForm> countOrdersPerKonto(final Konto k, final String sort,
+            final String sortorder, final String dateFrom, final String dateTo, final Connection cn) {
+        final ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -879,29 +917,29 @@ public class Bestellungen extends AbstractIdEntity {
 
             int total = 0;
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setAnzahl(rs.getInt("count(bid)"));
                 total = total + osf.getAnzahl();
                 osf.setTotal(total);
                 auflistung.add(osf);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countOrdersPerKonto(Konto k, String sort, String sortorder, String dateFrom, "
                     + "String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -919,10 +957,10 @@ public class Bestellungen extends AbstractIdEntity {
      * @param boolean subitocheck (true => nur Subitobestellungen)
      * @return
      */
-    public List<OrderStatistikForm> countOrdersPerKontoPerStatus(long KID,
-            String status, String sort, String sortorder, String dateFrom,
-            String dateTo, boolean subitocheck, Connection cn) {
-        ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
+    public List<OrderStatistikForm> countOrdersPerKontoPerStatus(final long KID,
+            final String status, final String sort, final String sortorder, final String dateFrom,
+            final String dateTo, final boolean subitocheck, final Connection cn) {
+        final ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -964,29 +1002,29 @@ public class Bestellungen extends AbstractIdEntity {
             rs = pstmt.executeQuery();
             int total = 0;
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setAnzahl(rs.getInt("count(bid)"));
                 total = total + osf.getAnzahl();
                 osf.setTotal(total);
                 auflistung.add(osf);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countOrdersPerKontoPerStatus(long KID, String status, String sort, String sortorder, "
                     + "String dateFrom, String dateTo, boolean subitocheck, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1000,14 +1038,14 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid
      * @return int anzahl
      */
-    public int allOrdersThisYearForKonto(Konto k, Connection cn) {
+    public int allOrdersThisYearForKonto(final Konto k, final Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            Calendar cal = Calendar.getInstance();
+            final Calendar cal = Calendar.getInstance();
             cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
-            String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
+            final String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `orderdate` >= ?");
             pstmt.setLong(1, k.getId());
@@ -1017,21 +1055,21 @@ public class Bestellungen extends AbstractIdEntity {
                 anzahl = rs.getInt("count(bid)");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("allOrdersThisYearForKonto(Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1045,7 +1083,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String sql
      * @return
      */
-    public String sortOrder(String sql, String sort, String sortorder) {
+    public String sortOrder(String sql, final String sort, final String sortorder) {
 
         if (sort.equals("zeitschrift") || sort.equals("buchtitel")) {
             sql = sql + "CONCAT( zeitschrift, buchtitel ) " + sortorder;
@@ -1067,12 +1105,12 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Bestellungen b
      * @return true/false
      */
-    public boolean checkAnonymize(Bestellungen b) {
+    public boolean checkAnonymize(final Bestellungen b) {
         boolean check = false;
 
         if (b.getBenutzer() != null && ReadSystemConfigurations.isAnonymizationActivated()) {
-            Calendar cal = stringFromMysqlToCal(b.getOrderdate());
-            Calendar limit = Calendar.getInstance();
+            final Calendar cal = stringFromMysqlToCal(b.getOrderdate());
+            final Calendar limit = Calendar.getInstance();
             // takes SystemTimezone due to pratical reasons
             limit.setTimeZone(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
             limit.add(Calendar.MONTH, -ReadSystemConfigurations.getAnonymizationAfterMonths());
@@ -1091,11 +1129,11 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Bestellungen b
      * @return Bestellungen b
      */
-    private Bestellungen anonymize(Bestellungen b) {
+    private Bestellungen anonymize(final Bestellungen b) {
 
         if (b.getBenutzer() != null && ReadSystemConfigurations.isAnonymizationActivated()) {
 
-            AbstractBenutzer anon = b.getBenutzer();
+            final AbstractBenutzer anon = b.getBenutzer();
             anon.setName("anonymized");
             anon.setVorname("");
             anon.setEmail("");
@@ -1113,16 +1151,16 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String datum
      * @return cal cal
      */
-    public Calendar stringFromMysqlToCal(String datum) { // 2007-11-01 08:56:07.0
+    public Calendar stringFromMysqlToCal(final String datum) { // 2007-11-01 08:56:07.0
 
         Date dateParsed = new Date();
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
 
         try {
-            ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             dateParsed = sdf.parse(datum);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             LOG.error("stringFromMysqlToCal(String datum):\012" + e.toString());
         }
 
@@ -1142,9 +1180,9 @@ public class Bestellungen extends AbstractIdEntity {
 
         try {
             if (datum.contains(".")) {
-                datum = datum.substring(0, datum.indexOf("."));
+                datum = datum.substring(0, datum.indexOf('.'));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("removeMilliseconds(String datum):\012" + e.toString());
         }
 
@@ -1154,32 +1192,32 @@ public class Bestellungen extends AbstractIdEntity {
     /*
      * Erstellt ein Bestellungsobjekt aus einer Zeile aus der Datenbank
      */
-    private Bestellungen(ResultSet rs) {
+    private Bestellungen(final ResultSet rs) {
         try {
             getBestellung(rs);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Bestellungen(ResultSet rs: " + e.toString());
         }
     }
 
-    private void getBestellung(ResultSet rs) throws Exception {
+    private void getBestellung(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("BID"));
 
         //    Falls vorname nicht im rs ist kein Benutzer abfüllen
         try {  rs.findColumn("vorname");
-        AbstractBenutzer b = new AbstractBenutzer();
+        final AbstractBenutzer b = new AbstractBenutzer();
         this.setBenutzer(b.getUser(rs));
-        } catch (SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 1: " + se.toString()); }
+        } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 1: " + se.toString()); }
         //Falls biblioname nicht im rs is kein Konto abfüllen
         try {  rs.findColumn("biblioname");
         this.setKonto(new Konto(rs));
-        } catch (SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString()); }
+        } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString()); }
         //Falls CH nicht im rs ist kein Lieferant abfüllen
         try {  rs.findColumn("CH");
         this.setLieferant(new Lieferanten(rs));
-        } catch (SQLException se) {
+        } catch (final SQLException se) {
             LOG.ludicrous("getBestellung(ResultSet rs) Pos. 3: " + se.toString());
-            Lieferanten l = new Lieferanten();
+            final Lieferanten l = new Lieferanten();
             l.setLid(Long.valueOf(1));
             l.setName("k.A.");
             this.setLieferant(l);
@@ -1226,17 +1264,17 @@ public class Bestellungen extends AbstractIdEntity {
     /*
      * Füllt ein Bestellungsobjekt mit einer Zeile aus der Datenbank
      */
-    private Bestellungen getBestellung(Bestellungen b, ResultSet rs, Connection cn) throws Exception {
+    private Bestellungen getBestellung(final Bestellungen b, final ResultSet rs, final Connection cn) throws Exception {
 
         b.setId(rs.getLong("BID"));
-        Lieferanten lieferantenInstance = new Lieferanten();
-        AbstractBenutzer ab = new AbstractBenutzer();
+        final Lieferanten instance = new Lieferanten();
+        final AbstractBenutzer ab = new AbstractBenutzer();
 
         try {
             rs.findColumn("biblioname"); // Braucht es nicht ist ein Beispiel
             b.setBenutzer(ab.getUser(rs));
             b.setKonto(new Konto(rs));
-        } catch (SQLException se) {
+        } catch (final SQLException se) {
             //einfach nix machen ;-)
             LOG.error("getBestellungen(Bestellungen b, ResultSet rs, Connection cn): " + se.toString());
         }
@@ -1270,7 +1308,7 @@ public class Bestellungen extends AbstractIdEntity {
         b.setDeloptions(rs.getString("deloptions"));
         b.setFileformat(rs.getString("fileformat"));
 
-        b.setLieferant(lieferantenInstance.getLieferantFromLid(rs.getString("lid"), cn));
+        b.setLieferant(instance.getLieferantFromLid(rs.getString("lid"), cn));
         b.setBestellquelle(rs.getString("bestellquelle"));
         if (b.getBestellquelle() == null || b.getBestellquelle().equals("") || b.getBestellquelle().equals("0")) {
             b.setBestellquelle("k.A."); // Wenn keine Lieferantenangaben gemacht wurden den Eintrag auf "k.A." setzen
@@ -1290,11 +1328,11 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countOrdersPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
+    public OrderStatistikForm countOrdersPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
 
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
         int total = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1308,31 +1346,31 @@ public class Bestellungen extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
-                anzahl = rs.getInt("anzahl");
-                total = total + anzahl;
-                osf.setAnzahl(anzahl);
+                final OrderStatistikForm osf = new OrderStatistikForm();
+                count = rs.getInt("anzahl");
+                total = total + count;
+                osf.setAnzahl(count);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countOrdersPerKonto(Long kid, String dateFrom, String dateTo, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1347,10 +1385,10 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countLieferantPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+    public OrderStatistikForm countLieferantPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
         int total = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1365,14 +1403,14 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
-                anzahl = rs.getInt("anzahl");
-                total = total + anzahl;
+                count = rs.getInt("anzahl");
+                total = total + count;
                 label = rs.getString("bestellquelle");
                 if (label == null || label.equals("") || label.equals("0")) { label = "k.A."; }
                 osf.setLabel(label);
-                osf.setAnzahl(anzahl);
+                osf.setAnzahl(count);
                 osf.setPreiswaehrung(costsPerField(kid, dateFrom, dateTo, "bestellquelle", label, cn));
                 list.add(osf);
             }
@@ -1380,22 +1418,22 @@ public class Bestellungen extends AbstractIdEntity {
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countLieferantPerKonto(Long kid, String dateFrom, String dateTo, "
                     + "Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1410,15 +1448,15 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countGratisKostenpflichtigPerKonto(Long kid, String dateFrom, String dateTo,
-            Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+    public OrderStatistikForm countGratisKostenpflichtigPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
 
-        int gratis = 0;
-        int kostenpflichtig = 0;
+        int free = 0;
+        int pay = 0;
         int unknown = 0;
-        int totalbestellungen = 0;
+        int totalOrders = 0;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1435,61 +1473,61 @@ public class Bestellungen extends AbstractIdEntity {
                 if (rs.getString("kaufpreis") != null) { // null = k.A.
 
                     if (rs.getFloat("kaufpreis") != 0.0) { // 0.0 = gratis
-                        int x = rs.getInt("anzahl");
-                        kostenpflichtig = kostenpflichtig + x;
-                        totalbestellungen = totalbestellungen + x;
+                        final int x = rs.getInt("anzahl");
+                        pay = pay + x;
+                        totalOrders = totalOrders + x;
 
                     } else {
-                        int x = rs.getInt("anzahl");
-                        gratis = gratis + x;
-                        totalbestellungen = totalbestellungen + x;
+                        final int x = rs.getInt("anzahl");
+                        free = free + x;
+                        totalOrders = totalOrders + x;
                     }
 
                 } else { // k.A.
                     unknown = rs.getInt("anzahl");
-                    totalbestellungen = totalbestellungen + unknown;
+                    totalOrders = totalOrders + unknown;
                 }
 
             }
 
-            OrderStatistikForm ok = new OrderStatistikForm();
+            final OrderStatistikForm ok = new OrderStatistikForm();
             ok.setLabel("stats.toPay");
-            ok.setAnzahl(kostenpflichtig);
+            ok.setAnzahl(pay);
             list.add(ok);
 
-            OrderStatistikForm og = new OrderStatistikForm();
+            final OrderStatistikForm og = new OrderStatistikForm();
             og.setLabel("stats.free");
-            og.setAnzahl(gratis);
+            og.setAnzahl(free);
             list.add(og);
 
-            OrderStatistikForm oka = new OrderStatistikForm();
+            final OrderStatistikForm oka = new OrderStatistikForm();
             oka.setLabel("stats.notSpecified");
             oka.setAnzahl(unknown);
             list.add(oka);
 
-            OrderStatistikForm osf = new OrderStatistikForm();
+            final OrderStatistikForm osf = new OrderStatistikForm();
             osf.setLabel("stats.total");
-            osf.setAnzahl(totalbestellungen);
+            osf.setAnzahl(totalOrders);
             list.add(osf);
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countGratisKostenpflichtigPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1504,11 +1542,11 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm sumGratisKostenpflichtigPerKonto(Long kid, String dateFrom, String dateTo,
-            Connection cn) {
+    public OrderStatistikForm sumGratisKostenpflichtigPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
 
-        OrderStatistikForm cost = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        final OrderStatistikForm cost = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1523,9 +1561,9 @@ public class Bestellungen extends AbstractIdEntity {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 if (rs.getString("waehrung") != null) { // null = k.A.
-                    OrderStatistikForm osf = new OrderStatistikForm();
+                    final OrderStatistikForm osf = new OrderStatistikForm();
                     osf.setLabel(rs.getString("waehrung"));
-                    NumberFormat nf = NumberFormat.getInstance();
+                    final NumberFormat nf = NumberFormat.getInstance();
                     nf.setMinimumFractionDigits(2);
                     nf.setMaximumFractionDigits(2);
                     osf.setPreis(nf.format(rs.getFloat("summe")));
@@ -1535,22 +1573,22 @@ public class Bestellungen extends AbstractIdEntity {
 
             cost.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("sumGratisKostenpflichtigPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1565,10 +1603,10 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countLieferartPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+    public OrderStatistikForm countLieferartPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
         int total = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1582,35 +1620,35 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
-                anzahl = rs.getInt("anzahl");
-                total = total + anzahl;
+                count = rs.getInt("anzahl");
+                total = total + count;
                 label = rs.getString("deloptions");
                 osf.setLabel(label);
-                osf.setAnzahl(anzahl);
+                osf.setAnzahl(count);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countLieferartPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1625,10 +1663,10 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countMediatypePerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+    public OrderStatistikForm countMediatypePerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
         int total = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1642,35 +1680,35 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
-                anzahl = rs.getInt("anzahl");
-                total = total + anzahl;
+                count = rs.getInt("anzahl");
+                total = total + count;
                 label = rs.getString("mediatype");
                 osf.setLabel(label);
-                osf.setAnzahl(anzahl);
+                osf.setAnzahl(count);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countMediatypePerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1685,10 +1723,10 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countFileformatPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+    public OrderStatistikForm countFileformatPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int countl = 0;
         int total = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1702,36 +1740,36 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
-                anzahl = rs.getInt("anzahl");
-                total = total + anzahl;
+                countl = rs.getInt("anzahl");
+                total = total + countl;
                 label = rs.getString("fileformat");
                 //TODO: leere Angaben abfangen...
                 osf.setLabel(label);
-                osf.setAnzahl(anzahl);
+                osf.setAnzahl(countl);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countFileformatPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1746,10 +1784,10 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countPriorityPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+    public OrderStatistikForm countPriorityPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
         int total = 0;
         int unknown = 0;
         PreparedStatement pstmt = null;
@@ -1764,23 +1802,23 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
-                anzahl = rs.getInt("anzahl");
-                total = total + anzahl;
+                count = rs.getInt("anzahl");
+                total = total + count;
                 label = rs.getString("orderpriority");
                 if (!label.equals("") && !label.equals("0")) {
                     osf.setLabel(label);
-                    osf.setAnzahl(anzahl);
+                    osf.setAnzahl(count);
                     list.add(osf);
                 } else {
-                    unknown = unknown + anzahl;
+                    unknown = unknown + count;
                 }
             }
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekannter Prio als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
                 list.add(osf);
@@ -1789,22 +1827,22 @@ public class Bestellungen extends AbstractIdEntity {
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countPriorityPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1819,15 +1857,15 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countGenderPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
-        int bestellungen = 0;
-        int totalbestellungen = 0;
+    public OrderStatistikForm countGenderPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
+        int orders = 0;
+        int totalOrders = 0;
         int total = 0;
         int unknown = 0;
-        int unknownbestellungen = 0;
+        int unknownOrders = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -1843,55 +1881,55 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 if (rs.getString("anrede").equals("Herr")) { label = "stats.male"; }
                 if (rs.getString("anrede").equals("Frau")) { label = "stats.female"; }
-                anzahl = rs.getInt("anzahl");
-                bestellungen = countRowsPerFeld(kid, dateFrom, dateTo, "anrede", rs.getString("anrede"), cn);
-                total = total + anzahl;
-                totalbestellungen = totalbestellungen + bestellungen;
+                count = rs.getInt("anzahl");
+                orders = countRowsPerFeld(kid, dateFrom, dateTo, "anrede", rs.getString("anrede"), cn);
+                total = total + count;
+                totalOrders = totalOrders + orders;
                 if (!label.equals("") && !label.equals("0")) {
                     osf.setLabel(label);
-                    osf.setAnzahl(anzahl);
-                    osf.setAnzahl_two(bestellungen);
+                    osf.setAnzahl(count);
+                    osf.setAnzahl_two(orders);
                     osf.setPreiswaehrung(costsPerFieldInnerJoin(
                             kid, dateFrom, dateTo, "anrede", rs.getString("anrede"), cn));
                     list.add(osf);
                 } else {
-                    unknown = unknown + anzahl;
-                    unknownbestellungen = unknownbestellungen + bestellungen;
+                    unknown = unknown + count;
+                    unknownOrders = unknownOrders + orders;
                 }
             }
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekanntem Gender als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("stats.notSpecified");
                 osf.setAnzahl(unknown);
-                osf.setAnzahl_two(unknownbestellungen);
+                osf.setAnzahl_two(unknownOrders);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
-            os.setTotal_two(totalbestellungen);
+            os.setTotal_two(totalOrders);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countGenderPerKonto(Long kid, String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1906,15 +1944,15 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countInstPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
-        int bestellungen = 0;
-        int totalbestellungen = 0;
+    public OrderStatistikForm countInstPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
+        int orders = 0;
+        int totalOrders = 0;
         int total = 0;
         int unknown = 0;
-        int unknownbestellungen = 0;
+        int unknownOrders = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -1930,53 +1968,53 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 label = rs.getString("institut");
-                anzahl = rs.getInt("anzahl");
-                bestellungen = countRowsPerFeld(kid, dateFrom, dateTo, "institut", rs.getString("institut"), cn);
-                total = total + anzahl;
-                totalbestellungen = totalbestellungen + bestellungen;
+                count = rs.getInt("anzahl");
+                orders = countRowsPerFeld(kid, dateFrom, dateTo, "institut", rs.getString("institut"), cn);
+                total = total + count;
+                totalOrders = totalOrders + orders;
                 if (!label.equals("") && !label.equals("0")) {
                     osf.setLabel(label);
-                    osf.setAnzahl(anzahl);
-                    osf.setAnzahl_two(bestellungen);
+                    osf.setAnzahl(count);
+                    osf.setAnzahl_two(orders);
                     osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "institut", label, cn));
                     list.add(osf);
                 } else {
-                    unknown = unknown + anzahl;
-                    unknownbestellungen = unknownbestellungen + bestellungen;
+                    unknown = unknown + count;
+                    unknownOrders = unknownOrders + orders;
                 }
             }
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekanntem Institut als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
-                osf.setAnzahl_two(unknownbestellungen);
+                osf.setAnzahl_two(unknownOrders);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
-            os.setTotal_two(totalbestellungen);
+            os.setTotal_two(totalOrders);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countInstPerKonto(Long kid, String dateFrom, String dateTo, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1996,15 +2034,15 @@ public class Bestellungen extends AbstractIdEntity {
      *            kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countAbteilungPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
-        int bestellungen = 0;
-        int totalbestellungen = 0;
+    public OrderStatistikForm countAbteilungPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
+        int orders = 0;
+        int totalOrders = 0;
         int total = 0;
         int unknown = 0;
-        int unknownbestellungen = 0;
+        int unknownOrders = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -2021,54 +2059,54 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 label = rs.getString("abteilung");
-                anzahl = rs.getInt("anzahl");
-                bestellungen = countRowsPerFeld(kid, dateFrom, dateTo, "abteilung", rs.getString("abteilung"), cn);
-                total = total + anzahl;
-                totalbestellungen = totalbestellungen + bestellungen;
+                count = rs.getInt("anzahl");
+                orders = countRowsPerFeld(kid, dateFrom, dateTo, "abteilung", rs.getString("abteilung"), cn);
+                total = total + count;
+                totalOrders = totalOrders + orders;
                 if (!label.equals("") && !label.equals("0")) {
                     osf.setLabel(label);
-                    osf.setAnzahl(anzahl);
-                    osf.setAnzahl_two(bestellungen);
+                    osf.setAnzahl(count);
+                    osf.setAnzahl_two(orders);
                     osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "abteilung", label, cn));
                     list.add(osf);
                 } else {
-                    unknown = unknown + anzahl;
-                    unknownbestellungen = unknownbestellungen + bestellungen;
+                    unknown = unknown + count;
+                    unknownOrders = unknownOrders + orders;
                 }
             }
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekannter Abteilung als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
-                osf.setAnzahl_two(unknownbestellungen);
+                osf.setAnzahl_two(unknownOrders);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
-            os.setTotal_two(totalbestellungen);
+            os.setTotal_two(totalOrders);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countAbteilungPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2083,15 +2121,15 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countPLZPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
-        int bestellungen = 0;
-        int totalbestellungen = 0;
+    public OrderStatistikForm countPLZPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
+        int orders = 0;
+        int totalOrders = 0;
         int total = 0;
         int unknown = 0;
-        int unknownbestellungen = 0;
+        int unknownOrders = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -2108,55 +2146,55 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 String labelTwo = "";
                 label = rs.getString("plz");
                 labelTwo = rs.getString("ort");
-                anzahl = rs.getInt("anzahl");
-                bestellungen = countRowsPerFeld(kid, dateFrom, dateTo, "plz", rs.getString("plz"), cn);
-                total = total + anzahl;
-                totalbestellungen = totalbestellungen + bestellungen;
+                count = rs.getInt("anzahl");
+                orders = countRowsPerFeld(kid, dateFrom, dateTo, "plz", rs.getString("plz"), cn);
+                total = total + count;
+                totalOrders = totalOrders + orders;
                 if (!label.equals("") && !label.equals("0")) {
                     osf.setLabel(label);
                     osf.setLabel_two(labelTwo);
-                    osf.setAnzahl(anzahl);
-                    osf.setAnzahl_two(bestellungen);
+                    osf.setAnzahl(count);
+                    osf.setAnzahl_two(orders);
                     list.add(osf);
                 } else {
-                    unknown = unknown + anzahl;
-                    unknownbestellungen = unknownbestellungen + bestellungen;
+                    unknown = unknown + count;
+                    unknownOrders = unknownOrders + orders;
                 }
             }
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekannter PLZ als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
-                osf.setAnzahl_two(unknownbestellungen);
+                osf.setAnzahl_two(unknownOrders);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
-            os.setTotal_two(totalbestellungen);
+            os.setTotal_two(totalOrders);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countPLZPerKonto(Long kid, String dateFrom, String dateTo, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2171,15 +2209,15 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countLandPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
-        int bestellungen = 0;
-        int totalbestellungen = 0;
+    public OrderStatistikForm countLandPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
+        int orders = 0;
+        int totalOrders = 0;
         int total = 0;
         int unknown = 0;
-        int unknownbestellungen = 0;
+        int unknownOrders = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -2196,52 +2234,52 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 label = rs.getString("land");
-                anzahl = rs.getInt("anzahl");
-                bestellungen = countRowsPerFeld(kid, dateFrom, dateTo, "land", rs.getString("land"), cn);
-                total = total + anzahl;
-                totalbestellungen = totalbestellungen + bestellungen;
+                count = rs.getInt("anzahl");
+                orders = countRowsPerFeld(kid, dateFrom, dateTo, "land", rs.getString("land"), cn);
+                total = total + count;
+                totalOrders = totalOrders + orders;
                 if (!label.equals("") && !label.equals("0")) {
                     osf.setLabel(label);
-                    osf.setAnzahl(anzahl);
-                    osf.setAnzahl_two(bestellungen);
+                    osf.setAnzahl(count);
+                    osf.setAnzahl_two(orders);
                     list.add(osf);
                 } else {
-                    unknown = unknown + anzahl;
-                    unknownbestellungen = unknownbestellungen + bestellungen;
+                    unknown = unknown + count;
+                    unknownOrders = unknownOrders + orders;
                 }
             }
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekanntem Land als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
-                osf.setAnzahl_two(unknownbestellungen);
+                osf.setAnzahl_two(unknownOrders);
                 list.add(osf);
             }
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
-            os.setTotal_two(totalbestellungen);
+            os.setTotal_two(totalOrders);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countLandPerKonto(Long kid, String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2256,12 +2294,12 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countISSNPerKonto(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
-        int anzahl = 0;
+    public OrderStatistikForm countISSNPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+        int count = 0;
         int total = 0;
-        int andere = 0;
+        int others = 0;
 
         int user = 0;
         int usertotal = 0;
@@ -2278,51 +2316,51 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 String labelTwo = "";
-                anzahl = rs.getInt("anzahl");
+                count = rs.getInt("anzahl");
                 label = rs.getString("issn");
                 labelTwo = rs.getString("zeitschrift");
-                total = total + anzahl;
+                total = total + count;
                 user = countRowsUIDPerISSN(kid, dateFrom, dateTo, label, cn);
                 usertotal = usertotal + user;
-                if (anzahl > 1 && !label.equals("")) { // nur Treffer, falls mehr als 1 Bestellung und ISSN nicht ""
+                if (count > 1 && !label.equals("")) { // nur Treffer, falls mehr als 1 Bestellung und ISSN nicht ""
                     osf.setLabel(label);
                     osf.setLabel_two(labelTwo);
-                    osf.setAnzahl(anzahl);
+                    osf.setAnzahl(count);
                     osf.setAnzahl_two(user); // Anzahl User pro ISSN
                     osf.setPreiswaehrung(costsPerField(kid, dateFrom, dateTo, "issn", label, cn));
                     list.add(osf);
                 } else {
-                    andere = andere + anzahl;
+                    others = others + count;
                 }
             }
 
             // hier werden Bestellungen mit nur 1 Treffert als "andere" aufgeführt...
-            OrderStatistikForm osf = new OrderStatistikForm();
+            final OrderStatistikForm osf = new OrderStatistikForm();
             osf.setLabel("andere");
-            osf.setAnzahl(andere);
+            osf.setAnzahl(others);
             list.add(osf);
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countISSNPerKonto(Long kid, String dateFrom, String dateTo, Connection cn)" + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2337,9 +2375,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String feldbezeichnung String wert Connection cn
      * @return PreisWaehrungForm
      */
-    private PreisWaehrungForm costsPerField(Long kid, String dateFrom, String dateTo, String feldbezeichnung,
-            String wert, Connection cn) {
-        PreisWaehrungForm pw = new PreisWaehrungForm();
+    private PreisWaehrungForm costsPerField(final Long kid, final String dateFrom, final String dateTo, final String feldbezeichnung,
+            final String wert, final Connection cn) {
+        final PreisWaehrungForm pw = new PreisWaehrungForm();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -2358,7 +2396,7 @@ public class Bestellungen extends AbstractIdEntity {
                 if (rs.getString("summe") != null && !rs.getString("summe").equals("")
                         && !rs.getString("summe").equals("0.00")) {
 
-                    PreisWaehrungForm pwf = new PreisWaehrungForm();
+                    final PreisWaehrungForm pwf = new PreisWaehrungForm();
                     pwf.setPreis(rs.getString("summe"));
                     pwf.setWaehrung(rs.getString("waehrung"));
 
@@ -2378,31 +2416,35 @@ public class Bestellungen extends AbstractIdEntity {
                 }
             }
 
-        } catch (Exception e) {
-            StringBuffer bf = new StringBuffer();
+        } catch (final Exception e) {
+            final StringBuffer bf = new StringBuffer(400);
             bf.append("In PreisWaehrungForm costsPerField(Long kid, String dateFrom, String dateTo, "
                     + "String feldbezeichnung, String wert, Connection cn) trat folgender Fehler auf:\n\n");
             bf.append(e);
-            bf.append("\n\n");
-            bf.append("KID:\040" + kid + "\n");
-            bf.append("dateFrom:\040" + dateFrom + "\n");
-            bf.append("dateTo:\040" + dateTo + "\n");
-            bf.append("Feldbezeichnung:\040" + feldbezeichnung + "\n");
-            bf.append("Wert:\040" + wert + "\n");
+            bf.append("\n\nKID:\040");
+            bf.append(kid);
+            bf.append("\ndateFrom:\040");
+            bf.append(dateFrom);
+            bf.append("\ndateTo:\040");
+            bf.append(dateTo);
+            bf.append("\nFeldbezeichnung:\040");
+            bf.append(feldbezeichnung);
+            bf.append("\nWert:\040");
+            bf.append(wert);
             LOG.error(bf.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2418,9 +2460,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String feldbezeichnung String wert Connection cn
      * @return PreisWaehrungForm
      */
-    private PreisWaehrungForm costsPerFieldInnerJoin(Long kid, String dateFrom, String dateTo, String feldbezeichnung,
-            String wert, Connection cn) {
-        PreisWaehrungForm pw = new PreisWaehrungForm();
+    private PreisWaehrungForm costsPerFieldInnerJoin(final Long kid, final String dateFrom, final String dateTo, final String feldbezeichnung,
+            final String wert, final Connection cn) {
+        final PreisWaehrungForm pw = new PreisWaehrungForm();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -2439,7 +2481,7 @@ public class Bestellungen extends AbstractIdEntity {
                 if (rs.getString("summe") != null && !rs.getString("summe").equals("")
                         && !rs.getString("summe").equals("0.00")) {
 
-                    PreisWaehrungForm pwf = new PreisWaehrungForm();
+                    final PreisWaehrungForm pwf = new PreisWaehrungForm();
                     pwf.setPreis(rs.getString("summe"));
                     pwf.setWaehrung(rs.getString("waehrung"));
 
@@ -2459,31 +2501,35 @@ public class Bestellungen extends AbstractIdEntity {
                 }
             }
 
-        } catch (Exception e) {
-            StringBuffer bf = new StringBuffer();
+        } catch (final Exception e) {
+            final StringBuffer bf = new StringBuffer(400);
             bf.append("In PreisWaehrungForm costsPerFieldInnerJoin(Long kid, String dateFrom, String dateTo, "
                     + "String feldbezeichnung, String wert, Connection cn) trat folgender Fehler auf:\n\n");
             bf.append(e);
-            bf.append("\n\n");
-            bf.append("KID:\040" + kid + "\n");
-            bf.append("dateFrom:\040" + dateFrom + "\n");
-            bf.append("dateTo:\040" + dateTo + "\n");
-            bf.append("Feldbezeichnung:\040" + feldbezeichnung + "\n");
-            bf.append("Wert:\040" + wert + "\n");
+            bf.append("\n\nKID:\040");
+            bf.append(kid);
+            bf.append("\ndateFrom:\040");
+            bf.append(dateFrom);
+            bf.append("\ndateTo:\040");
+            bf.append(dateTo);
+            bf.append("\nFeldbezeichnung:\040");
+            bf.append(feldbezeichnung);
+            bf.append("\nWert:\040");
+            bf.append(wert);
             LOG.error(bf.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2499,9 +2545,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countRowsUID(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+    public OrderStatistikForm countRowsUID(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2515,7 +2561,7 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 anzahl = rs.getInt("COUNT(*)");
                 osf.setAnzahl(anzahl);
                 list.add(osf);
@@ -2523,21 +2569,21 @@ public class Bestellungen extends AbstractIdEntity {
 
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countRowsUID(Long kid, String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2554,7 +2600,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String issn Connection cn
      * @return int anzahl
      */
-    public int countRowsUIDPerISSN(Long kid, String dateFrom, String dateTo, String iss, Connection cn) {
+    public int countRowsUIDPerISSN(final Long kid, final String dateFrom, final String dateTo, final String iss, final Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2572,30 +2618,33 @@ public class Bestellungen extends AbstractIdEntity {
                 anzahl = rs.getInt("COUNT(*)");
             }
 
-        } catch (Exception e) {
-            StringBuffer bf = new StringBuffer();
+        } catch (final Exception e) {
+            final StringBuffer bf = new StringBuffer(300);
             bf.append("In countRowsUIDPerISSN(Long kid, String dateFrom, String dateTo, "
                     + "String issn, Connection cn) trat folgender Fehler auf:\n\n");
             bf.append(e);
-            bf.append("\n\n");
-            bf.append("KID:\040" + kid + "\n");
-            bf.append("dateFrom:\040" + dateFrom + "\n");
-            bf.append("dateTo:\040" + dateTo + "\n");
-            bf.append("ISSN:\040" + iss + "\n");
+            bf.append("\n\nKID:\040");
+            bf.append(kid);
+            bf.append("\ndateFrom:\040");
+            bf.append(dateFrom);
+            bf.append("\ndateTo:\040");
+            bf.append(dateTo);
+            bf.append("\nISSN:\040");
+            bf.append(iss);
             LOG.error(bf.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2610,8 +2659,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String benutzerfeld String inhalt Connection cn
      * @return int anzahl
      */
-    public int countRowsPerFeld(Long kid, String dateFrom, String dateTo, String benutzerfeld, String inhalt,
-            Connection cn) {
+    public int countRowsPerFeld(final Long kid, final String dateFrom, final String dateTo, final String benutzerfeld, final String inhalt,
+            final Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2631,31 +2680,35 @@ public class Bestellungen extends AbstractIdEntity {
                 anzahl = rs.getInt("COUNT(*)");
             }
 
-        } catch (Exception e) {
-            StringBuffer bf = new StringBuffer();
+        } catch (final Exception e) {
+            final StringBuffer bf = new StringBuffer(400);
             bf.append("In countRowsPerFeld(Long kid, String dateFrom, String dateTo, "
                     + "String benutzerfeld, String inhalt, Connection cn) trat folgender Fehler auf:\n\n");
             bf.append(e);
-            bf.append("\n\n");
-            bf.append("KID:\040" + kid + "\n");
-            bf.append("dateFrom:\040" + dateFrom + "\n");
-            bf.append("dateTo:\040" + dateTo + "\n");
-            bf.append("Feldbezeichnung:\040" + benutzerfeld + "\n");
-            bf.append("Wert:\040" + inhalt + "\n");
+            bf.append("\n\nKID:\040");
+            bf.append(kid);
+            bf.append("\ndateFrom:\040");
+            bf.append(dateFrom);
+            bf.append("\ndateTo:\040");
+            bf.append(dateTo);
+            bf.append("\nFeldbezeichnung:\040");
+            bf.append(benutzerfeld);
+            bf.append("\nWert:\040");
+            bf.append(inhalt);
             LOG.error(bf.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2670,9 +2723,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countOrderYears(Long kid, String dateFrom, String dateTo, Connection cn) {
-        OrderStatistikForm os = new OrderStatistikForm();
-        ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
+    public OrderStatistikForm countOrderYears(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+        final OrderStatistikForm os = new OrderStatistikForm();
+        final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
         int total = 0;
         int unknown = 0;
@@ -2688,7 +2741,7 @@ public class Bestellungen extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
                 label = rs.getString("jahr");
                 anzahl = rs.getInt("anzahl");
@@ -2704,7 +2757,7 @@ public class Bestellungen extends AbstractIdEntity {
 
             if (unknown > 0) {
                 // hier werden Bestellungen mit unbekanntem Jahr als "k.A." aufgeführt...
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
                 list.add(osf);
@@ -2713,21 +2766,21 @@ public class Bestellungen extends AbstractIdEntity {
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countOrderYears(Long kid, String dateFrom, String dateTo, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2741,29 +2794,29 @@ public class Bestellungen extends AbstractIdEntity {
      * @param pstmt
      * @return
      */
-    public List<OrderStatistikForm> countSearchOrdersPerKonto(PreparedStatement pstmt) {
-        ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
+    public List<OrderStatistikForm> countSearchOrdersPerKonto(final PreparedStatement pstmt) {
+        final ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
         ResultSet rs = null;
         try {
             rs = pstmt.executeQuery();
 
             int total = 0;
             while (rs.next()) {
-                OrderStatistikForm osf = new OrderStatistikForm();
+                final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setAnzahl(rs.getInt("count(bid)"));
                 total = total +  osf.getAnzahl();
                 osf.setTotal(total);
                 auflistung.add(osf);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("countSearchOrdersPerKonto(PreparedStatement pstmt): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -2774,7 +2827,7 @@ public class Bestellungen extends AbstractIdEntity {
         return kaufpreis;
     }
 
-    public void setKaufpreis(BigDecimal kaufpreis) {
+    public void setKaufpreis(final BigDecimal kaufpreis) {
         this.kaufpreis = kaufpreis;
     }
 
@@ -2782,7 +2835,7 @@ public class Bestellungen extends AbstractIdEntity {
         return preisnachkomma;
     }
 
-    public void setPreisnachkomma(String preisnachkomma) {
+    public void setPreisnachkomma(final String preisnachkomma) {
         this.preisnachkomma = preisnachkomma;
     }
 
@@ -2790,7 +2843,7 @@ public class Bestellungen extends AbstractIdEntity {
         return preisvorkomma;
     }
 
-    public void setPreisvorkomma(String preisvorkomma) {
+    public void setPreisvorkomma(final String preisvorkomma) {
         this.preisvorkomma = preisvorkomma;
     }
 
@@ -2798,7 +2851,7 @@ public class Bestellungen extends AbstractIdEntity {
         return fileformat;
     }
 
-    public void setFileformat(String fileformat) {
+    public void setFileformat(final String fileformat) {
         this.fileformat = fileformat;
     }
 
@@ -2806,7 +2859,7 @@ public class Bestellungen extends AbstractIdEntity {
         return lieferant;
     }
 
-    public void setLieferant(Lieferanten lieferant) {
+    public void setLieferant(final Lieferanten lieferant) {
         this.lieferant = lieferant;
     }
 
@@ -2814,7 +2867,7 @@ public class Bestellungen extends AbstractIdEntity {
         return deloptions;
     }
 
-    public void setDeloptions(String deloptions) {
+    public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
@@ -2822,7 +2875,7 @@ public class Bestellungen extends AbstractIdEntity {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(final String priority) {
         this.priority = priority;
     }
 
@@ -2830,7 +2883,7 @@ public class Bestellungen extends AbstractIdEntity {
         return artikeltitel;
     }
 
-    public void setArtikeltitel(String artikeltitel) {
+    public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
     }
 
@@ -2838,7 +2891,7 @@ public class Bestellungen extends AbstractIdEntity {
         return autor;
     }
 
-    public void setAutor(String autor) {
+    public void setAutor(final String autor) {
         this.autor = autor;
     }
 
@@ -2846,7 +2899,7 @@ public class Bestellungen extends AbstractIdEntity {
         return bibliothek;
     }
 
-    public void setBibliothek(String bibliothek) {
+    public void setBibliothek(final String bibliothek) {
         this.bibliothek = bibliothek;
     }
 
@@ -2854,7 +2907,7 @@ public class Bestellungen extends AbstractIdEntity {
         return sigel;
     }
 
-    public void setSigel(String sigel) {
+    public void setSigel(final String sigel) {
         this.sigel = sigel;
     }
 
@@ -2862,7 +2915,7 @@ public class Bestellungen extends AbstractIdEntity {
         return bestellquelle;
     }
 
-    public void setBestellquelle(String bestellquelle) {
+    public void setBestellquelle(final String bestellquelle) {
         this.bestellquelle = bestellquelle;
     }
 
@@ -2870,7 +2923,7 @@ public class Bestellungen extends AbstractIdEntity {
         return heft;
     }
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -2878,7 +2931,7 @@ public class Bestellungen extends AbstractIdEntity {
         return issn;
     }
 
-    public void setIssn(String issn) {
+    public void setIssn(final String issn) {
         this.issn = issn;
     }
 
@@ -2886,7 +2939,7 @@ public class Bestellungen extends AbstractIdEntity {
         return jahr;
     }
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -2894,7 +2947,7 @@ public class Bestellungen extends AbstractIdEntity {
         return jahrgang;
     }
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -2902,7 +2955,7 @@ public class Bestellungen extends AbstractIdEntity {
         return seiten;
     }
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -2910,7 +2963,7 @@ public class Bestellungen extends AbstractIdEntity {
         return subitonr;
     }
 
-    public void setSubitonr(String subitonr) {
+    public void setSubitonr(final String subitonr) {
         this.subitonr = subitonr;
     }
 
@@ -2918,7 +2971,7 @@ public class Bestellungen extends AbstractIdEntity {
         return zeitschrift;
     }
 
-    public void setZeitschrift(String zeitschrift) {
+    public void setZeitschrift(final String zeitschrift) {
         this.zeitschrift = zeitschrift;
     }
 
@@ -2926,7 +2979,7 @@ public class Bestellungen extends AbstractIdEntity {
         return benutzer;
     }
 
-    public void setBenutzer(AbstractBenutzer benutzer) {
+    public void setBenutzer(final AbstractBenutzer benutzer) {
         this.benutzer = benutzer;
     }
 
@@ -2934,7 +2987,7 @@ public class Bestellungen extends AbstractIdEntity {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -2942,7 +2995,7 @@ public class Bestellungen extends AbstractIdEntity {
         return systembemerkung;
     }
 
-    public void setSystembemerkung(String systembemerkung) {
+    public void setSystembemerkung(final String systembemerkung) {
         this.systembemerkung = systembemerkung;
     }
 
@@ -2950,7 +3003,7 @@ public class Bestellungen extends AbstractIdEntity {
         return statusdate;
     }
 
-    public void setStatusdate(String statusdate) {
+    public void setStatusdate(final String statusdate) {
         this.statusdate = statusdate;
     }
 
@@ -2958,7 +3011,7 @@ public class Bestellungen extends AbstractIdEntity {
         return statustext;
     }
 
-    public void setStatustext(String statustext) {
+    public void setStatustext(final String statustext) {
         this.statustext = statustext;
     }
 
@@ -2966,7 +3019,7 @@ public class Bestellungen extends AbstractIdEntity {
         return orderdate;
     }
 
-    public void setOrderdate(String orderdate) {
+    public void setOrderdate(final String orderdate) {
         this.orderdate = orderdate;
     }
 
@@ -2974,7 +3027,7 @@ public class Bestellungen extends AbstractIdEntity {
         return notizen;
     }
 
-    public void setNotizen(String notizen) {
+    public void setNotizen(final String notizen) {
         this.notizen = notizen;
     }
 
@@ -2982,7 +3035,7 @@ public class Bestellungen extends AbstractIdEntity {
         return waehrung;
     }
 
-    public void setWaehrung(String waehrung) {
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
@@ -2990,7 +3043,7 @@ public class Bestellungen extends AbstractIdEntity {
         return buchtitel;
     }
 
-    public void setBuchtitel(String buchtitel) {
+    public void setBuchtitel(final String buchtitel) {
         this.buchtitel = buchtitel;
     }
 
@@ -2998,7 +3051,7 @@ public class Bestellungen extends AbstractIdEntity {
         return doi;
     }
 
-    public void setDoi(String doi) {
+    public void setDoi(final String doi) {
         this.doi = doi;
     }
 
@@ -3006,7 +3059,7 @@ public class Bestellungen extends AbstractIdEntity {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public void setIsbn(final String isbn) {
         this.isbn = isbn;
     }
 
@@ -3014,7 +3067,7 @@ public class Bestellungen extends AbstractIdEntity {
         return kapitel;
     }
 
-    public void setKapitel(String kapitel) {
+    public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
 
@@ -3022,7 +3075,7 @@ public class Bestellungen extends AbstractIdEntity {
         return mediatype;
     }
 
-    public void setMediatype(String mediatype) {
+    public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
 
@@ -3030,7 +3083,7 @@ public class Bestellungen extends AbstractIdEntity {
         return pmid;
     }
 
-    public void setPmid(String pmid) {
+    public void setPmid(final String pmid) {
         this.pmid = pmid;
     }
 
@@ -3038,7 +3091,7 @@ public class Bestellungen extends AbstractIdEntity {
         return verlag;
     }
 
-    public void setVerlag(String verlag) {
+    public void setVerlag(final String verlag) {
         this.verlag = verlag;
     }
 
@@ -3046,7 +3099,7 @@ public class Bestellungen extends AbstractIdEntity {
         return gbvnr;
     }
 
-    public void setGbvnr(String gbvnr) {
+    public void setGbvnr(final String gbvnr) {
         this.gbvnr = gbvnr;
     }
 
@@ -3054,7 +3107,7 @@ public class Bestellungen extends AbstractIdEntity {
         return interne_bestellnr;
     }
 
-    public void setInterne_bestellnr(String interne_bestellnr) {
+    public void setInterne_bestellnr(final String interne_bestellnr) {
         this.interne_bestellnr = interne_bestellnr;
     }
 
@@ -3062,7 +3115,7 @@ public class Bestellungen extends AbstractIdEntity {
         return trackingnr;
     }
 
-    public void setTrackingnr(String trackingnr) {
+    public void setTrackingnr(final String trackingnr) {
         this.trackingnr = trackingnr;
     }
 
@@ -3070,7 +3123,7 @@ public class Bestellungen extends AbstractIdEntity {
         return erledigt;
     }
 
-    public void setErledigt(boolean erledigt) {
+    public void setErledigt(final boolean erledigt) {
         this.erledigt = erledigt;
     }
 
@@ -3078,11 +3131,11 @@ public class Bestellungen extends AbstractIdEntity {
         return preisdefault;
     }
 
-    public void setPreisdefault(boolean preisdefault) {
+    public void setPreisdefault(final boolean preisdefault) {
         this.preisdefault = preisdefault;
     }
 
-    private PreparedStatement setOrderValues(PreparedStatement ps, Bestellungen b) throws Exception {
+    private PreparedStatement setOrderValues(final PreparedStatement ps, final Bestellungen b) throws Exception {
         ps.setLong(1, b.getKonto().getId());
         ps.setLong(2, b.getBenutzer().getId());
         if (b.getLieferant() == null || b.getLieferant().getLid() == null

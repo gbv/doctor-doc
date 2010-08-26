@@ -40,38 +40,38 @@ import ch.dbs.form.UserInfo;
 public final class PrepareUserAddAction extends Action {
 
 
-    public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         UserForm uf = (UserForm) form;
-        Countries countriesInstance = new Countries();
-        Konto kontoInstance = new Konto();
-        UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // nach Login
+        final Countries countriesInstance = new Countries();
+        final Konto kontoInstance = new Konto();
+        final UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // nach Login
         if (ufLoginAction != null) {
             uf = ufLoginAction;
         }
         String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
+        final Text cn = new Text();
+        final Auth auth = new Auth();
 
 
         if (auth.isLogin(rq)) {
             // bereits eingeloggt => direkt zu modifykontousers.do
             forward = "adduser";
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
-            ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
+            final List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+            final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
 
-            for (Konto k : allPossKontos) {
-                KontoForm kf = new KontoForm();
+            for (final Konto k : allPossKontos) {
+                final KontoForm kf = new KontoForm();
                 kf.setKonto(k);
                 lkf.add(kf);
             }
 
-            List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
 
-            AbstractBenutzer b = new AbstractBenutzer(uf);
+            final AbstractBenutzer b = new AbstractBenutzer(uf);
             uf.setUser(b);
 
             uf .setAddFromBestellformEmail(true); // steuert die korrekte Überschrift in modifykontousers.jsp

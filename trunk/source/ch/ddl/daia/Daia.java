@@ -30,27 +30,26 @@ public class Daia extends Action {
      * Schnittstelle um Bestände in D-D über OpenURL abzufragen und Antworten
      * per XML im DAIA-Format zu erhalten
      */
-    public ActionForward execute(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        OrderForm ofjo = (OrderForm) form;
+        final OrderForm ofjo = (OrderForm) form;
 
         String output = "";
         //    String outputformat = rq.getParameter("format");
 
-        ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-        OpenUrl openUrlInstance = new OpenUrl();
+        final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
+        final OpenUrl openUrlInstance = new OpenUrl();
 
-        ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
+        final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
         ofjo.completeOrderForm(ofjo, convertOpenUrlInstance.makeOrderform(co));
 
         // Parameter für indirekte Nutzung über einen Metakatalog (z.B. Vufind)
-        String daiaIP = rq.getParameter("ip"); // in der URL übermittelte Originalanfrage-IP
+        final String daiaIP = rq.getParameter("ip"); // in der URL übermittelte Originalanfrage-IP
         boolean showInternal = false; // opt. Parameter um auch Bestände anzuzeigen, die mit "intern" gekennzeichnet sind
         if (rq.getParameter("in") != null && rq.getParameter("in").equals("1")) { showInternal = true; }
 
-        Stock stock = new Stock();
+        final Stock stock = new Stock();
         ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
         String msgBestand = ""; // msgBestand ist nicht DAIA-standardkonform. Wird nur bei Abfrage DAIA + IP verwendet
 
@@ -60,10 +59,10 @@ public class Daia extends Action {
                 bestaende = stock.checkGeneralStockAvailability(ofjo, false);
             } else { // Bestände für ein bestimmtes Konto prüfen (IP-basiert)
                 msgBestand = "No holdings found";
-                Text cn = new Text();
+                final Text cn = new Text();
                 // Text mit Konto anhand IP holen
-                IPChecker ipck = new IPChecker();
-                Text tip = ipck.contains(daiaIP, cn.getConnection());
+                final IPChecker ipck = new IPChecker();
+                final Text tip = ipck.contains(daiaIP, cn.getConnection());
 
                 if (tip.getKonto() != null && tip.getKonto().getId() != null) { // Nur prüfen, falls Konto vorhanden
                     bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());
@@ -77,9 +76,9 @@ public class Daia extends Action {
             msgBestand = "Missing ISSN";
         }
 
-        DaiaXMLResponse xml = new DaiaXMLResponse();
+        final DaiaXMLResponse xml = new DaiaXMLResponse();
 
-        if (bestaende.size() > 0) { // es gibt Bestände
+        if (!bestaende.isEmpty()) { // es gibt Bestände
             output =  xml.listHoldings(bestaende, ofjo.getRfr_id());
         } else { // es gibt keine Bestände
             output = xml.noHoldings(msgBestand, ofjo.getRfr_id());
@@ -93,7 +92,7 @@ public class Daia extends Action {
 
             rp.setContentType("text/xml");
             rp.flushBuffer();
-            PrintWriter pw = rp.getWriter();
+            final PrintWriter pw = rp.getWriter();
             // use writer to render text
 
             pw.write(output);
@@ -106,7 +105,7 @@ public class Daia extends Action {
             LOG.error(e.toString());
         }
 
-        return mp.findForward(forward); // geht ggf. auf Fehlerseite
+        return mp.findForward("failure"); // geht ggf. auf Fehlerseite
     }
 
     //  private boolean isJson(String outputformat) {

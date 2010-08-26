@@ -59,7 +59,7 @@ public class Issn extends AbstractIdEntity {
      * @param Connection cn
      * @return ISSN issn
      */
-    public Issn(Long iid, Connection cn) {
+    public Issn(final Long iid, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -72,21 +72,21 @@ public class Issn extends AbstractIdEntity {
                 this.setRsValues(cn, rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Issn (Long iid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -100,9 +100,9 @@ public class Issn extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<ISSN> issn
      */
-    public ArrayList<String> getAllIssnsFromOneIssn(String iss, Connection cn) {
+    public ArrayList<String> getAllIssnsFromOneIssn(final String iss, final Connection cn) {
 
-        ArrayList<String> is = new ArrayList<String>();
+        final ArrayList<String> is = new ArrayList<String>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -116,21 +116,21 @@ public class Issn extends AbstractIdEntity {
                 is.add(rs.getString("issn"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllIssnsFromOneIssn(String issn, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -145,9 +145,9 @@ public class Issn extends AbstractIdEntity {
      * @param Connection cn
      * @return ArrayList<ISSN> issn
      */
-    public ArrayList<String> getAllIssnsFromOneIdentifierID(String ident_id, Connection cn) {
+    public ArrayList<String> getAllIssnsFromOneIdentifierID(final String ident_id, final Connection cn) {
 
-        ArrayList<String> iss = new ArrayList<String>();
+        final ArrayList<String> iss = new ArrayList<String>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -161,21 +161,21 @@ public class Issn extends AbstractIdEntity {
                 iss.add(rs.getString("issn"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getAllIssnsFromOneEzbid(String ident_id, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -188,7 +188,7 @@ public class Issn extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public Issn(Connection cn, ResultSet rs) {
+    public Issn(final Connection cn, final ResultSet rs) {
 
         try {
 
@@ -204,12 +204,12 @@ public class Issn extends AbstractIdEntity {
             this.setOrt(rs.getString("ort"));
             this.setSprache(rs.getString("sprache"));
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("Issn (Connection cn, ResultSet rs): " + e.toString());
         }
     }
 
-    private void setRsValues(Connection cn, ResultSet rs) throws Exception {
+    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
         this.setId(rs.getLong("IID"));
         this.setIdentifier(rs.getString("identifier"));
         this.setIdentifier_id(rs.getString("identifier_id"));
@@ -229,7 +229,7 @@ public class Issn extends AbstractIdEntity {
     }
 
 
-    public void setIssn(String issn) {
+    public void setIssn(final String issn) {
         this.issn = issn;
     }
 
@@ -239,7 +239,7 @@ public class Issn extends AbstractIdEntity {
     }
 
 
-    public void setEissn(boolean eissn) {
+    public void setEissn(final boolean eissn) {
         this.eissn = eissn;
     }
 
@@ -247,7 +247,7 @@ public class Issn extends AbstractIdEntity {
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -255,7 +255,7 @@ public class Issn extends AbstractIdEntity {
         return identifier_id;
     }
 
-    public void setIdentifier_id(String identifier_id) {
+    public void setIdentifier_id(final String identifier_id) {
         this.identifier_id = identifier_id;
     }
 
@@ -263,7 +263,7 @@ public class Issn extends AbstractIdEntity {
         return lissn;
     }
 
-    public void setLissn(boolean lissn) {
+    public void setLissn(final boolean lissn) {
         this.lissn = lissn;
     }
 
@@ -271,7 +271,7 @@ public class Issn extends AbstractIdEntity {
         return coden;
     }
 
-    public void setCoden(String coden) {
+    public void setCoden(final String coden) {
         this.coden = coden;
     }
 
@@ -279,7 +279,7 @@ public class Issn extends AbstractIdEntity {
         return titel;
     }
 
-    public void setTitel(String titel) {
+    public void setTitel(final String titel) {
         this.titel = titel;
     }
 
@@ -287,7 +287,7 @@ public class Issn extends AbstractIdEntity {
         return verlag;
     }
 
-    public void setVerlag(String verlag) {
+    public void setVerlag(final String verlag) {
         this.verlag = verlag;
     }
 
@@ -295,7 +295,7 @@ public class Issn extends AbstractIdEntity {
         return ort;
     }
 
-    public void setOrt(String ort) {
+    public void setOrt(final String ort) {
         this.ort = ort;
     }
 
@@ -303,7 +303,7 @@ public class Issn extends AbstractIdEntity {
         return sprache;
     }
 
-    public void setSprache(String sprache) {
+    public void setSprache(final String sprache) {
         this.sprache = sprache;
     }
 

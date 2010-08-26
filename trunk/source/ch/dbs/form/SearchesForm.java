@@ -19,46 +19,42 @@ package ch.dbs.form;
 
 public class SearchesForm extends OverviewForm {
 
-  private static final long serialVersionUID = 1L;
-  private String field; // MYSQL-Zielfeld
-  private String condition; // ist gleich, enthält etc.
-  private String input; // Suchwert
-  private String bool; // Boolsche Verknüpfung
+    private static final long serialVersionUID = 1L;
+    private String field; // MYSQL-Zielfeld
+    private String condition; // ist gleich, enthält etc.
+    private String input; // Suchwert
+    private String bool; // Boolsche Verknüpfung
 
-    public SearchesForm() {
-
+    public String getBool() {
+        return bool;
     }
 
-  public String getBool() {
-    return bool;
-  }
+    public void setBool(final String bool) {
+        this.bool = bool;
+    }
 
-  public void setBool(String bool) {
-    this.bool = bool;
-  }
+    public String getCondition() {
+        return condition;
+    }
 
-  public String getCondition() {
-    return condition;
-  }
+    public void setCondition(final String condition) {
+        this.condition = condition;
+    }
 
-  public void setCondition(String condition) {
-    this.condition = condition;
-  }
+    public String getField() {
+        return field;
+    }
 
-  public String getField() {
-    return field;
-  }
+    public void setField(final String field) {
+        this.field = field;
+    }
 
-  public void setField(String field) {
-    this.field = field;
-  }
+    public String getInput() {
+        return input;
+    }
 
-  public String getInput() {
-    return input;
-  }
-
-  public void setInput(String input) {
-    this.input = input;
-  }
+    public void setInput(final String input) {
+        this.input = input;
+    }
 
 }

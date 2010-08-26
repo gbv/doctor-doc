@@ -39,18 +39,18 @@ public class LogoutAction extends Action {
     /**
      * Logout. Zerstört das Sessionbean
      */
-    public ActionForward execute(ActionMapping mp,
-            ActionForm form, HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp,
+            final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         try {
-            Object loc = rq.getSession().getAttribute("org.apache.struts.action.LOCALE"); // get existing Locale
+            final Object loc = rq.getSession().getAttribute("org.apache.struts.action.LOCALE"); // get existing Locale
             rq.getSession().invalidate();
             if (loc != null) {
                 // restore Locale (maybe manually choosen)
                 rq.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(loc.toString()));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("execute: " + e.toString());
         }
 

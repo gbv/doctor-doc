@@ -19,14 +19,14 @@ package util;
 
 public class MyException extends Exception {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public MyException() {
+    public MyException() {
 
-  }
+    }
 
-  public MyException(String s) {
-    super(s);
-  }
+    public MyException(final String s) {
+        super(s);
+    }
 }
 

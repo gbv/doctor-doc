@@ -32,6 +32,7 @@ import util.SpecialCharacters;
 public class OpenUrl {
 
     private static final SimpleLogger LOG = new SimpleLogger(OpenUrl.class);
+    private static final String PM_ENDTAG = "</Item>";
 
     /**
      * Klasse um OpenURL anzuwenden
@@ -42,423 +43,423 @@ public class OpenUrl {
      * identifiziert die OpenURL-Identifiers aus einem Request
      * verwendet die Standardmethoden von Java
      */
-    public ContextObject readOpenUrlFromRequest(HttpServletRequest rq) {
+    public ContextObject readOpenUrlFromRequest(final HttpServletRequest rq) {
 
-        ContextObject co = new ContextObject();
+        final ContextObject co = new ContextObject();
         ConcurrentHashMap<String, String> params = new ConcurrentHashMap<String, String>();
         params = getOpenUrlParameters(rq);
 
-        ArrayList<String> uriSchemas = new ArrayList<String>();
+        final ArrayList<String> uriSchemas = new ArrayList<String>();
 
-        for (Map.Entry<String, String> pairs : params.entrySet()) {
+        for (final Map.Entry<String, String> pairs : params.entrySet()) {
 
-            String key = pairs.getKey();
-            String value = pairs.getValue();
+            final String key = pairs.getKey();
+            final String value = pairs.getValue();
 
             try {
 
                 // Parameter aus OpenURL Version 1.0
-                if (key.equals("rft_val_fmt")) {
+                if ("rft_val_fmt".equals(key)) {
                     co.setRft_val_fmt(value);
                     continue;
                 }
-                if (key.equals("rfr_id")) {
+                if ("rfr_id".equals(key)) {
                     co.setRfr_id(value);
                     continue;
                 }
-                if (key.equals("rft.genre")) {
+                if ("rft.genre".equals(key)) {
                     co.setRft_genre(value);
                     continue;
                 }
-                if (key.equals("rft.atitle")) {
+                if ("rft.atitle".equals(key)) {
                     co.setRft_atitle(value);
                     continue;
                 }
-                if (key.equals("rft.btitle")) {
+                if ("rft.btitle".equals(key)) {
                     co.setRft_btitle(value);
                     continue;
                 }
-                if (key.equals("rft.series")) {
+                if ("rft.series".equals(key)) {
                     co.setRft_series(value);
                     continue;
                 }
-                if (key.equals("rft.pub")) {
+                if ("rft.pub".equals(key)) {
                     co.setRft_pub(value);
                     continue;
                 }
-                if (key.equals("rft.place")) {
+                if ("rft.place".equals(key)) {
                     co.setRft_place(value);
                     continue;
                 }
-                if (key.equals("rft.edition")) {
+                if ("rft.edition".equals(key)) {
                     co.setRft_edition(value);
                     continue;
                 }
-                if (key.equals("rft.title")) {
+                if ("rft.title".equals(key)) {
                     co.setRft_title(value);
                     continue;
                 }
-                if (key.equals("rft.jtitle")) {
+                if ("rft.jtitle".equals(key)) {
                     co.setRft_jtitle(value);
                     continue;
                 }
-                if (key.equals("rft.stitle")) {
+                if ("rft.stitle".equals(key)) {
                     co.setRft_stitle(value);
                     continue;
                 }
-                if (key.equals("rft.issn")) {
+                if ("rft.issn".equals(key)) {
                     co.setRft_issn(value);
                     continue;
                 }
-                if (key.equals("rft.issn1")) {
+                if ("rft.issn1".equals(key)) {
                     co.setRft_issn1(value);
                     continue;
                 }
-                if (key.equals("rft.eissn")) {
+                if ("rft.eissn".equals(key)) {
                     co.setRft_eissn(value);
                     continue;
                 }
-                if (key.equals("rft.eissn1")) {
+                if ("rft.eissn1".equals(key)) {
                     co.setRft_eissn1(value);
                     continue;
                 }
-                if (key.equals("rft.isbn")) {
+                if ("rft.isbn".equals(key)) {
                     co.setRft_isbn(value);
                     continue;
                 }
-                if (key.equals("rft.date")) {
+                if ("rft.date".equals(key)) {
                     co.setRft_date(value);
                     continue;
                 }
-                if (key.equals("rft.volume")) {
+                if ("rft.volume".equals(key)) {
                     co.setRft_volume(value);
                     continue;
                 }
-                if (key.equals("rft.part")) {
+                if ("rft.part".equals(key)) {
                     co.setRft_part(value);
                     continue;
                 }
-                if (key.equals("rft.issue")) {
+                if ("rft.issue".equals(key)) {
                     co.setRft_issue(value);
                     continue;
                 }
-                if (key.equals("rft.spage")) {
+                if ("rft.spage".equals(key)) {
                     co.setRft_spage(value);
                     continue;
                 }
-                if (key.equals("rft.epage")) {
+                if ("rft.epage".equals(key)) {
                     co.setRft_epage(value);
                     continue;
                 }
-                if (key.equals("rft.pages")) {
+                if ("rft.pages".equals(key)) {
                     co.setRft_pages(value);
                     continue;
                 }
-                if (key.equals("rft.tpages")) {
+                if ("rft.tpages".equals(key)) {
                     co.setRft_tpages(value);
                     continue;
                 }
-                if (key.equals("rft.author")) {
+                if ("rft.author".equals(key)) {
                     co.setRft_author(value);
                     continue;
                 }
-                if (key.equals("rft.au")) {
+                if ("rft.au".equals(key)) {
                     co.setRft_au(value);
                     continue;
                 }
-                if (key.equals("rft.aucorp")) {
+                if ("rft.aucorp".equals(key)) {
                     co.setRft_aucorp(value);
                     continue;
                 }
-                if (key.equals("rft.auinit")) {
+                if ("rft.auinit".equals(key)) {
                     co.setRft_auinit(value);
                     continue;
                 }
-                if (key.equals("rft.auinit1")) {
+                if ("rft.auinit1".equals(key)) {
                     co.setRft_auinit1(value);
                     continue;
                 }
-                if (key.equals("rft.auinitm")) {
+                if ("rft.auinitm".equals(key)) {
                     co.setRft_auinitm(value);
                     continue;
                 }
-                if (key.equals("rft.ausuffix")) {
+                if ("rft.ausuffix".equals(key)) {
                     co.setRft_ausuffix(value);
                     continue;
                 }
-                if (key.equals("rft.aulast")) {
+                if ("rft.aulast".equals(key)) {
                     co.setRft_aulast(value);
                     continue;
                 }
-                if (key.equals("rft.aufirst")) {
+                if ("rft.aufirst".equals(key)) {
                     co.setRft_aufirst(value);
                     continue;
                 }
-                if (key.equals("rft.sici")) {
+                if ("rft.sici".equals(key)) {
                     co.setRft_sici(value);
                     continue;
                 }
-                if (key.equals("rft.bici")) {
+                if ("rft.bici".equals(key)) {
                     co.setRft_bici(value);
                     continue;
                 }
-                if (key.equals("rft.coden")) {
+                if ("rft.coden".equals(key)) {
                     co.setRft_coden(value);
                     continue;
                 }
-                if (key.equals("rft.artnum")) {
+                if ("rft.artnum".equals(key)) {
                     co.setRft_artnum(value);
                     continue;
                 }
                 // RFTs Dublin Core, z.B. in Blogs:
-                if (key.equals("rft.creator")) {
+                if ("rft.creator".equals(key)) {
                     co.setRft_creator(value);
                     continue;
                 }
-                if (key.equals("rft.publisher")) {
+                if ("rft.publisher".equals(key)) {
                     co.setRft_publisher(value);
                     continue;
                 }
-                if (key.equals("rft.type")) {
+                if ("rft.type".equals(key)) {
                     co.setRft_type(value);
                     continue;
                 }
-                if (key.equals("rft.subject")) {
+                if ("rft.subject".equals(key)) {
                     co.setRft_subject(value);
                     continue;
                 }
-                if (key.equals("rft.format")) {
+                if ("rft.format".equals(key)) {
                     co.setRft_format(value);
                     continue;
                 }
-                if (key.equals("rft.language")) {
+                if ("rft.language".equals(key)) {
                     co.setRft_language(value);
                     continue;
                 }
-                if (key.equals("rft.source")) {
+                if ("rft.source".equals(key)) {
                     co.setRft_source(value);
                     continue;
                 }
-                if (key.equals("rft.identifier")) {
+                if ("rft.identifier".equals(key)) {
                     co.setRft_identifier(value);
                     continue;
                 }
-                if (key.equals("rft.description")) {
+                if ("rft.description".equals(key)) {
                     co.setRft_description(value);
                     continue;
                 }
-                if (key.equals("rft.relation")) {
+                if ("rft.relation".equals(key)) {
                     co.setRft_relation(value);
                     continue;
                 }
-                if (key.equals("rft.coverage")) {
+                if ("rft.coverage".equals(key)) {
                     co.setRft_coverage(value);
                     continue;
                 }
-                if (key.equals("rft.rights")) {
+                if ("rft.rights".equals(key)) {
                     co.setRft_rights(value);
                     continue;
                 }
 
                 //         Parameter aus OpenURL 0.1.
-                if (key.equals("id") && !value.startsWith("doi:")) { // kommt bei BIOONE und Inforama vor: id=doi:
+                if ("id".equals(key) && !value.startsWith("doi:")) { // kommt bei BIOONE und Inforama vor: id=doi:
                     co.setRfr_id(value);
                     continue;
                 }
-                if (key.equals("sid")) {
+                if ("sid".equals(key)) {
                     co.setRfr_id(value); // überschreibt &id=
                     continue;
                 }
-                if (key.equals("genre")) {
+                if ("genre".equals(key)) {
                     co.setRft_genre(value);
                     continue;
                 }
-                if (key.equals("atitle")) {
+                if ("atitle".equals(key)) {
                     co.setRft_atitle(value);
                     continue;
                 }
-                if (key.equals("btitle")) {
+                if ("btitle".equals(key)) {
                     co.setRft_btitle(value);
                     continue;
                 }
-                if (key.equals("series")) {
+                if ("series".equals(key)) {
                     co.setRft_series(value);
                     continue;
                 }
-                if (key.equals("pub")) {
+                if ("pub".equals(key)) {
                     co.setRft_pub(value);
                     continue;
                 }
-                if (key.equals("place")) {
+                if ("place".equals(key)) {
                     co.setRft_place(value);
                     continue;
                 }
-                if (key.equals("edition")) {
+                if ("edition".equals(key)) {
                     co.setRft_edition(value);
                     continue;
                 }
-                if (key.equals("title")) {
+                if ("title".equals(key)) {
                     co.setRft_title(value);
                     continue;
                 }
-                if (key.equals("jtitle")) {
+                if ("jtitle".equals(key)) {
                     co.setRft_jtitle(value);
                     continue;
                 }
-                if (key.equals("stitle")) {
+                if ("stitle".equals(key)) {
                     co.setRft_stitle(value);
                     continue;
                 }
-                if (key.equals("issn")) {
+                if ("issn".equals(key)) {
                     co.setRft_issn(value);
                     continue;
                 }
-                if (key.equals("issn1")) {
+                if ("issn1".equals(key)) {
                     co.setRft_issn1(value); // kann es manchmal geben, als ISSN mit Bindestrich
                     continue;
                 }
-                if (key.equals("eissn")) {
+                if ("eissn".equals(key)) {
                     co.setRft_eissn(value);
                     continue;
                 }
-                if (key.equals("eissn1")) {
+                if ("eissn1".equals(key)) {
                     co.setRft_eissn1(value);
                     continue;
                 }
-                if (key.equals("isbn")) {
+                if ("isbn".equals(key)) {
                     co.setRft_isbn(value);
                     continue;
                 }
-                if (key.equals("date")) {
+                if ("date".equals(key)) {
                     co.setRft_date(value);
                     continue;
                 }
-                if (key.equals("volume")) {
+                if ("volume".equals(key)) {
                     co.setRft_volume(value);
                     continue;
                 }
-                if (key.equals("part")) {
+                if ("part".equals(key)) {
                     co.setRft_part(value);
                     continue;
                 }
-                if (key.equals("issue")) {
+                if ("issue".equals(key)) {
                     co.setRft_issue(value);
                     continue;
                 }
-                if (key.equals("spage")) {
+                if ("spage".equals(key)) {
                     co.setRft_spage(value);
                     continue;
                 }
-                if (key.equals("epage")) {
+                if ("epage".equals(key)) {
                     co.setRft_epage(value);
                     continue;
                 }
-                if (key.equals("pages")) {
+                if ("pages".equals(key)) {
                     co.setRft_pages(value);
                     continue;
                 }
-                if (key.equals("tpages")) {
+                if ("tpages".equals(key)) {
                     co.setRft_tpages(value);
                     continue;
                 }
-                if (key.equals("author")) {
+                if ("author".equals(key)) {
                     co.setRft_author(value);
                     continue;
                 }
-                if (key.equals("au")) {
+                if ("au".equals(key)) {
                     co.setRft_au(value);
                     continue;
                 }
-                if (key.equals("aucorp")) {
+                if ("aucorp".equals(key)) {
                     co.setRft_aucorp(value);
                     continue;
                 }
-                if (key.equals("auinit")) {
+                if ("auinit".equals(key)) {
                     co.setRft_auinit(value);
                     continue;
                 }
-                if (key.equals("auinit1")) {
+                if ("auinit1".equals(key)) {
                     co.setRft_auinit1(value);
                     continue;
                 }
-                if (key.equals("auinitm")) {
+                if ("auinitm".equals(key)) {
                     co.setRft_auinitm(value);
                     continue;
                 }
-                if (key.equals("ausuffix")) {
+                if ("ausuffix".equals(key)) {
                     co.setRft_ausuffix(value);
                     continue;
                 }
-                if (key.equals("aulast")) {
+                if ("aulast".equals(key)) {
                     co.setRft_aulast(value);
                     continue;
                 }
-                if (key.equals("aufirst")) {
+                if ("aufirst".equals(key)) {
                     co.setRft_aufirst(value);
                     continue;
                 }
-                if (key.equals("sici")) {
+                if ("sici".equals(key)) {
                     co.setRft_sici(value); // doppelt?
                     continue;
                 }
-                if (key.equals("bici")) {
+                if ("bici".equals(key)) {
                     co.setRft_bici(value);
                     continue;
                 }
-                if (key.equals("coden")) {
+                if ("coden".equals(key)) {
                     co.setRft_coden(value);
                     continue;
                 }
-                if (key.equals("artnum")) {
+                if ("artnum".equals(key)) {
                     co.setRft_artnum(value);
                     continue;
                 }
                 // RFTs Dublin Core, z.B. in Blogs:
-                if (key.equals("creator")) {
+                if ("creator".equals(key)) {
                     co.setRft_creator(value);
                     continue;
                 }
-                if (key.equals("publisher")) {
+                if ("publisher".equals(key)) {
                     co.setRft_publisher(value);
                     continue;
                 }
-                if (key.equals("type")) {
+                if ("type".equals(key)) {
                     co.setRft_type(value);
                     continue;
                 }
-                if (key.equals("subject")) {
+                if ("subject".equals(key)) {
                     co.setRft_subject(value);
                     continue;
                 }
-                if (key.equals("format")) {
+                if ("format".equals(key)) {
                     co.setRft_format(value);
                     continue;
                 }
-                if (key.equals("language")) {
+                if ("language".equals(key)) {
                     co.setRft_language(value);
                     continue;
                 }
-                if (key.equals("source")) {
+                if ("source".equals(key)) {
                     co.setRft_source(value);
                     continue;
                 }
-                if (key.equals("identifier")) {
+                if ("identifier".equals(key)) {
                     co.setRft_identifier(value);
                     continue;
                 }
-                if (key.equals("description")) {
+                if ("description".equals(key)) {
                     co.setRft_description(value);
                     continue;
                 }
-                if (key.equals("relation")) {
+                if ("relation".equals(key)) {
                     co.setRft_relation(value);
                     continue;
                 }
-                if (key.equals("coverage")) {
+                if ("coverage".equals(key)) {
                     co.setRft_coverage(value);
                     continue;
                 }
-                if (key.equals("rights")) {
+                if ("rights".equals(key)) {
                     co.setRft_rights(value);
                     continue;
                 }
@@ -466,40 +467,40 @@ public class OpenUrl {
 
                 // hier muss aus Kompatibilitätsgründen das jeweilige URI-Schema hinzugefügt werden
                 // http://www.info-uri.info/registry/
-                if (key.equals("rft_id")) {
+                if ("rft_id".equals(key)) {
                     uriSchemas.add(value);
                     continue;
                 }
-                if (key.equals("pmid")) {
+                if ("pmid".equals(key)) {
                     if (value.length() > 0) { uriSchemas.add("info:pmid/" + value); }
                     continue;
                 }
-                if (key.equals("id") && value.startsWith("doi:")) { // kommt bei BIOONE und Inforama vor
+                if ("id".equals(key) && value.startsWith("doi:")) { // kommt bei BIOONE und Inforama vor
                     if (value.length() > 9) {
                         uriSchemas.add("info:doi/" + value.substring(value.indexOf("doi:") + 4));
                     }
                     continue;
                 }
-                if (key.equals("doi")) {
+                if ("doi".equals(key)) {
                     if (value.length() > 9) { uriSchemas.add("info:doi/" + value); }
                     continue;
                 }
-                if (key.equals("sici")) {
+                if ("sici".equals(key)) {
                     if (value.length() > 10) { uriSchemas.add("info:sici/" + value); }
                     continue;
                 }
-                if (key.equals("lccn")) {
+                if ("lccn".equals(key)) {
                     if (value.length() > 0) { uriSchemas.add("info:lccn/" + value); }
                     continue;
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("readOpenUrlFromRequest: " + key + "\040value:\040" + value + "\040" + e.toString());
             }
 
         }
 
-        if (uriSchemas.size() > 0) { co.setRft_id(uriSchemas); }
+        if (!uriSchemas.isEmpty()) { co.setRft_id(uriSchemas); }
 
         return co;
     }
@@ -511,15 +512,15 @@ public class OpenUrl {
      * verwendet selbstgefertigte Stringanalysen
      *
      */
-    public ContextObject readOpenUrlFromString(String content) {
+    public ContextObject readOpenUrlFromString(final String content) {
 
-        ContextObject co = new ContextObject();
+        final ContextObject co = new ContextObject();
 
         try {
 
             String openURL = content;
 
-            SpecialCharacters specialCharacters = new SpecialCharacters();
+            final SpecialCharacters specialCharacters = new SpecialCharacters();
             openURL = specialCharacters.replace(openURL); // Entfernen von &amp; und co.
 
             // Achtung: OpenURL nicht vor if (OpenURL...contains(">") decodieren,
@@ -528,14 +529,14 @@ public class OpenUrl {
             if (openURL.contains("ver=Z39.88-2004")
                     // falls content von einer Webseite stammt...
                     && openURL.substring(openURL.indexOf("ver=Z39.88-2004")).contains(">")) {
-                openURL = openURL.substring(openURL.indexOf("ver=Z39.88-2004"), openURL.indexOf(">", openURL
+                openURL = openURL.substring(openURL.indexOf("ver=Z39.88-2004"), openURL.indexOf('>', openURL
                         .indexOf("ver=Z39.88-2004"))); // ...String mit OpenUrl suchen und verkürzen
             }
             // Kleinschreibung
             if (openURL.contains("ver=z39.88-2004")
                     // falls content von einer Webseite stammt...
                     && openURL.substring(openURL.indexOf("ver=z39.88-2004")).contains(">")) {
-                openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"), openURL.indexOf(">", openURL
+                openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"), openURL.indexOf('>', openURL
                         .indexOf("ver=z39.88-2004"))); // ...String mit OpenUrl suchen und verkürzen
             }
 
@@ -694,14 +695,14 @@ public class OpenUrl {
                     co.setRft_rights(getOpenUrlIdentifiersVersion1_0("rft.rights=", openURL));
                 }
 
-                ArrayList<String> id = new ArrayList<String>();
+                final ArrayList<String> id = new ArrayList<String>();
 
                 while (openURL.contains("rft_id=")) { // kann mehrere rft_id enthalten
                     id.add(getOpenUrlIdentifiersVersion1_0("rft_id=", openURL));
                     openURL = openURL.substring(openURL.indexOf("rft_id=") + 6);
                 }
 
-                if (id.size() > 0) { co.setRft_id(id); }
+                if (!id.isEmpty()) { co.setRft_id(id); }
 
             } else {
 
@@ -868,39 +869,39 @@ public class OpenUrl {
                     co.setRft_rights(getOpenUrlIdentifiersVersion0_1("rights=", openURL));
                 }
 
-                ArrayList<String> id = new ArrayList<String>();
+                final ArrayList<String> id = new ArrayList<String>();
                 // hier muss aus Kompatibilitätsgründen das jeweilige URI-Schema hinzugefügt werden
                 // http://www.info-uri.info/registry/
                 if (openURL.contains("pmid:")) {
-                    String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid:", openURL);
+                    final String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid:", openURL);
                     if (reg.length() > 10) { id.add(reg); }
                 }
                 if (openURL.contains("doi:")) {
-                    String reg = "info:doi/" + getOpenUrlIdentifiersVersion0_1("doi:", openURL);
+                    final String reg = "info:doi/" + getOpenUrlIdentifiersVersion0_1("doi:", openURL);
                     if (reg.length() > 9) { id.add(reg); }
                 }
                 if (openURL.contains("sici:")) {
-                    String reg = "info:sici/" + getOpenUrlIdentifiersVersion0_1("sici:", openURL);
+                    final String reg = "info:sici/" + getOpenUrlIdentifiersVersion0_1("sici:", openURL);
                     if (reg.length() > 10) { id.add(reg); }
                 }
                 if (openURL.contains("lccn:")) {
-                    String reg = "info:lccn/" + getOpenUrlIdentifiersVersion0_1("lccn:", openURL);
+                    final String reg = "info:lccn/" + getOpenUrlIdentifiersVersion0_1("lccn:", openURL);
                     if (reg.length() > 10) { id.add(reg); }
                 }
                 if (openURL.contains("pmid=")) {
-                    String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid=", openURL);
+                    final String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid=", openURL);
                     if (reg.length() > 10) { id.add(reg); }
                 }
                 if (openURL.contains("doi=")) {
-                    String reg = "info:doi/" + getOpenUrlIdentifiersVersion0_1("doi=", openURL);
+                    final String reg = "info:doi/" + getOpenUrlIdentifiersVersion0_1("doi=", openURL);
                     if (reg.length() > 9) { id.add(reg); }
                 }
                 if (openURL.contains("sici=")) {
-                    String reg = "info:sici/" + getOpenUrlIdentifiersVersion0_1("sici=", openURL);
+                    final String reg = "info:sici/" + getOpenUrlIdentifiersVersion0_1("sici=", openURL);
                     if (reg.length() > 10) { id.add(reg); }
                 }
                 if (openURL.contains("lccn=")) {
-                    String reg = "info:lccn/" + getOpenUrlIdentifiersVersion0_1("lccn=", openURL);
+                    final String reg = "info:lccn/" + getOpenUrlIdentifiersVersion0_1("lccn=", openURL);
                     if (reg.length() > 10) { id.add(reg); }
                 }
 
@@ -910,7 +911,7 @@ public class OpenUrl {
             }
 
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("readOpenUrl: " + "\012" + content);
         }
 
@@ -920,161 +921,210 @@ public class OpenUrl {
     /**
      * Stellt aus einem ContextObject den entsprechenden OpenURL-String zusammen
      */
-    public String composeOpenUrl(ContextObject co) {
+    public String composeOpenUrl(final ContextObject co) {
 
-        StringBuffer openURL = new StringBuffer();
+        final StringBuffer openURL = new StringBuffer(800);
 
         // hier werden die Identifiers gesetzt
         if (co.getRft_val_fmt() != null && !co.getRft_val_fmt().equals("")) {
-            openURL.append("&rft_val_fmt=" + co.getRft_val_fmt());
+            openURL.append("&rft_val_fmt=");
+            openURL.append(co.getRft_val_fmt());
         }
         if (co.getRfr_id() != null && !co.getRfr_id().equals("")) {
-            openURL.append("&rfr_id=" + co.getRfr_id());
+            openURL.append("&rfr_id=");
+            openURL.append(co.getRfr_id());
         }
         if (co.getRft_genre() != null && !co.getRft_genre().equals("")) {
-            openURL.append("&rft.genre=" + co.getRft_genre());
+            openURL.append("&rft.genre=");
+            openURL.append(co.getRft_genre());
         }
         if (co.getRft_atitle() != null && !co.getRft_atitle().equals("")) {
-            openURL.append("&rft.atitle=" + co.getRft_atitle());
+            openURL.append("&rft.atitle=");
+            openURL.append(co.getRft_atitle());
         }
         if (co.getRft_btitle() != null && !co.getRft_btitle().equals("")) {
-            openURL.append("&rft.btitle=" + co.getRft_btitle());
+            openURL.append("&rft.btitle=");
+            openURL.append(co.getRft_btitle());
         }
         if (co.getRft_series() != null && !co.getRft_series().equals("")) {
-            openURL.append("&rft.series=" + co.getRft_series());
+            openURL.append("&rft.series=");
+            openURL.append(co.getRft_series());
         }
         if (co.getRft_pub() != null && !co.getRft_pub().equals("")) {
-            openURL.append("&rft.pub=" + co.getRft_pub());
+            openURL.append("&rft.pub=");
+            openURL.append(co.getRft_pub());
         }
         if (co.getRft_place() != null && !co.getRft_place().equals("")) {
-            openURL.append("&rft.place=" + co.getRft_place());
+            openURL.append("&rft.place=");
+            openURL.append(co.getRft_place());
         }
         if (co.getRft_edition() != null && !co.getRft_edition().equals("")) {
-            openURL.append("&rft.edition=" + co.getRft_edition());
+            openURL.append("&rft.edition=");
+            openURL.append(co.getRft_edition());
         }
         if (co.getRft_title() != null && !co.getRft_title().equals("")) {
-            openURL.append("&rft.title=" + co.getRft_title());
+            openURL.append("&rft.title=");
+            openURL.append(co.getRft_title());
         }
         if (co.getRft_jtitle() != null && !co.getRft_jtitle().equals("")) {
-            openURL.append("&rft.jtitle=" + co.getRft_jtitle());
+            openURL.append("&rft.jtitle=");
+            openURL.append(co.getRft_jtitle());
         }
         if (co.getRft_stitle() != null && !co.getRft_stitle().equals("")) {
-            openURL.append("&rft.stitle=" + co.getRft_stitle());
+            openURL.append("&rft.stitle=");
+            openURL.append(co.getRft_stitle());
         }
         if (co.getRft_issn() != null && !co.getRft_issn().equals("")) {
-            openURL.append("&rft.issn=" + co.getRft_issn());
+            openURL.append("&rft.issn=");
+            openURL.append(co.getRft_issn());
         }
         if (co.getRft_eissn() != null && !co.getRft_eissn().equals("")) {
-            openURL.append("&rft.eissn=" + co.getRft_eissn());
+            openURL.append("&rft.eissn=");
+            openURL.append(co.getRft_eissn());
         }
         if (co.getRft_isbn() != null && !co.getRft_isbn().equals("")) {
-            openURL.append("&rft.isbn=" + co.getRft_isbn());
+            openURL.append("&rft.isbn=");
+            openURL.append(co.getRft_isbn());
         }
         if (co.getRft_date() != null && !co.getRft_date().equals("")) {
-            openURL.append("&rft.date=" + co.getRft_date());
+            openURL.append("&rft.date=");
+            openURL.append(co.getRft_date());
         }
         if (co.getRft_volume() != null && !co.getRft_volume().equals("")) {
-            openURL.append("&rft.volume=" + co.getRft_volume());
+            openURL.append("&rft.volume=");
+            openURL.append(co.getRft_volume());
         }
         if (co.getRft_part() != null && !co.getRft_part().equals("")) {
-            openURL.append("&rft.part=" + co.getRft_part());
+            openURL.append("&rft.part=");
+            openURL.append(co.getRft_part());
         }
         if (co.getRft_issue() != null && !co.getRft_issue().equals("")) {
-            openURL.append("&rft.issue=" + co.getRft_issue());
+            openURL.append("&rft.issue=");
+            openURL.append(co.getRft_issue());
         }
         if (co.getRft_spage() != null && !co.getRft_spage().equals("")) {
-            openURL.append("&rft.spage=" + co.getRft_spage());
+            openURL.append("&rft.spage=");
+            openURL.append(co.getRft_spage());
         }
         if (co.getRft_epage() != null && !co.getRft_epage().equals("")) {
-            openURL.append("&rft.epage=" + co.getRft_epage());
+            openURL.append("&rft.epage=");
+            openURL.append(co.getRft_epage());
         }
         if (co.getRft_pages() != null && !co.getRft_pages().equals("")) {
-            openURL.append("&rft.pages=" + co.getRft_pages());
+            openURL.append("&rft.pages=");
+            openURL.append(co.getRft_pages());
         }
         if (co.getRft_tpages() != null && !co.getRft_tpages().equals("")) {
-            openURL.append("&rft.tpages=" + co.getRft_tpages());
+            openURL.append("&rft.tpages=");
+            openURL.append(co.getRft_tpages());
         }
         if (co.getRft_author() != null && !co.getRft_author().equals("")) {
-            openURL.append("&rft.author=" + co.getRft_author());
+            openURL.append("&rft.author=");
+            openURL.append(co.getRft_author());
         }
         if (co.getRft_au() != null && !co.getRft_au().equals("")) {
-            openURL.append("&rft.au=" + co.getRft_au());
+            openURL.append("&rft.au=");
+            openURL.append(co.getRft_au());
         }
         if (co.getRft_aucorp() != null && !co.getRft_aucorp().equals("")) {
-            openURL.append("&rft.aucorp=" + co.getRft_aucorp());
+            openURL.append("&rft.aucorp=");
+            openURL.append(co.getRft_aucorp());
         }
         if (co.getRft_auinit() != null && !co.getRft_auinit().equals("")) {
-            openURL.append("&rft.auinit=" + co.getRft_auinit());
+            openURL.append("&rft.auinit=");
+            openURL.append(co.getRft_auinit());
         }
         if (co.getRft_auinit1() != null && !co.getRft_auinit1().equals("")) {
-            openURL.append("&rft.auinit1=" + co.getRft_auinit1());
+            openURL.append("&rft.auinit1=");
+            openURL.append(co.getRft_auinit1());
         }
         if (co.getRft_auinitm() != null && !co.getRft_auinitm().equals("")) {
-            openURL.append("&rft.auinitm=" + co.getRft_auinitm());
+            openURL.append("&rft.auinitm=");
+            openURL.append(co.getRft_auinitm());
         }
         if (co.getRft_ausuffix() != null && !co.getRft_ausuffix().equals("")) {
-            openURL.append("&rft.ausuffix=" + co.getRft_ausuffix());
+            openURL.append("&rft.ausuffix=");
+            openURL.append(co.getRft_ausuffix());
         }
         if (co.getRft_aulast() != null && !co.getRft_aulast().equals("")) {
-            openURL.append("&rft.aulast=" + co.getRft_aulast());
+            openURL.append("&rft.aulast=");
+            openURL.append(co.getRft_aulast());
         }
         if (co.getRft_aufirst() != null && !co.getRft_aufirst().equals("")) {
-            openURL.append("&rft.aufirst=" + co.getRft_aufirst());
+            openURL.append("&rft.aufirst=");
+            openURL.append(co.getRft_aufirst());
         }
         if (co.getRft_sici() != null && !co.getRft_sici().equals("")) {
-            openURL.append("&rft.sici=" + co.getRft_sici());
+            openURL.append("&rft.sici=");
+            openURL.append(co.getRft_sici());
         }
         if (co.getRft_bici() != null && !co.getRft_bici().equals("")) {
-            openURL.append("&rft.bici=" + co.getRft_bici());
+            openURL.append("&rft.bici=");
+            openURL.append(co.getRft_bici());
         }
         if (co.getRft_coden() != null && !co.getRft_coden().equals("")) {
-            openURL.append("&rft.coden=" + co.getRft_coden());
+            openURL.append("&rft.coden=");
+            openURL.append(co.getRft_coden());
         }
         if (co.getRft_artnum() != null && !co.getRft_artnum().equals("")) {
-            openURL.append("&rft.artnum=" + co.getRft_artnum());
+            openURL.append("&rft.artnum=");
+            openURL.append(co.getRft_artnum());
         }
 
         // RFTs Dublin Core, z.B. in Blogs:
         if (co.getRft_creator() != null && !co.getRft_creator().equals("")) {
-            openURL.append("&rft.creator=" + co.getRft_creator());
+            openURL.append("&rft.creator=");
+            openURL.append(co.getRft_creator());
         }
         if (co.getRft_publisher() != null && !co.getRft_publisher().equals("")) {
-            openURL.append("&rft.publisher=" + co.getRft_publisher());
+            openURL.append("&rft.publisher=");
+            openURL.append(co.getRft_publisher());
         }
         if (co.getRft_type() != null && !co.getRft_type().equals("")) {
-            openURL.append("&rft.type=" + co.getRft_type());
+            openURL.append("&rft.type=");
+            openURL.append(co.getRft_type());
         }
         if (co.getRft_subject() != null && !co.getRft_subject().equals("")) {
-            openURL.append("&rft.subject=" + co.getRft_subject());
+            openURL.append("&rft.subject=");
+            openURL.append(co.getRft_subject());
         }
         if (co.getRft_format() != null && !co.getRft_format().equals("")) {
-            openURL.append("&rft.format=" + co.getRft_format());
+            openURL.append("&rft.format=");
+            openURL.append(co.getRft_format());
         }
         if (co.getRft_language() != null && !co.getRft_language().equals("")) {
-            openURL.append("&rft.language=" + co.getRft_language());
+            openURL.append("&rft.language=");
+            openURL.append(co.getRft_language());
         }
         if (co.getRft_source() != null && !co.getRft_source().equals("")) {
-            openURL.append("&rft.source=" + co.getRft_source());
+            openURL.append("&rft.source=");
+            openURL.append(co.getRft_source());
         }
         if (co.getRft_identifier() != null && !co.getRft_identifier().equals("")) {
-            openURL.append("&rft.identifier=" + co.getRft_identifier());
+            openURL.append("&rft.identifier=");
+            openURL.append(co.getRft_identifier());
         }
         if (co.getRft_description() != null && !co.getRft_description().equals("")) {
-            openURL.append("&rft.description=" + co.getRft_description());
+            openURL.append("&rft.description=");
+            openURL.append(co.getRft_description());
         }
         if (co.getRft_relation() != null && !co.getRft_relation().equals("")) {
-            openURL.append("&rft.relation=" + co.getRft_relation());
+            openURL.append("&rft.relation=");
+            openURL.append(co.getRft_relation());
         }
         if (co.getRft_coverage() != null && !co.getRft_coverage().equals("")) {
-            openURL.append("&rft.coverage=" + co.getRft_coverage());
+            openURL.append("&rft.coverage=");
+            openURL.append(co.getRft_coverage());
         }
         if (co.getRft_rights() != null && !co.getRft_rights().equals("")) {
-            openURL.append("&rft.rights=" + co.getRft_rights());
+            openURL.append("&rft.rights=");
+            openURL.append(co.getRft_rights());
         }
 
         if (co.getRft_id() != null) {
             for (int i = 0; i < co.getRft_id().size(); i++) { // kann mehrere rft_id enthalten
-                openURL.append("&rft_id=" + co.getRft_id().get(i).toString());
+                openURL.append("&rft_id=");
+                openURL.append(co.getRft_id().get(i).toString());
             }
         }
 
@@ -1093,81 +1143,79 @@ public class OpenUrl {
 
         // http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=3966282
 
-        ContextObject co = new ContextObject();
-        SpecialCharacters specialCharacters = new SpecialCharacters();
+        final ContextObject co = new ContextObject();
+        final SpecialCharacters specialCharacters = new SpecialCharacters();
         content = specialCharacters.replace(content); // Entfernen von &amp; und co.
 
         try { // notwendig, da nicht kontrolliert wird, ob XML valide ist!
 
-            String endtag = "</Item>";
-
             // wird bei Umwandlung zu "Artikel", (Journal Article, Randomized Controlled Trial etc.)
             if (content.contains("<Item Name=\"PubType\"")) {
-                co.setRft_genre(getXmlTag("<Item Name=\"PubType\"", endtag, content));
+                co.setRft_genre(getXmlTag("<Item Name=\"PubType\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"PubDate\"")) {
-                co.setRft_date(getXmlTag("<Item Name=\"PubDate\"", endtag, content));
+                co.setRft_date(getXmlTag("<Item Name=\"PubDate\"", PM_ENDTAG, content));
             }
             // nur falls Datum nicht schon gesetzt
             if (content.contains("<Item Name=\"EPubDate\"")
                     && (co.getRft_date() == null || co.getRft_date().equals(""))) {
-                co.setRft_date(getXmlTag("<Item Name=\"EPubDate\"", endtag, content));
+                co.setRft_date(getXmlTag("<Item Name=\"EPubDate\"", PM_ENDTAG, content));
             }
             // unter der Annahme, dass es sich um einen Artikel handelt
             if (content.contains("<Item Name=\"FullJournalName\"")) {
-                co.setRft_jtitle(getXmlTag("<Item Name=\"FullJournalName\"", endtag, content));
+                co.setRft_jtitle(getXmlTag("<Item Name=\"FullJournalName\"", PM_ENDTAG, content));
             }
             // unter der Annahme, dass es sich um einen Artikel handelt
             if (content.contains("<Item Name=\"Source\"")) {
-                co.setRft_stitle(getXmlTag("<Item Name=\"Source\"", endtag, content));
+                co.setRft_stitle(getXmlTag("<Item Name=\"Source\"", PM_ENDTAG, content));
             }
             // nur der erste Author wird abgefüllt
             if (content.contains("<Item Name=\"Author\"")) {
-                co.setRft_author(getXmlTag("<Item Name=\"Author\"", endtag, content));
+                co.setRft_author(getXmlTag("<Item Name=\"Author\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"CollectiveName\"")) {
-                co.setRft_aucorp(getXmlTag("<Item Name=\"CollectiveName\"", endtag, content));
+                co.setRft_aucorp(getXmlTag("<Item Name=\"CollectiveName\"", PM_ENDTAG, content));
             }
             // unter der Annahme, dass es sich um einen Artikel handelt
             if (content.contains("<Item Name=\"Title\"")) {
-                co.setRft_atitle(getXmlTag("<Item Name=\"Title\"", endtag, content));
+                co.setRft_atitle(getXmlTag("<Item Name=\"Title\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"Volume\"")) {
-                co.setRft_volume(getXmlTag("<Item Name=\"Volume\"", endtag, content));
+                co.setRft_volume(getXmlTag("<Item Name=\"Volume\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"Issue\"")) {
-                co.setRft_issue(getXmlTag("<Item Name=\"Issue\"", endtag, content));
+                co.setRft_issue(getXmlTag("<Item Name=\"Issue\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"Pages\"")) {
-                co.setRft_pages(getXmlTag("<Item Name=\"Pages\"", endtag, content));
+                co.setRft_pages(getXmlTag("<Item Name=\"Pages\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"PubStatus\" Type=\"String\">aheadofprint")
                     && (co.getRft_pages() == null || co.getRft_pages().equals(""))) {
-                co.setRft_pages(getXmlTag("<Item Name=\"PubStatus\"", endtag, content));
+                co.setRft_pages(getXmlTag("<Item Name=\"PubStatus\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"ISSN\"")) {
-                co.setRft_issn(getXmlTag("<Item Name=\"ISSN\"", endtag, content));
+                co.setRft_issn(getXmlTag("<Item Name=\"ISSN\"", PM_ENDTAG, content));
             }
             // nur abfüllen, falls ISSN nicht schon gesetzt
             if (content.contains("<Item Name=\"ESSN\"") && (co.getRft_issn() == null || co.getRft_issn().equals(""))) {
-                co.setRft_eissn(getXmlTag("<Item Name=\"ESSN\"", endtag, content));
+                co.setRft_eissn(getXmlTag("<Item Name=\"ESSN\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"Lang\"")) {
-                co.setRft_language(getXmlTag("<Item Name=\"Lang\"", endtag, content));
+                co.setRft_language(getXmlTag("<Item Name=\"Lang\"", PM_ENDTAG, content));
             }
 
-            ArrayList<String> id = new ArrayList<String>();
+            final ArrayList<String> id = new ArrayList<String>();
 
             if (content.contains("<Item Name=\"doi\"")) {
-                id.add("info:doi/" + getXmlTag("<Item Name=\"doi\"", endtag, content));
+                id.add("info:doi/" + getXmlTag("<Item Name=\"doi\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"pubmed\"")) {
-                id.add("info:pmid/" + getXmlTag("<Item Name=\"pubmed\"", endtag, content));
+                id.add("info:pmid/" + getXmlTag("<Item Name=\"pubmed\"", PM_ENDTAG, content));
             }
 
             co.setRft_id(id);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("readXmlPubmed/getXmlTag:\012" + content);
         }
 
@@ -1177,26 +1225,27 @@ public class OpenUrl {
     /**
      * holt aus dem Request alle OpenURL-Parameter
      */
-    public ConcurrentHashMap<String, String> getOpenUrlParameters(HttpServletRequest rq) {
+    public ConcurrentHashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
 
-        ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
+        final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
 
 
         @SuppressWarnings("unchecked")
+        final
         Map<String, String[]> paramMap = rq.getParameterMap();
 
-        for (Map.Entry<String, String[]> pairs : paramMap.entrySet()) {
+        for (final Map.Entry<String, String[]> pairs : paramMap.entrySet()) {
 
-            String key = pairs.getKey();
-            String[] values = pairs.getValue();
+            final String key = pairs.getKey();
+            final String[] values = pairs.getValue();
 
-            if (key.equals("rft_id")) { // rft_id enthält nocheinmal unterschiedliche Identifier nach dem info: Scheme
+            if ("rft_id".equals(key)) { // rft_id enthält nocheinmal unterschiedliche Identifier nach dem info: Scheme
                 // rft_id wird jeweils separat abgelegt und nicht aneinander gehängt
                 for (int z = 0; z < values.length; z++) {
                     hm.put(key, getOpenUrlValue(values[z]));
                 }
             } else { // hier werden Mehrfachparameter (z.B. mehrere Autoren) aneinander gehängt
-                StringBuffer buf = new StringBuffer();
+                final StringBuffer buf = new StringBuffer();
                 for (int z = 0; z < values.length; z++) {
                     if (z == 0) { buf.append(values[z]); } else { buf.append("\040;\040" + values[z]); }
                 }
@@ -1211,10 +1260,10 @@ public class OpenUrl {
     /**
      * extrahiert aus dem content den Inhalt eines RFTs, RFRs oder RFEs (Standard-Version)
      */
-    private String getOpenUrlIdentifiersVersion1_0(String rft, String content) {
+    private String getOpenUrlIdentifiersVersion1_0(final String rft, final String content) {
 
         String output = "";
-        CodeUrl codeUrl = new CodeUrl();
+        final CodeUrl codeUrl = new CodeUrl();
 
         // Delimiter ist das nächste &rft (Referent), &rfe (Referring Entity), &rfr (Referrer)
         if (content.substring(content.indexOf(rft)).contains("&rf")) {
@@ -1224,7 +1273,7 @@ public class OpenUrl {
             // Delimiter ist das " am Ende des URLs in HTML
             if (content.substring(content.indexOf(rft)).contains("\"")) {
                 output = content.substring(content.indexOf(rft)
-                        + rft.length(), content.indexOf("\"", content.indexOf(rft)));
+                        + rft.length(), content.indexOf('"', content.indexOf(rft)));
             } else {
                 // Delimiter ist Space oder Umbruch
                 if (content.substring(content.indexOf(rft)).contains("\040")
@@ -1251,10 +1300,10 @@ public class OpenUrl {
     /**
      * extrahiert aus dem content den Inhalt die nicht standardisierten RFTs (ohne RFT-Bezeichnung)
      */
-    private String getOpenUrlIdentifiersVersion0_1(String rft, String content) {
+    private String getOpenUrlIdentifiersVersion0_1(final String rft, final String content) {
 
         String output = "";
-        CodeUrl codeUrl = new CodeUrl();
+        final CodeUrl codeUrl = new CodeUrl();
 
         // Delimiter ist das nächste &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
@@ -1291,11 +1340,11 @@ public class OpenUrl {
     /**
      * extrahiert aus dem XML-Content den Inhalt eines bestimmten Tags
      */
-    private String getXmlTag(String starttag, String endtag, String content) {
+    private String getXmlTag(final String starttag, final String endtag, final String content) {
 
         String output = "";
 
-        output = content.substring(content.indexOf(">", content.indexOf(starttag)) + 1,
+        output = content.substring(content.indexOf('>', content.indexOf(starttag)) + 1,
                 content.indexOf(endtag, content.indexOf(starttag)));
 
         return output;
@@ -1307,7 +1356,7 @@ public class OpenUrl {
 
             if (decode(input)) { input = Decoder.utf8Convert(input); }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("private boolean decode (String input): " + e.toString());
         }
 
@@ -1318,7 +1367,7 @@ public class OpenUrl {
      * OpenURL-request sometimes are UTF-8 encoded, sometimes ISO-8895-1
      * Here will, check if we need to decode a string or not
      */
-    private boolean decode(String input) {
+    private boolean decode(final String input) {
 
         boolean check = false;
 
@@ -1326,7 +1375,7 @@ public class OpenUrl {
 
             if (input.length() > Decoder.utf8Convert(input).length()) { check = true; }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("private boolean decode (String input): " + e.toString());
         }
 

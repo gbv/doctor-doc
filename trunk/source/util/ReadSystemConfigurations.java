@@ -24,62 +24,66 @@ package util;
  *
  * @author Markus Fischer
  */
-public class ReadSystemConfigurations {
+public final class ReadSystemConfigurations {
 
-  public static final String getSystemTimezone() {
-    return AbstractReadSystemConfigurations.SYSTEM_TIMEZONE;
-  }
+    private ReadSystemConfigurations()  {
 
-  public static final String getSystemEmail() {
-    return AbstractReadSystemConfigurations.SYSTEM_EMAIL;
-  }
+    }
 
-  public static final String getErrorEmail() {
-    return AbstractReadSystemConfigurations.ERROR_EMAIL;
-  }
+    public static String getSystemTimezone() {
+        return AbstractReadSystemConfigurations.SYSTEM_TIMEZONE;
+    }
 
-  public static final String getApplicationName() {
-    return AbstractReadSystemConfigurations.APPLICATION_NAME;
-  }
+    public static String getSystemEmail() {
+        return AbstractReadSystemConfigurations.SYSTEM_EMAIL;
+    }
 
-  public static final String getServerWelcomepage() {
-    return AbstractReadSystemConfigurations.SERVER_WELCOMEPAGE;
-  }
+    public static String getErrorEmail() {
+        return AbstractReadSystemConfigurations.ERROR_EMAIL;
+    }
 
-  public static final String getServerInstallation() {
-    return AbstractReadSystemConfigurations.SERVER_INSTALLATION;
-  }
+    public static String getApplicationName() {
+        return AbstractReadSystemConfigurations.APPLICATION_NAME;
+    }
 
-  public static final boolean isAllowRegisterLibraryAccounts() {
-    return AbstractReadSystemConfigurations.ALLOW_REGISTER_LIBRARY_ACCOUNTS;
-  }
+    public static String getServerWelcomepage() {
+        return AbstractReadSystemConfigurations.SERVER_WELCOMEPAGE;
+    }
 
-  public static final boolean isAllowPatronAutomaticGoogleSearch() {
-    return AbstractReadSystemConfigurations.ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH;
-  }
+    public static String getServerInstallation() {
+        return AbstractReadSystemConfigurations.SERVER_INSTALLATION;
+    }
 
-  public static final boolean isGTC() {
-    return AbstractReadSystemConfigurations.ACTIVATE_GTC;
-  }
+    public static boolean isAllowRegisterLibraryAccounts() {
+        return AbstractReadSystemConfigurations.ALLOW_REGISTER_LIBRARY_ACCOUNTS;
+    }
 
-  public static final boolean isAnonymizationActivated() {
-    return AbstractReadSystemConfigurations.ANONYMIZATION_ACTIVATED;
-  }
+    public static boolean isAllowPatronAutomaticGoogleSearch() {
+        return AbstractReadSystemConfigurations.ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH;
+    }
 
-  public static final int getAnonymizationAfterMonths() {
-    return AbstractReadSystemConfigurations.ANONYMIZATION_AFTER_MONTHS;
-  }
+    public static boolean isGTC() {
+        return AbstractReadSystemConfigurations.ACTIVATE_GTC;
+    }
 
-  public static final boolean isSearchCarelit() {
-    return AbstractReadSystemConfigurations.SEARCH_CARELIT;
-  }
+    public static boolean isAnonymizationActivated() {
+        return AbstractReadSystemConfigurations.ANONYMIZATION_ACTIVATED;
+    }
 
-  public static final boolean isUseDaia() {
-    return AbstractReadSystemConfigurations.USE_DAIA;
-  }
+    public static int getAnonymizationAfterMonths() {
+        return AbstractReadSystemConfigurations.ANONYMIZATION_AFTER_MONTHS;
+    }
 
-  public static final String getDaiaHost() {
-    return AbstractReadSystemConfigurations.DAIA_HOST;
-  }
+    public static boolean isSearchCarelit() {
+        return AbstractReadSystemConfigurations.SEARCH_CARELIT;
+    }
+
+    public static boolean isUseDaia() {
+        return AbstractReadSystemConfigurations.USE_DAIA;
+    }
+
+    public static String getDaiaHost() {
+        return AbstractReadSystemConfigurations.DAIA_HOST;
+    }
 
 }

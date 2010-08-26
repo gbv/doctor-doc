@@ -22,65 +22,60 @@ import org.apache.struts.action.ActionForm;
 
 public final class PreisWaehrungForm extends ActionForm {
 
-  private static final long serialVersionUID = 1L;
-  private PreisWaehrungForm eur;
-  private PreisWaehrungForm chf;
-  private PreisWaehrungForm gbp;
-  private PreisWaehrungForm usd;
+    private static final long serialVersionUID = 1L;
+    private PreisWaehrungForm eur;
+    private PreisWaehrungForm chf;
+    private PreisWaehrungForm gbp;
+    private PreisWaehrungForm usd;
 
-  private String preis;
+    private String preis;
     private String waehrung;
 
 
-    public PreisWaehrungForm() {
 
+    public PreisWaehrungForm getEur() {
+        return eur;
     }
 
+    public void setEur(final PreisWaehrungForm eur) {
+        this.eur = eur;
+    }
 
+    public PreisWaehrungForm getChf() {
+        return chf;
+    }
 
-  public PreisWaehrungForm getEur() {
-    return eur;
-  }
+    public void setChf(final PreisWaehrungForm chf) {
+        this.chf = chf;
+    }
 
-  public void setEur(PreisWaehrungForm eur) {
-    this.eur = eur;
-  }
+    public PreisWaehrungForm getGbp() {
+        return gbp;
+    }
 
-  public PreisWaehrungForm getChf() {
-    return chf;
-  }
+    public void setGbp(final PreisWaehrungForm gbp) {
+        this.gbp = gbp;
+    }
 
-  public void setChf(PreisWaehrungForm chf) {
-    this.chf = chf;
-  }
+    public PreisWaehrungForm getUsd() {
+        return usd;
+    }
 
-  public PreisWaehrungForm getGbp() {
-    return gbp;
-  }
+    public void setUsd(final PreisWaehrungForm usd) {
+        this.usd = usd;
+    }
 
-  public void setGbp(PreisWaehrungForm gbp) {
-    this.gbp = gbp;
-  }
-
-  public PreisWaehrungForm getUsd() {
-    return usd;
-  }
-
-  public void setUsd(PreisWaehrungForm usd) {
-    this.usd = usd;
-  }
-
-  public String getPreis() {
-    return preis;
-  }
-  public void setPreis(String preis) {
-    this.preis = preis;
-  }
-  public String getWaehrung() {
-    return waehrung;
-  }
-  public void setWaehrung(String waehrung) {
-    this.waehrung = waehrung;
-  }
+    public String getPreis() {
+        return preis;
+    }
+    public void setPreis(final String preis) {
+        this.preis = preis;
+    }
+    public String getWaehrung() {
+        return waehrung;
+    }
+    public void setWaehrung(final String waehrung) {
+        this.waehrung = waehrung;
+    }
 
 }

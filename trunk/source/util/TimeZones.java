@@ -26,17 +26,17 @@ import java.util.TreeSet;
 
 public class TimeZones {
 
-    private static final String TIMEZONE_ID_PREFIXES =
-        "^(Africa|America|Asia|Atlantic|Australia|Europe|Indian|Pacific)/.*"; // Filter
+    // Filter
+    private static final String PREFIXES = "^(Africa|America|Asia|Atlantic|Australia|Europe|Indian|Pacific)/.*";
 
-    private List<TimeZone> timeZones = null;
-    private TreeSet<String> timeZonesAsString = null;
+    private static List<TimeZone> timeZs;
+    private static TreeSet<String> timeZonesAsString;
 
     public List<TimeZone> getTimeZones() {
-        if (timeZones == null) {
+        if (timeZs == null) {
             initTimeZones();
         }
-        return timeZones;
+        return timeZs;
     }
 
     public TreeSet<String> getTimeZonesAsString() {
@@ -46,26 +46,26 @@ public class TimeZones {
         return timeZonesAsString;
     }
 
-    private void initTimeZones() {
-        timeZones = new ArrayList<TimeZone>();
+    private static final void initTimeZones() {
+        timeZs = new ArrayList<TimeZone>();
         final String[] timeZoneIds = TimeZone.getAvailableIDs();
         for (final String id : timeZoneIds) {
-            if (id.matches(TIMEZONE_ID_PREFIXES)) { // Filter with Regex
-                timeZones.add(TimeZone.getTimeZone(id));
+            if (id.matches(PREFIXES)) { // Filter with Regex
+                timeZs.add(TimeZone.getTimeZone(id));
             }
         }
-        Collections.sort(timeZones, new Comparator<TimeZone>() { // sort
+        Collections.sort(timeZs, new Comparator<TimeZone>() { // sort
             public int compare(final TimeZone a, final TimeZone b) {
                 return a.getID().compareTo(b.getID());
             }
         });
     }
 
-    private void initTimeZonesAsStrings() {
+    private static final void initTimeZonesAsStrings() {
         timeZonesAsString = new TreeSet<String>();
         final String[] timeZoneIds = TimeZone.getAvailableIDs();
         for (final String id : timeZoneIds) {
-            if (id.matches(TIMEZONE_ID_PREFIXES)) { // Filter with Regex
+            if (id.matches(PREFIXES)) { // Filter with Regex
                 timeZonesAsString.add(id);
             }
         }

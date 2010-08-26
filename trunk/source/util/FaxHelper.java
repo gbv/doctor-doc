@@ -334,7 +334,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
                                     f.saveNewFax();
                                 } catch (FaxHelperException e) {
                                     // Critical Error-Message
-                                    System.out.println(e);
+                                    LOG.error(e.toString());
                                     MHelper mh = new MHelper();
                                     StringBuffer bf = new StringBuffer();
                                     bf.append("Fehler Faxserver - ");
@@ -351,7 +351,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
                             }
                         } catch (InterruptedException e) {
                             // Critical Error-Message
-                            System.out.println(e);
+                            LOG.error(e.toString());
                             MHelper mh = new MHelper();
                             StringBuffer bf = new StringBuffer();
                             bf.append("Fehler Faxserver - ");

@@ -27,24 +27,21 @@ public class FaxserverCronjob {
      * Cronjob um das Abholen und Weiterleiten der Faxe von popfax durchzuführen
      * @param args
      */
-    public FaxserverCronjob() {
 
-        // Ausgangslage: xy-Faxserverkonten bei Popfax => schickt bei Faxempfang ein Email auf xy@doctor-doc.com
-        // Szenario 1: regelmässiges (5-10 Min.) Abfragen aller Emailkonten auf doctor-doc => ggf. Aufruf von FaxHelper
-        // Szenario 2: weiterleiten aller doctor-doc Emails auf ein zentrales Email => ggf.FaxHelper
-        // Szenario 3: regelmässiges (10-15 Min.) direktes Abfragen aller Faxkonten bei popfax mittels FaxHelper.
-        // Lokales Emailkonto nur als Buffer/Backup
-
-    }
+    // Ausgangslage: xy-Faxserverkonten bei Popfax => schickt bei Faxempfang ein Email auf xy@doctor-doc.com
+    // Szenario 1: regelmässiges (5-10 Min.) Abfragen aller Emailkonten auf doctor-doc => ggf. Aufruf von FaxHelper
+    // Szenario 2: weiterleiten aller doctor-doc Emails auf ein zentrales Email => ggf.FaxHelper
+    // Szenario 3: regelmässiges (10-15 Min.) direktes Abfragen aller Faxkonten bei popfax mittels FaxHelper.
+    // Lokales Emailkonto nur als Buffer/Backup
 
     /**
      * Kontrolliert für alle Kontos welche Popfax besitzen, ob ein neuer Fax eingetroffen ist und
      * liefert diesen gegebenenfalls an die im Konto konfigurierte Mailadresse aus
      */
     public void checkPopfaxEmail() {
-        Konto kto = new Konto();
-        List<Konto> kontos = kto.getFaxserverKontos();
-        FaxHelper fh = new FaxHelper();
+        final Konto kto = new Konto();
+        final List<Konto> kontos = kto.getFaxserverKontos();
+        final FaxHelper fh = new FaxHelper();
         for (Konto k : kontos) {
             //        System.out.println("Zur zeit wird dieses Konto bearbeitet: " + k.getBibliotheksname());
             fh.retrieveIncomingFaxList(k);

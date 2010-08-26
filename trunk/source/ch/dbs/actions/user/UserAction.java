@@ -72,29 +72,34 @@ public final class UserAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(UserAction.class);
     private static final int FIRST_YEAR = 2007; // the first year relevant for statistic for this installation
+    private static final String FAILURE = "failure";
+    private static final String SUCCESS = "success";
+    private static final String UEBERSICHT = "uebersicht";
+    private static final String ACTIVEMENUS = "ActiveMenus";
+    private static final String ERRORMESSAGE = "errormessage";
 
 
-    public ActionForward stati(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward stati(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
 
         //    Make sure user is logged in
         if (auth.isLogin(rq)) {
 
-            forward = "success";
+            forward = SUCCESS;
 
-            ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("uebersicht");
-            rq.setAttribute("ActiveMenus", mf);
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu(UEBERSICHT);
+            rq.setAttribute(ACTIVEMENUS, mf);
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);
@@ -104,27 +109,27 @@ public final class UserAction extends DispatchAction {
      *  Übersicht Zeigt Bestellungen an. Kann durch Benutzer festgelegt werden, nach welchem
      *  Feld er ab- und aufsteigend sortieren will
      */
-    public ActionForward overview(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward overview(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        String forward = "failure";
+        String forward = FAILURE;
 
         OverviewForm of = (OverviewForm) fm;
-        OrderStatistikForm osf = new OrderStatistikForm();
-        Bestellungen b = new Bestellungen();
+        final OrderStatistikForm osf = new OrderStatistikForm();
+        final Bestellungen b = new Bestellungen();
 
-        Check check = new Check();
-        Auth auth = new Auth();
-        Text cn = new Text();
+        final Check check = new Check();
+        final Auth auth = new Auth();
+        final Text cn = new Text();
 
         if (auth.isLogin(rq)) {
-            forward = "success";
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            forward = SUCCESS;
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("uebersicht");
-            rq.setAttribute("ActiveMenus", mf);
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu(UEBERSICHT);
+            rq.setAttribute(ACTIVEMENUS, mf);
 
             // hier wird geprüft, ob Suchkriterien eingegeben wurden, oder die Sortierung einer Suche vorliegt
             if (!checkIfInputIsNotEmpty(of) && !of.isS()) {
@@ -169,13 +174,13 @@ public final class UserAction extends DispatchAction {
                 }
 
                 // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
-                Date d = new Date(); // aktuelles Datum setzen
-                ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                String datum = fmt.format(d, ui.getKonto().getTimezone());
+                final Date d = new Date(); // aktuelles Datum setzen
+                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
+                final String datum = fmt.format(d, ui.getKonto().getTimezone());
                 int yearNow = Integer.parseInt(datum);
                 int yearStart = FIRST_YEAR;
 
-                ArrayList<Integer> years = new ArrayList<Integer>();
+                final ArrayList<Integer> years = new ArrayList<Integer>();
                 yearNow++;
                 for (int j = 0; yearStart < yearNow; j++) {
                     years.add(j, yearStart);
@@ -184,7 +189,7 @@ public final class UserAction extends DispatchAction {
                 of.setYears(years);
 
                 // Suchfelder bestimmen
-                TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                final TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
 
                 rq.setAttribute("overviewform", of);
@@ -197,11 +202,11 @@ public final class UserAction extends DispatchAction {
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         return mp.findForward(forward);
@@ -210,47 +215,47 @@ public final class UserAction extends DispatchAction {
     /**
      * Wechselt den Status einer Bestellung, unter Berücksichtigung allfällig bestehender Sortierung und Filterung
      */
-    public ActionForward changestat(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward changestat(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        OverviewForm of = (OverviewForm) form;
-        OrderState orderstate = new OrderState();
+        final OverviewForm of = (OverviewForm) form;
+        final OrderState orderstate = new OrderState();
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        String forward = "failure";
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            Text t = new Text();
+            final Text t = new Text();
 
             try {
-                Text status = new Text(t.getConnection(), of.getTid());
-                Bestellungen b = new Bestellungen(t.getConnection(), of.getBid());
+                final Text status = new Text(t.getConnection(), of.getTid());
+                final Bestellungen b = new Bestellungen(t.getConnection(), of.getBid());
                 if (b != null && status != null) {
                     orderstate.changeOrderState(b, ui.getKonto().getTimezone(), status, null,
                             ui.getBenutzer().getEmail(), t.getConnection());
-                    forward = "success";
+                    forward = SUCCESS;
                     rq.setAttribute("overviewform", of);
                 }
 
-            } catch (Exception e) {
-                forward = "failure";
+            } catch (final Exception e) {
+                forward = FAILURE;
 
-                ErrorMessage em = new ErrorMessage();
+                final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
                 LOG.error("changestat: " + e.toString());
 
             } finally {
                 t.close();
             }
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
         return mp.findForward(forward);
     }
@@ -258,33 +263,33 @@ public final class UserAction extends DispatchAction {
     /**
      * Wechselt den Status einer Bestellung, unter Berücksichtigung allfällig bestehender Sortierung und Filterung
      */
-    public ActionForward changenotes(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward changenotes(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        OverviewForm of = (OverviewForm) form;
+        final OverviewForm of = (OverviewForm) form;
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        String forward = "failure";
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
 
-            Text cn = new Text();
+            final Text cn = new Text();
 
             try {
-                Bestellungen b = new Bestellungen(cn.getConnection(), of.getBid());
+                final Bestellungen b = new Bestellungen(cn.getConnection(), of.getBid());
                 b.setNotizen(of.getNotizen());
                 if (b != null) {
                     b.update(cn.getConnection());
                 }
-                forward = "success";
+                forward = SUCCESS;
                 rq.setAttribute("overviewform", of);
 
-            } catch (Exception e) {
-                forward = "failure";
+            } catch (final Exception e) {
+                forward = FAILURE;
 
-                ErrorMessage em = new ErrorMessage();
+                final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
                 LOG.error("changenotes: " + e.toString());
 
             } finally {
@@ -292,11 +297,11 @@ public final class UserAction extends DispatchAction {
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
         return mp.findForward(forward);
     }
@@ -304,55 +309,55 @@ public final class UserAction extends DispatchAction {
     /**
      * Konto wechseln
      */
-    public ActionForward changekonto(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward changekonto(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         //    Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        KontoForm kf = (KontoForm) form;
-        OrderForm pageForm = new OrderForm(kf);
-        String forward = "failure";
-        Auth auth = new Auth();
+        final KontoForm kf = (KontoForm) form;
+        final OrderForm pageForm = new OrderForm(kf);
+        String forward = FAILURE;
+        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            Konto k = new Konto();
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final Konto k = new Konto();
             ui.setKonto(new Konto(kf.getKid(), k.getConnection()));
             k.close();
             rq.getSession().setAttribute("userinfo", ui);
 
             if (auth.isUserlogin(rq) && auth.isUserAccount(rq)) {
-                forward = "success";
+                forward = SUCCESS;
             } else {
                 rq.getSession().setAttribute("userinfo", null); // userinfo aus Session löschen
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(ACTIVEMENUS, mf);
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
         if (kf.isResolver()) {
             // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
             rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
             // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if (forward.equals("success") && auth.isBenutzer(rq)) { forward = "order"; }
+            if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) { forward = "order"; }
             // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals("success") && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
+            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
         }
         if (kf.getKundenemail() != null && !kf.getKundenemail().equals("")) {
             // Übergabe von Userangaben von Link aus Bestellform-Email
-            if (forward.equals("success") && !auth.isBenutzer(rq)) { forward = "adduser"; }
-            UserForm uf = new UserForm(kf);
+            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "adduser"; }
+            final UserForm uf = new UserForm(kf);
             rq.setAttribute("userform", uf);
         }
 
@@ -362,24 +367,24 @@ public final class UserAction extends DispatchAction {
     /**
      * Benutzer setzen wenn Logininfos Login bei verschiedenen konten zulassen
      */
-    public ActionForward setuser(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward setuser(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        LoginForm authuserlist = (LoginForm) rq.getSession().getAttribute("authuserlist");
-        UserInfo ui = new UserInfo();
-        LoginForm lf = (LoginForm) form; // Infos mit welchem Benutzer gearbeitet werden soll
+        final LoginForm authuserlist = (LoginForm) rq.getSession().getAttribute("authuserlist");
+        final UserInfo ui = new UserInfo();
+        final LoginForm lf = (LoginForm) form; // Infos mit welchem Benutzer gearbeitet werden soll
 
-        String forward = "failure";
-        ActiveMenusForm mf = new ActiveMenusForm();
+        String forward = FAILURE;
+        final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("login");
 
-        Auth auth = new Auth();
-        Text cn = new Text();
+        final Auth auth = new Auth();
+        final Text cn = new Text();
 
         //  Ueberprüfung ob Auswahl aus LoginForm tatsächlich authorisierte Benutzer sind
-        for (UserInfo authlist : authuserlist.getUserinfolist()) {
+        for (final UserInfo authlist : authuserlist.getUserinfolist()) {
             if (lf.getUserid().equals(authlist.getBenutzer().getId())) {
 
                 //Benutzer und Kontos in ui setzen
@@ -395,9 +400,9 @@ public final class UserAction extends DispatchAction {
                     u = ui.getBenutzer();
                     u.updateLastuse(u, ui.getKonto(), cn.getConnection());
 
-                    Gtc g = new Gtc();
+                    final Gtc g = new Gtc();
                     if (g.isAccepted(ui.getBenutzer(), cn.getConnection())) {
-                        forward = "success";
+                        forward = SUCCESS;
                         mf.setActivemenu("suchenbestellen");
                     } else {
                         forward = "gtc";
@@ -417,10 +422,10 @@ public final class UserAction extends DispatchAction {
         cn.close();
 
         // Fehlermeldung bereitstellen falls mittels URL-hacking versucht wurde zu manipulieren
-        if (forward.equals("failure")) {
+        if (forward.equals(FAILURE)) {
             rq.getSession().setAttribute("userinfo", null);
-            ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-            rq.setAttribute("errormessage", em);
+            final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
             LOG.info("setuser: prevented URL-hacking! " + ui.getBenutzer().getEmail());
         }
 
@@ -429,45 +434,45 @@ public final class UserAction extends DispatchAction {
             // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
             rq.setAttribute("orderform", lf); // Übergabe in jedem Fall
             // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if (forward.equals("success") && auth.isBenutzer(rq)) { forward = "order"; }
+            if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) { forward = "order"; }
             // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals("success") && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
+            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
         }
 
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(ACTIVEMENUS, mf);
         return mp.findForward(forward);
     }
 
     /**
      * Dient dazu beim Aufruf von prepareAddUser ab journalorder.jsp, alle Bestellangaben zu behalten...
      */
-    public ActionForward keepOrderDetails(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward keepOrderDetails(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            forward = "success";
-            OrderForm pageForm = (OrderForm) form;
+            forward = SUCCESS;
+            final OrderForm pageForm = (OrderForm) form;
             rq.getSession().setAttribute("ofjo", pageForm);
 
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             // damit kann in prepareAddUser kontrolliert werden, dass odervalues dabei sind!
             ui.setKeepordervalues(true);
             rq.getSession().setAttribute("userinfo", ui);
 
         } else {
             if (auth.isLogin(rq)) {
-                ErrorMessage em = new ErrorMessage("error.berechtigung");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung");
+                rq.setAttribute(ERRORMESSAGE, em);
             } else {
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
-                ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
         }
         return mp.findForward(forward);
@@ -477,20 +482,20 @@ public final class UserAction extends DispatchAction {
     /**
      * Hinzufuegen eines neuen Benutzers vorbereiten
      */
-    public ActionForward prepareAddUser(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward prepareAddUser(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = FAILURE;
         ErrorMessage em = new ErrorMessage();
-        Text cn = new Text();
-        Countries countriesInstance = new Countries();
-        Konto kontoInstance = new Konto();
-        Auth auth = new Auth();
+        final Text cn = new Text();
+        final Countries countriesInstance = new Countries();
+        final Konto kontoInstance = new Konto();
+        final Auth auth = new Auth();
 
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
             if (ui.isKeepordervalues()) { // hier wird festegestellt, ob keepOrderDetails durchlaufen wurde
                 ui.setKeepordervalues(false);
@@ -503,33 +508,33 @@ public final class UserAction extends DispatchAction {
                 rq.getSession().setAttribute("ofjo", null);
             }
 
-            List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
-            ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
+            final List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+            final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
 
-            for (Konto k : allPossKontos) {
-                KontoForm kf = new KontoForm();
+            for (final Konto k : allPossKontos) {
+                final KontoForm kf = new KontoForm();
                 kf.setKonto(k);
                 lkf.add(kf);
             }
 
-            List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
 
             ui.setKontos(allPossKontos);
             ui.setCountries(allPossCountries);
-            forward = "success";
+            forward = SUCCESS;
             rq.setAttribute("ui", ui);
 
         } else {
             if (auth.isLogin(rq)) {
                 em = new ErrorMessage("error.berechtigung");
             } else {
-                ActiveMenusForm mf = new ActiveMenusForm();
+                final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(ACTIVEMENUS, mf);
                 em = new ErrorMessage("error.timeout", "login.do");
             }
         }
-        rq.setAttribute("errormessage", em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
+        rq.setAttribute(ERRORMESSAGE, em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
         cn.close();
         return mp.findForward(forward);
     }
@@ -538,22 +543,22 @@ public final class UserAction extends DispatchAction {
     /**
      * Benutzereinstellungen ändern
      */
-    public ActionForward changeuserdetails(ActionMapping mp,
-            ActionForm form,
-            HttpServletRequest rq,
-            HttpServletResponse rp) {
+    public ActionForward changeuserdetails(final ActionMapping mp,
+            final ActionForm form,
+            final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = FAILURE;
         ErrorMessage em = new ErrorMessage();
-        Countries countriesInstance = new Countries();
-        Text cn = new Text();
-        Auth auth = new Auth();
-        VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
+        final Countries countriesInstance = new Countries();
+        final Text cn = new Text();
+        final Auth auth = new Auth();
+        final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                UserForm uf = (UserForm) form;
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final UserForm uf = (UserForm) form;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 AbstractBenutzer u = new AbstractBenutzer();
                 u = u.getUser(uf.getBid(), cn.getConnection());
 
@@ -563,11 +568,11 @@ public final class UserAction extends DispatchAction {
                     uf.setUser(u);
 
                     // selektiert alle Konten unter denen ein Kunde angehängt ist
-                    List<Konto> kontolist = ui.getKonto().getKontosForBenutzer(u, cn.getConnection());
-                    List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn.getConnection());
-                    for (Konto k : kontolist) {
+                    final List<Konto> kontolist = ui.getKonto().getKontosForBenutzer(u, cn.getConnection());
+                    final List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn.getConnection());
+                    for (final Konto k : kontolist) {
                         int y = 0;
-                        for (Konto uik : allPossKontos) {
+                        for (final Konto uik : allPossKontos) {
                             if (uik.getId().longValue() == k.getId().longValue()) {
                                 uik.setSelected(true);
                                 allPossKontos.set(y, uik);
@@ -575,22 +580,22 @@ public final class UserAction extends DispatchAction {
                             y++;
                         }
                     }
-                    ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
-                    for (Konto k : allPossKontos) {
-                        KontoForm kf = new KontoForm();
+                    final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
+                    for (final Konto k : allPossKontos) {
+                        final KontoForm kf = new KontoForm();
                         kf.setKonto(k);
                         lkf.add(kf);
                     }
 
-                    List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
                     ui.setKontos(allPossKontos);
                     ui.setCountries(allPossCountries);
-                    forward = "success";
+                    forward = SUCCESS;
                     rq.setAttribute("ui", ui);
                     rq.setAttribute("userform", uf);
 
                 } else {
-                    forward = "failure";
+                    forward = FAILURE;
                     em = new ErrorMessage("error.hack");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
                     LOG.info("changeuserdetails: prevented URL-hacking! " + ui.getBenutzer().getEmail());
@@ -602,12 +607,12 @@ public final class UserAction extends DispatchAction {
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(ACTIVEMENUS, mf);
             em = new ErrorMessage("error.timeout", "login.do");
         }
-        rq.setAttribute("errormessage", em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
+        rq.setAttribute(ERRORMESSAGE, em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
         cn.close();
         return mp.findForward(forward);
     }
@@ -615,31 +620,31 @@ public final class UserAction extends DispatchAction {
     /**
      * Generiert ein neues Passwort und teilt dem Benutzer dieses Mail mit
      */
-    public ActionForward pwreset(ActionMapping mp, ActionForm form,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward pwreset(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        LoginForm lf = (LoginForm) form;
-        String forward = "failure";
-        Text cn = new Text();
-        MessageResources messageResources = getResources(rq);
-        ErrorMessage em = new ErrorMessage();
+        final LoginForm lf = (LoginForm) form;
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final MessageResources messageResources = getResources(rq);
+        final ErrorMessage em = new ErrorMessage();
         AbstractBenutzer u = new AbstractBenutzer();
         u = u.getUserFromEmail(lf.getEmail(), cn.getConnection());
         //Check ob der Benutzer berechtigt ist sein Passwort zurückzusetzen
         if (u != null) {
             if (u.isLoginopt() || u.getRechte() > 1) {
                 // Passwort erzeugen
-                PasswordGenerator p = new PasswordGenerator(8);
-                String pw = p.getRandomString();
+                final PasswordGenerator p = new PasswordGenerator(8);
+                final String pw = p.getRandomString();
                 // Passwort codieren und in DB speichern
-                Encrypt e = new Encrypt();
+                final Encrypt e = new Encrypt();
                 u.setPassword(e.makeSHA(pw));
-                Konto tz = new Konto(); // we need this for setting a default timezone
+                final Konto tz = new Konto(); // we need this for setting a default timezone
                 u.updateUser(u, tz, cn.getConnection());
                 // Benutzer per Mail das neue Passwort mitteilen
-                String[] recipients = new String[1];
+                final String[] recipients = new String[1];
                 recipients[0] = u.getEmail();
-                StringBuffer msg = new StringBuffer();
+                final StringBuffer msg = new StringBuffer();
                 msg.append(messageResources.getMessage("resend.email.intro"));
                 msg.append("\012\012");
                 msg.append(pw);
@@ -649,24 +654,24 @@ public final class UserAction extends DispatchAction {
                 msg.append(messageResources.getMessage("resend.email.team"));
                 msg.append("\040");
                 msg.append(ReadSystemConfigurations.getApplicationName());
-                MHelper m = new MHelper();
+                final MHelper m = new MHelper();
                 m.sendMail(recipients, messageResources.getMessage("resend.email.subject")
                         + "\040" + ReadSystemConfigurations.getApplicationName(),
                         msg.toString());
-                forward = "success";
+                forward = SUCCESS;
                 rq.setAttribute("message", new Message("message.pwreset", "login.do"));
 
             } else {
                 em.setError("error.pwreset");
                 em.setLink("login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(ERRORMESSAGE, em);
                 log.warn(lf.getEmail() + " ist registriert und hat versucht sich "
                         + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
             }
         } else {
             em.setError("error.unknown_email");
             em.setLink("login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ERRORMESSAGE, em);
             log.warn(lf.getEmail() + " (unbekannt) hat versucht sich "
                     + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
         }
@@ -677,36 +682,36 @@ public final class UserAction extends DispatchAction {
     /**
      * Uebersicht Benutzer des Kontos
      */
-    public ActionForward showkontousers(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward showkontousers(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        String forward = "failure";
-        UserForm uf = new UserForm();
-        Auth auth = new Auth();
+        String forward = FAILURE;
+        final UserForm uf = new UserForm();
+        final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
-            forward = "success";
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            forward = SUCCESS;
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             // Bei URL-hacking: User sehen nur sich selber
             if (auth.isBenutzer(rq)) {
-                ArrayList<AbstractBenutzer> ul = new ArrayList<AbstractBenutzer>();
+                final ArrayList<AbstractBenutzer> ul = new ArrayList<AbstractBenutzer>();
                 ul.add(ui.getBenutzer());
                 uf.setUsers(ul);
             }
             // Bibliothekare sehen alle Benutzer eines Kontos
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                Text t = new Text();
+                final Text t = new Text();
                 uf.setUsers(ui.getBenutzer().getKontoUser(ui.getKonto(), t.getConnection()));
                 t.close();
             }
             rq.setAttribute("userform", uf);
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
         return mp.findForward(forward);
     }
@@ -714,36 +719,36 @@ public final class UserAction extends DispatchAction {
     /**
      * neuer User anlegen abschliessen, User bearbeiten
      */
-    public ActionForward modifykontousers(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward modifykontousers(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        String forward = "failure";
-        Text cn = new Text();
-        Check check = new Check();
-        Auth auth = new Auth();
-        VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Check check = new Check();
+        final Auth auth = new Auth();
+        final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 
         if (auth.isLogin(rq)) {
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                UserForm uf = (UserForm) fm;
+                final UserForm uf = (UserForm) fm;
 
                 // ggf. Leerschläge entfernen
                 if (uf.getEmail() != null) { uf.setEmail(uf.getEmail().trim()); }
 
-                boolean name = check.isMinLength(uf.getName(), 2);
-                boolean vorname = check.isMinLength(uf.getVorname(), 2);
-                boolean email = check.isEmail(uf.getEmail());
-                boolean kont = uf.getKontos() != null;
-                boolean land = check.isMinLength(uf.getLand(), 2);
+                final boolean name = check.isMinLength(uf.getName(), 2);
+                final boolean vorname = check.isMinLength(uf.getVorname(), 2);
+                final boolean email = check.isEmail(uf.getEmail());
+                final boolean kont = uf.getKontos() != null;
+                final boolean land = check.isMinLength(uf.getLand(), 2);
 
                 //Test, ob alle Sollangaben gemacht wurden
                 if (name && vorname && email && kont && land) {
 
-                    String[] kontos = (String[]) uf.getKontos();
+                    final String[] kontos = (String[]) uf.getKontos();
 
-                    forward = "success";
+                    forward = SUCCESS;
                     AbstractBenutzer u = new Benutzer();
 
                     if (uf.getBid() != null) {
@@ -807,21 +812,21 @@ public final class UserAction extends DispatchAction {
                         u.setOrt(uf.getOrt());
                     }
                     u.setLand(uf.getLand());
-                    u.setLoginopt(uf.getLoginopt());
+                    u.setLoginopt(uf.isLoginopt());
                     u.setKontostatus(uf.isKontostatus());
-                    Encrypt e = new Encrypt();
+                    final Encrypt e = new Encrypt();
                     u.setPassword(e.makeSHA(uf.getPassword()));
-                    u.setUserbestellung(uf.getUserbestellung()); // SUBITO
+                    u.setUserbestellung(uf.isUserbestellung()); // SUBITO
                     u.setGbvbestellung(uf.isGbvbestellung()); // GBV
-                    u.setKontovalidation(uf.getKontovalidation());
+                    u.setKontovalidation(uf.isKontovalidation());
                     u.setBilling(uf.getBilling());
                     u.setGtc(uf.getGtc());
                     u.setGtcdate(uf.getGtcdate());
 
                     if (uf.getBid() == null) {
-                        Date d = new Date();
-                        ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String datum = fmt.format(d, ui.getKonto().getTimezone());
+                        final Date d = new Date();
+                        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        final String datum = fmt.format(d, ui.getKonto().getTimezone());
                         u.setDatum(datum);
                         uf.setBid(u.saveNewUser(u, ui.getKonto(), cn.getConnection()));
                         // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
@@ -830,10 +835,10 @@ public final class UserAction extends DispatchAction {
                         u.updateUser(u, ui.getKonto(), cn.getConnection());
                     } else {
                         ErrorMessage em = new ErrorMessage();
-                        forward = "failure";
+                        forward = FAILURE;
                         em = new ErrorMessage("error.hack");
                         em.setLink("searchfree.do?activemenu=suchenbestellen");
-                        rq.setAttribute("errormessage", em);
+                        rq.setAttribute(ERRORMESSAGE, em);
                         LOG.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
 
@@ -843,11 +848,11 @@ public final class UserAction extends DispatchAction {
 
                         if (u.getId() != null) { vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection()); }
                         for (int i = 0; i < kontos.length; i++) {
-                            Konto k = new Konto(Long.parseLong(kontos[i]), cn.getConnection());
+                            final Konto k = new Konto(Long.parseLong(kontos[i]), cn.getConnection());
                             vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
                         }
 
-                        AbstractBenutzer b = new AbstractBenutzer(uf);
+                        final AbstractBenutzer b = new AbstractBenutzer(uf);
                         uf.setUser(b);
 
                         // d.h. hier wurde ein User angelegt aus der journalorder.jsp
@@ -871,32 +876,32 @@ public final class UserAction extends DispatchAction {
                     }
 
                 } else {
-                    ErrorMessage em = new ErrorMessage();
+                    final ErrorMessage em = new ErrorMessage();
                     if (!vorname) { em.setError("error.vorname"); }
                     if (!name) { em.setError("error.name"); }
                     if (!email) { em.setError("error.mail"); }
                     if (!kont) { em.setError("error.kontos"); }
                     if (!land) { em.setError("error.land"); }
-                    rq.setAttribute("errormessage", em);
-                    AbstractBenutzer b = new AbstractBenutzer(uf);
+                    rq.setAttribute(ERRORMESSAGE, em);
+                    final AbstractBenutzer b = new AbstractBenutzer(uf);
                     uf.setUser(b);
                     rq.setAttribute("userform", uf);
                     forward = "missing";
                 }
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
         cn.close();
-        Message m = new Message("message.modifyuser");
+        final Message m = new Message("message.modifyuser");
         m.setLink("listkontousers.do?method=showkontousers&activemenu=bibliokunden");
         rq.setAttribute("message", m);
         return mp.findForward(forward);
@@ -905,32 +910,32 @@ public final class UserAction extends DispatchAction {
      * User aus Konto löschen,oder gänzlich wenn er keinem Konto mehr angehört
      *
      */
-    public ActionForward deleteKontousers(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward deleteKontousers(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
         //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
-        String forward = "failure";
-        Text cn = new Text();
-        Auth auth = new Auth();
-        VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Auth auth = new Auth();
+        final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                Benutzer u = new Benutzer();
-                UserForm uf = (UserForm) fm;
-                UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                Konto k = ui.getKonto();
+                final Benutzer u = new Benutzer();
+                final UserForm uf = (UserForm) fm;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final Konto k = ui.getKonto();
                 if (vKontoBenutzer.isUserFromKonto(k.getId(), uf.getBid(), cn.getConnection())) {
-                    forward = "success";
+                    forward = SUCCESS;
 
                     if (uf.getBid() != null) {
                         u.setId(uf.getBid());
-                        VKontoBenutzer vkb = new VKontoBenutzer();
+                        final VKontoBenutzer vkb = new VKontoBenutzer();
                         vkb.deleteSingleKontoEntry(u, k, cn.getConnection());
                     }
 
-                    List<Konto> rkv = ui.getKonto().getLoginKontos(u, cn.getConnection());
-                    AbstractBenutzer b = new AbstractBenutzer();
+                    final List<Konto> rkv = ui.getKonto().getLoginKontos(u, cn.getConnection());
+                    final AbstractBenutzer b = new AbstractBenutzer();
                     if (rkv.isEmpty()) { b.deleteUser(u, cn.getConnection()); }
 
                     rq.setAttribute("userform", uf);
@@ -938,25 +943,25 @@ public final class UserAction extends DispatchAction {
                     ErrorMessage em = new ErrorMessage();
                     em = new ErrorMessage("error.hack");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(ERRORMESSAGE, em);
                     LOG.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
         cn.close();
 
-        Message m = new Message("message.deleteuser");
+        final Message m = new Message("message.deleteuser");
         m.setLink("listkontousers.do?method=showkontousers&activemenu=bibliokunden");
         rq.setAttribute("message", m);
 
@@ -966,37 +971,37 @@ public final class UserAction extends DispatchAction {
     /**
      * Bereitet die Suche nach Bestellungen vor
      */
-    public ActionForward prepareSearch(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward prepareSearch(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Auth auth = new Auth();
-        Text cn = new Text();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
+        final Text cn = new Text();
 
         if (auth.isLogin(rq)) {
 
             OverviewForm of = (OverviewForm) fm;
-            OrderStatistikForm osf = new OrderStatistikForm();
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final OrderStatistikForm osf = new OrderStatistikForm();
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                forward = "success";
+                forward = SUCCESS;
 
-                ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("uebersicht");
-                rq.setAttribute("ActiveMenus", mf);
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu(UEBERSICHT);
+                rq.setAttribute(ACTIVEMENUS, mf);
 
-                Check check = new Check();
+                final Check check = new Check();
                 // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
                 of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
 
                 // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
-                Date d = new Date(); // aktuelles Datum setzen
-                ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                String datum = fmt.format(d, ui.getKonto().getTimezone());
+                final Date d = new Date(); // aktuelles Datum setzen
+                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
+                final String datum = fmt.format(d, ui.getKonto().getTimezone());
                 int yearNow = Integer.parseInt(datum);
                 int yearStart = FIRST_YEAR;
 
-                ArrayList<Integer> years = new ArrayList<Integer>();
+                final ArrayList<Integer> years = new ArrayList<Integer>();
                 yearNow++;
                 for (int j = 0; yearStart < yearNow; j++) {
                     years.add(j, yearStart);
@@ -1005,10 +1010,10 @@ public final class UserAction extends DispatchAction {
                 of.setYears(years);
 
                 // Suchfelder bestimmen
-                TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                final TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
 
-                Texttyp tty = new Texttyp();
+                final Texttyp tty = new Texttyp();
                 long id = 2; // Bestellstati
                 tty.setId(id);
                 of.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
@@ -1021,16 +1026,16 @@ public final class UserAction extends DispatchAction {
                 rq.setAttribute("orderstatistikform", osf);
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
 
@@ -1040,27 +1045,27 @@ public final class UserAction extends DispatchAction {
     /**
      * Suche nach Bestellungen
      */
-    public ActionForward search(ActionMapping mp, ActionForm fm,
-            HttpServletRequest rq, HttpServletResponse rp) {
+    public ActionForward search(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        String forward = "failure";
-        Auth auth = new Auth();
-        Bestellungen b = new Bestellungen();
+        String forward = FAILURE;
+        final Auth auth = new Auth();
+        final Bestellungen b = new Bestellungen();
 
         if (auth.isLogin(rq)) {
 
             OverviewForm of = (OverviewForm) fm;
-            OrderStatistikForm osf = new OrderStatistikForm();
-            UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            Check check = new Check();
-            Text cn = new Text();
+            final OrderStatistikForm osf = new OrderStatistikForm();
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            final Check check = new Check();
+            final Text cn = new Text();
 
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                 forward = "result";
 
-                ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("uebersicht");
-                rq.setAttribute("ActiveMenus", mf);
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu(UEBERSICHT);
+                rq.setAttribute(ACTIVEMENUS, mf);
 
                 // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
                 of.setStatitexts(cn.getAllTextPlusKontoTexts(
@@ -1076,13 +1081,13 @@ public final class UserAction extends DispatchAction {
                 of = check.checkOrdersSortCriterias(of);
 
                 // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
-                Date d = new Date(); // aktuelles Datum setzen
-                ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                String datum = fmt.format(d, ui.getKonto().getTimezone());
+                final Date d = new Date(); // aktuelles Datum setzen
+                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
+                final String datum = fmt.format(d, ui.getKonto().getTimezone());
                 int yearNow = Integer.parseInt(datum);
                 int yearStart = FIRST_YEAR;
 
-                ArrayList<Integer> years = new ArrayList<Integer>();
+                final ArrayList<Integer> years = new ArrayList<Integer>();
                 yearNow++;
                 for (int j = 0; yearStart < yearNow; j++) {
                     years.add(j, yearStart);
@@ -1091,10 +1096,10 @@ public final class UserAction extends DispatchAction {
                 of.setYears(years);
 
                 //          Suchfelder bestimmen
-                TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                final TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
 
-                Texttyp t = new Texttyp();
+                final Texttyp t = new Texttyp();
                 long id = 2; // Bestellstati
                 t.setId(id);
                 of.setStatitexts(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
@@ -1102,8 +1107,8 @@ public final class UserAction extends DispatchAction {
                 t.setId(id);
                 of.setWaehrungen(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
 
-                String dateFrom = of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + " 00:00:00";
-                String dateTo = of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00";
+                final String dateFrom = of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + " 00:00:00";
+                final String dateTo = of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00";
 
                 ArrayList<SearchesForm> searches = new ArrayList<SearchesForm>();
 
@@ -1125,7 +1130,7 @@ public final class UserAction extends DispatchAction {
                     }
                 }
 
-                if (searches.size() != 0) { // Suche, falls etwas im searchesForm liegt...
+                if (!searches.isEmpty()) { // Suche, falls etwas im searchesForm liegt...
 
                     //               Suchkriterien in userinfo und Session legen, damit Sortierung funktioniert
                     ui.setSearches(searches);
@@ -1137,18 +1142,18 @@ public final class UserAction extends DispatchAction {
                         pstmt = composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
                                 dateFrom, dateTo, cn.getConnection());
                         of.setBestellungen(b.searchOrdersPerKonto(pstmt));
-                    } catch (Exception e) { // Fehler aus Methode abfangen
+                    } catch (final Exception e) { // Fehler aus Methode abfangen
                         // zusätzliche Ausgabe von Fehlermeldung, falls versucht wurde
                         // Bestellungen nach Kunde > 3 Monate zu suchen (Datenschutz)
-                        forward = "failure";
-                        ErrorMessage em = new ErrorMessage("error.system", "searchorder.do?method=prepareSearch");
-                        rq.setAttribute("errormessage", em);
+                        forward = FAILURE;
+                        final ErrorMessage em = new ErrorMessage("error.system", "searchorder.do?method=prepareSearch");
+                        rq.setAttribute(ERRORMESSAGE, em);
                         LOG.error("search: " + e.toString());
                     } finally {
                         if (pstmt != null) {
                             try {
                                 pstmt.close();
-                            } catch (SQLException e) {
+                            } catch (final SQLException e) {
                                 LOG.error("search: " + e.toString());
                             }
                         }
@@ -1158,13 +1163,13 @@ public final class UserAction extends DispatchAction {
                         pstmtb = composeCountSearchLogic(searches, ui.getKonto(),
                                 of.getSort(), of.getSortorder(), dateFrom, dateTo, cn.getConnection());
                         osf.setAuflistung(b.countSearchOrdersPerKonto(pstmtb));
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         LOG.error("composeCountSearchLogic: " + e.toString());
                     } finally {
                         if (pstmtb != null) {
                             try {
                                 pstmtb.close();
-                            } catch (SQLException e) {
+                            } catch (final SQLException e) {
                                 LOG.error("composeCountSearchLogic: " + e.toString());
                             }
                         }
@@ -1179,16 +1184,16 @@ public final class UserAction extends DispatchAction {
                 rq.setAttribute("orderstatistikform", osf);
 
             } else {
-                ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
         } else {
-            ActiveMenusForm mf = new ActiveMenusForm();
+            final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
         }
 
 
@@ -1199,12 +1204,12 @@ public final class UserAction extends DispatchAction {
     /**
      * Stellt den MYSQL für die Suche zusammen / Suchlogik
      */
-    public PreparedStatement composeSearchLogic(ArrayList<SearchesForm> searches, Konto k, String sort,
-            String sortorder, String date_from, String date_to, Connection cn) throws Exception {
+    public PreparedStatement composeSearchLogic(final ArrayList<SearchesForm> searches, final Konto k, final String sort,
+            final String sortorder, final String date_from, final String date_to, final Connection cn) throws Exception {
 
-        Bestellungen b = new Bestellungen();
+        final Bestellungen b = new Bestellungen();
 
-        StringBuffer sql = new StringBuffer();
+        final StringBuffer sql = new StringBuffer(500);
 
         sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
                 + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND (");
@@ -1241,7 +1246,7 @@ public final class UserAction extends DispatchAction {
         boolean stop = false;
         for (int i = 0; i < searches.size() && !stop; i++) {
 
-            SearchesForm sf = (SearchesForm) searches.get(i);
+            final SearchesForm sf = (SearchesForm) searches.get(i);
 
             // Kontrolle, ob mit Name || Vorname || Email || Systembemerkungen
             // ausserhalb des erlaubten Datumbereiches (3 Monate) gesucht wird...
@@ -1277,10 +1282,10 @@ public final class UserAction extends DispatchAction {
     /**
      * Stellt den MYSQL für die Suche zusammen / Suchlogik
      */
-    private PreparedStatement composeCountSearchLogic(ArrayList<SearchesForm> searches, Konto k, String sort,
-            String sortorder, String date_from, String date_to, Connection cn) throws Exception {
-        Bestellungen b = new Bestellungen();
-        StringBuffer sql = new StringBuffer();
+    private PreparedStatement composeCountSearchLogic(final ArrayList<SearchesForm> searches, final Konto k, final String sort,
+            final String sortorder, final String date_from, final String date_to, final Connection cn) throws Exception {
+        final Bestellungen b = new Bestellungen();
+        final StringBuffer sql = new StringBuffer(300);
         sql.append("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
                 + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND (");
 
@@ -1307,12 +1312,12 @@ public final class UserAction extends DispatchAction {
         sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '"
                 + date_to + "' ORDER BY ", sort, sortorder));
 
-        PreparedStatement pstmt = cn.prepareStatement(sql.toString());
+        final PreparedStatement pstmt = cn.prepareStatement(sql.toString());
         pstmt.setLong(1, k.getId());
 
         for (int i = 0; i < searches.size(); i++) {
 
-            SearchesForm sf = (SearchesForm) searches.get(i);
+            final SearchesForm sf = (SearchesForm) searches.get(i);
 
             String truncation = ""; // Normalerweise keine Trunkierung
             if (sf.getCondition().contains("contains")) { truncation = "%"; } // Trunkierung für LIKE
@@ -1332,50 +1337,50 @@ public final class UserAction extends DispatchAction {
     /**
      * Übersetzt die Suchfelder in die korrekten MYSQL Table-Felder / Suchlogik
      */
-    private String composeSearchLogicTable(String field, String condition) {
+    private String composeSearchLogicTable(final String field, final String condition) {
 
         String table = "";
 
         if (checkIfSearchFieldIsValid(field)) {
 
             // Suche in einzelnen Feldern
-            if (field.equals("searchorders.artikeltitel")) { table = "artikeltitel"; }
-            if (field.equals("searchorders.author")) { table = "autor"; }
-            if (field.equals("searchorders.bemerkungen")) { table = "systembemerkung"; }
-            if (field.equals("searchorders.delformat")) { table = "fileformat"; }
-            if (field.equals("searchorders.heft")) { table = "heft"; }
-            if (field.equals("searchorders.notizen")) { table = "notizen"; }
-            if (field.equals("searchorders.issn")) { table = "issn"; }
-            if (field.equals("searchorders.jahr")) { table = "jahr"; }
-            if (field.equals("searchorders.jahrgang")) { table = "jahrgang"; }
-            if (field.equals("searchorders.gender")) { table = "anrede"; }
-            if (field.equals("searchorders.email")) { table = "mail"; }
-            if (field.equals("searchorders.institut")) { table = "institut"; }
-            if (field.equals("searchorders.department")) { table = "abteilung"; }
-            if (field.equals("searchorders.name")) { table = "name"; }
-            if (field.equals("searchorders.vorname")) { table = "vorname"; }
-            if (field.equals("searchorders.supplier")) { table = "bestellquelle"; }
-            if (field.equals("searchorders.deliveryway")) { table = "deloptions"; }
-            if (field.equals("searchorders.prio")) { table = "orderpriority"; }
-            if (field.equals("searchorders.seiten")) { table = "seiten"; }
-            if (field.equals("searchorders.subitonr")) { table = "subitonr"; }
-            if (field.equals("searchorders.gbvnr")) { table = "gbvnr"; }
-            if (field.equals("searchorders.internenr")) { table = "internenr"; }
-            if (field.equals("searchorders.zeitschrift")) { table = "zeitschrift"; }
-            if (field.equals("searchorders.doi")) { table = "doi"; }
-            if (field.equals("searchorders.pmid")) { table = "pmid"; }
-            if (field.equals("searchorders.isbn")) { table = "isbn"; }
-            if (field.equals("searchorders.typ")) { table = "mediatype"; }
-            if (field.equals("searchorders.verlag")) { table = "verlag"; }
-            if (field.equals("searchorders.buchkapitel")) { table = "buchkapitel"; }
-            if (field.equals("searchorders.buchtitel")) { table = "buchtitel"; }
+            if ("searchorders.artikeltitel".equals(field)) { table = "artikeltitel"; }
+            if ("searchorders.author".equals(field)) { table = "autor"; }
+            if ("searchorders.bemerkungen".equals(field)) { table = "systembemerkung"; }
+            if ("searchorders.delformat".equals(field)) { table = "fileformat"; }
+            if ("searchorders.heft".equals(field)) { table = "heft"; }
+            if ("searchorders.notizen".equals(field)) { table = "notizen"; }
+            if ("searchorders.issn".equals(field)) { table = "issn"; }
+            if ("searchorders.jahr".equals(field)) { table = "jahr"; }
+            if ("searchorders.jahrgang".equals(field)) { table = "jahrgang"; }
+            if ("searchorders.gender".equals(field)) { table = "anrede"; }
+            if ("searchorders.email".equals(field)) { table = "mail"; }
+            if ("searchorders.institut".equals(field)) { table = "institut"; }
+            if ("searchorders.department".equals(field)) { table = "abteilung"; }
+            if ("searchorders.name".equals(field)) { table = "name"; }
+            if ("searchorders.vorname".equals(field)) { table = "vorname"; }
+            if ("searchorders.supplier".equals(field)) { table = "bestellquelle"; }
+            if ("searchorders.deliveryway".equals(field)) { table = "deloptions"; }
+            if ("searchorders.prio".equals(field)) { table = "orderpriority"; }
+            if ("searchorders.seiten".equals(field)) { table = "seiten"; }
+            if ("searchorders.subitonr".equals(field)) { table = "subitonr"; }
+            if ("searchorders.gbvnr".equals(field)) { table = "gbvnr"; }
+            if ("searchorders.internenr".equals(field)) { table = "internenr"; }
+            if ("searchorders.zeitschrift".equals(field)) { table = "zeitschrift"; }
+            if ("searchorders.doi".equals(field)) { table = "doi"; }
+            if ("searchorders.pmid".equals(field)) { table = "pmid"; }
+            if ("searchorders.isbn".equals(field)) { table = "isbn"; }
+            if ("searchorders.typ".equals(field)) { table = "mediatype"; }
+            if ("searchorders.verlag".equals(field)) { table = "verlag"; }
+            if ("searchorders.buchkapitel".equals(field)) { table = "buchkapitel"; }
+            if ("searchorders.buchtitel".equals(field)) { table = "buchtitel"; }
 
         } else { // Suche nach allen Feldern
             table = "MATCH (artikeltitel,autor,fileformat,heft,notizen,issn,heft,jahr,bestellquelle,"
                 + "jahrgang,bestellquelle,deloptions,seiten,subitonr,gbvnr,internenr,zeitschrift,doi,"
                 + "pmid,isbn,mediatype,verlag,buchkapitel,buchtitel) ";
             // hier wird die Suche von AND zu AND NOT umgekehrt
-            if (condition.equals("contains not") || condition.equals("is not")) {
+            if ("contains not".equals(condition) || "is not".equals(condition)) {
                 table = "NOT MATCH (artikeltitel,autor,fileformat,heft,notizen,issn,heft,jahr,bestellquelle,"
                     + "jahrgang,bestellquelle,deloptions,seiten,subitonr,gbvnr,internenr,zeitschrift,doi,pmid,"
                     + "isbn,mediatype,verlag,buchkapitel,buchtitel) ";
@@ -1388,19 +1393,19 @@ public final class UserAction extends DispatchAction {
     /**
      * Übersetzt die Bedingungen in die korrekten MYSQL-Begriffe / Suchlogik
      */
-    private String composeSearchLogicCondition(String condition) {
+    private String composeSearchLogicCondition(final String condition) {
 
         String expression = "";
 
-        if (condition.equals("contains") || condition.equals("contains not") || condition.equals("is")
-                || condition.equals("is not") || condition.equals("higher") || condition.equals("smaller")) {
+        if ("contains".equals(condition) || "contains not".equals(condition) || "is".equals(condition)
+                || "is not".equals(condition) || "higher".equals(condition) || "smaller".equals(condition)) {
 
-            if (condition.equals("contains")) { expression = "LIKE"; }
-            if (condition.equals("contains not")) { expression = "NOT LIKE"; }
-            if (condition.equals("is")) { expression = "="; }
-            if (condition.equals("is not")) { expression = "!="; }
-            if (condition.equals("higher")) { expression = ">"; }
-            if (condition.equals("smaller")) { expression = "<"; }
+            if ("contains".equals(condition)) { expression = "LIKE"; }
+            if ("contains not".equals(condition)) { expression = "NOT LIKE"; }
+            if ("is".equals(condition)) { expression = "="; }
+            if ("is not".equals(condition)) { expression = "!="; }
+            if ("higher".equals(condition)) { expression = ">"; }
+            if ("smaller".equals(condition)) { expression = "<"; }
 
         } else {
             expression = "LIKE";
@@ -1412,15 +1417,15 @@ public final class UserAction extends DispatchAction {
     /**
      * Übersetzt die Verknüpfung in die korrekten MYSQL-Begriffe / Suchlogik
      */
-    private String composeSearchLogicBoolean(String bool) {
+    private String composeSearchLogicBoolean(final String bool) {
 
         String expression = "";
 
-        if (bool.equals("and") || bool.equals("and not") || bool.equals("or")) {
+        if ("and".equals(bool) || "and not".equals(bool) || "or".equals(bool)) {
 
-            if (bool.equals("and")) { expression = "AND"; }
-            if (bool.equals("and not")) { expression = "AND NOT"; }
-            if (bool.equals("or")) { expression = "OR"; }
+            if ("and".equals(bool)) { expression = "AND"; }
+            if ("and not".equals(bool)) { expression = "AND NOT"; }
+            if ("or".equals(bool)) { expression = "OR"; }
         } else {
             expression = "AND";
         }
@@ -1433,12 +1438,12 @@ public final class UserAction extends DispatchAction {
      * @param HttpServletRequest rq
      * @return TreeMap<String, String>
      */
-    private TreeMap<String, String> composeSortedLocalisedOrderSearchFields(HttpServletRequest rq) {
+    private TreeMap<String, String> composeSortedLocalisedOrderSearchFields(final HttpServletRequest rq) {
 
-        Vector<String> v = prepareOrderSearchFields();
-        TreeMap<String, String> result = new TreeMap<String, String>();
-        Locale locale = getLocale(rq);
-        MessageResources msgs = getResources(rq);
+        final Vector<String> v = prepareOrderSearchFields();
+        final TreeMap<String, String> result = new TreeMap<String, String>();
+        final Locale locale = getLocale(rq);
+        final MessageResources msgs = getResources(rq);
         String key = null;
         String value = null;
         for (int i = 0; i < v.size(); i++) {
@@ -1453,7 +1458,7 @@ public final class UserAction extends DispatchAction {
     /**
      * Ersetzt Anzeige Werte in die korrekten in der Datenbank gespeicherten Werte
      */
-    private SearchesForm searchMapping(SearchesForm sf) {
+    private SearchesForm searchMapping(final SearchesForm sf) {
 
         //       Mapping bei Prio => express = urgent
         if (sf.getField().equals("Priorität") && sf.getInput().equalsIgnoreCase("express")) { sf.setInput("urgent"); }
@@ -1469,7 +1474,7 @@ public final class UserAction extends DispatchAction {
      */
     private Vector<String> prepareOrderSearchFields() {
 
-        Vector<String> v = new Vector<String>();
+        final Vector<String> v = new Vector<String>();
 
         //        v.add("all"); // hardcodiert in JSP damit dieser Parameter in jeder Sprache zuoberst steht
         v.add("department");
@@ -1513,15 +1518,15 @@ public final class UserAction extends DispatchAction {
 
         if (input != null) {
 
-            Check check = new Check();
+            final Check check = new Check();
 
             // nur Buchstaben inkl. Umlaute und Zahlen zugelassen. Keine Sonderzeichen wie ";.-?!" etc.
-            ArrayList<String> words = check.getAlphanumericWordCharacters(input);
-            StringBuffer buf = new StringBuffer();
+            final ArrayList<String> words = check.getAlphanumericWordCharacters(input);
+            final StringBuffer buf = new StringBuffer();
             buf.append("");
 
             int i = 0;
-            for (String word : words) {
+            for (final String word : words) {
                 i++;
                 // Ausschluss von Leerzeichen und Wörten kürzer als drei Buchstaben (min. 4 Buchstaben)
                 if (word.length() > 3) {
@@ -1540,7 +1545,7 @@ public final class UserAction extends DispatchAction {
     /**
      * Prüft ob Suchwerte eingegeben wurden
      */
-    private boolean checkIfInputIsNotEmpty(OverviewForm of) {
+    private boolean checkIfInputIsNotEmpty(final OverviewForm of) {
 
         boolean check = false;
 
@@ -1557,16 +1562,16 @@ public final class UserAction extends DispatchAction {
      * @param String input
      * @return boolean
      */
-    private boolean checkIfSearchFieldIsValid(String input) {
+    private boolean checkIfSearchFieldIsValid(final String input) {
 
         boolean check = false;
 
         if (input != null && !input.equals("searchorders.all")) {
 
-            Vector<String> v = prepareOrderSearchFields();
+            final Vector<String> v = prepareOrderSearchFields();
 
             for (int i = 0; i < v.size(); i++) {
-                String compare = "searchorders." + (String) v.elementAt(i);
+                final String compare = "searchorders." + (String) v.elementAt(i);
                 if (input.equals(compare)) {
                     check = true;
                     break;
@@ -1583,13 +1588,13 @@ public final class UserAction extends DispatchAction {
      * @param Strinf date_from
      * @return true/false
      */
-    public boolean checkAnonymize(String date_from, String timezone) {
+    public boolean checkAnonymize(final String date_from, final String timezone) {
         boolean check = false;
 
         if (date_from != null && ReadSystemConfigurations.isAnonymizationActivated()) {
-            Bestellungen b = new Bestellungen();
-            Calendar cal = b.stringFromMysqlToCal(date_from);
-            Calendar limit = Calendar.getInstance();
+            final Bestellungen b = new Bestellungen();
+            final Calendar cal = b.stringFromMysqlToCal(date_from);
+            final Calendar limit = Calendar.getInstance();
             limit.setTimeZone(TimeZone.getTimeZone(timezone));
             limit.add(Calendar.MONTH, -ReadSystemConfigurations.getAnonymizationAfterMonths());
             limit.add(Calendar.DAY_OF_MONTH, -1);
@@ -1604,9 +1609,9 @@ public final class UserAction extends DispatchAction {
     /**
      * stellt ein SearchForm zusammen
      */
-    public SearchesForm getSearchForm(String field, String condition, String input, String bool) {
+    public SearchesForm getSearchForm(final String field, final String condition, final String input, final String bool) {
 
-        SearchesForm sf = new SearchesForm();
+        final SearchesForm sf = new SearchesForm();
         sf.setField(field);
         sf.setCondition(condition);
         sf.setInput(input);

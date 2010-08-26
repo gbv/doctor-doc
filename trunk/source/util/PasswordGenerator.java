@@ -23,45 +23,45 @@ package util;
  *
  */
 public class PasswordGenerator {
-  public static final int DEFAULT_PASSWORD_LENGTH = 8;
+    public static final int DEFAULT_PW_LENGTH = 8;
 
-  private static java.util.Random rnd = null;
+    private static java.util.Random rnd;
 
-  private int passwordLength;
+    private int passwordLength;
 
-  public PasswordGenerator() {
-    this(DEFAULT_PASSWORD_LENGTH);
-  }
-
-  /**
-   * Erstellt eine zufällige Zeichenkette beliebiger Länge
-   * @param length
-   */
-  public PasswordGenerator(int length) {
-    if (length < 1) {
-      throw new IllegalArgumentException(
-          "could not generate passwords with length smaller than 1");
+    public PasswordGenerator() {
+        this(DEFAULT_PW_LENGTH);
     }
-    if (rnd == null) {
-      rnd = new java.util.Random();
-    }
-    passwordLength = length;
-  }
 
-  /**
-   * Erzeugt eine Zeichenkette
-   * @return
-   */
-  public String getRandomString() {
-    char[] pwd = new char[passwordLength];
-    for (int i = 0; i < pwd.length; i++) {
-      if (rnd.nextInt(36) < 10) {
-        pwd[i] = (char) (48 + rnd.nextInt(10)); // zufällige Zahlenziffer erzeugen
-      } else {
-        pwd[i] = (char) (97 + rnd.nextInt(26)); // zufälligen Kleinbuchstabe erzeugen
-      }
+    /**
+     * Erstellt eine zufällige Zeichenkette beliebiger Länge
+     * @param length
+     */
+    public PasswordGenerator(final int length) {
+        if (length < 1) {
+            throw new IllegalArgumentException(
+            "could not generate passwords with length smaller than 1");
+        }
+        if (rnd == null) {
+            rnd = new java.util.Random();
+        }
+        passwordLength = length;
     }
-    return new String(pwd);
-  }
+
+    /**
+     * Erzeugt eine Zeichenkette
+     * @return
+     */
+    public String getRandomString() {
+        char[] pwd = new char[passwordLength];
+        for (int i = 0; i < pwd.length; i++) {
+            if (rnd.nextInt(36) < 10) {
+                pwd[i] = (char) (48 + rnd.nextInt(10)); // zufällige Zahlenziffer erzeugen
+            } else {
+                pwd[i] = (char) (97 + rnd.nextInt(26)); // zufälligen Kleinbuchstabe erzeugen
+            }
+        }
+        return new String(pwd);
+    }
 }
 

@@ -90,7 +90,7 @@ public class LoginForm extends ValidatorForm {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -98,7 +98,7 @@ public class LoginForm extends ValidatorForm {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -106,7 +106,7 @@ public class LoginForm extends ValidatorForm {
         return userinfolist;
     }
 
-    public void setUserinfolist(ArrayList<UserInfo> userinfolist) {
+    public void setUserinfolist(final ArrayList<UserInfo> userinfolist) {
         this.userinfolist = userinfolist;
     }
 
@@ -115,7 +115,7 @@ public class LoginForm extends ValidatorForm {
         return userid;
     }
 
-    public void setUserid(Long userid) {
+    public void setUserid(final Long userid) {
         this.userid = userid;
     }
 
@@ -129,7 +129,7 @@ public class LoginForm extends ValidatorForm {
     /**
      * @param konto The konto to set.
      */
-    public void setKonto(List<Konto> konto) {
+    public void setKonto(final List<Konto> konto) {
         this.konto = konto;
     }
 
@@ -143,7 +143,7 @@ public class LoginForm extends ValidatorForm {
     /**
      * @param kontoid The kontoid to set.
      */
-    public void setKontoid(Long kontoid) {
+    public void setKontoid(final Long kontoid) {
         this.kontoid = kontoid;
     }
 
@@ -151,7 +151,7 @@ public class LoginForm extends ValidatorForm {
         return issn;
     }
 
-    public void setIssn(String issn) {
+    public void setIssn(final String issn) {
         this.issn = issn;
     }
 
@@ -159,7 +159,7 @@ public class LoginForm extends ValidatorForm {
         return artikeltitel;
     }
 
-    public void setArtikeltitel(String artikeltitel) {
+    public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
     }
 
@@ -167,7 +167,7 @@ public class LoginForm extends ValidatorForm {
         return artikeltitel_encoded;
     }
 
-    public void setArtikeltitel_encoded(String artikeltitel_encoded) {
+    public void setArtikeltitel_encoded(final String artikeltitel_encoded) {
         this.artikeltitel_encoded = artikeltitel_encoded;
     }
 
@@ -175,7 +175,7 @@ public class LoginForm extends ValidatorForm {
         return heft;
     }
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -183,7 +183,7 @@ public class LoginForm extends ValidatorForm {
         return jahr;
     }
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -191,7 +191,7 @@ public class LoginForm extends ValidatorForm {
         return jahrgang;
     }
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -199,7 +199,7 @@ public class LoginForm extends ValidatorForm {
         return zdbid;
     }
 
-    public void setZdbid(String zdbid) {
+    public void setZdbid(final String zdbid) {
         this.zdbid = zdbid;
     }
 
@@ -207,7 +207,7 @@ public class LoginForm extends ValidatorForm {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
@@ -215,7 +215,7 @@ public class LoginForm extends ValidatorForm {
         return author_encoded;
     }
 
-    public void setAuthor_encoded(String author_encoded) {
+    public void setAuthor_encoded(final String author_encoded) {
         this.author_encoded = author_encoded;
     }
 
@@ -223,7 +223,7 @@ public class LoginForm extends ValidatorForm {
         return seiten;
     }
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -231,7 +231,7 @@ public class LoginForm extends ValidatorForm {
         return zeitschriftentitel;
     }
 
-    public void setZeitschriftentitel(String zeitschriftentitel) {
+    public void setZeitschriftentitel(final String zeitschriftentitel) {
         this.zeitschriftentitel = zeitschriftentitel;
     }
 
@@ -239,7 +239,7 @@ public class LoginForm extends ValidatorForm {
         return doi;
     }
 
-    public void setDoi(String doi) {
+    public void setDoi(final String doi) {
         this.doi = doi;
     }
 
@@ -247,7 +247,7 @@ public class LoginForm extends ValidatorForm {
         return pmid;
     }
 
-    public void setPmid(String pmid) {
+    public void setPmid(final String pmid) {
         this.pmid = pmid;
     }
 
@@ -255,7 +255,7 @@ public class LoginForm extends ValidatorForm {
         return sici;
     }
 
-    public void setSici(String sici) {
+    public void setSici(final String sici) {
         this.sici = sici;
     }
 
@@ -263,7 +263,7 @@ public class LoginForm extends ValidatorForm {
         return lccn;
     }
 
-    public void setLccn(String lccn) {
+    public void setLccn(final String lccn) {
         this.lccn = lccn;
     }
 
@@ -271,7 +271,7 @@ public class LoginForm extends ValidatorForm {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public void setIsbn(final String isbn) {
         this.isbn = isbn;
     }
 
@@ -279,7 +279,7 @@ public class LoginForm extends ValidatorForm {
         return genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(final String genre) {
         this.genre = genre;
     }
 
@@ -287,7 +287,7 @@ public class LoginForm extends ValidatorForm {
         return rfr_id;
     }
 
-    public void setRfr_id(String rfr_id) {
+    public void setRfr_id(final String rfr_id) {
         this.rfr_id = rfr_id;
     }
 
@@ -295,7 +295,7 @@ public class LoginForm extends ValidatorForm {
         return mediatype;
     }
 
-    public void setMediatype(String mediatype) {
+    public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
 
@@ -303,7 +303,7 @@ public class LoginForm extends ValidatorForm {
         return verlag;
     }
 
-    public void setVerlag(String verlag) {
+    public void setVerlag(final String verlag) {
         this.verlag = verlag;
     }
 
@@ -311,7 +311,7 @@ public class LoginForm extends ValidatorForm {
         return kapitel;
     }
 
-    public void setKapitel(String kapitel) {
+    public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
 
@@ -319,7 +319,7 @@ public class LoginForm extends ValidatorForm {
         return buchtitel;
     }
 
-    public void setBuchtitel(String buchtitel) {
+    public void setBuchtitel(final String buchtitel) {
         this.buchtitel = buchtitel;
     }
 
@@ -327,7 +327,7 @@ public class LoginForm extends ValidatorForm {
         return foruser;
     }
 
-    public void setForuser(String foruser) {
+    public void setForuser(final String foruser) {
         this.foruser = foruser;
     }
 
@@ -335,7 +335,7 @@ public class LoginForm extends ValidatorForm {
         return kundenname;
     }
 
-    public void setKundenname(String kundenname) {
+    public void setKundenname(final String kundenname) {
         this.kundenname = kundenname;
     }
 
@@ -343,7 +343,7 @@ public class LoginForm extends ValidatorForm {
         return kundenvorname;
     }
 
-    public void setKundenvorname(String kundenvorname) {
+    public void setKundenvorname(final String kundenvorname) {
         this.kundenvorname = kundenvorname;
     }
 
@@ -351,7 +351,7 @@ public class LoginForm extends ValidatorForm {
         return kundenemail;
     }
 
-    public void setKundenemail(String kundenemail) {
+    public void setKundenemail(final String kundenemail) {
         this.kundenemail = kundenemail;
     }
 
@@ -359,7 +359,7 @@ public class LoginForm extends ValidatorForm {
         return kundeninstitution;
     }
 
-    public void setKundeninstitution(String kundeninstitution) {
+    public void setKundeninstitution(final String kundeninstitution) {
         this.kundeninstitution = kundeninstitution;
     }
 
@@ -367,7 +367,7 @@ public class LoginForm extends ValidatorForm {
         return kundenabteilung;
     }
 
-    public void setKundenabteilung(String kundenabteilung) {
+    public void setKundenabteilung(final String kundenabteilung) {
         this.kundenabteilung = kundenabteilung;
     }
 
@@ -375,7 +375,7 @@ public class LoginForm extends ValidatorForm {
         return kundentelefon;
     }
 
-    public void setKundentelefon(String kundentelefon) {
+    public void setKundentelefon(final String kundentelefon) {
         this.kundentelefon = kundentelefon;
     }
 
@@ -383,7 +383,7 @@ public class LoginForm extends ValidatorForm {
         return kundenadresse;
     }
 
-    public void setKundenadresse(String kundenadresse) {
+    public void setKundenadresse(final String kundenadresse) {
         this.kundenadresse = kundenadresse;
     }
 
@@ -391,7 +391,7 @@ public class LoginForm extends ValidatorForm {
         return kundenplz;
     }
 
-    public void setKundenplz(String kundenplz) {
+    public void setKundenplz(final String kundenplz) {
         this.kundenplz = kundenplz;
     }
 
@@ -399,7 +399,7 @@ public class LoginForm extends ValidatorForm {
         return kundenort;
     }
 
-    public void setKundenort(String kundenort) {
+    public void setKundenort(final String kundenort) {
         this.kundenort = kundenort;
     }
 
@@ -407,7 +407,7 @@ public class LoginForm extends ValidatorForm {
         return kundenland;
     }
 
-    public void setKundenland(String kundenland) {
+    public void setKundenland(final String kundenland) {
         this.kundenland = kundenland;
     }
 
@@ -415,7 +415,7 @@ public class LoginForm extends ValidatorForm {
         return resolver;
     }
 
-    public void setResolver(boolean resolver) {
+    public void setResolver(final boolean resolver) {
         this.resolver = resolver;
     }
 
