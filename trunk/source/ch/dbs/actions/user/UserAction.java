@@ -646,13 +646,13 @@ public final class UserAction extends DispatchAction {
                 recipients[0] = u.getEmail();
                 final StringBuffer msg = new StringBuffer();
                 msg.append(messageResources.getMessage("resend.email.intro"));
-                msg.append("\012\012");
+                msg.append("\n\n");
                 msg.append(pw);
-                msg.append("\012\012");
+                msg.append("\n\n");
                 msg.append(messageResources.getMessage("resend.email.greetings"));
-                msg.append("\012");
+                msg.append('\n');
                 msg.append(messageResources.getMessage("resend.email.team"));
-                msg.append("\040");
+                msg.append('\040');
                 msg.append(ReadSystemConfigurations.getApplicationName());
                 final MHelper m = new MHelper();
                 m.sendMail(recipients, messageResources.getMessage("resend.email.subject")
@@ -1236,7 +1236,7 @@ public final class UserAction extends DispatchAction {
             // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
             if (i + 1 < searches.size()) {
                 sql.append(composeSearchLogicBoolean(sf.getBool()));
-                sql.append("\040");
+                sql.append('\040');
             }
 
         }
@@ -1318,7 +1318,7 @@ public final class UserAction extends DispatchAction {
             // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
             if (i + 1 < searches.size()) {
                 sql.append(composeSearchLogicBoolean(sf.getBool()));
-                sql.append("\040");
+                sql.append('\040');
             }
 
         }
@@ -1545,7 +1545,7 @@ public final class UserAction extends DispatchAction {
                 // Ausschluss von Leerzeichen und Wörten kürzer als drei Buchstaben (min. 4 Buchstaben)
                 if (word.length() > 3) {
                     buf.append("+" + word + "*"); // Jedem Wort ein Plus-Zeichen voranstellen, und Trunkierung anhängen
-                    if (i < words.size()) { buf.append("\040"); } // ggf. ein Leerschlag dazwischen setzen
+                    if (i < words.size()) { buf.append('\040'); } // ggf. ein Leerschlag dazwischen setzen
                 }
             }
 

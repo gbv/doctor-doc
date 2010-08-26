@@ -1206,20 +1206,18 @@ public final class BestellformAction extends DispatchAction {
      */
     public String extractDoi(String doi) {
 
-        final int offset = 4;
-
         if (doi != null && !doi.equals("")) {
             try {
 
                 doi = doi.trim().toLowerCase();
                 if (doi.contains("doi:")) {
-                    doi = doi.substring(doi.indexOf("doi:") + offset);
+                    doi = doi.substring(doi.indexOf("doi:") + 4);
                 } // ggf. Text "DOI:" entfernen
                 if (doi.contains("dx.doi.org/")) {
                     doi = doi.substring(doi.indexOf("dx.doi.org/") + 11);
                 } // verschiedene Formen der Angaben entfernen ( dx.doi.org/... , http://dx.doi.org/...)
                 if (doi.contains("doi/")) {
-                    doi = doi.substring(doi.indexOf("doi/") + offset);
+                    doi = doi.substring(doi.indexOf("doi/") + 4);
                 } // ggf. Text "DOI/" entfernen
 
             } catch (final Exception e) {
@@ -1513,7 +1511,7 @@ public final class BestellformAction extends DispatchAction {
 
             final ArrayList<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(k, email, cn);
 
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 u = list.get(0);
             } // es wird der erste Benutzer zurückgegeben
 

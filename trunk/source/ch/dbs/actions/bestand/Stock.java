@@ -483,19 +483,19 @@ public class Stock extends DispatchAction {
                 if (line == null) { line = ""; }
                 switch (column) {
                 case 1: // Stock-ID
-                    msg = checkStockID(i, line);
+                    msg = checkStockID(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
                     break;
                 case 2: // Holding-ID
-                    msg = checkHoldingID(i, line);
+                    msg = checkHoldingID(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
                     break;
                 case 3: // Location-ID
-                    msg = checkLocationID(i, line);
+                    msg = checkLocationID(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -505,7 +505,7 @@ public class Stock extends DispatchAction {
                 case 5: // Shelfmark
                     break;
                 case 6: // Title
-                    msg = checkTitle(i, line);
+                    msg = checkTitle(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -517,7 +517,7 @@ public class Stock extends DispatchAction {
                 case 9: // Place
                     break;
                 case 10: // ISSN
-                    msg = checkISSN(i, line);
+                    msg = checkISSN(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -525,7 +525,7 @@ public class Stock extends DispatchAction {
                 case 11: // ZDB-ID
                     break;
                 case 12: // Startyear
-                    msg = checkStartyear(i, line);
+                    msg = checkStartyear(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -535,7 +535,7 @@ public class Stock extends DispatchAction {
                 case 14: // Startissue
                     break;
                 case 15: // Endyear
-                    msg = checkEndyear(i, line);
+                    msg = checkEndyear(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -545,7 +545,7 @@ public class Stock extends DispatchAction {
                 case 17: // Endissue
                     break;
                 case 18: // Supplement
-                    msg = checkSuppl(i, line);
+                    msg = checkSuppl(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -553,13 +553,13 @@ public class Stock extends DispatchAction {
                 case 19: // remarks
                     break;
                 case 20: // eissue
-                    msg = checkBoolean(i, line);
+                    msg = checkBoolean(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
                     break;
                 case 21: // internal
-                    msg = checkBoolean(i, line);
+                    msg = checkBoolean(i + 1, line);
                     if (msg.getMessage() != null) {
                         messageList.add(msg);
                     }
@@ -672,6 +672,14 @@ public class Stock extends DispatchAction {
                 final Message msg = new Message();
                 msg.setMessage("error.import.location");
                 msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getInhalt()));
+                messageList.add(msg);
+            }
+
+            // if there is an endvolume or and endissue => there must be an endyear
+            if ((!"".equals(b.getEndvolume()) || !"".equals(b.getEndissue())) && "".equals(b.getEndyear())) {
+                final Message msg = new Message();
+                msg.setMessage("error.import.endyear");
+                msg.setSystemMessage(composeSystemMessage(lineCount, ""));
                 messageList.add(msg);
             }
 
