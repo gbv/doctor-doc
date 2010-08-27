@@ -425,7 +425,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
         return session;
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         final MHelper mail = new MHelper();
         mail.process();
     }

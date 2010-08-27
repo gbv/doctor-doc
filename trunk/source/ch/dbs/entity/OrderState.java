@@ -48,14 +48,6 @@ public class OrderState extends AbstractIdEntity {
     private String bearbeiter;
 
 
-    public OrderState() {
-
-    }
-
-    public OrderState(final AbstractBenutzer user, final Konto k) {
-
-    }
-
     // History Bestellungen eröffnen, Status, Statusdatum sowie Bestelldatum eintragen
     public void setNewOrderState(final Bestellungen b, final Konto k, final Text t, final String bemerk, final String bearb,
             final Connection cn) {

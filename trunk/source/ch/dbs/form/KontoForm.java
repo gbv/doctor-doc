@@ -982,7 +982,7 @@ public final class KontoForm extends ValidatorForm {
                 isil = isil.replaceAll("ß", "ss");
                 isil = isil.replaceAll("\040", "");
                 isil = isil.trim();
-                if (isil.equals("")) { isil = null; } // falls Leerstring, ISIL als null speichern
+                if ("".equals(isil)) { isil = null; } // falls Leerstring, ISIL als null speichern
             }
 
         } catch (final Exception e) {

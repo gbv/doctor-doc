@@ -39,12 +39,12 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
     public ThreadedJournalSeek() {
     }
 
-    public ThreadedJournalSeek(final String zeitschriftentitel_enc, final String artikeltitel_enc, final OrderForm of,
-            String concurrentCopyZeitschriftentit) {
-        this.zeitschriftentitel_encoded = zeitschriftentitel_enc;
-        this.artikeltitel_encoded = artikeltitel_enc;
+    public ThreadedJournalSeek(final String zeitschrifttitEnc, final String artikeltitelEnc, final OrderForm of,
+            final String concurrCopyZTit) {
+        this.zeitschriftentitel_encoded = zeitschrifttitEnc;
+        this.artikeltitel_encoded = artikeltitelEnc;
         this.pageForm = of;
-        this.concurrCopyTitle = concurrentCopyZeitschriftentit;
+        this.concurrCopyTitle = concurrCopyZTit;
     }
     public ArrayList<JournalDetails> call() {
         final OrderAction oa = new OrderAction();
@@ -57,7 +57,7 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
         return zeitschriftentitel_encoded;
     }
 
-    public void setZeitschriftentitel_encoded(String zeitschriftentitelEncoded) {
+    public void setZeitschriftentitel_encoded(final String zeitschriftentitelEncoded) {
         zeitschriftentitel_encoded = zeitschriftentitelEncoded;
     }
 
@@ -65,7 +65,7 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
         return artikeltitel_encoded;
     }
 
-    public void setArtikeltitel_encoded(String artikeltitelEncoded) {
+    public void setArtikeltitel_encoded(final String artikeltitelEncoded) {
         artikeltitel_encoded = artikeltitelEncoded;
     }
 
@@ -73,7 +73,7 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
         return pageForm;
     }
 
-    public void setPageForm(OrderForm pageForm) {
+    public void setPageForm(final OrderForm pageForm) {
         this.pageForm = pageForm;
     }
 
@@ -82,7 +82,7 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
     }
 
     public void setConcurrentCopyZeitschriftentitel(
-            String concurrentCopyZeitschriftentitel) {
+            final String concurrentCopyZeitschriftentitel) {
         this.concurrCopyTitle = concurrentCopyZeitschriftentitel;
     }
 

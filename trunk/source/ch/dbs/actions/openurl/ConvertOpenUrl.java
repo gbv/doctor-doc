@@ -625,10 +625,9 @@ public class ConvertOpenUrl {
                     if (input.indexOf(';') > 8) { // must have a ISSN number before the separtion character
                         input = input.substring(0, input.indexOf(';')).trim(); // take the first ISSN
                     }
-                } else if (input.contains(",")) {
-                    if (input.indexOf(',') > 8) { // must have a ISSN number before the separtion character
-                        input = input.substring(0, input.indexOf(',')).trim(); // take the first ISSN
-                    }
+                } else if (input.contains(",") && input.indexOf(',') > 8) {
+                    // must have a ISSN number before the separtion character
+                    input = input.substring(0, input.indexOf(',')).trim(); // take the first ISSN
                 }
             }
 

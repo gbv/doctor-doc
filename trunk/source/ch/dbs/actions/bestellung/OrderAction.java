@@ -124,7 +124,7 @@ public final class OrderAction extends DispatchAction {
             if (!forward.equals("pmidfailure")) {
 
                 // ***Funktion Autocomplete ein erstes Mal ausführen
-                if (!pageForm.isAutocomplete()) { pageForm.setAutocomplete(autoComplete(mp, form, rq, rp)); }
+                if (!pageForm.isAutocomplete()) { pageForm.setAutocomplete(autoComplete(form, rq)); }
 
                 if (!auth.isBenutzer(rq) || // Automatische Google-Suche für Bibliothekare und Admins...
                         // ...und für User, falls aufgrund der SystemConfigurations erlaubt.
@@ -536,7 +536,7 @@ public final class OrderAction extends DispatchAction {
                 }
                 if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
                     pageForm.setCheckDidYouMean(true);
-                    pageForm.setAutocomplete(autoComplete(mp, form, rq, rp));
+                    pageForm.setAutocomplete(autoComplete(form, rq));
                 }
 
             }
@@ -750,7 +750,7 @@ public final class OrderAction extends DispatchAction {
         if (pageForm.getArtikeltitel().length() != 0
                 && (pageForm.getRuns_autocomplete() == 0 && pageForm.getIssn().length() != 0)) {
             //*** Funktion AutoComplete ausführen
-            pageForm.setAutocomplete(autoComplete(mp, form, rq, rp));
+            pageForm.setAutocomplete(autoComplete(form, rq));
             if (!pageForm.isAutocomplete()) {
 
                 // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
@@ -759,7 +759,7 @@ public final class OrderAction extends DispatchAction {
                 }
                 if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
                     pageForm.setCheckDidYouMean(true);
-                    pageForm.setAutocomplete(autoComplete(mp, form, rq, rp));
+                    pageForm.setAutocomplete(autoComplete(form, rq));
                 }
 
             }
@@ -1448,8 +1448,7 @@ public final class OrderAction extends DispatchAction {
         return issn;
     }
 
-    private boolean autoComplete(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    private boolean autoComplete(final ActionForm form, final HttpServletRequest rq) {
 
         boolean autocomplete = false;
         String link = "";
@@ -1480,7 +1479,7 @@ public final class OrderAction extends DispatchAction {
 
             while ((run < x) && (!autocomplete)) {
                 link = composeLinkWorldCat(artikeltitelWC, pageForm, run);
-                autocomplete = searchWorldCat(link, mp, form, rq, rp);
+                autocomplete = searchWorldCat(link, pageForm);
                 run = run + 1;
                 // prüft, ob Umlaute vorhanden sind und verhindert ggf. eine unötige WorldCat-Abfrage
                 if (run < x && !checkPrepareWorldCat1(artikeltitelWC)) { run = run + 1; }
@@ -1562,50 +1561,41 @@ public final class OrderAction extends DispatchAction {
     }
 
 
-    private boolean searchWorldCat(final String link, final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
-            final HttpServletResponse rp) {
+    private boolean searchWorldCat(final String link, final OrderForm pageForm) {
 
         boolean worldcat = false;
         String content = "";
         String openURL = "";
 
-        final OrderForm pageForm = (OrderForm) form;
-        final Auth auth = new Auth();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wi
+        content = getWebcontent(link, TIMEOUT_2, RETRYS_3);
 
-        if (auth.isLogin(rq)) {
+        // Hier folgt die Auswertung nach Z39.88
+        // bei nicht eindeutigem Treffer wird einfach der erste genommen...
+        if (content.contains("url_ver=Z39.88")) {
+            worldcat = true;
+            pageForm.setRuns_autocomplete(+1);
 
-            content = getWebcontent(link, TIMEOUT_2, RETRYS_3);
+            openURL = content.substring(content.indexOf("url_ver=Z39.88"),
+                    content.indexOf('>', content.indexOf("url_ver=Z39.88")));
+            //                System.out.println("String OpenURL: " + OpenURL);
+            openURL = correctWorldCat(openURL);
 
-            // Hier folgt die Auswertung nach Z39.88
-            // bei nicht eindeutigem Treffer wird einfach der erste genommen...
-            if (content.contains("url_ver=Z39.88")) {
-                worldcat = true;
-                pageForm.setRuns_autocomplete(+1);
+            // Hier folgt die OpenURL-Auswertung
+            final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
+            final OpenUrl openUrlInstance = new OpenUrl();
+            // ContextObject mit Inhalten von content abfüllen
+            final ContextObject co = openUrlInstance.readOpenUrlFromString(openURL);
+            final OrderForm of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
 
-                openURL = content.substring(content.indexOf("url_ver=Z39.88"),
-                        content.indexOf('>', content.indexOf("url_ver=Z39.88")));
-                //                System.out.println("String OpenURL: " + OpenURL);
-                openURL = correctWorldCat(openURL);
-
-                // Hier folgt die OpenURL-Auswertung
-                final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-                final OpenUrl openUrlInstance = new OpenUrl();
-                // ContextObject mit Inhalten von content abfüllen
-                final ContextObject co = openUrlInstance.readOpenUrlFromString(openURL);
-                final OrderForm of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
-
-                // Artikeltitel als User-Eingabe muss behalten werden
-                pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
-                pageForm.setIssn(of.getIssn());
-                pageForm.setJahr(of.getJahr());
-                pageForm.setJahrgang(of.getJahrgang());
-                pageForm.setHeft(of.getHeft());
-                pageForm.setSeiten(of.getSeiten());
-                pageForm.setAuthor(of.getAuthor());
-                pageForm.setFlag_noissn(of.isFlag_noissn());
-
-            }
+            // Artikeltitel als User-Eingabe muss behalten werden
+            pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
+            pageForm.setIssn(of.getIssn());
+            pageForm.setJahr(of.getJahr());
+            pageForm.setJahrgang(of.getJahrgang());
+            pageForm.setHeft(of.getHeft());
+            pageForm.setSeiten(of.getSeiten());
+            pageForm.setAuthor(of.getAuthor());
+            pageForm.setFlag_noissn(of.isFlag_noissn());
 
         }
 
@@ -2162,7 +2152,7 @@ public final class OrderAction extends DispatchAction {
             if (!pageForm.isAutocomplete() && pageForm.getRuns_autocomplete() == 0
                     && pageForm.getArtikeltitel().length() != 0) { // noch kein autocomplete ausgeführt...
                 //            *** Funktion AutoComplete ausführen
-                pageForm.setAutocomplete(autoComplete(mp, form, rq, rp));
+                pageForm.setAutocomplete(autoComplete(form, rq));
                 if (!pageForm.isAutocomplete()) {
 
                     // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
@@ -2172,7 +2162,7 @@ public final class OrderAction extends DispatchAction {
                     }
                     if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
                         pageForm.setCheckDidYouMean(true);
-                        pageForm.setAutocomplete(autoComplete(mp, form, rq, rp));
+                        pageForm.setAutocomplete(autoComplete(form, rq));
                     }
 
                 }
@@ -2931,7 +2921,7 @@ public final class OrderAction extends DispatchAction {
         try {
             if (artikeltitel.length() > 75) { // Google ist limitiert in der Laenge bei Phrasen-Suche im Titel
                 if (artikeltitel.substring(0, 75).contains("\040")) {
-                    artikeltitel = artikeltitel.substring(0, artikeltitel.lastIndexOf("\040", 75));
+                    artikeltitel = artikeltitel.substring(0, artikeltitel.lastIndexOf('\040', 75));
                 }
             }
 

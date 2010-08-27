@@ -119,7 +119,7 @@ public final class PositionForm extends ActionForm {
         return benutzer;
     }
 
-    public void setBenutzer(AbstractBenutzer benutzer) {
+    public void setBenutzer(final AbstractBenutzer benutzer) {
         this.benutzer = benutzer;
     }
 
@@ -127,7 +127,7 @@ public final class PositionForm extends ActionForm {
         return konto;
     }
 
-    public void setKonto(Konto konto) {
+    public void setKonto(final Konto konto) {
         this.konto = konto;
     }
 
@@ -135,7 +135,7 @@ public final class PositionForm extends ActionForm {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(final String priority) {
         this.priority = priority;
     }
 
@@ -143,7 +143,7 @@ public final class PositionForm extends ActionForm {
         return deloptions;
     }
 
-    public void setDeloptions(String deloptions) {
+    public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
@@ -151,7 +151,7 @@ public final class PositionForm extends ActionForm {
         return fileformat;
     }
 
-    public void setFileformat(String fileformat) {
+    public void setFileformat(final String fileformat) {
         this.fileformat = fileformat;
     }
 
@@ -159,7 +159,7 @@ public final class PositionForm extends ActionForm {
         return orderdate;
     }
 
-    public void setOrderdate(Date orderdate) {
+    public void setOrderdate(final Date orderdate) {
         this.orderdate = orderdate;
     }
 
@@ -167,7 +167,7 @@ public final class PositionForm extends ActionForm {
         return mediatype;
     }
 
-    public void setMediatype(String mediatype) {
+    public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
 
@@ -175,7 +175,7 @@ public final class PositionForm extends ActionForm {
         return autor;
     }
 
-    public void setAutor(String autor) {
+    public void setAutor(final String autor) {
         this.autor = autor;
     }
 
@@ -183,7 +183,7 @@ public final class PositionForm extends ActionForm {
         return zeitschrift_verlag;
     }
 
-    public void setZeitschrift_verlag(String zeitschrift_verlag) {
+    public void setZeitschrift_verlag(final String zeitschrift_verlag) {
         this.zeitschrift_verlag = zeitschrift_verlag;
     }
 
@@ -191,7 +191,7 @@ public final class PositionForm extends ActionForm {
         return heft;
     }
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -199,7 +199,7 @@ public final class PositionForm extends ActionForm {
         return jahrgang;
     }
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -207,7 +207,7 @@ public final class PositionForm extends ActionForm {
         return jahr;
     }
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -215,7 +215,7 @@ public final class PositionForm extends ActionForm {
         return titel;
     }
 
-    public void setTitel(String titel) {
+    public void setTitel(final String titel) {
         this.titel = titel;
     }
 
@@ -223,7 +223,7 @@ public final class PositionForm extends ActionForm {
         return kapitel;
     }
 
-    public void setKapitel(String kapitel) {
+    public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
 
@@ -231,7 +231,7 @@ public final class PositionForm extends ActionForm {
         return seiten;
     }
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -239,7 +239,7 @@ public final class PositionForm extends ActionForm {
         return waehrung;
     }
 
-    public void setWaehrung(String waehrung) {
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
@@ -247,7 +247,7 @@ public final class PositionForm extends ActionForm {
         return preis;
     }
 
-    public void setPreis(String preis) {
+    public void setPreis(final String preis) {
         this.preis = preis;
     }
 

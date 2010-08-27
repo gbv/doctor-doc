@@ -905,7 +905,7 @@ public class OpenUrl {
                     if (reg.length() > 10) { id.add(reg); }
                 }
 
-                if (id.size() > 0) { co.setRft_id(id); }
+                if (!id.isEmpty()) { co.setRft_id(id); }
 
 
             }
@@ -1247,7 +1247,10 @@ public class OpenUrl {
             } else { // hier werden Mehrfachparameter (z.B. mehrere Autoren) aneinander gehängt
                 final StringBuffer buf = new StringBuffer();
                 for (int z = 0; z < values.length; z++) {
-                    if (z == 0) { buf.append(values[z]); } else { buf.append("\040;\040" + values[z]); }
+                    if (z == 0) { buf.append(values[z]); } else {
+                        buf.append("\040;\040");
+                        buf.append(values[z]);
+                    }
                 }
                 hm.put(key, getOpenUrlValue(buf.toString()));
             }
@@ -1280,10 +1283,10 @@ public class OpenUrl {
                         || content.substring(content.indexOf(rft)).contains("\012")) {
                     if (content.substring(content.indexOf(rft)).contains("\040")) {
                         output = content.substring(content.indexOf(rft)
-                                + rft.length(), content.indexOf("\040", content.indexOf(rft)));
+                                + rft.length(), content.indexOf('\040', content.indexOf(rft)));
                     } else {
                         output = content.substring(content.indexOf(rft)
-                                + rft.length(), content.indexOf("\012", content.indexOf(rft)));
+                                + rft.length(), content.indexOf('\012', content.indexOf(rft)));
                     }
                 } else {
                     // kein Delimiter. String bis ans Ende

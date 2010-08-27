@@ -20,7 +20,6 @@ package ch.dbs.actions.bestellung;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -138,7 +137,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                 m.setMessage(e.getMessage());
                                                 rq.setAttribute("gbvmessage", m);
                                             }
-                                            gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                            gsf = getGbvOrderObject(matches, of);
                                             // ...ist das Bestellobjekt da und kein E-Journal?
                                             if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
                                                 // 2. Chance anhand der vorhandenen ISSN
@@ -152,7 +151,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                                 "zdb", of.getZdbid(), 1));
                                                         of.setGbvfield("zdb");
                                                         of.setGbvsearch(of.getZdbid());
-                                                        gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
                                                         final Message m = new Message();
@@ -168,7 +167,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                                 getGbvSrucontentSearchAsPhrase("iss", of.getIssn(), 1));
                                                         of.setGbvfield("iss");
                                                         of.setGbvsearch(of.getIssn());
-                                                        gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
                                                         final Message m = new Message();
@@ -191,7 +190,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                                 "zdb", of.getZdbid(), 1));
                                                         of.setGbvfield("zdb");
                                                         of.setGbvsearch(of.getZdbid());
-                                                        gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
                                                         final Message m = new Message();
@@ -206,7 +205,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                                 "iss", of.getIssn(), 1));
                                                         of.setGbvfield("iss");
                                                         of.setGbvsearch(of.getIssn());
-                                                        gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     } catch (final MyException e) {
                                                         LOG.info("GBV-Message: " + e.getMessage());
                                                         final Message m = new Message();
@@ -236,7 +235,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                         m.setMessage(e.getMessage());
                                                         rq.setAttribute("gbvmessage", m);
                                                     }
-                                                    gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                    gsf = getGbvOrderObject(matches, of);
                                                 }
                                             } else {
                                                 if (of.getMediatype().equals("Teilkopie Buch")) {
@@ -247,7 +246,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                                     "isb", of.getIsbn(), 1));
                                                             of.setGbvfield("isb");
                                                             of.setGbvsearch(of.getIsbn());
-                                                            gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                            gsf = getGbvOrderObject(matches, of);
                                                         } catch (final MyException e) {
                                                             LOG.info("GBV-Message: " + e.getMessage());
                                                             final Message m = new Message();
@@ -282,7 +281,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
-                                                        gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     }
                                                 } else { // Titelsuche für Zeitschriften ohne ISSN
                                                     if (ck.isMinLength(of.getZeitschriftentitel(), 2)) {
@@ -305,7 +304,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
-                                                        gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     }
                                                 }
                                             }
@@ -479,7 +478,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                 m.setMessage(e.getMessage());
                                                 rq.setAttribute("gbvmessage", m);
                                             }
-                                            gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                            gsf = getGbvOrderObject(matches, of);
                                         } else { // Versuch anhand des Titels ein GBV-Bestellobjekt zu erhalten
                                             try { // allfällige SRU-Fehler-Codes abfangen
                                                 // erster Versuch eng, als Phrase
@@ -507,7 +506,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                 m.setMessage(e.getMessage());
                                                 rq.setAttribute("gbvmessage", m);
                                             }
-                                            gsf = getGbvOrderObject(matches, of, t.getConnection());
+                                            gsf = getGbvOrderObject(matches, of);
                                         }
 
                                         // *** ein Loan-Bestellobjekt erhalten => Bestellverarbeitung
@@ -915,7 +914,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param OrderForm of
      * @return GbvSruForm
      */
-    private GbvSruForm getGbvOrderObject(ArrayList<GbvSruForm> matches, final OrderForm of, final Connection cn) {
+    private GbvSruForm getGbvOrderObject(ArrayList<GbvSruForm> matches, final OrderForm of) {
 
         GbvSruForm gsf = new GbvSruForm();
 

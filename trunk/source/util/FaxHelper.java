@@ -48,34 +48,33 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
 
     private static final SimpleLogger LOG = new SimpleLogger(FaxHelper.class);
     private static final int WAIT = 6000;
+    private static final String LINK = "https://api.popfax.com/api-server.php";
 
     /**
      * Hilfsklasse um Faxe von popfax.com abzuholen und zu verwalten
      *
      * @author Markus Fischer
      */
-    public FaxHelper() {
 
 
-        // All requests to execute necessary actions are sent to the server as a HTTP POST
-        // request over a secured link (https) with specific data. Communication is established over HTTPS protocol to:
-        // https://api.popfax.com/api-server.php
+    // All requests to execute necessary actions are sent to the server as a HTTP POST
+    // request over a secured link (https) with specific data. Communication is established over HTTPS protocol to:
+    // https://api.popfax.com/api-server.php
 
-        // Server will process the request and will send back a response as XML Document or, for
-        // some specific actions (like RetrieveFaxImage), a document.
+    // Server will process the request and will send back a response as XML Document or, for
+    // some specific actions (like RetrieveFaxImage), a document.
 
-        // ********************************************
-        // Dieser Teil vermutlich nur zum Senden benötigt!
-        // The client must send a Content-Type HTTP header, with the content type set to: multipart/form-data
-        // The client shall include the character encoding of the content being sent a
-        // 8 in the charset attribute of the Content-Type header.
-        // For example, a request might look like:
-        // POST /api-server.php HTTP/1.1
-        // Host: api.popfax.com
-        // Content-Type: multipart/form-data; charset=utf-8
-        // ********************************************
+    // ********************************************
+    // Dieser Teil vermutlich nur zum Senden benötigt!
+    // The client must send a Content-Type HTTP header, with the content type set to: multipart/form-data
+    // The client shall include the character encoding of the content being sent a
+    // 8 in the charset attribute of the Content-Type header.
+    // For example, a request might look like:
+    // POST /api-server.php HTTP/1.1
+    // Host: api.popfax.com
+    // Content-Type: multipart/form-data; charset=utf-8
+    // ********************************************
 
-    }
 
     /**
      * Holt ein Fax ab und leitet diesen an die Mailadresse des Bibliothekskontos weiter
@@ -86,30 +85,38 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
     public void forwardFaxToMail(final Konto k, final String faxId) throws FaxHelperException {
         //      //Post Methode vorbereiten um einen Fax abzuholen
 
-        final String link = "https://api.popfax.com/api-server.php";
-        String data = "";
+        final StringBuffer data = new StringBuffer(112);
         URLConnection conn = null;
         OutputStreamWriter wr = null;
         try {
-            data = URLEncoder.encode("action", "UTF-8") + "="
-            + URLEncoder.encode("get_fax_file", "UTF-8");
-            data += "&" + URLEncoder.encode("username", "UTF-8") + "="
-            + URLEncoder.encode(k.getFaxusername(), "UTF-8");
-            data += "&" + URLEncoder.encode("password", "UTF-8") + "="
-            + URLEncoder.encode(k.getFaxpassword(), "UTF-8");
-            data += "&" + URLEncoder.encode("faxId", "UTF-8") + "="
-            + URLEncoder.encode(faxId, "UTF-8");
-            data += "&" + URLEncoder.encode("fileType", "UTF-8") + "="
-            + URLEncoder.encode("PDF", "UTF-8");
+            data.append(URLEncoder.encode("action", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode("get_fax_file", "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("username", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode(k.getFaxusername(), "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("password", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode(k.getFaxpassword(), "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("faxId", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode(faxId, "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("fileType", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode("PDF", "UTF-8"));
 
             DisableSSLCertificateCheckUtil.disableChecks();
             //       Send data
-            final URL url = new URL(link);
+            final URL url = new URL(LINK);
             conn = url.openConnection();
             conn.setDoOutput(true);
             wr = new OutputStreamWriter(conn
                     .getOutputStream());
-            wr.write(data);
+            wr.write(data.toString());
             wr.flush();
 
         } catch (final Exception e) {
@@ -250,23 +257,32 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
         // recommend to decrease the time interval and try again.
 
         final Fax f = new Fax();
+        final StringBuffer data = new StringBuffer(128);
 
-        final String link = "https://api.popfax.com/api-server.php";
-        String data = "";
         try {
-            data = URLEncoder.encode("action", "UTF-8") + "="
-            + URLEncoder.encode("retrieve_incoming_fax_list", "UTF-8");
-            data += "&" + URLEncoder.encode("username", "UTF-8") + "="
-            + URLEncoder.encode(k.getFaxusername(), "UTF-8");
-            data += "&" + URLEncoder.encode("password", "UTF-8") + "="
-            + URLEncoder.encode(k.getFaxpassword(), "UTF-8");
-            data += "&" + URLEncoder.encode("dateFrom", "UTF-8") + "="
-            + URLEncoder.encode("2009-10-01 00:00:00", "UTF-8");
-            data += "&" + URLEncoder.encode("dateTo", "UTF-8") + "="
-            + URLEncoder.encode("2010-12-31 00:00:00", "UTF-8");
+            data.append(URLEncoder.encode("action", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode("retrieve_incoming_fax_list", "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("username", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode(k.getFaxusername(), "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("password", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode(k.getFaxpassword(), "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("dateFrom", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode("2010-08-01 00:00:00", "UTF-8"));
+            data.append('&');
+            data.append(URLEncoder.encode("dateTo", "UTF-8"));
+            data.append('=');
+            data.append(URLEncoder.encode("2010-12-31 00:00:00", "UTF-8"));
+
         } catch (final UnsupportedEncodingException e1) {
             // Critical Error-Message
-            e1.printStackTrace();
+            System.out.println(e1);
             final MHelper mh = new MHelper();
             mh.sendErrorMail("Faxserver Abfrage-URL konnte nicht erstellt werden", "retrieve_incoming_fax_list:  - "
                     + e1.toString() + " KID: " + k.getId() + "Konto: " + k.getBibliotheksname());
@@ -276,7 +292,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
 
         final Http http = new Http();
 
-        String contents = http.getWebcontent(link, data);
+        String contents = http.getWebcontent(LINK, data.toString());
 
         f.setKid(String.valueOf(k.getId()));
 
@@ -361,7 +377,7 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
                             bf.append(" Fax-ID: ");
                             bf.append(f.getPopfaxid());
                             mh.sendErrorMail("!!!Faxserver: InterruptedException!!!", bf.toString());
-                            e.printStackTrace();
+                            System.out.println(e);
                         } finally {
                             lock.unlock();
                         }

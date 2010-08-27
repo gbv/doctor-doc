@@ -77,7 +77,7 @@ public class BestandMissing extends AbstractIdEntity {
     /*
      * Setzt die Werte im Preparestatement der Methoden save()
      */
-    private PreparedStatement setBestandMissingValues(final PreparedStatement pstmt, final BestandMissing be, final Connection cn)
+    private PreparedStatement setBestandMissingValues(final PreparedStatement pstmt, final BestandMissing be)
     throws Exception {
 
         pstmt.setLong(1, be.getBestand().getId());
@@ -105,7 +105,7 @@ public class BestandMissing extends AbstractIdEntity {
         try {
             pstmt = setBestandMissingValues(cn.prepareStatement("INSERT INTO `stock_missing` (`STID` , "
                     + "`startyear` , `startvolume` , `startissue` , `endyear` , `endvolume` , `endissue` , "
-                    + "`suppl` , `bemerkungen`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"), bm, cn);
+                    + "`suppl` , `bemerkungen`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"), bm);
 
             pstmt.executeUpdate();
 

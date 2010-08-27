@@ -50,10 +50,6 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten(final AbstractBenutzer user, final Konto k) {
-
-    }
-
     public Lieferanten(final ResultSet rs) throws Exception {
 
         this.setLid(rs.getLong("LID"));

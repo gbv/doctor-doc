@@ -132,7 +132,7 @@ public class BestellParam extends ValidatorForm {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                this.setRsValues(cn, rs);
+                this.setRsValues(rs);
             }
 
         } catch (final Exception e) {
@@ -174,7 +174,7 @@ public class BestellParam extends ValidatorForm {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                this.setRsValues(cn, rs);
+                this.setRsValues(rs);
             }
 
         } catch (final Exception e) {
@@ -221,7 +221,7 @@ public class BestellParam extends ValidatorForm {
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
-                    this.setRsValues(cn, rs);
+                    this.setRsValues(rs);
                 }
             }
 
@@ -266,7 +266,7 @@ public class BestellParam extends ValidatorForm {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                this.setRsValues(cn, rs);
+                this.setRsValues(rs);
             }
 
         } catch (final Exception e) {
@@ -381,7 +381,7 @@ public class BestellParam extends ValidatorForm {
         }
     }
 
-    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
+    private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
         this.setTyid(rs.getLong("TYID"));

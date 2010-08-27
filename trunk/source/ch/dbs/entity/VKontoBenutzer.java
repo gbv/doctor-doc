@@ -283,7 +283,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
     // (wird nicht von einem bestehenden User / Admin angelegt, deshalb nicht setUserValues)
     private PreparedStatement setBibliothekarValues(final PreparedStatement pstmt, final AbstractBenutzer user, final Connection cn)
     throws Exception {
-        final String berechtigung = "2";
+
         String userBestellung = "0";
         String gbvBestellung = "0";
         String loginOpt = "0";
@@ -332,7 +332,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         }
         pstmt.setString(19, kontoVal);
         pstmt.setString(20, kontoStatus);
-        pstmt.setString(21, berechtigung);
+        pstmt.setString(21, "2");
         if (user.getGtc() != null) { pstmt.setString(22, user.getGtc()); } else { pstmt.setString(22, ""); }
         if (user.getGtcdate() == null || user.getGtcdate().equals("")) {
             pstmt.setString(23, "0000:00:00 00:00:00");

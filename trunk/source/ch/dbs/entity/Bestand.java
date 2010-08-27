@@ -183,7 +183,7 @@ public class Bestand extends AbstractIdEntity {
      * Sets the values for the PreparedStatement. Leaves the ID blank and lets
      * MySQL autoincrement the STID.
      */
-    private PreparedStatement setBestandValuesAutoincrement(final PreparedStatement pstmt, final Bestand be, final Connection cn)
+    private PreparedStatement setBestandValuesAutoincrement(final PreparedStatement pstmt, final Bestand be)
     throws Exception {
 
         pstmt.setLong(1, be.getHolding().getId());
@@ -247,7 +247,7 @@ public class Bestand extends AbstractIdEntity {
             pstmt = setBestandValuesAutoincrement(
                     cn.prepareStatement("INSERT INTO `stock` (`HOID` , `startyear` , `startvolume` , `startissue` , "
                             + "`endyear` , `endvolume` , `endissue` , `suppl` , `eissue` , `standort` , `shelfmark` , "
-                            + "`bemerkungen` , `internal`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be, cn);
+                            + "`bemerkungen` , `internal`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be);
 
             pstmt.executeUpdate();
 

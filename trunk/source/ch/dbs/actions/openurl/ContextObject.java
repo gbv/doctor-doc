@@ -29,10 +29,6 @@ import java.util.List;
 public class ContextObject {
 
 
-    public ContextObject() {
-
-    }
-
     //  mögliche Angaben für rft Referent-Infos (the cited article) und und Referrer rfr (the database)
     //  [ Angaben zu Referring Entity rfe (the citing article)  sind beschränkt relevant]
 
@@ -134,309 +130,309 @@ public class ContextObject {
     public String getRft_artnum() {
         return rft_artnum;
     }
-    public void setRft_artnum(String rft_artnum) {
+    public void setRft_artnum(final String rft_artnum) {
         this.rft_artnum = rft_artnum;
     }
     public String getRfr_id() {
         return rfr_id;
     }
-    public void setRfr_id(String rfr_id) {
+    public void setRfr_id(final String rfr_id) {
         this.rfr_id = rfr_id;
     }
     public String getRft_atitle() {
         return rft_atitle;
     }
-    public void setRft_atitle(String rft_atitle) {
+    public void setRft_atitle(final String rft_atitle) {
         this.rft_atitle = rft_atitle;
     }
     public String getRft_aucorp() {
         return rft_aucorp;
     }
-    public void setRft_aucorp(String rft_aucorp) {
+    public void setRft_aucorp(final String rft_aucorp) {
         this.rft_aucorp = rft_aucorp;
     }
     public String getRft_aufirst() {
         return rft_aufirst;
     }
-    public void setRft_aufirst(String rft_aufirst) {
+    public void setRft_aufirst(final String rft_aufirst) {
         this.rft_aufirst = rft_aufirst;
     }
     public String getRft_aulast() {
         return rft_aulast;
     }
-    public void setRft_aulast(String rft_aulast) {
+    public void setRft_aulast(final String rft_aulast) {
         this.rft_aulast = rft_aulast;
     }
     public String getRft_author() {
         return rft_author;
     }
-    public void setRft_author(String rft_author) {
+    public void setRft_author(final String rft_author) {
         this.rft_author = rft_author;
     }
     public String getRft_date() {
         return rft_date;
     }
-    public void setRft_date(String rft_date) {
+    public void setRft_date(final String rft_date) {
         this.rft_date = rft_date;
     }
     public String getRft_eissn() {
         return rft_eissn;
     }
-    public void setRft_eissn(String rft_eissn) {
+    public void setRft_eissn(final String rft_eissn) {
         this.rft_eissn = rft_eissn;
     }
     public String getRft_epage() {
         return rft_epage;
     }
-    public void setRft_epage(String rft_epage) {
+    public void setRft_epage(final String rft_epage) {
         this.rft_epage = rft_epage;
     }
     public String getRft_genre() {
         return rft_genre;
     }
-    public void setRft_genre(String rft_genre) {
+    public void setRft_genre(final String rft_genre) {
         this.rft_genre = rft_genre;
     }
     public String getRft_isbn() {
         return rft_isbn;
     }
-    public void setRft_isbn(String rft_isbn) {
+    public void setRft_isbn(final String rft_isbn) {
         this.rft_isbn = rft_isbn;
     }
     public String getRft_issn() {
         return rft_issn;
     }
-    public void setRft_issn(String rft_issn) {
+    public void setRft_issn(final String rft_issn) {
         this.rft_issn = rft_issn;
     }
     public String getRft_eissn1() {
         return rft_eissn1;
     }
-    public void setRft_eissn1(String rft_eissn1) {
+    public void setRft_eissn1(final String rft_eissn1) {
         this.rft_eissn1 = rft_eissn1;
     }
     public String getRft_issn1() {
         return rft_issn1;
     }
-    public void setRft_issn1(String rft_issn1) {
+    public void setRft_issn1(final String rft_issn1) {
         this.rft_issn1 = rft_issn1;
     }
     public String getRft_issue() {
         return rft_issue;
     }
-    public void setRft_issue(String rft_issue) {
+    public void setRft_issue(final String rft_issue) {
         this.rft_issue = rft_issue;
     }
     public String getRft_jtitle() {
         return rft_jtitle;
     }
-    public void setRft_jtitle(String rft_jtitle) {
+    public void setRft_jtitle(final String rft_jtitle) {
         this.rft_jtitle = rft_jtitle;
     }
     public String getRft_pages() {
         return rft_pages;
     }
-    public void setRft_pages(String rft_pages) {
+    public void setRft_pages(final String rft_pages) {
         this.rft_pages = rft_pages;
     }
     public String getRft_part() {
         return rft_part;
     }
-    public void setRft_part(String rft_part) {
+    public void setRft_part(final String rft_part) {
         this.rft_part = rft_part;
     }
     public String getRft_spage() {
         return rft_spage;
     }
-    public void setRft_spage(String rft_spage) {
+    public void setRft_spage(final String rft_spage) {
         this.rft_spage = rft_spage;
     }
     public String getRft_stitle() {
         return rft_stitle;
     }
-    public void setRft_stitle(String rft_stitle) {
+    public void setRft_stitle(final String rft_stitle) {
         this.rft_stitle = rft_stitle;
     }
     public String getRft_title() {
         return rft_title;
     }
-    public void setRft_title(String rft_title) {
+    public void setRft_title(final String rft_title) {
         this.rft_title = rft_title;
     }
     public String getRft_volume() {
         return rft_volume;
     }
-    public void setRft_volume(String rft_volume) {
+    public void setRft_volume(final String rft_volume) {
         this.rft_volume = rft_volume;
     }
 
     public String getRft_btitle() {
         return rft_btitle;
     }
-    public void setRft_btitle(String rft_btitle) {
+    public void setRft_btitle(final String rft_btitle) {
         this.rft_btitle = rft_btitle;
     }
     public String getRft_pub() {
         return rft_pub;
     }
-    public void setRft_pub(String rft_pub) {
+    public void setRft_pub(final String rft_pub) {
         this.rft_pub = rft_pub;
     }
     public List<String> getRft_id() {
         return rft_id;
     }
-    public void setRft_id(List<String> rft_id) {
+    public void setRft_id(final List<String> rft_id) {
         this.rft_id = rft_id;
     }
     public String getRft_val_fmt() {
         return rft_val_fmt;
     }
-    public void setRft_val_fmt(String rft_val_fmt) {
+    public void setRft_val_fmt(final String rft_val_fmt) {
         this.rft_val_fmt = rft_val_fmt;
     }
     public String getRft_au() {
         return rft_au;
     }
-    public void setRft_au(String rft_au) {
+    public void setRft_au(final String rft_au) {
         this.rft_au = rft_au;
     }
     public String getRft_auinit() {
         return rft_auinit;
     }
-    public void setRft_auinit(String rft_auinit) {
+    public void setRft_auinit(final String rft_auinit) {
         this.rft_auinit = rft_auinit;
     }
     public String getRft_bici() {
         return rft_bici;
     }
-    public void setRft_bici(String rft_bici) {
+    public void setRft_bici(final String rft_bici) {
         this.rft_bici = rft_bici;
     }
     public String getRft_coden() {
         return rft_coden;
     }
-    public void setRft_coden(String rft_coden) {
+    public void setRft_coden(final String rft_coden) {
         this.rft_coden = rft_coden;
     }
     public String getRft_place() {
         return rft_place;
     }
-    public void setRft_place(String rft_place) {
+    public void setRft_place(final String rft_place) {
         this.rft_place = rft_place;
     }
     public String getRft_sici() {
         return rft_sici;
     }
-    public void setRft_sici(String rft_sici) {
+    public void setRft_sici(final String rft_sici) {
         this.rft_sici = rft_sici;
     }
     public String getRft_tpages() {
         return rft_tpages;
     }
-    public void setRft_tpages(String rft_tpages) {
+    public void setRft_tpages(final String rft_tpages) {
         this.rft_tpages = rft_tpages;
     }
 
     public String getRft_auinit1() {
         return rft_auinit1;
     }
-    public void setRft_auinit1(String rft_auinit1) {
+    public void setRft_auinit1(final String rft_auinit1) {
         this.rft_auinit1 = rft_auinit1;
     }
     public String getRft_auinitm() {
         return rft_auinitm;
     }
-    public void setRft_auinitm(String rft_auinitm) {
+    public void setRft_auinitm(final String rft_auinitm) {
         this.rft_auinitm = rft_auinitm;
     }
     public String getRft_ausuffix() {
         return rft_ausuffix;
     }
-    public void setRft_ausuffix(String rft_ausuffix) {
+    public void setRft_ausuffix(final String rft_ausuffix) {
         this.rft_ausuffix = rft_ausuffix;
     }
     public String getRft_edition() {
         return rft_edition;
     }
-    public void setRft_edition(String rft_edition) {
+    public void setRft_edition(final String rft_edition) {
         this.rft_edition = rft_edition;
     }
     public String getRft_series() {
         return rft_series;
     }
-    public void setRft_series(String rft_series) {
+    public void setRft_series(final String rft_series) {
         this.rft_series = rft_series;
     }
     public String getRft_coverage() {
         return rft_coverage;
     }
-    public void setRft_coverage(String rft_coverage) {
+    public void setRft_coverage(final String rft_coverage) {
         this.rft_coverage = rft_coverage;
     }
     public String getRft_creator() {
         return rft_creator;
     }
-    public void setRft_creator(String rft_creator) {
+    public void setRft_creator(final String rft_creator) {
         this.rft_creator = rft_creator;
     }
     public String getRft_description() {
         return rft_description;
     }
-    public void setRft_description(String rft_description) {
+    public void setRft_description(final String rft_description) {
         this.rft_description = rft_description;
     }
     public String getRft_format() {
         return rft_format;
     }
-    public void setRft_format(String rft_format) {
+    public void setRft_format(final String rft_format) {
         this.rft_format = rft_format;
     }
     public String getRft_identifier() {
         return rft_identifier;
     }
-    public void setRft_identifier(String rft_identifier) {
+    public void setRft_identifier(final String rft_identifier) {
         this.rft_identifier = rft_identifier;
     }
     public String getRft_language() {
         return rft_language;
     }
-    public void setRft_language(String rft_language) {
+    public void setRft_language(final String rft_language) {
         this.rft_language = rft_language;
     }
     public String getRft_publisher() {
         return rft_publisher;
     }
-    public void setRft_publisher(String rft_publisher) {
+    public void setRft_publisher(final String rft_publisher) {
         this.rft_publisher = rft_publisher;
     }
     public String getRft_relation() {
         return rft_relation;
     }
-    public void setRft_relation(String rft_relation) {
+    public void setRft_relation(final String rft_relation) {
         this.rft_relation = rft_relation;
     }
     public String getRft_rights() {
         return rft_rights;
     }
-    public void setRft_rights(String rft_rights) {
+    public void setRft_rights(final String rft_rights) {
         this.rft_rights = rft_rights;
     }
     public String getRft_source() {
         return rft_source;
     }
-    public void setRft_source(String rft_source) {
+    public void setRft_source(final String rft_source) {
         this.rft_source = rft_source;
     }
     public String getRft_subject() {
         return rft_subject;
     }
-    public void setRft_subject(String rft_subject) {
+    public void setRft_subject(final String rft_subject) {
         this.rft_subject = rft_subject;
     }
     public String getRft_type() {
         return rft_type;
     }
-    public void setRft_type(String rft_type) {
+    public void setRft_type(final String rft_type) {
         this.rft_type = rft_type;
     }
 

@@ -91,20 +91,20 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 getPositionen(rs);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Positionen(Connection cn, Long id): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
@@ -133,20 +133,20 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             if (rs.next()) {
                 this.setId(rs.getLong("LAST_INSERT_ID()"));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("save(Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
@@ -170,13 +170,13 @@ public class Position extends AbstractIdEntity implements OrderHandler {
 
             pstmt.executeUpdate();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("update(Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
@@ -200,13 +200,13 @@ public class Position extends AbstractIdEntity implements OrderHandler {
 
             success = true;
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("deleteSelf(Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
@@ -228,7 +228,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             try {
                 rs.findColumn("vorname");
                 this.setBenutzer(b.getUser(rs));
-            } catch (SQLException se) {
+            } catch (final SQLException se) {
                 LOG.error("getPositionen/ResultSet rs: " + se.toString());
                 this.setBenutzer(b.getUser(rs.getLong("UID"), this.getConnection()));
                 this.close();
@@ -237,11 +237,11 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             try {
                 rs.findColumn("biblioname");
                 this.setKonto(new Konto(rs));
-            } catch (SQLException se) {
+            } catch (final SQLException se) {
                 LOG.error("getPositionen/ResultSet rs: " + se.toString());
                 this.setKonto(new Konto(rs.getLong("KID"), this.getConnection()));
                 this.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("getPositionen(rs)" + e.toString());
             }
             this.setPriority(rs.getString("priority"));
@@ -296,7 +296,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             this.setWaehrung(rs.getString("waehrung"));
             this.setPreis(rs.getString("preis"));
 
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("getPositionen(rs): " + e.toString());
         }
 
@@ -347,7 +347,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return orderdate;
     }
 
-    public void setOrderdate(Date orderdate) {
+    public void setOrderdate(final Date orderdate) {
         this.orderdate = orderdate;
     }
 
@@ -355,7 +355,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return mediatype;
     }
 
-    public void setMediatype(String mediatype) {
+    public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
 
@@ -363,7 +363,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return autor;
     }
 
-    public void setAutor(String autor) {
+    public void setAutor(final String autor) {
         this.autor = autor;
     }
 
@@ -371,7 +371,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return zeitschrift_verlag;
     }
 
-    public void setZeitschrift_verlag(String zeitschrift_verlag) {
+    public void setZeitschrift_verlag(final String zeitschrift_verlag) {
         this.zeitschrift_verlag = zeitschrift_verlag;
     }
 
@@ -379,7 +379,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return heft;
     }
 
-    public void setHeft(String heft) {
+    public void setHeft(final String heft) {
         this.heft = heft;
     }
 
@@ -387,7 +387,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return jahrgang;
     }
 
-    public void setJahrgang(String jahrgang) {
+    public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
@@ -395,7 +395,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return jahr;
     }
 
-    public void setJahr(String jahr) {
+    public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
 
@@ -403,7 +403,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return titel;
     }
 
-    public void setTitel(String titel) {
+    public void setTitel(final String titel) {
         this.titel = titel;
     }
 
@@ -411,7 +411,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return kapitel;
     }
 
-    public void setKapitel(String kapitel) {
+    public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
 
@@ -419,7 +419,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return seiten;
     }
 
-    public void setSeiten(String seiten) {
+    public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
 
@@ -427,7 +427,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return waehrung;
     }
 
-    public void setWaehrung(String waehrung) {
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
@@ -435,7 +435,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         return preis;
     }
 
-    public void setPreis(String preis) {
+    public void setPreis(final String preis) {
         this.preis = preis;
     }
 
@@ -446,7 +446,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
      * @throws Exception
      * @author Pascal Steiner
      */
-    private PreparedStatement setPositionenValues(PreparedStatement ps) throws Exception {
+    private PreparedStatement setPositionenValues(final PreparedStatement ps) throws Exception {
 
         ps.setLong(1, this.getBenutzer().getId());
         ps.setLong(2, this.getKonto().getId());
