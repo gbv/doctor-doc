@@ -56,12 +56,12 @@
   <tr>
     <td>OpenOffice:</td>
     <td><a href="export-holdings.do" target="_blank">CSV</a></td>
-    <td>&nbsp;</td>
+    <td>&nbsp;(<bean:message key="stockexport.no.excel" />)</td>
   </tr>
   <tr>
     <td>MS-Excel:</td>
     <td><a href="export-holdings.do?filetype=txt" target="_blank">TXT</a></td>
-    <td>(<bean:message key="stockexport.excel" />)</td>
+    <td>&nbsp;(<bean:message key="stockexport.excel" />)</td>
   </tr>
 </table>
  
