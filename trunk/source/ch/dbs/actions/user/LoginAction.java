@@ -101,7 +101,7 @@ public final class LoginAction extends Action {
             if (auth.isAdmin(rq)) { forward = SUCCESS; } // Admin braucht keine GTC-Prüfung
 
             // Check ob sich der Benutzer an mehr als an 1 Konto anmelden kann und Werte in UserInfo schreiben
-            if (!forward.equals("gtc")) {
+            if (!"gtc".equals(forward)) {
                 if (uil.get(0).getKontos().size() == 1) {
                     uil.get(0).setKonto(uil.get(0).getKontos().get(0));
                     forward = SUCCESS;

@@ -177,16 +177,17 @@ public class Billing extends AbstractIdEntity {
      * @return String Rechnungsnummer
      */
     public String generateBillingNumber(final Konto k) {
-        String rn = "";
+        final StringBuffer billNr = new StringBuffer();
         //aktuelles Jahr zum String erstellen
         final Date d = new Date(Calendar.getInstance().getTimeInMillis());
         final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-");
-        rn = fmt.format(d);
+        billNr.append(fmt.format(d));
         //Kundennummer zur Rechnungsummer hinzufügen
-        rn = rn + k.getId().toString() + "-";
+        billNr.append(k.getId().toString());
+        billNr.append('-');
         //Gesamtanzahl Rechnungen welche an Konto erstellt wurden ermitteln und Kontorechnungsnummer erstellen
-        rn = rn + countBillings(k);
-        return rn;
+        billNr.append(countBillings(k));
+        return billNr.toString();
     }
 
     /**

@@ -89,9 +89,9 @@ public final class GtcAction extends DispatchAction {
             // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
             rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
             // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if (forward.equals("success") && auth.isBenutzer(rq)) { forward = "order"; }
+            if ("success".equals(forward) && auth.isBenutzer(rq)) { forward = "order"; }
             // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals("success") && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
+            if ("success".equals(forward) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
         }
 
         final ActiveMenusForm mf = new ActiveMenusForm();

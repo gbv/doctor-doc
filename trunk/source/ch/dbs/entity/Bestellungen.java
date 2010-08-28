@@ -567,7 +567,7 @@ public class Bestellungen extends AbstractIdEntity {
                 mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
                         + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? AND orderdate >= ? "
                         + "AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if (status.equals("offen")) {
+                if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? "
                             + "AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ",
@@ -578,7 +578,7 @@ public class Bestellungen extends AbstractIdEntity {
                 mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
                         + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? "
                         + "AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if (status.equals("offen")) {
+                if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "s( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? "
                             + "AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
@@ -587,7 +587,7 @@ public class Bestellungen extends AbstractIdEntity {
             }
             pstmt = cn.prepareStatement(mysql);
             pstmt.setLong(1, u.getId());
-            if (!status.equals("offen")) {
+            if (!"offen".equals(status)) {
                 pstmt.setString(2, status);
                 pstmt.setString(3, dateFrom);
                 pstmt.setString(4, dateTo);
@@ -713,7 +713,7 @@ public class Bestellungen extends AbstractIdEntity {
                 mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
                         + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND orderdate >= ? "
                         + "AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if (status.equals("offen")) {
+                if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT "
                             + "state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
@@ -723,7 +723,7 @@ public class Bestellungen extends AbstractIdEntity {
                 mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                         + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? "
                         + "AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if (status.equals("offen")) {
+                if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT "
                             + "state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY "
@@ -733,7 +733,7 @@ public class Bestellungen extends AbstractIdEntity {
 
             pstmt = cn.prepareStatement(mysql);
             pstmt.setString(1, String.valueOf(KID));
-            if (!status.equals("offen")) {
+            if (!"offen".equals(status)) {
                 pstmt.setString(2, status);
                 pstmt.setString(3, dateFrom);
                 pstmt.setString(4, dateTo);
@@ -969,7 +969,7 @@ public class Bestellungen extends AbstractIdEntity {
                 mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
                         + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
                         + "WHERE k.kid=? AND state=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if (status.equals("offen")) {
+                if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
                             + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
                             + "WHERE k.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? "
@@ -981,7 +981,7 @@ public class Bestellungen extends AbstractIdEntity {
                         + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
                         + "WHERE k.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
                         + "ORDER BY ", sort, sortorder);
-                if (status.equals("offen")) {
+                if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
                             + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
                             + "WHERE k.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? "
@@ -991,7 +991,7 @@ public class Bestellungen extends AbstractIdEntity {
 
             pstmt = cn.prepareStatement(mysql);
             pstmt.setString(1, String.valueOf(KID));
-            if (!status.equals("offen")) {
+            if (!"offen".equals(status)) {
                 pstmt.setString(2, status);
                 pstmt.setString(3, dateFrom);
                 pstmt.setString(4, dateTo);
@@ -1085,10 +1085,10 @@ public class Bestellungen extends AbstractIdEntity {
      */
     public String sortOrder(String sql, final String sort, final String sortorder) {
 
-        if (sort.equals("zeitschrift") || sort.equals("buchtitel")) {
+        if ("zeitschrift".equals(sort) || "buchtitel".equals(sort)) {
             sql = sql + "CONCAT( zeitschrift, buchtitel ) " + sortorder;
         } else {
-            if (sort.equals("artikeltitel") || sort.equals("kapitel")) {
+            if ("artikeltitel".equals(sort) || "kapitel".equals(sort)) {
                 sql = sql + "CONCAT( artikeltitel, buchkapitel ) " + sortorder;
             } else {
                 sql = sql + sort + "\040" + sortorder;
@@ -1807,7 +1807,7 @@ public class Bestellungen extends AbstractIdEntity {
                 count = rs.getInt("anzahl");
                 total = total + count;
                 label = rs.getString("orderpriority");
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     list.add(osf);
@@ -1889,7 +1889,7 @@ public class Bestellungen extends AbstractIdEntity {
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "anrede", rs.getString("anrede"), cn);
                 total = total + count;
                 totalOrders = totalOrders + orders;
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
@@ -1975,7 +1975,7 @@ public class Bestellungen extends AbstractIdEntity {
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "institut", rs.getString("institut"), cn);
                 total = total + count;
                 totalOrders = totalOrders + orders;
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
@@ -2066,7 +2066,7 @@ public class Bestellungen extends AbstractIdEntity {
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "abteilung", rs.getString("abteilung"), cn);
                 total = total + count;
                 totalOrders = totalOrders + orders;
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
@@ -2155,7 +2155,7 @@ public class Bestellungen extends AbstractIdEntity {
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "plz", rs.getString("plz"), cn);
                 total = total + count;
                 totalOrders = totalOrders + orders;
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setLabel_two(labelTwo);
                     osf.setAnzahl(count);
@@ -2241,7 +2241,7 @@ public class Bestellungen extends AbstractIdEntity {
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "land", rs.getString("land"), cn);
                 total = total + count;
                 totalOrders = totalOrders + orders;
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
@@ -2325,7 +2325,7 @@ public class Bestellungen extends AbstractIdEntity {
                 total = total + count;
                 user = countRowsUIDPerISSN(kid, dateFrom, dateTo, label, cn);
                 usertotal = usertotal + user;
-                if (count > 1 && !label.equals("")) { // nur Treffer, falls mehr als 1 Bestellung und ISSN nicht ""
+                if (count > 1 && !"".equals(label)) { // nur Treffer, falls mehr als 1 Bestellung und ISSN nicht ""
                     osf.setLabel(label);
                     osf.setLabel_two(labelTwo);
                     osf.setAnzahl(count);
@@ -2746,7 +2746,7 @@ public class Bestellungen extends AbstractIdEntity {
                 label = rs.getString("jahr");
                 anzahl = rs.getInt("anzahl");
                 total = total + anzahl;
-                if (!label.equals("") && !label.equals("0")) {
+                if (!"".equals(label) && !"0".equals(label)) {
                     osf.setLabel(label);
                     osf.setAnzahl(anzahl);
                     list.add(osf);

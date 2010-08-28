@@ -121,7 +121,7 @@ public final class OrderAction extends DispatchAction {
         // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
         if (auth.isLogin(rq)) {
 
-            if (!forward.equals("pmidfailure")) {
+            if (!"pmidfailure".equals(forward)) {
 
                 // ***Funktion Autocomplete ein erstes Mal ausführen
                 if (!pageForm.isAutocomplete()) { pageForm.setAutocomplete(autoComplete(form, rq)); }
@@ -515,9 +515,9 @@ public final class OrderAction extends DispatchAction {
 
         // failure wird leider nicht als globale Fehlermeldung verwendet.
         // Deshalb Ausklammerung, falls ein tatsächlicher Fehler vorliegt...
-        if (!forward.equals("error")) {
+        if (!"error".equals(forward)) {
 
-            if (!forward.equals("captcha") && !forward.equals("pmidfailure")) {
+            if (!"captcha".equals(forward) && !"pmidfailure".equals(forward)) {
                 if ((hitsGoogle.isEmpty()) && (hitsGoogleScholar.isEmpty())) {
                     forward = "notfound";
                 } else {
@@ -527,7 +527,7 @@ public final class OrderAction extends DispatchAction {
 
             //*** ggf. nochmals Funktion AutoComplete ausführen
             // weder bei vorliegendem Captcha noch nach dessen Auflösung...
-            if (!forward.equals("captcha") && pageForm.getCaptcha_id() == null
+            if (!"captcha".equals(forward) && pageForm.getCaptcha_id() == null
                     && !pageForm.isAutocomplete()) {
 
                 // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
@@ -556,7 +556,7 @@ public final class OrderAction extends DispatchAction {
             }
 
             // um zu verhindern, dass vor dem ISSN-Assistent nochmals erfolglos versucht wir Autocomplete auszuführen...
-            if (!forward.equals("captcha")) { pageForm.setRuns_autocomplete(1); }
+            if (!"captcha".equals(forward)) { pageForm.setRuns_autocomplete(1); }
 
             // ersetzt eigentlich nur griechisches Alphabet zu alpha, beta etc.
             pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
@@ -775,7 +775,7 @@ public final class OrderAction extends DispatchAction {
 
 
         if (pageForm.isFromstock()) { // der Assistent wurde aus den Bestandesangaben heraus aufgerufen
-            if (forward.equals("noresult") || forward.equals("issn_direkt")) { forward = "stock"; }
+            if ("noresult".equals(forward) || "issn_direkt".equals(forward)) { forward = "stock"; }
         }
 
 
@@ -911,7 +911,7 @@ public final class OrderAction extends DispatchAction {
             pageForm.setLink(openurl);
 
             // Link für Abfrage EZB/ZDB-Schnittstelle (nur D)
-            if (land.equals("Deutschland") && zdb && !bibid.equals("AAAAA")) {
+            if ("Deutschland".equals(land) && zdb && !"AAAAA".equals(bibid)) {
                 // http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=journal&issn=0001-6446&eissn=1588-2667&pid=bibid=UBR
                 // ansprechbar bis allen Identifiern von oben! &genre=article&atitle=...&date=1994-10-01&volume=26&issue=10&issn=0022-2828&spage=1349&pid=bibid=UBR
                 // z.B. http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=article&atitle=robotics-based&date=2005&volume=11&issue=1-2&issn=1022-0038&spage=189&pid=bibid=UBR
@@ -942,7 +942,7 @@ public final class OrderAction extends DispatchAction {
 
             // Hier folgt die Prüfung über die EZB
             // Schnittstelle EZB/ZDB für Deutschland, bei EZB-Teilnehmern, die auch in der ZDB dabei sind...
-            if (land.equals("Deutschland") && zdb && !bibid.equals("AAAAA")) {
+            if ("Deutschland".equals(land) && zdb && !"AAAAA".equals(bibid)) {
 
                 if (auth.isLogin(rq) || ((content.contains("../icons/e")
                         && !content.contains("/e4_html.gif")) // Online vorhanden
@@ -1378,7 +1378,7 @@ public final class OrderAction extends DispatchAction {
 
                     final String issn = getIssnRegensburg(linkRB);
 
-                    if (!issn.equals("")) { // nur Treffer mit ISSN zulassen
+                    if (!"".equals(issn)) { // nur Treffer mit ISSN zulassen
 
                         final JournalDetails jdRB = new JournalDetails();
                         jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
@@ -2006,7 +2006,7 @@ public final class OrderAction extends DispatchAction {
 
         }
 
-        if (link.equals("") && content.contains("warpto")) { // zweiter Versuch Link auf Journalebene
+        if ("".equals(link) && content.contains("warpto")) { // zweiter Versuch Link auf Journalebene
 
             try {
 
