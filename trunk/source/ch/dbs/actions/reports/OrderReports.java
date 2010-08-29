@@ -179,26 +179,33 @@ public final class OrderReports extends DispatchAction {
 
                         // Hier werden die Notizen so aufbereitet, dass Bestellnummern immer am Anfang stehen
                         // und keine unnötigen Zeilenumbrüche enthalten.
-                        String numbers = "";
+                        final StringBuffer numbers = new StringBuffer();
                         if (order.getSubitonr() != null && !order.getSubitonr().equals("")) {
-                            numbers = order.getSubitonr();
+                            numbers.append(order.getSubitonr());
                         }
                         if (order.getGbvnr() != null && !order.getGbvnr().equals("")) {
-                            if (!"".equals(numbers)) {
+                            if (numbers.length() > 0) {
                                 // bereits Bestellnummer vorhanden
-                                numbers = numbers + "\nGBV-Nr.: " + order.getGbvnr();
-                            } else { numbers = "GBV-Nr.: " + order.getGbvnr(); } // keine Bestellnummer vorhanden
-                        }
-                        if (order.getInterne_bestellnr() != null && !order.getInterne_bestellnr().equals("")) {
-                            if (!"".equals(numbers)) {
-                                // bereits Bestellnummer vorhanden
-                                numbers = numbers + "\nInterne Nr.: " + order.getInterne_bestellnr();
+                                numbers.append("\nGBV-Nr.: ");
+                                numbers.append(order.getGbvnr());
                             } else {
                                 // keine Bestellnummer vorhanden
-                                numbers = "Interne Nr.: " + order.getInterne_bestellnr();
+                                numbers.append("GBV-Nr.: ");
+                                numbers.append(order.getGbvnr());
                             }
                         }
-                        if (!"".equals(numbers)) { order.setNotizen(numbers + "\n" + order.getNotizen()); }
+                        if (order.getInterne_bestellnr() != null && !order.getInterne_bestellnr().equals("")) {
+                            if (numbers.length() > 0) {
+                                // bereits Bestellnummer vorhanden
+                                numbers.append("\nInterne Nr.: ");
+                                numbers.append(order.getInterne_bestellnr());
+                            } else {
+                                // keine Bestellnummer vorhanden
+                                numbers.append("Interne Nr.: ");
+                                numbers.append(order.getInterne_bestellnr());
+                            }
+                        }
+                        if (numbers.length() > 0) { order.setNotizen(numbers.toString() + "\n" + order.getNotizen()); }
 
                         hm.put("notes", order.getNotizen());
                         al.add(hm);
