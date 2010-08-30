@@ -19,7 +19,7 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
- * Erstellt auf eine Verfügbarkeitsanfrage per OpenURL eine DAIA-Response in XML
+ * Gives a DAIA response in XML to a OpenURL request.
  * DAIA = Document Availability Information API
  * http://ws.gbv.de/daia/daia.xsd.htm
  * <p/>
@@ -30,6 +30,7 @@ public class DaiaXMLResponse {
     private static final SimpleLogger LOG = new SimpleLogger(DaiaXMLResponse.class);
     private static final String UTF8 = "UTF-8";
     private static final String CDATA = "CDATA";
+    private static final String URN = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + ":";
 
     public String listHoldings(final ArrayList<Bestand> bestaende, final String rfr_id) {
 
@@ -53,7 +54,7 @@ public class DaiaXMLResponse {
 
             final AttributesImpl atts = new AttributesImpl();
 
-            final Date d = new Date(); // aktuelles Datum erstellen
+            final Date d = new Date();
             final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
             final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 
@@ -64,7 +65,7 @@ public class DaiaXMLResponse {
 
             // Institution tag
             atts.clear();
-            // TODO: Bestellpfad einrichten
+            // TODO: Create a path and the function to order from a given holding
             atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
             hd.startElement("", "", "institution", atts);
             String text = "Register " + ReadSystemConfigurations.getApplicationName();
@@ -72,7 +73,7 @@ public class DaiaXMLResponse {
             hd.endElement("", "", "institution");
 
             if (rfr_id != null && !rfr_id.equals("")) {
-                // Message tag (hier ggf. benutzt für rfr_id einer Anfrage über OpenURL)
+                // Message tag (used for the rfr_id of a OpenURL request)
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
@@ -81,15 +82,13 @@ public class DaiaXMLResponse {
                 hd.endElement("", "", "message");
             }
 
-            final String urn = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + ":";
-
             for (final Bestand b : bestaende) {
                 // Document tag
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, urn + "holding:" + b.getHolding().getId().toString()); // Holding-ID
+                atts.addAttribute("", "", "id", CDATA, URN + "holding:" + b.getHolding().getId().toString()); // Holding-ID
                 hd.startElement("", "", "document", atts);
 
-                // Message tag (hier benutzt für Titel)
+                // Message tag (used for journal title)
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
@@ -99,10 +98,10 @@ public class DaiaXMLResponse {
 
                 // Item tag
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, urn + "stock:" + b.getId().toString()); // Stock-ID
+                atts.addAttribute("", "", "id", CDATA, URN + "stock:" + b.getId().toString()); // Stock-ID
                 hd.startElement("", "", "item", atts);
 
-                // Message tag (hier benutzt für Feld 'Bemerkungen' eines Bestandes)
+                // Message tag (used for 'remarks' of a holding)
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
@@ -110,7 +109,7 @@ public class DaiaXMLResponse {
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
 
-                // Label tag (Signatur = Shelfmark)
+                // Label tag (call number / Shelfmark)
                 atts.clear();
                 hd.startElement("", "", "label", atts);
                 text = StringEscapeUtils.escapeXml(b.getShelfmark());
@@ -119,7 +118,7 @@ public class DaiaXMLResponse {
 
                 // Department tag
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, urn + "library:" + b.getHolding().getKid().toString());
+                atts.addAttribute("", "", "id", CDATA, URN + "library:" + b.getHolding().getKid().toString());
                 hd.startElement("", "", "department", atts);
                 text = b.getHolding().getKonto().getBibliotheksname() + "\040"
                 + b.getHolding().getKonto().getOrt() + "\040"
@@ -131,13 +130,13 @@ public class DaiaXMLResponse {
                 // Storage tag
                 atts.clear();
                 hd.startElement("", "", "storage", atts);
-                // Zusatztag location
+                // additional tag location
                 atts.clear();
                 hd.startElement("", "", "location", atts);
                 text = StringEscapeUtils.escapeXml(b.getStandort().getInhalt());
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "location");
-                //      // Zusatztag shelfmark
+                //      // additional tag shelfmark
                 //      atts.clear();
                 //      hd.startElement("", "", "shelfmark", atts);
                 //      text = StringEscapeUtils.escapeXml(bestaende.get(i).getShelfmark());
@@ -156,7 +155,7 @@ public class DaiaXMLResponse {
                 atts.addAttribute("", "", "service", CDATA, "interloan");
                 hd.startElement("", "", "available", atts);
 
-                //      // Limitation tag (z.B. für Liefermöglichkeiten: Fax, Post, Email...)
+                //      // Limitation tag (e.g. for deliveryways: fax, postal, email...)
                 //      String[] deliveryways = {"Fax", "Post", "Email", "Express"};
                 //      String[] costs = {"8", "8", "8", "16"};
                 //      String waehrung = "CHF";
@@ -218,7 +217,7 @@ public class DaiaXMLResponse {
 
             final AttributesImpl atts = new AttributesImpl();
 
-            final Date d = new Date(); // aktuelles Datum erstellen
+            final Date d = new Date();
             final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
             final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 
@@ -236,7 +235,7 @@ public class DaiaXMLResponse {
             hd.endElement("", "", "institution");
 
             if (rfr_id != null && !rfr_id.equals("")) {
-                // Message tag (hier ggf. benutzt für rfr_id einer Anfrage über OpenURL)
+                // Message tag (used for the rfr_id of a OpenURL request)
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
@@ -275,7 +274,7 @@ public class DaiaXMLResponse {
             // Storage tag
             atts.clear();
             hd.startElement("", "", "storage", atts);
-            // Zusatztag location
+            // additional tag location
             atts.clear();
             hd.startElement("", "", "location", atts);
             text = StringEscapeUtils.escapeXml("");

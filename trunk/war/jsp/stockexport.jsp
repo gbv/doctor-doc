@@ -14,7 +14,7 @@
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <title><bean:message bundle="systemConfig" key="application.name"/> - Standortverwaltung</title>
+  <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="menu.export" /></title>
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
   
 
@@ -61,7 +61,7 @@
   <tr>
     <td>MS-Excel:</td>
     <td><a href="export-holdings.do?filetype=txt" target="_blank">TXT</a></td>
-    <td>&nbsp;(<bean:message key="stockexport.excel" />)</td>
+    <td>&nbsp;(<a href="http://www.doctor-doc.com/howto_export.pdf" target="_blank"><bean:message key="stockexport.excel" /></a>)</td>
   </tr>
 </table>
  

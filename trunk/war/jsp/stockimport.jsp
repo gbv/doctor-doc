@@ -14,7 +14,7 @@
 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title><bean:message bundle="systemConfig" key="application.name"/> - Bestandesverwaltung</title>
+<title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="menu.import" /></title>
 <link rel="stylesheet" type="text/css" href="jsp/import/styles.css">
   
  </head>
