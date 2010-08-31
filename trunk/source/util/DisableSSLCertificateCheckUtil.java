@@ -74,6 +74,7 @@ public final class DisableSSLCertificateCheckUtil {
 
         try {
             new URL("https://0.0.0.0/").getContent();
+            // CHECKSTYLE:OFF - this an empty catch "by design"
         } catch (final IOException e) {
             // This invocation will always fail, but it will register the
             // default SSL provider to the URL class.

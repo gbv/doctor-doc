@@ -37,8 +37,8 @@ public final class PositionForm extends ActionForm {
 
     private static final long serialVersionUID = 1L;
 
-    private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
-    private Konto konto; // Bibliothekskonto
+    private transient AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
+    private transient Konto konto; // Bibliothekskonto
 
     // Lieferinfos
     private String priority = ""; // Normal, Express

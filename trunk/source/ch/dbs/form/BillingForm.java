@@ -38,12 +38,12 @@ public final class BillingForm extends ActionForm {
     private static final long serialVersionUID = 1L;
     private Long billid;
     private Long userid;
-    private AbstractBenutzer user;
-    private Billing bill;
+    private transient AbstractBenutzer user;
+    private transient Billing bill;
     private List<Billing> billings;
-    private Konto konto;
+    private transient Konto konto;
     private Long kontoid;
-    private Text rechnungsgrund;
+    private transient Text rechnungsgrund;
     private List<Text> rechnungsgrundliste;
     private String rechnungsgrundstring = "";
     private Long rechnungsgrundid;

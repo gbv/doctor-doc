@@ -61,7 +61,7 @@ public final class UserForm extends ValidatorForm {
     private String gtc;
     private String gtcdate;
 
-    private AbstractBenutzer user;
+    private transient AbstractBenutzer user;
 
     private Long bid;
     private boolean delete;

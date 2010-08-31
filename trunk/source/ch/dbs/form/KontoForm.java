@@ -34,7 +34,7 @@ public final class KontoForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
     private Long kid;
-    private Konto konto;
+    private transient Konto konto;
     private List<Konto> kontos; // wird für Auswahl Admin - Kontoverwaltung gebraucht
     private String kontoselect; // Kontoauswahl für Admin prepareModifyKonto
     private String biblioname;
@@ -62,8 +62,8 @@ public final class KontoForm extends ValidatorForm {
     private String ezbid;
     private String instlogolink; // Link to a logo/image on a remote server
     private boolean zdb;
-    private Text billing;
-    private Text billingtype;
+    private transient Text billing;
+    private transient Text billingtype;
     private int accounting_rhythmvalue;
     private int accounting_rhythmday;
     private int accounting_rhythmtimeout;

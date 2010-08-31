@@ -29,8 +29,8 @@ import ch.dbs.entity.Konto;
 public final class UserInfo extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
-    private AbstractBenutzer benutzer;
-    private Konto konto;
+    private transient AbstractBenutzer benutzer;
+    private transient Konto konto;
     private List<Konto> kontos;
     private ArrayList<SearchesForm> searches; // wird für die Sortierung bei der Suche benötigt
     private List<Countries> countries;

@@ -46,8 +46,8 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private List<Lieferanten> quellen;
     private List<Text> waehrungen;
     private List<DefaultPreis> defaultpreise;
-    private Bestellungen bestellung;
-    private Lieferanten lieferant; // neue Verknüpfung zu Tabelle Lieferanten
+    private transient Bestellungen bestellung;
+    private transient Lieferanten lieferant; // neue Verknüpfung zu Tabelle Lieferanten
     private String bestellquelle; // dient lediglich noch der Führung des doppelten Eintrages in der DB
     private String submit = ""; // dient zur Unterscheidung welcher Submit-Knopf in einem Formular gewählt wurde
     private Long bid; // Order-ID

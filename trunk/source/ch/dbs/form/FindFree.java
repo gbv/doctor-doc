@@ -36,7 +36,7 @@ public final class FindFree extends ActionForm {
     private String jahrgang;
     private String heft;
     private String seiten;
-    private Lieferanten lieferant;
+    private transient Lieferanten lieferant;
     private String deloptions;
 
     // wird in Checkavailability gebraucht

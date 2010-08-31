@@ -32,7 +32,7 @@ import ch.dbs.entity.Text;
 public final class HoldingForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
-    private Holding holding;
+    private transient Holding holding;
     private String zeitschrift = ""; // u.a. auch ISSN-Assistent
     private String startyear;
     private String startvolume;
@@ -42,7 +42,7 @@ public final class HoldingForm extends ValidatorForm {
     private String endissue;
     private int suppl; // 0 = keine Supplemente / 1 = inkl. Supplemente / 2 = nur Supplemente
     private boolean eissue;
-    private Text standort;
+    private transient Text standort;
     private String standortid;
     private String shelfmark; // Notation, Büchergestellnummer etc.
     private String bemerkungen = "";

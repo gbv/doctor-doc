@@ -29,7 +29,7 @@ public final class FileForm extends ActionForm {
      */
 
     private static final long serialVersionUID = 1L;
-    private FormFile file;
+    private transient FormFile file;
     private boolean condition;
 
 
