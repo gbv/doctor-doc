@@ -46,8 +46,7 @@ public class OpenUrl {
     public ContextObject readOpenUrlFromRequest(final HttpServletRequest rq) {
 
         final ContextObject co = new ContextObject();
-        ConcurrentHashMap<String, String> params = new ConcurrentHashMap<String, String>();
-        params = getOpenUrlParameters(rq);
+        final ConcurrentHashMap<String, String> params = getOpenUrlParameters(rq);
 
         final ArrayList<String> uriSchemas = new ArrayList<String>();
 

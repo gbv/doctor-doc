@@ -697,6 +697,9 @@ public final class OrderAction extends DispatchAction {
                                 if (issnJS != null && !issnJS.isEmpty()) {
                                     treffer = true;
                                 } else {
+                                    // avoid possible nullpointer dereference, due to threaded request
+                                    // which may, upon failing, set issnJS to null
+                                    if (issnJS == null) { issnJS = new ArrayList<JournalDetails>(); }
                                     final JournalDetails jd = new JournalDetails();
                                     jd.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
                                     jd.setZeitschriftentitel_encoded(zeitschriftentitelEncoded);
@@ -1053,8 +1056,7 @@ public final class OrderAction extends DispatchAction {
 
                     if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
                             bfInstance.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
-                        OrderForm of = new OrderForm();
-                        of = bfInstance.resolvePmid(pageForm.getPmid());
+                        final OrderForm of = bfInstance.resolvePmid(pageForm.getPmid());
                         pageForm.completeOrderForm(pageForm, of);  // ergänzen
                     }
 

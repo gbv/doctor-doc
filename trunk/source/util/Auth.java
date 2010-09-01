@@ -96,12 +96,12 @@ public class Auth {
                         mh.sendErrorMail("IPv6 empfangen!", a6.getHostAddress());
                     }
                     if (((Inet6Address) a6).isIPv4CompatibleAddress()) {
-                        final Inet4Address a4 = (Inet4Address) Inet4Address.getByName(a6.getHostName());
+                        final Inet4Address a4 = (Inet4Address) InetAddress.getByName(a6.getHostName());
                         System.out.println("umgewandelte IP6 to IP4: " + a4.getHostAddress());
                         ip = a4.getHostAddress(); // Umwandlung in IP4 // TODO: IPv6 grundsätzlich ermöglichen
                     }
                 }
-            } catch (UnknownHostException ex) {
+            } catch (final UnknownHostException ex) {
                 LOG.error("grantAccess ip: " + ip + "\040" + ex.toString());
             }
         }
@@ -246,7 +246,7 @@ public class Auth {
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator admin = new Administrator();
-            if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(admin))) {
+            if (b.getClass().isInstance(bib) || b.getClass().isInstance(admin)) {
                 check = true;
             }
 
@@ -304,7 +304,7 @@ public class Auth {
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator a = new Administrator();
-            if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {
+            if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
                 check = true;
             }
 
@@ -334,7 +334,7 @@ public class Auth {
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator a = new Administrator();
-            if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {
+            if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
                 check = true;
             }
             // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
@@ -366,7 +366,7 @@ public class Auth {
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator a = new Administrator();
-            if ((b.getClass().isInstance(bib)) || (b.getClass().isInstance(a))) {
+            if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
                 check = true;
             }
 
