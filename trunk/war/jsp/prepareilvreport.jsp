@@ -128,7 +128,7 @@
 <bean:write name="userinfo" property="konto.adresse" />
 <logic:notEqual name="userinfo" property="konto.adressenzusatz" value=""><bean:write name="userinfo" property="konto.adressenzusatz" /></logic:notEqual>
 <bean:write name="userinfo" property="konto.PLZ" /> <bean:write name="userinfo" property="konto.ort" />
-<bean:write name="userinfo" property="konto.land" /></textarea>
+<bean:write name="orderform" property="konto.land" /></textarea>
     </td>
   </tr>
   <tr>

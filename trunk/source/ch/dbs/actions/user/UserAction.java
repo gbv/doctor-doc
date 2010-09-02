@@ -517,7 +517,7 @@ public final class UserAction extends DispatchAction {
                 lkf.add(kf);
             }
 
-            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
 
             ui.setKontos(allPossKontos);
             ui.setCountries(allPossCountries);
@@ -587,7 +587,7 @@ public final class UserAction extends DispatchAction {
                         lkf.add(kf);
                     }
 
-                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                     ui.setKontos(allPossKontos);
                     ui.setCountries(allPossCountries);
                     forward = SUCCESS;

@@ -208,6 +208,8 @@ public class Stock extends DispatchAction {
                                         // save or update holdings, delete all other holdings
                                         final String successMessage = update(bestandList, ui, cn.getConnection());
 
+                                        // TODO: check DAIA-ID
+
                                         forward = SUCCESS;
 
                                         final Message msg = new Message("import.success", successMessage,

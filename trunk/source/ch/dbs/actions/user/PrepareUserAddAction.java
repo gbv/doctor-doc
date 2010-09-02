@@ -69,7 +69,7 @@ public final class PrepareUserAddAction extends Action {
                 lkf.add(kf);
             }
 
-            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
 
             final AbstractBenutzer b = new AbstractBenutzer(uf);
             uf.setUser(b);

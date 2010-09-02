@@ -36,6 +36,7 @@ public abstract class AbstractReadSystemConfigurations {
     private static final String PATH = "resources/SystemConfiguration.properties";
 
     static final String SYSTEM_TIMEZONE = readSystemTimezone();
+    static final String LOCALE = readLocale();
 
     static final String SYSTEM_EMAIL = readSystemEmail();
     static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
@@ -72,11 +73,26 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             systemTimezone = config.getString("system.timezone");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
         return systemTimezone;
+    }
+
+    private static String readLocale() {
+
+        String locale = "";
+
+        try {
+            final Configuration config = new PropertiesConfiguration(PATH);
+            locale = config.getString("locale");
+
+        } catch (final ConfigurationException e) {
+            LOG.error(e.toString());
+        }
+
+        return locale;
     }
 
     private static String readSystemEmail() {
@@ -87,7 +103,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             systemEmail = config.getString("systemEmail.email");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -102,7 +118,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             host = config.getString("systemEmail.host");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -117,7 +133,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             accountname = config.getString("systemEmail.accountname");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -132,7 +148,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             password = config.getString("systemEmail.password");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -147,7 +163,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             errorEmail = config.getString("errorEmail.email");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -162,7 +178,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             databaseServerAdress = config.getString("mysql.serveraddress");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -177,7 +193,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             databaseName = config.getString("mysql.databaseName");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -192,7 +208,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             databaseUser = config.getString("mysql.user");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -207,7 +223,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             databasePassword = config.getString("mysql.password");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -222,7 +238,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             activated = config.getBoolean("mysql.pooledConnections");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -237,7 +253,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             serverAddress = config.getString("server.welcomepage");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -252,7 +268,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             serverInstallation = config.getString("server.installation");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -267,7 +283,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             applicationName = config.getString("application.name");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -282,7 +298,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             allow = config.getBoolean("allow.registerLibraryAccounts");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -297,7 +313,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             allow = config.getBoolean("allow.patronAutomaticGoogleSearch");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -312,7 +328,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             activate = config.getBoolean("activate.gtc");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -327,7 +343,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             activated = config.getBoolean("anonymization.activated");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -342,7 +358,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             months = config.getInt("anonymization.after.months");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -357,7 +373,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             searchCarelit = config.getBoolean("searchCarelit");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -372,7 +388,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             useDaia = config.getBoolean("useDaia");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
@@ -387,7 +403,7 @@ public abstract class AbstractReadSystemConfigurations {
             final Configuration config = new PropertiesConfiguration(PATH);
             daiaHost = config.getString("daiaHost");
 
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 

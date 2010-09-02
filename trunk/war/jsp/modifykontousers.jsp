@@ -110,8 +110,8 @@
             <select name="land">
             <option value="0" selected><bean:message key="select.countries" /></option>
          <logic:iterate id="c" name="userinfo" property="countries">
-        <bean:define id="tmp" name="c" property="countryname" type="java.lang.String"/>
-             <option value="<bean:write name="c" property="countryname" />"<logic:notPresent name="userform" property="user"><logic:equal name="userinfo" property="konto.land" value="<%=tmp%>"> selected</logic:equal></logic:notPresent><logic:present name="userform" property="user"><logic:equal name="userform" property="user.land" value="<%=tmp%>"> selected</logic:equal></logic:present>><bean:write name="c" property="countryname" /></option>
+        <bean:define id="tmp" name="c" property="countrycode" type="java.lang.String"/>
+             <option value="<bean:write name="c" property="countrycode" />"<logic:notPresent name="userform" property="user"><logic:equal name="userinfo" property="konto.land" value="<%=tmp%>"> selected</logic:equal></logic:notPresent><logic:present name="userform" property="user"><logic:equal name="userform" property="user.land" value="<%=tmp%>"> selected</logic:equal></logic:present>><bean:write name="c" property="countryname" /></option>
            </logic:iterate>
       </select>
       </td>      

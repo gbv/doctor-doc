@@ -185,7 +185,7 @@ public final class BestellformAction extends DispatchAction {
             if (t != null && t.getInhalt() != null) {
                 bp = new BestellParam(t, cn.getConnection());
                 // Länderauswahl setzen
-                final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                 of.setCountries(allPossCountries);
                 if (of.getRadiobutton().equals("")) {
                     of.setRadiobutton(bp.getOption_value1());
@@ -275,7 +275,7 @@ public final class BestellformAction extends DispatchAction {
 
                 // set country select
                 if (bp != null && bp.getId() != null) {
-                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                     of.setCountries(allPossCountries);
                     if (of.getRadiobutton().equals("")) {
                         of.setRadiobutton(bp.getOption_value1());
@@ -392,14 +392,14 @@ public final class BestellformAction extends DispatchAction {
             if (!auth.isLogin(rq) && t != null && t.getInhalt() != null) {
                 bp = new BestellParam(t, cn.getConnection());
                 // Länderauswahl setzen
-                final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                 of.setCountries(allPossCountries);
             } else {
                 if (auth.isLogin(rq)) {
                     k = ui.getKonto();
                     bp = new BestellParam(k, cn.getConnection());
                     // Länderauswahl setzen
-                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                     of.setCountries(allPossCountries);
                 }
             }
@@ -1110,7 +1110,7 @@ public final class BestellformAction extends DispatchAction {
 
                             // analog wie in validate()
                             // Länderauswahl setzen
-                            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                     .getConnection());
                             of.setCountries(allPossCountries);
                             if (of.getRadiobutton().equals("")) {

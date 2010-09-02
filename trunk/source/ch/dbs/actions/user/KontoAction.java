@@ -91,7 +91,7 @@ public final class KontoAction extends DispatchAction {
         final KontoForm kf = new KontoForm();
         final Countries countriesInstance = new Countries();
 
-        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+        final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
         kf.setCountries(allPossCountries);
         forward = SUCCESS;
         rq.setAttribute("kontoform", kf);
@@ -166,7 +166,7 @@ public final class KontoAction extends DispatchAction {
                             final TimeZones tz = new TimeZones();
                             final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                             rq.setAttribute(TIMEZONES, setTZ);
-                            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                     .getConnection());
                             kf.setCountries(allPossCountries);
                             rq.setAttribute("kontoform", kf);
@@ -178,7 +178,7 @@ public final class KontoAction extends DispatchAction {
                         final TimeZones tz = new TimeZones();
                         final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                         rq.setAttribute(TIMEZONES, setTZ);
-                        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                        final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                 .getConnection());
                         kf.setCountries(allPossCountries);
                         rq.setAttribute("kontoform", kf);
@@ -207,7 +207,7 @@ public final class KontoAction extends DispatchAction {
                 final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                 rq.setAttribute(TIMEZONES, setTZ);
 
-                final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                 kf.setCountries(allPossCountries);
 
                 rq.setAttribute("kontoform", kf);
@@ -221,7 +221,7 @@ public final class KontoAction extends DispatchAction {
             final TreeSet<String> setTZ = tz.getTimeZonesAsString();
             rq.setAttribute(TIMEZONES, setTZ);
 
-            final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
 
             rq.setAttribute("kontoform", kf);
@@ -575,7 +575,7 @@ public final class KontoAction extends DispatchAction {
             rq.setAttribute(ERRORMESSAGE, em);
         }
 
-        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+        final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
         kf.setCountries(allPossCountries);
 
         rq.setAttribute("kontoform", kf);
@@ -648,7 +648,7 @@ public final class KontoAction extends DispatchAction {
                                     final TimeZones tz = new TimeZones();
                                     final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                                     rq.setAttribute(TIMEZONES, setTZ);
-                                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                             .getConnection());
                                     kf.setCountries(allPossCountries);
                                 }
@@ -659,7 +659,7 @@ public final class KontoAction extends DispatchAction {
                                 final TimeZones tz = new TimeZones();
                                 final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                                 rq.setAttribute(TIMEZONES, setTZ);
-                                final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                                final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                         .getConnection());
                                 kf.setCountries(allPossCountries);
                             } catch (final Exception e) {
@@ -778,7 +778,7 @@ public final class KontoAction extends DispatchAction {
                         final TimeZones tz = new TimeZones();
                         final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                         rq.setAttribute(TIMEZONES, setTZ);
-                        final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn
+                        final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                 .getConnection());
                         kf.setCountries(allPossCountries);
                     }
@@ -789,7 +789,7 @@ public final class KontoAction extends DispatchAction {
                     final TimeZones tz = new TimeZones();
                     final TreeSet<String> setTZ = tz.getTimeZonesAsString();
                     rq.setAttribute(TIMEZONES, setTZ);
-                    final List<Countries> allPossCountries = countriesInstance.getAllActivatedCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                     kf.setCountries(allPossCountries);
                 }
 

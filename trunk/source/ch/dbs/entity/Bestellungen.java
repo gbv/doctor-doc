@@ -1213,8 +1213,8 @@ public class Bestellungen extends AbstractIdEntity {
         this.setKonto(new Konto(rs));
         } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString()); }
         //Falls CH nicht im rs ist kein Lieferant abfüllen
-        try {  rs.findColumn("CH");
-        this.setLieferant(new Lieferanten(rs));
+        try {
+            this.setLieferant(new Lieferanten(rs));
         } catch (final SQLException se) {
             LOG.ludicrous("getBestellung(ResultSet rs) Pos. 3: " + se.toString());
             final Lieferanten l = new Lieferanten();

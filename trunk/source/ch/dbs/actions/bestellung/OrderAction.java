@@ -3016,14 +3016,14 @@ public final class OrderAction extends DispatchAction {
     /**
      * Holt aus einer ArrayList<Bestand> die eigenen Bestände
      */
-    private ArrayList<Bestand> extractInternalHoldings(final ArrayList<Bestand> bestaende, final long id) {
+    private ArrayList<Bestand> extractInternalHoldings(final ArrayList<Bestand> bestaende, final long daiaId) {
 
         final ArrayList<Bestand> internalHoldings = new ArrayList<Bestand>();
 
         try {
 
             for (final Bestand b : bestaende) {
-                if (b.getHolding().getKid().equals(id)) {
+                if (b.getHolding().getKid().equals(daiaId)) {
                     internalHoldings.add(b);
                 }
             }
@@ -3039,7 +3039,7 @@ public final class OrderAction extends DispatchAction {
     /**
      * Holt aus einer ArrayList<Bestand> die Fremdbestände
      */
-    private ArrayList<Bestand> extractExternalHoldings(final ArrayList<Bestand> bestaende, final long id, final UserInfo ui) {
+    private ArrayList<Bestand> extractExternalHoldings(final ArrayList<Bestand> bestaende, final long daiaId, final UserInfo ui) {
 
         final ArrayList<Bestand> externalHoldings = new ArrayList<Bestand>();
 
@@ -3052,7 +3052,7 @@ public final class OrderAction extends DispatchAction {
                         && b.getHolding().getKonto().getLand().equals(ui.getKonto().getLand())) {
 
                     // add to list if it is not a holding from the own account
-                    if (!b.getHolding().getKid().equals(id)
+                    if (!b.getHolding().getKid().equals(daiaId)
                             && !b.isInternal()) {
                         externalHoldings.add(b);
                     }

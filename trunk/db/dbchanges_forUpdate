@@ -1,3 +1,68 @@
+-- Revision 85
+
+-- add an 'open' countryCode field
+
+ALTER TABLE `lieferanten` ADD `countryCode` VARCHAR( 2 ) NOT NULL AFTER `lieferant` ;
+
+-- migrate existing entries from hardcoded fields
+
+UPDATE `lieferanten` SET `countryCode` = 'CH' WHERE `lieferanten`.`CH` =1 ;
+
+UPDATE `lieferanten` SET `countryCode` = 'AT' WHERE `lieferanten`.`A` =1 ;
+
+UPDATE `lieferanten` SET `countryCode` = 'DE' WHERE `lieferanten`.`D` =1 ;
+
+-- drop hardcoded fields
+
+ALTER TABLE `lieferanten`
+  DROP `D`,
+  DROP `A`,
+  DROP `CH`;
+  
+-- migrate existing entries from hardcoded fields in table konto
+  
+UPDATE `konto` SET `land` = 'CH' WHERE `konto`.`land` LIKE 'Schweiz' ;
+
+UPDATE `konto` SET `land` = 'DE' WHERE `konto`.`land` LIKE 'Deutschland' ;
+
+UPDATE `konto` SET `land` = 'AT' WHERE `konto`.`land` LIKE 'Österreich' ;
+
+UPDATE `konto` SET `land` = 'FR' WHERE `konto`.`land` LIKE 'France' ;
+
+UPDATE `konto` SET `land` = 'IT' WHERE `konto`.`land` LIKE 'Italien' ;
+
+UPDATE `konto` SET `land` = 'OT' WHERE `konto`.`land` LIKE '%other%' ;
+
+-- shrink field size to what is needed
+
+ALTER TABLE `konto` CHANGE `land` `land` VARCHAR( 2 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ;
+
+-- migrate existing entries from hardcoded fields in table benutzer
+
+UPDATE `benutzer` SET `land` = 'CH' WHERE `benutzer`.`land` LIKE 'Schweiz' ;
+
+UPDATE `benutzer` SET `land` = 'DE' WHERE `benutzer`.`land` LIKE 'Deutschland' ;
+
+UPDATE `benutzer` SET `land` = 'AT' WHERE `benutzer`.`land` LIKE 'Österreich' ;
+
+UPDATE `benutzer` SET `land` = 'IT' WHERE `benutzer`.`land` LIKE 'Italien' ;
+
+UPDATE `benutzer` SET `land` = 'FR' WHERE `benutzer`.`land` LIKE 'France' ;
+
+UPDATE `benutzer` SET `land` = 'GB' WHERE `benutzer`.`land` LIKE 'England' ;
+
+UPDATE `benutzer` SET `land` = 'OT' WHERE `benutzer`.`land` LIKE '%other%' ;
+
+-- shrink field size to what is needed
+
+ALTER TABLE `benutzer` CHANGE `land` `land` VARCHAR( 2 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL 
+
+
+-- optimize table iso_countries
+
+UPDATE `iso_countries` SET `countryCode` = 'OT' WHERE `countryName` LIKE '%other%' ;
+
+
 -- Revision 56
 
 ALTER TABLE `issn` CHANGE `identifier_id` `identifier_id` VARCHAR( 20 ) NOT NULL 

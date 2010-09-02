@@ -43,6 +43,7 @@ import util.Auth;
 import util.ReadSystemConfigurations;
 import util.RemoveNullValuesFromObject;
 import util.ThreadSafeSimpleDateFormat;
+import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
@@ -77,6 +78,12 @@ public final class ILVReport extends DispatchAction {
             final Text cn = new Text();
 
             try {
+
+                // this is a small hack, because the ILV report is beeing
+                // composed on the JSP, where we can't exchange the country
+                // codes (CH / DE / US) against the fullname of the country
+                final Countries country = new Countries(pageForm.getKonto().getLand(), cn.getConnection());
+                pageForm.getKonto().setLand(country.getCountryname());
 
                 rq.setAttribute("orderform", pageForm);
                 final ActiveMenusForm mf = new ActiveMenusForm();

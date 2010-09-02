@@ -40,9 +40,7 @@ public class Lieferanten extends AbstractIdEntity {
     private Long kid;
     private String sigel;
     private String name;
-    private boolean land_d;
-    private boolean land_a;
-    private boolean land_ch;
+    private String countryCode;
     private boolean land_allgemein;
 
 
@@ -56,28 +54,21 @@ public class Lieferanten extends AbstractIdEntity {
         this.setKid(rs.getLong("kid"));
         this.setSigel(rs.getString("siegel"));
         this.setName(rs.getString("lieferant"));
-        this.setLand_a(rs.getBoolean("A"));
-        this.setLand_d(rs.getBoolean("D"));
-        this.setLand_ch(rs.getBoolean("CH"));
+        this.setCountryCode(rs.getString("countryCode"));
         this.setLand_allgemein(rs.getBoolean("allgemein"));
     }
 
-    public ArrayList<Lieferanten> getListForKontoAndCountry(String land, final Long kId, final Connection cn) {
-
-        if ("Schweiz".equals(land)) { land = "CH"; }
-        if ("Deutschland".equals(land)) { land = "D"; }
-        if ("Österreich".equals(land)) { land = "A"; }
-        // if we couldn't set a country code, use a default
-        if (!"CH".equals(land) && !"D".equals(land) && !"A".equals(land)) { land = "CH"; }
+    public ArrayList<Lieferanten> getListForKontoAndCountry(final String land, final Long kId, final Connection cn) {
 
         final ArrayList<Lieferanten> list = new ArrayList<Lieferanten>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? OR `allgemein`='1' OR `"
-                    + land + "`='1' ORDER BY siegel ASC, lieferant ASC");
+            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? OR `allgemein`='1' OR "
+                    + "`countryCode`=? ORDER BY siegel ASC, lieferant ASC");
             pstmt.setLong(1, kId);
+            pstmt.setString(2, land);
 
             rs = pstmt.executeQuery();
 
@@ -196,9 +187,7 @@ public class Lieferanten extends AbstractIdEntity {
             l.setKid(rs.getLong("kid"));
             l.setSigel(rs.getString("siegel"));
             l.setName(rs.getString("lieferant"));
-            l.setLand_a(rs.getBoolean("A"));
-            l.setLand_d(rs.getBoolean("D"));
-            l.setLand_ch(rs.getBoolean("CH"));
+            l.setCountryCode(rs.getString("countryCode"));
             l.setLand_allgemein(rs.getBoolean("allgemein"));
 
         } catch (final Exception e) {
@@ -218,56 +207,29 @@ public class Lieferanten extends AbstractIdEntity {
         this.kid = kid;
     }
 
-
-    public boolean isLand_a() {
-        return land_a;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-
-    public void setLand_a(final boolean land_a) {
-        this.land_a = land_a;
+    public void setCountryCode(final String countryCode) {
+        this.countryCode = countryCode;
     }
-
 
     public boolean isLand_allgemein() {
         return land_allgemein;
     }
 
-
     public void setLand_allgemein(final boolean land_allgemein) {
         this.land_allgemein = land_allgemein;
     }
-
-
-    public boolean isLand_ch() {
-        return land_ch;
-    }
-
-
-    public void setLand_ch(final boolean land_ch) {
-        this.land_ch = land_ch;
-    }
-
-
-    public boolean isLand_d() {
-        return land_d;
-    }
-
-
-    public void setLand_d(final boolean land_d) {
-        this.land_d = land_d;
-    }
-
 
     public Long getLid() {
         return lid;
     }
 
-
     public void setLid(final Long lid) {
         this.lid = lid;
     }
-
 
     public String getName() {
         return name;
@@ -287,8 +249,6 @@ public class Lieferanten extends AbstractIdEntity {
     public void setSigel(final String sigel) {
         this.sigel = sigel;
     }
-
-
 
 
 }

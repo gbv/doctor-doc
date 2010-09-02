@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
+import util.ReadSystemConfigurations;
+
 
 /**
  * Abstract base class for entities having a {@link Long} unique
@@ -36,6 +38,9 @@ import org.grlea.log.SimpleLogger;
 public class Countries extends AbstractIdEntity {
 
     private static final SimpleLogger LOG = new SimpleLogger(Countries.class);
+    // defines which locale of iso_countries shall be used
+    // you may define your own set of localized countries in the MySQL table
+    private static final String LOCALE = ReadSystemConfigurations.getLocale();
 
     private String rowid;
     private String countryid;
@@ -44,21 +49,25 @@ public class Countries extends AbstractIdEntity {
     private String countryname;
     private String phoneprefix;
 
+    public Countries() {
 
+    }
 
     /**
-     * Listet alle aktivierten Länder auf (in DB mit locale 'de' versehen)
+     * Gets all Countries for the given locale specified in SystemConfiguartion.properties
      * <p></p>
      * @return a {@link Countries}
      */
-    public List<Countries> getAllActivatedCountries(final Connection cn) {
+    public List<Countries> getAllCountries(final Connection cn) {
 
         final ArrayList<Countries> cl = new ArrayList<Countries>();
+
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM `iso_countries` WHERE `locale` ='de' "
+            pstmt = cn.prepareStatement("SELECT * FROM `iso_countries` WHERE `locale` =? "
                     + "ORDER BY `countryName` ASC");
+            pstmt.setString(1, LOCALE);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 cl.add(getCountries(rs));
@@ -86,8 +95,48 @@ public class Countries extends AbstractIdEntity {
 
     }
 
+    /**
+     * Gets a Country from a countryCode and for the given locale specified in SystemConfiguartion.properties
+     * <p></p>
+     * @return a {@link Countries}
+     */
+    public Countries(final String code, final Connection cn) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM `iso_countries` WHERE `locale` =? "
+                    + "AND `countryCode` =? ORDER BY `countryName` ASC");
+            pstmt.setString(1, LOCALE);
+            pstmt.setString(2, code);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                this.setRsValues(rs);
+            }
+
+        } catch (final Exception e) {
+            LOG.error("Countries getCountry: " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+    }
+
     /*
-     * Füllt ein Countries-Objekt mit einer Zeile aus der Datenbank
+     * Fills a Countries object with a row of the database
      */
     private Countries getCountries(final ResultSet rs) throws Exception {
         final Countries country = new Countries();
@@ -99,6 +148,18 @@ public class Countries extends AbstractIdEntity {
         country.setPhoneprefix(rs.getString("phonePrefix"));
 
         return country;
+    }
+
+    /*
+     * Fills a Countries object with a row of the database
+     */
+    private void setRsValues(final ResultSet rs) throws Exception {
+        this.setRowid(rs.getString("rowId"));
+        this.setCountryid(rs.getString("countryId"));
+        this.setLocale(rs.getString("locale"));
+        this.setCountrycode(rs.getString("countryCode"));
+        this.setCountryname(rs.getString("countryName"));
+        this.setPhoneprefix(rs.getString("phonePrefix"));
     }
 
 

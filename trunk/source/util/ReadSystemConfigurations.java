@@ -34,6 +34,10 @@ public final class ReadSystemConfigurations {
         return AbstractReadSystemConfigurations.SYSTEM_TIMEZONE;
     }
 
+    public static String getLocale() {
+        return AbstractReadSystemConfigurations.LOCALE;
+    }
+
     public static String getSystemEmail() {
         return AbstractReadSystemConfigurations.SYSTEM_EMAIL;
     }
