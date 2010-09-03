@@ -6,15 +6,15 @@ import util.Http;
 
 class MyCallable implements Callable<String> {
 
-  private final String link;
+    private final transient String link;
 
-  MyCallable( String link ) {
-    this.link = link;
-  }
-  public String call() {
-    Http http = new Http();
-      String content = http.getWebcontent(link, 2000, 3);
-    return content;
-  }
+    MyCallable( final String link ) {
+        this.link = link;
+    }
+    public String call() {
+        final Http http = new Http();
+
+        return http.getWebcontent(link, 2000, 3);
+    }
 
 }

@@ -777,11 +777,6 @@ public final class OrderAction extends DispatchAction {
         }
 
 
-        if (pageForm.isFromstock()) { // der Assistent wurde aus den Bestandesangaben heraus aufgerufen
-            if ("noresult".equals(forward) || "issn_direkt".equals(forward)) { forward = "stock"; }
-        }
-
-
         rq.setAttribute("orderform", pageForm);
         rq.setAttribute("form", pageForm);
 
@@ -1281,7 +1276,8 @@ public final class OrderAction extends DispatchAction {
                     }
 
                     issnRB.add(jdRB);
-                    while (content.startsWith(";", startIssn + 9)) {
+                    //                    while (content.startsWith(";", startIssn + 9)) {
+                    while (content.charAt(startIssn + 9) == ';') {
                         // falls es weitere ISSNs gibt...
                         content = content.substring(startIssn + 10);
                         startIssn = content.indexOf('-') - 4;
@@ -1326,7 +1322,8 @@ public final class OrderAction extends DispatchAction {
 
                         issnRB.add(jdRB);
 
-                        while (content.startsWith(";", startIssn + 9)) {
+                        //                        while (content.startsWith(";", startIssn + 9)) {
+                        while (content.charAt(startIssn + 9) == ';') {
                             // falls es weitere ISSNs gibt...
                             content = content.substring(startIssn + 10);
                             startIssn = content.indexOf('-') - 4;
@@ -1422,7 +1419,8 @@ public final class OrderAction extends DispatchAction {
 
             issn = contentGetIssn.substring(startIssn, startIssn + 9);
 
-            while (contentGetIssn.startsWith(";", startIssn + 9)) {
+            //            while (contentGetIssn.startsWith(";", startIssn + 9)) {
+            while (contentGetIssn.charAt(startIssn + 9) == ';') {
                 // falls es weitere ISSNs gibt...
                 contentGetIssn = contentGetIssn.substring(startIssn + 10);
                 startIssn = contentGetIssn.indexOf('-') - 4;
@@ -1436,7 +1434,8 @@ public final class OrderAction extends DispatchAction {
                 int startIssn = contentGetIssn.indexOf('-', start) - 4;
                 issn = contentGetIssn.substring(startIssn, startIssn + 9);
 
-                while (contentGetIssn.startsWith(";", startIssn + 9)) {
+                //                while (contentGetIssn.startsWith(";", startIssn + 9)) {
+                while (contentGetIssn.charAt(startIssn + 9) == ';') {
                     // falls es weitere ISSNs gibt...
                     contentGetIssn = contentGetIssn.substring(startIssn + 10);
                     startIssn = contentGetIssn.indexOf('-') - 4;
@@ -2704,29 +2703,28 @@ public final class OrderAction extends DispatchAction {
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     }
 
-                    if (auth.isBibliothekar(rq)) {
-                        // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
-                        if (!b.getKonto().getId().equals(ui.getKonto().getId())) {
-                            System.out.println("URL-hacking... ;-)");
-                            forward = FAILURE;
-                            final ErrorMessage em = new ErrorMessage("error.hack",
-                            "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                            rq.setAttribute(ERRORMESSAGE, em);
-                            rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
-                            LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
-                        }
+                    if (auth.isBibliothekar(rq)
+                            // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
+                            && !b.getKonto().getId().equals(ui.getKonto().getId())) {
+                        System.out.println("URL-hacking... ;-)");
+                        forward = FAILURE;
+                        final ErrorMessage em = new ErrorMessage("error.hack",
+                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
+                        LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
-                    if (auth.isBenutzer(rq)) {
+                    if (auth.isBenutzer(rq)
+                            // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
+                            && !b.getBenutzer().getId().equals(ui.getBenutzer().getId())) {
                         // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
-                        if (!b.getBenutzer().getId().equals(ui.getBenutzer().getId())) {
-                            System.out.println("URL-hacking... ;-)");
-                            forward = FAILURE;
-                            final ErrorMessage em = new ErrorMessage("error.hack",
-                            "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                            rq.setAttribute(ERRORMESSAGE, em);
-                            rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
-                            LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
-                        }
+                        System.out.println("URL-hacking... ;-)");
+                        forward = FAILURE;
+                        final ErrorMessage em = new ErrorMessage("error.hack",
+                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
+                        LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
 
                 } else {
@@ -2921,10 +2919,10 @@ public final class OrderAction extends DispatchAction {
     private String shortenGoogleSearchPhrase(String artikeltitel) {
 
         try {
-            if (artikeltitel.length() > 75) { // Google ist limitiert in der Laenge bei Phrasen-Suche im Titel
-                if (artikeltitel.substring(0, 75).contains("\040")) {
-                    artikeltitel = artikeltitel.substring(0, artikeltitel.lastIndexOf('\040', 75));
-                }
+            // Google is limited for the length of the search term while searching as a phrase
+            if (artikeltitel.length() > 75
+                    && artikeltitel.substring(0, 75).contains("\040")) {
+                artikeltitel = artikeltitel.substring(0, artikeltitel.lastIndexOf('\040', 75));
             }
 
         } catch (final Exception e) {
@@ -3049,13 +3047,11 @@ public final class OrderAction extends DispatchAction {
                 // TODO: we need a better mechanism to manage the indication of external holdings
                 // We make sure that the holdings are from the same country as the requester
                 if (ui != null && b.getHolding().getKonto().getLand() != null
-                        && b.getHolding().getKonto().getLand().equals(ui.getKonto().getLand())) {
-
-                    // add to list if it is not a holding from the own account
-                    if (!b.getHolding().getKid().equals(daiaId)
-                            && !b.isInternal()) {
-                        externalHoldings.add(b);
-                    }
+                        && b.getHolding().getKonto().getLand().equals(ui.getKonto().getLand())
+                        // add to list if it is not a holding from the own account
+                        && !b.getHolding().getKid().equals(daiaId)
+                        && !b.isInternal()) {
+                    externalHoldings.add(b);
                 }
             }
 

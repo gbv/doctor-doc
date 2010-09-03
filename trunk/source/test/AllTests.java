@@ -26,16 +26,16 @@ import test.dbs.entity.TestKonto;
 
 public class AllTests {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite("Test for test.dbs.entity");
-    //$JUnit-BEGIN$
-    suite.addTestSuite(TestBenutzer.class);
-    suite.addTestSuite(TestKonto.class);
-    suite.addTestSuite(TestKontoAction.class);
-    suite.addTestSuite(TestLoginAction.class);
-//    suite.addTestSuite(TestPosition.class);
-    //$JUnit-END$
-    return suite;
-  }
+    public static Test suite() {
+        final TestSuite suite = new TestSuite("Test for test.dbs.entity");
+        //$JUnit-BEGIN$
+        suite.addTestSuite(TestBenutzer.class);
+        suite.addTestSuite(TestKonto.class);
+        suite.addTestSuite(TestKontoAction.class);
+        suite.addTestSuite(TestLoginAction.class);
+        //    suite.addTestSuite(TestPosition.class);
+        //$JUnit-END$
+        return suite;
+    }
 
 }

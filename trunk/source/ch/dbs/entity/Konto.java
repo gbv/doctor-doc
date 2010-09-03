@@ -781,7 +781,7 @@ public class Konto extends AbstractIdEntity {
         } else {
             pstmt.setString(37, "1");
         }
-        pstmt.setString(38, Integer.valueOf(k.getKontotyp()).toString());
+        pstmt.setInt(38, k.getKontotyp());
         pstmt.setString(39, k.getDefault_deloptions());
         if (k.getPaydate() != null) {
             pstmt.setDate(40, k.getPaydate());

@@ -39,10 +39,10 @@ public class CSV {
     }
 
     /** The fields in the current String */
-    private final List<String> list = new ArrayList<String>();
+    private final transient List<String> list = new ArrayList<String>();
 
     /** the separator char for this parser */
-    private char fieldSep;
+    private final transient char fieldSep;
 
     /** parse: break the input String into fields
      * @return java.util.Iterator containing each field

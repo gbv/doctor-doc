@@ -423,7 +423,6 @@
             validate="false" 
             type="ch.dbs.actions.bestellung.OrderAction">
       <forward name="success" path="/jsp/issnresult.jsp"/>
-      <forward name="stock" path="/stock.do?method=prepare"/>
       <forward name="issn_direkt" path="/jsp/issnsearch.jsp"/>
       <forward name="notfreeebz" path="/journalorder.do?method=prepare"/>
     <forward name="freeezb" path="/jsp/availabilityresult.jsp"/>

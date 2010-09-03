@@ -670,7 +670,7 @@ public class IllHandler {
 
         try {
 
-            if (fax != null && fax.startsWith("+")) {
+            if (fax != null && fax.charAt(0) == '+') {
                 fax = "00" + fax.substring(1);
             }
 

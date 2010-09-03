@@ -42,7 +42,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String SERVER = "jdbc:mysql://" + DATABASE_SERVERADDRESS + "/" + DATABASE_NAME
     + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false";
-    private Connection cn;
+    private transient Connection cn;
 
     /**
      * Stellt die Verbindung zur MySql DB her und speichert die Verbindung im Objekt
@@ -54,7 +54,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
             Class.forName(DRIVER);
             cn = DriverManager.getConnection(SERVER, DATABASE_USER, DATABASE_PASSWORD);
             //            System.out.println("Verbunden mit " + SERVER + " Verbindungsobjekt: " + cn );
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("connect: " + e.toString());
         }
         return cn;
@@ -93,7 +93,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 cn.close();
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("close: " + e.toString());
         }
     }
@@ -112,7 +112,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 if (cn.isClosed()) {
                     this.connect();
                 }
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 LOG.error("getSingleConnection: " + e.toString());
             }
         }
@@ -135,7 +135,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                     cn = getSingleConnection();
                 }
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOG.error("getConnection: " + e.toString());
             cn = getSingleConnection();
         }
@@ -161,7 +161,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 //              System.err.println("num_busy_connections: " + pds.getNumBusyConnectionsDefaultUser());
                 //              System.err.println("num_idle_connections: " + pds.getNumIdleConnectionsDefaultUser());
                 //              System.err.println();
-            } catch (Exception e) { // alternativer Versuch, falls PooledConnection versagt
+            } catch (final Exception e) { // alternativer Versuch, falls PooledConnection versagt
                 LOG.error("getPooledConnection: " + e.toString());
                 cn = getSingleConnection();
                 // Control to see if it works on remote server
@@ -180,7 +180,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                         // System.err.println("num_busy_connections: " + pds.getNumBusyConnectionsDefaultUser());
                         // System.err.println("num_idle_connections: " + pds.getNumIdleConnectionsDefaultUser());
                         // System.err.println();
-                    } catch (Exception e) { // alternativer Versuch, falls PooledConnection versagt
+                    } catch (final Exception e) { // alternativer Versuch, falls PooledConnection versagt
                         LOG.error("getPooledConnection: " + e.toString());
                         cn = getSingleConnection();
                         // Control to see if it works on remote server
@@ -188,7 +188,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                         mh.sendErrorMail("Failure in getPooledConnection!!!", e.toString());
                     }
                 }
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 LOG.error("getPooledConnection: " + e.toString());
             }
         }

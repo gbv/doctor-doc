@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 
 public class SimpleLineReader {
-    private FilterInputStream s;
+    private transient FilterInputStream s;
 
     /**
      * Erstellt die Klasse SimpleLineReader, welche einen InputStream als FilterInputStream abspeichert.

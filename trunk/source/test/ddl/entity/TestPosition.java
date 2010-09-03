@@ -36,74 +36,74 @@ import ch.ddl.entity.Position;
 
 public class TestPosition extends TestCase{
 
-  private static Konto k = new Konto();
+    private static Konto k = new Konto();
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
 
-  }
+    }
 
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
 
 
-  }
+    }
 
-  @Before
-  public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
-  }
+    }
 
-  @After
-  public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
 
-  }
+    }
 
-  @Test //@BeforeClass funzt nicht
-  public void testSetUp() {
-    Konto tz = new Konto(); // we need this for setting a default timezone
-    Date d = new Date();
-    ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String datum = fmt.format(d, tz.getTimezone());
-        AbstractBenutzer b = PrepareTestObjects.getBibliothekar();
+    @Test //@BeforeClass funzt nicht
+    public void testSetUp() {
+        final Konto tz = new Konto(); // we need this for setting a default timezone
+        final Date d = new Date();
+        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String datum = fmt.format(d, tz.getTimezone());
+        final AbstractBenutzer b = PrepareTestObjects.getBibliothekar();
         b.setDatum(datum);
-    b.saveNewUser(b, tz, k.getSingleConnection());
-    k.close();
-  }
+        b.saveNewUser(b, tz, k.getSingleConnection());
+        k.close();
+    }
 
-  @Test
-  public void testSaveLoadUpdateDeletePostionen() {
+    @Test
+    public void testSaveLoadUpdateDeletePostionen() {
 
-    // Test
-    Position p = PrepareTestObjects.getPosition();
-    p.save(p.getSingleConnection());
-    Position loadestpos = new Position(p.getId(), p.getSingleConnection());
-    loadestpos.setAutor("modified");
-    loadestpos.update(p.getSingleConnection());
-    loadestpos = new Position(p.getId(), p.getSingleConnection());
-    Boolean del = p.deleteSelf(p.getSingleConnection());
-    p.close();
+        // Test
+        final Position p = PrepareTestObjects.getPosition();
+        p.save(p.getSingleConnection());
+        Position loadestpos = new Position(p.getId(), p.getSingleConnection());
+        loadestpos.setAutor("modified");
+        loadestpos.update(p.getSingleConnection());
+        loadestpos = new Position(p.getId(), p.getSingleConnection());
+        final Boolean del = p.deleteSelf(p.getSingleConnection());
+        p.close();
 
-    // Prüfung
-    assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", p.getSingleConnection());
-    assertNotNull("Positionen wurde nicht gespeichert", p.getId());
-    assertNotNull("Laden von Positionen hat nicht geklappt", loadestpos.getId());
-    assertEquals("Update von Positionen hat nicht geklappt", "modified", loadestpos.getAutor());
-    assertTrue("Löschen von Positionen hat nicht geklappt", del);
-  }
+        // Prüfung
+        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", p.getSingleConnection());
+        assertNotNull("Positionen wurde nicht gespeichert", p.getId());
+        assertNotNull("Laden von Positionen hat nicht geklappt", loadestpos.getId());
+        assertEquals("Update von Positionen hat nicht geklappt", "modified", loadestpos.getAutor());
+        assertTrue("Löschen von Positionen hat nicht geklappt", del);
+    }
 
-  @Test
-  public void testFillPositionenFromFormBean() {
-//    PositionForm pf  = PrepareTestObjects.getPositionForm();
-//    Position p = new Position(pf);
-//    assertNotNull(p.getId());
-  }
+    @Test
+    public void testFillPositionenFromFormBean() {
+        //    PositionForm pf  = PrepareTestObjects.getPositionForm();
+        //    Position p = new Position(pf);
+        //    assertNotNull(p.getId());
+    }
 
-  @Test //@AfterClass funzt nicht
-  public void testTearDownUp() {
-    AbstractBenutzer b = new AbstractBenutzer();
-    b.deleteUser(PrepareTestObjects.getTestBibliothekarFromDb(k.getSingleConnection()), k.getSingleConnection());
-    k.close();
-  }
+    @Test //@AfterClass funzt nicht
+    public void testTearDownUp() {
+        final AbstractBenutzer b = new AbstractBenutzer();
+        b.deleteUser(PrepareTestObjects.getTestBibliothekarFromDb(k.getSingleConnection()), k.getSingleConnection());
+        k.close();
+    }
 
 }

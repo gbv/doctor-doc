@@ -34,7 +34,7 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
     private String zeitschriftentitel_encoded;
     private String artikeltitel_encoded;
     private OrderForm pageForm;
-    private String concurrCopyTitle;
+    private transient String concurrCopyTitle;
 
     public ThreadedJournalSeek() {
     }

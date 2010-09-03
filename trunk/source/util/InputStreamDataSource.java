@@ -27,9 +27,9 @@ import javax.activation.DataSource;
 
 public class InputStreamDataSource implements DataSource {
 
-    private final String name;
-    private final String contentType;
-    private final ByteArrayOutputStream baos;
+    private final transient String name;
+    private final transient String contentType;
+    private final transient ByteArrayOutputStream baos;
 
     InputStreamDataSource(final String stName, final String contentTyp, final InputStream inputStream) throws IOException {
         this.name = stName;

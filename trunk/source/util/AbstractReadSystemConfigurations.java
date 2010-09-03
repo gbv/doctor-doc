@@ -30,40 +30,40 @@ import org.grlea.log.SimpleLogger;
  * @author Markus Fischer
  */
 
-public abstract class AbstractReadSystemConfigurations {
+abstract class AbstractReadSystemConfigurations {
 
     private static final SimpleLogger LOG = new SimpleLogger(AbstractReadSystemConfigurations.class);
     private static final String PATH = "resources/SystemConfiguration.properties";
 
-    static final String SYSTEM_TIMEZONE = readSystemTimezone();
-    static final String LOCALE = readLocale();
+    protected static final String SYSTEM_TIMEZONE = readSystemTimezone();
+    protected static final String LOCALE = readLocale();
 
-    static final String SYSTEM_EMAIL = readSystemEmail();
-    static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
-    static final String SYSTEM_EMAIL_ACCOUNTNAME = readSystemEmailAccountname();
-    static final String SYSTEM_EMAIL_PASSWORD = readSystemEmailPassword();
-    static final String ERROR_EMAIL = readErrorEmail();
+    protected static final String SYSTEM_EMAIL = readSystemEmail();
+    protected static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
+    protected static final String SYSTEM_EMAIL_ACCOUNTNAME = readSystemEmailAccountname();
+    protected static final String SYSTEM_EMAIL_PASSWORD = readSystemEmailPassword();
+    protected static final String ERROR_EMAIL = readErrorEmail();
 
-    static final String DATABASE_SERVERADDRESS = readDatabaseServerAddress();
-    static final String DATABASE_NAME = readDatabaseName();
-    static final String DATABASE_USER = readDatabaseUser();
-    static final String DATABASE_PASSWORD = readDatabasePassword();
-    static final boolean DATABASE_POOLED_CONNECTIONS = readDatabasePooledConnections();
+    protected static final String DATABASE_SERVERADDRESS = readDatabaseServerAddress();
+    protected static final String DATABASE_NAME = readDatabaseName();
+    protected static final String DATABASE_USER = readDatabaseUser();
+    protected static final String DATABASE_PASSWORD = readDatabasePassword();
+    protected static final boolean DATABASE_POOLED_CONNECTIONS = readDatabasePooledConnections();
 
-    static final String SERVER_WELCOMEPAGE = readServerWelcomepage();
-    static final String SERVER_INSTALLATION = readServerInstallation();
-    static final String APPLICATION_NAME = readApplicationName();
+    protected static final String SERVER_WELCOMEPAGE = readServerWelcomepage();
+    protected static final String SERVER_INSTALLATION = readServerInstallation();
+    protected static final String APPLICATION_NAME = readApplicationName();
 
-    static final boolean ALLOW_REGISTER_LIBRARY_ACCOUNTS = readAllowRegisterLibraryAccounts();
-    static final boolean ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH = readAllowPatronAutomaticGoogleSearch();
-    static final boolean ACTIVATE_GTC = readActivateGTC();
+    protected static final boolean ALLOW_REGISTER_LIBRARY_ACCOUNTS = readAllowRegisterLibraryAccounts();
+    protected static final boolean ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH = readAllowPatronAutomaticGoogleSearch();
+    protected static final boolean ACTIVATE_GTC = readActivateGTC();
 
-    static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
-    static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
+    protected static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
+    protected static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
 
-    static final boolean SEARCH_CARELIT = searchCarelit();
-    static final boolean USE_DAIA = readUseDaia();
-    static final String DAIA_HOST = readDaiaHost();
+    protected static final boolean SEARCH_CARELIT = searchCarelit();
+    protected static final boolean USE_DAIA = readUseDaia();
+    protected static final String DAIA_HOST = readDaiaHost();
 
     private static String readSystemTimezone() {
 

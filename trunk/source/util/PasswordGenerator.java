@@ -27,7 +27,7 @@ public class PasswordGenerator {
 
     private static java.util.Random rnd;
 
-    private final int passwordLength;
+    private final transient int passwordLength;
 
     public PasswordGenerator() {
         this(DEFAULT_PW_LENGTH);

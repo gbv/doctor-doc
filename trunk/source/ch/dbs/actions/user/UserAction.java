@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1454,14 +1453,14 @@ public final class UserAction extends DispatchAction {
      */
     private TreeMap<String, String> composeSortedLocalisedOrderSearchFields(final HttpServletRequest rq) {
 
-        final Vector<String> v = prepareOrderSearchFields();
+        final List<String> list = prepareOrderSearchFields();
         final TreeMap<String, String> result = new TreeMap<String, String>();
         final Locale locale = getLocale(rq);
         final MessageResources msgs = getResources(rq);
         String key = null;
         String value = null;
-        for (int i = 0; i < v.size(); i++) {
-            value = "searchorders." + (String) v.elementAt(i);
+        for (int i = 0; i < list.size(); i++) {
+            value = "searchorders." + list.get(i);
             key = msgs.getMessage(locale, value);
             result.put(key, value);
         }
@@ -1486,43 +1485,44 @@ public final class UserAction extends DispatchAction {
      * Enthält den hinteren Teil der Einträge im Properties-File
      * z.B. all => searchorders.all=...
      */
-    private Vector<String> prepareOrderSearchFields() {
+    private List<String> prepareOrderSearchFields() {
 
-        final Vector<String> v = new Vector<String>();
+        final List<String> list = new ArrayList<String>();
 
-        //        v.add("all"); // hardcodiert in JSP damit dieser Parameter in jeder Sprache zuoberst steht
-        v.add("department");
-        v.add("gender");
-        v.add("artikeltitel");
-        v.add("author");
-        v.add("bemerkungen");
-        v.add("buchkapitel");
-        v.add("buchtitel");
-        v.add("delformat");
-        v.add("doi");
-        v.add("email");
-        v.add("gbvnr");
-        v.add("heft");
-        v.add("institut");
-        v.add("internenr");
-        v.add("notizen");
-        v.add("isbn");
-        v.add("issn");
-        v.add("jahr");
-        v.add("jahrgang");
-        v.add("supplier");
-        v.add("deliveryway");
-        v.add("name");
-        v.add("pmid");
-        v.add("prio");
-        v.add("seiten");
-        v.add("subitonr");
-        v.add("typ");
-        v.add("verlag");
-        v.add("vorname");
-        v.add("zeitschrift");
+        // the param "all" is hardcoded on the JSP, to ensure he is always on top, language independent
+        //        list.add("all");
+        list.add("department");
+        list.add("gender");
+        list.add("artikeltitel");
+        list.add("author");
+        list.add("bemerkungen");
+        list.add("buchkapitel");
+        list.add("buchtitel");
+        list.add("delformat");
+        list.add("doi");
+        list.add("email");
+        list.add("gbvnr");
+        list.add("heft");
+        list.add("institut");
+        list.add("internenr");
+        list.add("notizen");
+        list.add("isbn");
+        list.add("issn");
+        list.add("jahr");
+        list.add("jahrgang");
+        list.add("supplier");
+        list.add("deliveryway");
+        list.add("name");
+        list.add("pmid");
+        list.add("prio");
+        list.add("seiten");
+        list.add("subitonr");
+        list.add("typ");
+        list.add("verlag");
+        list.add("vorname");
+        list.add("zeitschrift");
 
-        return v;
+        return list;
     }
 
     /**
@@ -1582,10 +1582,10 @@ public final class UserAction extends DispatchAction {
 
         if (input != null && !input.equals("searchorders.all")) {
 
-            final Vector<String> v = prepareOrderSearchFields();
+            final List<String> list = prepareOrderSearchFields();
 
-            for (int i = 0; i < v.size(); i++) {
-                final String compare = "searchorders." + (String) v.elementAt(i);
+            for (int i = 0; i < list.size(); i++) {
+                final String compare = "searchorders." + (String) list.get(i);
                 if (input.equals(compare)) {
                     check = true;
                     break;

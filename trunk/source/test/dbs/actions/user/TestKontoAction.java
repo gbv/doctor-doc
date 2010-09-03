@@ -36,137 +36,137 @@ import ch.dbs.form.UserForm;
 
 public class TestKontoAction extends MockStrutsTestCase{
 
-  private Konto k = new Konto();
-  private Long id = PrepareTestObjects.KONTOID;
+    private transient Konto k = new Konto();
+    private transient final Long id = PrepareTestObjects.KONTOID;
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
 
-  }
+    }
 
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
 
-  }
+    }
 
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-//     set the context directory to /WebRoot
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        //     set the context directory to /WebRoot
         // to find the /WEB-INF/web.xml
         setContextDirectory(new File("war"));
 
-  }
+    }
 
-  @After
-  public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
 
-  }
+    }
 
-  @Test
-  public void testAddNewKonto() throws Exception {
+    @Test
+    public void testAddNewKonto() throws Exception {
 
-    // remove old testobjects from db
-    PrepareTestObjects.clearTestObjects();
+        // remove old testobjects from db
+        PrepareTestObjects.clearTestObjects();
 
-//    Kontoform vorbereiten
+        //    Kontoform vorbereiten
 
-    k = new Konto(id, k.getSingleConnection());
-    KontoForm kf = new KontoForm(k);
-    kf.setValuesFromKonto();
+        k = new Konto(id, k.getSingleConnection());
+        final KontoForm kf = new KontoForm(k);
+        kf.setValuesFromKonto();
 
-    //Kontoform absenden
-    setRequestPathInfo("/anmeldungkonto_.do");
-    addRequestParameter("method", "addNewKonto");
-    setActionForm(kf);
-    actionPerform();
+        //Kontoform absenden
+        setRequestPathInfo("/anmeldungkonto_.do");
+        addRequestParameter("method", "addNewKonto");
+        setActionForm(kf);
+        actionPerform();
 
-    //Kontrolle ob es geklappt hat
-    verifyNoActionErrors();
-    verifyForward("success");
-  }
+        //Kontrolle ob es geklappt hat
+        verifyNoActionErrors();
+        verifyForward("success");
+    }
 
-  @Test
-  public void testAddNewBibliothekar() throws Exception {
-
-        // Kontoform vorbereiten
-    KontoForm kf = PrepareTestObjects.getKontoValues();
-
-    // UserForm vorbereiten
-    UserForm uf = PrepareTestObjects.getUserForm();
-
-    //Kontoforms absenden
-    setRequestPathInfo("/anmeldungbibliothekar_.do");
-    addRequestParameter("method", "addNewBibliothekar");
-    getSession().setAttribute("kontoform", kf);
-
-    setActionForm(uf);
-    actionPerform();
-
-    //Kontrolle ob es geklappt hat
-    verifyNoActionErrors();
-    verifyForward("weiter");
-
-  }
-
-  @Test
-  public void testAddNewBibliothekarIdenticalUser() throws Exception {
+    @Test
+    public void testAddNewBibliothekar() throws Exception {
 
         // Kontoform vorbereiten
-    KontoForm kf = PrepareTestObjects.getKontoValues();
-    kf.setBiblioname(PrepareTestObjects.BIBLIONAME2);
+        final KontoForm kf = PrepareTestObjects.getKontoValues();
 
-    // UserForm vorbereiten
-    UserForm uf = PrepareTestObjects.getUserForm();
+        // UserForm vorbereiten
+        final UserForm uf = PrepareTestObjects.getUserForm();
 
-    //Kontoforms absenden
-    setRequestPathInfo("/anmeldungbibliothekar_.do");
-    addRequestParameter("method", "addNewBibliothekar");
-    getSession().setAttribute("kontoform", kf);
+        //Kontoforms absenden
+        setRequestPathInfo("/anmeldungbibliothekar_.do");
+        addRequestParameter("method", "addNewBibliothekar");
+        getSession().setAttribute("kontoform", kf);
 
-    setActionForm(uf);
-    actionPerform();
+        setActionForm(uf);
+        actionPerform();
 
-    //Kontrolle ob es geklappt hat
-    verifyNoActionErrors();
-    verifyForward("weiter");
+        //Kontrolle ob es geklappt hat
+        verifyNoActionErrors();
+        verifyForward("weiter");
+
+    }
+
+    @Test
+    public void testAddNewBibliothekarIdenticalUser() throws Exception {
+
+        // Kontoform vorbereiten
+        final KontoForm kf = PrepareTestObjects.getKontoValues();
+        kf.setBiblioname(PrepareTestObjects.BIBLIONAME2);
+
+        // UserForm vorbereiten
+        final UserForm uf = PrepareTestObjects.getUserForm();
+
+        //Kontoforms absenden
+        setRequestPathInfo("/anmeldungbibliothekar_.do");
+        addRequestParameter("method", "addNewBibliothekar");
+        getSession().setAttribute("kontoform", kf);
+
+        setActionForm(uf);
+        actionPerform();
+
+        //Kontrolle ob es geklappt hat
+        verifyNoActionErrors();
+        verifyForward("weiter");
 
 
-    // remove testobjects from db
-    PrepareTestObjects.clearTestObjects();
-  }
+        // remove testobjects from db
+        PrepareTestObjects.clearTestObjects();
+    }
 
-//  @Test
-//  public void testAddNewFaxentry() throws Exception {
-//
-//    Fax f = new Fax();
-//    f.setFrom("Fromnummer");
-//    f.setKid("1");
-//    f.setPages("30");
-//    f.setPopfaxid("123456");
-//    f.setState("20");
-//    f.setStatedate("9999-09-09");
-//    f.saveNewFax(f.getConnection());
-//    f.close();
-////    Kontoform vorbereiten
-//
-//    k = new Konto(id, k.getConnection());
-//    KontoForm kf = new KontoForm(k);
-//    kf.setValuesFromKonto();
-//
-//    //Konto Subitobn modifizieren, damit Test durch Dublettenkontrollle Subitobn kommt
-//    k.setSubitobenutzername("blaaa");
-//    k.update(k.getConnection());
-//
-//    //Kontoform absenden
-//    setRequestPathInfo("/anmeldungkonto_.do");
-//    addRequestParameter("method", "addNewKonto");
-//    setActionForm(kf);
-//    actionPerform();
-//
-//    //Kontrolle ob es geklappt hat
-//    verifyNoActionErrors();
-//    verifyForward("success");
-//  }
+    //  @Test
+    //  public void testAddNewFaxentry() throws Exception {
+    //
+    //    Fax f = new Fax();
+    //    f.setFrom("Fromnummer");
+    //    f.setKid("1");
+    //    f.setPages("30");
+    //    f.setPopfaxid("123456");
+    //    f.setState("20");
+    //    f.setStatedate("9999-09-09");
+    //    f.saveNewFax(f.getConnection());
+    //    f.close();
+    ////    Kontoform vorbereiten
+    //
+    //    k = new Konto(id, k.getConnection());
+    //    KontoForm kf = new KontoForm(k);
+    //    kf.setValuesFromKonto();
+    //
+    //    //Konto Subitobn modifizieren, damit Test durch Dublettenkontrollle Subitobn kommt
+    //    k.setSubitobenutzername("blaaa");
+    //    k.update(k.getConnection());
+    //
+    //    //Kontoform absenden
+    //    setRequestPathInfo("/anmeldungkonto_.do");
+    //    addRequestParameter("method", "addNewKonto");
+    //    setActionForm(kf);
+    //    actionPerform();
+    //
+    //    //Kontrolle ob es geklappt hat
+    //    verifyNoActionErrors();
+    //    verifyForward("success");
+    //  }
 
 }

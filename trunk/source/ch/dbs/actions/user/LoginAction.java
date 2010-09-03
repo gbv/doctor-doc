@@ -89,11 +89,10 @@ public final class LoginAction extends Action {
 
             // Veraenderter Benutzer wieder in UserInfo und Session speichern.
             // Ab hier keine Veränderungen mehr am UserInfo!
-            if (u.getClass().isInstance(new Bibliothekar()) || u.getClass().isInstance(new Benutzer())) {
-                // Damit die Auswahl bei nur einem konto nicht dargestellt wird (Gilt nicht für Admins)
-                if (uil.get(0).getKontos().size() == 1) {
-                    uil.get(0).setKontoanz(1);
-                }
+            if ((u.getClass().isInstance(new Bibliothekar()) || u.getClass().isInstance(new Benutzer()))
+                    // Damit die Auswahl bei nur einem konto nicht dargestellt wird (Gilt nicht für Admins)
+                    && uil.get(0).getKontos().size() == 1) {
+                uil.get(0).setKontoanz(1);
             }
             uil.get(0).setBenutzer(u);
             rq.getSession().setAttribute("userinfo", uil.get(0)); // userinfo in Session schreiben

@@ -159,8 +159,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     // Captcha
     private String captcha_id;
     private String captcha_text;
-    // Bestandesangaben
-    private boolean fromstock; // um forward wieder auf stock zu setzen (Bestandesangaben)
     // GBV
     private String gbvsearch; // Suchbegriff
     private String gbvfield; // Suchfeld
@@ -1310,13 +1308,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.carelit = carelit;
     }
 
-    public boolean isFromstock() {
-        return fromstock;
-    }
-
-    public void setFromstock(final boolean fromstock) {
-        this.fromstock = fromstock;
-    }
 
     /**
      * Liefert je nach <br>

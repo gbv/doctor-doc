@@ -355,40 +355,57 @@ public final class KontoAction extends DispatchAction {
                 forward = "weiter";
 
                 // Nachricht über neues Konto abschicken
-                final StringBuffer message = new StringBuffer(
-                        "There has been registered a new library account in "
-                        + ReadSystemConfigurations.getApplicationName() + "\012\012");
-                message.append("Library account: " + k.getBibliotheksname() + "\012");
-                message.append("City: " + k.getOrt() + "\012");
-                message.append("Country: " + k.getLand() + "\012");
-                message.append("Library email: " + k.getBibliotheksmail() + "\012");
-                message.append("Type of account (0 = free | 1 = 1 year enhanced | 2 = 1 year faxserver | "
-                        + "3 = 3 months faxserver): " + k.getKontotyp() + "\012");
-                message.append("Librarian: " + u.getVorname() + "\040" + u.getName() + "\012");
-                message.append("Librarian email: " + u.getEmail() + "\012");
+                final StringBuffer message = new StringBuffer(272);
+                message.append("There has been registered a new library account in ");
+                message.append(ReadSystemConfigurations.getApplicationName());
+                message.append("\n\nLibrary account: ");
+                message.append(k.getBibliotheksname());
+                message.append("\nCity: ");
+                message.append(k.getOrt());
+                message.append("\nCountry: ");
+                message.append(k.getLand());
+                message.append("\nLibrary email: ");
+                message.append(k.getBibliotheksmail());
+                message.append("\nType of account (0 = free | 1 = 1 year enhanced | 2 = 1 year faxserver | "
+                        + "3 = 3 months faxserver): ");
+                message.append(k.getKontotyp());
+                message.append("\nLibrarian: ");
+                message.append(u.getVorname());
+                message.append('\040');
+                message.append(u.getName());
+                message.append("\nLibrarian email: ");
+                message.append(u.getEmail());
                 final String[] to = new String[1];
                 to[0] = ReadSystemConfigurations.getSystemEmail();
                 final MHelper mh = new MHelper();
                 mh.sendMail(to, "New library account!", message.toString());
 
                 // Bestätigungsemail mit Angaben zu den nächsten Schritten und Möglichkeiten
-                final StringBuffer mg = new StringBuffer("Dear\040");
+                final StringBuffer mg = new StringBuffer(400);
+                mg.append("Dear\040");
                 if (u.getAnrede().equals("Frau")) {
-                    mg.append("Ms\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
+                    mg.append("Ms\040");
+                    mg.append(u.getVorname());
+                    mg.append('\040');
+                    mg.append(u.getName());
                 }
                 if (u.getAnrede().equals("Herr")) {
-                    mg.append("Mr\040" + u.getVorname() + "\040" + u.getName() + "\012\012");
+                    mg.append("Mr\040");
+                    mg.append(u.getVorname());
+                    mg.append('\040');
+                    mg.append(u.getName());
                 }
-                mg.append("Welcome at " + ReadSystemConfigurations.getApplicationName() + "!\012\012");
-                mg.append("To use the IP-based oderform for your patrons within your institution, send us your "
-                        + "IP. We'll activate this function for your account at "
-                        + ReadSystemConfigurations.getApplicationName() + ".\012\012");
-                mg.append("This link will show you your IP: http://www.whatismyip.com (if your institution uses "
-                        + "an IP-range instead of a single IP, ask your IT)\012\012");
-                mg.append("Check out the How-To to use " + ReadSystemConfigurations.getApplicationName()
-                        + " as a linkresolver (in connection with the services of EZB/ZDB): "
-                        + "http://www.doctor-doc.com/version1.0/howto_openurl.do\012\012");
-                mg.append("You team consists of several librarians and you want each one of them to have their "
+                mg.append("\n\nWelcome at ");
+                mg.append(ReadSystemConfigurations.getApplicationName());
+                mg.append("!\n\nTo use the IP-based oderform for your patrons within your institution, send us your "
+                        + "IP. We'll activate this function for your account at ");
+                mg.append(ReadSystemConfigurations.getApplicationName());
+                mg.append(".\n\nThis link will show you your IP: http://www.whatismyip.com (if your institution uses "
+                        + "an IP-range instead of a single IP, ask your IT)\n\nCheck out the How-To to use ");
+                mg.append(ReadSystemConfigurations.getApplicationName());
+                mg.append(" as a linkresolver (in connection with the services of EZB/ZDB): "
+                        + "http://www.doctor-doc.com/version1.0/howto_openurl.do\012\012"
+                        + "Your team consists of several librarians and you want each one of them to have their "
                         + "own ID + PW? Create their accounts as normal patrons and contact us which addresses "
                         + "should be granted as librarians.\012\012");
                 if (k.getKontotyp() != 0) { mg.append("Thank you for choosing the option \"Fax to PDF\". We'll "
@@ -396,26 +413,27 @@ public final class KontoAction extends DispatchAction {
                         + "possible.\012\012");
                 }
                 if (k.getKontotyp() != 0 && k.getLand().equals("Deutschland")) {
-                    mg.append("-------------------\012");
-                    mg.append("GILT FÜR DEUTSCHLAND:\012");
-                    mg.append("Aufgrund der geltenden Bestimmungen des deutschen Gesetzes für Telekommunikation "
+                    mg.append("-------------------\012"
+                            + "GILT FÜR DEUTSCHLAND:\012"
+                            + "Aufgrund der geltenden Bestimmungen des deutschen Gesetzes für Telekommunikation "
                             + "bezüglich der Ortsnetzrufnummern, die von der Bundesnetzagentur "
-                            + "(http://www.bundesnetzagentur.de/media/archive/11497.pdf) verwaltet werden, ");
-                    mg.append("benötigen wir eine schriftliche Bescheinigung, dass Sie tatsächlich den Sitz im selben "
-                            + "Ortsnetzbereich mit der von uns vergebenen Faxnummer haben.\012");
-                    mg.append("Bitte senden Sie uns, deshalb per Email eine Bescheinigung des \"Firmensitzes\", "
-                            + "entweder in Form einer:\012");
-                    mg.append("- Kopie einer Rechnung für Wasser, Strom, Gas usw.\012");
-                    mg.append("- Kopie des Handelsregisterauszugs/Gewerbeanmeldung\012");
-                    mg.append("Bitte entschuldigen Sie diesen Zusatzaufwand, aber leider verlangt die deutsche "
-                            + "Gesetzgebung diese Überprüfung.\012");
-                    mg.append("-------------------\012\012");
+                            + "(http://www.bundesnetzagentur.de/media/archive/11497.pdf) verwaltet werden, "
+                            + "benötigen wir eine schriftliche Bescheinigung, dass Sie tatsächlich den Sitz im selben "
+                            + "Ortsnetzbereich mit der von uns vergebenen Faxnummer haben.\012"
+                            + "Bitte senden Sie uns, deshalb per Email eine Bescheinigung des \"Firmensitzes\", "
+                            + "entweder in Form einer:\012"
+                            + "- Kopie einer Rechnung für Wasser, Strom, Gas usw.\012"
+                            + "- Kopie des Handelsregisterauszugs/Gewerbeanmeldung\012"
+                            + "Bitte entschuldigen Sie diesen Zusatzaufwand, aber leider verlangt die deutsche "
+                            + "Gesetzgebung diese Überprüfung.\012"
+                            + "-------------------\012\012");
 
                 }
-                mg.append("We hope you enjoy using " + ReadSystemConfigurations.getApplicationName() + "!\012\012");
-                mg.append("Get in contact with us if you have any questions!\012\012");
-                mg.append("Best regards\012");
-                mg.append("Your team " + ReadSystemConfigurations.getApplicationName() + "\012");
+                mg.append("We hope you enjoy using ");
+                mg.append(ReadSystemConfigurations.getApplicationName());
+                mg.append("!\n\nGet in contact with us if you have any questions!\012\012"
+                        + "Best regards\012Your team");
+                mg.append(ReadSystemConfigurations.getApplicationName());
                 final String[] sendto = new String[1];
                 sendto[0] = u.getEmail();
                 final MHelper mailh = new MHelper();

@@ -26,8 +26,8 @@ import java.util.concurrent.Callable;
  */
 public class ThreadedWebcontent implements Callable<String> {
 
-    static final int TIMEOUT = 2000;
-    static final int RETRYS = 3;
+    private static final int TIMEOUT = 2000;
+    private static final int RETRYS = 3;
 
     private String link;
 

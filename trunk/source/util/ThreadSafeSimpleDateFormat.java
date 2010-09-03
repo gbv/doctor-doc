@@ -25,7 +25,7 @@ import java.util.TimeZone;
 
 public class ThreadSafeSimpleDateFormat {
 
-    private final DateFormat df;
+    private final transient DateFormat df;
     //   private static final String TIMEZONE = "GTM+01";
 
     public ThreadSafeSimpleDateFormat(final String format) {

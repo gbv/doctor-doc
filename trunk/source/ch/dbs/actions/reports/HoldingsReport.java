@@ -199,7 +199,7 @@ public final class HoldingsReport extends DispatchAction {
 
     private StringBuffer initStringBuffer(final char delimiter) {
 
-        final StringBuffer buf = new StringBuffer(227);
+        final StringBuffer buf = new StringBuffer(251);
 
         buf.append("\"Stock ID\"");
         buf.append(delimiter);

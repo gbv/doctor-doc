@@ -434,20 +434,20 @@ public final class KontoAdmin  {
     public String getBillingInfos() {
 
         final StringBuffer t = new StringBuffer(430);
-        t.append("\n\n*******************************************************\n");
-        t.append("Zahlungsinformationen:" + "\n");
+        t.append("\n\n*******************************************************\n"
+                + "Zahlungsinformationen:" + "\n");
         t.append(ReadSystemConfigurations.getApplicationName());
-        t.append("\nKonto Nr.:      16 9.350.8040.02\n");
-        t.append("IBAN:           CH62 0630 0016 9350 8040 2\n");
-        t.append("Bank:           Valiant Bank, Postfach, 3001 Bern\n");
-        t.append("Bankenclearing: 6300\n");
-        t.append("Postcheckkonto: 30-38112-0\n");
-        t.append("Swift-Code:     VABECH22\n\n");
-        t.append("Name und Adresse:\n");
-        t.append("Pascal Steiner\n");
-        t.append("Gysulastrasse 83\n");
-        t.append("5022 Rombach (CH)\n");
-        t.append("*******************************************************");
+        t.append("\nKonto Nr.:      16 9.350.8040.02\n"
+                + "IBAN:           CH62 0630 0016 9350 8040 2\n"
+                + "Bank:           Valiant Bank, Postfach, 3001 Bern\n"
+                + "Bankenclearing: 6300\n"
+                + "Postcheckkonto: 30-38112-0\n"
+                + "Swift-Code:     VABECH22\n\n"
+                + "Name und Adresse:\n"
+                + "Pascal Steiner\n"
+                + "Gysulastrasse 83\n"
+                + "5022 Rombach (CH)\n"
+                + "*******************************************************");
 
         return t.toString();
     }

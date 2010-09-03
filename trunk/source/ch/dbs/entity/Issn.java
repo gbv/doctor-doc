@@ -69,7 +69,7 @@ public class Issn extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                this.setRsValues(cn, rs);
+                this.setRsValues(rs);
             }
 
         } catch (final Exception e) {
@@ -188,7 +188,7 @@ public class Issn extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public Issn(final Connection cn, final ResultSet rs) {
+    public Issn(final ResultSet rs) {
 
         try {
 
@@ -209,7 +209,7 @@ public class Issn extends AbstractIdEntity {
         }
     }
 
-    private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
+    private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("IID"));
         this.setIdentifier(rs.getString("identifier"));
         this.setIdentifier_id(rs.getString("identifier_id"));

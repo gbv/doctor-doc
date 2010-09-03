@@ -58,7 +58,7 @@ public class PrepareTestObjects {
      * @return LoginForm
      */
     public static LoginForm getloginForm() {
-        LoginForm lf = new LoginForm();
+        final LoginForm lf = new LoginForm();
 
         lf.setMediatype("Artikel");
         lf.setIssn("0803-5253");
@@ -82,7 +82,7 @@ public class PrepareTestObjects {
      */
     public static KontoForm getKontoValues() {
 
-        KontoForm kf = new KontoForm();
+        final KontoForm kf = new KontoForm();
 
         kf.setBiblioname(BIBLIONAME1);
         kf.setAdresse("adresse");
@@ -101,8 +101,8 @@ public class PrepareTestObjects {
 
     public static ArrayList <Konto> getTestkonto() {
 
-        ArrayList <Konto> kl = new ArrayList<Konto>();
-        Konto cn = new Konto();
+        final ArrayList <Konto> kl = new ArrayList<Konto>();
+        final Konto cn = new Konto();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -116,21 +116,21 @@ public class PrepareTestObjects {
                 kl.add(new Konto(rs));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.out.println("getKontoValues() trat folgender Fehler auf: \012"
                     + e);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
@@ -142,18 +142,18 @@ public class PrepareTestObjects {
     public static void clearTestObjects() {
         // UserForm vorbereiten
         //    UserForm uf = PrepareTestObjects.getUserForm();
-        ArrayList<Konto> oldkl = PrepareTestObjects.getTestkonto();
+        final ArrayList<Konto> oldkl = PrepareTestObjects.getTestkonto();
 
-        Konto cn = new Konto();
+        final Konto cn = new Konto();
 
-        for (Konto k : oldkl) {
+        for (final Konto k : oldkl) {
             System.out.println("Konto ID = " + k.getId());
             k.deleteSelf(cn.getSingleConnection());
         }
 
-        VKontoBenutzer vkb = new VKontoBenutzer();
-        ArrayList<AbstractBenutzer> alb = new AbstractBenutzer().getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
-        for (AbstractBenutzer b : alb) {
+        final VKontoBenutzer vkb = new VKontoBenutzer();
+        final ArrayList<AbstractBenutzer> alb = new AbstractBenutzer().getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
+        for (final AbstractBenutzer b : alb) {
             vkb.deleteAllKontoEntries(b, cn.getSingleConnection());
             b.deleteUser(b, cn.getSingleConnection());
         }
@@ -165,14 +165,14 @@ public class PrepareTestObjects {
      */
     public static UserForm getUserForm() {
 
-        UserForm uf = new UserForm();
+        final UserForm uf = new UserForm();
 
         uf.setAnrede("Herr");
         uf.setName("Testname"); //Mussfeld beim Bibliothekar erstellen
         uf.setVorname("Testvorname"); //Mussfeld beim Bibliothekar erstellen
         uf.setEmail(BNEMAIL); //Mussfeld beim Bibliothekar erstellen
         uf.setKontostatus(true);
-        Encrypt e = new Encrypt();
+        final Encrypt e = new Encrypt();
         uf.setPassword(e.makeSHA(LOGINPW)); //Das Passwort muss mindestens 7 Zeichen lang sein
 
         return uf;
@@ -185,8 +185,7 @@ public class PrepareTestObjects {
      */
     public static Konto getKonto() {
 
-        Konto k = new Konto(getKontoValues());
-        return k;
+        return new Konto(getKontoValues());
 
     }
 
@@ -196,8 +195,8 @@ public class PrepareTestObjects {
      * @return Benutzer
      */
     public static Benutzer getBenutzer() {
-        Benutzer b = new Benutzer(getUserForm());
-        return b;
+
+        return new Benutzer(getUserForm());
     }
 
     /**
@@ -205,10 +204,10 @@ public class PrepareTestObjects {
      * @param cn
      * @return
      */
-    public static Benutzer getTestBenutzerFromDb(Connection cn) {
+    public static Benutzer getTestBenutzerFromDb(final Connection cn) {
         Benutzer b = null;
-        AbstractBenutzer ab = new AbstractBenutzer();
-        Encrypt e = new Encrypt();
+        final AbstractBenutzer ab = new AbstractBenutzer();
+        final Encrypt e = new Encrypt();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -223,21 +222,21 @@ public class PrepareTestObjects {
             while (rs.next()) {
                 b = (Benutzer) ab.getUser(rs);
             }
-        } catch (Exception err) {
-            String f = "In PrepareTestObjects.getTestBenutzerFromDb(Connection cn) trat folgender Fehler auf:\n";
+        } catch (final Exception err) {
+            final String f = "In PrepareTestObjects.getTestBenutzerFromDb(Connection cn) trat folgender Fehler auf:\n";
             System.out.println(f + err);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException ex) {
+                } catch (final SQLException ex) {
                     System.out.println(ex);
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException ex) {
+                } catch (final SQLException ex) {
                     System.out.println(ex);
                 }
             }
@@ -251,10 +250,10 @@ public class PrepareTestObjects {
      * @param cn
      * @return
      */
-    public static Bibliothekar getTestBibliothekarFromDb(Connection cn) {
+    public static Bibliothekar getTestBibliothekarFromDb(final Connection cn) {
         Bibliothekar b = null;
-        AbstractBenutzer ab = new AbstractBenutzer();
-        Encrypt e = new Encrypt();
+        final AbstractBenutzer ab = new AbstractBenutzer();
+        final Encrypt e = new Encrypt();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -269,21 +268,21 @@ public class PrepareTestObjects {
             while (rs.next()) {
                 b = (Bibliothekar) ab.getUser(rs);
             }
-        } catch (Exception err) {
-            String f = "In PrepareTestObjects.getTestBenutzerFromDb(Connection cn) trat folgender Fehler auf:\n";
+        } catch (final Exception err) {
+            final String f = "In PrepareTestObjects.getTestBenutzerFromDb(Connection cn) trat folgender Fehler auf:\n";
             System.out.println(f + err);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException ex) {
+                } catch (final SQLException ex) {
                     System.out.println(ex);
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException ex) {
+                } catch (final SQLException ex) {
                     System.out.println(ex);
                 }
             }
@@ -297,7 +296,7 @@ public class PrepareTestObjects {
      * @param cn
      * @return
      */
-    public static Konto getTestKontoFromDb(String kontoname, Connection cn) {
+    public static Konto getTestKontoFromDb(final String kontoname, final Connection cn) {
         Konto k = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -311,21 +310,21 @@ public class PrepareTestObjects {
             while (rs.next()) {
                 k = new Konto(rs);
             }
-        } catch (Exception err) {
-            String f = "getTestKontoFromDb(String kontoname, Connection cn) trat folgender Fehler auf:\n";
+        } catch (final Exception err) {
+            final String f = "getTestKontoFromDb(String kontoname, Connection cn) trat folgender Fehler auf:\n";
             System.out.println(f + err);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
@@ -340,8 +339,8 @@ public class PrepareTestObjects {
      * @return Bibliothekar
      */
     public static Bibliothekar getBibliothekar() {
-        Bibliothekar b = new Bibliothekar(getUserForm());
-        return b;
+
+        return new Bibliothekar(getUserForm());
     }
 
     /**
@@ -350,7 +349,7 @@ public class PrepareTestObjects {
      * @return Position
      */
     public static Position getPosition() {
-        Position p = new Position();
+        final Position p = new Position();
         p.setAutor("autor");
         p.setBenutzer(getTestBibliothekarFromDb(p.getSingleConnection()));
         p.setDeloptions("deloptions");

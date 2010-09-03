@@ -32,21 +32,19 @@ import ch.dbs.entity.Lieferanten;
  */
 public class Order {
 
-  public Order() {
 
-  }
-  /**
-   * Testet das Erstellen eines Bestellungsobjektes und speichert dieses in der Datenbank
-   * @author Pascal Steiner
-   * @return Bestellungen b
-   */
-  public Bestellungen newOrder() {
-      //Bestellung Schreiben und ID auslesen
-      Bestellungen b = new Bestellungen();
-      AbstractBenutzer ab = new AbstractBenutzer();
-      Lieferanten lieferantenInstance = new Lieferanten();
-      b.setKonto(new Konto(Long.valueOf(1),b.getSingleConnection()));
-      b.setBenutzer(ab.getUser(Long.valueOf(1), b.getSingleConnection()));
+    /**
+     * Testet das Erstellen eines Bestellungsobjektes und speichert dieses in der Datenbank
+     * @author Pascal Steiner
+     * @return Bestellungen b
+     */
+    public Bestellungen newOrder() {
+        //Bestellung Schreiben und ID auslesen
+        final Bestellungen b = new Bestellungen();
+        final AbstractBenutzer ab = new AbstractBenutzer();
+        final Lieferanten lieferantenInstance = new Lieferanten();
+        b.setKonto(new Konto(Long.valueOf(1),b.getSingleConnection()));
+        b.setBenutzer(ab.getUser(Long.valueOf(1), b.getSingleConnection()));
         b.setLieferant(lieferantenInstance.getLieferantFromName("Subito", b.getSingleConnection()));
         b.setPriority("normal");
         b.setDeloptions("email"); // Lieferbedingungen. In Subito neu "deliveryway". Nur noch "post" und "fax" möglich
@@ -65,9 +63,9 @@ public class Order {
         b.setSystembemerkung("Systembemerkung");
         b.setNotizen("Notizen"); // interne Anmerkungen
 
-        Date d = new Date();
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String datum = fmt.format(d);
+        final Date d = new Date();
+        final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String datum = fmt.format(d);
 
         // um zu verhindern, dass eine Bestellung kein Datum erhält, falls beim Statusschreiben etwas schief geht
         b.setOrderdate(datum);
@@ -80,7 +78,7 @@ public class Order {
 
         return b;
 
-  }
+    }
 
 
 

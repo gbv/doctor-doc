@@ -661,14 +661,13 @@ public class Stock extends DispatchAction {
                     messageList.add(msg);
 
                     // Location-ID belongs to account, but do the locations match?
-                } else if (!b.getStandort().getInhalt().equals("")) {
-                    if (!b.getStandort().getInhalt().equals(control.getInhalt())) { // locations do not match...
-                        final Message msg = new Message();
-                        msg.setMessage("error.import.locationsDoNotMatch");
-                        msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString()
-                                + "/" + b.getStandort().getInhalt()));
-                        messageList.add(msg);
-                    }
+                } else if (!b.getStandort().getInhalt().equals("")
+                        && !b.getStandort().getInhalt().equals(control.getInhalt())) { // locations do not match...
+                    final Message msg = new Message();
+                    msg.setMessage("error.import.locationsDoNotMatch");
+                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString()
+                            + "/" + b.getStandort().getInhalt()));
+                    messageList.add(msg);
                 }
             } else if (b.getStandort().getInhalt().equals("")) { // check if location is present
                 final Message msg = new Message();
@@ -1015,14 +1014,12 @@ public class Stock extends DispatchAction {
 
         final Message msg = new Message();
 
-        if (!"".equals(content)) { // may be empty => we will use default value
-
-            if (!"0".equals(content)
-                    && !"1".equals(content)
-                    && !"2".equals(content)) {
-                msg.setMessage("error.import.suppl");
-                msg.setSystemMessage(composeSystemMessage(lineCount, content));
-            }
+        if (!"".equals(content) // may be empty => we will use default value
+                && !"0".equals(content)
+                && !"1".equals(content)
+                && !"2".equals(content)) {
+            msg.setMessage("error.import.suppl");
+            msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
 
         return msg;
@@ -1035,13 +1032,11 @@ public class Stock extends DispatchAction {
 
         final Message msg = new Message();
 
-        if (!"".equals(content)) { // may be empty => we will use default value
-
-            if (!"true".equals(content)
-                    && !"false".equals(content)) {
-                msg.setMessage("error.import.boolean");
-                msg.setSystemMessage(composeSystemMessage(lineCount, content));
-            }
+        if (!"".equals(content) // may be empty => we will use default value
+                && !"true".equals(content)
+                && !"false".equals(content)) {
+            msg.setMessage("error.import.boolean");
+            msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
 
         return msg;
