@@ -3,6 +3,7 @@ package ch.ddl.daia;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +51,7 @@ public class Daia extends Action {
         if (rq.getParameter("in") != null && rq.getParameter("in").equals("1")) { showInternal = true; }
 
         final Stock stock = new Stock();
-        ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
+        List<Bestand> bestaende = new ArrayList<Bestand>();
         String msgBestand = ""; // msgBestand ist nicht DAIA-standardkonform. Wird nur bei Abfrage DAIA + IP verwendet
 
         if (ofjo.getIssn() != null && !ofjo.getIssn().equals("")) {
@@ -101,7 +102,7 @@ public class Daia extends Action {
 
             return null;
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.toString());
         }
 

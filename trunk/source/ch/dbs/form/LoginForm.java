@@ -17,7 +17,6 @@
 
 package ch.dbs.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
@@ -38,7 +37,7 @@ public class LoginForm extends ValidatorForm {
     private String password;
     private Long kontoid;
     private Long userid;
-    private ArrayList<UserInfo> userinfolist;
+    private List<UserInfo> userinfolist;
 
     /**
      * Eine Liste der Institutionen, welche für das Login angeboten werden.
@@ -102,11 +101,11 @@ public class LoginForm extends ValidatorForm {
         this.password = password;
     }
 
-    public ArrayList<UserInfo> getUserinfolist() {
+    public List<UserInfo> getUserinfolist() {
         return userinfolist;
     }
 
-    public void setUserinfolist(final ArrayList<UserInfo> userinfolist) {
+    public void setUserinfolist(final List<UserInfo> userinfolist) {
         this.userinfolist = userinfolist;
     }
 

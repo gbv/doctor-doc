@@ -17,7 +17,6 @@
 
 package ch.dbs.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
@@ -32,7 +31,7 @@ public final class UserInfo extends ValidatorForm {
     private transient AbstractBenutzer benutzer;
     private transient Konto konto;
     private List<Konto> kontos;
-    private ArrayList<SearchesForm> searches; // wird für die Sortierung bei der Suche benötigt
+    private List<SearchesForm> searches; // wird für die Sortierung bei der Suche benötigt
     private List<Countries> countries;
     private int kontoanz; // Anzahl Kontos in welchen der Benutzer berechtigungen hat
     // Kontrollvariable falls Orderangaben beim Benutzererstellen mitgeschickt werden sollen
@@ -85,11 +84,11 @@ public final class UserInfo extends ValidatorForm {
         this.kontos = kontos;
     }
 
-    public ArrayList<SearchesForm> getSearches() {
+    public List<SearchesForm> getSearches() {
         return searches;
     }
 
-    public void setSearches(final ArrayList<SearchesForm> searches) {
+    public void setSearches(final List<SearchesForm> searches) {
         this.searches = searches;
     }
 

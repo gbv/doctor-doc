@@ -19,8 +19,8 @@ package ch.dbs.actions.reports;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -129,7 +129,7 @@ public final class HoldingsReport extends DispatchAction {
         // get a StringBuffer with a header describing the content of the fields
         final StringBuffer buf = initStringBuffer(delimiter);
 
-        final ArrayList<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), cn.getConnection());
+        final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), cn.getConnection());
 
         for (final Bestand b : stock) {
             buf.append(getExportLine(b, delimiter));

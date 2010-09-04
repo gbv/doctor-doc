@@ -98,7 +98,7 @@ public final class OrderReports extends DispatchAction {
                 of = c.checkOrdersSortCriterias(of);
                 of = c.checkSortOrderValues(of);
 
-                ArrayList<SearchesForm> searches = new ArrayList<SearchesForm>();
+                List<SearchesForm> searches = new ArrayList<SearchesForm>();
 
                 if (of.isS()) { // Suchkriterien aus Session holen, falls Anzeige von einer Suche stammt
                     searches = ui.getSearches();

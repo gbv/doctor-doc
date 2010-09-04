@@ -18,7 +18,6 @@
 package ch.dbs.actions.bestellung;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -1509,7 +1508,7 @@ public final class BestellformAction extends DispatchAction {
 
         try {
 
-            final ArrayList<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(k, email, cn);
+            final List<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(k, email, cn);
 
             if (!list.isEmpty()) {
                 u = list.get(0);

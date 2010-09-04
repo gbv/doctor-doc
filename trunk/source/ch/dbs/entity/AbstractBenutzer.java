@@ -303,11 +303,11 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * <p></p>
      * @param Konto k
      * @param String email
-     * @return ArrayList (Benutzer, Bibliothekar oder Administrator)
+     * @return List (Benutzer, Bibliothekar oder Administrator)
      */
-    public ArrayList<AbstractBenutzer> getUserListFromEmailAndKonto(final Konto k, final String mail, final Connection cn) {
+    public List<AbstractBenutzer> getUserListFromEmailAndKonto(final Konto k, final String mail, final Connection cn) {
 
-        final ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
+        final List<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
         AbstractBenutzer u = null;
 
         PreparedStatement pstmt = null;
@@ -395,9 +395,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @param mail
      * @return AbstractUser (Benutzer, Bibliothekar oder Administrator)
      */
-    public ArrayList<AbstractBenutzer> getAllUserFromEmail(final String mail, final Connection cn) {
+    public List<AbstractBenutzer> getAllUserFromEmail(final String mail, final Connection cn) {
 
-        final ArrayList<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
+        final List<AbstractBenutzer> benutzerlist = new ArrayList<AbstractBenutzer>();
         AbstractBenutzer u = null;
 
         PreparedStatement pstmt = null;
@@ -437,8 +437,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
     /**
      * @return Alle Kontos bei welchen der {@link AbstractBenutzer} hinterlegt ist in einer {@link ArrayList}
      */
-    public ArrayList<Konto> getKontosDeposited(final AbstractBenutzer u, final Connection cn) {
-        final ArrayList<Konto> kontos = new ArrayList<Konto>();
+    public List<Konto> getKontosDeposited(final AbstractBenutzer u, final Connection cn) {
+        final List<Konto> kontos = new ArrayList<Konto>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -480,8 +480,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * @return Alle Kontos bei welchen der {@link AbstractBenutzer} hinterlegt und bei welchen er sich auch einloggen
      * darf in einer {@link ArrayList}
      */
-    public ArrayList<Konto> getKontosAlowedLogin(final AbstractBenutzer u, final Connection cn) {
-        final ArrayList<Konto> kontos = new ArrayList<Konto>();
+    public List<Konto> getKontosAlowedLogin(final AbstractBenutzer u, final Connection cn) {
+        final List<Konto> kontos = new ArrayList<Konto>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -526,10 +526,10 @@ public class AbstractBenutzer extends AbstractIdEntity {
      * Login
      */
 
-    public ArrayList<UserInfo> login(final String mail, final String pw, final Connection cn) {
+    public List<UserInfo> login(final String mail, final String pw, final Connection cn) {
 
         UserInfo u;
-        final ArrayList<UserInfo> userinfolist = new ArrayList<UserInfo>();
+        final List<UserInfo> userinfolist = new ArrayList<UserInfo>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -546,7 +546,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
             pstmt.setString(1, mail);
             pstmt.setString(2, pw);
             rs = pstmt.executeQuery();
-            ArrayList<Konto> kontolist;
+            List<Konto> kontolist;
 
             final Administrator admin = new Administrator();
             final Konto k = new Konto();

@@ -383,6 +383,7 @@ public final class UserAction extends DispatchAction {
         final Text cn = new Text();
 
         //  Ueberprüfung ob Auswahl aus LoginForm tatsächlich authorisierte Benutzer sind
+        final Gtc gtc = new Gtc();
         for (final UserInfo authlist : authuserlist.getUserinfolist()) {
             if (lf.getUserid().equals(authlist.getBenutzer().getId())) {
 
@@ -395,12 +396,11 @@ public final class UserAction extends DispatchAction {
                 if (ui.getKontos().size() == 1) {
                     ui.setKonto(ui.getKontos().get(0));
                     // Last-Login Datum beim Benutzer hinterlegen
-                    AbstractBenutzer u = new AbstractBenutzer();
-                    u = ui.getBenutzer();
+                    final AbstractBenutzer u = ui.getBenutzer();
                     u.updateLastuse(u, ui.getKonto(), cn.getConnection());
 
-                    final Gtc g = new Gtc();
-                    if (g.isAccepted(ui.getBenutzer(), cn.getConnection())) {
+
+                    if (gtc.isAccepted(ui.getBenutzer(), cn.getConnection())) {
                         forward = SUCCESS;
                         mf.setActivemenu("suchenbestellen");
                     } else {
@@ -410,8 +410,7 @@ public final class UserAction extends DispatchAction {
                 //Falls Benutzer unter mehreren Kontos arbeiten darf weiterleitung zur Kontoauswahl
                 if (ui.getKontos().size() > 1) {
                     // Last-Login Datum beim Benutzer hinterlegen
-                    AbstractBenutzer u = new AbstractBenutzer();
-                    u = ui.getBenutzer();
+                    final AbstractBenutzer u = ui.getBenutzer();
                     u.updateLastuse(u, ui.getKontos().get(0), cn.getConnection());
                     forward = "kontochoose";
                 }
@@ -1109,7 +1108,7 @@ public final class UserAction extends DispatchAction {
                 final String dateFrom = of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + " 00:00:00";
                 final String dateTo = of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00";
 
-                ArrayList<SearchesForm> searches = new ArrayList<SearchesForm>();
+                List<SearchesForm> searches = new ArrayList<SearchesForm>();
 
                 if (of.isS()) { // Suchkriterien aus Session holen
                     searches = ui.getSearches();
@@ -1203,7 +1202,7 @@ public final class UserAction extends DispatchAction {
     /**
      * Stellt den MYSQL für die Suche zusammen / Suchlogik
      */
-    public PreparedStatement composeSearchLogic(final ArrayList<SearchesForm> searches, final Konto k, final String sort,
+    public PreparedStatement composeSearchLogic(final List<SearchesForm> searches, final Konto k, final String sort,
             final String sortorder, final String date_from, final String date_to, final Connection cn) throws Exception {
 
         final Bestellungen b = new Bestellungen();
@@ -1288,7 +1287,7 @@ public final class UserAction extends DispatchAction {
     /**
      * Stellt den MYSQL für die Suche zusammen / Suchlogik
      */
-    private PreparedStatement composeCountSearchLogic(final ArrayList<SearchesForm> searches, final Konto k, final String sort,
+    private PreparedStatement composeCountSearchLogic(final List<SearchesForm> searches, final Konto k, final String sort,
             final String sortorder, final String date_from, final String date_to, final Connection cn) throws Exception {
         final Bestellungen b = new Bestellungen();
         final StringBuffer sql = new StringBuffer(300);
@@ -1535,7 +1534,7 @@ public final class UserAction extends DispatchAction {
             final Check check = new Check();
 
             // nur Buchstaben inkl. Umlaute und Zahlen zugelassen. Keine Sonderzeichen wie ";.-?!" etc.
-            final ArrayList<String> words = check.getAlphanumericWordCharacters(input);
+            final List<String> words = check.getAlphanumericWordCharacters(input);
             final StringBuffer buf = new StringBuffer();
             buf.append("");
 

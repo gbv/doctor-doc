@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -98,11 +99,11 @@ public class Issn extends AbstractIdEntity {
      *
      * @param String issn
      * @param Connection cn
-     * @return ArrayList<ISSN> issn
+     * @return List<ISSN> issn
      */
-    public ArrayList<String> getAllIssnsFromOneIssn(final String iss, final Connection cn) {
+    public List<String> getAllIssnsFromOneIssn(final String iss, final Connection cn) {
 
-        final ArrayList<String> is = new ArrayList<String>();
+        final List<String> is = new ArrayList<String>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -143,11 +144,11 @@ public class Issn extends AbstractIdEntity {
      *
      * @param String ident_id
      * @param Connection cn
-     * @return ArrayList<ISSN> issn
+     * @return List<ISSN> issn
      */
-    public ArrayList<String> getAllIssnsFromOneIdentifierID(final String ident_id, final Connection cn) {
+    public List<String> getAllIssnsFromOneIdentifierID(final String ident_id, final Connection cn) {
 
-        final ArrayList<String> iss = new ArrayList<String>();
+        final List<String> iss = new ArrayList<String>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;

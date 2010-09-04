@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -99,9 +100,9 @@ public class PrepareTestObjects {
 
     }
 
-    public static ArrayList <Konto> getTestkonto() {
+    public static List <Konto> getTestkonto() {
 
-        final ArrayList <Konto> kl = new ArrayList<Konto>();
+        final List <Konto> kl = new ArrayList<Konto>();
         final Konto cn = new Konto();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -142,7 +143,7 @@ public class PrepareTestObjects {
     public static void clearTestObjects() {
         // UserForm vorbereiten
         //    UserForm uf = PrepareTestObjects.getUserForm();
-        final ArrayList<Konto> oldkl = PrepareTestObjects.getTestkonto();
+        final List<Konto> oldkl = PrepareTestObjects.getTestkonto();
 
         final Konto cn = new Konto();
 
@@ -152,7 +153,7 @@ public class PrepareTestObjects {
         }
 
         final VKontoBenutzer vkb = new VKontoBenutzer();
-        final ArrayList<AbstractBenutzer> alb = new AbstractBenutzer().getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
+        final List<AbstractBenutzer> alb = new AbstractBenutzer().getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
         for (final AbstractBenutzer b : alb) {
             vkb.deleteAllKontoEntries(b, cn.getSingleConnection());
             b.deleteUser(b, cn.getSingleConnection());

@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -58,9 +59,9 @@ public class Lieferanten extends AbstractIdEntity {
         this.setLand_allgemein(rs.getBoolean("allgemein"));
     }
 
-    public ArrayList<Lieferanten> getListForKontoAndCountry(final String land, final Long kId, final Connection cn) {
+    public List<Lieferanten> getListForKontoAndCountry(final String land, final Long kId, final Connection cn) {
 
-        final ArrayList<Lieferanten> list = new ArrayList<Lieferanten>();
+        final List<Lieferanten> list = new ArrayList<Lieferanten>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;

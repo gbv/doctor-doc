@@ -19,8 +19,8 @@ package test.dbs.actions.user;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -266,7 +266,7 @@ public class TestLoginAction extends MockStrutsTestCase{
         // Benutzer login in DB auf Konto erlauben
         final AbstractBenutzer b = new AbstractBenutzer();
         be = PrepareTestObjects.getTestBenutzerFromDb(k1.getSingleConnection());
-        final ArrayList<Konto> kl = b.getKontosDeposited(be, k1.getSingleConnection());
+        final List<Konto> kl = b.getKontosDeposited(be, k1.getSingleConnection());
         if (!kl.isEmpty()) {
             kl.get(0).setUserlogin(true);
             kl.get(0).update(k1.getSingleConnection());

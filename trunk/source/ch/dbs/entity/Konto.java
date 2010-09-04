@@ -265,9 +265,9 @@ public class Konto extends AbstractIdEntity {
      * Listet alle Kontos auf, sortiert nach Bibliotheksnamen
      * @return Kontolist
      */
-    public ArrayList<Konto> getAllKontos(final Connection cn) {
+    public List<Konto> getAllKontos(final Connection cn) {
 
-        final ArrayList<Konto> kontos = new ArrayList<Konto>();
+        final List<Konto> kontos = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -442,9 +442,9 @@ public class Konto extends AbstractIdEntity {
      * @param the expiredays
      * @return a {@link Konto}
      */
-    public ArrayList<Konto> getExpireKontos(final int expiredays) {
+    public List<Konto> getExpireKontos(final int expiredays) {
         final DBConn cn = new DBConn();
-        final ArrayList<Konto> kl = new ArrayList<Konto>();
+        final List<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -525,7 +525,7 @@ public class Konto extends AbstractIdEntity {
      * Listet alle Kontos auf, bei welchen der Benutzer hinterlegt ist
      *
      * @param AbstractBenutzer
-     * @return ArrayList<Konto> kl
+     * @return List<Konto> kl
      */
     public List<Konto> getKontosForBenutzer(final AbstractBenutzer u, final Connection cn) {
         final ArrayList<Konto> kl = new ArrayList<Konto>();

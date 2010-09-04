@@ -21,7 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -39,7 +39,7 @@ public class ZDBIDObject extends AbstractIdEntity {
     private String identifier;
     private String identifier_id;
     private String zdbid;
-    private ArrayList<String> issn;
+    private List<String> issn;
 
     public ZDBIDObject() {
 
@@ -218,11 +218,11 @@ public class ZDBIDObject extends AbstractIdEntity {
         this.zdbid = zdbid;
     }
 
-    public ArrayList<String> getIssn() {
+    public List<String> getIssn() {
         return issn;
     }
 
-    public void setIssn(final ArrayList<String> issn) {
+    public void setIssn(final List<String> issn) {
         this.issn = issn;
     }
 

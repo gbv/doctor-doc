@@ -21,7 +21,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -52,9 +52,9 @@ public class IPChecker {
 
                 if (isTextNull(t)) {
                     // Prüfung auf IP-Bereiche
-                    final ArrayList<Text> list = t.possibleIPRanges(ip, cn);
+                    final List<Text> list = t.possibleIPRanges(ip, cn);
 
-                    for (Text ipToCheck : list) {
+                    for (final Text ipToCheck : list) {
                         if (compare(ip, ipToCheck.getInhalt())) {
                             t = ipToCheck;
                             return t;
@@ -63,7 +63,7 @@ public class IPChecker {
                 }
             }
 
-        } catch (UnknownHostException ex) {
+        } catch (final UnknownHostException ex) {
             LOG.error("Text contains(String ip, Connection cn): " + ip + "\040" + ex.toString());
         }
 
@@ -117,7 +117,7 @@ public class IPChecker {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("boolean compare(String ip, String ip_db): " + e.toString());
         }
 

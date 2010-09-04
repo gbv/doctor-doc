@@ -187,11 +187,11 @@ public class Stock extends DispatchAction {
                                 encoding = "CP1250"; // Windows ANSI encoding...
                             }
 
-                            // Get an ArrayList<List<String>> representation of the file
-                            final ArrayList<List<String>> stockList = readImport(upload, delimiter, encoding);
+                            // Get an List<List<String>> representation of the file
+                            final List<List<String>> stockList = readImport(upload, delimiter, encoding);
 
                             // Check if the file contains the correct number of columns
-                            ArrayList<Message> messageList = checkColumns(stockList);
+                            List<Message> messageList = checkColumns(stockList);
                             if (messageList.isEmpty()) {
 
                                 // Basic checks and make sure all entries in stockList are parsable
@@ -199,7 +199,7 @@ public class Stock extends DispatchAction {
                                 if (messageList.isEmpty()) {
 
                                     // Convert to ArrayList<Bestand>
-                                    final ArrayList<Bestand> bestandList = convertToBestand(stockList, ui);
+                                    final List<Bestand> bestandList = convertToBestand(stockList, ui);
 
                                     // Check integrity of Bestand()
                                     messageList = checkBestandIntegrity(bestandList, ui, cn.getConnection());
@@ -420,17 +420,17 @@ public class Stock extends DispatchAction {
     /**
      * Gets a list of all holdings from all libraries
      */
-    public ArrayList<Bestand> checkGeneralStockAvailability(final OrderForm pageForm, final boolean internal) {
+    public List<Bestand> checkGeneralStockAvailability(final OrderForm pageForm, final boolean internal) {
 
-        ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
+        List<Bestand> bestaende = new ArrayList<Bestand>();
 
         if (pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
             final Text cn = new Text();
 
-            final ArrayList<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn.getConnection());
+            final List<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn.getConnection());
 
             final Holding ho = new Holding();
-            final ArrayList<String> hoids = ho.getAllHOIDs(setIssn, cn.getConnection());
+            final List<String> hoids = ho.getAllHOIDs(setIssn, cn.getConnection());
 
             final Bestand be = new Bestand();
             bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn.getConnection());
@@ -445,19 +445,19 @@ public class Stock extends DispatchAction {
     /**
      * Gets a list of all holdings for a given library from an IP
      */
-    public ArrayList<Bestand> checkStockAvailabilityForIP(final OrderForm pageForm, final Text tip, final boolean internal,
+    public List<Bestand> checkStockAvailabilityForIP(final OrderForm pageForm, final Text tip, final boolean internal,
             final Connection cn) {
 
-        ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
+        List<Bestand> bestaende = new ArrayList<Bestand>();
 
         final Bestand be = new Bestand();
         final Holding ho = new Holding();
 
         if (tip.getKonto() != null && tip.getKonto().getId() != null) { // Nur prüfen, falls Konto vorhanden
 
-            final ArrayList<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn);
+            final List<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn);
 
-            final ArrayList<String> hoids = ho.getAllHOIDsForKonto(setIssn, tip.getKonto().getId(), cn);
+            final List<String> hoids = ho.getAllHOIDsForKonto(setIssn, tip.getKonto().getId(), cn);
 
             bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn);
         }
@@ -470,11 +470,11 @@ public class Stock extends DispatchAction {
      * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable to Bestand()
      *
      * @param ArrayList<List<String> stocklist
-     * @return ArrayList<Message> messageList
+     * @return List<Message> messageList
      */
-    private ArrayList<Message> checkBasicParsability(final ArrayList<List<String>> stockList) {
+    private List<Message> checkBasicParsability(final List<List<String>> stockList) {
 
-        final ArrayList<Message> messageList = new ArrayList<Message>();
+        final List<Message> messageList = new ArrayList<Message>();
 
         for (int i = 1; i < stockList.size(); i++) { // start at position 1, thus ignoring the header
             final List<String> importLine = stockList.get(i);
@@ -581,11 +581,11 @@ public class Stock extends DispatchAction {
      * the columns per line.
      *
      * @param ArrayList<List<String>> stockList
-     * @return ArrayList<Message> messageList
+     * @return List<Message> messageList
      */
-    private ArrayList<Message> checkColumns(final ArrayList<List<String>> stockList) {
+    private List<Message> checkColumns(final List<List<String>> stockList) {
 
-        final ArrayList<Message> messageList = new ArrayList<Message>();
+        final List<Message> messageList = new ArrayList<Message>();
         int lineCount = 0;
 
         for (final List<String> importLine : stockList) {
@@ -604,11 +604,11 @@ public class Stock extends DispatchAction {
      * account uploading the file
      *
      * @param ArrayList<Bestand> bestandList
-     * @return ArrayList<Message> messageList
+     * @return List<Message> messageList
      */
-    private ArrayList<Message> checkBestandIntegrity(final ArrayList<Bestand> bestandList, final UserInfo ui, final Connection cn) {
+    private List<Message> checkBestandIntegrity(final List<Bestand> bestandList, final UserInfo ui, final Connection cn) {
 
-        final ArrayList<Message> messageList = new ArrayList<Message>();
+        final List<Message> messageList = new ArrayList<Message>();
         final HashSet<Long> uniqueSetStockID = new HashSet<Long>();
         int lineCount = 1; // the header of the ArrayList<Bestand> is already omitted
 
@@ -696,11 +696,11 @@ public class Stock extends DispatchAction {
      *
      * @param FormFile upload
      * @param char delimiter
-     * @return ArrayList<List<String>> list
+     * @return List<List<String>> list
      */
-    private ArrayList<List<String>> readImport(final FormFile upload, final char delimiter, final String encoding) {
+    private List<List<String>> readImport(final FormFile upload, final char delimiter, final String encoding) {
 
-        final ArrayList<List<String>> list = new ArrayList<List<String>>();
+        final List<List<String>> list = new ArrayList<List<String>>();
         String line = "";
         BufferedInputStream fileStream = null;
         BufferedReader br = null;
@@ -732,11 +732,11 @@ public class Stock extends DispatchAction {
      * Converts an ArrayList<List<String>> with import elements into an ArrayList<Bestand>
      *
      * @param ArrayList<List<String>> stockList
-     * @return ArrayList<Bestand> bestandList
+     * @return List<Bestand> bestandList
      */
-    private ArrayList<Bestand> convertToBestand(final ArrayList<List<String>> stockList, final UserInfo ui) {
+    private List<Bestand> convertToBestand(final List<List<String>> stockList, final UserInfo ui) {
 
-        final ArrayList<Bestand> bestandList = new ArrayList<Bestand>();
+        final List<Bestand> bestandList = new ArrayList<Bestand>();
 
         for (int i = 1; i < stockList.size(); i++) { // start at position 1, thus ignoring the header
             bestandList.add(getBestand(stockList.get(i), ui.getKonto().getId()));
@@ -751,7 +751,7 @@ public class Stock extends DispatchAction {
      * etc. have been run before!
      *
      * @param ArrayList<List<String>> stockList
-     * @return ArrayList<Bestand> bestandList
+     * @return List<Bestand> bestandList
      */
     private Bestand getBestand(final List<String> list, final long kid) {
         final Bestand b = new Bestand();
@@ -860,11 +860,11 @@ public class Stock extends DispatchAction {
     /**
      * Gets from an ISSN a TreeSet<String> list of all 'related' ISSNs to map them
      */
-    private ArrayList<String> getRelatedIssn(final String issn, final Connection cn) {
+    private List<String> getRelatedIssn(final String issn, final Connection cn) {
 
         final Issn issnInstance = new Issn();
 
-        final ArrayList<String> issns = issnInstance.getAllIssnsFromOneIssn(issn, cn);
+        final List<String> issns = issnInstance.getAllIssnsFromOneIssn(issn, cn);
 
         if (issns.isEmpty()) { issns.add(issn); } // if there has been no hit, return the ISSN from the input
 
@@ -1064,7 +1064,7 @@ public class Stock extends DispatchAction {
      * etc. have been run before!
      *
      */
-    private String update(final ArrayList<Bestand> bestandList, final UserInfo ui, final Connection cn) {
+    private String update(final List<Bestand> bestandList, final UserInfo ui, final Connection cn) {
 
         final StringBuffer bf = new StringBuffer(32);
         int countUpdate = 0;

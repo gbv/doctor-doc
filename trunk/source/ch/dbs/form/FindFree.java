@@ -17,7 +17,6 @@
 
 package ch.dbs.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.action.ActionForm;
@@ -48,8 +47,8 @@ public final class FindFree extends ActionForm {
     private String p_ampel; // // Steuerung Anzeige Ampel
     private String message_print;
     private String institution_print;
-    private ArrayList<String> location_print;
-    private ArrayList<String> shelfmark_print;
+    private List<String> location_print;
+    private List<String> shelfmark_print;
     private String link_print;
     private String linktitle_print;
     private String zdb_link; // enthält den Suchlink
@@ -260,22 +259,22 @@ public final class FindFree extends ActionForm {
     }
 
 
-    public ArrayList<String> getLocation_print() {
+    public List<String> getLocation_print() {
         return location_print;
     }
 
 
-    public void setLocation_print(final ArrayList<String> locationPrint) {
+    public void setLocation_print(final List<String> locationPrint) {
         location_print = locationPrint;
     }
 
 
-    public ArrayList<String> getShelfmark_print() {
+    public List<String> getShelfmark_print() {
         return shelfmark_print;
     }
 
 
-    public void setShelfmark_print(final ArrayList<String> shelfmarkPrint) {
+    public void setShelfmark_print(final List<String> shelfmarkPrint) {
         shelfmark_print = shelfmarkPrint;
     }
 

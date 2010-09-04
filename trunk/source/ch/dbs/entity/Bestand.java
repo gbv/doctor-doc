@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -335,10 +336,10 @@ public class Bestand extends AbstractIdEntity {
      * @param Long kid
      * @param Connection cn
      *
-     * @return ArrayList<Bestand> listBestand
+     * @return List<Bestand> listBestand
      */
-    public ArrayList<Bestand> getAllKontoBestand(final Long kid, final Connection cn) {
-        final ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
+    public List<Bestand> getAllKontoBestand(final Long kid, final Connection cn) {
+        final List<Bestand> listBestand = new ArrayList<Bestand>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -349,8 +350,7 @@ public class Bestand extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final Bestand be = new Bestand(cn, rs);
-                listBestand.add(be);
+                listBestand.add(new Bestand(cn, rs));
             }
 
         } catch (final Exception e) {
@@ -383,8 +383,8 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return List mit Bestand
      */
-    public ArrayList<Bestand> getAllBestandForStandortId(final Long tid, final Connection cn) {
-        final ArrayList<Bestand> sl = new ArrayList<Bestand>();
+    public List<Bestand> getAllBestandForStandortId(final Long tid, final Connection cn) {
+        final List<Bestand> sl = new ArrayList<Bestand>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -393,8 +393,7 @@ public class Bestand extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final Bestand be = new Bestand(cn, rs);
-                sl.add(be);
+                sl.add(new Bestand(cn, rs));
             }
 
         } catch (final Exception e) {
@@ -426,11 +425,11 @@ public class Bestand extends AbstractIdEntity {
      * @param boolean internal
      * @param Connection cn
      *
-     * @return ArrayList<Bestand> listBestand
+     * @return List<Bestand> listBestand
      */
-    public ArrayList<Bestand> getAllBestandForHoldings(final ArrayList<String> hoids, final OrderForm pageForm, final boolean intern,
+    public List<Bestand> getAllBestandForHoldings(final List<String> hoids, final OrderForm pageForm, final boolean intern,
             final Connection cn) {
-        final ArrayList<Bestand> listBestand = new ArrayList<Bestand>();
+        final List<Bestand> listBestand = new ArrayList<Bestand>();
 
         if (!hoids.isEmpty()) {
 

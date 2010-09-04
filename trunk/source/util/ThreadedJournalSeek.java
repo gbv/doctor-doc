@@ -17,7 +17,7 @@
 
 package util;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import ch.dbs.actions.bestellung.OrderAction;
@@ -29,7 +29,7 @@ import ch.dbs.form.OrderForm;
  *
  * @author Markus Fischer
  */
-public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> {
+public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
 
     private String zeitschriftentitel_encoded;
     private String artikeltitel_encoded;
@@ -46,9 +46,9 @@ public class ThreadedJournalSeek implements Callable<ArrayList<JournalDetails>> 
         this.pageForm = of;
         this.concurrCopyTitle = concurrCopyZTit;
     }
-    public ArrayList<JournalDetails> call() {
+    public List<JournalDetails> call() {
         final OrderAction oa = new OrderAction();
-        final ArrayList<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded,
+        final List<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded,
                 artikeltitel_encoded, pageForm, concurrCopyTitle);
         return jd;
     }

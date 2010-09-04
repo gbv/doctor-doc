@@ -17,7 +17,7 @@
 
 package ch.dbs.actions.user;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,7 +68,7 @@ public final class LoginAction extends Action {
         // User mittels Logininfos aus der DB heraussuchen
         final Encrypt e = new Encrypt();
         AbstractBenutzer u = new AbstractBenutzer();
-        final ArrayList<UserInfo> uil = u.login(lf.getEmail(), e.makeSHA(lf.getPassword()), cn.getConnection());
+        final List<UserInfo> uil = u.login(lf.getEmail(), e.makeSHA(lf.getPassword()), cn.getConnection());
 
         // Wurde nur ein User mit den Logininfos gefunden, Bean userinfo erstellen
         if (uil.size() == 1) {

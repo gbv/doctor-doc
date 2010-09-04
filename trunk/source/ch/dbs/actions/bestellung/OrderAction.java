@@ -637,7 +637,7 @@ public final class OrderAction extends DispatchAction {
 
                         //              Methode 1 ueber Journalseek
                         final FindFree ff = new FindFree();
-                        ArrayList<JournalDetails> issnJS = new ArrayList<JournalDetails>();
+                        List<JournalDetails> issnJS = new ArrayList<JournalDetails>();
 
                         // der Zeitschriftentitel im OrderForm kann sich im Thread von Regensburg ändern
                         final String concurrentCopyZeitschriftentitel = pageForm.getZeitschriftentitel();
@@ -645,7 +645,7 @@ public final class OrderAction extends DispatchAction {
                         final ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelEncoded,
                                 artikeltitelEnc, pageForm, concurrentCopyZeitschriftentitel);
                         final ExecutorService executor = Executors.newCachedThreadPool();
-                        Future<ArrayList<JournalDetails>> journalseekResult = null;
+                        Future<List<JournalDetails>> journalseekResult = null;
                         boolean jsThread = false;
 
                         if ((pageForm.getIssn().length() == 0)
@@ -665,7 +665,7 @@ public final class OrderAction extends DispatchAction {
                         final FindFree ffRB = new FindFree();
 
                         // Print ISSN Regensburg
-                        final ArrayList<JournalDetails> issnRB = searchEzbRegensburg(zeitschriftentitelEncoded,
+                        final List<JournalDetails> issnRB = searchEzbRegensburg(zeitschriftentitelEncoded,
                                 artikeltitelEnc, pageForm, bibid);
 
                         if (!issnRB.isEmpty()) {
@@ -996,9 +996,9 @@ public final class OrderAction extends DispatchAction {
             }
 
             // Check for internal / external Holdings using DAIA Document Availability Information API
-            ArrayList<Bestand> allHoldings = new ArrayList<Bestand>();
-            ArrayList<Bestand> internalHoldings = new ArrayList<Bestand>();
-            ArrayList<Bestand> externalHoldings = new ArrayList<Bestand>();
+            List<Bestand> allHoldings = new ArrayList<Bestand>();
+            List<Bestand> internalHoldings = new ArrayList<Bestand>();
+            List<Bestand> externalHoldings = new ArrayList<Bestand>();
 
             if (ReadSystemConfigurations.isUseDaia()) { // Check an external register over DAIA
                 final DaiaRequest daiaRequest = new DaiaRequest();
@@ -1111,10 +1111,10 @@ public final class OrderAction extends DispatchAction {
     }
 
 
-    public ArrayList<JournalDetails> searchJournalseek(final String zeitschriftentitel_encoded, final String artikeltitel_encoded,
+    public List<JournalDetails> searchJournalseek(final String zeitschriftentitel_encoded, final String artikeltitel_encoded,
             final OrderForm pageForm, final String concurrentCopyZeitschriftentitel) {
 
-        final ArrayList<JournalDetails> issnJS = new ArrayList<JournalDetails>();
+        final List<JournalDetails> issnJS = new ArrayList<JournalDetails>();
         final CodeUrl codeUrl = new CodeUrl();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
 
@@ -1189,10 +1189,10 @@ public final class OrderAction extends DispatchAction {
         return issnJS;
     }
 
-    private ArrayList<JournalDetails> searchEzbRegensburg(final String zeitschriftentitelEncoded, final String artikeltitelEncoded,
+    private List<JournalDetails> searchEzbRegensburg(final String zeitschriftentitelEncoded, final String artikeltitelEncoded,
             final OrderForm pageForm, final String bibid) {
 
-        final ArrayList<JournalDetails> issnRB = new ArrayList<JournalDetails>();
+        final List<JournalDetails> issnRB = new ArrayList<JournalDetails>();
 
         String link = "";
         String content = "";
@@ -1777,7 +1777,7 @@ public final class OrderAction extends DispatchAction {
      * vorhandener Einträge
      *
      */
-    private FindFree getFindFreeForInternalHoldings(final FindFree ff, final ArrayList<Bestand> internalHoldings, final String link) {
+    private FindFree getFindFreeForInternalHoldings(final FindFree ff, final List<Bestand> internalHoldings, final String link) {
 
         final Lieferanten lieferantenInstance = new Lieferanten();
         final Text t = new Text();
@@ -1795,8 +1795,8 @@ public final class OrderAction extends DispatchAction {
         ff.setLieferant(lieferantenInstance.getLieferantFromName("abonniert", t.getConnection()));
         ff.setDeloptions("email");
 
-        final ArrayList<String> location = new ArrayList<String>();
-        final ArrayList<String> shelfmark = new ArrayList<String>();
+        final List<String> location = new ArrayList<String>();
+        final List<String> shelfmark = new ArrayList<String>();
 
         for (final Bestand b : internalHoldings) {
 
@@ -3015,7 +3015,7 @@ public final class OrderAction extends DispatchAction {
     /**
      * Holt aus einer ArrayList<Bestand> die eigenen Bestände
      */
-    private ArrayList<Bestand> extractInternalHoldings(final ArrayList<Bestand> bestaende, final long daiaId) {
+    private List<Bestand> extractInternalHoldings(final List<Bestand> bestaende, final long daiaId) {
 
         final ArrayList<Bestand> internalHoldings = new ArrayList<Bestand>();
 
@@ -3038,9 +3038,9 @@ public final class OrderAction extends DispatchAction {
     /**
      * Holt aus einer ArrayList<Bestand> die Fremdbestände
      */
-    private ArrayList<Bestand> extractExternalHoldings(final ArrayList<Bestand> bestaende, final long daiaId, final UserInfo ui) {
+    private List<Bestand> extractExternalHoldings(final List<Bestand> bestaende, final long daiaId, final UserInfo ui) {
 
-        final ArrayList<Bestand> externalHoldings = new ArrayList<Bestand>();
+        final List<Bestand> externalHoldings = new ArrayList<Bestand>();
 
         try {
             for (final Bestand b : bestaende) {

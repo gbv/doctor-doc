@@ -2,8 +2,8 @@ package ch.ddl.daia;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.grlea.log.SimpleLogger;
@@ -32,7 +32,7 @@ public class DaiaXMLResponse {
     private static final String CDATA = "CDATA";
     private static final String URN = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + ":";
 
-    public String listHoldings(final ArrayList<Bestand> bestaende, final String rfr_id) {
+    public String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
 
         String xml = "";
 

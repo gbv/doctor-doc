@@ -22,6 +22,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,10 +58,10 @@ public class Check {
                 if (m.find()) {
                     check = true;
                 }
-            } catch (AddressException e1) {
+            } catch (final AddressException e1) {
                 LOG.info("isEmail: " + email + " " + e1.toString());
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("isEmail: "  + email + " " + e.toString());
         }
 
@@ -149,7 +150,7 @@ public class Check {
                     of.setTodate(of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00");
                 }
 
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 LOG.error("checkDateRegion: " + e.toString());
                 of.setYfrom(null);
             }
@@ -224,7 +225,7 @@ public class Check {
             boolean validCriteria = false;
             // Die kontoabhängigen Stati müssen vorgängig mittels of.setStati abgelegt werden
             if (of.getStatitexts().size() > 0) {
-                for (Text status : of.getStatitexts()) {
+                for (final Text status : of.getStatitexts()) {
                     if (of.getFilter().equals(status.getInhalt()) || of.getFilter().equals("offen")) {
                         validCriteria = true;
                     }
@@ -267,7 +268,7 @@ public class Check {
         try {
             final URL url = new URL(link);
             System.out.println("Gültige URL: " + url); // unterdrückt Warnung, dass url nie gebraucht wird
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             LOG.info("isUrl: " + link + "\040" + e.toString());
             check = false;
         }
@@ -296,7 +297,7 @@ public class Check {
             // needs to be an URL after all!
             if (check) { check = isUrl(link); }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             check = false; // if we got here, the check failed
         }
 
@@ -325,7 +326,7 @@ public class Check {
                     check = true;
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 check = false; // if we got here, the check failed
             }
 
@@ -338,11 +339,11 @@ public class Check {
     /**
      * Extrahiert aus einem String alle Wörter und Zahlen (Regexp: \w   A word character: [a-zA-Z_0-9])
      * @param s
-     * @return ArrayList words
+     * @return List words
      */
-    public ArrayList<String> getAlphanumericWordCharacters(final String s) {
+    public List<String> getAlphanumericWordCharacters(final String s) {
 
-        final ArrayList<String> words = new ArrayList<String>();
+        final List<String> words = new ArrayList<String>();
 
         if (s != null) {
 
@@ -434,7 +435,7 @@ public class Check {
                     System.out.println("ungültige Prüfziffer: " + issn);
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("isValidIssn: " + issn + "\040" + e.toString());
         }
 
@@ -463,7 +464,7 @@ public class Check {
                 if (m.find()) {
                     check = true;
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("isYear(String year): " + year + "\040" + e.toString());
             }
         }

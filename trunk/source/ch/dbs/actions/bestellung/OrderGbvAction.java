@@ -120,7 +120,7 @@ public final class OrderGbvAction extends DispatchAction {
                                     if (of.getPpn() == null) {
 
                                         GbvSruForm gsf = new GbvSruForm();
-                                        ArrayList<GbvSruForm> matches = new ArrayList<GbvSruForm>();
+                                        List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
 
                                         // *** hier gibt es zwei Chancen ein GBV-Bestellobjekt zu erhalten:
                                         // ZDB-ID und ISSN vorhanden
@@ -463,7 +463,7 @@ public final class OrderGbvAction extends DispatchAction {
                                     if (of.getPpn() == null) {
 
                                         GbvSruForm gsf = new GbvSruForm();
-                                        ArrayList<GbvSruForm> matches = new ArrayList<GbvSruForm>();
+                                        List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
 
                                         // Versuch anhand der ISBN GBV-Bestellobjekt zu erhalten
                                         if (ck.isMinLength(of.getIsbn(), 2)) {
@@ -696,7 +696,7 @@ public final class OrderGbvAction extends DispatchAction {
 
                     try { // allfällige SRU-Fehler-Codes abfangen
                         // erste Suche eng als Phrase
-                        ArrayList<GbvSruForm> matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
+                        List<GbvSruForm> matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
                                 of.getGbvfield(), of.getGbvsearch(), startRecord));
                         // zweite Suche als Stichwörter
                         if (matches.isEmpty()) {
@@ -914,7 +914,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param OrderForm of
      * @return GbvSruForm
      */
-    private GbvSruForm getGbvOrderObject(ArrayList<GbvSruForm> matches, final OrderForm of) {
+    private GbvSruForm getGbvOrderObject(List<GbvSruForm> matches, final OrderForm of) {
 
         GbvSruForm gsf = new GbvSruForm();
 
@@ -957,11 +957,11 @@ public final class OrderGbvAction extends DispatchAction {
      * Liest die Treffer aus einem SRU-content und gibt sie in einem Array als Objekte zurück.
      *
      * @param String content
-     * @return ArrayList<GbvSruForm>
+     * @return List<GbvSruForm>
      */
-    private static ArrayList<GbvSruForm> getGbvMatches(String content) throws MyException {
+    private static List<GbvSruForm> getGbvMatches(String content) throws MyException {
 
-        final ArrayList<GbvSruForm> matches = new ArrayList<GbvSruForm>();
+        final List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
         int treffer = 0;
         int startRecord = 0;
         int maximumRecord = 0;
@@ -1698,7 +1698,7 @@ public final class OrderGbvAction extends DispatchAction {
         String pZdbid = null;
 
         try {
-            final ArrayList<GbvSruForm> matches = getGbvMatches(content);
+            final List<GbvSruForm> matches = getGbvMatches(content);
 
             if (!matches.isEmpty()) { // nur falls nicht keine Treffer! Sonst kracht es...
                 final GbvSruForm gsf = (GbvSruForm) matches.get(0);

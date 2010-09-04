@@ -2,6 +2,7 @@ package ch.ddl.daia;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,9 +31,9 @@ public class DaiaRequest {
 
     private static final SimpleLogger LOG = new SimpleLogger(DaiaRequest.class);
 
-    public ArrayList<Bestand> get(String openurl) {
+    public List<Bestand> get(String openurl) {
 
-        final ArrayList<Bestand> bestaende = new ArrayList<Bestand>();
+        final List<Bestand> bestaende = new ArrayList<Bestand>();
         // TODO: ggf. DAIA-ID mitschicken um kontospezifische Ausgaben zu erhalten
         openurl = ReadSystemConfigurations.getDaiaHost() + "?" + openurl;
         //    openurl = "http://localhost:8080/daia.do?" + openurl;

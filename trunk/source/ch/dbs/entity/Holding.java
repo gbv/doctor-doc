@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
@@ -260,11 +261,11 @@ public class Holding extends AbstractIdEntity {
      *
      * @param ArrayList<String> identifier
      * @param Connection cn
-     * @return ArrayList<Holding> holdings
+     * @return List<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldings(final ArrayList<String> identifier, final Connection cn) {
+    public List<Holding> getAllHoldings(final List<String> identifier, final Connection cn) {
 
-        final ArrayList<Holding> list = new ArrayList<Holding>();
+        final List<Holding> list = new ArrayList<Holding>();
 
         if (!identifier.isEmpty()) {
 
@@ -323,11 +324,11 @@ public class Holding extends AbstractIdEntity {
      *
      * @param Long kid
      * @param Connection cn
-     * @return ArrayList<Holding> holdings
+     * @return List<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldingsForKonto(final Long kId, final Connection cn) {
+    public List<Holding> getAllHoldingsForKonto(final Long kId, final Connection cn) {
 
-        final ArrayList<Holding> list = new ArrayList<Holding>();
+        final List<Holding> list = new ArrayList<Holding>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -372,11 +373,11 @@ public class Holding extends AbstractIdEntity {
      * @param ArrayList<String> identifier
      * @param Long kid
      * @param Connection cn
-     * @return ArrayList<Holding> holdings
+     * @return List<Holding> holdings
      */
-    public ArrayList<Holding> getAllHoldingsForKonto(final ArrayList<String> identifier, final Long kId, final Connection cn) {
+    public List<Holding> getAllHoldingsForKonto(final List<String> identifier, final Long kId, final Connection cn) {
 
-        final ArrayList<Holding> list = new ArrayList<Holding>();
+        final List<Holding> list = new ArrayList<Holding>();
 
         if (!identifier.isEmpty()) {
 
@@ -438,11 +439,11 @@ public class Holding extends AbstractIdEntity {
      *
      * @param ArrayList<String> identifier
      * @param Connection cn
-     * @return ArrayList<String> HOIDs
+     * @return List<String> HOIDs
      */
-    public ArrayList<String> getAllHOIDs(final ArrayList<String> identifier, final Connection cn) {
+    public List<String> getAllHOIDs(final List<String> identifier, final Connection cn) {
 
-        final ArrayList<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
 
         if (!identifier.isEmpty()) {
 
@@ -503,11 +504,11 @@ public class Holding extends AbstractIdEntity {
      * @param ArrayList<String> identifier
      * @param Long kid
      * @param Connection cn
-     * @return ArrayList<String> HOIDs
+     * @return List<String> HOIDs
      */
-    public ArrayList<String> getAllHOIDsForKonto(final ArrayList<String> identifier, final Long kId, final Connection cn) {
+    public List<String> getAllHOIDsForKonto(final List<String> identifier, final Long kId, final Connection cn) {
 
-        final ArrayList<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
 
         if (!identifier.isEmpty()) {
 

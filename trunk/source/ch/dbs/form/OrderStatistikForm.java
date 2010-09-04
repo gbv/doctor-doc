@@ -17,7 +17,6 @@
 
 package ch.dbs.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
@@ -27,7 +26,7 @@ public final class OrderStatistikForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
     private List<OrderStatistikForm> auflistung;
-    private ArrayList<OrderStatistikForm> statistik;
+    private List<OrderStatistikForm> statistik;
     private PreisWaehrungForm preiswaehrung;
     private String label;
     private int anzahl;
@@ -40,12 +39,12 @@ public final class OrderStatistikForm extends ValidatorForm {
     private String konto;
 
 
-    public ArrayList<OrderStatistikForm> getStatistik() {
+    public List<OrderStatistikForm> getStatistik() {
         return statistik;
     }
 
 
-    public void setStatistik(final ArrayList<OrderStatistikForm> statistik) {
+    public void setStatistik(final List<OrderStatistikForm> statistik) {
         this.statistik = statistik;
     }
 

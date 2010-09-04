@@ -516,8 +516,8 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @return list ArrayList<Text>
      */
-    public ArrayList<Text> possibleIPRanges(final String ip, final Connection cn) {
-        final ArrayList<Text> list = new ArrayList<Text>();
+    public List<Text> possibleIPRanges(final String ip, final Connection cn) {
+        final List<Text> list = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -661,7 +661,7 @@ public class Text extends AbstractIdEntity {
 
     /**
      * Liefert generell alle Texte anhand eines Texttypes plus alle kontospezifischen Texte dieses Texttypes
-     * @return ArrayList<Text> mit Stati-Texten
+     * @return List<Text> mit Stati-Texten
      */
     public List<Text> getAllTextPlusKontoTexts(final Texttyp t, final Long kid, final Connection cn) {
         final ArrayList<Text> sl = new ArrayList<Text>();
