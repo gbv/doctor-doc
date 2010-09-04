@@ -549,13 +549,13 @@ public class AbstractBenutzer extends AbstractIdEntity {
             ArrayList<Konto> kontolist;
 
             final Administrator admin = new Administrator();
+            final Konto k = new Konto();
             while (rs.next()) {
                 // Wenn Userlogin in Konto erlaubt ist, UserInfo erstellen
                 if (rs.getBoolean("userlogin") && rs.getBoolean("loginopt") || rs.getInt("rechte") >= 2) {
                     u = new UserInfo();
                     final AbstractBenutzer benutzer = getUser(rs);
                     if (benutzer.getClass().isInstance(admin)) {
-                        final Konto k = new Konto();
                         kontolist = k.getAllKontos(cn);
                     } else {
                         kontolist = getKontosAlowedLogin(benutzer, cn);

@@ -251,8 +251,7 @@ public class Billing extends AbstractIdEntity {
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                final Billing b = new Billing(rs, cn);
-                bl.add(b);
+                bl.add(new Billing(rs, cn));
             }
         } catch (final Exception e) {
             LOG.error("getBillings(Konto k, Connection cn): " + e.toString());

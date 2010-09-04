@@ -34,9 +34,7 @@ import org.junit.Test;
 
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.AbstractBenutzer;
-import ch.dbs.entity.Administrator;
 import ch.dbs.entity.Benutzer;
-import ch.dbs.entity.Bibliothekar;
 import ch.dbs.entity.Konto;
 
 public class TestBenutzer extends TestCase{
@@ -223,12 +221,12 @@ public class TestBenutzer extends TestCase{
 
         AbstractBenutzer u = null;
 
-        if (rechte == 3) {
-            u = new Administrator();
-        }
-        if (rechte == 2) {
-            u = new Bibliothekar();
-        }
+        //        if (rechte == 3) {
+        //            u = new Administrator();
+        //        }
+        //        if (rechte == 2) {
+        //            u = new Bibliothekar();
+        //        }
         if (rechte == 1) {
             u = new Benutzer();
         }

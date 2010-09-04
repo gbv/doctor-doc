@@ -95,8 +95,9 @@ public final class OrderAction extends DispatchAction {
         final ArrayList<JournalDetails> hitsGoogleScholar = new ArrayList<JournalDetails>();
         final Check check = new Check();
         final BestellformAction bfInstance = new BestellformAction();
-        String link = "";
         String content = "";
+        String linkGoogle = "";
+        String linkGS = "";
         String linkPdfGoogle = "";
         String linkPdfGS = "";
 
@@ -154,25 +155,25 @@ public final class OrderAction extends DispatchAction {
 
                             if ((searches == 0)
                                     || (searches == 2)) { // phrase + allintitle + filetype:pdf
-                                link = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=pdf&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
+                                linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=pdf&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
                             if ((searches == 1)
                                     || (searches == 3)) { // phrase + allintitle
-                                link = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
+                                linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
                             if ((searches > 3)
                                     && (searches < 6)) {
                                 //    Nummerierung auf 5 gestellt. Ev. auf 3 anpassen...!!!
-                                link = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
+                                linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
                             if (!didYouMean) {
-                                link = link + pageForm.getArtikeltitel_encoded();
+                                linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
                             }
                             if (didYouMean) { // Verwendung von String aus Methode googleDidYouMean
-                                link = link + pageForm.getDidYouMean();
+                                linkGoogle = linkGoogle + pageForm.getDidYouMean();
                             }
 
-                            content = getWebcontent(link, TIMEOUT_1, RETRYS_3);
+                            content = getWebcontent(linkGoogle, TIMEOUT_1, RETRYS_3);
 
                             //      content = "<form action=\"Captcha\" method=\"get\">" +
                             //      "<input type=\"hidden\" name=\"id\" value=\"17179006839024668804\">" +
@@ -305,29 +306,29 @@ public final class OrderAction extends DispatchAction {
 
                             if (searches == 0) { // phrase + allintitle + filetype:pdf
                                 if (!didYouMean) {
-                                    link = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
                                         + pageForm.getArtikeltitel_encoded()
                                         + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
                                 }
                                 if (didYouMean) {
-                                    link = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
                                         + pageForm.getDidYouMean()
                                         + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
                                 }
                             }
                             if (searches == 1) { // phrase + allintitle
                                 if (!didYouMean) {
-                                    link = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
                                         + pageForm.getArtikeltitel_encoded()
                                         + "%22&hl=de&lr=&btnG=Suche&lr=";
                                 }
                                 if (didYouMean) {
-                                    link = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
                                         + pageForm.getDidYouMean() + "%22&hl=de&lr=&btnG=Suche&lr=";
                                 }
                             }
 
-                            content = getWebcontent(link, TIMEOUT_1, RETRYS_3);
+                            content = getWebcontent(linkGS, TIMEOUT_1, RETRYS_3);
 
                             // Sicherstellen, dass Google Scholar nicht mit Captcha reagiert
                             if (!check.containsGoogleCaptcha(content)) {
@@ -430,9 +431,9 @@ public final class OrderAction extends DispatchAction {
                         // wobei id aus Quelltext und Text aus captcha übereinstimmen
                         // müssen => man landet auf Google Grundseite...
 
-                        link = "http://www.google.ch/sorry/Captcha?continue=http://www.google.ch/search?hl=de&id="
+                        linkGoogle = "http://www.google.ch/sorry/Captcha?continue=http://www.google.ch/search?hl=de&id="
                             + pageForm.getCaptcha_id() + "&captcha=" + pageForm.getCaptcha_text();
-                        content = getWebcontent(link, TIMEOUT_1, RETRYS_1);
+                        content = getWebcontent(linkGoogle, TIMEOUT_1, RETRYS_1);
 
                         if (!check.containsGoogleCaptcha(content)) {
                             // Important message
@@ -441,12 +442,12 @@ public final class OrderAction extends DispatchAction {
                         }
 
                         // Captcha: manuelle Google-Suche vorbereiten
-                        link = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
+                        linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
                             + pageForm.getArtikeltitel_encoded()
                             + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
 
                         final JournalDetails jdGoogleCaptcha = new JournalDetails();
-                        jdGoogleCaptcha.setLink(link);
+                        jdGoogleCaptcha.setLink(linkGoogle);
                         jdGoogleCaptcha.setUrl_text("Search Google!");
                         hitsGoogle.add(jdGoogleCaptcha);
 
@@ -455,12 +456,12 @@ public final class OrderAction extends DispatchAction {
                         rq.setAttribute("treffer_gl", ff);
 
                         // needs to be UTF-8 encoded
-                        link = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
+                        linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
                             + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
                             + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
 
                         final JournalDetails jdGoogleScholarCaptcha = new JournalDetails();
-                        jdGoogleScholarCaptcha.setLink(link);
+                        jdGoogleScholarCaptcha.setLink(linkGS);
                         jdGoogleScholarCaptcha.setUrl_text("Search Google-Scholar!");
                         hitsGoogleScholar.add(jdGoogleScholarCaptcha);
 
@@ -473,12 +474,12 @@ public final class OrderAction extends DispatchAction {
                 } else {
 
                     // User: manuelle Google-Suche vorbereiten
-                    link = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
+                    linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
                         + pageForm.getArtikeltitel_encoded()
                         + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
 
                     final JournalDetails jdGoogleManual = new JournalDetails();
-                    jdGoogleManual.setLink(link);
+                    jdGoogleManual.setLink(linkGoogle);
                     jdGoogleManual.setUrl_text("Search Google!");
                     hitsGoogle.add(jdGoogleManual);
 
@@ -487,12 +488,12 @@ public final class OrderAction extends DispatchAction {
                     rq.setAttribute("treffer_gl", ff);
 
                     // needs to be UTF-8 encoded
-                    link = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
+                    linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
                         + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
                         + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=";
 
                     final JournalDetails jdGoogleScholarManual = new JournalDetails();
-                    jdGoogleScholarManual.setLink(link);
+                    jdGoogleScholarManual.setLink(linkGS);
                     jdGoogleScholarManual.setUrl_text("Search Google-Scholar!");
                     hitsGoogleScholar.add(jdGoogleScholarManual);
 

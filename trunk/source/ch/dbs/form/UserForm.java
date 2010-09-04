@@ -122,12 +122,14 @@ public final class UserForm extends ValidatorForm {
     }
 
     public String[] getKontos() {
-        return kontos;
+        // defensive copying
+        return kontos.clone();
     }
 
 
     public void setKontos(final String[] kontos) {
-        this.kontos = kontos;
+        // defensive copying
+        this.kontos = kontos.clone();
     }
 
 

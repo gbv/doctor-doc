@@ -68,18 +68,15 @@ public class DBConn extends AbstractReadSystemConfigurations {
      * @param table (Tabelle)
      * @param field (Feld, in dem die Datei gespeichert wird)
      */
-    public void saveFile(final File fl, final String id, final String table, final String field) throws Exception {
-
-        Class.forName(DRIVER);
-        final Connection dbCon = DriverManager.getConnection(SERVER, DATABASE_USER, DATABASE_PASSWORD);
+    public void saveFile(final File fl, final String id, final String table, final String field,
+            final Connection con) throws Exception {
 
         final FileInputStream fis = new FileInputStream(fl);
-        final PreparedStatement pstmt = dbCon.prepareStatement(
+        final PreparedStatement pstmt = con.prepareStatement(
                 "update " + table + " set " + field + " = ? where did = " + id);
         pstmt.setBinaryStream(1, fis, (int) fl.length());
         pstmt.executeUpdate();
         pstmt.close();
-        dbCon.close();
         fis.close();
     }
 
