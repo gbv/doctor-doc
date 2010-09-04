@@ -181,29 +181,25 @@ public class DaiaRequest {
                             if (availableList.getLength() > 0) { // nur zurückgeben, falls verfügbar
 
                                 final Element availableElement = (Element) availableList.item(0);
-                                //                                System.out.println("Available: " + availableElement.getAttribute("service"));
-
-                                // ------
                                 final NodeList availableLimitationList = availableElement.getElementsByTagName("limitation");
-                                final int totalLimitations = availableLimitationList.getLength();
-                                System.out.println("Total no of limitations: " + totalLimitations);
 
-                                // for (int m = 0; m < availableLimitationList.getLength(); m++) {
-                                //   String deliveryway = "";
-                                //   Element availableLimitationElement = (Element) availableLimitationList.item(m);
-                                //   deliveryway = availableLimitationElement.getAttribute("id");
-                                //   System.out.println("Lieferart: " + deliveryway);
-                                //   NodeList costsList = availableLimitationElement.getElementsByTagName("costs");
-                                //   Element costsElement = (Element) costsList.item(0);
-                                //   String waehrung = costsElement.getAttribute("id");
-                                //   NodeList textCostsList = costsElement.getChildNodes();
-                                //   if (textCostsList.getLength() > 0) {
-                                //        value = ((Node) textCostsList.item(0)).getNodeValue().trim();
-                                //   } else {
-                                //        value = "";
-                                //          }
-                                //        System.out.println(waehrung + ": " + value);
-                                //   }
+                                for (int m = 0; m < availableLimitationList.getLength(); m++) {
+                                    String id = "";
+                                    final Element countryElement = (Element) availableLimitationList.item(m);
+                                    id = countryElement.getAttribute("id");
+                                    // make sure limitation tag has id=country
+                                    // TODO: read also "groups"
+                                    if ("country".equals(id)) {
+                                        final NodeList textCountryList = countryElement.getChildNodes();
+                                        if (textCountryList.getLength() > 0) {
+                                            value = ((Node) textCountryList.item(0)).getNodeValue().trim();
+                                        } else {
+                                            value = "";
+                                        }
+                                        // TODO: use a separate filter form, instead of setting the country
+                                        bestand.getHolding().getKonto().setLand(value);
+                                    }
+                                }
 
                                 bestaende.add(bestand);
                             }

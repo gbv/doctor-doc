@@ -136,18 +136,6 @@ public class DaiaXMLResponse {
                 text = StringEscapeUtils.escapeXml(b.getStandort().getInhalt());
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "location");
-                //      // additional tag shelfmark
-                //      atts.clear();
-                //      hd.startElement("", "", "shelfmark", atts);
-                //      text = StringEscapeUtils.escapeXml(bestaende.get(i).getShelfmark());
-                //      hd.characters(text.toCharArray(), 0, text.length());
-                //      hd.endElement("", "", "shelfmark");
-                //      // Zusatztag eissue
-                //      atts.clear();
-                //      hd.startElement("", "", "eissue", atts);
-                //      if (bestaende.get(i).isEissue()) {text="true"; } else {text="false"; };
-                //      hd.characters(text.toCharArray(), 0, text.length());
-                //      hd.endElement("", "", "eissue");
                 hd.endElement("", "", "storage");
 
                 // Available tag
@@ -155,22 +143,17 @@ public class DaiaXMLResponse {
                 atts.addAttribute("", "", "service", CDATA, "interloan");
                 hd.startElement("", "", "available", atts);
 
-                //      // Limitation tag (e.g. for deliveryways: fax, postal, email...)
-                //      String[] deliveryways = {"Fax", "Post", "Email", "Express"};
-                //      String[] costs = {"8", "8", "8", "16"};
-                //      String waehrung = "CHF";
-                //      for (int y=0;y<deliveryways.length;y++) {
-                //        atts.clear();
-                //        atts.addAttribute("", "", "id", CDATA, deliveryways[y]);
-                //        hd.startElement("", "", "limitation", atts);
-                //        // Zusatztag costs
-                //        atts.clear();
-                //        atts.addAttribute("", "", "id", CDATA, waehrung);
-                //        hd.startElement("", "", "costs", atts);
-                //        hd.characters(costs[y].toCharArray(), 0, costs[y].length());
-                //        hd.endElement("", "", "costs");
-                //        hd.endElement("", "", "limitation");
-                //      }
+                // Limitation tag (for countries: CH, DE, AT...)
+                // for now we use only one configuration: the country of the library
+                // TODO: allow multiple, configurable countries
+                // TODO: allow groups (tag "group")
+                atts.clear();
+                atts.addAttribute("", "", "id", CDATA, "country");
+                hd.startElement("", "", "limitation", atts);
+                text = b.getHolding().getKonto().getLand();
+                text = StringEscapeUtils.escapeXml(text);
+                hd.characters(text.toCharArray(), 0, text.length());
+                hd.endElement("", "", "limitation");
 
                 hd.endElement("", "", "available");
                 hd.endElement("", "", "item");
