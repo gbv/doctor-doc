@@ -46,6 +46,9 @@ public class Holding extends AbstractIdEntity {
     private String issn;
     private String zdbid;
 
+    // contains the baseUrl of a holding to be ordered
+    private String baseurl;
+
 
     public Holding() {
         this.setKonto(new Konto());
@@ -746,6 +749,14 @@ public class Holding extends AbstractIdEntity {
 
     public void setZdbid(final String zdbid) {
         this.zdbid = zdbid;
+    }
+
+    public String getBaseurl() {
+        return baseurl;
+    }
+
+    public void setBaseurl(final String baseurl) {
+        this.baseurl = baseurl;
     }
 
 

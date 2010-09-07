@@ -65,7 +65,6 @@ public class DaiaXMLResponse {
 
             // Institution tag
             atts.clear();
-            // TODO: Create a path and the function to order from a given holding
             atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
             hd.startElement("", "", "institution", atts);
             String text = "Register " + ReadSystemConfigurations.getApplicationName();
