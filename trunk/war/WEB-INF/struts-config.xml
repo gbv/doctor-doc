@@ -5,10 +5,10 @@
   <data-sources/>
   
   <!-- ======================================== Form Bean Definitions -->
-  <form-beans>
-    <form-bean name="BestellParam" type="ch.dbs.entity.BestellParam"/>
-    <form-bean name="BillingForm" type="ch.dbs.form.BillingForm"/>
-    <form-bean name="HoldingForm" type="ch.dbs.form.HoldingForm"/>
+ <form-beans>
+  <form-bean name="BestellParam" type="ch.dbs.entity.BestellParam"/>
+  <form-bean name="BillingForm" type="ch.dbs.form.BillingForm"/>
+  <form-bean name="HoldingForm" type="ch.dbs.form.HoldingForm"/>
   <form-bean name="LoginForm" type="ch.dbs.form.LoginForm"/>
   <form-bean name="FindFree" type="ch.dbs.form.FindFree"/>
   <form-bean name="JournalDetails" type="ch.dbs.form.JournalDetails"/>
@@ -27,7 +27,7 @@
   <form-bean name="GbvSruForm" type="ch.dbs.form.GbvSruForm"/>
   <form-bean name="PreisWaehrungForm" type="ch.dbs.form.PreisWaehrungForm"/>
   <form-bean name="SearchesForm" type="ch.dbs.form.SearchesForm"/>
-  </form-beans>
+ </form-beans>
   
   <global-exceptions/>
   
@@ -919,6 +919,7 @@
     <!-- ********************************************************************************************************** -->
     
     <!-- *************************************************Bestandesverwaltung************************************************* -->
+    
     <!-- Prepares the JSP page to export holdings -->
     <action path="/allstock"
         input="/jsp/stockexport.jsp"
@@ -930,6 +931,7 @@
         <forward name="failure" path="/error.do"/>
         <forward name="success" path="/stockexport.do"/>
     </action>
+    
     <!-- Prepares the JSP page to import holdings -->
     <action path="/stock"
         input="/jsp/stockimport.jsp"
@@ -941,7 +943,8 @@
         <forward name="failure" path="/error.do"/>
         <forward name="success" path="/stockimport.do"/>
     </action>
-   <!-- Upload a CSV-File of holdings -->
+    
+  <!-- Upload a CSV-File of holdings -->
   <action path="/importholdinglist"
         name="FileForm"
         parameter="method"
@@ -952,10 +955,11 @@
       <forward name="importError" path="/jsp/messages.jsp"/>
       <forward name="success" path="/jsp/message.jsp"/>
     </action>
+    
     <!-- Modify locations of holdings -->
     <action path="/modplace"
         input="/jsp/stockplacesmodify.jsp"
-        name="HoldingForm"  
+        name="HoldingForm"
         scope="request" 
         parameter="method"
         validate="false"
@@ -964,9 +968,21 @@
         <forward name="success" path="/stockplacesmodify.do"/>
     </action>
     
+   <!-- Information about library for a given stock / holding -->
+   <action path="/stockinfo"
+   			name="OrderForm"
+            validate="false" 
+            parameter="method"
+            scope="request"
+            type="ch.dbs.actions.bestand.Stockdetails">
+      <forward name="success" path="/stockdetails.do"/>
+      <forward name="failure" path="/error.do"/>
+    </action>
+    
     <action name="ActiveMenus" forward = "/jsp/stockimport.jsp" path="/stockimport"/>
     <action name="ActiveMenus" forward = "/jsp/stockplacesmodify.jsp" path="/stockplacesmodify"/>
     <action name="ActiveMenus" forward = "/jsp/stockexport.jsp" path="/stockexport"/>
+    <action name="ActiveMenus" forward = "/jsp/stockdetails.jsp" path="/stockdetails"/>
     <!-- ********************************************************************************************************** -->
     
     

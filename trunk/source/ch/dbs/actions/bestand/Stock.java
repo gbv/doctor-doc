@@ -628,7 +628,8 @@ public class Stock extends DispatchAction {
                 }
 
                 // check if Bestand is from account
-                final Bestand control = new Bestand(b.getId(), cn); // get control Bestand from specified ID
+                // internal holdings are visible
+                final Bestand control = new Bestand(b.getId(), true, cn); // get control Bestand from specified ID
 
                 // check if KID from Bestand matches KID from ui
                 if (control.getHolding() != null && control.getHolding().getKid().equals(ui.getKonto().getId())) {

@@ -97,16 +97,18 @@ public class Bestand extends AbstractIdEntity {
      * Erstellt einen Bestand anhand einer Verbindung und der ID
      *
      * @param Long stid
+     * @param boolean internal
      * @param Connection cn
      * @return Bestand bestand
      */
-    public Bestand(final Long stid, final Connection cn) {
+    public Bestand(final Long stid, final boolean intern, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM stock WHERE STID = ?");
+            pstmt = cn.prepareStatement("SELECT * FROM stock WHERE STID = ? AND internal <= ?");
             pstmt.setLong(1, stid);
+            pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -334,19 +336,21 @@ public class Bestand extends AbstractIdEntity {
      * Gets all "Bestand" from a kid
      *
      * @param Long kid
+     * @param boolean internal
      * @param Connection cn
      *
      * @return List<Bestand> listBestand
      */
-    public List<Bestand> getAllKontoBestand(final Long kid, final Connection cn) {
+    public List<Bestand> getAllKontoBestand(final Long kid, final boolean intern, final Connection cn) {
         final List<Bestand> listBestand = new ArrayList<Bestand>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT a.* FROM stock AS a JOIN holdings AS b "
-                    + "ON a.HOID = b.HOID WHERE b.KID = ?");
+                    + "ON a.HOID = b.HOID WHERE b.KID = ? AND a.internal <= ?");
             pstmt.setLong(1, kid);
+            pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -384,7 +388,7 @@ public class Bestand extends AbstractIdEntity {
      * @return List mit Bestand
      */
     public List<Bestand> getAllBestandForStandortId(final Long tid, final Connection cn) {
-        final List<Bestand> sl = new ArrayList<Bestand>();
+        final List<Bestand> bestandList = new ArrayList<Bestand>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -393,7 +397,7 @@ public class Bestand extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                sl.add(new Bestand(cn, rs));
+                bestandList.add(new Bestand(cn, rs));
             }
 
         } catch (final Exception e) {
@@ -415,7 +419,7 @@ public class Bestand extends AbstractIdEntity {
             }
         }
 
-        return sl;
+        return bestandList;
     }
 
     /**
@@ -548,6 +552,53 @@ public class Bestand extends AbstractIdEntity {
         }
 
         return listBestand;
+    }
+
+
+    /**
+     * Gets all Bestand from a single holding
+     * @param Holding hold
+     * @param boolean internal
+     * @param Connection cn
+     *
+     * @return List<Bestand> listBestand
+     */
+    public List<Bestand> getAllBestandForHolding(final Holding hold, final boolean intern, final Connection cn) {
+
+        final List<Bestand> bestandList = new ArrayList<Bestand>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM `stock` WHERE HOID = ? AND internal <= ?");
+            pstmt.setLong(1, hold.getId());
+            pstmt.setBoolean(2, intern);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                bestandList.add(new Bestand(cn, rs));
+            }
+
+        } catch (final Exception e) {
+            LOG.error("getAllBestandForHolding(final Holding hold, final boolean intern, final Connection cn): "
+                    + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return bestandList;
     }
 
     /**

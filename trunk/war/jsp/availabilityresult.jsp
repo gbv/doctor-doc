@@ -13,6 +13,27 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="availresult.titel" /></title>
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
+  
+  <!-- In the head section of the page -->
+<script>
+<!--
+function wopen(url, name, w, h)
+{
+// Fudge factors for window decoration space.
+// Works well on different platforms & browsers.
+w += 32;
+h += 96;
+ var win = window.open(url,
+  name,
+  'width=' + w + ', height=' + h + ', ' +
+  'location=no, menubar=no, ' +
+  'status=no, toolbar=no, scrollbars=no, resizable=no');
+ win.resizeTo(w, h);
+ win.focus();
+}
+// -->
+</script> 
+  
  </head>
  <body>
 
@@ -22,7 +43,7 @@
 
 <br />
               
-    <div id="italic">
+  <div id="italic">
     <logic:present name="orderform" property="author"><logic:notEqual name="orderform" property="author" value=""><bean:write name="orderform" property="author" /> : </logic:notEqual></logic:present>
     <logic:present name="orderform" property="artikeltitel"><logic:notEqual name="orderform" property="artikeltitel" value=""><bean:write name="orderform" property="artikeltitel" />. - </logic:notEqual></logic:present>
     <logic:present name="orderform" property="zeitschriftentitel"><logic:notEqual name="orderform" property="zeitschriftentitel" value=""><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEqual></logic:present><br />
@@ -285,21 +306,19 @@
   </logic:equal>
   </logic:present>
 
-  <!-- Here we show holdings found in the same country as the user is coming from -->
   <logic:present name="holdings">
-  
-   <bean:define id="country" type="java.lang.String"><bean:write name="userinfo" property="konto.land" /></bean:define>
   
   <h3><bean:message key="availresult.singleHoldings" /></h3>
     <table border="1" cellspacing="0" cellpadding="3">
       <tr>
         <th id="th-left"><bean:message key="availresult.library" /></td>
-        <th id="th-left"><bean:message key="impressum.contact" /></td>
+        <th>&nbsp;</th>
       </tr>
       <logic:iterate id="hold" name="holdings">
           <tr>
             <td><bean:write name="hold" property="holding.konto.bibliotheksname" /></td>
-            <td><a href="mailto:<bean:write name="hold" property="holding.konto.bibliotheksmail" />"><bean:write name="hold" property="holding.konto.bibliotheksmail" /></a></td>
+            <td><a href="<bean:write name="hold" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="hold" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" 
+            target="popup" onClick="wopen('<bean:write name="hold" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="hold" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />', 'popup', 840, 580); return false;"><bean:message key="availresult.details" /></a></td>
           </tr>
       </logic:iterate>
     </table>    

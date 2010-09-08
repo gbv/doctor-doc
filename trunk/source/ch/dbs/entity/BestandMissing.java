@@ -59,7 +59,8 @@ public class BestandMissing extends AbstractIdEntity {
         try {
 
             this.setId(rs.getLong("NLID"));
-            this.setBestand(new Bestand(rs.getLong("STID"), cn));
+            // internal holdings are visible
+            this.setBestand(new Bestand(rs.getLong("STID"), true, cn));
             this.setStartyear(rs.getString("startyear"));
             this.setStartvolume(rs.getString("startvolume"));
             this.setStartissue(rs.getString("startissue"));

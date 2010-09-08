@@ -129,7 +129,8 @@ public final class HoldingsReport extends DispatchAction {
         // get a StringBuffer with a header describing the content of the fields
         final StringBuffer buf = initStringBuffer(delimiter);
 
-        final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), cn.getConnection());
+        // internal holdings are visible
+        final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
         for (final Bestand b : stock) {
             buf.append(getExportLine(b, delimiter));
