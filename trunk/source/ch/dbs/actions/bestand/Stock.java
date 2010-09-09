@@ -859,7 +859,7 @@ public class Stock extends DispatchAction {
 
 
     /**
-     * Gets from an ISSN a TreeSet<String> list of all 'related' ISSNs to map them
+     * Gets from an ISSN a List<String> of all 'related' ISSNs to map them
      */
     private List<String> getRelatedIssn(final String issn, final Connection cn) {
 

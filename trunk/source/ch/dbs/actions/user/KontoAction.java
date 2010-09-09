@@ -19,7 +19,7 @@ package ch.dbs.actions.user;
 
 import java.util.Date;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -85,7 +85,7 @@ public final class KontoAction extends DispatchAction {
         final Text cn = new Text();
 
         final TimeZones tz = new TimeZones();
-        final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+        final Set<String> setTZ = tz.getTimeZonesAsString();
         rq.setAttribute(TIMEZONES, setTZ);
 
         final KontoForm kf = new KontoForm();
@@ -164,7 +164,7 @@ public final class KontoAction extends DispatchAction {
                             forward = "subitofailed"; // Pfad i.O.
                             kf.setMessage("error.gbv_values");
                             final TimeZones tz = new TimeZones();
-                            final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                            final Set<String> setTZ = tz.getTimeZonesAsString();
                             rq.setAttribute(TIMEZONES, setTZ);
                             final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                     .getConnection());
@@ -176,7 +176,7 @@ public final class KontoAction extends DispatchAction {
                         forward = "subitofailed"; // Pfad i.O.
                         kf.setMessage("error.gbv_timeout");
                         final TimeZones tz = new TimeZones();
-                        final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                        final Set<String> setTZ = tz.getTimeZonesAsString();
                         rq.setAttribute(TIMEZONES, setTZ);
                         final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                 .getConnection());
@@ -204,7 +204,7 @@ public final class KontoAction extends DispatchAction {
                 kf.setMessage("error.values");
 
                 final TimeZones tz = new TimeZones();
-                final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                final Set<String> setTZ = tz.getTimeZonesAsString();
                 rq.setAttribute(TIMEZONES, setTZ);
 
                 final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
@@ -218,7 +218,7 @@ public final class KontoAction extends DispatchAction {
             kf.setMessage("error.berechtigung");
 
             final TimeZones tz = new TimeZones();
-            final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+            final Set<String> setTZ = tz.getTimeZonesAsString();
             rq.setAttribute(TIMEZONES, setTZ);
 
             final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
@@ -486,7 +486,7 @@ public final class KontoAction extends DispatchAction {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
                 final TimeZones tz = new TimeZones();
-                final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                final Set<String> setTZ = tz.getTimeZonesAsString();
                 rq.setAttribute(TIMEZONES, setTZ);
 
                 final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
@@ -664,7 +664,7 @@ public final class KontoAction extends DispatchAction {
                                     forward = "subitofailed"; // Pfad i.O.
                                     kf.setMessage("error.gbv_values");
                                     final TimeZones tz = new TimeZones();
-                                    final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                                    final Set<String> setTZ = tz.getTimeZonesAsString();
                                     rq.setAttribute(TIMEZONES, setTZ);
                                     final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                             .getConnection());
@@ -675,7 +675,7 @@ public final class KontoAction extends DispatchAction {
                                 forward = "subitofailed"; // Pfad i.O.
                                 kf.setMessage("error.gbv_timeout");
                                 final TimeZones tz = new TimeZones();
-                                final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                                final Set<String> setTZ = tz.getTimeZonesAsString();
                                 rq.setAttribute(TIMEZONES, setTZ);
                                 final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                         .getConnection());
@@ -794,7 +794,7 @@ public final class KontoAction extends DispatchAction {
                         forward = "missingvalues";
                         kf.setMessage("error.url");
                         final TimeZones tz = new TimeZones();
-                        final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                        final Set<String> setTZ = tz.getTimeZonesAsString();
                         rq.setAttribute(TIMEZONES, setTZ);
                         final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
                                 .getConnection());
@@ -805,7 +805,7 @@ public final class KontoAction extends DispatchAction {
                     forward = "missingvalues";
                     kf.setMessage("error.values");
                     final TimeZones tz = new TimeZones();
-                    final TreeSet<String> setTZ = tz.getTimeZonesAsString();
+                    final Set<String> setTZ = tz.getTimeZonesAsString();
                     rq.setAttribute(TIMEZONES, setTZ);
                     final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
                     kf.setCountries(allPossCountries);

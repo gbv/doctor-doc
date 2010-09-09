@@ -30,7 +30,7 @@ public class DaiaXMLResponse {
     private static final SimpleLogger LOG = new SimpleLogger(DaiaXMLResponse.class);
     private static final String UTF8 = "UTF-8";
     private static final String CDATA = "CDATA";
-    private static final String URN = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + ":";
+    private static final String URN = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do:";
 
     public String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
 

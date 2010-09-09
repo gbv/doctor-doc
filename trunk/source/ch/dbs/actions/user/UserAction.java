@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -188,7 +189,7 @@ public final class UserAction extends DispatchAction {
                 of.setYears(years);
 
                 // Suchfelder bestimmen
-                final TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                final Map<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
 
                 rq.setAttribute("overviewform", of);
@@ -1008,7 +1009,7 @@ public final class UserAction extends DispatchAction {
                 of.setYears(years);
 
                 // Suchfelder bestimmen
-                final TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                final Map<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
 
                 final Texttyp tty = new Texttyp();
@@ -1094,7 +1095,7 @@ public final class UserAction extends DispatchAction {
                 of.setYears(years);
 
                 //          Suchfelder bestimmen
-                final TreeMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                final Map<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
 
                 final Texttyp t = new Texttyp();
@@ -1448,12 +1449,12 @@ public final class UserAction extends DispatchAction {
     /**
      * Liefert eine sprachabhängig sortierte Liste an Suchfeldern für den Select
      * @param HttpServletRequest rq
-     * @return TreeMap<String, String>
+     * @return Map<String, String>
      */
-    private TreeMap<String, String> composeSortedLocalisedOrderSearchFields(final HttpServletRequest rq) {
+    private Map<String, String> composeSortedLocalisedOrderSearchFields(final HttpServletRequest rq) {
 
         final List<String> list = prepareOrderSearchFields();
-        final TreeMap<String, String> result = new TreeMap<String, String>();
+        final Map<String, String> result = new TreeMap<String, String>();
         final Locale locale = getLocale(rq);
         final MessageResources msgs = getResources(rq);
         String key = null;
