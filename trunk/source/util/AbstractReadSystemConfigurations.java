@@ -24,8 +24,7 @@ import org.grlea.log.SimpleLogger;
 
 
 /**
- * Benutzt die Klasse commons-configuration um Properties-Files auszulesen und
- * an andere Klassen zu vererben
+ * Uses the class commons-configuration to read properties files.
  *
  * @author Markus Fischer
  */
@@ -63,7 +62,7 @@ abstract class AbstractReadSystemConfigurations {
 
     protected static final boolean SEARCH_CARELIT = searchCarelit();
     protected static final boolean USE_DAIA = readUseDaia();
-    protected static final String DAIA_HOST = readDaiaHost();
+    protected static final String[] DAIA_HOSTS = readDaiaHosts();
 
     private static String readSystemTimezone() {
 
@@ -395,19 +394,28 @@ abstract class AbstractReadSystemConfigurations {
         return useDaia;
     }
 
-    private static String readDaiaHost() {
+    private static String[] readDaiaHosts() {
 
-        String daiaHost = "";
+        String[] daiaHosts = null;
 
         try {
             final Configuration config = new PropertiesConfiguration(PATH);
-            daiaHost = config.getString("daiaHost");
+            daiaHosts = parse(config.getString("daiaHosts"));
 
         } catch (final ConfigurationException e) {
             LOG.error(e.toString());
         }
 
-        return daiaHost;
+        return daiaHosts;
+    }
+
+    /**
+     * This method is beeing used to read ; delimited properties files with
+     * several parameters
+     *
+     */
+    private static String[] parse(final String string) {
+        return string.split(";\\s*");
     }
 
 

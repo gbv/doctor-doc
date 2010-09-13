@@ -86,8 +86,8 @@ public final class ReadSystemConfigurations {
         return AbstractReadSystemConfigurations.USE_DAIA;
     }
 
-    public static String getDaiaHost() {
-        return AbstractReadSystemConfigurations.DAIA_HOST;
+    public static String[] getDaiaHosts() {
+        return AbstractReadSystemConfigurations.DAIA_HOSTS;
     }
 
 }
