@@ -144,7 +144,8 @@ public final class GetOpenUrlRequest extends Action {
                     LOG.ludicrous("Kein Cookie gesetzt!");
                 } else {
 
-                    for (int i = 0; i < cookies.length; i++) {
+                    final int max = cookies.length;
+                    for (int i = 0; i < max; i++) {
 
                         if (cookies[i].getName() != null && "doctordoc-bestellform".equals(cookies[i].getName())) {
                             String cookietext = cookies[i].getValue();

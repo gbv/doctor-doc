@@ -476,7 +476,8 @@ public class Stock extends DispatchAction {
 
         final List<Message> messageList = new ArrayList<Message>();
 
-        for (int i = 1; i < stockList.size(); i++) { // start at position 1, thus ignoring the header
+        final int max = stockList.size();
+        for (int i = 1; i < max; i++) { // start at position 1, thus ignoring the header
             final List<String> importLine = stockList.get(i);
             int column = 0; // column number of element to check
             for (String line : importLine) {
@@ -739,7 +740,8 @@ public class Stock extends DispatchAction {
 
         final List<Bestand> bestandList = new ArrayList<Bestand>();
 
-        for (int i = 1; i < stockList.size(); i++) { // start at position 1, thus ignoring the header
+        final int max = stockList.size();
+        for (int i = 1; i < max; i++) { // start at position 1, thus ignoring the header
             bestandList.add(getBestand(stockList.get(i), ui.getKonto().getId()));
         }
 

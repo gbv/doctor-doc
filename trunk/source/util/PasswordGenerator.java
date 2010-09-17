@@ -17,6 +17,8 @@
 
 package util;
 
+import java.util.Random;
+
 /**
  *
  * @author Pascal Steiner
@@ -25,7 +27,7 @@ package util;
 public class PasswordGenerator {
     public static final int DEFAULT_PW_LENGTH = 8;
 
-    private static java.util.Random rnd;
+    private static final Random RND = new Random();
 
     private final transient int passwordLength;
 
@@ -42,9 +44,6 @@ public class PasswordGenerator {
             throw new IllegalArgumentException(
             "could not generate passwords with length smaller than 1");
         }
-        if (rnd == null) {
-            rnd = new java.util.Random();
-        }
         passwordLength = length;
     }
 
@@ -54,11 +53,12 @@ public class PasswordGenerator {
      */
     public String getRandomString() {
         final char[] pwd = new char[passwordLength];
-        for (int i = 0; i < pwd.length; i++) {
-            if (rnd.nextInt(36) < 10) {
-                pwd[i] = (char) (48 + rnd.nextInt(10)); // zufällige Zahlenziffer erzeugen
+        final int max = pwd.length;
+        for (int i = 0; i < max; i++) {
+            if (RND.nextInt(36) < 10) {
+                pwd[i] = (char) (48 + RND.nextInt(10)); // zufällige Zahlenziffer erzeugen
             } else {
-                pwd[i] = (char) (97 + rnd.nextInt(26)); // zufälligen Kleinbuchstabe erzeugen
+                pwd[i] = (char) (97 + RND.nextInt(26)); // zufälligen Kleinbuchstabe erzeugen
             }
         }
         return new String(pwd);

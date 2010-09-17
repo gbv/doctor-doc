@@ -249,8 +249,8 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_id() != null) {
-            for (int i = 0; co.getRft_id().size() > i; i++) { // hier werden URIs ausgelsen und ins co geschrieben
-                of = resolveUriScheme(co.getRft_id().get(i).toString(), of);
+            for (final String str : co.getRft_id()) {
+                of = resolveUriScheme(str, of);
             }
         }
 

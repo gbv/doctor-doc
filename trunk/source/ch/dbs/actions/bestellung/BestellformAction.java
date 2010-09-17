@@ -212,7 +212,8 @@ public final class BestellformAction extends DispatchAction {
             } else {
                 final CodeString codeString = new CodeString();
 
-                for (int i = 0; i < cookies.length; i++) {
+                final int max = cookies.length;
+                for (int i = 0; i < max; i++) {
 
                     if (cookies[i].getName() != null && cookies[i].getName().equals("doctordoc-bestellform")) {
                         String cookietext = codeString.decodeString(cookies[i].getValue());

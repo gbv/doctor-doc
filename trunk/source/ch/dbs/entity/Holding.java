@@ -276,7 +276,8 @@ public class Holding extends AbstractIdEntity {
 
             sqlQuery.append("SELECT * FROM holdings WHERE issn = ? OR coden = ? OR zdbid = ?");
 
-            for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
+            final int max = identifier.size();
+            for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
             }
 
@@ -387,7 +388,8 @@ public class Holding extends AbstractIdEntity {
             final StringBuffer sqlQuery = new StringBuffer(242);
             sqlQuery.append("SELECT * FROM holdings WHERE KID = ? AND (issn = ? OR coden = ? OR zdbid = ?");
 
-            for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
+            final int max = identifier.size();
+            for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
             }
 
@@ -453,7 +455,8 @@ public class Holding extends AbstractIdEntity {
             final StringBuffer sqlQuery = new StringBuffer(264);
             sqlQuery.append("SELECT HOID FROM holdings WHERE issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 
-            for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
+            final int max = identifier.size();
+            for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
             }
 
@@ -518,7 +521,8 @@ public class Holding extends AbstractIdEntity {
             final StringBuffer sqlQuery = new StringBuffer(281);
             sqlQuery.append("SELECT HOID FROM holdings WHERE KID LIKE ? AND (issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 
-            for (int i = 1; i < identifier.size(); i++) { // nur ausführen falls length > 1
+            final int max = identifier.size();
+            for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
             }
 

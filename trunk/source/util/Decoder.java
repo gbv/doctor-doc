@@ -32,7 +32,8 @@ public class Decoder {
      */
     public String urlDecode(final String s, final String charset) throws UnsupportedEncodingException {
         final StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < s.length(); i++) {
+        final int max = s.length();
+        for (int i = 0; i < max; i++) {
             final char c = s.charAt(i);
             switch (c) {
             case '+':
@@ -124,7 +125,8 @@ public class Decoder {
     public static final String utf8Convert(final String utf8String)
     throws java.io.UnsupportedEncodingException {
         final byte[] bytes = new byte[utf8String.length()];
-        for (int i = 0; i < utf8String.length(); i++) {
+        final int max = utf8String.length();
+        for (int i = 0; i < max; i++) {
             bytes[i] = (byte) utf8String.charAt(i);
         }
         return new String(bytes, "UTF-8");

@@ -1121,9 +1121,9 @@ public class OpenUrl {
         }
 
         if (co.getRft_id() != null) {
-            for (int i = 0; i < co.getRft_id().size(); i++) { // kann mehrere rft_id enthalten
+            for (final String str : co.getRft_id()) {
                 openURL.append("&rft_id=");
-                openURL.append(co.getRft_id().get(i).toString());
+                openURL.append(str);
             }
         }
 
@@ -1240,12 +1240,13 @@ public class OpenUrl {
 
             if ("rft_id".equals(key)) { // rft_id enthält nocheinmal unterschiedliche Identifier nach dem info: Scheme
                 // rft_id wird jeweils separat abgelegt und nicht aneinander gehängt
-                for (int z = 0; z < values.length; z++) {
-                    hm.put(key, getOpenUrlValue(values[z]));
+                for (final String str : values) {
+                    hm.put(key, getOpenUrlValue(str));
                 }
             } else { // hier werden Mehrfachparameter (z.B. mehrere Autoren) aneinander gehängt
                 final StringBuffer buf = new StringBuffer();
-                for (int z = 0; z < values.length; z++) {
+                final int max = values.length;
+                for (int z = 0; z < max; z++) {
                     if (z == 0) { buf.append(values[z]); } else {
                         buf.append("\040;\040");
                         buf.append(values[z]);

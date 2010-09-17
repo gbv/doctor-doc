@@ -443,7 +443,8 @@ public class Bestand extends AbstractIdEntity {
 
                 final StringBuffer sqlQuery = new StringBuffer(getSQL(searchMode));
 
-                for (int i = 1; i < hoids.size(); i++) { // only append if there are several holdings
+                final int max = hoids.size();
+                for (int i = 1; i < max; i++) { // only append if there are several holdings
                     sqlQuery.append(" OR HOID = ?");
                 }
                 sqlQuery.append(')'); // close SQL Syntax with a parenthesis
@@ -512,7 +513,7 @@ public class Bestand extends AbstractIdEntity {
                                 + searchMode);
                     }
 
-                    for (int i = 0; i < hoids.size(); i++) {
+                    for (int i = 0; i < max; i++) {
                         pstmt.setString(positionHoid + i, hoids.get(i));
                     }
 

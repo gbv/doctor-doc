@@ -287,8 +287,8 @@ public class Check {
             final String extension = link.substring(link.lastIndexOf('.') + 1); // may throw exception
 
             // check for specified filetypes
-            for (int i = 0; i < filetypes.length; i++) {
-                if (extension.equalsIgnoreCase(filetypes[i])) { check = true; }
+            for (final String filetype : filetypes) {
+                if (extension.equalsIgnoreCase(filetype)) { check = true; }
             }
 
             // link mustn't be longer than 254 charactres
@@ -374,7 +374,8 @@ public class Check {
         //It can't contain only numbers if it's null or empty...
         if (str == null || str.length() == 0) { return false; }
 
-        for (int i = 0; i < str.length(); i++) {
+        final int max = str.length();
+        for (int i = 0; i < max; i++) {
 
             //If we find a non-digit character we return false.
             if (!Character.isDigit(str.charAt(i))) { return false; }

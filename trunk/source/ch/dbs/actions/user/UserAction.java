@@ -846,8 +846,8 @@ public final class UserAction extends DispatchAction {
                             || vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
 
                         if (u.getId() != null) { vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection()); }
-                        for (int i = 0; i < kontos.length; i++) {
-                            final Konto k = new Konto(Long.parseLong(kontos[i]), cn.getConnection());
+                        for (final String knt : kontos) {
+                            final Konto k = new Konto(Long.parseLong(knt), cn.getConnection());
                             vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
                         }
 
@@ -1214,7 +1214,8 @@ public final class UserAction extends DispatchAction {
                 + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND (");
         // letzte Klammer wichtig: sonst kann mit OR Bestellungen anderer Kontos ausgelesen werden...!!!
 
-        for (int i = 0; i < searches.size(); i++) {
+        final int max = searches.size();
+        for (int i = 0; i < max; i++) {
 
             SearchesForm sf = (SearchesForm) searches.get(i);
 
@@ -1233,7 +1234,7 @@ public final class UserAction extends DispatchAction {
             }
 
             // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
-            if (i + 1 < searches.size()) {
+            if (i + 1 < max) {
                 sql.append(composeSearchLogicBoolean(sf.getBool()));
                 sql.append('\040');
             }
@@ -1250,7 +1251,7 @@ public final class UserAction extends DispatchAction {
         // bricht die Suche ab, falls nach Name || Vorname ausserhalb
         // des erlaubten Datumbereiches (3 Monate) gesucht wird...
         boolean stop = false;
-        for (int i = 0; i < searches.size() && !stop; i++) {
+        for (int i = 0; i < max && !stop; i++) {
 
             final SearchesForm sf = (SearchesForm) searches.get(i);
 
@@ -1295,7 +1296,8 @@ public final class UserAction extends DispatchAction {
         sql.append("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
                 + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND (");
 
-        for (int i = 0; i < searches.size(); i++) {
+        final int max = searches.size();
+        for (int i = 0; i < max; i++) {
 
             SearchesForm sf = (SearchesForm) searches.get(i);
 
@@ -1315,7 +1317,7 @@ public final class UserAction extends DispatchAction {
             }
 
             // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
-            if (i + 1 < searches.size()) {
+            if (i + 1 < max) {
                 sql.append(composeSearchLogicBoolean(sf.getBool()));
                 sql.append('\040');
             }
@@ -1328,7 +1330,7 @@ public final class UserAction extends DispatchAction {
         final PreparedStatement pstmt = cn.prepareStatement(sql.toString());
         pstmt.setLong(1, k.getId());
 
-        for (int i = 0; i < searches.size(); i++) {
+        for (int i = 0; i < max; i++) {
 
             final SearchesForm sf = (SearchesForm) searches.get(i);
 
@@ -1459,8 +1461,8 @@ public final class UserAction extends DispatchAction {
         final MessageResources msgs = getResources(rq);
         String key = null;
         String value = null;
-        for (int i = 0; i < list.size(); i++) {
-            value = "searchorders." + list.get(i);
+        for (final String str : list) {
+            value = "searchorders." + str;
             key = msgs.getMessage(locale, value);
             result.put(key, value);
         }
@@ -1584,8 +1586,8 @@ public final class UserAction extends DispatchAction {
 
             final List<String> list = prepareOrderSearchFields();
 
-            for (int i = 0; i < list.size(); i++) {
-                final String compare = "searchorders." + (String) list.get(i);
+            for (final String str : list) {
+                final String compare = "searchorders." + str;
                 if (input.equals(compare)) {
                     check = true;
                     break;
