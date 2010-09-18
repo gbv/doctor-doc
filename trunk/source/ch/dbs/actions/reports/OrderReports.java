@@ -17,8 +17,8 @@
 
 package ch.dbs.actions.reports;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -223,8 +223,8 @@ public final class OrderReports extends DispatchAction {
 
                     //Reportauswahl, Verbindung zum Report aufbauen
                     if (of.getReport() == null) { of.setReport("reports/Orders.jasper"); }
-                    final InputStream reportStream = this.getServlet().getServletContext()
-                    .getResourceAsStream(of.getReport());
+                    final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                            .getResourceAsStream(of.getReport()));
 
                     //Ausgabestream vorbereiten
                     rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln

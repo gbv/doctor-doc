@@ -17,8 +17,8 @@
 
 package ch.dbs.actions.reports;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -189,8 +189,7 @@ public final class ILVReport extends DispatchAction {
                         + ": " + ReadSystemConfigurations.getServerWelcomepage());
 
                 //Reportauswahl, Verbindung zum Report aufbauen
-                final InputStream reportStream = this.getServlet().getServletContext().getResourceAsStream(
-                "reports/ILV-Form.jasper");
+                final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("reports/ILV-Form.jasper"));
 
                 //Ausgabestream vorbereiten
                 rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
