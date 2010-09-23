@@ -262,21 +262,21 @@ public class Holding extends AbstractIdEntity {
     /**
      * Holt alle Holdings anhand einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID) und einer Verbindung
      *
-     * @param ArrayList<String> identifier
+     * @param ArrayList<String> identifiers
      * @param Connection cn
      * @return List<Holding> holdings
      */
-    public List<Holding> getAllHoldings(final List<String> identifier, final Connection cn) {
+    public List<Holding> getAllHoldings(final List<String> identifiers, final Connection cn) {
 
         final List<Holding> list = new ArrayList<Holding>();
 
-        if (!identifier.isEmpty()) {
+        if (!identifiers.isEmpty()) {
 
             final StringBuffer sqlQuery = new StringBuffer(226);
 
             sqlQuery.append("SELECT * FROM holdings WHERE issn = ? OR coden = ? OR zdbid = ?");
 
-            final int max = identifier.size();
+            final int max = identifiers.size();
             for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
             }
@@ -286,10 +286,10 @@ public class Holding extends AbstractIdEntity {
             try {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 int pos = 1;
-                for (final String ident : identifier) {
-                    pstmt.setString(pos, ident);
-                    pstmt.setString(pos + 1, ident);
-                    pstmt.setString(pos + 2, ident);
+                for (final String identifier : identifiers) {
+                    pstmt.setString(pos, identifier);
+                    pstmt.setString(pos + 1, identifier);
+                    pstmt.setString(pos + 2, identifier);
                     pos = pos + 3;
                 }
 
@@ -374,21 +374,21 @@ public class Holding extends AbstractIdEntity {
      * Gets all holdings for a given library from its KID, a list of all related
      * identifieres (ISSN, Coden or ZDB-ID) and a connection
      *
-     * @param ArrayList<String> identifier
+     * @param ArrayList<String> identifiers
      * @param Long kid
      * @param Connection cn
      * @return List<Holding> holdings
      */
-    public List<Holding> getAllHoldingsForKonto(final List<String> identifier, final Long kId, final Connection cn) {
+    public List<Holding> getAllHoldingsForKonto(final List<String> identifiers, final Long kId, final Connection cn) {
 
         final List<Holding> list = new ArrayList<Holding>();
 
-        if (!identifier.isEmpty()) {
+        if (!identifiers.isEmpty()) {
 
             final StringBuffer sqlQuery = new StringBuffer(242);
             sqlQuery.append("SELECT * FROM holdings WHERE KID = ? AND (issn = ? OR coden = ? OR zdbid = ?");
 
-            final int max = identifier.size();
+            final int max = identifiers.size();
             for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
             }
@@ -401,10 +401,10 @@ public class Holding extends AbstractIdEntity {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 pstmt.setLong(1, kId);
                 int pos = 2;
-                for (final String ident : identifier) {
-                    pstmt.setString(pos, ident);
-                    pstmt.setString(pos + 1, ident);
-                    pstmt.setString(pos + 2, ident);
+                for (final String identifier : identifiers) {
+                    pstmt.setString(pos, identifier);
+                    pstmt.setString(pos + 1, identifier);
+                    pstmt.setString(pos + 2, identifier);
                     pos = pos + 3;
                 }
 
@@ -442,20 +442,20 @@ public class Holding extends AbstractIdEntity {
     /**
      * Holt alle HOIDs anhand einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID) und einer Verbindung
      *
-     * @param ArrayList<String> identifier
+     * @param ArrayList<String> identifiers
      * @param Connection cn
      * @return List<String> HOIDs
      */
-    public List<String> getAllHOIDs(final List<String> identifier, final Connection cn) {
+    public List<String> getAllHOIDs(final List<String> identifiers, final Connection cn) {
 
         final List<String> list = new ArrayList<String>();
 
-        if (!identifier.isEmpty()) {
+        if (!identifiers.isEmpty()) {
 
             final StringBuffer sqlQuery = new StringBuffer(264);
             sqlQuery.append("SELECT HOID FROM holdings WHERE issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 
-            final int max = identifier.size();
+            final int max = identifiers.size();
             for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
             }
@@ -465,10 +465,10 @@ public class Holding extends AbstractIdEntity {
             try {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 int pos = 1;
-                for (final String ident : identifier) {
-                    pstmt.setString(pos, ident);
-                    pstmt.setString(pos + 1, ident);
-                    pstmt.setString(pos + 2, ident);
+                for (final String identifier : identifiers) {
+                    pstmt.setString(pos, identifier);
+                    pstmt.setString(pos + 1, identifier);
+                    pstmt.setString(pos + 2, identifier);
                     pos = pos + 3;
                 }
 
@@ -507,21 +507,21 @@ public class Holding extends AbstractIdEntity {
      * einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID)
      * und einer Verbindung
      *
-     * @param ArrayList<String> identifier
+     * @param ArrayList<String> identifiers
      * @param Long kid
      * @param Connection cn
      * @return List<String> HOIDs
      */
-    public List<String> getAllHOIDsForKonto(final List<String> identifier, final Long kId, final Connection cn) {
+    public List<String> getAllHOIDsForKonto(final List<String> identifiers, final Long kId, final Connection cn) {
 
         final List<String> list = new ArrayList<String>();
 
-        if (!identifier.isEmpty()) {
+        if (!identifiers.isEmpty()) {
 
             final StringBuffer sqlQuery = new StringBuffer(281);
             sqlQuery.append("SELECT HOID FROM holdings WHERE KID LIKE ? AND (issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
 
-            final int max = identifier.size();
+            final int max = identifiers.size();
             for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
                 sqlQuery.append(" OR issn LIKE ? OR coden LIKE ? OR zdbid LIKE ?");
             }
@@ -534,10 +534,10 @@ public class Holding extends AbstractIdEntity {
                 pstmt = cn.prepareStatement(sqlQuery.toString());
                 pstmt.setLong(1, kId);
                 int pos = 2;
-                for (final String ident : identifier) {
-                    pstmt.setString(pos, ident);
-                    pstmt.setString(pos + 1, ident);
-                    pstmt.setString(pos + 2, ident);
+                for (final String identifier : identifiers) {
+                    pstmt.setString(pos, identifier);
+                    pstmt.setString(pos + 1, identifier);
+                    pstmt.setString(pos + 2, identifier);
                     pos = pos + 3;
                 }
 

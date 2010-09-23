@@ -846,8 +846,8 @@ public final class UserAction extends DispatchAction {
                             || vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
 
                         if (u.getId() != null) { vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection()); }
-                        for (final String knt : kontos) {
-                            final Konto k = new Konto(Long.parseLong(knt), cn.getConnection());
+                        for (final String konto : kontos) {
+                            final Konto k = new Konto(Long.parseLong(konto), cn.getConnection());
                             vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
                         }
 
@@ -1455,14 +1455,14 @@ public final class UserAction extends DispatchAction {
      */
     private Map<String, String> composeSortedLocalisedOrderSearchFields(final HttpServletRequest rq) {
 
-        final List<String> list = prepareOrderSearchFields();
+        final List<String> searchFields = prepareOrderSearchFields();
         final Map<String, String> result = new TreeMap<String, String>();
         final Locale locale = getLocale(rq);
         final MessageResources msgs = getResources(rq);
         String key = null;
         String value = null;
-        for (final String str : list) {
-            value = "searchorders." + str;
+        for (final String searchField : searchFields) {
+            value = "searchorders." + searchField;
             key = msgs.getMessage(locale, value);
             result.put(key, value);
         }
@@ -1584,10 +1584,10 @@ public final class UserAction extends DispatchAction {
 
         if (input != null && !input.equals("searchorders.all")) {
 
-            final List<String> list = prepareOrderSearchFields();
+            final List<String> searchFields = prepareOrderSearchFields();
 
-            for (final String str : list) {
-                final String compare = "searchorders." + str;
+            for (final String searchField : searchFields) {
+                final String compare = "searchorders." + searchField;
                 if (input.equals(compare)) {
                     check = true;
                     break;

@@ -50,10 +50,10 @@ public class OpenUrl {
 
         final ArrayList<String> uriSchemas = new ArrayList<String>();
 
-        for (final Map.Entry<String, String> pairs : params.entrySet()) {
+        for (final Map.Entry<String, String> pair : params.entrySet()) {
 
-            final String key = pairs.getKey();
-            final String value = pairs.getValue();
+            final String key = pair.getKey();
+            final String value = pair.getValue();
 
             try {
 
@@ -1121,9 +1121,9 @@ public class OpenUrl {
         }
 
         if (co.getRft_id() != null) {
-            for (final String str : co.getRft_id()) {
+            for (final String eachRftID : co.getRft_id()) {
                 openURL.append("&rft_id=");
-                openURL.append(str);
+                openURL.append(eachRftID);
             }
         }
 
@@ -1233,15 +1233,15 @@ public class OpenUrl {
         final
         Map<String, String[]> paramMap = rq.getParameterMap();
 
-        for (final Map.Entry<String, String[]> pairs : paramMap.entrySet()) {
+        for (final Map.Entry<String, String[]> pair : paramMap.entrySet()) {
 
-            final String key = pairs.getKey();
-            final String[] values = pairs.getValue();
+            final String key = pair.getKey();
+            final String[] values = pair.getValue();
 
             if ("rft_id".equals(key)) { // rft_id enthält nocheinmal unterschiedliche Identifier nach dem info: Scheme
                 // rft_id wird jeweils separat abgelegt und nicht aneinander gehängt
-                for (final String str : values) {
-                    hm.put(key, getOpenUrlValue(str));
+                for (final String eachRftID : values) {
+                    hm.put(key, getOpenUrlValue(eachRftID));
                 }
             } else { // hier werden Mehrfachparameter (z.B. mehrere Autoren) aneinander gehängt
                 final StringBuffer buf = new StringBuffer();

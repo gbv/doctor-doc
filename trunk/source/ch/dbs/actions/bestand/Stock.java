@@ -478,9 +478,9 @@ public class Stock extends DispatchAction {
 
         final int max = stockList.size();
         for (int i = 1; i < max; i++) { // start at position 1, thus ignoring the header
-            final List<String> importLine = stockList.get(i);
+            final List<String> importLines = stockList.get(i);
             int column = 0; // column number of element to check
-            for (String line : importLine) {
+            for (String line : importLines) {
                 Message msg;
                 column++;
                 if (line == null) { line = ""; }

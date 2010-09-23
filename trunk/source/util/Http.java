@@ -111,7 +111,7 @@ public class Http {
                     //                    System.out.println(gmethod.getResponseCharSet()); //
                 }
 
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOG.ludicrous("getWebContent(String link, int timeout_ms, int retrys), failure attempt: "
                         + trys + "\040" + e.toString());
                 if (trys + 1 == retrys) { // beim letzten Versuch ein Email schicken
@@ -136,7 +136,7 @@ public class Http {
         String f = "";
         try {
             f = method.getURI().toString();
-        } catch (URIException e1) {
+        } catch (final URIException e1) {
             LOG.error("getWebcontent(PostMethod method, int timeout_ms, int retrys): " + e1.toString());
         }
         String redirectLocation = "";
@@ -177,7 +177,7 @@ public class Http {
                     //                    System.out.println();
                 }
 
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOG.ludicrous("getWebContent(PostMethod method, int timeout_ms, int retrys), failure attempt: "
                         + trys + "\040" + e.toString());
                 if (trys + 1 == retrys) { // letzter Versuch
@@ -222,7 +222,7 @@ public class Http {
             }
             wr.close();
             rd.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getWebcontent(String link, String postdata): "
                     + e.toString() + "\012" + link + "\012" + postdata);
         }

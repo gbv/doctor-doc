@@ -249,8 +249,8 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_id() != null) {
-            for (final String str : co.getRft_id()) {
-                of = resolveUriScheme(str, of);
+            for (final String eachRftID : co.getRft_id()) {
+                of = resolveUriScheme(eachRftID, of);
             }
         }
 
