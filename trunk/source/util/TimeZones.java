@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
@@ -31,7 +31,7 @@ public class TimeZones {
     private static final String PREFIXES = "^(Africa|America|Asia|Atlantic|Australia|Europe|Indian|Pacific)/.*";
 
     private static List<TimeZone> timeZs;
-    private static Set<String> timeZonesAsString;
+    private static SortedSet<String> timeZonesAsString;
 
     public List<TimeZone> getTimeZones() {
         if (timeZs == null) {
@@ -40,7 +40,7 @@ public class TimeZones {
         return timeZs;
     }
 
-    public Set<String> getTimeZonesAsString() {
+    public SortedSet<String> getTimeZonesAsString() {
         if (timeZonesAsString == null) {
             initTimeZonesAsStrings();
         }
