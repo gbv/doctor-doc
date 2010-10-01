@@ -412,7 +412,7 @@ public final class KontoAction extends DispatchAction {
                         + "register you for this service and we will contact you with the details as soon as "
                         + "possible.\012\012");
                 }
-                if (k.getKontotyp() != 0 && k.getLand().equals("Deutschland")) {
+                if (k.getKontotyp() != 0 && k.getLand().equals("DE")) {
                     mg.append("-------------------\012"
                             + "GILT FÜR DEUTSCHLAND:\012"
                             + "Aufgrund der geltenden Bestimmungen des deutschen Gesetzes für Telekommunikation "

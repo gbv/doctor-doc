@@ -910,7 +910,7 @@ public final class OrderAction extends DispatchAction {
             pageForm.setLink(openurl);
 
             // Link für Abfrage EZB/ZDB-Schnittstelle (nur D)
-            if ("Deutschland".equals(land) && zdb && !"AAAAA".equals(bibid)) {
+            if ("DE".equals(land) && zdb && !"AAAAA".equals(bibid)) {
                 // http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=journal&issn=0001-6446&eissn=1588-2667&pid=bibid=UBR
                 // ansprechbar bis allen Identifiern von oben! &genre=article&atitle=...&date=1994-10-01&volume=26&issue=10&issn=0022-2828&spage=1349&pid=bibid=UBR
                 // z.B. http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=article&atitle=robotics-based&date=2005&volume=11&issue=1-2&issn=1022-0038&spage=189&pid=bibid=UBR
@@ -941,7 +941,7 @@ public final class OrderAction extends DispatchAction {
 
             // Hier folgt die Prüfung über die EZB
             // Schnittstelle EZB/ZDB für Deutschland, bei EZB-Teilnehmern, die auch in der ZDB dabei sind...
-            if ("Deutschland".equals(land) && zdb && !"AAAAA".equals(bibid)) {
+            if ("DE".equals(land) && zdb && !"AAAAA".equals(bibid)) {
 
                 if (auth.isLogin(rq) || ((content.contains("../icons/e")
                         && !content.contains("/e4_html.gif")) // Online vorhanden

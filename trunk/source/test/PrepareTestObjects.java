@@ -88,7 +88,7 @@ public class PrepareTestObjects {
         kf.setBiblioname(BIBLIONAME1);
         kf.setAdresse("adresse");
         kf.setPLZ("1234");
-        kf.setLand("Schweiz");
+        kf.setLand("CH");
         kf.setTelefon("12345678");
         kf.setBibliotheksmail("info@doctor-doc.com");
         kf.setDbsmail("dbs@mail.bl");
