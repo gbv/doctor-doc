@@ -348,7 +348,7 @@ public class Bestand extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT a.* FROM stock AS a JOIN holdings AS b "
-                    + "ON a.HOID = b.HOID WHERE b.KID = ? AND a.internal <= ?");
+                    + "ON a.HOID = b.HOID WHERE b.KID = ? AND a.internal <= ? ORDER by b.titel");
             pstmt.setLong(1, kid);
             pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();

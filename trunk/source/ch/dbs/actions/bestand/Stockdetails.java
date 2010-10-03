@@ -35,10 +35,11 @@ public class Stockdetails extends Action {
         final OrderForm of = (OrderForm) form;
 
         // get holding parameters
+        final String kid = rq.getParameter("library");
         final String hoid = rq.getParameter("holding");
         final String stid = rq.getParameter("stock");
 
-        final List<Bestand> holdings = getHoldings(hoid, stid);
+        final List<Bestand> holdings = getHoldings(kid, hoid, stid);
 
         // make sure we found some holdings
         if (holdings.isEmpty()) {
@@ -59,25 +60,28 @@ public class Stockdetails extends Action {
         return mp.findForward(forward);
     }
 
-    private List<Bestand> getHoldings(final String hoid, final String stid) {
+    private List<Bestand> getHoldings(final String kid, final String hoid, final String stid) {
 
         List<Bestand> holdings = new ArrayList<Bestand>();
         Bestand bestand = new Bestand();
         final Text cn = new Text();
 
         // we need at least one parameter
-        if (hoid == null && stid == null) { return holdings; }
+        if (kid == null && hoid == null && stid == null) { return holdings; }
 
-        // we have a stock-id
+        // return holdings upon the most specific identifier, ignoring
+        // less specific identifiers. The order is: stid, hoid, kid
         if (stid != null) {
             // internal holdings are not visible
             bestand = new Bestand(Long.valueOf(stid), false, cn.getConnection());
             holdings.add(bestand);
-        } else {
-            // we only have a holding-id
+        } else if (hoid != null) {
             // internal holdings are not visible
             final Holding hold = new Holding(Long.valueOf(hoid), cn.getConnection());
             holdings = bestand.getAllBestandForHolding(hold, false, cn.getConnection());
+        } else {
+            // we only have a kid
+            holdings = bestand.getAllKontoBestand(Long.valueOf(kid), false, cn.getConnection());
         }
 
         cn.close();
