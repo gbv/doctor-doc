@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import ch.dbs.entity.Bestand;
-import ch.dbs.entity.Holding;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -77,8 +76,7 @@ public class Stockdetails extends Action {
             holdings.add(bestand);
         } else if (hoid != null) {
             // internal holdings are not visible
-            final Holding hold = new Holding(Long.valueOf(hoid), cn.getConnection());
-            holdings = bestand.getAllBestandForHolding(hold, false, cn.getConnection());
+            holdings = bestand.getAllBestandForHoid(Long.valueOf(hoid), false, cn.getConnection());
         } else {
             // we only have a kid
             holdings = bestand.getAllKontoBestand(Long.valueOf(kid), false, cn.getConnection());
