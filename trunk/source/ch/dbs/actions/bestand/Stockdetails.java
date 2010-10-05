@@ -19,11 +19,14 @@ import ch.dbs.form.OrderForm;
 
 
 
+/**
+ * Class to show stock details. One does not need to be logged in,
+ * in order to view the information card of a holding.
+ */
 public class Stockdetails extends Action {
 
     /**
-     * Presents all the details to a given holding/stock
-     *
+     * Presents all the details for a given holding/stock.
      */
     public ActionForward execute(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -59,6 +62,14 @@ public class Stockdetails extends Action {
         return mp.findForward(forward);
     }
 
+    /**
+     * Gets a list with the holdings.
+     *
+     * @param String kid
+     * @param String hoid
+     * @param String stid
+     * @return List<Bestand> holdings
+     */
     private List<Bestand> getHoldings(final String kid, final String hoid, final String stid) {
 
         List<Bestand> holdings = new ArrayList<Bestand>();

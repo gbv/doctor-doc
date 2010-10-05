@@ -55,7 +55,7 @@ import ch.dbs.form.UserInfo;
 
 
 /**
- * Class to handle holdings information
+ * Class to manage holdings information. Import / Export functions.
  *
  * @author Markus Fischer
  */
@@ -75,7 +75,7 @@ public class Stock extends DispatchAction {
     private static final String ERRORMESSAGE = "errormessage";
 
     /**
-     * Access control for the holdings export page
+     * Access control for the holdings export page.
      */
     public ActionForward prepareExport(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -109,7 +109,7 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Access control for the holdings import page
+     * Access control for the holdings import page.
      */
     public ActionForward prepareImport(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -152,7 +152,7 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Import a file with holdings information
+     * Import a file with holdings information.
      */
     public ActionForward importHoldings(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -294,7 +294,7 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Gets all holding locations for a given library
+     * Gets all holding locations for a given library.
      */
     public ActionForward listStockplaces(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -341,7 +341,7 @@ public class Stock extends DispatchAction {
 
 
     /**
-     * Prepares and changes a given holding location
+     * Prepares and changes a given holding location.
      */
     public ActionForward changeStockplace(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -418,7 +418,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Gets a list of all holdings from all libraries
+     * Gets a list of all holdings from all libraries.
+     *
+     * @param OrderForm pageForm
+     * @param boolean internal
+     * @return list<Bestand>
      */
     public List<Bestand> checkGeneralStockAvailability(final OrderForm pageForm, final boolean internal) {
 
@@ -443,7 +447,13 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Gets a list of all holdings for a given library from an IP
+     * Gets a list of all holdings for a given library from an IP.
+     *
+     * @param OrderForm pageForm
+     * @param Text tip
+     * @param boolean internal
+     * @param Connection cn
+     * @return list<Bestand>
      */
     public List<Bestand> checkStockAvailabilityForIP(final OrderForm pageForm, final Text tip, final boolean internal,
             final Connection cn) {
@@ -467,9 +477,9 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable to Bestand()
+     * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable to Bestand().
      *
-     * @param ArrayList<List<String> stocklist
+     * @param List<List<String>> stockList
      * @return List<Message> messageList
      */
     private List<Message> checkBasicParsability(final List<List<String>> stockList) {
@@ -581,7 +591,7 @@ public class Stock extends DispatchAction {
      * Checks if the import file has the correct format, by counting
      * the columns per line.
      *
-     * @param ArrayList<List<String>> stockList
+     * @param List<List<String>> stockList
      * @return List<Message> messageList
      */
     private List<Message> checkColumns(final List<List<String>> stockList) {
@@ -602,9 +612,11 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks that each Bestand() has all necessary entries and belongs to the
-     * account uploading the file
+     * account uploading the file.
      *
-     * @param ArrayList<Bestand> bestandList
+     * @param List<Bestand> bestandList
+     * @param UserInfo ui
+     * @param Connection cn
      * @return List<Message> messageList
      */
     private List<Message> checkBestandIntegrity(final List<Bestand> bestandList, final UserInfo ui, final Connection cn) {
@@ -694,10 +706,11 @@ public class Stock extends DispatchAction {
 
 
     /**
-     * Converts an import file into an ArrayList<List<String>> with all the text line elements
+     * Converts an import file into an ArrayList<List<String>> with all the text line elements.
      *
      * @param FormFile upload
      * @param char delimiter
+     * @param String encoding
      * @return List<List<String>> list
      */
     private List<List<String>> readImport(final FormFile upload, final char delimiter, final String encoding) {
@@ -731,9 +744,10 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Converts an ArrayList<List<String>> with import elements into an ArrayList<Bestand>
+     * Converts an ArrayList<List<String>> with import elements into an ArrayList<Bestand>.
      *
-     * @param ArrayList<List<String>> stockList
+     * @param List<List<String>> stockList
+     * @param UserInfo ui
      * @return List<Bestand> bestandList
      */
     private List<Bestand> convertToBestand(final List<List<String>> stockList, final UserInfo ui) {
@@ -753,7 +767,8 @@ public class Stock extends DispatchAction {
      * It relies on the assumption, that all integrity checks for formatting
      * etc. have been run before!
      *
-     * @param ArrayList<List<String>> stockList
+     * @param list the list
+     * @param kid the kid
      * @return List<Bestand> bestandList
      */
     private Bestand getBestand(final List<String> list, final long kid) {
@@ -861,7 +876,11 @@ public class Stock extends DispatchAction {
 
 
     /**
-     * Gets from an ISSN a List<String> of all 'related' ISSNs to map them
+     * Gets from an ISSN a List<String> of all 'related' ISSNs to map them.
+     *
+     * @param String issn
+     * @param Connection cn
+     * @return List<String>
      */
     private List<String> getRelatedIssn(final String issn, final Connection cn) {
 
@@ -875,7 +894,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the string is a parsable Stock-ID
+     * Checks if the string is a parsable Stock-ID.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkStockID(int lineCount, final String content) {
 
@@ -894,7 +917,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the string is a parsable Holding-ID
+     * Checks if the string is a parsable Holding-ID.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkHoldingID(int lineCount, final String content) {
 
@@ -913,7 +940,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the string is a parsable Location-ID
+     * Checks if the string is a parsable Location-ID.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkLocationID(int lineCount, final String content) {
 
@@ -932,7 +963,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if there has been specified a title
+     * Checks if there has been specified a title.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkTitle(int lineCount, final String content) {
 
@@ -950,7 +985,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * If an ISSN has been specified, checks that the string specified is a valid ISSN
+     * If an ISSN has been specified, checks that the string specified is a valid ISSN.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkISSN(int lineCount, final String content) {
 
@@ -974,7 +1013,11 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if there has been specified a startyear and
-     *  the string is a valid year
+     * the string is a valid year.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkStartyear(int lineCount, final String content) {
 
@@ -991,7 +1034,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the string is a valid (end)year
+     * Checks if the string is a valid (end)year.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkEndyear(int lineCount, final String content) {
 
@@ -1011,7 +1058,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the string is a valid Supplement (0 / 1 / 2)
+     * Checks if the string is a valid Supplement (0 / 1 / 2).
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkSuppl(final int lineCount, final String content) {
 
@@ -1029,7 +1080,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the string is a valid boolean value
+     * Checks if the string is a valid boolean value.
+     *
+     * @param int lineCount
+     * @param String content
+     * @return Message
      */
     private Message checkBoolean(final int lineCount, final String content) {
 
@@ -1048,6 +1103,10 @@ public class Stock extends DispatchAction {
     /**
      * Uses a StringBuffer to compose a String in the form:
      * Row x: text...
+     *
+     * @param int lineCount
+     * @param String element
+     * @return String
      */
     private String composeSystemMessage(final int lineCount, final String element) {
 
@@ -1066,6 +1125,10 @@ public class Stock extends DispatchAction {
      * It relies on the assumption, that all integrity checks for formatting
      * etc. have been run before!
      *
+     * @param List<Bestand> bestandList
+     * @param UserInfo ui
+     * @param Connection cn
+     * @return String
      */
     private String update(final List<Bestand> bestandList, final UserInfo ui, final Connection cn) {
 
@@ -1130,10 +1193,20 @@ public class Stock extends DispatchAction {
         return bf.toString();
     }
 
+    /**
+     * Gets the delimiter csv.
+     *
+     * @return char delimiterCsv
+     */
     public static char getDelimiterCsv() {
         return DELIMITER_CSV;
     }
 
+    /**
+     * Gets the delimiter txt.
+     *
+     * @return char delimiterTxt
+     */
     public static char getDelimiterTxt() {
         return DELIMITER_TXT;
     }
