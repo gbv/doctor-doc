@@ -17,16 +17,22 @@
 
 package ch.dbs.form;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
 
+import util.ReadSystemConfigurations;
+import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Text;
 
 public class OverviewForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
+    private static final int FIRST_YEAR = 2007; // the first year relevant for statistic for this installation
+
     private int kid;
     private List<Bestellungen> bestellungen;
     private List<SearchesForm> searches;
@@ -111,6 +117,34 @@ public class OverviewForm extends ValidatorForm {
     private String boolean12;
     private String boolean13;
 
+
+    public OverviewForm() {
+        // set years for select in GUI
+        this.setYears(getYearsInSelect());
+    }
+
+    /**
+     * Gets the years offered in the select on the GUI
+     */
+    private static List<Integer> getYearsInSelect() {
+
+        final ArrayList<Integer> years = new ArrayList<Integer>();
+
+        // set years for select in GUI: 2007 to now
+        final Date d = new Date(); // aktuelles Datum setzen
+        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
+        final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
+        int yearNow = Integer.parseInt(datum);
+        int yearStart = FIRST_YEAR;
+
+        yearNow++;
+        for (int j = 0; yearStart < yearNow; j++) {
+            years.add(j, yearStart);
+            yearStart++;
+        }
+
+        return years;
+    }
 
     public Long getBid() {
         return bid;

@@ -31,7 +31,6 @@ import org.apache.struts.actions.DispatchAction;
 
 import util.Auth;
 import util.Check;
-import ch.dbs.actions.user.UserAction;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -87,8 +86,6 @@ public final class OrderStatistik extends DispatchAction {
                 }
 
                 of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
-                // set years for select in UI
-                of.setYears(UserAction.getYearsInSelect(ui.getKonto().getTimezone()));
 
                 rq.setAttribute("overviewform", of);
 

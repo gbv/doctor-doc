@@ -71,7 +71,6 @@ import ch.dbs.login.Gtc;
 public final class UserAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(UserAction.class);
-    private static final int FIRST_YEAR = 2007; // the first year relevant for statistic for this installation
     private static final String FAILURE = "failure";
     private static final String SUCCESS = "success";
     private static final String UEBERSICHT = "uebersicht";
@@ -172,9 +171,6 @@ public final class UserAction extends DispatchAction {
                                 cn.getConnection()));
                     }
                 }
-
-                // set years for select in UI
-                of.setYears(getYearsInSelect(ui.getKonto().getTimezone()));
 
                 // Suchfelder bestimmen
                 final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -981,9 +977,6 @@ public final class UserAction extends DispatchAction {
                 // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
                 of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
 
-                // set years for select in UI
-                of.setYears(getYearsInSelect(ui.getKonto().getTimezone()));
-
                 // Suchfelder bestimmen
                 final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                 rq.setAttribute("sortedSearchFields", result);
@@ -1054,9 +1047,6 @@ public final class UserAction extends DispatchAction {
                 of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
                 // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
                 of = check.checkOrdersSortCriterias(of);
-
-                // set years for select in UI
-                of.setYears(getYearsInSelect(ui.getKonto().getTimezone()));
 
                 //          Suchfelder bestimmen
                 final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -1599,29 +1589,5 @@ public final class UserAction extends DispatchAction {
 
         return sf;
     }
-
-    /**
-     * Gets the years offered in the select on the GUI
-     */
-    public static List<Integer> getYearsInSelect(final String timezone) {
-
-        final ArrayList<Integer> years = new ArrayList<Integer>();
-
-        // set years for select in GUI: 2007 to now
-        final Date d = new Date(); // aktuelles Datum setzen
-        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-        final String datum = fmt.format(d, timezone);
-        int yearNow = Integer.parseInt(datum);
-        int yearStart = FIRST_YEAR;
-
-        yearNow++;
-        for (int j = 0; yearStart < yearNow; j++) {
-            years.add(j, yearStart);
-            yearStart++;
-        }
-
-        return years;
-    }
-
 
 }
