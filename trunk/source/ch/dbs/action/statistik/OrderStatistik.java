@@ -18,9 +18,7 @@
 package ch.dbs.action.statistik;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +31,7 @@ import org.apache.struts.actions.DispatchAction;
 
 import util.Auth;
 import util.Check;
-import util.ThreadSafeSimpleDateFormat;
+import ch.dbs.actions.user.UserAction;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -49,7 +47,6 @@ import ch.dbs.statistik.Statistik;
  */
 public final class OrderStatistik extends DispatchAction {
 
-    private static final int FIRST_YEAR = 2007; // the first year relevant for statistic for this installation
     private static final int DEFAULT_PERIOD = 4; // default period in months for select
 
     /**
@@ -90,21 +87,8 @@ public final class OrderStatistik extends DispatchAction {
                 }
 
                 of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
-
-                // define the possible range of years in select. Staring from FIRST_YEAR till the actual year.
-                final Date now = new Date();
-                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                final String datum = fmt.format(now, ui.getKonto().getTimezone());
-                int yearNow = Integer.parseInt(datum);
-                int yearStart = FIRST_YEAR;
-
-                final ArrayList<Integer> years = new ArrayList<Integer>();
-                yearNow++;
-                for (int j = 0; yearStart < yearNow; j++) {
-                    years.add(j, yearStart);
-                    yearStart++;
-                }
-                of.setYears(years);
+                // set years for select in UI
+                of.setYears(UserAction.getYearsInSelect(ui.getKonto().getTimezone()));
 
                 rq.setAttribute("overviewform", of);
 

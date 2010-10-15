@@ -173,20 +173,8 @@ public final class UserAction extends DispatchAction {
                     }
                 }
 
-                // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
-                final Date d = new Date(); // aktuelles Datum setzen
-                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                final String datum = fmt.format(d, ui.getKonto().getTimezone());
-                int yearNow = Integer.parseInt(datum);
-                int yearStart = FIRST_YEAR;
-
-                final ArrayList<Integer> years = new ArrayList<Integer>();
-                yearNow++;
-                for (int j = 0; yearStart < yearNow; j++) {
-                    years.add(j, yearStart);
-                    yearStart++;
-                }
-                of.setYears(years);
+                // set years for select in UI
+                of.setYears(getYearsInSelect(ui.getKonto().getTimezone()));
 
                 // Suchfelder bestimmen
                 final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -993,20 +981,8 @@ public final class UserAction extends DispatchAction {
                 // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
                 of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
 
-                // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
-                final Date d = new Date(); // aktuelles Datum setzen
-                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                final String datum = fmt.format(d, ui.getKonto().getTimezone());
-                int yearNow = Integer.parseInt(datum);
-                int yearStart = FIRST_YEAR;
-
-                final ArrayList<Integer> years = new ArrayList<Integer>();
-                yearNow++;
-                for (int j = 0; yearStart < yearNow; j++) {
-                    years.add(j, yearStart);
-                    yearStart++;
-                }
-                of.setYears(years);
+                // set years for select in UI
+                of.setYears(getYearsInSelect(ui.getKonto().getTimezone()));
 
                 // Suchfelder bestimmen
                 final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -1079,20 +1055,8 @@ public final class UserAction extends DispatchAction {
                 // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
                 of = check.checkOrdersSortCriterias(of);
 
-                // angezeigter Jahresbereich im Select festlegen: 2007 bis aktuelles Jahr
-                final Date d = new Date(); // aktuelles Datum setzen
-                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
-                final String datum = fmt.format(d, ui.getKonto().getTimezone());
-                int yearNow = Integer.parseInt(datum);
-                int yearStart = FIRST_YEAR;
-
-                final ArrayList<Integer> years = new ArrayList<Integer>();
-                yearNow++;
-                for (int j = 0; yearStart < yearNow; j++) {
-                    years.add(j, yearStart);
-                    yearStart++;
-                }
-                of.setYears(years);
+                // set years for select in UI
+                of.setYears(getYearsInSelect(ui.getKonto().getTimezone()));
 
                 //          Suchfelder bestimmen
                 final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -1634,6 +1598,29 @@ public final class UserAction extends DispatchAction {
         sf.setBool(bool);
 
         return sf;
+    }
+
+    /**
+     * Gets the years offered in the select on the GUI
+     */
+    public static List<Integer> getYearsInSelect(final String timezone) {
+
+        final ArrayList<Integer> years = new ArrayList<Integer>();
+
+        // set years for select in GUI: 2007 to now
+        final Date d = new Date(); // aktuelles Datum setzen
+        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy");
+        final String datum = fmt.format(d, timezone);
+        int yearNow = Integer.parseInt(datum);
+        int yearStart = FIRST_YEAR;
+
+        yearNow++;
+        for (int j = 0; yearStart < yearNow; j++) {
+            years.add(j, yearStart);
+            yearStart++;
+        }
+
+        return years;
     }
 
 
