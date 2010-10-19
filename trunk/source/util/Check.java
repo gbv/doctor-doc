@@ -433,7 +433,11 @@ public class Check {
                 if (pos1.equalsIgnoreCase(kontrollziffer)) {
                     check = true;
                 } else {
-                    System.out.println("ungültige Prüfziffer: " + issn);
+                    System.out.println("invalid checksum: " + issn);
+                }
+            } else {
+                if (issn.length() > 0) {
+                    System.out.println("invalid checksum: " + issn);
                 }
             }
         } catch (final Exception e) {
