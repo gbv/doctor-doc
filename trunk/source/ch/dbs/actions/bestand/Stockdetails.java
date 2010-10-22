@@ -84,7 +84,8 @@ public class Stockdetails extends Action {
         if (stid != null) {
             // internal holdings are not visible
             bestand = new Bestand(Long.valueOf(stid), false, cn.getConnection());
-            holdings.add(bestand);
+            // to avoid NullPointerException if internal of holding = true
+            if (bestand.getId() != null) { holdings.add(bestand); }
         } else if (hoid != null) {
             // internal holdings are not visible
             holdings = bestand.getAllBestandForHoid(Long.valueOf(hoid), false, cn.getConnection());
