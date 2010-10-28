@@ -369,7 +369,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                             + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                             + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
 
-                                                    LOG.info("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
+                                                    LOG.ludicrous("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
                                                             + "\012" + returnValue + "\012" + gbvanswer);
                                                 }
                                             }
@@ -450,7 +450,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                         + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                         + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
 
-                                                LOG.info("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
+                                                LOG.ludicrous("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
                                                         + "\012" + returnValue + "\012" + gbvanswer);
                                             }
                                         }
@@ -600,7 +600,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                         + ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                         + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
 
-                                                LOG.info("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
+                                                LOG.ludicrous("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
                                                         + "\012" + returnValue + "\012" + gbvanswer);
                                             }
                                         }
