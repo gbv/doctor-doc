@@ -62,13 +62,13 @@
       focus="zeitschriftentitel">
       <logic:present name="orderform" property="mediatype">
         <logic:equal name="orderform" property="mediatype" value="Artikel">
-          <logic:equal name="orderform" property="issn" value="">
+          <logic:empty name="orderform" property="issn">
             <tr>
               <td colspan="2">
               <div id="italic"><bean:message key="issnsearch.issn_comment" /></div>
               </td>
             </tr>
-          </logic:equal>
+          </logic:empty>
           <logic:present name="orderform" property="artikeltitel">
             <tr>
               <td><bean:message key="bestellform.artikeltitel" />:</td>
@@ -92,18 +92,18 @@
               size="60" maxlength="100" /> <bean:message key="issnsearch.zeitschrift_example" /></td>
           </tr>
 
-          <logic:notEqual name="orderform" property="issn" value="">
+          <logic:notEmpty name="orderform" property="issn">
             <tr>
               <td></td>
               <td><input type="submit" value="<bean:message key="issnsearch.submit_neu_suchen" />"></input></td>
             </tr>
-          </logic:notEqual>
-          <logic:equal name="orderform" property="issn" value="">
+          </logic:notEmpty>
+          <logic:empty name="orderform" property="issn">
             <tr>
               <td></td>
               <td><input type="submit" value="<bean:message key="issnsearch.submit_fehlende_issn" />"></input></td>
             </tr>
-          </logic:equal>
+          </logic:empty>
         </logic:equal>
       </logic:present>
 
@@ -159,13 +159,13 @@
       <h3><bean:message key="issnsearch.header2" /></h3>
       </td>
     </tr>
-    <logic:notEqual name="orderform" property="artikeltitel" value="">
+    <logic:notEmpty name="orderform" property="artikeltitel">
       <tr>
         <td colspan="2">
         <div id="italic"><bean:message key="issnsearch.autocomplete_comment" /></div>
         </td>
       </tr>
-    </logic:notEqual>
+    </logic:notEmpty>
 
     <html:form action="findissn.do" method="post">
 
@@ -192,10 +192,10 @@
           <td><bean:message key="bestellform.issn" />&nbsp;</td>
           <td><input name="issn"
             value="<bean:write name="orderform" property="issn"/>" type="text"
-            size="9" maxlength="9" /> <logic:equal name="orderform"
-            property="issn" value="">
+            size="9" maxlength="9" /> <logic:empty name="orderform"
+            property="issn">
             <font color="white"><i> <bean:message key="issnsearch.issn_comment2" /></i></font>
-          </logic:equal></td>
+          </logic:empty></td>
         </tr>
         <tr>
           <td><bean:message key="bestellform.jahr" />&nbsp;</td>

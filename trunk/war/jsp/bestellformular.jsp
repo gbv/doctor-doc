@@ -56,9 +56,7 @@
 
 <table>
   <logic:notPresent name="userinfo" property="benutzer">
-    <logic:present name="orderform" property="artikeltitel_encoded">
-      <logic:notEqual name="orderform" property="artikeltitel_encoded"
-        value="">
+    <logic:notEmpty name="orderform" property="artikeltitel_encoded">
         <tr>
           <td><a
             href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images"
@@ -67,17 +65,14 @@
             href="http://scholar.google.com/scholar?as_q=&num=10&btnG=Scholar-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr="
             target="_blank"><i><bean:message key="bestellform.googlescholar" /></i></a></td>
         </tr>
-      </logic:notEqual>
-    </logic:present>
+    </logic:notEmpty>
   </logic:notPresent>
 
   <tr>
     <td colspan="2">
-    <h3><logic:present name="orderform" property="bibliothek">
-      <logic:notEqual name="orderform" property="bibliothek" value="">
-        <bean:write name="orderform" property="bibliothek" /> -   
-                  </logic:notEqual>
-    </logic:present><bean:message key="bestellform.bestellformular" /></h3>
+    <h3><logic:notEmpty name="orderform" property="bibliothek">
+        <bean:write name="orderform" property="bibliothek" /> - 
+    </logic:notEmpty><bean:message key="bestellform.bestellformular" /></h3>
     </td>
   </tr>
 
@@ -435,21 +430,15 @@
         <td></td>
         <td>
           <bean:define id="tmp" name="orderform" property="radiobutton" type="java.lang.String"/>
-          <logic:present name="bestellparam" property="option_value1">
-            <logic:notEqual name="bestellparam" property="option_value1" value="">
+          <logic:notEmpty name="bestellparam" property="option_value1">
               <input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value1" />" <logic:equal name="bestellparam" property="option_value1" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value1" />
-            </logic:notEqual>
-          </logic:present>
-          <logic:present name="bestellparam" property="option_value2">
-            <logic:notEqual name="bestellparam" property="option_value2" value="">
+          </logic:notEmpty>
+          <logic:notEmpty name="bestellparam" property="option_value2">
               <input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value2" />" <logic:equal name="bestellparam" property="option_value2" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value2" />
-            </logic:notEqual>
-          </logic:present>
-          <logic:present name="bestellparam" property="option_value3">
-            <logic:notEqual name="bestellparam" property="option_value3" value="">
+          </logic:notEmpty>
+          <logic:notEmpty name="bestellparam" property="option_value3">
               <input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value3" />" <logic:equal name="bestellparam" property="option_value3" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value3" />
-            </logic:notEqual>
-          </logic:present>
+          </logic:notEmpty>
         </td>
       </tr>      
     </logic:equal>

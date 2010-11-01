@@ -34,82 +34,82 @@
   
   <table border="1">
   <tr>
-    <logic:notEqual name="orderform" property="bestellung.subitonr" value="">
+    <logic:notEmpty name="orderform" property="bestellung.subitonr">
       <th align="left"><bean:message key="save.subitonr" /></th>
-    </logic:notEqual>
+    </logic:notEmpty>
     <logic:present name="orderform" property="bestellung.gbvnr">
       <th align="left"><bean:message key="save.gbvnr" /></th>
     </logic:present>
-    <logic:notEqual name="orderform" property="bestellung.interne_bestellnr" value="">
+    <logic:notEmpty name="orderform" property="bestellung.interne_bestellnr">
       <th align="left"><bean:message key="save.internenr" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.mediatype" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.mediatype">
       <th align="left"><bean:message key="bestellform.typ" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.autor" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.autor">
     <logic:notEqual name="orderform" property="bestellung.autor" value=" ">    
       <th align="left"><bean:message key="bestellform.author" /></th>
     </logic:notEqual>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.artikeltitel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.artikeltitel">
       <th align="left"><bean:message key="bestellform.artikeltitel" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.kapitel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.kapitel">
       <th align="left"><bean:message key="bestellform.kapitel" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.buchtitel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.buchtitel">
       <th align="left"><bean:message key="bestellform.buchtitel" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.verlag" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.verlag">
       <th align="left"><bean:message key="bestellform.verlag" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.zeitschrift" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.zeitschrift">
       <th align="left"><bean:message key="bestellform.zeitschrift" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.issn" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.issn">
       <th align="left"><bean:message key="bestellform.issn" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.isbn" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.isbn">
       <th align="left"><bean:message key="bestellform.isbn" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.jahrgang" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.jahrgang">
       <th align="left"><bean:message key="bestellform.jahrgang" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.jahr" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.jahr">
       <th align="left"><bean:message key="bestellform.jahr" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.heft" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.heft">
       <th align="left"><bean:message key="bestellform.heft" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.seiten" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.seiten">
       <th align="left"><bean:message key="bestellform.seiten" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.bibliothek" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.bibliothek">
       <th align="left"><bean:message key="orderview.lieferbibliothek" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.sigel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.sigel">
       <th align="left"><bean:message key="orderview.sigel" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.fileformat" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.fileformat">
       <th align="left"><bean:message key="save.format" /></th>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.priority" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.priority">
       <th align="left"><bean:message key="bestellform.prio" /></th>
-    </logic:notEqual>
+    </logic:notEmpty>
   </tr>
    <logic:present name="orderform" property="bestellung">
    
      <tr>     
-    <logic:notEqual name="orderform" property="bestellung.subitonr" value="">
+    <logic:notEmpty name="orderform" property="bestellung.subitonr">
       <td><a href="http://www.subito-doc.de/index.php?mod=subo&task=trackingdetail&tgq=<bean:write name="orderform" property="bestellung.subitonr" />" target="_blank"><bean:write name="orderform" property="bestellung.subitonr" /></a>&nbsp;</td>
-    </logic:notEqual>
+    </logic:notEmpty>
     <logic:present name="orderform" property="bestellung.gbvnr">
       <td><a href="https://www.gbv.de/cbs4/bestellverlauf.pl?BestellID=<bean:write name="orderform" property="bestellung.gbvnr" />" target="_blank"><bean:write name="orderform" property="bestellung.gbvnr" /></a>&nbsp;</td>
     </logic:present>
-    <logic:notEqual name="orderform" property="bestellung.interne_bestellnr" value="">
+    <logic:notEmpty name="orderform" property="bestellung.interne_bestellnr">
       <td><bean:write name="orderform" property="bestellung.interne_bestellnr" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.mediatype" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.mediatype">
       <td>
         <logic:equal name="orderform" property="bestellung.mediatype" value="Artikel">
           <bean:message key="save.artikel" />
@@ -122,55 +122,55 @@
         </logic:equal>
         &nbsp;
       </td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.autor" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.autor">
     <logic:notEqual name="orderform" property="bestellung.autor" value=" ">    
       <td><bean:write name="orderform" property="bestellung.autor" />&nbsp;</td>
     </logic:notEqual>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.artikeltitel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.artikeltitel">
       <td><bean:write name="orderform" property="bestellung.artikeltitel" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.kapitel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.kapitel">
       <td><bean:write name="orderform" property="bestellung.kapitel" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.buchtitel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.buchtitel">
       <td><bean:write name="orderform" property="bestellung.buchtitel" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.verlag" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.verlag">
       <td><bean:write name="orderform" property="bestellung.verlag" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.zeitschrift" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.zeitschrift">
            <td><bean:write name="orderform" property="bestellung.zeitschrift" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.issn" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.issn">
       <td><bean:write name="orderform" property="bestellung.issn" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.isbn" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.isbn">
       <td><bean:write name="orderform" property="bestellung.isbn" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.jahrgang" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.jahrgang">
       <td><bean:write name="orderform" property="bestellung.jahrgang" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.jahr" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.jahr">
       <td><bean:write name="orderform" property="bestellung.jahr" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.heft" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.heft">
       <td><bean:write name="orderform" property="bestellung.heft" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.seiten" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.seiten">
       <td><bean:write name="orderform" property="bestellung.seiten" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.bibliothek" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.bibliothek">
       <td><bean:write name="orderform" property="bestellung.bibliothek" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.sigel" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.sigel">
       <td><bean:write name="orderform" property="bestellung.sigel" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.fileformat" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.fileformat">
       <td><bean:write name="orderform" property="bestellung.fileformat" />&nbsp;</td>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="bestellung.priority" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.priority">
       <td>
         <logic:equal name="orderform" property="bestellung.priority" value="normal">
           <bean:message key="bestellform.normal" />
@@ -180,37 +180,37 @@
         </logic:equal>
       &nbsp;
       </td>
-    </logic:notEqual>    
+    </logic:notEmpty>    
      </tr>
      </table>
      
      <table>
      <tr>
        <td>
-     <logic:notEqual name="orderform" property="bestellung.pmid" value="">
+     <logic:notEmpty name="orderform" property="bestellung.pmid">
        <table border="1">
          <tr>
         <th align="left">PMID</th>
       </tr>
       <tr><td><a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="bestellung.pmid" />" target="_blank"><bean:write name="orderform" property="bestellung.pmid" /></a>&nbsp;</td></tr>
     </table>
-  </logic:notEqual>
+  </logic:notEmpty>
   </td>
   <td>
-  <logic:notEqual name="orderform" property="bestellung.doi" value="">
+  <logic:notEmpty name="orderform" property="bestellung.doi">
        <table border="1">
          <tr>
         <th align="left">DOI</th>
       </tr>
       <tr><td><a href="http://dx.doi.org/<bean:write name="orderform" property="bestellung.doi" />" target="_blank"><bean:write name="orderform" property="bestellung.doi" /></a>&nbsp;</td></tr>
     </table>
-  </logic:notEqual>
+  </logic:notEmpty>
   </td>
   </tr>
   </table>
   
    
-  <logic:notEqual name="orderform" property="bestellung.systembemerkung" value="">   
+  <logic:notEmpty name="orderform" property="bestellung.systembemerkung">   
      <p></p>
      <table border="1">
        <tr>
@@ -222,7 +222,7 @@
         </td>
       </tr>
     </table>
-  </logic:notEqual>
+  </logic:notEmpty>
     
     
  </logic:present>

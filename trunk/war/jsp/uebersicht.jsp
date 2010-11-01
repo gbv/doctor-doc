@@ -287,7 +287,7 @@
       <td align="center"><logic:equal name="b" property="mediatype" value="Artikel"><img border="0" src="img/article.gif" alt="<bean:message key="bestellform.artikelkopie" />" title="<bean:message key="bestellform.artikelkopie" />"/></logic:equal><logic:equal name="b" property="mediatype" value="Buch"><img border="0" src="img/book.gif" alt="<bean:message key="bestellform.buch" />" title="<bean:message key="bestellform.buch" />"/></logic:equal><logic:equal name="b" property="mediatype" value="Teilkopie Buch"><img border="0" src="img/Teilkopie_B.png" alt="<bean:message key="bestellform.buchausschnitt" />" title="<bean:message key="bestellform.buchausschnitt" />"/></logic:equal></td>
       <td align="center"><bean:write name="b" property="orderdate" />&nbsp;</td>
       <td>
-        <logic:equal name="b" property="subitonr" value="">
+        <logic:empty name="b" property="subitonr">
           <logic:present name="b" property="gbvnr">
         <a href="https://www.gbv.de/cbs4/bestellverlauf.pl?BestellID=<bean:write name="b" property="gbvnr" />" target="_blank"><bean:write name="b" property="bestellquelle" /></a>&nbsp;
       </logic:present>
@@ -299,10 +299,10 @@
               <bean:message key="stats.notSpecified" />&nbsp;
             </logic:equal>
           </logic:notPresent>
-        </logic:equal>
-        <logic:notEqual name="b" property="subitonr" value="">
+        </logic:empty>
+        <logic:notEmpty name="b" property="subitonr">
           <a href="http://www.subito-doc.de/index.php?mod=subo&task=trackingdetail&tgq=<bean:write name="b" property="subitonr" />" target="_blank"><bean:write name="b" property="bestellquelle" /></a>&nbsp;
-        </logic:notEqual>
+        </logic:notEmpty>
       </td>
       <td valign="middle">
       <html:form action="changestat">

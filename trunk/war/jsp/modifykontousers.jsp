@@ -41,9 +41,9 @@
   <input name="gtc" type="hidden" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.gtc" />"</logic:present> />
   <input name="gtcdate" type="hidden" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.gtcdate" />"</logic:present> />
   <logic:present name="userform" property="user">
-    <logic:notEqual name="userform" property="bid" value="">
+    <logic:notEmpty name="userform" property="bid">
       <input name="bid" type="hidden" value="<bean:write name="userform" property="bid" />" />
-    </logic:notEqual>
+    </logic:notEmpty>
   </logic:present>
   <table>
     <tr>

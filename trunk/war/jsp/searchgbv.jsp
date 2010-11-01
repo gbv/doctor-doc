@@ -161,133 +161,133 @@
     <br />
     
   <table>
-    <logic:notEqual name="orderform" property="author" value="">
+    <logic:notEmpty name="orderform" property="author">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.author" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="author" /></div></td>
   </tr>
-  </logic:notEqual>
+  </logic:notEmpty>
 <logic:equal name="orderform" property="mediatype" value="Artikel">
-  <logic:notEqual name="orderform" property="artikeltitel" value="">
+  <logic:notEmpty name="orderform" property="artikeltitel">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.artikeltitel" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="artikeltitel" /></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="zeitschriftentitel" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="zeitschriftentitel">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.zeitschrift" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="zeitschriftentitel"/></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="issn" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="issn">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.issn" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="issn" /></div></td>
   </tr>
-  </logic:notEqual>
+  </logic:notEmpty>
 </logic:equal>
 
 <logic:equal name="orderform" property="mediatype" value="Teilkopie Buch">
-  <logic:notEqual name="orderform" property="kapitel" value="">
+  <logic:notEmpty name="orderform" property="kapitel">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.kapitel" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="kapitel" /></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="buchtitel" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="buchtitel">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.buchtitel" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="buchtitel"/></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="isbn" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="isbn">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.isbn" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="isbn" /></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="verlag" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="verlag">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.verlag" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="verlag"/></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="jahr" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="jahr">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.jahr" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="jahr" /></div></td>
   </tr>
-  </logic:notEqual>
+  </logic:notEmpty>
 </logic:equal>
 
 <logic:equal name="orderform" property="mediatype" value="Buch">
-  <logic:notEqual name="orderform" property="buchtitel" value="">
+  <logic:notEmpty name="orderform" property="buchtitel">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.buchtitel" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="buchtitel"/></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="isbn" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="isbn">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.isbn" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="isbn" /></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="verlag" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="verlag">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.verlag" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="verlag"/></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="jahr" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="jahr">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.jahr" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="jahr" /></div></td>
   </tr>
-  </logic:notEqual>
+  </logic:notEmpty>
 </logic:equal>
 
 <logic:equal name="orderform" property="mediatype" value="Artikel">
-<logic:notEqual name="orderform" property="jahr" value="">
+<logic:notEmpty name="orderform" property="jahr">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.jahr" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="jahr" /></div></td>
   </tr>
-</logic:notEqual>
-  <logic:notEqual name="orderform" property="jahrgang" value="">
+</logic:notEmpty>
+  <logic:notEmpty name="orderform" property="jahrgang">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.jahrgang" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="jahrgang" /></div></td>
   </tr>
-  </logic:notEqual>
-  <logic:notEqual name="orderform" property="heft" value="">
+  </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="heft">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.heft" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="heft" /></div></td>
   </tr>
-  </logic:notEqual>
+  </logic:notEmpty>
 </logic:equal>
 <logic:notEqual name="orderform" property="mediatype" value="Buch">
-<logic:notEqual name="orderform" property="seiten" value="">
+<logic:notEmpty name="orderform" property="seiten">
   <tr>
     <td><div id="italic"><bean:message key="bestellform.seiten" />:&nbsp;</div></td>
     <td><div id="italic"><bean:write name="orderform" property="seiten" /></div></td>
   </tr>
+</logic:notEmpty>
 </logic:notEqual>
-</logic:notEqual>
-  <logic:notEqual name="orderform" property="anmerkungen" value="">
+  <logic:notEmpty name="orderform" property="anmerkungen">
     <tr>
         <td><div id="italic"><bean:message key="bestellform.bemerkungen" />:&nbsp;</div></td>
         <td><div id="italic"><bean:write name="orderform" property="anmerkungen" /></div></td>
     </tr>
-    </logic:notEqual>
-    <logic:notEqual name="orderform" property="notizen" value="">
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="notizen">
     <tr>
       <td><div id="italic"><bean:message key="bestellform.interne_notizen" />:&nbsp;</div></td>
       <td><div id="italic"><bean:write name="orderform" property="notizen" /></div></td>
     </tr>
-    </logic:notEqual>
+    </logic:notEmpty>
 
      <tr><td><br></td></tr>
      </table>

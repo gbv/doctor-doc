@@ -30,11 +30,9 @@
   
   <!-- Definiert ggf. ein Trennzeichen zwischen Institution und Abteilung -->
   <bean:define id="separator" value="" type="java.lang.String"/>
-  <logic:present name="orderform" property="benutzer.institut"><logic:present name="orderform" property="benutzer.abteilung">
-  <logic:notEqual name="orderform" property="benutzer.institut" value=""><logic:notEqual name="orderform" property="benutzer.abteilung" value="">
+  <logic:notEmpty name="orderform" property="benutzer.institut"><logic:notEmpty name="orderform" property="benutzer.abteilung">
     <bean:define id="separator" value=" / " type="java.lang.String"/>
-  </logic:notEqual></logic:notEqual>
-  </logic:present></logic:present>
+  </logic:notEmpty></logic:notEmpty>
   
   <form action="ilv-order-pdf.do" target="_blank">
   <logic:present name="userinfo" property="konto">
@@ -126,7 +124,7 @@
       <bean:message key="ilv-report.sendto" /><br />
       <textarea name="post" cols="25" rows="6"><bean:write name="userinfo" property="konto.bibliotheksname" />
 <bean:write name="userinfo" property="konto.adresse" />
-<logic:notEqual name="userinfo" property="konto.adressenzusatz" value=""><bean:write name="userinfo" property="konto.adressenzusatz" /></logic:notEqual>
+<logic:notEmpty name="userinfo" property="konto.adressenzusatz"><bean:write name="userinfo" property="konto.adressenzusatz" /></logic:notEmpty>
 <bean:write name="userinfo" property="konto.PLZ" /> <bean:write name="userinfo" property="konto.ort" />
 <bean:write name="orderform" property="konto.land" /></textarea>
     </td>

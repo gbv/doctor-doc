@@ -44,12 +44,12 @@ h += 96;
 <br />
               
   <div id="italic">
-    <logic:present name="orderform" property="author"><logic:notEqual name="orderform" property="author" value=""><bean:write name="orderform" property="author" /> : </logic:notEqual></logic:present>
-    <logic:present name="orderform" property="artikeltitel"><logic:notEqual name="orderform" property="artikeltitel" value=""><bean:write name="orderform" property="artikeltitel" />. - </logic:notEqual></logic:present>
-    <logic:present name="orderform" property="zeitschriftentitel"><logic:notEqual name="orderform" property="zeitschriftentitel" value=""><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEqual></logic:present><br />
-    <logic:present name="orderform" property="jahr"><logic:notEqual name="orderform" property="jahr" value=""><bean:write name="orderform" property="jahr" />;</logic:notEqual></logic:present><logic:present name="orderform" property="jahrgang"><logic:notEqual name="orderform" property="jahrgang" value=""><bean:write name="orderform" property="jahrgang" /></logic:notEqual></logic:present><logic:present name="orderform" property="heft"><logic:notEqual name="orderform" property="heft" value="">(<bean:write name="orderform" property="heft" />)</logic:notEqual></logic:present><logic:present name="orderform" property="seiten"><logic:notEqual name="orderform" property="seiten" value="">:<bean:write name="orderform" property="seiten" /></logic:notEqual></logic:present>
-    <logic:present name="orderform" property="issn"><logic:notEqual name="orderform" property="issn" value="">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEqual></logic:present>
-    <logic:present name="orderform" property="pmid"><logic:notEqual name="orderform" property="pmid" value="">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEqual></logic:present>
+    <logic:notEmpty name="orderform" property="author"><bean:write name="orderform" property="author" /> : </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="artikeltitel"><bean:write name="orderform" property="artikeltitel" />. - </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="zeitschriftentitel"><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEmpty><br />
+    <logic:notEmpty name="orderform" property="jahr"><bean:write name="orderform" property="jahr" />;</logic:notEmpty><logic:notEmpty name="orderform" property="jahrgang"><bean:write name="orderform" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="orderform" property="heft">(<bean:write name="orderform" property="heft" />)</logic:notEmpty><logic:notEmpty name="orderform" property="seiten">:<bean:write name="orderform" property="seiten" /></logic:notEmpty>
+    <logic:notEmpty name="orderform" property="issn">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEmpty>
+    <logic:notEmpty name="orderform" property="pmid">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEmpty>
   </div>
 
 <logic:present name="findfree" property="link">            
@@ -158,8 +158,7 @@ h += 96;
  
 <h3><bean:message key="availresult.extern" /></h3>
 
- <logic:present name="orderform" property="issn">
- <logic:notEqual name="orderform" property="issn" value="">
+ <logic:notEmpty name="orderform" property="issn">
    <table border="1" cellspacing="0" cellpadding="3">
     <tr>
       <th id="th-left" width="20%"><bean:message key="availresult.deutschland" /></th>
@@ -235,11 +234,9 @@ h += 96;
       <font color="white"><i><bean:message key="save.extern" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
     </logic:present>
   </p>
-  </logic:notEqual>
-  </logic:present>
+  </logic:notEmpty>
   
-  <logic:present name="orderform" property="issn">
- <logic:equal name="orderform" property="issn" value="">
+  <logic:empty name="orderform" property="issn">
  <div id="italic"><bean:message key="availresult.manuell" /></div><br />
    <table border="1" cellspacing="0" cellpadding="3">
     <tr>
@@ -310,8 +307,7 @@ h += 96;
       <font color="white"><i><bean:message key="save.extern" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></i></font>
     </logic:present>
   </p>
-  </logic:equal>
-  </logic:present>
+  </logic:empty>
 
   <logic:present name="holdings">
   
