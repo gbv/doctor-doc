@@ -27,15 +27,13 @@
 			<bean:write name="konto" property="adresse" />
 		</td>
 	</tr>
-	<logic:present name="konto" property="adressenzusatz">
-	<logic:notEqual name="konto" property="adressenzusatz" value="">
+	<logic:notEmpty name="konto" property="adressenzusatz">
 	<tr>
 		<td>
 			<bean:write name="konto" property="adressenzusatz" />
 		</td>
 	</tr>
-	</logic:notEqual>
-	</logic:present>
+	</logic:notEmpty>
 	<tr>
 		<td>
 			<bean:write name="konto" property="land" />-<bean:write name="konto" property="PLZ" />&nbsp;<bean:write name="konto" property="ort" />
@@ -49,17 +47,17 @@
 
 </table>
 
-<logic:notEqual name="orderform" property="issn" value="">
+<logic:notEmpty name="orderform" property="issn">
 <!-- Show only when we have an ISSN -->
 <h3><bean:message key="issnsearch.titel" /></h3>
 
-  <logic:present name="orderform" property="author"><logic:notEqual name="orderform" property="author" value=""><bean:write name="orderform" property="author" /> : </logic:notEqual></logic:present>
-  <logic:present name="orderform" property="artikeltitel"><logic:notEqual name="orderform" property="artikeltitel" value=""><bean:write name="orderform" property="artikeltitel" />. - </logic:notEqual></logic:present>
-  <logic:present name="orderform" property="zeitschriftentitel"><logic:notEqual name="orderform" property="zeitschriftentitel" value=""><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEqual></logic:present><br />
-  <logic:present name="orderform" property="jahr"><logic:notEqual name="orderform" property="jahr" value=""><bean:write name="orderform" property="jahr" />;</logic:notEqual></logic:present><logic:present name="orderform" property="jahrgang"><logic:notEqual name="orderform" property="jahrgang" value=""><bean:write name="orderform" property="jahrgang" /></logic:notEqual></logic:present><logic:present name="orderform" property="heft"><logic:notEqual name="orderform" property="heft" value="">(<bean:write name="orderform" property="heft" />)</logic:notEqual></logic:present><logic:present name="orderform" property="seiten"><logic:notEqual name="orderform" property="seiten" value="">:<bean:write name="orderform" property="seiten" /></logic:notEqual></logic:present>
-  <logic:present name="orderform" property="issn"><logic:notEqual name="orderform" property="issn" value="">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEqual></logic:present>
-  <logic:present name="orderform" property="pmid"><logic:notEqual name="orderform" property="pmid" value="">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEqual></logic:present>
-</logic:notEqual>
+  <logic:notEmpty name="orderform" property="author"><bean:write name="orderform" property="author" /> : </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="artikeltitel"><bean:write name="orderform" property="artikeltitel" />. - </logic:notEmpty>
+  <logic:notEmpty name="orderform" property="zeitschriftentitel"><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEmpty><br />
+  <logic:notEmpty name="orderform" property="jahr"><bean:write name="orderform" property="jahr" />;</logic:notEmpty><logic:notEmpty name="orderform" property="jahrgang"><bean:write name="orderform" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="orderform" property="heft">(<bean:write name="orderform" property="heft" />)</logic:notEmpty><logic:notEmpty name="orderform" property="seiten">:<bean:write name="orderform" property="seiten" /></logic:notEmpty>
+  <logic:notEmpty name="orderform" property="issn">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEmpty>
+  <logic:notEmpty name="orderform" property="pmid">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEmpty>
+</logic:notEmpty>
 
 <h3><bean:message key="availresult.link_title_print" /></h3>
 <table>
@@ -74,25 +72,16 @@
     		<bean:write name="stock" property="holding.titel" />
     	</td>
     </tr>
-    <tr>
-		<td>
-			ISSN:&nbsp;
-		</td>
-		<td>
-    		<bean:write name="stock" property="holding.issn" />
-    	</td>
-    </tr>
-    <tr>
+	<tr>
 		<td>
 			<bean:message key="availresult.titel" />:&nbsp;
 		</td>
 		<td>
-    		<logic:present name="stock" property="startyear"><logic:notEqual name="stock" property="startyear" value=""><bean:write name="stock" property="startyear" />;</logic:notEqual></logic:present><logic:present name="stock" property="startvolume"><logic:notEqual name="stock" property="startvolume" value=""><bean:write name="stock" property="startvolume" /></logic:notEqual></logic:present><logic:present name="stock" property="startissue"><logic:notEqual name="stock" property="startissue" value="">(<bean:write name="stock" property="startissue" />)</logic:notEqual></logic:present> -
-    		<logic:present name="stock" property="endyear"><logic:notEqual name="stock" property="endyear" value=""><bean:write name="stock" property="endyear" />;</logic:notEqual></logic:present><logic:present name="stock" property="endvolume"><logic:notEqual name="stock" property="endvolume" value=""><bean:write name="stock" property="endvolume" /></logic:notEqual></logic:present><logic:present name="stock" property="endissue"><logic:notEqual name="stock" property="endissue" value="">(<bean:write name="stock" property="endissue" />)</logic:notEqual></logic:present> 
+    		<logic:notEmpty name="stock" property="startyear"><bean:write name="stock" property="startyear" />;</logic:notEmpty><logic:notEmpty name="stock" property="startvolume"><bean:write name="stock" property="startvolume" /></logic:notEmpty><logic:notEmpty name="stock" property="startissue">(<bean:write name="stock" property="startissue" />)</logic:notEmpty> -
+    		<logic:notEmpty name="stock" property="endyear"><bean:write name="stock" property="endyear" />;</logic:notEmpty><logic:notEmpty name="stock" property="endvolume"><bean:write name="stock" property="endvolume" /></logic:notEmpty><logic:notEmpty name="stock" property="endissue">(<bean:write name="stock" property="endissue" />)</logic:notEmpty> 
     	</td>
     </tr>
-    <logic:present name="stock" property="bemerkungen">
-    <logic:notEqual name="stock" property="bemerkungen" value="">
+    <logic:notEmpty name="stock" property="bemerkungen">
     <tr>
 		<td>
 			<bean:message key="bestellform.bemerkungen" />:&nbsp;
@@ -101,8 +90,53 @@
     		<bean:write name="stock" property="bemerkungen" />
     	</td>
     </tr>
-    </logic:notEqual>
-    </logic:present>
+    </logic:notEmpty>
+    <tr>
+		<td>
+			<bean:message key="stockimport.suppl" />:&nbsp;
+		</td>
+		<td>
+    		<logic:equal name="stock" property="suppl" value="0"><bean:message key="stockimport.suppl_0" /></logic:equal>
+    		<logic:equal name="stock" property="suppl" value="1"><bean:message key="stockimport.suppl_1" /></logic:equal>
+    		<logic:equal name="stock" property="suppl" value="2"><bean:message key="stockimport.suppl_2" /></logic:equal>
+    	</td>
+    </tr>
+    <tr>
+		<td>
+			ISSN:&nbsp;
+		</td>
+		<td>
+    		<bean:write name="stock" property="holding.issn" />
+    	</td>
+    </tr>
+    <logic:notEmpty name="stock" property="holding.verlag">
+    <tr>
+		<td>
+			<bean:message key="bestellform.verlag" />:&nbsp;
+		</td>
+		<td>
+    		<logic:notEmpty name="stock" property="holding.ort"><bean:write name="stock" property="holding.ort" /> : </logic:notEmpty><bean:write name="stock" property="holding.verlag" />
+    	</td>
+    </tr>
+    </logic:notEmpty>
+    <tr>
+		<td>
+			<bean:message key="stockimport.loc" />:&nbsp;
+		</td>
+		<td>
+    		<bean:write name="stock" property="standort.inhalt" />
+    	</td>
+    </tr>
+    <logic:notEmpty name="stock" property="shelfmark">
+    <tr>
+		<td>
+			<bean:message key="stockimport.sig" />:&nbsp;
+		</td>
+		<td>
+    		<bean:write name="stock" property="shelfmark" />
+    	</td>
+    </tr>
+    </logic:notEmpty>
     <tr><td><br /></td></tr>
     
      </logic:iterate>

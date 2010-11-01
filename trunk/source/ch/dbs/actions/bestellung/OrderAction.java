@@ -1017,6 +1017,7 @@ public final class OrderAction extends DispatchAction {
                 ff = getFindFreeForInternalHoldings(ff, internalHoldings, link);
                 pageForm.setLieferant(ff.getLieferant()); // Bestellquelle setzen (Internet / abonniert)...
                 pageForm.setDeloptions(ff.getDeloptions()); // // Deloptions setzen (Online / Email)...
+                rq.setAttribute("internalHoldings", internalHoldings);
             }
             if (!externalHoldings.isEmpty()) { // there external holdings
                 rq.setAttribute("holdings", externalHoldings);
@@ -1794,28 +1795,6 @@ public final class OrderAction extends DispatchAction {
         ff.setP_ampel("yellow");
         ff.setLieferant(lieferantenInstance.getLieferantFromName("abonniert", t.getConnection()));
         ff.setDeloptions("email");
-
-        final List<String> location = new ArrayList<String>();
-        final List<String> shelfmark = new ArrayList<String>();
-
-        for (final Bestand b : internalHoldings) {
-
-            if (b.getStandort().getInhalt() != null) {
-                location.add(b.getStandort().getInhalt());
-            } else {
-                location.add("");
-            }
-
-            if (b.getShelfmark() != null) {
-                shelfmark.add(b.getShelfmark());
-            } else {
-                shelfmark.add("");
-            }
-
-        }
-
-        ff.setLocation_print(location);
-        ff.setShelfmark_print(shelfmark);
 
         t.close();
 

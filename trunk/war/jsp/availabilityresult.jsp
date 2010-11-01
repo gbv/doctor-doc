@@ -107,20 +107,27 @@ h += 96;
       <logic:present name="findfree" property="p_ampel"><logic:equal name="findfree" property="p_ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0"></logic:equal></logic:present>
     </td>
   </tr>
-  <logic:present name="findfree" property="location_print">
+  <logic:present name="internalHoldings">
   <tr>
     <td align="center" colspan="5">
       <table border="1">
+      	<logic:iterate id="location" name="internalHoldings">      
+            <td><bean:write name="location" property="standort.inhalt" /></td>
+        </logic:iterate>
         <tr>
-          <logic:iterate id="location" name="findfree" property="location_print">
-            <td><bean:write name="location" /></td>
-          </logic:iterate>          
-        </tr>
-        <tr>
-          <logic:iterate id="shelfmark" name="findfree" property="shelfmark_print">
-            <td align="center"><bean:write name="shelfmark" /></td>
-          </logic:iterate>          
-        </tr>
+        <logic:iterate id="location" name="internalHoldings">        	
+        	<td align="center">
+        		<logic:present name="location" property="holding.baseurl">
+            	<a href="<bean:write name="location" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" 
+            	target="popup" onClick="wopen('<bean:write name="location" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />', 'popup', 840, 580); return false;"><bean:message key="availresult.details" /></a>
+            </logic:present>
+            <logic:notPresent name="location" property="holding.baseurl">
+            	<a href="stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" 
+            	target="popup" onClick="wopen('stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />', 'popup', 840, 580); return false;"><bean:message key="availresult.details" /></a>
+            </logic:notPresent>
+        	</td>        	
+       	 </logic:iterate>
+       	 </tr>
       </table>  
     </td>
   </tr>

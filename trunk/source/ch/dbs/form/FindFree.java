@@ -47,8 +47,6 @@ public final class FindFree extends ActionForm {
     private String p_ampel; // // Steuerung Anzeige Ampel
     private String message_print;
     private String institution_print;
-    private List<String> location_print;
-    private List<String> shelfmark_print;
     private String link_print;
     private String linktitle_print;
     private String zdb_link; // enthält den Suchlink
@@ -256,26 +254,6 @@ public final class FindFree extends ActionForm {
 
     public void setInstitution_print(final String institutionPrint) {
         institution_print = institutionPrint;
-    }
-
-
-    public List<String> getLocation_print() {
-        return location_print;
-    }
-
-
-    public void setLocation_print(final List<String> locationPrint) {
-        location_print = locationPrint;
-    }
-
-
-    public List<String> getShelfmark_print() {
-        return shelfmark_print;
-    }
-
-
-    public void setShelfmark_print(final List<String> shelfmarkPrint) {
-        shelfmark_print = shelfmarkPrint;
     }
 
 }
