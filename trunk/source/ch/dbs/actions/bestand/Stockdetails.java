@@ -82,8 +82,8 @@ public class Stockdetails extends Action {
         // return holdings upon the most specific identifier, ignoring
         // less specific identifiers. The order is: stid, hoid, kid
         if (stid != null) {
-            // internal holdings are not visible
-            bestand = new Bestand(Long.valueOf(stid), false, cn.getConnection());
+            // with a stockid, internal holdings have to be visible
+            bestand = new Bestand(Long.valueOf(stid), true, cn.getConnection());
             // to avoid NullPointerException if internal of holding = true
             if (bestand.getId() != null) { holdings.add(bestand); }
         } else if (hoid != null) {

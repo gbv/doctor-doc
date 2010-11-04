@@ -22,7 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.grlea.log.SimpleLogger;
@@ -519,17 +520,20 @@ public class Bestand extends AbstractIdEntity {
 
                     rs = pstmt.executeQuery();
 
-                    // Controls that only one matching stock per location will be shown
-                    final HashSet<Long> uniqueLocationID = new HashSet<Long>();
-
                     while (rs.next()) {
                         final Bestand be = new Bestand(cn, rs);
-                        if (!uniqueLocationID.contains(be.getStandort().getId())) {
-                            listBestand.add(be); // add only one stock for a given location
-                            uniqueLocationID.add(be.getStandort().getId());
+                        listBestand.add(be); // there may be multiple stocks per location
+                    }
+
+                    // Sort holdings list for library name
+                    Collections.sort(listBestand, new Comparator<Bestand>() {
+
+                        public int compare(final Bestand be1, final Bestand be2) {
+                            return be1.getHolding().getKonto().getBibliotheksname().compareToIgnoreCase(be2.getHolding().getKonto().getBibliotheksname());
                         }
 
-                    }
+                    });
+
 
                 } catch (final Exception e) {
                     LOG.error("ArrayList<Bestand> getAllBestandForHoldings: " + e.toString());
