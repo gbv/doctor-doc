@@ -47,31 +47,74 @@
 
 </table>
 
-<logic:notEmpty name="orderform" property="issn">
-<!-- Show only when we have an ISSN -->
-<h3><bean:message key="issnsearch.titel" /></h3>
-
-  <logic:notEmpty name="orderform" property="author"><bean:write name="orderform" property="author" /> : </logic:notEmpty>
-  <logic:notEmpty name="orderform" property="artikeltitel"><bean:write name="orderform" property="artikeltitel" />. - </logic:notEmpty>
-  <logic:notEmpty name="orderform" property="zeitschriftentitel"><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEmpty><br />
-  <logic:notEmpty name="orderform" property="jahr"><bean:write name="orderform" property="jahr" />;</logic:notEmpty><logic:notEmpty name="orderform" property="jahrgang"><bean:write name="orderform" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="orderform" property="heft">(<bean:write name="orderform" property="heft" />)</logic:notEmpty><logic:notEmpty name="orderform" property="seiten">:<bean:write name="orderform" property="seiten" /></logic:notEmpty>
-  <logic:notEmpty name="orderform" property="issn">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEmpty>
-  <logic:notEmpty name="orderform" property="pmid">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEmpty>
-</logic:notEmpty>
-
-<h3><bean:message key="availresult.link_title_print" /></h3>
 <table>
+
+	<logic:notEmpty name="orderform" property="issn">
+	<!-- Show only when we have an ISSN -->
 	
-	<logic:iterate id="stock" name="holdings">
-	
+	<tr>
+		<td colspan="2">
+			<h3><bean:message key="issnsearch.titel" /></h3>
+		</td>
+	</tr>
+
+	<tr>
+		<td><bean:message key="stockdetails.issue" />:&nbsp;</td>
+		<td><logic:notEmpty name="orderform" property="jahr"><bean:write name="orderform" property="jahr" />;</logic:notEmpty><logic:notEmpty name="orderform" property="jahrgang"><bean:write name="orderform" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="orderform" property="heft">(<bean:write name="orderform" property="heft" />)</logic:notEmpty><logic:notEmpty name="orderform" property="seiten">:<bean:write name="orderform" property="seiten" /></logic:notEmpty></td>
+	</tr>
+	<logic:notEmpty name="orderform" property="zeitschriftentitel">
 	<tr>
 		<td>
 			<bean:message key="bestellform.zeitschrift" />:&nbsp;
 		</td>
 		<td>
-    		<bean:write name="stock" property="holding.titel" />
-    	</td>
-    </tr>
+			<bean:write name="orderform" property="zeitschriftentitel" />
+		</td>
+	</tr>
+	</logic:notEmpty>
+	<tr>
+		<td>ISSN:&nbsp;</td>
+		<td><logic:notEmpty name="orderform" property="issn"><bean:write name="orderform" property="issn" /></logic:notEmpty></td>
+	</tr>
+	
+	<logic:notEmpty name="orderform" property="author">
+	<tr>
+		<td>
+			<bean:message key="bestellform.author" />:&nbsp;
+		</td>
+		<td>
+			<bean:write name="orderform" property="author" /> 
+		</td>
+	</tr>
+	</logic:notEmpty>
+	<logic:notEmpty name="orderform" property="artikeltitel">
+	<tr>
+		<td>
+			<bean:message key="bestellform.artikeltitel" />:&nbsp;
+		</td>
+		<td>
+			<bean:write name="orderform" property="artikeltitel" />
+		</td>
+	</tr>
+	</logic:notEmpty>
+	<logic:notEmpty name="orderform" property="pmid">
+	<tr>
+		<td>PMID:&nbsp;</td>
+		<td><a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></td>
+	</tr>
+	</logic:notEmpty>
+	
+	
+	</logic:notEmpty>
+
+	<tr>
+		<td colspan="2">
+			<h3><bean:message key="availresult.link_title_print" /></h3>
+		</td>
+	</tr>
+	
+	<logic:iterate id="stock" name="holdings">
+	
 	<tr>
 		<td>
 			<bean:message key="availresult.titel" />:&nbsp;
@@ -101,12 +144,12 @@
     		<logic:equal name="stock" property="suppl" value="2"><bean:message key="stockimport.suppl_2" /></logic:equal>
     	</td>
     </tr>
-    <tr>
+	<tr>
 		<td>
-			ISSN:&nbsp;
+			<bean:message key="bestellform.zeitschrift" />:&nbsp;
 		</td>
 		<td>
-    		<bean:write name="stock" property="holding.issn" />
+    		<bean:write name="stock" property="holding.titel" />
     	</td>
     </tr>
     <logic:notEmpty name="stock" property="holding.verlag">
@@ -119,6 +162,14 @@
     	</td>
     </tr>
     </logic:notEmpty>
+    <tr>
+		<td>
+			ISSN:&nbsp;
+		</td>
+		<td>
+    		<bean:write name="stock" property="holding.issn" />
+    	</td>
+    </tr>
     <tr>
 		<td>
 			<bean:message key="stockimport.loc" />:&nbsp;
