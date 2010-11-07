@@ -624,23 +624,23 @@ public class Bestand extends AbstractIdEntity {
             break;
         case 3: // ISSN, Year, Volume
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '') "
-                + "AND (a.startvolume <= ? OR a.startvolume = '') AND (a.endvolume >= ? OR a.endvolume = '')) AND (a.HOID = ?";
+                + "AND (a.startvolume <= ?+0 OR a.startvolume = '') AND (a.endvolume >= ?+0 OR a.endvolume = '')) AND (a.HOID = ?";
             break;
         case 4: // ISSN, Year, Volume, Issue
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
-                + "(a.startvolume <=? OR a.startvolume = '') AND (a.endvolume >=? OR a.endvolume = '') AND "
-                + "(a.startissue <= ? OR a.startissue = '') AND (a.endissue >= ? OR a.endissue = '')) OR "
-                + "((a.endyear > ? OR a.endyear = '') AND (a.startvolume <=? OR a.startvolume = '') AND "
-                + "(a.endvolume >=? OR a.endvolume = '') AND (a.startissue <= ? OR a.startissue = '')))) OR "
-                + "(a.startyear < ? AND ((a.endyear = ? AND (a.startvolume <=? OR a.startvolume = '') AND "
-                + "(a.endvolume >=? OR a.endvolume = '') AND (a.endissue >= ? OR a.endissue = '')) OR "
+                + "(a.startvolume <=?+0 OR a.startvolume = '') AND (a.endvolume >=?+0 OR a.endvolume = '') AND "
+                + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                + "((a.endyear > ? OR a.endyear = '') AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
+                + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
+                + "(a.startyear < ? AND ((a.endyear = ? AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
+                + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
                 + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
             break;
         case 5: // ISSN, Year, Issue
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
-                + "(a.startissue <= ? OR a.startissue = '') AND (a.endissue >= ? OR a.endissue = '')) OR "
-                + "((a.endyear > ? OR a.endyear = '') AND (a.startissue <= ? OR a.startissue = '')))) OR "
-                + "(a.startyear < ? AND ((a.endyear = ? AND (a.endissue >= ? OR a.endissue = '')) OR "
+                + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                + "((a.endyear > ? OR a.endyear = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
+                + "(a.startyear < ? AND ((a.endyear = ? AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
                 + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
             break;
         default:
