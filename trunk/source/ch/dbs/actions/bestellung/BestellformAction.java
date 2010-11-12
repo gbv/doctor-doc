@@ -71,7 +71,7 @@ public final class BestellformAction extends DispatchAction {
     private static final long BKID = 11;
     private static final long KKID = 12;
     private static final long IP = 9;
-    private static final long LOGGED_IN = 9;
+    private static final long LOGGED_IN = 13;
     private static final int TIMEOUT = 2000;
     private static final int RETRYS = 2;
     private static final String FAILURE = "failure";
@@ -1297,9 +1297,8 @@ public final class BestellformAction extends DispatchAction {
         final ConvertOpenUrl couInstance = new ConvertOpenUrl();
         final OpenUrl openUrlInstance = new OpenUrl();
         final Http http = new Http();
-        final String link = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=" + pmid;
-        // empfohlener Link wäre:
-        // String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmode=xml&id=" + pmid;
+        //        final String link = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=" + pmid;
+        final String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=" + pmid;
         // TODO: Pubmed XML-Auswertung umstellen
         String content = "";
 

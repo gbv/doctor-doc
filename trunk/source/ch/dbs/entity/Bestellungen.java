@@ -418,11 +418,11 @@ public class Bestellungen extends AbstractIdEntity {
     }
 
     /**
-     * Löscht eine Bestellung aus der DB
+     * Deletes an order and all it's stati from the DB
      *
      * @param Bestellungen b
      */
-    public boolean deleteBestellung(final Bestellungen b, final Connection cn) {
+    public boolean deleteOrder(final Bestellungen b, final Connection cn) {
 
         boolean success = false;
 
@@ -434,8 +434,42 @@ public class Bestellungen extends AbstractIdEntity {
 
             success = true;
 
+            deleteStati(b, cn);
+
         } catch (final Exception e) {
             LOG.error("deleteBestellung(Bestellungen b, Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     * Deletes stati from the DB
+     *
+     * @param Bestellungen b
+     */
+    private boolean deleteStati(final Bestellungen b, final Connection cn) {
+
+        boolean success = false;
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("DELETE FROM `bestellstatus` WHERE `BID` =?");
+            pstmt.setLong(1, b.getId());
+            pstmt.executeUpdate();
+
+            success = true;
+
+        } catch (final Exception e) {
+            LOG.error("deleteStati(final Bestellungen b, final Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {

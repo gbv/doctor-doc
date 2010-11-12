@@ -2806,7 +2806,7 @@ public final class OrderAction extends DispatchAction {
                     (auth.isBibliothekar(rq) || auth.isAdmin(rq))
                     && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
 
-                if (b.deleteBestellung(b, cn.getConnection())) {
+                if (b.deleteOrder(b, cn.getConnection())) {
                     forward = SUCCESS;
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");

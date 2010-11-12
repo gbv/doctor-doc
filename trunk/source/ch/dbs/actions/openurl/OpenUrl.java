@@ -1140,8 +1140,6 @@ public class OpenUrl {
      */
     public ContextObject readXmlPubmed(String content) {
 
-        // http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=3966282
-
         final ContextObject co = new ContextObject();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
         content = specialCharacters.replace(content); // Entfernen von &amp; und co.
