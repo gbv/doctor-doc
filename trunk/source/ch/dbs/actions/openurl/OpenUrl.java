@@ -35,13 +35,12 @@ public class OpenUrl {
     private static final String PM_ENDTAG = "</Item>";
 
     /**
-     * Klasse um OpenURL anzuwenden
+     * Class to handle OpenURL.
      * @author Markus Fischer
      */
 
     /**
-     * identifiziert die OpenURL-Identifiers aus einem Request
-     * verwendet die Standardmethoden von Java
+     * Gets the contents of an OpenUrl web-request V 0.1 or V 1.0.
      */
     public ContextObject readOpenUrlFromRequest(final HttpServletRequest rq) {
 
@@ -57,7 +56,7 @@ public class OpenUrl {
 
             try {
 
-                // Parameter aus OpenURL Version 1.0
+                // Parameter from OpenURL Version 1.0
                 if ("rft_val_fmt".equals(key)) {
                     co.setRft_val_fmt(value);
                     continue;
@@ -210,7 +209,7 @@ public class OpenUrl {
                     co.setRft_artnum(value);
                     continue;
                 }
-                // RFTs Dublin Core, z.B. in Blogs:
+                // RFTs Dublin Core, e.g. in blogs:
                 if ("rft.creator".equals(key)) {
                     co.setRft_creator(value);
                     continue;
@@ -260,13 +259,13 @@ public class OpenUrl {
                     continue;
                 }
 
-                //         Parameter aus OpenURL 0.1.
-                if ("id".equals(key) && !value.startsWith("doi:")) { // kommt bei BIOONE und Inforama vor: id=doi:
+                // Parameter from OpenURL 0.1.
+                if ("id".equals(key) && !value.startsWith("doi:")) { // BIOONE and Inforama: id=doi:
                     co.setRfr_id(value);
                     continue;
                 }
                 if ("sid".equals(key)) {
-                    co.setRfr_id(value); // überschreibt &id=
+                    co.setRfr_id(value); // overrides &id=
                     continue;
                 }
                 if ("genre".equals(key)) {
@@ -314,7 +313,7 @@ public class OpenUrl {
                     continue;
                 }
                 if ("issn1".equals(key)) {
-                    co.setRft_issn1(value); // kann es manchmal geben, als ISSN mit Bindestrich
+                    co.setRft_issn1(value); // ISSN with hyphen
                     continue;
                 }
                 if ("eissn".equals(key)) {
@@ -398,7 +397,7 @@ public class OpenUrl {
                     continue;
                 }
                 if ("sici".equals(key)) {
-                    co.setRft_sici(value); // doppelt?
+                    co.setRft_sici(value);
                     continue;
                 }
                 if ("bici".equals(key)) {
@@ -413,7 +412,7 @@ public class OpenUrl {
                     co.setRft_artnum(value);
                     continue;
                 }
-                // RFTs Dublin Core, z.B. in Blogs:
+                // RFTs Dublin Core, e.g. in blogs:
                 if ("creator".equals(key)) {
                     co.setRft_creator(value);
                     continue;
@@ -464,7 +463,7 @@ public class OpenUrl {
                 }
 
 
-                // hier muss aus Kompatibilitätsgründen das jeweilige URI-Schema hinzugefügt werden
+                // URI-Scheme
                 // http://www.info-uri.info/registry/
                 if ("rft_id".equals(key)) {
                     uriSchemas.add(value);
@@ -474,7 +473,7 @@ public class OpenUrl {
                     if (value.length() > 0) { uriSchemas.add("info:pmid/" + value); }
                     continue;
                 }
-                if ("id".equals(key) && value.startsWith("doi:")) { // kommt bei BIOONE und Inforama vor
+                if ("id".equals(key) && value.startsWith("doi:")) { // BIOONE und Inforama
                     if (value.length() > 9) {
                         uriSchemas.add("info:doi/" + value.substring(value.indexOf("doi:") + 4));
                     }
@@ -507,8 +506,7 @@ public class OpenUrl {
 
 
     /**
-     * identifiziert die OpenURL-Identifiers aus einer Webseite (z.B. OCoins / Worlcat etc.)
-     * verwendet selbstgefertigte Stringanalysen
+     * Gets the contents of OpenURL from a web-site (e.g. OCoins / Worlcat etc.).
      *
      */
     public ContextObject readOpenUrlFromString(final String content) {
@@ -520,26 +518,26 @@ public class OpenUrl {
             String openURL = content;
 
             final SpecialCharacters specialCharacters = new SpecialCharacters();
-            openURL = specialCharacters.replace(openURL); // Entfernen von &amp; und co.
+            openURL = specialCharacters.replace(openURL); // remove &amp; and other html entities
 
-            // Achtung: OpenURL nicht vor if (OpenURL...contains(">") decodieren,
-            // sonst interferiert rtf.sici (enthält <...>)!
-            // Grosschreibung
+            // Attention: do not decode OpenURL before if (OpenURL...contains(">")!
+            // clashes with rtf.sici (contains <...>)!
+            // Upper case
             if (openURL.contains("ver=Z39.88-2004")
-                    // falls content von einer Webseite stammt...
+                    // In web-site...
                     && openURL.substring(openURL.indexOf("ver=Z39.88-2004")).contains(">")) {
                 openURL = openURL.substring(openURL.indexOf("ver=Z39.88-2004"), openURL.indexOf('>', openURL
-                        .indexOf("ver=Z39.88-2004"))); // ...String mit OpenUrl suchen und verkürzen
+                        .indexOf("ver=Z39.88-2004"))); // ...search for String with OpenUrl and extract
             }
-            // Kleinschreibung
+            // Lower case
             if (openURL.contains("ver=z39.88-2004")
-                    // falls content von einer Webseite stammt...
+                    // In web-site...
                     && openURL.substring(openURL.indexOf("ver=z39.88-2004")).contains(">")) {
                 openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"), openURL.indexOf('>', openURL
-                        .indexOf("ver=z39.88-2004"))); // ...String mit OpenUrl suchen und verkürzen
+                        .indexOf("ver=z39.88-2004"))); // ...search for String with OpenUrl and extract
             }
 
-            // OpenURL Version 1.0 (neben rft.genre etc. gibt es dasselbe nochmals mit rfr.genre)
+            // OpenURL Version 1.0
             if (openURL.contains("&rft.")) {
 
                 if (openURL.contains("rft_val_fmt=")) {
@@ -656,7 +654,7 @@ public class OpenUrl {
                 if (openURL.contains("rft.artnum=")) {
                     co.setRft_artnum(getOpenUrlIdentifiersVersion1_0("rft.artnum=", openURL));
                 }
-                // RFTs Dublin Core, z.B. in Blogs:
+                // RFTs Dublin Core, e.g. in blogs:
                 if (openURL.contains("rft.creator=")) {
                     co.setRft_creator(getOpenUrlIdentifiersVersion1_0("rft.creator=", openURL));
                 }
@@ -696,7 +694,7 @@ public class OpenUrl {
 
                 final ArrayList<String> id = new ArrayList<String>();
 
-                while (openURL.contains("rft_id=")) { // kann mehrere rft_id enthalten
+                while (openURL.contains("rft_id=")) { // may conatin several rft_id
                     id.add(getOpenUrlIdentifiersVersion1_0("rft_id=", openURL));
                     openURL = openURL.substring(openURL.indexOf("rft_id=") + 6);
                 }
@@ -706,15 +704,15 @@ public class OpenUrl {
             } else {
 
                 //         OpenURL Version 0.1
-                // kommt nicht vor in OpenURL != Version 1.0
+                // only appears in OpenURL == Version 1.0
                 if (openURL.contains("rft_val_fmt=")) {
                     co.setRft_val_fmt(getOpenUrlIdentifiersVersion0_1("rft_val_fmt=", openURL));
                 }
-                // mit &! sonst nicht eindeutig! etwas fragwürdig, ob das zuverlässig ist
+                // use with ampersand, or it may not be unique...
                 if (openURL.contains("&id=")) {
                     co.setRfr_id(getOpenUrlIdentifiersVersion0_1("&id=", openURL));
                 }
-                // überschreibt &id=
+                // overrides &id=
                 if (openURL.contains("sid=")) {
                     co.setRfr_id(getOpenUrlIdentifiersVersion0_1("sid=", openURL));
                 }
@@ -739,7 +737,7 @@ public class OpenUrl {
                 if (openURL.contains("edition=")) {
                     co.setRft_edition(getOpenUrlIdentifiersVersion0_1("edition=", openURL));
                 }
-                // mit &! sonst nicht eindeutig! etwas fragwürdig, ob das zuverlässig ist
+                // use with ampersand, or it may not be unique...
                 if (openURL.contains("&title=")) {
                     co.setRft_title(getOpenUrlIdentifiersVersion0_1("&title=", openURL));
                 }
@@ -752,7 +750,7 @@ public class OpenUrl {
                 if (openURL.contains("issn=")) {
                     co.setRft_issn(getOpenUrlIdentifiersVersion0_1("issn=", openURL));
                 }
-                // kann es manchmal geben, als ISSN mit Bindestrich
+                // ISSN with hyphen
                 if (openURL.contains("issn1=")) {
                     co.setRft_issn1(getOpenUrlIdentifiersVersion0_1("issn1=", openURL));
                 }
@@ -792,7 +790,7 @@ public class OpenUrl {
                 if (openURL.contains("author=")) {
                     co.setRft_author(getOpenUrlIdentifiersVersion0_1("author=", openURL));
                 }
-                // mit &, sonst nicht eindeutig!
+                // use with ampersand, or it may not be unique...
                 if (openURL.contains("&au=")) {
                     co.setRft_au(getOpenUrlIdentifiersVersion0_1("&au=", openURL));
                 }
@@ -817,7 +815,6 @@ public class OpenUrl {
                 if (openURL.contains("aufirst=")) {
                     co.setRft_aufirst(getOpenUrlIdentifiersVersion0_1("aufirst=", openURL));
                 }
-                // doppelt?
                 if (openURL.contains("sici=")) {
                     co.setRft_sici(getOpenUrlIdentifiersVersion0_1("sici=", openURL));
                 }
@@ -830,7 +827,7 @@ public class OpenUrl {
                 if (openURL.contains("artnum=")) {
                     co.setRft_artnum(getOpenUrlIdentifiersVersion0_1("artnum=", openURL));
                 }
-                // RFTs Dublin Core, z.B. in Blogs:
+                // RFTs Dublin Core, e.g. in blogs:
                 if (openURL.contains("creator=")) {
                     co.setRft_creator(getOpenUrlIdentifiersVersion0_1("creator=", openURL));
                 }
@@ -869,7 +866,7 @@ public class OpenUrl {
                 }
 
                 final ArrayList<String> id = new ArrayList<String>();
-                // hier muss aus Kompatibilitätsgründen das jeweilige URI-Schema hinzugefügt werden
+                // URI-scheme
                 // http://www.info-uri.info/registry/
                 if (openURL.contains("pmid:")) {
                     final String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid:", openURL);
@@ -918,262 +915,273 @@ public class OpenUrl {
     }
 
     /**
-     * Stellt aus einem ContextObject den entsprechenden OpenURL-String zusammen
+     * Creates an OpenURL link from a ContextObject. This method is
+     * optimized for the services of EZB/ZDB, which support only OpenURL V 0.1 and
+     * only a subset of the possible parameters. Sending any parameter in addition will
+     * cause to their service to fail...
      */
     public String composeOpenUrl(final ContextObject co) {
 
         final StringBuffer openURL = new StringBuffer(800);
 
         // hier werden die Identifiers gesetzt
-        if (co.getRft_val_fmt() != null && !co.getRft_val_fmt().equals("")) {
-            openURL.append("&rft_val_fmt=");
-            openURL.append(co.getRft_val_fmt());
-        }
-        if (co.getRfr_id() != null && !co.getRfr_id().equals("")) {
-            openURL.append("&rfr_id=");
-            openURL.append(co.getRfr_id());
-        }
+        //        if (co.getRft_val_fmt() != null && !co.getRft_val_fmt().equals("")) {
+        //            openURL.append("&rft_val_fmt=");
+        //            openURL.append(co.getRft_val_fmt());
+        //        }
+        //        if (co.getRfr_id() != null && !co.getRfr_id().equals("")) {
+        //            openURL.append("&rfr_id=");
+        //            openURL.append(co.getRfr_id());
+        //        }
         if (co.getRft_genre() != null && !co.getRft_genre().equals("")) {
-            openURL.append("&rft.genre=");
+            openURL.append("genre=");
             openURL.append(co.getRft_genre());
         }
         if (co.getRft_atitle() != null && !co.getRft_atitle().equals("")) {
-            openURL.append("&rft.atitle=");
+            openURL.append("&atitle=");
             openURL.append(co.getRft_atitle());
         }
-        if (co.getRft_btitle() != null && !co.getRft_btitle().equals("")) {
-            openURL.append("&rft.btitle=");
-            openURL.append(co.getRft_btitle());
-        }
-        if (co.getRft_series() != null && !co.getRft_series().equals("")) {
-            openURL.append("&rft.series=");
-            openURL.append(co.getRft_series());
-        }
-        if (co.getRft_pub() != null && !co.getRft_pub().equals("")) {
-            openURL.append("&rft.pub=");
-            openURL.append(co.getRft_pub());
-        }
-        if (co.getRft_place() != null && !co.getRft_place().equals("")) {
-            openURL.append("&rft.place=");
-            openURL.append(co.getRft_place());
-        }
-        if (co.getRft_edition() != null && !co.getRft_edition().equals("")) {
-            openURL.append("&rft.edition=");
-            openURL.append(co.getRft_edition());
-        }
+        //        if (co.getRft_btitle() != null && !co.getRft_btitle().equals("")) {
+        //            openURL.append("&btitle=");
+        //            openURL.append(co.getRft_btitle());
+        //        }
+        //        if (co.getRft_series() != null && !co.getRft_series().equals("")) {
+        //            openURL.append("&series=");
+        //            openURL.append(co.getRft_series());
+        //        }
+        //        if (co.getRft_pub() != null && !co.getRft_pub().equals("")) {
+        //            openURL.append("&pub=");
+        //            openURL.append(co.getRft_pub());
+        //        }
+        //        if (co.getRft_place() != null && !co.getRft_place().equals("")) {
+        //            openURL.append("&place=");
+        //            openURL.append(co.getRft_place());
+        //        }
+        //        if (co.getRft_edition() != null && !co.getRft_edition().equals("")) {
+        //            openURL.append("&edition=");
+        //            openURL.append(co.getRft_edition());
+        //        }
         if (co.getRft_title() != null && !co.getRft_title().equals("")) {
-            openURL.append("&rft.title=");
+            openURL.append("&title=");
             openURL.append(co.getRft_title());
-        }
-        if (co.getRft_jtitle() != null && !co.getRft_jtitle().equals("")) {
-            openURL.append("&rft.jtitle=");
+        } else if (co.getRft_jtitle() != null && !co.getRft_jtitle().equals("")) {
+            openURL.append("&title=");
             openURL.append(co.getRft_jtitle());
         }
+        //        if (co.getRft_jtitle() != null && !co.getRft_jtitle().equals("")) {
+        //            openURL.append("&jtitle=");
+        //            openURL.append(co.getRft_jtitle());
+        //        }
         if (co.getRft_stitle() != null && !co.getRft_stitle().equals("")) {
-            openURL.append("&rft.stitle=");
+            openURL.append("&stitle=");
             openURL.append(co.getRft_stitle());
         }
         if (co.getRft_issn() != null && !co.getRft_issn().equals("")) {
-            openURL.append("&rft.issn=");
+            openURL.append("&issn=");
             openURL.append(co.getRft_issn());
         }
         if (co.getRft_eissn() != null && !co.getRft_eissn().equals("")) {
-            openURL.append("&rft.eissn=");
+            openURL.append("&eissn=");
             openURL.append(co.getRft_eissn());
         }
-        if (co.getRft_isbn() != null && !co.getRft_isbn().equals("")) {
-            openURL.append("&rft.isbn=");
-            openURL.append(co.getRft_isbn());
-        }
+        //        if (co.getRft_isbn() != null && !co.getRft_isbn().equals("")) {
+        //            openURL.append("&isbn=");
+        //            openURL.append(co.getRft_isbn());
+        //        }
         if (co.getRft_date() != null && !co.getRft_date().equals("")) {
-            openURL.append("&rft.date=");
+            openURL.append("&date=");
             openURL.append(co.getRft_date());
         }
         if (co.getRft_volume() != null && !co.getRft_volume().equals("")) {
-            openURL.append("&rft.volume=");
+            openURL.append("&volume=");
             openURL.append(co.getRft_volume());
         }
         if (co.getRft_part() != null && !co.getRft_part().equals("")) {
-            openURL.append("&rft.part=");
+            openURL.append("&part=");
             openURL.append(co.getRft_part());
         }
         if (co.getRft_issue() != null && !co.getRft_issue().equals("")) {
-            openURL.append("&rft.issue=");
+            openURL.append("&issue=");
             openURL.append(co.getRft_issue());
         }
         if (co.getRft_spage() != null && !co.getRft_spage().equals("")) {
-            openURL.append("&rft.spage=");
+            openURL.append("&spage=");
             openURL.append(co.getRft_spage());
         }
         if (co.getRft_epage() != null && !co.getRft_epage().equals("")) {
-            openURL.append("&rft.epage=");
+            openURL.append("&epage=");
             openURL.append(co.getRft_epage());
         }
         if (co.getRft_pages() != null && !co.getRft_pages().equals("")) {
-            openURL.append("&rft.pages=");
+            openURL.append("&pages=");
             openURL.append(co.getRft_pages());
         }
-        if (co.getRft_tpages() != null && !co.getRft_tpages().equals("")) {
-            openURL.append("&rft.tpages=");
-            openURL.append(co.getRft_tpages());
-        }
-        if (co.getRft_author() != null && !co.getRft_author().equals("")) {
-            openURL.append("&rft.author=");
-            openURL.append(co.getRft_author());
-        }
-        if (co.getRft_au() != null && !co.getRft_au().equals("")) {
-            openURL.append("&rft.au=");
-            openURL.append(co.getRft_au());
-        }
-        if (co.getRft_aucorp() != null && !co.getRft_aucorp().equals("")) {
-            openURL.append("&rft.aucorp=");
-            openURL.append(co.getRft_aucorp());
-        }
+        //        if (co.getRft_tpages() != null && !co.getRft_tpages().equals("")) {
+        //            openURL.append("&tpages=");
+        //            openURL.append(co.getRft_tpages());
+        //        }
+        //        if (co.getRft_author() != null && !co.getRft_author().equals("")) {
+        //            openURL.append("&author=");
+        //            openURL.append(co.getRft_author());
+        //        }
+        //        if (co.getRft_au() != null && !co.getRft_au().equals("")) {
+        //            openURL.append("&au=");
+        //            openURL.append(co.getRft_au());
+        //        }
+        //        if (co.getRft_aucorp() != null && !co.getRft_aucorp().equals("")) {
+        //            openURL.append("&aucorp=");
+        //            openURL.append(co.getRft_aucorp());
+        //        }
         if (co.getRft_auinit() != null && !co.getRft_auinit().equals("")) {
-            openURL.append("&rft.auinit=");
+            openURL.append("&auinit=");
             openURL.append(co.getRft_auinit());
         }
         if (co.getRft_auinit1() != null && !co.getRft_auinit1().equals("")) {
-            openURL.append("&rft.auinit1=");
+            openURL.append("&auinit1=");
             openURL.append(co.getRft_auinit1());
         }
         if (co.getRft_auinitm() != null && !co.getRft_auinitm().equals("")) {
-            openURL.append("&rft.auinitm=");
+            openURL.append("&auinitm=");
             openURL.append(co.getRft_auinitm());
         }
-        if (co.getRft_ausuffix() != null && !co.getRft_ausuffix().equals("")) {
-            openURL.append("&rft.ausuffix=");
-            openURL.append(co.getRft_ausuffix());
-        }
+        //        if (co.getRft_ausuffix() != null && !co.getRft_ausuffix().equals("")) {
+        //            openURL.append("&ausuffix=");
+        //            openURL.append(co.getRft_ausuffix());
+        //        }
         if (co.getRft_aulast() != null && !co.getRft_aulast().equals("")) {
-            openURL.append("&rft.aulast=");
+            openURL.append("&aulast=");
             openURL.append(co.getRft_aulast());
         }
         if (co.getRft_aufirst() != null && !co.getRft_aufirst().equals("")) {
-            openURL.append("&rft.aufirst=");
+            openURL.append("&aufirst=");
             openURL.append(co.getRft_aufirst());
         }
         if (co.getRft_sici() != null && !co.getRft_sici().equals("")) {
-            openURL.append("&rft.sici=");
+            openURL.append("&sici=");
             openURL.append(co.getRft_sici());
         }
-        if (co.getRft_bici() != null && !co.getRft_bici().equals("")) {
-            openURL.append("&rft.bici=");
-            openURL.append(co.getRft_bici());
-        }
+        //        if (co.getRft_bici() != null && !co.getRft_bici().equals("")) {
+        //            openURL.append("&bici=");
+        //            openURL.append(co.getRft_bici());
+        //        }
         if (co.getRft_coden() != null && !co.getRft_coden().equals("")) {
-            openURL.append("&rft.coden=");
+            openURL.append("&coden=");
             openURL.append(co.getRft_coden());
         }
         if (co.getRft_artnum() != null && !co.getRft_artnum().equals("")) {
-            openURL.append("&rft.artnum=");
+            openURL.append("&artnum=");
             openURL.append(co.getRft_artnum());
         }
 
         // RFTs Dublin Core, z.B. in Blogs:
-        if (co.getRft_creator() != null && !co.getRft_creator().equals("")) {
-            openURL.append("&rft.creator=");
-            openURL.append(co.getRft_creator());
-        }
-        if (co.getRft_publisher() != null && !co.getRft_publisher().equals("")) {
-            openURL.append("&rft.publisher=");
-            openURL.append(co.getRft_publisher());
-        }
-        if (co.getRft_type() != null && !co.getRft_type().equals("")) {
-            openURL.append("&rft.type=");
-            openURL.append(co.getRft_type());
-        }
-        if (co.getRft_subject() != null && !co.getRft_subject().equals("")) {
-            openURL.append("&rft.subject=");
-            openURL.append(co.getRft_subject());
-        }
-        if (co.getRft_format() != null && !co.getRft_format().equals("")) {
-            openURL.append("&rft.format=");
-            openURL.append(co.getRft_format());
-        }
-        if (co.getRft_language() != null && !co.getRft_language().equals("")) {
-            openURL.append("&rft.language=");
-            openURL.append(co.getRft_language());
-        }
-        if (co.getRft_source() != null && !co.getRft_source().equals("")) {
-            openURL.append("&rft.source=");
-            openURL.append(co.getRft_source());
-        }
-        if (co.getRft_identifier() != null && !co.getRft_identifier().equals("")) {
-            openURL.append("&rft.identifier=");
-            openURL.append(co.getRft_identifier());
-        }
-        if (co.getRft_description() != null && !co.getRft_description().equals("")) {
-            openURL.append("&rft.description=");
-            openURL.append(co.getRft_description());
-        }
-        if (co.getRft_relation() != null && !co.getRft_relation().equals("")) {
-            openURL.append("&rft.relation=");
-            openURL.append(co.getRft_relation());
-        }
-        if (co.getRft_coverage() != null && !co.getRft_coverage().equals("")) {
-            openURL.append("&rft.coverage=");
-            openURL.append(co.getRft_coverage());
-        }
-        if (co.getRft_rights() != null && !co.getRft_rights().equals("")) {
-            openURL.append("&rft.rights=");
-            openURL.append(co.getRft_rights());
-        }
+        //        if (co.getRft_creator() != null && !co.getRft_creator().equals("")) {
+        //            openURL.append("&creator=");
+        //            openURL.append(co.getRft_creator());
+        //        }
+        //        if (co.getRft_publisher() != null && !co.getRft_publisher().equals("")) {
+        //            openURL.append("&publisher=");
+        //            openURL.append(co.getRft_publisher());
+        //        }
+        //        if (co.getRft_type() != null && !co.getRft_type().equals("")) {
+        //            openURL.append("&type=");
+        //            openURL.append(co.getRft_type());
+        //        }
+        //        if (co.getRft_subject() != null && !co.getRft_subject().equals("")) {
+        //            openURL.append("&subject=");
+        //            openURL.append(co.getRft_subject());
+        //        }
+        //        if (co.getRft_format() != null && !co.getRft_format().equals("")) {
+        //            openURL.append("&format=");
+        //            openURL.append(co.getRft_format());
+        //        }
+        //        if (co.getRft_language() != null && !co.getRft_language().equals("")) {
+        //            openURL.append("&language=");
+        //            openURL.append(co.getRft_language());
+        //        }
+        //        if (co.getRft_source() != null && !co.getRft_source().equals("")) {
+        //            openURL.append("&source=");
+        //            openURL.append(co.getRft_source());
+        //        }
+        //        if (co.getRft_identifier() != null && !co.getRft_identifier().equals("")) {
+        //            openURL.append("&identifier=");
+        //            openURL.append(co.getRft_identifier());
+        //        }
+        //        if (co.getRft_description() != null && !co.getRft_description().equals("")) {
+        //            openURL.append("&description=");
+        //            openURL.append(co.getRft_description());
+        //        }
+        //        if (co.getRft_relation() != null && !co.getRft_relation().equals("")) {
+        //            openURL.append("&relation=");
+        //            openURL.append(co.getRft_relation());
+        //        }
+        //        if (co.getRft_coverage() != null && !co.getRft_coverage().equals("")) {
+        //            openURL.append("&coverage=");
+        //            openURL.append(co.getRft_coverage());
+        //        }
+        //        if (co.getRft_rights() != null && !co.getRft_rights().equals("")) {
+        //            openURL.append("&rights=");
+        //            openURL.append(co.getRft_rights());
+        //        }
 
-        if (co.getRft_id() != null) {
-            for (final String eachRftID : co.getRft_id()) {
-                openURL.append("&rft_id=");
-                openURL.append(eachRftID);
-            }
-        }
+        //        if (co.getRft_id() != null) {
+        //            for (final String eachRftID : co.getRft_id()) {
+        //                openURL.append("&rft_id=");
+        //                openURL.append(eachRftID);
+        //            }
+        //        }
 
         String output = openURL.toString();
 
         if (output == null) { output = ""; }
+
+        // Strip a starting '&'
+        if (output.charAt(0) == '&') {
+            output = output.substring(1);
+        }
 
         return output;
     }
 
 
     /**
-     * liest den Inhalt einer Pubmed-Anzeige im XML-Format und liefert ein ContextObject zurück
+     * Gets the contents from a Pubmed record in XML and creates aContextObject.
      */
     public ContextObject readXmlPubmed(String content) {
 
         final ContextObject co = new ContextObject();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
-        content = specialCharacters.replace(content); // Entfernen von &amp; und co.
+        content = specialCharacters.replace(content); // remove &amp; and other html entities
 
-        try { // notwendig, da nicht kontrolliert wird, ob XML valide ist!
+        try { // we do not control if it is valid XML!
 
-            // wird bei Umwandlung zu "Artikel", (Journal Article, Randomized Controlled Trial etc.)
+            // will be overriden with "Artikel". ( Contains: Journal Article, Randomized Controlled Trial etc.)
             if (content.contains("<Item Name=\"PubType\"")) {
                 co.setRft_genre(getXmlTag("<Item Name=\"PubType\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"PubDate\"")) {
                 co.setRft_date(getXmlTag("<Item Name=\"PubDate\"", PM_ENDTAG, content));
             }
-            // nur falls Datum nicht schon gesetzt
+            // only if date isn't set already
             if (content.contains("<Item Name=\"EPubDate\"")
                     && (co.getRft_date() == null || co.getRft_date().equals(""))) {
                 co.setRft_date(getXmlTag("<Item Name=\"EPubDate\"", PM_ENDTAG, content));
             }
-            // unter der Annahme, dass es sich um einen Artikel handelt
+            // under the assumption, that this is an article
             if (content.contains("<Item Name=\"FullJournalName\"")) {
                 co.setRft_jtitle(getXmlTag("<Item Name=\"FullJournalName\"", PM_ENDTAG, content));
             }
-            // unter der Annahme, dass es sich um einen Artikel handelt
+            // under the assumption, that this is an article
             if (content.contains("<Item Name=\"Source\"")) {
                 co.setRft_stitle(getXmlTag("<Item Name=\"Source\"", PM_ENDTAG, content));
             }
-            // nur der erste Author wird abgefüllt
+            // Just get the first author
             if (content.contains("<Item Name=\"Author\"")) {
                 co.setRft_author(getXmlTag("<Item Name=\"Author\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"CollectiveName\"")) {
                 co.setRft_aucorp(getXmlTag("<Item Name=\"CollectiveName\"", PM_ENDTAG, content));
             }
-            // unter der Annahme, dass es sich um einen Artikel handelt
+            // under the assumption, that this is an article
             if (content.contains("<Item Name=\"Title\"")) {
                 co.setRft_atitle(getXmlTag("<Item Name=\"Title\"", PM_ENDTAG, content));
             }
@@ -1193,7 +1201,7 @@ public class OpenUrl {
             if (content.contains("<Item Name=\"ISSN\"")) {
                 co.setRft_issn(getXmlTag("<Item Name=\"ISSN\"", PM_ENDTAG, content));
             }
-            // nur abfüllen, falls ISSN nicht schon gesetzt
+            // only if ISSN isn't set already
             if (content.contains("<Item Name=\"ESSN\"") && (co.getRft_issn() == null || co.getRft_issn().equals(""))) {
                 co.setRft_eissn(getXmlTag("<Item Name=\"ESSN\"", PM_ENDTAG, content));
             }
@@ -1220,7 +1228,7 @@ public class OpenUrl {
     }
 
     /**
-     * holt aus dem Request alle OpenURL-Parameter
+     * Gets from a request all OpenURL parameters.
      */
     public ConcurrentHashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
 
@@ -1236,12 +1244,11 @@ public class OpenUrl {
             final String key = pair.getKey();
             final String[] values = pair.getValue();
 
-            if ("rft_id".equals(key)) { // rft_id enthält nocheinmal unterschiedliche Identifier nach dem info: Scheme
-                // rft_id wird jeweils separat abgelegt und nicht aneinander gehängt
+            if ("rft_id".equals(key)) { // rft_id contains different identifiers
                 for (final String eachRftID : values) {
                     hm.put(key, getOpenUrlValue(eachRftID));
                 }
-            } else { // hier werden Mehrfachparameter (z.B. mehrere Autoren) aneinander gehängt
+            } else { // Concat multiple parameters (e.g. several authors)
                 final StringBuffer buf = new StringBuffer();
                 final int max = values.length;
                 for (int z = 0; z < max; z++) {
@@ -1259,24 +1266,24 @@ public class OpenUrl {
     }
 
     /**
-     * extrahiert aus dem content den Inhalt eines RFTs, RFRs oder RFEs (Standard-Version)
+     * Extracts the content of RFTs, RFRs oder RFEs (standard-version).
      */
     private String getOpenUrlIdentifiersVersion1_0(final String rft, final String content) {
 
         String output = "";
         final CodeUrl codeUrl = new CodeUrl();
 
-        // Delimiter ist das nächste &rft (Referent), &rfe (Referring Entity), &rfr (Referrer)
+        // Delimiter is the next &rft (referent), &rfe (referring rntity), &rfr (referrer)
         if (content.substring(content.indexOf(rft)).contains("&rf")) {
             output = content.substring(content.indexOf(rft)
                     + rft.length(), content.indexOf("&rf", content.indexOf(rft)));
         } else {
-            // Delimiter ist das " am Ende des URLs in HTML
+            // Delimiter is the " at the end of an URL in HTML
             if (content.substring(content.indexOf(rft)).contains("\"")) {
                 output = content.substring(content.indexOf(rft)
                         + rft.length(), content.indexOf('"', content.indexOf(rft)));
             } else {
-                // Delimiter ist Space oder Umbruch
+                // Delimiter is space or new line
                 if (content.substring(content.indexOf(rft)).contains("\040")
                         || content.substring(content.indexOf(rft)).contains("\012")) {
                     if (content.substring(content.indexOf(rft)).contains("\040")) {
@@ -1287,36 +1294,36 @@ public class OpenUrl {
                                 + rft.length(), content.indexOf('\012', content.indexOf(rft)));
                     }
                 } else {
-                    // kein Delimiter. String bis ans Ende
+                    // no delimiter. String to the end
                     output = content.substring(content.indexOf(rft) + rft.length());
                 }
             }
         }
 
-        output = codeUrl.decode(output); // RFTs sind URL-codiert
+        output = codeUrl.decode(output); // RFTs are URL-encoded
 
         return output;
     }
 
     /**
-     * extrahiert aus dem content den Inhalt die nicht standardisierten RFTs (ohne RFT-Bezeichnung)
+     * Extracts the content of RFTs, RFRs oder RFEs (non standard version RFTs, without RFT-identifier).
      */
     private String getOpenUrlIdentifiersVersion0_1(final String rft, final String content) {
 
         String output = "";
         final CodeUrl codeUrl = new CodeUrl();
 
-        // Delimiter ist das nächste &
+        // Delimiter is the next &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
             output = content.substring(content.indexOf(rft)
                     + rft.length(), content.indexOf("&", content.indexOf(rft) + 1));
         } else {
-            // Delimiter ist das " am Ende des URLs in HTML
+            // Delimiter is the " at the end of anURL in HTML
             if (content.substring(content.indexOf(rft)).contains("\"")) {
                 output = content.substring(content.indexOf(rft)
                         + rft.length(), content.indexOf("\"", content.indexOf(rft)));
             } else {
-                // Delimiter ist Space oder Umbruch
+                // Delimiter is space or new line
                 if (content.substring(content.indexOf(rft)).contains("\040")
                         || content.substring(content.indexOf(rft)).contains("\012")) {
                     if (content.substring(content.indexOf(rft)).contains("\040")) {
@@ -1327,7 +1334,7 @@ public class OpenUrl {
                                 + rft.length(), content.indexOf("\012", content.indexOf(rft)));
                     }
                 } else {
-                    // kein Delimiter. String bis ans Ende
+                    // no delimiter. String to the end
                     output = content.substring(content.indexOf(rft) + rft.length());
                 }
             }
@@ -1339,7 +1346,7 @@ public class OpenUrl {
     }
 
     /**
-     * extrahiert aus dem XML-Content den Inhalt eines bestimmten Tags
+     * Extracts from XML the content of a given tag.
      */
     private String getXmlTag(final String starttag, final String endtag, final String content) {
 
@@ -1365,8 +1372,8 @@ public class OpenUrl {
     }
 
     /**
-     * OpenURL-request sometimes are UTF-8 encoded, sometimes ISO-8895-1
-     * Here will, check if we need to decode a string or not
+     * OpenURL-request sometimes are UTF-8 encoded, sometimes ISO-8895-1.
+     * Here we will check if we need to decode a string or not.
      */
     private boolean decode(final String input) {
 

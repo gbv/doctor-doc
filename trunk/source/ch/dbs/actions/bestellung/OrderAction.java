@@ -790,7 +790,6 @@ public final class OrderAction extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // will be needed for the ezbid
         OrderForm pageForm = (OrderForm) form;
         final BestellformAction bfInstance = new BestellformAction();
-        final CodeUrl codeUrl = new CodeUrl();
         Text t = new Text();
         final Auth auth = new Auth();
         FindFree ff = new FindFree();
@@ -902,36 +901,28 @@ public final class OrderAction extends DispatchAction {
             co = convertOpenUrlInstance.makeContextObject(pageForm);
 
             final OpenUrl openUrlInstance = new OpenUrl();
-            String openurl = openUrlInstance.composeOpenUrl(co);
-            openurl = openurl.replaceAll("&rft.", "&"); // scheint rft. als Identifier nicht zu unterstützen...
-            openurl = openurl.replaceAll("&rfr.", "&"); // scheint rfr. als Identifier nicht zu unterstützen...
+            final String openurl = openUrlInstance.composeOpenUrl(co);
 
             // damit auf Checkavailability codierte OpenURL-Anfragen zusammengestellt werden können (z.B. Carelit)
             pageForm.setLink(openurl);
 
             // Link für Abfrage EZB/ZDB-Schnittstelle (nur D)
             if ("DE".equals(land) && zdb && !"AAAAA".equals(bibid)) {
-                // http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=journal&issn=0001-6446&eissn=1588-2667&pid=bibid=UBR
-                // ansprechbar bis allen Identifiern von oben! &genre=article&atitle=...&date=1994-10-01&volume=26&issue=10&issn=0022-2828&spage=1349&pid=bibid=UBR
-                // z.B. http://services.d-nb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=article&atitle=robotics-based&date=2005&volume=11&issue=1-2&issn=1022-0038&spage=189&pid=bibid=UBR
 
                 link = "http://services.d-nb.de/fize-service/gvr/html-service.htm?"; // baseurl
-                link = link + codeUrl.encodeLatin1("sid=DRDOC:doctor-doc") + openurl + "&pid=bibid=" + bibid;
+                link = link  + openurl + "&pid=bibid=" + bibid;
 
             } else { // Link für Vascoda-Schnittstelle (alle anderen Länder und für Nicht-ZDB-Teilnehmer in D)
 
                 // BaseURL: http://ezb.uni-regensburg.de/ezeit/vascoda/openURL
-                // z.B. http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?genre=article&sid=suniltest&atitle=Prevention%20of%20Extracellular%20K%20Inhomogeneity%20Across&date=1994-10-01&volume=26&issue=10&issn=0022-2828&spage=1349&pid=%3Csrv_id%3Eft%3C%2Fsrv_id%3E
-
-                link = "http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?genre=article&sid=DRDOC:doctor-doc";
-                // Prevention%20of%20Extracellular%20K%20Inhomogeneity%20Across&date=1994-10-01&volume=26&issue=10&issn=0022-2828&spage=1349&pid=%3Csrv_id%3Eft%3C%2Fsrv_id%3E
+                link = "http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?";
 
                 link = link + openurl + "&bibid=" + bibid;
             }
 
 
             if (ReadSystemConfigurations.isSearchCarelit()) {
-                carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc"
+                carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
                         + openurl);
                 carelitcontent = executor.submit(carelitthread);
             }
