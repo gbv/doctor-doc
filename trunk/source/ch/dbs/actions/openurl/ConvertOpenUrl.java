@@ -569,13 +569,16 @@ public class ConvertOpenUrl {
 
         try {
 
-            if (of.getDoi().contains("10.1007/3-") || of.getDoi().contains("10.1007/978-3-") || // deutsch / spanisch
-                    of.getDoi().contains("10.1007/1-") || of.getDoi().contains("10.1007/978-1-") || // englisch
-                    of.getDoi().contains("10.1007/0-") || of.getDoi().contains("10.1007/978-0-") || // englisch
-                    of.getDoi().contains("10.1007/2-") || of.getDoi().contains("10.1007/978-2-") || // französisch
-                    of.getDoi().contains("10.1007/90-") || of.getDoi().contains("10.1007/978-90-") || // niederländisch
-                    of.getDoi().contains("10.1007/88-") || of.getDoi().contains("10.1007/978-88-")) { // ital. / port.
-                check = true;
+            if (of.getIssn() == null || "".equals(of.getIssn())) { // treat Springer-Books with ISSN as article / journal
+
+                if (of.getDoi().contains("10.1007/3-") || of.getDoi().contains("10.1007/978-3-") || // deutsch / spanisch
+                        of.getDoi().contains("10.1007/1-") || of.getDoi().contains("10.1007/978-1-") || // englisch
+                        of.getDoi().contains("10.1007/0-") || of.getDoi().contains("10.1007/978-0-") || // englisch
+                        of.getDoi().contains("10.1007/2-") || of.getDoi().contains("10.1007/978-2-") || // französisch
+                        of.getDoi().contains("10.1007/90-") || of.getDoi().contains("10.1007/978-90-") || // niederländisch
+                        of.getDoi().contains("10.1007/88-") || of.getDoi().contains("10.1007/978-88-")) { // ital. / port.
+                    check = true;
+                }
             }
 
         } catch (final Exception e) {
