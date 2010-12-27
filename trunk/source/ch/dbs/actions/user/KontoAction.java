@@ -658,7 +658,7 @@ public final class KontoAction extends DispatchAction {
                                 checkgbv = false;
                                 String gbvanswer = "";
                                 gbvanswer = gbvcontent.get(3, TimeUnit.SECONDS);
-                                if (gbvanswer.contains("Abmelden")) {
+                                if (gbvanswer.contains("/EXIT?")) {
                                     checkgbv = true;
                                 } else {
                                     forward = "subitofailed"; // Pfad i.O.

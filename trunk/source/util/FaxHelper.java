@@ -274,11 +274,11 @@ public class FaxHelper extends AbstractReadSystemConfigurations {
             data.append('&');
             data.append(URLEncoder.encode("dateFrom", "UTF-8"));
             data.append('=');
-            data.append(URLEncoder.encode("2010-08-01 00:00:00", "UTF-8"));
+            data.append(URLEncoder.encode("2010-12-27 00:00:00", "UTF-8"));
             data.append('&');
             data.append(URLEncoder.encode("dateTo", "UTF-8"));
             data.append('=');
-            data.append(URLEncoder.encode("2010-12-31 00:00:00", "UTF-8"));
+            data.append(URLEncoder.encode("2011-12-31 00:00:00", "UTF-8"));
 
         } catch (final UnsupportedEncodingException e1) {
             // Critical Error-Message
