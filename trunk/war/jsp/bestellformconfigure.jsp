@@ -45,6 +45,20 @@
 
 <html:form action="bfconfigure.do" method="post">
 
+<h4><bean:message key="bestellform.deactivate" /></h4>
+<table border="1" cellspacing="0px">
+  <tr>
+    <th id="th-left"><bean:message key="bestellform.bestellformular" /></th>
+    <th id="th-left"><bean:message key="bestellform.deactivate" /></th>
+  </tr>
+  <tr>
+    <td><bean:message key="bestellform.bestellformular" />&nbsp;</td>
+    <td align="center"><input type="checkbox" name="deactivated" <logic:equal name="bestellform" property="deactivated" value="true">checked="checked"</logic:equal> ></td>
+  </tr>
+</table>
+<p><bean:message key="bestellform.deactivate_explain" /></p>
+<p><br></p><hr></hr>
+
 
 <h4><bean:message key="bestellform.saveorder" /></h4>
 <table border="1" cellspacing="0px">

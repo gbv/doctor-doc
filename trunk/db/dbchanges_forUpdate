@@ -1,3 +1,10 @@
+-- Revision 120
+
+ALTER TABLE `bestellform_param` ADD `deactivated` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `saveorder` ,
+ADD INDEX ( deactivated ) 
+
+
+
 -- Revision 85
 
 -- add an 'open' countryCode field

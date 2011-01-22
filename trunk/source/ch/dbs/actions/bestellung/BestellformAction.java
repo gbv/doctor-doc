@@ -334,6 +334,16 @@ public final class BestellformAction extends DispatchAction {
 
         cn.close();
 
+        // if this Bestellform is deactivated show an error message
+        if (bp.isDeactivated()) {
+            final ErrorMessage em = new ErrorMessage("error.deactivated", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("bestellform");
+            rq.setAttribute(ACTIVEMENUS, mf);
+            forward = FAILURE;
+        }
+
         return mp.findForward(forward);
     }
 

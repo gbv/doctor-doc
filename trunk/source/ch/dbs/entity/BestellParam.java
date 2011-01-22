@@ -48,6 +48,9 @@ public class BestellParam extends ValidatorForm {
     // an email will always be sent. This can be configured differently for each orderform.
     private boolean saveorder;
 
+    // if deactivated, the patron can't order over this OrderForm
+    private boolean deactivated;
+
     // Activation of optional fields true / false
     private boolean institution;
     private boolean abteilung;
@@ -302,7 +305,7 @@ public class BestellParam extends ValidatorForm {
         ResultSet rs = null;
         try {
             pstmt = setBestellParamValues(cn.prepareStatement("INSERT INTO `bestellform_param` (`KID` , "
-                    + "`TYID` , `kennung` , `saveorder` , `institution` , `abteilung` , `adresse` , `strasse` , "
+                    + "`TYID` , `kennung` , `saveorder` , `deactivated` , `institution` , `abteilung` , `adresse` , `strasse` , "
                     + "`plz` , `ort` , `telefon` , `benutzernr` , `land` , `prio` , `lieferart` , `lieferart_value1` , "
                     + "`lieferart_value2` , `lieferart_value3` , `frei1` , `frei2` , `frei3` , `frei1_name` , "
                     + "`frei2_name` , `frei3_name` , `comment1` , `comment2` , `option` , `option_name` , "
@@ -310,7 +313,7 @@ public class BestellParam extends ValidatorForm {
                     + "`option_value2` , `option_value3` , `gebuehren` , `gebuehren_link` , `agb` , `agb_link` , "
                     + "`inst_required` , `abt_required` , `frei1_required` , `frei2_required` , `frei3_required` , "
                     + "`adr_required` , `str_required` , `plz_required` , `ort_required` , `land_required` , "
-                    + "`tel_required` , `benutzernr_required`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                    + "`tel_required` , `benutzernr_required`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                     + "?, ?, ?, ?, ?, ?)"), bp, cn);
 
@@ -354,7 +357,7 @@ public class BestellParam extends ValidatorForm {
         PreparedStatement pstmt = null;
         try {
             pstmt = setBestellParamValues(cn.prepareStatement("UPDATE `bestellform_param` SET "
-                    + "`KID` = ?, `TYID` = ?, `kennung` = ?, `saveorder` = ?, `institution` = ?, `abteilung` = ?, "
+                    + "`KID` = ?, `TYID` = ?, `kennung` = ?, `saveorder` = ?, `deactivated` = ?, `institution` = ?, `abteilung` = ?, "
                     + "`adresse` = ?,`strasse` = ?, `plz` = ?, `ort` = ?, `telefon` = ?, `benutzernr` = ?, `land` = ?, "
                     + "`prio` = ?, `lieferart` = ?,`lieferart_value1` = ?, `lieferart_value2` = ?, "
                     + "`lieferart_value3` = ?, `frei1` = ?, `frei2` = ?, `frei3` = ?, `frei1_name` = ?, "
@@ -365,7 +368,7 @@ public class BestellParam extends ValidatorForm {
                     + "`frei1_required` = ?, `frei2_required` = ?, `frei3_required` = ?, `adr_required` = ?, "
                     + "`str_required` = ?, `plz_required` = ?, `ort_required` = ?, `land_required` = ?, "
                     + "`tel_required` = ?, `benutzernr_required` = ? WHERE `BPID` =?"), bp, cn);
-            pstmt.setLong(51, bp.getId());
+            pstmt.setLong(52, bp.getId());
             pstmt.executeUpdate();
 
         } catch (final Exception e) {
@@ -387,6 +390,7 @@ public class BestellParam extends ValidatorForm {
         this.setTyid(rs.getLong("TYID"));
         this.setKennung(rs.getString("kennung"));
         this.setSaveorder(rs.getBoolean("saveorder"));
+        this.setDeactivated(rs.getBoolean("deactivated"));
         this.setInstitution(rs.getBoolean("institution"));
         this.setAbteilung(rs.getBoolean("abteilung"));
         this.setAdresse(rs.getBoolean("adresse"));
@@ -447,116 +451,117 @@ public class BestellParam extends ValidatorForm {
         pstmt.setLong(2, bp.getTyid());
         if (bp.getKennung() != null) { pstmt.setString(3, bp.getKennung()); } else { pstmt.setString(3, ""); }
         pstmt.setBoolean(4, bp.isSaveorder());
-        pstmt.setBoolean(5, bp.isInstitution());
-        pstmt.setBoolean(6, bp.isAbteilung());
-        pstmt.setBoolean(7, bp.isAdresse());
-        pstmt.setBoolean(8, bp.isStrasse());
-        pstmt.setBoolean(9, bp.isPlz());
-        pstmt.setBoolean(10, bp.isOrt());
-        pstmt.setBoolean(11, bp.isTelefon());
-        pstmt.setBoolean(12, bp.isBenutzernr());
-        pstmt.setBoolean(13, bp.isLand());
-        pstmt.setBoolean(14, bp.isPrio());
-        pstmt.setBoolean(15, bp.isLieferart());
+        pstmt.setBoolean(5, bp.isDeactivated());
+        pstmt.setBoolean(6, bp.isInstitution());
+        pstmt.setBoolean(7, bp.isAbteilung());
+        pstmt.setBoolean(8, bp.isAdresse());
+        pstmt.setBoolean(9, bp.isStrasse());
+        pstmt.setBoolean(10, bp.isPlz());
+        pstmt.setBoolean(11, bp.isOrt());
+        pstmt.setBoolean(12, bp.isTelefon());
+        pstmt.setBoolean(13, bp.isBenutzernr());
+        pstmt.setBoolean(14, bp.isLand());
+        pstmt.setBoolean(15, bp.isPrio());
+        pstmt.setBoolean(16, bp.isLieferart());
         if (bp.getLieferart_value1() == null || bp.getLieferart_value1().equals("")) {
-            pstmt.setString(16, null);
-        } else {
-            pstmt.setString(16, bp.getLieferart_value1());
-        }
-        if (bp.getLieferart_value2() == null || bp.getLieferart_value2().equals("")) {
             pstmt.setString(17, null);
         } else {
-            pstmt.setString(17, bp.getLieferart_value2());
+            pstmt.setString(17, bp.getLieferart_value1());
         }
-        if (bp.getLieferart_value3() == null || bp.getLieferart_value3().equals("")) {
+        if (bp.getLieferart_value2() == null || bp.getLieferart_value2().equals("")) {
             pstmt.setString(18, null);
         } else {
-            pstmt.setString(18, bp.getLieferart_value3());
+            pstmt.setString(18, bp.getLieferart_value2());
         }
-        pstmt.setBoolean(19, bp.isFreitxt1());
-        pstmt.setBoolean(20, bp.isFreitxt2());
-        pstmt.setBoolean(21, bp.isFreitxt3());
-        if (bp.getFreitxt1_name() != null) {
-            pstmt.setString(22, bp.getFreitxt1_name());
+        if (bp.getLieferart_value3() == null || bp.getLieferart_value3().equals("")) {
+            pstmt.setString(19, null);
         } else {
-            pstmt.setString(22, "");
+            pstmt.setString(19, bp.getLieferart_value3());
         }
-        if (bp.getFreitxt2_name() != null) {
-            pstmt.setString(23, bp.getFreitxt2_name());
+        pstmt.setBoolean(20, bp.isFreitxt1());
+        pstmt.setBoolean(21, bp.isFreitxt2());
+        pstmt.setBoolean(22, bp.isFreitxt3());
+        if (bp.getFreitxt1_name() != null) {
+            pstmt.setString(23, bp.getFreitxt1_name());
         } else {
             pstmt.setString(23, "");
         }
-        if (bp.getFreitxt3_name() != null) {
-            pstmt.setString(24, bp.getFreitxt3_name());
+        if (bp.getFreitxt2_name() != null) {
+            pstmt.setString(24, bp.getFreitxt2_name());
         } else {
             pstmt.setString(24, "");
         }
-        if (bp.getComment1() == null || bp.getComment1().equals("")) {
-            pstmt.setString(25, null);
+        if (bp.getFreitxt3_name() != null) {
+            pstmt.setString(25, bp.getFreitxt3_name());
         } else {
-            pstmt.setString(25, bp.getComment1());
+            pstmt.setString(25, "");
         }
-        if (bp.getComment2() == null || bp.getComment2().equals("")) {
+        if (bp.getComment1() == null || bp.getComment1().equals("")) {
             pstmt.setString(26, null);
         } else {
-            pstmt.setString(26, bp.getComment2());
+            pstmt.setString(26, bp.getComment1());
         }
-        pstmt.setBoolean(27, bp.isOption());
-        if (bp.getOption_name() != null) {
-            pstmt.setString(28, bp.getOption_name());
+        if (bp.getComment2() == null || bp.getComment2().equals("")) {
+            pstmt.setString(27, null);
         } else {
-            pstmt.setString(28, "");
+            pstmt.setString(27, bp.getComment2());
         }
-        if (bp.getOption_comment() != null) {
-            pstmt.setString(29, bp.getOption_comment());
+        pstmt.setBoolean(28, bp.isOption());
+        if (bp.getOption_name() != null) {
+            pstmt.setString(29, bp.getOption_name());
         } else {
             pstmt.setString(29, "");
         }
-        if (bp.getOption_linkout() != null) {
-            pstmt.setString(30, bp.getOption_linkout());
+        if (bp.getOption_comment() != null) {
+            pstmt.setString(30, bp.getOption_comment());
         } else {
             pstmt.setString(30, "");
         }
-        if (bp.getOption_linkoutname() != null) {
-            pstmt.setString(31, bp.getOption_linkoutname());
+        if (bp.getOption_linkout() != null) {
+            pstmt.setString(31, bp.getOption_linkout());
         } else {
             pstmt.setString(31, "");
         }
-        if (bp.getOption_value1() == null || bp.getOption_value1().equals("")) {
-            pstmt.setString(32, null);
+        if (bp.getOption_linkoutname() != null) {
+            pstmt.setString(32, bp.getOption_linkoutname());
         } else {
-            pstmt.setString(32, bp.getOption_value1());
+            pstmt.setString(32, "");
         }
-        if (bp.getOption_value2() == null || bp.getOption_value2().equals("")) {
+        if (bp.getOption_value1() == null || bp.getOption_value1().equals("")) {
             pstmt.setString(33, null);
         } else {
-            pstmt.setString(33, bp.getOption_value2());
+            pstmt.setString(33, bp.getOption_value1());
         }
-        if (bp.getOption_value3() == null || bp.getOption_value3().equals("")) {
+        if (bp.getOption_value2() == null || bp.getOption_value2().equals("")) {
             pstmt.setString(34, null);
         } else {
-            pstmt.setString(34, bp.getOption_value3());
+            pstmt.setString(34, bp.getOption_value2());
         }
-        pstmt.setBoolean(35, bp.isGebuehren());
-        if (bp.getLink_gebuehren() != null) {
-            pstmt.setString(36, bp.getLink_gebuehren());
+        if (bp.getOption_value3() == null || bp.getOption_value3().equals("")) {
+            pstmt.setString(35, null);
         } else {
-            pstmt.setString(36, "");
+            pstmt.setString(35, bp.getOption_value3());
         }
-        pstmt.setBoolean(37, bp.isAgb());
-        if (bp.getLink_agb() != null) { pstmt.setString(38, bp.getLink_agb()); } else { pstmt.setString(38, ""); }
-        pstmt.setBoolean(39, bp.isInst_required());
-        pstmt.setBoolean(40, bp.isAbt_required());
-        pstmt.setBoolean(41, bp.isFreitxt1_required());
-        pstmt.setBoolean(42, bp.isFreitxt2_required());
-        pstmt.setBoolean(43, bp.isFreitxt3_required());
-        pstmt.setBoolean(44, bp.isAdr_required());
-        pstmt.setBoolean(45, bp.isStr_required());
-        pstmt.setBoolean(46, bp.isPlz_required());
-        pstmt.setBoolean(47, bp.isOrt_required());
-        pstmt.setBoolean(48, bp.isLand_required());
-        pstmt.setBoolean(49, bp.isTelefon_required());
-        pstmt.setBoolean(50, bp.isBenutzernr_required());
+        pstmt.setBoolean(36, bp.isGebuehren());
+        if (bp.getLink_gebuehren() != null) {
+            pstmt.setString(37, bp.getLink_gebuehren());
+        } else {
+            pstmt.setString(37, "");
+        }
+        pstmt.setBoolean(38, bp.isAgb());
+        if (bp.getLink_agb() != null) { pstmt.setString(39, bp.getLink_agb()); } else { pstmt.setString(39, ""); }
+        pstmt.setBoolean(40, bp.isInst_required());
+        pstmt.setBoolean(41, bp.isAbt_required());
+        pstmt.setBoolean(42, bp.isFreitxt1_required());
+        pstmt.setBoolean(43, bp.isFreitxt2_required());
+        pstmt.setBoolean(44, bp.isFreitxt3_required());
+        pstmt.setBoolean(45, bp.isAdr_required());
+        pstmt.setBoolean(46, bp.isStr_required());
+        pstmt.setBoolean(47, bp.isPlz_required());
+        pstmt.setBoolean(48, bp.isOrt_required());
+        pstmt.setBoolean(49, bp.isLand_required());
+        pstmt.setBoolean(50, bp.isTelefon_required());
+        pstmt.setBoolean(51, bp.isBenutzernr_required());
 
         return pstmt;
     }
@@ -1136,6 +1141,14 @@ public class BestellParam extends ValidatorForm {
 
     public void setLink_back(final String link_back) {
         this.link_back = link_back;
+    }
+
+    public boolean isDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(final boolean deactivated) {
+        this.deactivated = deactivated;
     }
 
 
