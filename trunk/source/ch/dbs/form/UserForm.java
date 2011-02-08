@@ -40,6 +40,7 @@ public final class UserForm extends ValidatorForm {
     private String telefonnrp;
     private String institut;
     private String abteilung;
+    private String category;
     private String adresse;
     private String adresszusatz;
     private String plz;
@@ -392,6 +393,11 @@ public final class UserForm extends ValidatorForm {
 
     public void setUser(final AbstractBenutzer user) {
         this.user = user;
+        if (user.getCategory().getId() != null) {
+            this.category = user.getCategory().getId().toString();
+        } else {
+            this.category = "0";
+        }
     }
 
     public boolean isDelete() {
@@ -456,6 +462,14 @@ public final class UserForm extends ValidatorForm {
 
     public void setAddFromBestellformEmail(final boolean addFromBestellformEmail) {
         this.addFromBestellformEmail = addFromBestellformEmail;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(final String category) {
+        this.category = category;
     }
 
 }

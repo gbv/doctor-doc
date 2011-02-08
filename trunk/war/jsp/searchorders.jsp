@@ -143,7 +143,7 @@
 </table>
 <table>
   
-  <tr><td><br></td></tr>
+  <tr><td><br /></td></tr>
   
   <tr>
     <td>
@@ -157,18 +157,18 @@
     </td>
     <td>
       <select name="condition1" size="1">
-        <option value="contains" selected><bean:message key="uebersicht.contains" /></option>
+        <option value="contains" selected="selected"><bean:message key="uebersicht.contains" /></option>
         <option value="contains not"><bean:message key="uebersicht.contains_not" /></option>
         <option value="is"><bean:message key="uebersicht.is" /></option>
         <option value="is not"><bean:message key="uebersicht.is_not" /></option>
       </select>
     </td>
     <td>
-      <input name="input1" value="" type="text" size="50" maxlength="100">
+      <input name="input1" value="" type="text" size="50" maxlength="100" />
     </td>
     <td>
       <select name="boolean1" size="1">
-        <option value="and" selected><bean:message key="searchorders.and" /></option>
+        <option value="and" selected="selected"><bean:message key="searchorders.and" /></option>
         <option value="or"><bean:message key="searchorders.or" /></option>
       </select></td>
   </tr>
@@ -184,7 +184,7 @@
     </td>
     <td>
       <select name="condition2" size="1">
-        <option value="contains" selected><bean:message key="uebersicht.contains" /></option>
+        <option value="contains" selected="selected"><bean:message key="uebersicht.contains" /></option>
         <option value="contains not"><bean:message key="uebersicht.contains_not" /></option>
         <option value="is"><bean:message key="uebersicht.is" /></option>
         <option value="is not"><bean:message key="uebersicht.is_not" /></option>
@@ -203,18 +203,18 @@
     <tr>
     <td>
       <select name="value5" size="1">
-        <option value="state" selected>Status aktuell</option>
+        <option value="state" selected="selected">Status aktuell</option>
       </select>
     </td>
     <td>
       <select name="condition5" size="1">
-        <option value="is" selected>ist gleich</option>
+        <option value="is" selected="selected">ist gleich</option>
         <option value="is not">ist nicht</option>
       </select>
     </td>
     <td>
       <select name="input5">
-          <option value="0" selected>Status ausw&auml;hlen</option>
+          <option value="0" selected="selected">Status ausw&auml;hlen</option>
          <logic:iterate id="s" name="overviewform" property="statitexts">
              <option value="<bean:write name="s" property="inhalt" />"><bean:write name="s" property="inhalt" /></option>
            </logic:iterate>
@@ -222,7 +222,7 @@
     </td>
     <td>
       <select name="boolean5" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select></td>
   </tr>
@@ -230,12 +230,12 @@
     <td>
       <select name="value6" size="1">
         <option value="statedate">Bestelldatum</option>
-        <option value="orderdate" selected>Statusdatum aktuell</option>
+        <option value="orderdate" selected="selected">Statusdatum aktuell</option>
       </select>
     </td>
     <td>
       <select name="condition6" size="1">
-        <option value="is" selected>ist gleich</option>
+        <option value="is" selected="selected">ist gleich</option>
         <option value="higher">ist gr&ouml;sser</option>
         <option value="smaller">ist kleiner</option>
       </select>
@@ -245,20 +245,20 @@
     </td>
     <td>
       <select name="boolean6" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select> tt.mm.yyyy</td>
   </tr>
       <tr>
     <td>
       <select name="value7" size="1">
-        <option value="statedate" selected>Bestelldatum</option>
+        <option value="statedate" selected="selected">Bestelldatum</option>
         <option value="orderdate">Statusdatum aktuell</option>
       </select>
     </td>
     <td>
       <select name="condition7" size="1">
-        <option value="is" selected>ist gleich</option>
+        <option value="is" selected="selected">ist gleich</option>
         <option value="higher">ist gr&ouml;sser</option>
         <option value="smaller">ist kleiner</option>
       </select>
@@ -268,7 +268,7 @@
     </td>
     <td>
       <select name="boolean7" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select> tt.mm.yyyy</td>
   </tr>
@@ -279,18 +279,18 @@
     <tr>
         <td>
       <select name="value8" size="1">
-        <option value="state" selected>Status History</option>
+        <option value="state" selected="selected">Status History</option>
       </select>
     </td>
     <td>
       <select name="condition8" size="1">
-        <option value="contains" selected>enth&auml;lt</option>
+        <option value="contains" selected="selected">enth&auml;lt</option>
         <option value="contains not">enth&auml;lt nicht</option>
       </select>
     </td>
     <td>
       <select name="input8">
-          <option value="0" selected>Status ausw&auml;hlen</option>
+          <option value="0" selected="selected">Status ausw&auml;hlen</option>
          <logic:iterate id="s" name="overviewform" property="statitexts">
              <option value="<bean:write name="s" property="inhalt" />"><bean:write name="s" property="inhalt" /></option>
            </logic:iterate>
@@ -298,7 +298,7 @@
     </td>
     <td>
       <select name="boolean8" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select></td>
   </tr>
@@ -310,7 +310,7 @@
     </td>
     <td>
       <select name="condition9" size="1">
-        <option value="is" selected>ist gleich</option>
+        <option value="is" selected="selected">ist gleich</option>
         <option value="higher">ist gr&ouml;sser</option>
         <option value="smaller">ist kleiner</option>
       </select>
@@ -320,7 +320,7 @@
     </td>
     <td>
       <select name="boolean9" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select> tt.mm.yyyy</td>
   </tr>
@@ -328,13 +328,13 @@
   <tr>
     <td>
       <select name="value10" size="1">
-        <option value="user" selected>bearb. durch</option>
+        <option value="user" selected="selected">bearb. durch</option>
         <option value="systembemerkungen">Systembemerk.</option>
       </select>
     </td>
     <td>
       <select name="condition10" size="1">
-        <option value="contains" selected>enth&auml;lt</option>
+        <option value="contains" selected="selected">enth&auml;lt</option>
         <option value="is">ist gleich</option>
         <option value="is not">ist nicht gleich</option>
       </select>
@@ -344,7 +344,7 @@
     </td>
     <td>
       <select name="boolean10" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select></td>
   </tr>
@@ -352,12 +352,12 @@
     <td>
       <select name="value11" size="1">
         <option value="user">bearb. durch</option>
-        <option value="systembemerkungen" selected>Systembemerk.</option>
+        <option value="systembemerkungen" selected="selected">Systembemerk.</option>
       </select>
     </td>
     <td>
       <select name="condition11" size="1">
-        <option value="contains" selected>enth&auml;lt</option>
+        <option value="contains" selected="selected">enth&auml;lt</option>
         <option value="is">ist gleich</option>
         <option value="is not">ist nicht gleich</option>
       </select>
@@ -375,12 +375,12 @@
     <tr>
     <td>
       <select name="value12" size="1">
-        <option value="price" selected>Preis</option>
+        <option value="price" selected="selected">Preis</option>
       </select>
     </td>
     <td>
       <select name="condition12" size="1">
-        <option value="is" selected>ist gleich</option>
+        <option value="is" selected="selected">ist gleich</option>
         <option value="higher">ist gr&ouml;sser</option>
         <option value="smaller">ist kleiner</option>
       </select>
@@ -390,7 +390,7 @@
     </td>
     <td>
       <select name="boolean12" size="1">
-        <option value="and" selected>und</option>
+        <option value="and" selected="selected">und</option>
         <option value="or">oder</option>
       </select>
     </td>
@@ -398,17 +398,17 @@
     <tr>
     <td>
       <select name="value13" size="1">
-        <option value="currency" selected>W&auml;hrung</option>
+        <option value="currency" selected="selected">W&auml;hrung</option>
       </select>
     </td>
     <td>
       <select name="condition13" size="1">
-        <option value="is" selected>ist gleich</option>
+        <option value="is" selected="selected">ist gleich</option>
       </select>
     </td>
     <td>
       <select name="input13" size="1">
-        <option value="0" selected>W&auml;hrung ausw&auml;hlen</option>
+        <option value="0" selected="selected">W&auml;hrung ausw&auml;hlen</option>
         <logic:iterate id="w" name="overviewform" property="waehrungen">
         <bean:define id="tmp" name="w" property="inhalt" type="java.lang.String"/>
           <option value="<bean:write name="w" property="inhalt" />"<logic:equal name="overviewform" property="waehrungen" value="<%=tmp%>"> selected</logic:equal>><bean:write name="w" property="inhalt" /></option>

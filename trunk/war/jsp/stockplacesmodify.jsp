@@ -30,12 +30,12 @@
 <table
   style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
   <tr>
-    <td id="submenu" nowrap title="<bean:message key="menu.export_explain" />"><a
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.export_explain" />"><a
       href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
-    <td id="submenu" nowrap
+    <td id="submenu" nowrap="nowrap"
       title="<bean:message key="menu.import_explain" />"><a
       href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
-    <td id="submenuactive" nowrap
+    <td id="submenuactive" nowrap="nowrap"
       title="<bean:message key="menu.locations_explain" />"><a
       href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
   </tr>
@@ -83,10 +83,10 @@
    <input name="stid" type="hidden" value="<bean:write name="st" property="id" />" /> 
    </logic:iterate>
    <tr>
-      <td><br></td>
+      <td><br /></td>
     </tr>
    <tr>
-      <td><br></td>
+      <td><br /></td>
     </tr>
     <tr>
         <td><input type="submit" value="<bean:message key="stockplacesmodify.change" />"></input></td>

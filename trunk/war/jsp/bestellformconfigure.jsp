@@ -25,8 +25,8 @@
 
 <table style="position:absolute; text-align:left; left:<bean:message key="submenupos.konto" />px; z-index:2;">
   <tr>
-    <td id="submenu" nowrap title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
-    <td id="submenuactive" nowrap title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
+    <td id="submenuactive" nowrap="nowrap" title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
   </tr>
 </table>
 
@@ -53,11 +53,11 @@
   </tr>
   <tr>
     <td><bean:message key="bestellform.bestellformular" />&nbsp;</td>
-    <td align="center"><input type="checkbox" name="deactivated" <logic:equal name="bestellform" property="deactivated" value="true">checked="checked"</logic:equal> ></td>
+    <td align="center"><input type="checkbox" name="deactivated" <logic:equal name="bestellform" property="deactivated" value="true">checked="checked"</logic:equal> /></td>
   </tr>
 </table>
 <p><bean:message key="bestellform.deactivate_explain" /></p>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 
 <h4><bean:message key="bestellform.saveorder" /></h4>
@@ -68,11 +68,11 @@
   </tr>
   <tr>
     <td><bean:message key="order.title" />&nbsp;</td>
-    <td align="center"><input type="checkbox" name="saveorder" <logic:equal name="bestellform" property="saveorder" value="true">checked="checked"</logic:equal> ></td>
+    <td align="center"><input type="checkbox" name="saveorder" <logic:equal name="bestellform" property="saveorder" value="true">checked="checked"</logic:equal> /></td>
   </tr>
 </table>
 <p><bean:message key="bestellform.saveorder_explain" /></p>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.overwritedelivery" /></h4>
 <table border="1" cellspacing="0px">
@@ -98,9 +98,9 @@
         value="<bean:write name="bestellform" property="lieferart_value3" />"
         type="text" size="50" maxlength="50" /></td>
   </tr>
-<table>
+</table>
 <p><bean:message key="bestellform.overwritedelivery_explain" /> "<bean:message key="bestellform.post" /> / <bean:message key="bestellform.pdf" />"</p>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.prioselect" /></h4>
 <table border="1" cellspacing="0px">
@@ -110,11 +110,11 @@
   </tr>
   <tr>
     <td><bean:message key="bestellform.prio" />&nbsp;</td>
-    <td align="center"><input type="checkbox" name="prio" <logic:equal name="bestellform" property="prio" value="true">checked="checked"</logic:equal> ></td>
+    <td align="center"><input type="checkbox" name="prio" <logic:equal name="bestellform" property="prio" value="true">checked="checked"</logic:equal> /></td>
   </tr>
 </table>
 <p><bean:message key="bestellform.prioselect_explain" /> "<bean:message key="bestellform.normal" /> / <bean:message key="bestellform.urgent" />"</p>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.addcomment" /></h4>
 <table border="1" cellspacing="0px">
@@ -129,7 +129,7 @@
         type="text" size="100" maxlength="200" /></td>
   </tr>
 </table>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.addfields" /></h4>
 <table border="1" cellspacing="0px">
@@ -141,85 +141,85 @@
    </tr>
    <tr>
      <td><bean:message key="bestellform.freefield1" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="freitxt1" <logic:equal name="bestellform" property="freitxt1" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="freitxt1_required" <logic:equal name="bestellform" property="freitxt1_required" value="true">checked="checked"</logic:equal> > </td>
+     <td align="center"><input type="checkbox" name="freitxt1" <logic:equal name="bestellform" property="freitxt1" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="freitxt1_required" <logic:equal name="bestellform" property="freitxt1_required" value="true">checked="checked"</logic:equal> /> </td>
      <td><input name="freitxt1_name"
         value="<bean:write name="bestellform" property="freitxt1_name" />"
         type="text" size="50" maxlength="50" /></td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.institution" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="institution" <logic:equal name="bestellform" property="institution" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="inst_required" <logic:equal name="bestellform" property="inst_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="institution" <logic:equal name="bestellform" property="institution" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="inst_required" <logic:equal name="bestellform" property="inst_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.abteilung" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="abteilung" <logic:equal name="bestellform" property="abteilung" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="abt_required" <logic:equal name="bestellform" property="abt_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="abteilung" <logic:equal name="bestellform" property="abteilung" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="abt_required" <logic:equal name="bestellform" property="abt_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.freefield2" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="freitxt2" <logic:equal name="bestellform" property="freitxt2" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="freitxt2_required" <logic:equal name="bestellform" property="freitxt2_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="freitxt2" <logic:equal name="bestellform" property="freitxt2" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="freitxt2_required" <logic:equal name="bestellform" property="freitxt2_required" value="true">checked="checked"</logic:equal> /></td>
      <td><input name="freitxt2_name"
         value="<bean:write name="bestellform" property="freitxt2_name" />"
         type="text" size="50" maxlength="50" /></td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.adress" /> <bean:message key="bestellform.adress_explain" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="adresse" <logic:equal name="bestellform" property="adresse" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="adr_required" <logic:equal name="bestellform" property="adr_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="adresse" <logic:equal name="bestellform" property="adresse" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="adr_required" <logic:equal name="bestellform" property="adr_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.strasse" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="strasse" <logic:equal name="bestellform" property="strasse" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="str_required" <logic:equal name="bestellform" property="str_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="strasse" <logic:equal name="bestellform" property="strasse" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="str_required" <logic:equal name="bestellform" property="str_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.plz" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="plz" <logic:equal name="bestellform" property="plz" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="plz_required" <logic:equal name="bestellform" property="plz_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="plz" <logic:equal name="bestellform" property="plz" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="plz_required" <logic:equal name="bestellform" property="plz_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.ort" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="ort" <logic:equal name="bestellform" property="ort" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="ort_required" <logic:equal name="bestellform" property="ort_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="ort" <logic:equal name="bestellform" property="ort" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="ort_required" <logic:equal name="bestellform" property="ort_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.land" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="land" <logic:equal name="bestellform" property="land" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="land_required" <logic:equal name="bestellform" property="land_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="land" <logic:equal name="bestellform" property="land" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="land_required" <logic:equal name="bestellform" property="land_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.telefon" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="telefon" <logic:equal name="bestellform" property="telefon" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="telefon_required" <logic:equal name="bestellform" property="telefon_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="telefon" <logic:equal name="bestellform" property="telefon" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="telefon_required" <logic:equal name="bestellform" property="telefon_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.benutzernr" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="benutzernr" <logic:equal name="bestellform" property="benutzernr" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="benutzernr_required" <logic:equal name="bestellform" property="benutzernr_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="benutzernr" <logic:equal name="bestellform" property="benutzernr" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="benutzernr_required" <logic:equal name="bestellform" property="benutzernr_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
-   <tr>
+   </tr>
    <tr>
      <td><bean:message key="bestellform.freefield3" />&nbsp;</td>
-     <td align="center"><input type="checkbox" name="freitxt3" <logic:equal name="bestellform" property="freitxt3" value="true">checked="checked"</logic:equal> ></td>
-     <td align="center"><input type="checkbox" name="freitxt3_required" <logic:equal name="bestellform" property="freitxt3_required" value="true">checked="checked"</logic:equal> ></td>
+     <td align="center"><input type="checkbox" name="freitxt3" <logic:equal name="bestellform" property="freitxt3" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="freitxt3_required" <logic:equal name="bestellform" property="freitxt3_required" value="true">checked="checked"</logic:equal> /></td>
      <td><input name="freitxt3_name"
         value="<bean:write name="bestellform" property="freitxt3_name" />"
         type="text" size="50" maxlength="50" /></td>
-   <tr>
+   </tr>
    
 </table>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.addoptions" /></h4>
 <p><img src='img/option.gif' border='1' alt='<bean:message key="bestellform.addoptions" />'  /></p>
@@ -270,9 +270,9 @@
         value="<bean:write name="bestellform" property="option_linkoutname" />"
         type="text" size="50" maxlength="50" /></td>
   </tr>
-<table>
+</table>
 <p><bean:message key="bestellform.options_explain" /></p>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.addcomment" /></h4>
 <table border="1" cellspacing="0px">
@@ -287,7 +287,7 @@
         type="text" size="100" maxlength="200" /></td>
   </tr>
 </table>
-<p><br></p><hr></hr>
+<p><br /></p><hr></hr>
 
 <h4><bean:message key="bestellform.conditions" /></h4>
 <p><img src='img/comment_conditions.gif' border='1' alt='<bean:message key="bestellform.conditions" />'  /></p>
@@ -299,21 +299,21 @@
   </tr>
   <tr>
     <td><bean:message key="bestellform.gebuehren" />&nbsp;</td>
-    <td align="center"><input type="checkbox" name="gebuehren" <logic:equal name="bestellform" property="gebuehren" value="true">checked="checked"</logic:equal> ></td>
+    <td align="center"><input type="checkbox" name="gebuehren" <logic:equal name="bestellform" property="gebuehren" value="true">checked="checked"</logic:equal> /></td>
     <td><input name="link_gebuehren"
         value="<bean:write name="bestellform" property="link_gebuehren" />"
         type="text" size="100" maxlength="200" /></td>
   </tr>
   <tr>
     <td><bean:message key="bestellform.agb" />&nbsp;</td>
-    <td align="center"><input type="checkbox" name="agb" <logic:equal name="bestellform" property="agb" value="true">checked="checked"</logic:equal> ></td>
+    <td align="center"><input type="checkbox" name="agb" <logic:equal name="bestellform" property="agb" value="true">checked="checked"</logic:equal> /></td>
     <td><input name="link_agb"
         value="<bean:write name="bestellform" property="link_agb" />"
         type="text" size="100" maxlength="200" /></td>
   </tr>
 </table>
 
-<p><br></p>
+<p><br /></p>
 
 <input name="id" type="hidden" value="<bean:write name="bestellform" property="id" />" />
 <input name="kid" type="hidden" value="<bean:write name="bestellform" property="kid" />" />

@@ -12,7 +12,7 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="welcome.heading" /> </title>
-  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css">
+  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
  </head>
  <body>
  
@@ -36,10 +36,11 @@
     </tr>
     <tr>
       <td><bean:message key="login.password" /></td><td><html:password property="password" size="50" maxlength="50" />
-     <font color=red><html:errors property="password" /></font><p> 
+     <font color=red><html:errors property="password" /></font><p /> 
      <input type="hidden" name="method" value="overview" /></td>
     </tr>
   <tr>
+  	<td>
      <logic:present name="loginform">
        <input type="hidden" name="resolver" value="true" />
        <input type="hidden" name="issn" value="<bean:write name="loginform" property="issn" />" />
@@ -102,37 +103,35 @@
      <td><html:submit property="action" value="login" /></td>
   </tr>
  
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-    <tr><td><br></td></tr>
-
- </p>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
+    <tr><td><br /></td></tr>
   
  </html:form>
 
   <html:form action="pwreset">
   
     <tr>
-      <td colspan="2"><bean:message key="login.vergessen" /> <bean:message key="login.email" />&nbsp; <html:text property="email" size="39" maxlength="50" />
- <font color=red><html:errors property="email" /></font>
-
-  <input type="hidden" name="method" value="pwreset" />
-  
-  <input type="submit" value="<bean:message key="login.submitpwrt" />" />  
+      <td colspan="2">
+      	<bean:message key="login.vergessen" /> <bean:message key="login.email" />&nbsp; <html:text property="email" size="39" maxlength="50" />
+ 		<font color=red><html:errors property="email" /></font>
+		<input type="hidden" name="method" value="pwreset" />
+  		<input type="submit" value="<bean:message key="login.submitpwrt" />" />  
+  		</td>
+     </tr>
   </html:form>
-
-  </td>
-      </tr>
+  
   </table>
+  
   
   <p><br></br></p>
   <p><br></br></p>

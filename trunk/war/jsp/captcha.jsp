@@ -50,7 +50,7 @@
 
 <logic:notPresent name="userinfo" property="konto">
   <p>Session Timeout! Bitte erneut einloggen:</p>
-  <p><a href="login.do">zur&uuml;ck</a>
+  <p /><a href="login.do">zur&uuml;ck</a>
 </logic:notPresent>
 
 </div>

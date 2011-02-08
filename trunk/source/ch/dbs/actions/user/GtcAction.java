@@ -107,7 +107,7 @@ public final class GtcAction extends DispatchAction {
 
         String forward = "failure";
         final Auth auth = new Auth();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
 
         if (auth.isLogin(rq)) {
             forward = "decline";

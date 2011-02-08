@@ -70,7 +70,7 @@ public final class ILVReport extends DispatchAction {
 
         final OrderForm pageForm = (OrderForm) fm;
         final Auth auth = new Auth();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = "failure";
         if (auth.isLogin(rq)) {
             forward = "success";

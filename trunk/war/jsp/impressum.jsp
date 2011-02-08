@@ -55,9 +55,10 @@
        <a href="https://lists.sourceforge.net/lists/listinfo/doctor-doc-tech" target="_blank">https://lists.sourceforge.net/lists/listinfo/doctor-doc-tech</a>
     </td>
   </tr>
-  <tr><td><br></br></td></tr>
+  <tr><td><br /></td></tr>
   <tr>
     <td><b><bean:message key="impressum.presse" /></b></td>
+  </tr>
     <tr>
       <td>
         <ul>
@@ -70,6 +71,7 @@
     </tr>
   <tr>
     <td><b><bean:message key="impressum.newsletter" /></b></td>
+  </tr>
     <tr>
       <td>
         <ul>

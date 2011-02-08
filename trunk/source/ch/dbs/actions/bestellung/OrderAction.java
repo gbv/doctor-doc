@@ -119,7 +119,7 @@ public final class OrderAction extends DispatchAction {
         // ISO-8859-1 encoding is important for automatic search!
         pageForm.setArtikeltitel_encoded(codeUrl.encodeLatin1(shortenGoogleSearchPhrase(pageForm.getArtikeltitel())));
 
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
             if (!"pmidfailure".equals(forward)) {
@@ -585,7 +585,7 @@ public final class OrderAction extends DispatchAction {
 
         final String artikeltitelEnc = codeUrl.encodeLatin1(pageForm.getArtikeltitel());
 
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         boolean treffer = false;
         if (auth.isLogin(rq)) {
@@ -2007,7 +2007,7 @@ public final class OrderAction extends DispatchAction {
         final OrderState orderstate = new OrderState();
         final Auth auth = new Auth();
         final BestellformAction instance = new BestellformAction();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         if (auth.isLogin(rq)) {
             forward = SUCCESS;
@@ -2116,7 +2116,7 @@ public final class OrderAction extends DispatchAction {
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) form;
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
@@ -2192,7 +2192,7 @@ public final class OrderAction extends DispatchAction {
 
         if (pageForm.getKkid() == null) { t = auth.grantAccess(rq); }
 
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         if ((t != null && t.getInhalt() != null) || (pageForm.getKkid() != null
                 || pageForm.getBkid() != null) || auth.isLogin(rq)) {
@@ -2349,7 +2349,7 @@ public final class OrderAction extends DispatchAction {
             pageForm = (OrderForm) rq.getAttribute("ofjo");
             rq.setAttribute("ofjo", null);
         }
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         if (auth.isLogin(rq)) {
             forward = SUCCESS;
@@ -2441,7 +2441,7 @@ public final class OrderAction extends DispatchAction {
         final OrderForm pageForm = (OrderForm) form;
         final Lieferanten lieferantenInstance = new Lieferanten();
         final OrderState orderstate = new OrderState();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
@@ -2622,7 +2622,7 @@ public final class OrderAction extends DispatchAction {
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         OrderForm pageForm = (OrderForm) form;
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {

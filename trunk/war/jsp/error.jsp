@@ -11,7 +11,7 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title> <bean:message key="error.heading" /> </title>
-  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css">
+  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
  </head>
  <body>
  
@@ -39,7 +39,7 @@
   <logic:present name="orderform" property="issn">
   <logic:notEqual name="orderform" property="submit" value="GBV">
    <p><bean:message key="save.manuell_bestellen" />:<br />
-   <a href="http://www.subito-doc.de/order/po.php?BI=CH_SO%2FDRDOC&VOL=<bean:write name="orderform" property="jahrgang" />/<bean:write name="orderform" property="heft" />&APY=<bean:write name="orderform" property="jahr" />&PG=<bean:write name="orderform" property="seiten" />&SS=<bean:write name="orderform" property="issn" />&JT=&ATI=<bean:write name="orderform" property="artikeltitel" />&AAU=<bean:write name="orderform" property="author" /><logic:present name="orderform" property="sessionid">&PHPSESSID=<bean:write name="orderform" property="sessionid" /></logic:present>" target="_blank"><bean:message key="order.subito" /></a><br>&nbsp;<bean:message key="order.keepvalues" />
+   <a href="http://www.subito-doc.de/order/po.php?BI=CH_SO%2FDRDOC&VOL=<bean:write name="orderform" property="jahrgang" />/<bean:write name="orderform" property="heft" />&APY=<bean:write name="orderform" property="jahr" />&PG=<bean:write name="orderform" property="seiten" />&SS=<bean:write name="orderform" property="issn" />&JT=&ATI=<bean:write name="orderform" property="artikeltitel" />&AAU=<bean:write name="orderform" property="author" /><logic:present name="orderform" property="sessionid">&PHPSESSID=<bean:write name="orderform" property="sessionid" /></logic:present>" target="_blank"><bean:message key="order.subito" /></a><br />&nbsp;<bean:message key="order.keepvalues" />
    </p>
    <p>
     <bean:message key="save.manuell" />: <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&status=bestellt&lid=32&deloptions=<logic:present name="userinfo" property="konto.faxno">fax%20to%20pdf</logic:present><logic:notPresent name="userinfo" property="konto.faxno">fax</logic:notPresent>&preisvorkomma=<bean:write name="orderform" property="preisvorkomma" />&preisnachkomma=<bean:write name="orderform" property="preisnachkomma" />&waehrung=<bean:write name="orderform" property="waehrung" />&artikeltitel=<bean:write name="orderform" property="artikeltitel" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel" />&author=<bean:write name="orderform" property="author" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" />

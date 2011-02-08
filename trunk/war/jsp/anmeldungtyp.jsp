@@ -52,7 +52,7 @@
 <tr><td><bean:message key="anmeldungtyp.openurl" /></td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.linkresolver" /></td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.faxtopdf" /></td><td align="center">&nbsp;</td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
-<tr><td colspan="3"><p><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /><p /></td></tr>
+<tr><td colspan="3"><p /><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /></td></tr>
 </table>
 
 <p><b><bean:message key="anmeldungtyp.register" /></b></p>

@@ -88,7 +88,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                getPositionen(rs);
+                getPositionen(rs, cn);
             }
 
         } catch (final Exception e) {
@@ -220,14 +220,14 @@ public class Position extends AbstractIdEntity implements OrderHandler {
      * @param rs
      * @author Pascal Steiner
      */
-    private void getPositionen(final ResultSet rs) {
+    private void getPositionen(final ResultSet rs, final Connection cn) {
         try {
             this.setId(rs.getLong("pid"));
             // Benutzer abfüllen
             final AbstractBenutzer b = new AbstractBenutzer();
             try {
                 rs.findColumn("vorname");
-                this.setBenutzer(b.getUser(rs));
+                this.setBenutzer(b.getUser(rs, cn));
             } catch (final SQLException se) {
                 LOG.error("getPositionen/ResultSet rs: " + se.toString());
                 this.setBenutzer(b.getUser(rs.getLong("UID"), this.getConnection()));

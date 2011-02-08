@@ -432,7 +432,7 @@ public final class KontoAction extends DispatchAction {
                 mg.append("We hope you enjoy using ");
                 mg.append(ReadSystemConfigurations.getApplicationName());
                 mg.append("!\n\nGet in contact with us if you have any questions!\012\012"
-                        + "Best regards\012Your team");
+                        + "Best regards\012Your Team\040");
                 mg.append(ReadSystemConfigurations.getApplicationName());
                 final String[] sendto = new String[1];
                 sendto[0] = u.getEmail();

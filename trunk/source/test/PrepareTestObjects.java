@@ -31,6 +31,7 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Bibliothekar;
 import ch.dbs.entity.Konto;
+import ch.dbs.entity.Text;
 import ch.dbs.entity.VKontoBenutzer;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.LoginForm;
@@ -197,7 +198,13 @@ public class PrepareTestObjects {
      */
     public static Benutzer getBenutzer() {
 
-        return new Benutzer(getUserForm());
+        final Text t = new Text();
+
+        final Benutzer b = new Benutzer(getUserForm(), t.getSingleConnection());
+
+        t.close();
+
+        return b;
     }
 
     /**
@@ -221,7 +228,7 @@ public class PrepareTestObjects {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                b = (Benutzer) ab.getUser(rs);
+                b = (Benutzer) ab.getUser(rs, cn);
             }
         } catch (final Exception err) {
             final String f = "In PrepareTestObjects.getTestBenutzerFromDb(Connection cn) trat folgender Fehler auf:\n";
@@ -267,7 +274,7 @@ public class PrepareTestObjects {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                b = (Bibliothekar) ab.getUser(rs);
+                b = (Bibliothekar) ab.getUser(rs, cn);
             }
         } catch (final Exception err) {
             final String f = "In PrepareTestObjects.getTestBenutzerFromDb(Connection cn) trat folgender Fehler auf:\n";
@@ -341,7 +348,13 @@ public class PrepareTestObjects {
      */
     public static Bibliothekar getBibliothekar() {
 
-        return new Bibliothekar(getUserForm());
+        final Text t = new Text();
+
+        final Bibliothekar b = new Bibliothekar(getUserForm(), t.getSingleConnection());
+
+        t.close();
+
+        return b;
     }
 
     /**

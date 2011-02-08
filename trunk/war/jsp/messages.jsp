@@ -27,7 +27,7 @@
 <h3><bean:message key="<%=translationKey%>" /></h3>
 
 <logic:present name="singleMessage" property="systemMessage">
-  <p><pre><bean:write name="message" property="systemMessage" /></pre></p>
+  <p /><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
 
 
@@ -50,5 +50,6 @@
 <logic:present name="singleMessage" property="link">
   <a href="<bean:write name="singleMessage" property="link" />"><bean:message key="error.back" /></a>
 </logic:present>
+</div>
  </body>
 </html>

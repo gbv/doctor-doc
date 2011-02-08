@@ -34,7 +34,7 @@
   
   <logic:present name="errormessage" property="error">
     <bean:define id="em"><bean:write name="errormessage" property="error"/></bean:define>
-    <font color=red><p><bean:message key="<%=em%>" /></p></font>
+    <p><font color=red><bean:message key="<%=em%>" /></font></p>
   </logic:present>
 
   <html:form action="editkontousers1.do" method="post" focus="anrede">
@@ -62,7 +62,6 @@
       <td><select name="anrede" size="1">
           <option value="Frau" <logic:present name="userform" property="user.anrede"><logic:equal name="userform" property="user.anrede" value="Frau">selected</logic:equal></logic:present>><bean:message key="adressen.anrede_frau" /></option>
           <option value="Herr" <logic:present name="userform" property="user.anrede"><logic:equal name="userform" property="user.anrede" value="Herr">selected</logic:equal></logic:present>><bean:message key="adressen.anrede_herr" /></option>
-          
         </select>
         <font color="red"><html:errors property="anrede" /></font>
       </td>
@@ -93,6 +92,30 @@
       <td><bean:message key="bestellform.abteilung" /></td><td><input name="abteilung" type="text" size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.abteilung" />"</logic:present> /></td>
     </tr>
     <tr>
+      <td><bean:message key="modifykontousers.category" /></td>
+      <td>
+      	<select name="category">
+      	<option value="0"><bean:message key="modifykontousers.choose" /></option>
+      	<logic:present name="userform">
+      		<bean:define id="tmp" name="userform" property="category" type="java.lang.String" />
+      		<logic:iterate id="cat" name="categories">
+         		<option value="<bean:write name="cat" property="id" />" <logic:equal name="cat" property="id" value="<%=tmp%>">selected</logic:equal>><bean:write name="cat" property="inhalt" /></option>
+        	</logic:iterate>
+        </logic:present>
+        <logic:notPresent name="userform"> 	
+      		<logic:iterate id="cat" name="categories">
+         		<option value="<bean:write name="cat" property="id" />"><bean:write name="cat" property="inhalt" /></option>
+        	</logic:iterate>
+        </logic:notPresent>
+        </select>
+        <logic:present name="userinfo" property="benutzer">
+     		<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
+        		<a href="usercategories.do?method=prepareCategories">Kategorie erstellen</a>
+        	</logic:notEqual>
+        </logic:present>
+      </td>
+    </tr>
+    <tr>
       <td><bean:message key="modifykonto.adress" /></td><td><input name="adresse" type="text" size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.adresse" />"</logic:present> /></td>
     </tr>
     <tr>
@@ -108,7 +131,7 @@
           <td><b><bean:message key="bestellform.land" />*</b></td>
           <td>
             <select name="land">
-            <option value="0" selected><bean:message key="select.countries" /></option>
+            <option value="0"><bean:message key="select.countries" /></option>
          <logic:iterate id="c" name="userinfo" property="countries">
         <bean:define id="tmp" name="c" property="countrycode" type="java.lang.String"/>
              <option value="<bean:write name="c" property="countrycode" />"<logic:notPresent name="userform" property="user"><logic:equal name="userinfo" property="konto.land" value="<%=tmp%>"> selected</logic:equal></logic:notPresent><logic:present name="userform" property="user"><logic:equal name="userform" property="user.land" value="<%=tmp%>"> selected</logic:equal></logic:present>><bean:write name="c" property="countryname" /></option>
@@ -160,7 +183,7 @@
       <td><bean:message key="modifykontousers.aktiv" /></td>
       <td>
       
-    <select name="kontostatus" size="1" readonly>
+    <select name="kontostatus" size="1">
           <option value="true" <logic:present name="userform" property="user"><logic:equal name="userform" property="user.kontostatus" value="true">selected</logic:equal></logic:present>><bean:message key="modifykonto.yes" /></option>
           <option value="false" <logic:present name="userform" property="user"><logic:equal name="userform" property="user.kontostatus" value="false">selected</logic:equal></logic:present>><bean:message key="modifykonto.no" /></option>
         </select> <font color="white"><bean:message key="modifykontousers.aktiv_comment" /></font>
@@ -172,7 +195,7 @@
     <!-- <tr>
       <td>Rechnungsart</td>
       <td><select name="billing" size="1">Rechnung Funzt noch nicht!
-          <option value="false" selected>Keine Rechnungen???</option>
+          <option value="false" selected="selected">Keine Rechnungen???</option>
           <option value="true">Einzelrechnungen???</option>
         </select>
       </td>
@@ -184,12 +207,12 @@
     
       <tr>
       <logic:equal name="userform" property="delete" value="true">
-        <td><br /><bean:message key="modifykontousers.delete_confirm" /> <input type="submit" value="<bean:message key="modifykonto.yes" />"></input></br></td>
+        <td><br /><bean:message key="modifykontousers.delete_confirm" /> <input type="submit" value="<bean:message key="modifykonto.yes" />" /></td>
           <input name="method" type="hidden" value="deleteKontousers" />
       </logic:equal>
       <logic:notEqual name="userform" property="delete" value="true">
-        <td><br /><input type="submit" value="sichern"></input></br></td>
-        <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></br></logic:notEqual></td>
+        <td><br /><input type="submit" value="sichern"></input></td>
+        <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           <input name="method" type="hidden" value="modifykontousers" />
         </logic:notEqual>
         </tr>
@@ -199,18 +222,17 @@
     <logic:notPresent name="userform" property="delete">
     
       <tr>
-
         <logic:notEqual name="userinfo" property="keepordervalues2" value="true">
-        <td><br><input type="submit" value="<bean:message key="modifykontousers.save" />"></input></br></td>
-          <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></br></logic:notEqual></td>
-          <input name="method" type="hidden" value="modifykontousers" />
-          </logic:notEqual>
+        	<td><br /><input type="submit" value="<bean:message key="modifykontousers.save" />"/></td>
+        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+          	<input name="method" type="hidden" value="modifykontousers" />
+        </logic:notEqual>
           
         <logic:equal name="userinfo" property="keepordervalues2" value="true">
-        <td><br /><input type="submit" value="<bean:message key="modifykontousers.save_continue" />"></input></br></td>
-          <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></br></logic:notEqual></td>
-          <input name="method" type="hidden" value="modifykontousers" />
-          </logic:equal>
+        	<td><br /><input type="submit" value="<bean:message key="modifykontousers.save_continue" />"></input></td>
+        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+          	<input name="method" type="hidden" value="modifykontousers" />
+        </logic:equal>
           
         </tr>
         
@@ -222,5 +244,6 @@
        
   </html:form>
   <p><b>*<bean:message key="modifykonto.required" /></b></p>
+</div>
 </body>
 </html>

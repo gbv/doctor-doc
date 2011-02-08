@@ -92,7 +92,7 @@ public final class OrderGbvAction extends DispatchAction {
         // URL Test-System des GBV
         //    String baseurl = "http://cbst.gbv.de:8080/cgi-bin/vuefl_0702/vuefl_recv_data.pl";
 
-        if (auth.isLogin(rq)) { // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        if (auth.isLogin(rq)) { // Make sure method is only accessible when user is logged in
 
             // Fileformat für Statistik aus gemachten Angaben schliessen
             if ("Buch".equals(of.getMediatype())) { of.setFileformat("Papierkopie");
@@ -680,7 +680,7 @@ public final class OrderGbvAction extends DispatchAction {
         final OrderForm of = (OrderForm) fm;
         final Auth auth = new Auth();
 
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
             try {
@@ -773,7 +773,7 @@ public final class OrderGbvAction extends DispatchAction {
         final OrderForm of = (OrderForm) fm;
         final Auth auth = new Auth();
 
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
             final Texttyp t = new Texttyp();
@@ -848,7 +848,7 @@ public final class OrderGbvAction extends DispatchAction {
         final OrderForm of = (OrderForm) form;
         final Auth auth = new Auth();
 
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
             forward = SUCCESS;

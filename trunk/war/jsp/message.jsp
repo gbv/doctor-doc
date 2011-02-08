@@ -24,15 +24,16 @@
 <h3><bean:message key="message.header" />:</h3>
 
 <bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>              
-<p><pre><bean:message key="<%=translationKey%>" /></pre></p>
+<p /><pre><bean:message key="<%=translationKey%>" /></pre>
 
 <logic:present name="message" property="systemMessage">
-  <p><pre><bean:write name="message" property="systemMessage" /></pre></p>
+  <p /><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
 
 <br></br>
 <logic:present name="message" property="link">
   <a href="<bean:write name="message" property="link" />"><bean:message key="message.next" /></a>
-</logic:present>  
+</logic:present>
+</div>
  </body>
 </html>

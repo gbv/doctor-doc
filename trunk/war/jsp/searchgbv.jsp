@@ -12,7 +12,7 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="searchgbv.titel" /></title>
-  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css">
+  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
  </head>
  <body>
  
@@ -22,14 +22,14 @@
 
 <table style="position:absolute; text-align:left; left:111px; z-index:2;">
   <tr>
-    <td id="submenu" nowrap title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
-    <td id="submenu" nowrap title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
   <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">  
     <td <logic:notEqual name="orderform" property="submit" value="GBV">id="submenuactive" nowrap</logic:notEqual><logic:equal name="orderform" property="submit" value="GBV">id="submenu" nowrap</logic:equal>title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
     <logic:present name="userinfo" property="konto.gbvbenutzername"><td <logic:equal name="orderform" property="submit" value="GBV">id="submenuactive" nowrap</logic:equal><logic:notEqual name="orderform" property="submit" value="GBV">id="submenu" nowrap</logic:notEqual>title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV<logic:present name="orderform" property="mediatype">&mediatype=<bean:write name="orderform" property="mediatype" /></logic:present>"><bean:message key="menu.gbv" /></a></td></logic:present>
   </logic:notEqual>
   <logic:equal name="userinfo" property="benutzer.rechte" value="1">
-        <td id="submenu" nowrap title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
     <logic:equal name="userinfo" property="benutzer.userbestellung" value="true">
         <td <logic:notEqual name="orderform" property="submit" value="GBV">id="submenuactive" nowrap</logic:notEqual><logic:equal name="orderform" property="submit" value="GBV">id="submenu" nowrap</logic:equal>title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
     </logic:equal>
@@ -42,7 +42,7 @@
     </logic:present>
   </logic:equal>
       <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-        <td id="submenu" nowrap title="<bean:message key="menu.save_explain" />"><a href="prepareJournalSave.do?method=prepareJournalSave"><bean:message key="menu.save" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.save_explain" />"><a href="prepareJournalSave.do?method=prepareJournalSave"><bean:message key="menu.save" /></a></td>
       </logic:notEqual>
   </tr>
 </table>
@@ -64,8 +64,8 @@
     </tr>
     <tr>
       <td>
-        <select name="gbvfield" type="select">
-          <option value="ALL" selected>Alle W&ouml;rter [ALL]</option>
+        <select name="gbvfield">
+          <option value="ALL" selected="selected">Alle W&ouml;rter [ALL]</option>
         <option value="TIT">Titel (Stichwort) [TIT]</option>
         <option value="PER">Person, Autor [PER]</option>
         <option value="THM">Alle Themen [THM]</option>
@@ -146,7 +146,7 @@
       </td>
     </tr>
     <tr>
-      <td><input name="gbvsearch" type="text" size="98" ></p></td>
+      <td><input name="gbvsearch" type="text" size="98" /></td>
     </tr>
     <tr>
       <td><br /></td>
@@ -289,7 +289,7 @@
     </tr>
     </logic:notEmpty>
 
-     <tr><td><br></td></tr>
+     <tr><td><br /></td></tr>
      </table>
 
   <logic:present name="orderform" property="bid">

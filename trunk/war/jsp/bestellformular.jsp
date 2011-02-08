@@ -24,19 +24,19 @@
   <logic:equal name="userinfo" property="benutzer.rechte" value="1">          
     <table style="position:absolute; text-align:left; left:111px; z-index:2;">
       <tr>
-        <td id="submenu" nowrap title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
-        <td id="submenu" nowrap title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
-        <td id="submenuactive" nowrap title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
+        <td id="submenuactive" nowrap="nowrap" title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
 <logic:present name="userinfo" property="benutzer.userbestellung"> 
   <logic:equal name="userinfo" property="benutzer.userbestellung" value="true">
-        <td id="submenu" nowrap title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
   </logic:equal>
 </logic:present>
 <logic:present name="userinfo" property="konto.gbvrequesterid">
 <logic:present name="userinfo" property="konto.isil">
 <logic:present name="userinfo" property="benutzer.gbvbestellung">
   <logic:equal name="userinfo" property="benutzer.gbvbestellung" value="true">
-        <logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
+        <logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap="nowrap" title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
   </logic:equal>
 </logic:present>
 </logic:present>
@@ -102,13 +102,13 @@
       <td><bean:message key="bestellform.typ" />&nbsp;</td>
       <td><input type="radio" name="mediatype" value="Artikel"
         <logic:equal name="orderform" property="mediatype" value="Artikel">checked="checked"</logic:equal>
-        <logic:notEqual name="orderform" property="mediatype" value="Artikel">onClick="submit()"</logic:notEqual> /><bean:message key="bestellform.artikelkopie" />
+        <logic:notEqual name="orderform" property="mediatype" value="Artikel">onclick="submit()"</logic:notEqual> /><bean:message key="bestellform.artikelkopie" />
       <input type="radio" name="mediatype" value="Teilkopie Buch"
         <logic:equal name="orderform" property="mediatype" value="Teilkopie Buch">checked="checked"</logic:equal>
-        <logic:notEqual name="orderform" property="mediatype" value="Teilkopie Buch">onClick="submit()"</logic:notEqual> /><bean:message key="bestellform.buchausschnitt" />
+        <logic:notEqual name="orderform" property="mediatype" value="Teilkopie Buch">onclick="submit()"</logic:notEqual> /><bean:message key="bestellform.buchausschnitt" />
       <input type="radio" name="mediatype" value="Buch"
         <logic:equal name="orderform" property="mediatype" value="Buch">checked="checked"</logic:equal>
-        <logic:notEqual name="orderform" property="mediatype" value="Buch">onClick="submit()"</logic:notEqual> /><bean:message key="bestellform.buch" /></td>
+        <logic:notEqual name="orderform" property="mediatype" value="Buch">onclick="submit()"</logic:notEqual> /><bean:message key="bestellform.buch" /></td>
     </tr>
     <input name="method" type="hidden" value="validate" />
     <input name="resolve" type="hidden" value="true" />
@@ -283,7 +283,7 @@
       <tr>
         <td><bean:message key="bestellform.adress" />&nbsp;</td>
         <td><textarea cols="54" rows="2" name="kundenadresse"
-          style="word-wrap:soft;" wrap=soft><bean:write
+          style="word-wrap:soft;" wrap="soft"><bean:write
           name="orderform" property="kundenadresse" /></textarea></td>
       </tr>
     </logic:equal>
@@ -298,7 +298,7 @@
           <bean:message key="bestellform.adress" /><logic:equal name="bestellparam" property="adr_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><textarea cols="54" rows="2" name="kundenadresse"
-          style="word-wrap:soft;" wrap=soft><bean:write
+          style="word-wrap:soft;" wrap="soft"><bean:write
           name="orderform" property="kundenadresse" /></textarea>
         </td>
       </tr>      
@@ -359,7 +359,7 @@
         </td>
         <td>
         <select name="kundenland">
-          <option value="0" selected><bean:message key="select.countries" /></option>
+          <option value="0" selected="selected"><bean:message key="select.countries" /></option>
        <logic:iterate id="c" name="orderform" property="countries">
         <bean:define id="tmp" name="c" property="countrycode" type="java.lang.String"/>
              <option value="<bean:write name="c" property="countrycode" />"<logic:present name="orderform" property="kundenland"><logic:equal name="orderform" property="kundenland" value="<%=tmp%>"> selected</logic:equal></logic:present>><bean:write name="c" property="countryname" /></option>
@@ -601,7 +601,7 @@
         <td>
         </td>
         <td>
-          <input type="checkbox" name="gebuehren">&nbsp;<bean:message key="bestellform.gebuehrentxt" />&nbsp;<a href="<bean:write name="bestellparam" property="link_gebuehren" />" target="_blank"><bean:message key="bestellform.gebuehren" /></a>
+          <input type="checkbox" name="gebuehren" />&nbsp;<bean:message key="bestellform.gebuehrentxt" />&nbsp;<a href="<bean:write name="bestellparam" property="link_gebuehren" />" target="_blank"><bean:message key="bestellform.gebuehren" /></a>
         </td>
       </tr>      
     </logic:equal>
@@ -618,7 +618,7 @@
         <td>
         </td>
         <td>
-          <input type="checkbox" name="agb">&nbsp;<bean:message key="bestellform.agbtxt" />&nbsp;<a href="<bean:write name="bestellparam" property="link_agb" />" target="_blank"><bean:message key="bestellform.agb" /></a>
+          <input type="checkbox" name="agb" />&nbsp;<bean:message key="bestellform.agbtxt" />&nbsp;<a href="<bean:write name="bestellparam" property="link_agb" />" target="_blank"><bean:message key="bestellform.agb" /></a>
         </td>
       </tr>      
     </logic:equal>

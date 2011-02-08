@@ -23,27 +23,27 @@
 <table
   style="position:absolute; text-align:left; left:111px; z-index:2;">
   <tr>
-    <td id="submenu" nowrap title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
-    <td id="submenuactive" nowrap title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
+    <td id="submenuactive" nowrap="nowrap" title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
   <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">  
-    <td id="submenu" nowrap title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
-    <logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
+    <logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap="nowrap" title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
   </logic:notEqual>
   <logic:equal name="userinfo" property="benutzer.rechte" value="1">
-        <td id="submenu" nowrap title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
     <logic:equal name="userinfo" property="benutzer.userbestellung" value="true">
-        <td id="submenu" nowrap title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
     </logic:equal>
     <logic:present name="userinfo" property="konto.gbvrequesterid">
     <logic:present name="userinfo" property="konto.isil">
     <logic:equal name="userinfo" property="benutzer.gbvbestellung" value="true">
-        <logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
+        <logic:present name="userinfo" property="konto.gbvbenutzername"><td id="submenu" nowrap="nowrap" title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
     </logic:equal>
     </logic:present>
     </logic:present>
   </logic:equal>
       <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-        <td id="submenu" nowrap title="<bean:message key="menu.save_explain" />"><a href="prepareJournalSave.do?method=prepareJournalSave"><bean:message key="menu.save" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.save_explain" />"><a href="prepareJournalSave.do?method=prepareJournalSave"><bean:message key="menu.save" /></a></td>
       </logic:notEqual>
   </tr>
 </table>
@@ -223,13 +223,13 @@
             size="15" maxlength="15" /></td>
         </tr>
         <tr>
-          <td>
+          <td>&nbsp;</td>
           <td><input name="pmid" type="hidden"
             value="<bean:write name="orderform" property="pmid" />" size="60"
             maxlength="200" /></td>
         </tr>
         <tr>
-          <td>
+          <td>&nbsp;</td>
           <td><input name="doi" type="hidden"
             value="<bean:write name="orderform" property="doi" />" size="60"
             maxlength="200" /></td>
@@ -267,7 +267,7 @@
     <logic:present name="journalseek" property="zeitschriften">
       <p><i><bean:message key="issnsearch.no_hits" /></i></p>
       <logic:iterate id="js" name="journalseek" property="zeitschriften">
-        <p><logic:present name="js"
+        <p /><logic:present name="js"
           property="zeitschriftentitel_encoded">
           <i><b><a
             href="http://www.google.ch/search?hl=de&btnG=Google-Suche&meta&q=issn+%22<bean:write name="js" property="zeitschriftentitel_encoded" />%22"

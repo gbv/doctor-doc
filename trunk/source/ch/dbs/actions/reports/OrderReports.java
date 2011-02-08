@@ -115,7 +115,7 @@ public final class OrderReports extends DispatchAction {
                         PreparedStatement pstmt = null;
                         pstmt = uaInstance.composeSearchLogic(searches, ui.getKonto(),
                                 of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
-                        orders = b.searchOrdersPerKonto(pstmt);
+                        orders = b.searchOrdersPerKonto(pstmt, cn.getConnection());
                         if (pstmt != null) {
                             try {
                                 pstmt.close();

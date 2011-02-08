@@ -1,3 +1,46 @@
+-- Revision 121 --
+
+INSERT INTO `doctor-doc_com_dbs`.`texttyp` (
+`TYID` ,
+`KID` ,
+`inhalt`
+)
+VALUES (
+'15', NULL , 'Benutzer Kategorie'
+);
+
+ALTER TABLE `benutzer` ADD `category` BIGINT( 20 ) NOT NULL DEFAULT '0' AFTER `abteilung` 
+
+-- small Optimizations --
+
+ALTER TABLE `holdings` CHANGE `issn` `issn` VARCHAR( 10 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+
+ALTER TABLE `issn` CHANGE `coden` `coden` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
+
+ALTER TABLE `bestellungen` ADD INDEX ( `orderdate` ) 
+
+ALTER TABLE `bestellungen` ADD INDEX ( `statedate` ) 
+
+ALTER TABLE `benutzer` ADD INDEX ( `vorname` ) 
+
+ALTER TABLE `benutzer` ADD INDEX ( `name` ) 
+
+ALTER TABLE `holdings` ADD INDEX ( `titel` ) 
+
+ALTER TABLE `billing` ADD INDEX ( `rechnungsdatum` ) 
+
+ALTER TABLE `billing` ADD INDEX ( `zahlungseingang` ) 
+
+ALTER TABLE `billing` ADD INDEX ( `UID` ) 
+
+ALTER TABLE `billing` ADD INDEX ( `KID` ) 
+
+ALTER TABLE `konto` ADD INDEX ( `biblioname` ) 
+
+ALTER TABLE `konto` ADD INDEX ( `kontotyp` ) 
+
+ALTER TABLE `bestellstatus` ADD INDEX ( `date` ) 
+
 -- Revision 120
 
 ALTER TABLE `bestellform_param` ADD `deactivated` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `saveorder` ,

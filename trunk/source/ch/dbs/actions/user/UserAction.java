@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -111,7 +112,7 @@ public final class UserAction extends DispatchAction {
     public ActionForward overview(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
 
         OverviewForm of = (OverviewForm) fm;
@@ -204,7 +205,7 @@ public final class UserAction extends DispatchAction {
 
         final OverviewForm of = (OverviewForm) form;
         final OrderState orderstate = new OrderState();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
@@ -251,7 +252,7 @@ public final class UserAction extends DispatchAction {
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         final OverviewForm of = (OverviewForm) form;
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
@@ -298,7 +299,7 @@ public final class UserAction extends DispatchAction {
             final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        //    Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        //    Make sure method is only accessible when user is logged in
         final KontoForm kf = (KontoForm) form;
         final OrderForm pageForm = new OrderForm(kf);
         String forward = FAILURE;
@@ -501,9 +502,12 @@ public final class UserAction extends DispatchAction {
             }
 
             final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+            final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                    ui.getKonto().getId(), cn.getConnection());
 
             ui.setKontos(allPossKontos);
             ui.setCountries(allPossCountries);
+            rq.setAttribute("categories", categories);
             forward = SUCCESS;
             rq.setAttribute("ui", ui);
 
@@ -571,9 +575,13 @@ public final class UserAction extends DispatchAction {
                     }
 
                     final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+                    final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                            ui.getKonto().getId(), cn.getConnection());
+
                     ui.setKontos(allPossKontos);
                     ui.setCountries(allPossCountries);
                     forward = SUCCESS;
+                    rq.setAttribute("categories", categories);
                     rq.setAttribute("ui", ui);
                     rq.setAttribute("userform", uf);
 
@@ -601,7 +609,7 @@ public final class UserAction extends DispatchAction {
     }
 
     /**
-     * Generiert ein neues Passwort und teilt dem Benutzer dieses Mail mit
+     * Generates a new password and sends it to the email adress specified.
      */
     public ActionForward pwreset(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -668,7 +676,7 @@ public final class UserAction extends DispatchAction {
     public ActionForward showkontousers(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final UserForm uf = new UserForm();
         final Auth auth = new Auth();
@@ -705,7 +713,7 @@ public final class UserAction extends DispatchAction {
     public ActionForward modifykontousers(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Text cn = new Text();
         final Check check = new Check();
@@ -774,6 +782,10 @@ public final class UserAction extends DispatchAction {
                     } else {
                         u.setAbteilung(uf.getAbteilung());
                     }
+
+                    u.setCategory(new Text(cn.getConnection(),
+                            Long.valueOf(uf.getCategory())));
+
                     if (uf.getAdresse() != null) {
                         u.setAdresse(uf.getAdresse().trim());
                     } else {
@@ -835,7 +847,7 @@ public final class UserAction extends DispatchAction {
                             vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
                         }
 
-                        final AbstractBenutzer b = new AbstractBenutzer(uf);
+                        final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
                         uf.setUser(b);
 
                         // d.h. hier wurde ein User angelegt aus der journalorder.jsp
@@ -866,7 +878,7 @@ public final class UserAction extends DispatchAction {
                     if (!kont) { em.setError("error.kontos"); }
                     if (!land) { em.setError("error.land"); }
                     rq.setAttribute(ERRORMESSAGE, em);
-                    final AbstractBenutzer b = new AbstractBenutzer(uf);
+                    final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
                     uf.setUser(b);
                     rq.setAttribute("userform", uf);
                     forward = "missing";
@@ -889,6 +901,154 @@ public final class UserAction extends DispatchAction {
         rq.setAttribute("message", m);
         return mp.findForward(forward);
     }
+
+
+    /**
+     * Prepare changing or creating of categories.
+     */
+    public ActionForward prepareCategories(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+
+        String forward = FAILURE;
+        final Auth auth = new Auth();
+        // Make sure method is only accessible when user is logged in
+        if (auth.isLogin(rq)) {
+            forward = SUCCESS;
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            // only accessible by librarians or admins
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                final Text cn = new Text();
+                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                        ui.getKonto().getId(), cn.getConnection());
+                cn.close();
+                // only set into request, if we have at least one category
+                if (categories.size() > 0) {
+                    rq.setAttribute("categories", categories);
+                }
+            } else {
+                final ErrorMessage em = new ErrorMessage("error.berechtigung");
+                em.setLink("searchfree.do?activemenu=suchenbestellen");
+                rq.setAttribute(ERRORMESSAGE, em);
+            }
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
+        }
+        return mp.findForward(forward);
+    }
+
+    /**
+     * Changes a given category.
+     */
+    public ActionForward changeCategory(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Texttyp ty = new Texttyp("Benutzer Kategorie", cn.getConnection());
+        final Auth auth = new Auth();
+
+        // Access control
+        if (auth.isLogin(rq)) {
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final String id = (String) rq.getParameter("id");
+                final String sav = (String) rq.getParameter("sav");
+                final String del = (String) rq.getParameter("del");
+                final String mod = (String) rq.getParameter("mod");
+                final String category = (String) rq.getParameter("category");
+                boolean save = false;
+                boolean delete = false;
+                boolean modify = false;
+
+                if ("true".equals(sav)) { save = true; }
+                if ("true".equals(del)) { delete = true; }
+                if ("true".equals(mod)) { modify = true; }
+
+                if (save && category != null) {
+                    // save new category
+                    forward = SUCCESS;
+                    final Text txt = new Text();
+                    txt.setInhalt(category);
+                    txt.setTexttyp(ty);
+                    txt.setKonto(ui.getKonto());
+                    txt.saveNewText(cn.getConnection(), txt);
+
+                    final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
+
+                    // only set into request, if we have at least one category
+                    if (categories.size() > 0) {
+                        rq.setAttribute("categories", categories);
+                    }
+
+                } else {
+
+                    if (id != null && StringUtils.isNumeric(id)) {
+
+                        // Make sure the Text() and the category belong to the given account
+                        final Text txt = new Text(cn.getConnection(), Long.valueOf(id), ui.getKonto().getId(), ty.getId());
+
+                        if (txt.getId() != null) {
+                            forward = SUCCESS;
+
+                            // delete
+                            if (delete) {
+                                txt.deleteText(cn.getConnection(), txt);
+                                // reset all adressen
+                                ui.getBenutzer().resetCategories(txt.getId(), cn.getConnection());
+                            } else if (modify && category != null) {
+                                // update
+                                txt.setInhalt(category);
+                                txt.updateText(cn.getConnection(), txt);
+                            } else {
+                                // prepare for update
+                                rq.setAttribute("categoryText", txt);
+                            }
+
+                            final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
+
+                            // only set into request, if we have at least one category
+                            if (categories.size() > 0) {
+                                rq.setAttribute("categories", categories);
+                            }
+
+                        } else { // URL-hacking
+                            final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+                            rq.setAttribute(ERRORMESSAGE, em);
+                            LOG.info("changeCategory: prevented URL-hacking 2! " + ui.getBenutzer().getEmail());
+                        }
+
+                    } else { // URL-hacking
+                        final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+                        rq.setAttribute(ERRORMESSAGE, em);
+                        LOG.info("changeCategory: prevented URL-hacking 1! " + ui.getBenutzer().getEmail());
+                    }
+
+                }
+
+            } else {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
+            }
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute(ACTIVEMENUS, mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute(ERRORMESSAGE, em);
+        }
+
+        cn.close();
+        return mp.findForward(forward);
+    }
+
+
     /**
      * User aus Konto löschen,oder gänzlich wenn er keinem Konto mehr angehört
      *
@@ -896,7 +1056,7 @@ public final class UserAction extends DispatchAction {
     public ActionForward deleteKontousers(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        //Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wird
+        // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         final Text cn = new Text();
         final Auth auth = new Auth();
@@ -1094,10 +1254,10 @@ public final class UserAction extends DispatchAction {
                     try {
                         pstmt = composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
                                 dateFrom, dateTo, cn.getConnection());
-                        of.setBestellungen(b.searchOrdersPerKonto(pstmt));
+                        of.setBestellungen(b.searchOrdersPerKonto(pstmt, cn.getConnection()));
                     } catch (final Exception e) { // Fehler aus Methode abfangen
                         // zusätzliche Ausgabe von Fehlermeldung, falls versucht wurde
-                        // Bestellungen nach Kunde > 3 Monate zu suchen (Datenschutz)
+                        // Bestellungen nach Kunde > als erlaubter Zeitraum (Datenschutz)
                         forward = FAILURE;
                         final ErrorMessage em = new ErrorMessage("error.system", "searchorder.do?method=prepareSearch");
                         rq.setAttribute(ERRORMESSAGE, em);
@@ -1202,15 +1362,13 @@ public final class UserAction extends DispatchAction {
         PreparedStatement pstmt = cn.prepareStatement(sql.toString());
         pstmt.setLong(1, k.getId());
 
-        // bricht die Suche ab, falls nach Name || Vorname ausserhalb
-        // des erlaubten Datumbereiches (3 Monate) gesucht wird...
+        // Stops the search if the allowed search range for name, first name, email,
+        // remarks is exceeded
         boolean stop = false;
         for (int i = 0; i < max && !stop; i++) {
 
             final SearchesForm sf = (SearchesForm) searches.get(i);
 
-            // Kontrolle, ob mit Name || Vorname || Email || Systembemerkungen
-            // ausserhalb des erlaubten Datumbereiches (3 Monate) gesucht wird...
             if (composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("name")
                     || composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("vorname")
                     || composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("mail")
@@ -1221,7 +1379,7 @@ public final class UserAction extends DispatchAction {
                 }
                 if (pstmt == null) {
                     throw new Exception(
-                    "Datenschutz: unerlaubte Suchperiode (max. 3 Monate) bei Name, Vorname, Email, Bemerkungen");
+                    "Data privacy: exceeded allowed search range for name, firts name, email, remarks");
                 }
             }
 
@@ -1553,7 +1711,7 @@ public final class UserAction extends DispatchAction {
     }
 
     /**
-     * Prüft, ob bei einer Suche der Datenschutz (3 Monate) verletzt wird...
+     * Data privacy: checks if the allowed range is exceeded.
      * <p></p>
      * @param Strinf date_from
      * @return true/false

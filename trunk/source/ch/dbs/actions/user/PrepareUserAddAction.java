@@ -33,6 +33,7 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
+import ch.dbs.entity.Texttyp;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
@@ -46,7 +47,7 @@ public final class PrepareUserAddAction extends Action {
         UserForm uf = (UserForm) form;
         final Countries countriesInstance = new Countries();
         final Konto kontoInstance = new Konto();
-        final UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // nach Login
+        final UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // get from Login
         if (ufLoginAction != null) {
             uf = ufLoginAction;
         }
@@ -56,7 +57,7 @@ public final class PrepareUserAddAction extends Action {
 
 
         if (auth.isLogin(rq)) {
-            // bereits eingeloggt => direkt zu modifykontousers.do
+            // logged in => go directly to modifykontousers.do
             forward = "adduser";
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
@@ -70,18 +71,21 @@ public final class PrepareUserAddAction extends Action {
             }
 
             final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+            final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                    ui.getKonto().getId(), cn.getConnection());
 
-            final AbstractBenutzer b = new AbstractBenutzer(uf);
+            final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
             uf.setUser(b);
 
-            uf .setAddFromBestellformEmail(true); // steuert die korrekte Überschrift in modifykontousers.jsp
+            uf .setAddFromBestellformEmail(true); // triggers the correct header in modifykontousers.jsp
 
             ui.setKontos(allPossKontos);
             ui.setCountries(allPossCountries);
+            rq.setAttribute("categories", categories);
             rq.setAttribute("ui", ui);
 
         } else {
-            // nicht eingeloggt => zu LoginAction
+            // not logged in => to LoginAction
             forward = "login";
         }
 

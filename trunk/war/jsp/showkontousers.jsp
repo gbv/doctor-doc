@@ -29,8 +29,8 @@
 <a href="addkontousers.do?method=prepareAddUser"><img border="0" src="img/newuser.png" alt="<bean:message key="showkontousers.info_new" />" title="<bean:message key="showkontousers.info_new" />"/></a>
 <table border="1" width="100%" cellspacing="0px" >
   <tr>
-    <th colspan="2" >&nbsp;</th><th><bean:message key="adressen.anrede" /></th><th><bean:message key="adressen.vorname" /></th><th><bean:message key="adressen.name" /></th><th><bean:message key="adressen.email" /></th><th><bean:message key="showkontousers.typ" /></th><logic:equal name="userinfo" property="konto.userlogin" value="true"><th><bean:message key="showkontousers.login" /></th></logic:equal><logic:equal name="userinfo" property="konto.userbestellung" value="true"><th><bean:message key="showkontousers.subito" /></th></logic:equal><logic:equal name="userinfo" property="konto.gbvbestellung" value="true"><th><bean:message key="showkontousers.gbv" /></th></logic:equal><th><bean:message key="showkontousers.aktiv" /></th><th><bean:message key="showkontousers.telefon_g" /></th><th><bean:message key="showkontousers.telefon_p" /></th><th><bean:message key="bestellform.institution" /></th><th><bean:message key="bestellform.abteilung" /></th><th><bean:message key="modifykonto.adress" /></th><th><bean:message key="modifykonto.adress_second" /></th><th><bean:message key="modifykonto.plz" /></th><th><bean:message key="modifykonto.ort" /></th>
-  <tr>
+    <th colspan="2" >&nbsp;</th><th><bean:message key="adressen.anrede" /></th><th><bean:message key="adressen.vorname" /></th><th><bean:message key="adressen.name" /></th><th><bean:message key="adressen.email" /></th><th><bean:message key="showkontousers.typ" /></th><logic:equal name="userinfo" property="konto.userlogin" value="true"><th><bean:message key="showkontousers.login" /></th></logic:equal><logic:equal name="userinfo" property="konto.userbestellung" value="true"><th><bean:message key="showkontousers.subito" /></th></logic:equal><logic:equal name="userinfo" property="konto.gbvbestellung" value="true"><th><bean:message key="showkontousers.gbv" /></th></logic:equal><th><bean:message key="showkontousers.aktiv" /></th><th><bean:message key="showkontousers.telefon_g" /></th><th><bean:message key="showkontousers.telefon_p" /></th><th><bean:message key="bestellform.institution" /></th><th><bean:message key="bestellform.abteilung" /></th><th><a href="usercategories.do?method=prepareCategories"><bean:message key="modifykontousers.category" /></a></th><th><bean:message key="modifykonto.adress" /></th><th><bean:message key="modifykonto.adress_second" /></th><th><bean:message key="modifykonto.plz" /></th><th><bean:message key="modifykonto.ort" /></th>
+  </tr>
  <logic:present name="userform" property="users">
    <logic:iterate id="u" name="userform" property="users">
      <tr>
@@ -51,10 +51,11 @@
       <td align="center"><logic:equal name="u" property="gbvbestellung" value="true"><i><font color="white"><bean:message key="modifykonto.yes" /></font></i></logic:equal><logic:equal name="u" property="gbvbestellung" value="false"><i><font color="red"><bean:message key="modifykonto.no" /></font></i></logic:equal>&nbsp;</td>
       </logic:equal>
       <td align="center"><logic:equal name="u" property="kontostatus" value="true"><i><font color="white"><bean:message key="modifykonto.yes" /></font></i></logic:equal><logic:equal name="u" property="kontostatus" value="false"><i><font color="red"><bean:message key="modifykonto.no" /></font></i></logic:equal>&nbsp;</td>
-    <td nowrap><bean:write name="u" property="telefonnrg" />&nbsp;</td>
-      <td nowrap><bean:write name="u" property="telefonnrp" />&nbsp;</td>
+    <td nowrap="nowrap"><bean:write name="u" property="telefonnrg" />&nbsp;</td>
+      <td nowrap="nowrap"><bean:write name="u" property="telefonnrp" />&nbsp;</td>
       <td><bean:write name="u" property="institut" />&nbsp;</td>
       <td><bean:write name="u" property="abteilung" />&nbsp;</td>
+      <td><bean:write name="u" property="category.inhalt" />&nbsp;</td>
       <td><bean:write name="u" property="adresse" />&nbsp;</td>
       <td><bean:write name="u" property="adresszusatz" />&nbsp;</td>
       <td><bean:write name="u" property="plz" />&nbsp;</td>

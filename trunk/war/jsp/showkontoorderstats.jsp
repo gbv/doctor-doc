@@ -236,7 +236,7 @@
     name="overviewform" property="dto" />-<bean:write name="overviewform"
     property="mto" />-<bean:write name="overviewform" property="yto" /><br></br>
   </h4>
-* <bean:message key="stats.comment1" /><br>
+* <bean:message key="stats.comment1" /><br />
 ** <bean:message key="stats.comment2" />
 
 <p></p>
@@ -280,7 +280,6 @@
             </logic:equal>
           </th>
           <td id="tablestats"><bean:write name="os" property="anzahl" /></td>
-          </td>
           <td id="tablestatsleft"><logic:present name="os"
             property="preiswaehrung.eur">
             <bean:write name="os" property="preiswaehrung.eur.preis" />
@@ -672,6 +671,65 @@
       </tr>
     </logic:present>
   </table>
+  
+    <br></br>
+
+  <table border="1">
+    <tr>
+      <th id="tablestatsleft"><bean:message key="modifykontousers.category" />**</th>
+      <th id="tablestats"><bean:message key="stats.orders" /></th>
+      <th id="tablestats"><bean:message key="stats.users" /></th>
+      <th id="tablestatsleft"><bean:message key="stats.eur" /></th>
+      <th id="tablestatsleft"><bean:message key="stats.chf" /></th>
+      <th id="tablestatsleft"><bean:message key="stats.usd" /></th>
+      <th id="tablestatsleft"><bean:message key="stats.gbp" /></th>
+    </tr>
+    <logic:present name="statistics" property="categorystat">
+      <logic:iterate id="os" name="statistics"
+        property="categorystat.statistik">
+        <tr>
+          <th id="tablestatsleft">
+            <logic:notEqual name="os" property="label" value="k.A.">
+              <bean:write name="os" property="label" />
+            </logic:notEqual>
+            <logic:equal name="os" property="label" value="k.A.">
+              <bean:message key="stats.notSpecified" />
+            </logic:equal>
+          </th>
+          <td id="tablestats"><bean:write name="os"
+            property="anzahl_two" /></td>
+          <td id="tablestats"><bean:write name="os" property="anzahl" /></td>
+          <td id="tablestatsleft"><logic:present name="os"
+            property="preiswaehrung.eur">
+            <bean:write name="os" property="preiswaehrung.eur.preis" />
+          </logic:present>&nbsp;</td>
+          <td id="tablestatsleft"><logic:present name="os"
+            property="preiswaehrung.chf">
+            <bean:write name="os" property="preiswaehrung.chf.preis" />
+          </logic:present>&nbsp;</td>
+          <td id="tablestatsleft"><logic:present name="os"
+            property="preiswaehrung.usd">
+            <bean:write name="os" property="preiswaehrung.usd.preis" />
+          </logic:present>&nbsp;</td>
+          <td id="tablestatsleft"><logic:present name="os"
+            property="preiswaehrung.gbp">
+            <bean:write name="os" property="preiswaehrung.gbp.preis" />
+          </logic:present>&nbsp;</td>
+        </tr>
+      </logic:iterate>
+      <tr>
+        <th id="tablestatsleft"><bean:message key="stats.total" /></th>
+        <td id="tablestats"><bean:write name="statistics"
+          property="categorystat.total_two" /></td>
+        <td id="tablestats"><bean:write name="statistics"
+          property="categorystat.total" /></td>
+        <td id="tablestats"></td>
+        <td id="tablestats"></td>
+        <td id="tablestats"></td>
+        <td id="tablestats"></td>
+      </tr>
+    </logic:present>
+  </table>
 
   <br></br>
 
@@ -779,7 +837,6 @@
           </logic:notEqual>&nbsp;</td>
           <td id="tablestatsleft"><bean:write name="os"
             property="label_two" /></td>
-          </td>
           <td id="tablestatsleft"><logic:present name="os"
             property="preiswaehrung.eur">
             <bean:write name="os" property="preiswaehrung.eur.preis" />
@@ -812,7 +869,7 @@
     </tr>
   </table>
   
-  <bean:message key="stats.comment3" /><br>
+  <bean:message key="stats.comment3" /><br />
 
   <br></br>
 

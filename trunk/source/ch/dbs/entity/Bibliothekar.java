@@ -17,6 +17,8 @@
 
 package ch.dbs.entity;
 
+import java.sql.Connection;
+
 import ch.dbs.form.UserForm;
 
 
@@ -34,8 +36,8 @@ public class Bibliothekar extends AbstractBenutzer {
     }
 
     // Bibliothekare aus UserForm erstellen
-    public Bibliothekar(final UserForm uf) {
-        super(uf);
+    public Bibliothekar(final UserForm uf, final Connection cn) {
+        super(uf, cn);
     }
 
 }

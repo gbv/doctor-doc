@@ -17,6 +17,8 @@
 
 package ch.dbs.entity;
 
+import java.sql.Connection;
+
 import ch.dbs.form.UserForm;
 
 
@@ -35,8 +37,8 @@ public class Benutzer extends AbstractBenutzer {
     }
 
     //Benutzer aus UserForm erstellen
-    public Benutzer(final UserForm uf) {
-        super(uf);
+    public Benutzer(final UserForm uf, final Connection cn) {
+        super(uf, cn);
     }
 
 

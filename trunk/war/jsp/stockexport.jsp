@@ -33,12 +33,12 @@
 <table
   style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
   <tr>
-    <td id="submenuactive" nowrap title="<bean:message key="menu.export_explain" />"><a
+    <td id="submenuactive" nowrap="nowrap" title="<bean:message key="menu.export_explain" />"><a
       href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
-    <td id="submenu" nowrap
+    <td id="submenu" nowrap="nowrap""
       title="<bean:message key="menu.import_explain" />"><a
       href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
-    <td id="submenu" nowrap
+    <td id="submenu" nowrap="nowrap""
       title="<bean:message key="menu.locations_explain" />"><a
       href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
   </tr>
@@ -81,21 +81,21 @@
 <h4><bean:message key="stockexport.subheader2" /></h4>
 
 <ul>
-<p><li><bean:message key="stockexport.list2.one" /></li></p>
-<p><li><bean:message key="stockexport.list2.two" /></li></p>
-<p><li><bean:message key="stockexport.list2.three" /></li></p>
-<p><li><bean:message key="stockexport.list2.four" /></li></p>
-<p><li><bean:message arg0="<%=appName%>" key="stockexport.list2.five" /></li></p>
-<p><li><bean:message key="stockexport.list2.six" /></li></p>
-<p><li><bean:message key="stockexport.list2.seven" /></li></p>
-<p><li><bean:message key="stockexport.list2.eight" /></li></p>
-<p><li><bean:message key="stockexport.list2.nine" /></li></p>
-<p><li><bean:message key="stockexport.list2.ten" /></li></p>
-<p><li><bean:message key="stockexport.list2.eleven" />
+<li><p><bean:message key="stockexport.list2.one" /></p></li>
+<li><p><bean:message key="stockexport.list2.two" /></p></li>
+<li><p><bean:message key="stockexport.list2.three" /></p></li>
+<li><p><bean:message key="stockexport.list2.four" /></p></li>
+<li><p><bean:message arg0="<%=appName%>" key="stockexport.list2.five" /></p></li>
+<li><p><bean:message key="stockexport.list2.six" /></p></li>
+<li><p><bean:message key="stockexport.list2.seven" /></p></li>
+<li><p><bean:message key="stockexport.list2.eight" /></p></li>
+<li><p><bean:message key="stockexport.list2.nine" /></p></li>
+<li><p><bean:message key="stockexport.list2.ten" /></p></li>
+<li><p><bean:message key="stockexport.list2.eleven" />
 <br /><bean:message key="stockexport.list2.twelve" />
 <br /><bean:message key="stockexport.list2.thirteen" />
 <br /><bean:message key="stockexport.list2.fourteen" />
-</li></p>
+</p></li>
 </ul>
 <p>
   <bean:message key="stockexport.list2.fifteen" />

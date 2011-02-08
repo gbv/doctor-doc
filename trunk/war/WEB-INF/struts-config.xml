@@ -841,6 +841,19 @@
       <forward name="returntojournalsave" path="/prepareJournalSave.do?method=prepareJournalSave"/>
     </action>
     
+    <!-- Modify / create user categories -->
+    <action path="/usercategories"
+        name="HoldingForm"
+        scope="request" 
+        parameter="method"
+        validate="false"
+        type="ch.dbs.actions.user.UserAction">
+        <forward name="failure" path="/error.do"/>
+        <forward name="success" path="/modifyusercategories.do"/>
+    </action>
+    
+    <action forward = "/jsp/modifyusercategories.jsp" path="/modifyusercategories"/>
+    
     <!-- *************************************************Cronjobs************************************************* -->
     <action path="/checkpopfax"  
       scope="request" 

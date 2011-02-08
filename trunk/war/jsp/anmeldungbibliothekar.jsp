@@ -64,20 +64,19 @@
     <tr>
       <td><b>*<bean:message key="modifykonto.required" /></b></td><td></td>
     </tr>    
-     
-     <input name="institut" type="hidden" value="<logic:present name="kontoform" property="biblioname"><bean:write name="kontoform" property="biblioname" /></logic:present>" />
+    <tr>
+      <td><br /><input type="submit" value="<bean:message key="register.submit" />" /></td>
+    </tr>
+  </table>
+  
+  	 <input name="institut" type="hidden" value="<logic:present name="kontoform" property="biblioname"><bean:write name="kontoform" property="biblioname" /></logic:present>" />
      <input name="adresse" type="hidden" value="<logic:present name="kontoform" property="adresse"><bean:write name="kontoform" property="adresse" /></logic:present>" />
      <input name="adresszusatz" type="hidden" value="<logic:present name="kontoform" property="adressenzusatz"><bean:write name="kontoform" property="adressenzusatz" /></logic:present>" />
      <input name="plz" type="hidden" value="<logic:present name="kontoform" property="PLZ"><bean:write name="kontoform" property="PLZ" /></logic:present>" />
      <input name="ort" type="hidden" value="<logic:present name="kontoform" property="ort"><bean:write name="kontoform" property="ort" /></logic:present>" />
      <input name="land" type="hidden" value="<logic:present name="kontoform" property="land"><bean:write name="kontoform" property="land" /></logic:present>" />
+   	 <input name="method" type="hidden" value="addNewBibliothekar" />
     
-      <tr>
-        <td><br><input type="submit" value="<bean:message key="register.submit" />"></input></br></td>       
-          <input name="method" type="hidden" value="addNewBibliothekar">
-        </tr>
-  </table>
-       
   </html:form>
   
   <tiles:insert page="import/footer.jsp" flush="true" />

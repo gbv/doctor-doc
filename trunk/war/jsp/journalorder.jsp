@@ -22,14 +22,14 @@
 
 <table style="position:absolute; text-align:left; left:111px; z-index:2;">
   <tr>
-    <td id="submenu" nowrap title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
-    <td id="submenu" nowrap title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.search_explain" />"><a href="searchfree.do?activemenu=suchenbestellen"><bean:message key="menu.search" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.issn_explain" />"><a href="issnsearch_.do?method=prepareIssnSearch"><bean:message key="menu.issn" /></a></td>
   <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">  
     <td <logic:notEqual name="orderform" property="submit" value="GBV">id="submenuactive" nowrap</logic:notEqual><logic:equal name="orderform" property="submit" value="GBV">id="submenu" nowrap</logic:equal>title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
     <logic:present name="userinfo" property="konto.gbvbenutzername"><td <logic:equal name="orderform" property="submit" value="GBV">id="submenuactive" nowrap</logic:equal><logic:notEqual name="orderform" property="submit" value="GBV">id="submenu" nowrap</logic:notEqual>title="<bean:message arg0="<%=appName%>" key="menu.gbv_explain" />"><a href="journalorder.do?method=prepare&submit=GBV"><bean:message key="menu.gbv" /></a></td></logic:present>
   </logic:notEqual>
   <logic:equal name="userinfo" property="benutzer.rechte" value="1">
-        <td id="submenu" nowrap title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.user_order_explain" />"><a href="journalorder.do?method=prepare&submit=bestellform"><bean:message key="menu.user_order" /></a></td>
     <logic:equal name="userinfo" property="benutzer.userbestellung" value="true">
         <td <logic:notEqual name="orderform" property="submit" value="GBV">id="submenuactive" nowrap</logic:notEqual><logic:equal name="orderform" property="submit" value="GBV">id="submenu" nowrap</logic:equal>title="<bean:message key="menu.subito_explain" />"><a href="journalorder.do?method=prepare"><bean:message key="menu.subito" /></a></td>
     </logic:equal>
@@ -42,7 +42,7 @@
     </logic:present>
   </logic:equal>
       <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-        <td id="submenu" nowrap title="<bean:message key="menu.save_explain" />"><a href="prepareJournalSave.do?method=prepareJournalSave"><bean:message key="menu.save" /></a></td>
+        <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.save_explain" />"><a href="prepareJournalSave.do?method=prepareJournalSave"><bean:message key="menu.save" /></a></td>
       </logic:notEqual>
   </tr>
 </table>
@@ -62,7 +62,7 @@
    
   <table>
   <logic:notPresent name="message" property="error">
-      <tr><td><br></td></tr>
+      <tr><td><br /></td></tr>
   </logic:notPresent>
 
  <!--
@@ -71,12 +71,16 @@
  <html:form action="changeMediatypeGbv.do" method="post">
     <tr>
     <td><bean:message key="order.copy" /></td>
-    <td><input type="radio" name="mediatype" value="Artikel" <logic:equal name="orderform" property="mediatype" value="Artikel">checked="checked"</logic:equal><logic:notEqual name="orderform" property="mediatype" value="Artikel">onClick="submit()"</logic:notEqual> /><bean:message key="save.artikel" /></input>
-    <input type="radio" name="mediatype" value="Teilkopie Buch" <logic:equal name="orderform" property="mediatype" value="Teilkopie Buch">checked="checked"</logic:equal><logic:notEqual name="orderform" property="mediatype" value="Teilkopie Buch">onClick="submit()"</logic:notEqual> /><bean:message key="save.bookpart" /></input>
+    <td>
+    	<input type="radio" name="mediatype" value="Artikel" <logic:equal name="orderform" property="mediatype" value="Artikel">checked="checked"</logic:equal><logic:notEqual name="orderform" property="mediatype" value="Artikel">onclick="submit()"</logic:notEqual> /><bean:message key="save.artikel" />
+    	<input type="radio" name="mediatype" value="Teilkopie Buch" <logic:equal name="orderform" property="mediatype" value="Teilkopie Buch">checked="checked"</logic:equal><logic:notEqual name="orderform" property="mediatype" value="Teilkopie Buch">onclick="submit()"</logic:notEqual> /><bean:message key="save.bookpart" />
+    </td>
   </tr>
     <tr>   
-      <td><bean:message key="order.loan" /></td><td>
-      <input type="radio" name="mediatype" value="Buch" <logic:equal name="orderform" property="mediatype" value="Buch">checked="checked"</logic:equal><logic:notEqual name="orderform" property="mediatype" value="Buch">onClick="submit()"</logic:notEqual> /><bean:message key="order.book" /></input></td>
+      <td><bean:message key="order.loan" /></td>
+      <td>
+      	<input type="radio" name="mediatype" value="Buch" <logic:equal name="orderform" property="mediatype" value="Buch">checked="checked"</logic:equal><logic:notEqual name="orderform" property="mediatype" value="Buch">onclick="submit()"</logic:notEqual> /><bean:message key="order.book" />
+      </td>
     </tr>
 <input name="method" type="hidden" value="changeMediatypeGbv" />
 </html:form>
@@ -88,11 +92,11 @@
 <input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />" /> 
     <tr>   
       <td><bean:message key="bestellform.bestellart" /></td><td>
-      <!-- GBV akzeptiert fÃ¼r den Moment nur Bestellungen per Post, obwohl technische mÃ¶glich
+      <!-- GBV akzeptiert für den Moment nur Bestellungen per Post, obwohl technisch möglich...
       <logic:present name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" <logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal>>Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</input><logic:notEqual name="orderform" property="mediatype" value="Buch"><input type="radio" name="deloptions" value="fax to pdf" <logic:notEqual name="orderform" property="deloptions" value="post"> checked="checked"</logic:notEqual>>Fax to Email [als PDF | Faxnummer: <bean:write name="userinfo" property="konto.faxno" /> ]</input></logic:notEqual></logic:present>
       <logic:notPresent name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" checked="checked">Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</input><logic:notEqual name="orderform" property="mediatype" value="Buch"><logic:present name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" value="fax">Fax &nbsp;[ <bean:write name="userinfo" property="konto.fax_extern" /> ]</input></logic:present><logic:notPresent name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" disabled="true" value="fax">Fax</input> <font color="white"><i>(Hinterlegen Sie unter 'Konto' ihre lokale Faxnummer!) </i></font></logic:notPresent></logic:notEqual></logic:notPresent>
       -->
-      <input type="radio" name="deloptions" value="post" checked="checked"><bean:message key="save.post" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</input>
+      <input type="radio" name="deloptions" value="post" checked="checked" /><bean:message key="save.post" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </td>
     </tr>
     <tr>
@@ -105,7 +109,7 @@
     </tr>    
     <tr>
       <td><b><bean:message key="save.foruser" />*&nbsp;</b></td><td><select name="foruser">
-                        <option value="0" selected><bean:message key="select.kunde" /></option>
+                        <option value="0" selected="selected"><bean:message key="select.kunde" /></option>
                      <logic:iterate id="u" name="orderform" property="kontouser">
                      <bean:define id="tmp"><bean:write name="orderform" property="foruser"/></bean:define>
                          <option value="<bean:write name="u" property="id" />"<logic:equal name="u" property="id" value="<%=tmp%>"> selected</logic:equal>><bean:write name="u" property="name" />, <bean:write name="u" property="vorname" /> - [<bean:write name="u" property="email" />]</option>
@@ -229,9 +233,10 @@
       </tr>
     </logic:notEqual>
     <tr>
-      <td><bean:message key="order.mehrkosten" />&nbsp;</td><td><input name="maximum_cost" type="text"
+      <td><bean:message key="order.mehrkosten" />&nbsp;</td>
+      <td><input name="maximum_cost" type="text"
           value="<bean:write name="orderform" property="maximum_cost" />" size="2"
-          maxlength="2" />&nbsp;<bean:message key="order.eur" /> <logic:notEqual name="orderform" property="mediatype" value="Buch">(<bean:message key="order.copy_plus" />)</logic:notEqual><td></td>
+          maxlength="2" />&nbsp;<bean:message key="order.eur" /> <logic:notEqual name="orderform" property="mediatype" value="Buch">(<bean:message key="order.copy_plus" />)</logic:notEqual></td>
     </tr>
   <tr title="<bean:message key="info.internenr" />">
       <td><bean:message key="save.internenr" /><img src="img/info.png" alt="<bean:message key="info.internenr" />" />&nbsp;</td>
@@ -239,26 +244,26 @@
     </tr>
 
     <tr title="<bean:message key="order.bemerkungen_explain" />">
-      <td><bean:message key="bestellform.bemerkungen" /> <img src="img/info.png" alt="<bean:message key="order.bemerkungen_explain" />" /></td><td><input name="anmerkungen" type="text" value="<bean:write name="orderform" property="anmerkungen" />" size="62" maxlength="100"> (<bean:message key="order.send" />)</td>
+      <td><bean:message key="bestellform.bemerkungen" /> <img src="img/info.png" alt="<bean:message key="order.bemerkungen_explain" />" /></td><td><input name="anmerkungen" type="text" value="<bean:write name="orderform" property="anmerkungen" />" size="62" maxlength="100" /> (<bean:message key="order.send" />)</td>
     </tr>
     <tr title="<bean:message arg0="<%=appName%>" key="save.interne_notizen_comment" />">
-      <td><bean:message key="bestellform.interne_notizen" /> <img src="img/info.png" alt="<bean:message arg0="<%=appName%>" key="save.interne_notizen_comment" />" />&nbsp;</td><td><input name="notizen" type="text" value="<bean:write name="orderform" property="notizen" />" size="62" maxlength="500"> (<bean:message key="order.intern" />)</td>
+      <td><bean:message key="bestellform.interne_notizen" /> <img src="img/info.png" alt="<bean:message arg0="<%=appName%>" key="save.interne_notizen_comment" />" />&nbsp;</td><td><input name="notizen" type="text" value="<bean:write name="orderform" property="notizen" />" size="62" maxlength="500" /> (<bean:message key="order.intern" />)</td>
     </tr>
 
-     <tr><td><br></td></tr>
+     <tr><td><br /></td></tr>
 
 
       <tr>
       <td><bean:message key="order.method" />&nbsp;</td><td>
-      <input type="radio" name="manuell" <logic:notPresent name="userinfo" property="konto.gbvrequesterid">disabled="true" </logic:notPresent><logic:present name="userinfo" property="konto.gbvrequesterid"><logic:notPresent name="userinfo" property="konto.isil">disabled="true" </logic:notPresent></logic:present>value="false" <logic:present name="orderform" property="manuell"><logic:equal name="orderform" property="manuell" value="false">checked="checked"</logic:equal></logic:present><logic:notPresent name="orderform" property="manuell">checked="checked"</logic:notPresent>><bean:message key="order.gbv_autom" /> [<b>* <bean:message key="bestellform.required" /></b>] <font color="white"><i><logic:notPresent name="userinfo" property="konto.gbvrequesterid"> <bean:message key="error.requesterid" /></logic:notPresent><logic:present name="userinfo" property="konto.gbvrequesterid"><logic:notPresent name="userinfo" property="konto.isil"> <bean:message key="error.isil" /></logic:notPresent></logic:present></i></font>
-      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br>
-      <input type="radio" name="manuell" value="true" <logic:present name="orderform" property="manuell"><logic:equal name="orderform" property="manuell" value="true">checked="checked"</logic:equal></logic:present>><bean:message key="order.gbv_manuell" />
+      <input type="radio" name="manuell" <logic:notPresent name="userinfo" property="konto.gbvrequesterid">disabled="true" </logic:notPresent><logic:present name="userinfo" property="konto.gbvrequesterid"><logic:notPresent name="userinfo" property="konto.isil">disabled="true" </logic:notPresent></logic:present>value="false" <logic:present name="orderform" property="manuell"><logic:equal name="orderform" property="manuell" value="false">checked="checked"</logic:equal></logic:present><logic:notPresent name="orderform" property="manuell">checked="checked"</logic:notPresent> /><bean:message key="order.gbv_autom" /> [<b>* <bean:message key="bestellform.required" /></b>] <font color="white"><i><logic:notPresent name="userinfo" property="konto.gbvrequesterid"> <bean:message key="error.requesterid" /></logic:notPresent><logic:present name="userinfo" property="konto.gbvrequesterid"><logic:notPresent name="userinfo" property="konto.isil"> <bean:message key="error.isil" /></logic:notPresent></logic:present></i></font>
+      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br />
+      <input type="radio" name="manuell" value="true" <logic:present name="orderform" property="manuell"><logic:equal name="orderform" property="manuell" value="true">checked="checked"</logic:equal></logic:present> /><bean:message key="order.gbv_manuell" />
       </logic:notEqual>
       </td>
     </tr>
       
  
-      <tr><td><br></td></tr>
+      <tr><td><br /></td></tr>
 
     <logic:notEqual name="userinfo" property="konto.bibliotheksname" value="Demo-Bibliothek">
   
@@ -273,7 +278,7 @@
   <tr>
   <td><input type="submit" name="submit" value="<bean:message key="order.order" />"></input></td>
   <td><br />&nbsp;&nbsp;</td>
-  <td><div id="italic"><bean:message key="order.doppelklicks" /></td>
+  <td><div id="italic"><bean:message key="order.doppelklicks" /></div></td>
   </tr>
   </table>
   </td>

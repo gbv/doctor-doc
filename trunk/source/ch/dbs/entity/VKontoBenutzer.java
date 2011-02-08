@@ -194,16 +194,16 @@ public class VKontoBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = b.setUserValues(cn.prepareStatement("SELECT * FROM `benutzer` WHERE "
-                    + "`institut` = ? AND `abteilung` = ? AND `anrede` = ? AND `vorname` = ? AND `name` = ? "
-                    + "AND `adr` = ? AND`adrzus` = ? AND `telp` = ? AND `telg` = ? AND `plz` = ? AND `ort` = ? "
-                    + "AND `land` = ? AND `mail` = ? AND `pw` = ? AND`loginopt` = ? AND `userbestellung` = ? "
+            pstmt = b.setUserValues(cn.prepareStatement("SELECT * FROM `benutzer` WHERE `institut` = ? AND "
+                    + "`abteilung` = ? AND `category` = ? AND `anrede` = ? AND `vorname` = ? AND `name` = ? "
+                    + "AND `adr` = ? AND `adrzus` = ? AND `telp` = ? AND `telg` = ? AND `plz` = ? AND `ort` = ? "
+                    + "AND `land` = ? AND `mail` = ? AND `pw` = ? AND `loginopt` = ? AND `userbestellung` = ? "
                     + "AND `gbvbestellung` = ? AND `billing` = ? AND `kontoval` = ? AND `kontostatus` = ? "
                     + "AND `rechte` = ? AND `gtc` = ? AND `gtcdate` = ? AND `lastuse` = ?"), b, k, cn);
 
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                b = b.getUser(rs);
+                b = b.getUser(rs, cn);
             }
 
             pstmt = cn.prepareStatement("INSERT INTO `v_konto_benutzer` (`UID` , "
@@ -242,15 +242,15 @@ public class VKontoBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = setBibliothekarValues(cn.prepareStatement("SELECT * FROM `benutzer` WHERE "
-                    + "`institut` = ? AND `abteilung` = ? AND `anrede` = ? AND `vorname` = ? AND `name` = ? "
-                    + "AND `adr` = ? AND`adrzus` = ? AND `telp` = ? AND `telg` = ? AND `plz` = ? AND `ort` = ? "
-                    + "AND `land` = ? AND `mail` = ? AND `pw` = ? AND`loginopt` = ? AND `userbestellung` = ? "
+            pstmt = setBibliothekarValues(cn.prepareStatement("SELECT * FROM `benutzer` WHERE `institut` = ? AND "
+                    + "`abteilung` = ? AND `category` = ? AND `anrede` = ? AND `vorname` = ? AND `name` = ? "
+                    + "AND `adr` = ? AND `adrzus` = ? AND `telp` = ? AND `telg` = ? AND `plz` = ? AND `ort` = ? "
+                    + "AND `land` = ? AND `mail` = ? AND `pw` = ? AND `loginopt` = ? AND `userbestellung` = ? "
                     + "AND `gbvbestellung` = ? AND `billing` = ? AND `kontoval` = ? AND `kontostatus` = ? "
                     + "AND `rechte` = ? AND `gtc` = ? AND `gtcdate` = ?"), b, cn);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                b = b.getUser(rs);
+                b = b.getUser(rs, cn);
             }
 
             pstmt = cn.prepareStatement("INSERT INTO `v_konto_benutzer` (`UID` , "
@@ -302,42 +302,43 @@ public class VKontoBenutzer extends AbstractIdEntity {
 
         if (user.getInstitut() != null) { pstmt.setString(1, user.getInstitut()); } else { pstmt.setString(1, ""); }
         if (user.getAbteilung() != null) { pstmt.setString(2, user.getAbteilung()); } else { pstmt.setString(2, ""); }
-        if (user.getAnrede() != null) { pstmt.setString(3, user.getAnrede()); } else { pstmt.setString(3, ""); }
-        if (user.getVorname() != null) { pstmt.setString(4, user.getVorname()); } else { pstmt.setString(4, ""); }
-        if (user.getName() != null) { pstmt.setString(5, user.getName()); } else { pstmt.setString(5, ""); }
-        if (user.getAdresse() != null) { pstmt.setString(6, user.getAdresse()); } else { pstmt.setString(6, ""); }
-        if (user.getAdresszusatz() != null) { pstmt.setString(7, user.getAdresszusatz()); } else { pstmt.setString(7, ""); }
-        if (user.getTelefonnrp() != null) { pstmt.setString(8, user.getTelefonnrp()); } else { pstmt.setString(8, ""); }
-        if (user.getTelefonnrg() != null) { pstmt.setString(9, user.getTelefonnrg()); } else { pstmt.setString(9, ""); }
-        if (user.getPlz() != null) { pstmt.setString(10, user.getPlz()); } else { pstmt.setString(10, ""); }
-        if (user.getOrt() != null) { pstmt.setString(11, user.getOrt()); } else { pstmt.setString(11, ""); }
-        if (user.getLand() != null) { pstmt.setString(12, user.getLand()); } else { pstmt.setString(12, ""); }
-        if (user.getEmail() != null) { pstmt.setString(13, user.getEmail()); } else { pstmt.setString(13, ""); }
+        pstmt.setLong(3, user.getCategory().getId());
+        if (user.getAnrede() != null) { pstmt.setString(4, user.getAnrede()); } else { pstmt.setString(4, ""); }
+        if (user.getVorname() != null) { pstmt.setString(5, user.getVorname()); } else { pstmt.setString(5, ""); }
+        if (user.getName() != null) { pstmt.setString(6, user.getName()); } else { pstmt.setString(6, ""); }
+        if (user.getAdresse() != null) { pstmt.setString(7, user.getAdresse()); } else { pstmt.setString(7, ""); }
+        if (user.getAdresszusatz() != null) { pstmt.setString(8, user.getAdresszusatz()); } else { pstmt.setString(8, ""); }
+        if (user.getTelefonnrp() != null) { pstmt.setString(9, user.getTelefonnrp()); } else { pstmt.setString(9, ""); }
+        if (user.getTelefonnrg() != null) { pstmt.setString(10, user.getTelefonnrg()); } else { pstmt.setString(10, ""); }
+        if (user.getPlz() != null) { pstmt.setString(11, user.getPlz()); } else { pstmt.setString(11, ""); }
+        if (user.getOrt() != null) { pstmt.setString(12, user.getOrt()); } else { pstmt.setString(12, ""); }
+        if (user.getLand() != null) { pstmt.setString(13, user.getLand()); } else { pstmt.setString(13, ""); }
+        if (user.getEmail() != null) { pstmt.setString(14, user.getEmail()); } else { pstmt.setString(14, ""); }
         if (user.getPassword() != null) {
             // Falls das Passwort "" wäre, ist anzunehmen dass das PW bereits gesetzt ist und
             // beim Updaten nicht geändert werden soll
             if (user.getPassword().equals("da39a3ee5e6b4bd3255bfef95601890afd879") && user.getId() != null) {
                 AbstractBenutzer userpw = new AbstractBenutzer();
                 userpw = userpw.getUser(user.getId(), cn);
-                pstmt.setString(14, userpw.getPassword());
-            } else { pstmt.setString(14, user.getPassword()); }
-        } else { pstmt.setString(14, ""); } // must not be null
-        pstmt.setString(15, loginOpt);
-        pstmt.setString(16, userBestellung);
-        pstmt.setString(17, gbvBestellung);
+                pstmt.setString(15, userpw.getPassword());
+            } else { pstmt.setString(15, user.getPassword()); }
+        } else { pstmt.setString(15, ""); } // must not be null
+        pstmt.setString(16, loginOpt);
+        pstmt.setString(17, userBestellung);
+        pstmt.setString(18, gbvBestellung);
         if (user.getBilling() != null) {
-            pstmt.setString(18, user.getBilling().toString());
+            pstmt.setString(19, user.getBilling().toString());
         } else {
-            pstmt.setString(18, "");
+            pstmt.setString(19, "");
         }
-        pstmt.setString(19, kontoVal);
-        pstmt.setString(20, kontoStatus);
-        pstmt.setString(21, "2");
-        if (user.getGtc() != null) { pstmt.setString(22, user.getGtc()); } else { pstmt.setString(22, ""); }
+        pstmt.setString(20, kontoVal);
+        pstmt.setString(21, kontoStatus);
+        pstmt.setString(22, "2");
+        if (user.getGtc() != null) { pstmt.setString(23, user.getGtc()); } else { pstmt.setString(23, ""); }
         if (user.getGtcdate() == null || user.getGtcdate().equals("")) {
-            pstmt.setString(23, "0000:00:00 00:00:00");
+            pstmt.setString(24, "0000:00:00 00:00:00");
         } else {
-            pstmt.setString(23, user.getGtcdate());
+            pstmt.setString(24, user.getGtcdate());
         }
 
         return pstmt;

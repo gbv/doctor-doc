@@ -36,6 +36,7 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Konto;
+import ch.dbs.entity.Text;
 
 public class TestBenutzer extends TestCase{
 
@@ -47,6 +48,7 @@ public class TestBenutzer extends TestCase{
     private static final String telefonnrp = "1234568";
     private static final String institut = "Testinstitut";
     private static final String abteilung = "Testabteilung";
+    private static final Text category = new Text();
     private static final String adresse = "Testadresse";
     private static final String adresszusatz = "Testadresszusatz";
     private static final String plz = "Testplz";
@@ -118,6 +120,7 @@ public class TestBenutzer extends TestCase{
         assertEquals(b.getTelefonnrp(),telefonnrp);
         assertEquals(b.getInstitut(),institut);
         assertEquals(b.getAbteilung(),abteilung);
+        assertEquals(b.getCategory(),category);
         assertEquals(b.getAdresse(),adresse);
         assertEquals(b.getAdresszusatz(),adresszusatz);
         assertEquals(b.getPlz(),plz);
@@ -233,6 +236,7 @@ public class TestBenutzer extends TestCase{
         if (u != null) {
             u.setInstitut(institut);
             u.setAbteilung(abteilung);
+            u.setCategory(category);
             u.setAnrede(anrede);
             u.setVorname(vorname);
             u.setName(name);

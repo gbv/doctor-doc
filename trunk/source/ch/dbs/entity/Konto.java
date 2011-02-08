@@ -533,7 +533,7 @@ public class Konto extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement(
-            "SELECT * FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
+            "SELECT k.* FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
             pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
 
@@ -577,10 +577,10 @@ public class Konto extends AbstractIdEntity {
             // Nur an alle Kontos anmelden, wenn auch Loginoption == true
             if (u.isLoginopt() || u.getClass().isInstance(new Bibliothekar())
                     || u.getClass().isInstance(new Administrator())) {
-                pstmt = cn.prepareStatement("SELECT * FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) "
+                pstmt = cn.prepareStatement("SELECT k.* FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) "
                         + "ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
             } else { // Sonst nur Kontos, welche Benutzerlogin zulassen
-                pstmt = cn.prepareStatement("SELECT * FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) "
+                pstmt = cn.prepareStatement("SELECT k.* FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) "
                         + "ON (k.KID=vkb.KID) WHERE vkb.UID = ? AND k.userlogin = 1");
             }
             pstmt.setLong(1, u.getId());

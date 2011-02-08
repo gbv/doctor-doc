@@ -149,7 +149,7 @@ OpenURL - Linkresolver
    </h3>
    <p><bean:message key="bestellformconfigureselect.test" /></p>
    
-   <p><a href="http://www.doctor-doc.com/version1.0/openurl.do?kkid=medtest&sid=Entrez:PubMed&id=pmid:18221514">http://www.doctor-doc.com/version1.0/openurl.do?kkid=medtest&sid=Entrez:PubMed&id=pmid:18221514</a></p>
+   <p><a href="http://www.doctor-doc.com/version1.0/openurl.do?kkid=medtest&sid=Entrez:PubMed&id=pmid:18221514">http://www.doctor-doc.com/version1.0/openurl.do?kkid=medtest&amp;sid=Entrez:PubMed&amp;id=pmid:18221514</a></p>
       
 
     
@@ -192,10 +192,10 @@ OpenURL - Linkresolver
    
    <h3>
      Demo
-   </h3></a>
+   </h3>
    <p><bean:message key="bestellformconfigureselect.test" /></p>
    
-   <p><a href="http://www.doctor-doc.com/version1.0/bestellform.do?method=validate&activemenu=bestellform&kkid=medtest">http://www.doctor-doc.com/version1.0/bestellform.do?method=validate&activemenu=bestellform&kkid=medtest</a></p>
+   <p><a href="http://www.doctor-doc.com/version1.0/bestellform.do?method=validate&activemenu=bestellform&kkid=medtest">http://www.doctor-doc.com/version1.0/bestellform.do?method=validate&amp;activemenu=bestellform&amp;kkid=medtest</a></p>
     
 
   </logic:equal>

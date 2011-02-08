@@ -15,7 +15,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="menu.import" /></title>
-<link rel="stylesheet" type="text/css" href="jsp/import/styles.css">
+<link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
   
  </head>
  <body>
@@ -30,12 +30,12 @@
 <table
   style="position:absolute; text-align:left; left:<bean:message key="submenupos.stock" />px; z-index:2;">
   <tr>
-    <td id="submenu" nowrap title="<bean:message key="menu.export_explain" />"><a
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="menu.export_explain" />"><a
       href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
     <td <logic:notEqual name="holdingform" property="submit" value="minus">id="submenuactive" nowrap</logic:notEqual><logic:equal name="holdingform" property="submit" value="minus">id="submenu" nowrap</logic:equal>
       title="<bean:message key="menu.import_explain" />"><a
       href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
-    <td id="submenu" nowrap
+    <td id="submenu" nowrap="nowrap""
       title="<bean:message key="menu.locations_explain" />"><a
       href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
   </tr>
@@ -127,8 +127,7 @@
     <th id="th-left">Suppl&nbsp;</th>
     <td><bean:message key="stockimport.supplements" /></td>
   </tr>
-  </tr>
-    <tr>
+  <tr>
     <th id="th-left">remarks&nbsp;</th>
     <td><bean:message key="stockimport.remarks" /></td>
   </tr>
@@ -163,6 +162,6 @@
 
 <p><br /></p>
 
-
+</div>
 </body>
 </html>

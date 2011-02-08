@@ -27,8 +27,8 @@
 
 <table style="position:absolute; text-align:left; left:<bean:message key="submenupos.konto" />px; z-index:2;">
   <tr>
-    <td id="submenuactive" nowrap title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
-    <td id="submenu" nowrap title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
+    <td id="submenuactive" nowrap="nowrap" title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
   </tr>
 </table>
 
@@ -103,7 +103,7 @@
           <td><b><bean:message key="modifykonto.land" />*</b></td>
           <td>
             <select name="land">
-            <option value="0" selected><bean:message key="modifykonto.countrychoose" /></option>
+            <option value="0" selected="selected"><bean:message key="modifykonto.countrychoose" /></option>
          <logic:iterate id="c" name="kontoform" property="countries">
         <bean:define id="tmp" name="c" property="countrycode" type="java.lang.String"/>
              <option value="<bean:write name="c" property="countrycode" />"<logic:present name="kontoform" property="land"><logic:equal name="kontoform" property="land" value="<%=tmp%>"> selected</logic:equal></logic:present>><bean:write name="c" property="countryname" /></option>
