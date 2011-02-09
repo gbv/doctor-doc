@@ -40,7 +40,7 @@ public final class UserForm extends ValidatorForm {
     private String telefonnrp;
     private String institut;
     private String abteilung;
-    private String category;
+    private String category = "0";
     private String adresse;
     private String adresszusatz;
     private String plz;
@@ -81,6 +81,7 @@ public final class UserForm extends ValidatorForm {
 
         if (lf.getKundeninstitution() != null) { institut = lf.getKundeninstitution().trim(); }
         if (lf.getKundenabteilung() != null) { abteilung = lf.getKundenabteilung().trim(); }
+        if (lf.getCategory() != null) { category = lf.getCategory(); }
         if (lf.getKundenvorname() != null) { vorname = lf.getKundenvorname().trim(); }
         if (lf.getKundenname() != null) { name = lf.getKundenname().trim(); }
         if (lf.getKundenadresse() != null) { adresse = lf.getKundenadresse().trim(); }
@@ -95,6 +96,7 @@ public final class UserForm extends ValidatorForm {
 
         if (kf.getKundeninstitution() != null) { institut = kf.getKundeninstitution().trim(); }
         if (kf.getKundenabteilung() != null) { abteilung = kf.getKundenabteilung().trim(); }
+        if (kf.getCategory() != null) { category = kf.getCategory(); }
         if (kf.getKundenvorname() != null) { vorname = kf.getKundenvorname().trim(); }
         if (kf.getKundenname() != null) { name = kf.getKundenname().trim(); }
         if (kf.getKundenadresse() != null) { adresse = kf.getKundenadresse().trim(); }

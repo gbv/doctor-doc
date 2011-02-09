@@ -119,6 +119,7 @@ public final class KontoForm extends ValidatorForm {
     private String kundenemail;
     private String kundeninstitution;
     private String kundenabteilung;
+    private String category = "0";
     private String kundentelefon;
     private String kundenadresse;
     private String kundenplz;
@@ -907,6 +908,16 @@ public final class KontoForm extends ValidatorForm {
 
     public void setKundenabteilung(final String kundenabteilung) {
         this.kundenabteilung = kundenabteilung;
+    }
+
+
+    public String getCategory() {
+        return category;
+    }
+
+
+    public void setCategory(final String category) {
+        this.category = category;
     }
 
 

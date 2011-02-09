@@ -238,7 +238,9 @@
 
 </html:form>
 
-<a class="black" target="_blank" href="orderreport.do?method=orderspdf&sort=<bean:write name="overviewform" property="sort" />&sortorder=<bean:write name="overviewform" property="sortorder" />&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />&filter=<bean:write name="overviewform" property="filter" /><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>"><img src='img/pdf-druckvorschau.png' alt="<bean:message key="uebersicht.pdf" />" title="<bean:message key="uebersicht.pdf" />" height="30" width="26" border="0"></a>
+<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
+	<a class="black" target="_blank" href="orderreport.do?method=orderspdf&sort=<bean:write name="overviewform" property="sort" />&sortorder=<bean:write name="overviewform" property="sortorder" />&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />&filter=<bean:write name="overviewform" property="filter" /><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>"><img src='img/pdf-druckvorschau.png' alt="<bean:message key="uebersicht.pdf" />" title="<bean:message key="uebersicht.pdf" />" height="30" width="26" border="0"></a>
+</logic:notEqual>
 <bean:message key="uebersicht.titel" /> <logic:present name="orderstatistikform" property="auflistung">- <bean:message key="uebersicht.total" />: <logic:iterate id="o" name="orderstatistikform" property="auflistung"><bean:write name="o" property="total" /></logic:iterate></logic:present>
 
 <table border="1">

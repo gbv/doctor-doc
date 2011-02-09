@@ -54,6 +54,9 @@
        <logic:present name="userform" property="abteilung">
          <input type="hidden" name="kundenabteilung" value="<bean:write name="userform" property="abteilung" />" />
        </logic:present>
+       <logic:present name="userform" property="category">
+         <input type="hidden" name="category" value="<bean:write name="userform" property="category" />" />
+       </logic:present>
        <logic:present name="userform" property="telefonnrg">
          <input type="hidden" name="kundentelefon" value="<bean:write name="userform" property="telefonnrg" />" />
        </logic:present>

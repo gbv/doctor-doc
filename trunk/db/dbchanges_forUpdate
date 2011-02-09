@@ -6,7 +6,7 @@ ALTER TABLE `bestellform_param` ADD `category_required` TINYINT( 1 ) NOT NULL DE
 
 -- Revision 121 --
 
-INSERT INTO `doctor-doc_com_dbs`.`texttyp` (
+INSERT INTO `texttyp` (
 `TYID` ,
 `KID` ,
 `inhalt`

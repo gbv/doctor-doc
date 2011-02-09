@@ -293,7 +293,7 @@ public final class BestellformAction extends DispatchAction {
                     // get user categories for drop down menu
                     if (bp.isCategory()) {
                         final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                                t.getKonto().getId(), cn.getConnection());
+                                ui.getKonto().getId(), cn.getConnection());
                         // only set into request, if we have at least one category
                         rq.setAttribute("categories", categories);
                     }
@@ -301,7 +301,9 @@ public final class BestellformAction extends DispatchAction {
                     // values for customizable orderform
                     of.setKundeninstitution(ui.getBenutzer().getInstitut());
                     of.setKundenabteilung(ui.getBenutzer().getAbteilung());
-                    of.setKundenkategorieID(ui.getBenutzer().getCategory().getId().toString());
+                    if (ui.getBenutzer().getCategory().getId() != null) {
+                        of.setKundenkategorieID(ui.getBenutzer().getCategory().getId().toString());
+                    }
                     of.setKundenadresse(ui.getBenutzer().getAdresse() + "\012" + ui.getBenutzer().getAdresszusatz()
                             + "\012" + ui.getBenutzer().getPlz() + "\040" + ui.getBenutzer().getOrt());
                     of.setKundenstrasse(ui.getBenutzer().getAdresse() + "\040" + ui.getBenutzer().getAdresszusatz());
@@ -1577,47 +1579,51 @@ public final class BestellformAction extends DispatchAction {
         final StringBuffer urlParam = new StringBuffer();
         final CodeUrl urlCoder = new CodeUrl();
 
-        if (of.getKundenmail() != null && !of.getKundenmail().equals("")) {
+        if (of.getKundenmail() != null && !"".equals(of.getKundenmail())) {
             urlParam.append("email=");
             urlParam.append(of.getKundenmail());
         }
-        if (of.getKundenname() != null && !of.getKundenname().equals("")) {
+        if (of.getKundenname() != null && !"".equals(of.getKundenname())) {
             urlParam.append("&name=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenname()));
         }
-        if (of.getKundenvorname() != null && !of.getKundenvorname().equals("")) {
+        if (of.getKundenvorname() != null && !"".equals(of.getKundenvorname())) {
             urlParam.append("&vorname=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenvorname()));
         }
-        if (of.getKundeninstitution() != null && !of.getKundeninstitution().equals("")) {
+        if (of.getKundeninstitution() != null && !"".equals(of.getKundeninstitution())) {
             urlParam.append("&institut=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundeninstitution()));
         }
-        if (of.getKundenabteilung() != null && !of.getKundenabteilung().equals("")) {
+        if (of.getKundenabteilung() != null && !"".equals(of.getKundenabteilung())) {
             urlParam.append("&abteilung=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenabteilung()));
         }
-        if (of.getKundenadresse() != null && !of.getKundenadresse().equals("")) {
+        if (of.getKundenkategorieID() != null && !"0".equals(of.getKundenkategorieID())) {
+            urlParam.append("&category=");
+            urlParam.append(urlCoder.encodeLatin1(of.getKundenkategorieID()));
+        }
+        if (of.getKundenadresse() != null && !"".equals(of.getKundenadresse())) {
             urlParam.append("&adresse=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenadresse()));
         }
-        if (of.getKundenstrasse() != null && !of.getKundenstrasse().equals("")) {
+        if (of.getKundenstrasse() != null && !"".equals(of.getKundenstrasse())) {
             urlParam.append("&adresse=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenstrasse()));
         }
-        if (of.getKundentelefon() != null && !of.getKundentelefon().equals("")) {
+        if (of.getKundentelefon() != null && !"".equals(of.getKundentelefon())) {
             urlParam.append("&telefonnrg=");
             urlParam.append(of.getKundentelefon());
         }
-        if (of.getKundenplz() != null && !of.getKundenplz().equals("")) {
+        if (of.getKundenplz() != null && !"".equals(of.getKundenplz())) {
             urlParam.append("&plz=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenplz()));
         }
-        if (of.getKundenort() != null && !of.getKundenort().equals("")) {
+        if (of.getKundenort() != null && !"".equals(of.getKundenort())) {
             urlParam.append("&ort=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenort()));
         }
-        if (of.getKundenland() != null && !of.getKundenland().equals("")) {
+        if (of.getKundenland() != null && !"".equals(of.getKundenland())) {
             urlParam.append("&land=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenland()));
         }
