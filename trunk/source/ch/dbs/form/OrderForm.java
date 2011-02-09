@@ -129,6 +129,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String kundenlieferart3;
     private String kundeninstitution;
     private String kundenabteilung;
+    private String kundenkategorieID = "0";
     private String freitxt1_label;
     private String freitxt1_inhalt;
     private String kundenadresse;
@@ -1018,6 +1019,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
     public void setKundenabteilung(final String kundenabteilung) {
         this.kundenabteilung = kundenabteilung;
+    }
+
+    public String getKundenkategorieID() {
+        return kundenkategorieID;
+    }
+
+    public void setKundenkategorieID(final String kundenkategorieID) {
+        this.kundenkategorieID = kundenkategorieID;
     }
 
     public String getFreitxt1_label() {

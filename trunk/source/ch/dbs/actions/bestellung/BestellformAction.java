@@ -190,6 +190,14 @@ public final class BestellformAction extends DispatchAction {
                     of.setRadiobutton(bp.getOption_value1());
                 } // default Option1
 
+                // get user categories for drop down menu
+                if (bp.isCategory()) {
+                    final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                            t.getKonto().getId(), cn.getConnection());
+                    // only set into request, if we have at least one category
+                    rq.setAttribute("categories", categories);
+                }
+
                 // set link in request if there is institution logo for this account
                 if (t.getKonto().getInstlogolink() != null) {
                     rq.setAttribute("logolink", t.getKonto().getInstlogolink());
@@ -271,7 +279,8 @@ public final class BestellformAction extends DispatchAction {
                     }
                 }
 
-                bp = new BestellParam(ui.getKonto(), cn.getConnection()); // special case BestellParam when logged in
+                // special case BestellParam when logged in
+                bp = new BestellParam(ui.getKonto(), cn.getConnection());
 
                 // set country select
                 if (bp != null && bp.getId() != null) {
@@ -280,9 +289,19 @@ public final class BestellformAction extends DispatchAction {
                     if (of.getRadiobutton().equals("")) {
                         of.setRadiobutton(bp.getOption_value1());
                     } // default Option1
+
+                    // get user categories for drop down menu
+                    if (bp.isCategory()) {
+                        final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                                t.getKonto().getId(), cn.getConnection());
+                        // only set into request, if we have at least one category
+                        rq.setAttribute("categories", categories);
+                    }
+
                     // values for customizable orderform
                     of.setKundeninstitution(ui.getBenutzer().getInstitut());
                     of.setKundenabteilung(ui.getBenutzer().getAbteilung());
+                    of.setKundenkategorieID(ui.getBenutzer().getCategory().getId().toString());
                     of.setKundenadresse(ui.getBenutzer().getAdresse() + "\012" + ui.getBenutzer().getAdresszusatz()
                             + "\012" + ui.getBenutzer().getPlz() + "\040" + ui.getBenutzer().getOrt());
                     of.setKundenstrasse(ui.getBenutzer().getAdresse() + "\040" + ui.getBenutzer().getAdresszusatz());
@@ -398,7 +417,7 @@ public final class BestellformAction extends DispatchAction {
                 }
             }
 
-            // zugehörige Bestellformular-Parameter holen
+            // get an eventual BestellParam
             if (!auth.isLogin(rq) && t != null && t.getInhalt() != null) {
                 bp = new BestellParam(t, cn.getConnection());
                 // Länderauswahl setzen
@@ -523,7 +542,7 @@ public final class BestellformAction extends DispatchAction {
                         m.append("Institution: ");
                         m.append(of.getKundeninstitution());
                         m.append('\n');
-                    } else { // ggf. Angaben aus dbs
+                    } else { // use information from database
                         if (u.getInstitut() != null && !u.getInstitut().equals("")) {
                             m.append("Institution: ");
                             m.append(u.getInstitut());
@@ -535,10 +554,22 @@ public final class BestellformAction extends DispatchAction {
                         m.append("Department: ");
                         m.append(of.getKundenabteilung());
                         m.append('\n');
-                    } else { // ggf. Angaben aus dbs
+                    } else { // use information from database
                         if (u.getAbteilung() != null && !u.getAbteilung().equals("")) {
                             m.append("Department: ");
                             m.append(u.getAbteilung());
+                            m.append('\n');
+                        }
+                    }
+
+                    if (of.getKundenkategorieID() != null && !"0".equals(of.getKundenkategorieID())) {
+                        m.append("Category: ");
+                        m.append(new Text(cn.getConnection(), Long.valueOf(of.getKundenkategorieID())).getInhalt());
+                        m.append('\n');
+                    } else { // use information from database
+                        if (u.getCategory() != null && u.getCategory().getInhalt() != null) {
+                            m.append("Category: ");
+                            m.append(u.getCategory().getInhalt());
                             m.append('\n');
                         }
                     }
@@ -580,7 +611,7 @@ public final class BestellformAction extends DispatchAction {
                         m.append("Phone: ");
                         m.append(of.getKundentelefon());
                         m.append('\n');
-                    } else { // ggf. Angaben aus dbs
+                    } else { // use information from database
                         if (u.getTelefonnrg() != null && !u.getTelefonnrg().equals("")) {
                             m.append("Phone B: ");
                             m.append(u.getTelefonnrg());
@@ -1135,6 +1166,14 @@ public final class BestellformAction extends DispatchAction {
                                 }
                             }
 
+                            // get user categories for drop down menu
+                            if (bp.isCategory()) {
+                                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                                        ui.getKonto().getId(), cn.getConnection());
+                                // only set into request, if we have at least one category
+                                rq.setAttribute("categories", categories);
+                            }
+
                             rq.setAttribute("orderform", of);
                             rq.setAttribute("bestellparam", bp);
 
@@ -1463,6 +1502,9 @@ public final class BestellformAction extends DispatchAction {
                 }
                 if (bp.isAbt_required() && !ck.isMinLength(of.getKundenabteilung(), 1)) {
                     m.setMessage("error.abteilung");
+                }
+                if (bp.isCategory_required() && ("0".equals(of.getKundenkategorieID()) || !ck.isMinLength(of.getKundenkategorieID(), 1))) {
+                    m.setMessage("error.category");
                 }
                 if (bp.isFreitxt1_required() && !ck.isMinLength(of.getFreitxt1_inhalt(), 1)) {
                     m.setMessage("error.values");

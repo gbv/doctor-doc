@@ -1,3 +1,9 @@
+-- Revision 122 --
+
+ALTER TABLE `bestellform_param` ADD `category` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `abteilung` 
+
+ALTER TABLE `bestellform_param` ADD `category_required` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `abt_required` 
+
 -- Revision 121 --
 
 INSERT INTO `doctor-doc_com_dbs`.`texttyp` (

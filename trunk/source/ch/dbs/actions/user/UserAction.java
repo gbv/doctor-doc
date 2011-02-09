@@ -969,13 +969,16 @@ public final class UserAction extends DispatchAction {
                 if ("true".equals(mod)) { modify = true; }
 
                 if (save && category != null) {
-                    // save new category
                     forward = SUCCESS;
-                    final Text txt = new Text();
-                    txt.setInhalt(category);
-                    txt.setTexttyp(ty);
-                    txt.setKonto(ui.getKonto());
-                    txt.saveNewText(cn.getConnection(), txt);
+                    // don't save empty string
+                    if (!"".equals(category) && !" ".equals(category)) {
+                        // save new category
+                        final Text txt = new Text();
+                        txt.setInhalt(category);
+                        txt.setTexttyp(ty);
+                        txt.setKonto(ui.getKonto());
+                        txt.saveNewText(cn.getConnection(), txt);
+                    }
 
                     final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
 

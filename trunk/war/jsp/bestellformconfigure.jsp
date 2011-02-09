@@ -160,6 +160,12 @@
      <td>&nbsp;</td>
    </tr>
    <tr>
+     <td><bean:message key="modifykontousers.category" />&nbsp;</td>
+     <td align="center"><input type="checkbox" name="category" <logic:equal name="bestellform" property="category" value="true">checked="checked"</logic:equal> /></td>
+     <td align="center"><input type="checkbox" name="category_required" <logic:equal name="bestellform" property="category_required" value="true">checked="checked"</logic:equal> /></td>
+     <td>&nbsp;</td>
+   </tr>
+   <tr>
      <td><bean:message key="bestellform.freefield2" />&nbsp;</td>
      <td align="center"><input type="checkbox" name="freitxt2" <logic:equal name="bestellform" property="freitxt2" value="true">checked="checked"</logic:equal> /></td>
      <td align="center"><input type="checkbox" name="freitxt2_required" <logic:equal name="bestellform" property="freitxt2_required" value="true">checked="checked"</logic:equal> /></td>

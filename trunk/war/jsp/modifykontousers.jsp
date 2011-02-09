@@ -110,7 +110,7 @@
         </select>
         <logic:present name="userinfo" property="benutzer">
      		<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-        		<a href="usercategories.do?method=prepareCategories">Kategorie erstellen</a>
+        		<a href="usercategories.do?method=prepareCategories"><bean:message key="modifyusercategories.create" /></a>
         	</logic:notEqual>
         </logic:present>
       </td>

@@ -261,6 +261,23 @@
         </td>
       </tr>      
     </logic:equal>
+   <logic:equal name="bestellparam" property="category" value="true">
+      <tr>
+        <td>
+          <logic:equal name="bestellparam" property="category_required" value="true"><b></logic:equal>
+          <bean:message key="modifykontousers.category" /><logic:equal name="bestellparam" property="category_required" value="true">*</b></logic:equal>&nbsp;
+        </td>
+      <td>
+      <select name="kundenkategorieID">
+      	<option value="0"><bean:message key="modifykontousers.choose" /></option>
+      		<bean:define id="tmp" name="orderform" property="kundenkategorieID" type="java.lang.String" />
+      		<logic:iterate id="cat" name="categories">
+         		<option value="<bean:write name="cat" property="id" />" <logic:equal name="cat" property="id" value="<%=tmp%>">selected</logic:equal>><bean:write name="cat" property="inhalt" /></option>
+        	</logic:iterate>
+       </select>
+      </td>
+      </tr>      
+    </logic:equal>
     <logic:equal name="bestellparam" property="freitxt2" value="true">
       <tr>
         <td>

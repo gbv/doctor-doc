@@ -34,7 +34,7 @@
 <table>
 	<tr>
 		<td>
-			<bean:message key="modifyusercategories.create" />
+			<bean:message key="modifyusercategories.create" />:
 		</td>
 	</tr>
 	<tr>
@@ -44,7 +44,12 @@
 	</tr>
 		<tr>
 		<td>
-			<input type="submit" value="<bean:message key="modifyusercategories.submit" />" />
+			<logic:notPresent name="categoryText">
+				<input type="submit" value="<bean:message key="modifyusercategories.submit" />" />
+			</logic:notPresent>
+			<logic:present name="categoryText">
+				<input type="submit" value="<bean:message key="stockplacesmodify.change" />" />
+			</logic:present>
 		</td>
 	</tr>
 </table>
@@ -52,6 +57,7 @@
 <logic:present name="categoryText">
 	<input name="id" value="<bean:write name="categoryText" property="id" />" type="hidden" />
 	<input name="mod" value="true" type="hidden" />
+	<p><a href="usercategories.do?method=prepareCategories"><bean:message key="modifyusercategories.create" /></a></p>
 </logic:present>
 <logic:notPresent name="categoryText">
 	<input name="sav" value="true" type="hidden" />

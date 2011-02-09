@@ -177,6 +177,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
         } else {
             this.abteilung = of.getKundenabteilung();
         }
+        final Text t = new Text();
+        t.setId(Long.valueOf(of.getKundenkategorieID()));
+        this.category = t;
         if (of.getKundenadresse() != null) { // this may contain street, zip and place!
             this.adresszusatz = of.getKundenadresse().trim();
         } else {
