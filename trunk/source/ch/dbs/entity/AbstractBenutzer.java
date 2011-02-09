@@ -849,7 +849,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
 
         if (u.getInstitut() != null) { pstmt.setString(1, u.getInstitut()); } else { pstmt.setString(1, ""); }
         if (u.getAbteilung() != null) { pstmt.setString(2, u.getAbteilung()); } else { pstmt.setString(2, ""); }
-        if (u.getCategory().getId() != null) { pstmt.setLong(3, u.getCategory().getId()); } else { pstmt.setLong(3, Long.valueOf("0")); }
+        if (u.getCategory() != null && u.getCategory().getId() != null) { pstmt.setLong(3, u.getCategory().getId()); } else { pstmt.setLong(3, Long.valueOf("0")); }
         if (u.getAnrede() != null) { pstmt.setString(4, u.getAnrede()); } else { pstmt.setString(4, ""); }
         if (u.getVorname() != null) { pstmt.setString(5, u.getVorname()); } else { pstmt.setString(5, ""); }
         if (u.getName() != null) { pstmt.setString(6, u.getName()); } else { pstmt.setString(6, ""); }

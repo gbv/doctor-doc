@@ -301,7 +301,7 @@ public final class BestellformAction extends DispatchAction {
                     // values for customizable orderform
                     of.setKundeninstitution(ui.getBenutzer().getInstitut());
                     of.setKundenabteilung(ui.getBenutzer().getAbteilung());
-                    if (ui.getBenutzer().getCategory().getId() != null) {
+                    if (ui.getBenutzer().getCategory() != null && ui.getBenutzer().getCategory().getId() != null) {
                         of.setKundenkategorieID(ui.getBenutzer().getCategory().getId().toString());
                     }
                     of.setKundenadresse(ui.getBenutzer().getAdresse() + "\012" + ui.getBenutzer().getAdresszusatz()

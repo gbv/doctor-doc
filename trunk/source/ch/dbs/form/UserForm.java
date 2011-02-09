@@ -395,7 +395,7 @@ public final class UserForm extends ValidatorForm {
 
     public void setUser(final AbstractBenutzer user) {
         this.user = user;
-        if (user.getCategory().getId() != null) {
+        if (user.getCategory() != null && user.getCategory().getId() != null) {
             this.category = user.getCategory().getId().toString();
         } else {
             this.category = "0";

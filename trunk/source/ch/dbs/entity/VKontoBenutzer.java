@@ -302,7 +302,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
 
         if (user.getInstitut() != null) { pstmt.setString(1, user.getInstitut()); } else { pstmt.setString(1, ""); }
         if (user.getAbteilung() != null) { pstmt.setString(2, user.getAbteilung()); } else { pstmt.setString(2, ""); }
-        if (user.getCategory().getId() != null) { pstmt.setLong(3, user.getCategory().getId()); } else { pstmt.setLong(3, Long.valueOf("0")); }
+        if (user.getCategory() != null && user.getCategory().getId() != null) { pstmt.setLong(3, user.getCategory().getId()); } else { pstmt.setLong(3, Long.valueOf("0")); }
         if (user.getAnrede() != null) { pstmt.setString(4, user.getAnrede()); } else { pstmt.setString(4, ""); }
         if (user.getVorname() != null) { pstmt.setString(5, user.getVorname()); } else { pstmt.setString(5, ""); }
         if (user.getName() != null) { pstmt.setString(6, user.getName()); } else { pstmt.setString(6, ""); }
