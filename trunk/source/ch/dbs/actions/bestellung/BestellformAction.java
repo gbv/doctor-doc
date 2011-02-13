@@ -34,8 +34,8 @@ import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
 
 import util.Auth;
+import util.Base64String;
 import util.Check;
-import util.CodeString;
 import util.CodeUrl;
 import util.Http;
 import util.MHelper;
@@ -164,9 +164,6 @@ public final class BestellformAction extends DispatchAction {
                             rq.setAttribute("ip", t);
                             of.setBibliothek(t.getKonto().getBibliotheksname());
                             of.setBkid(bkid);
-                        } else { // Brokerkennung remains unresolved
-                            // TODO: Prüfungen wer was liefern kann und Anzeige
-                            System.out.println("need to be resolved yet!");
                         }
                     } else { // invalid bkid
                         forward = FAILURE;
@@ -180,7 +177,7 @@ public final class BestellformAction extends DispatchAction {
             }
 
             // get additional orderform parameters (BestellParam bp)
-            // Änderungen in diesem Abschnitt müssen in save() wiederholt werden
+            // Changes in this section have to be repeated in save()!
             if (t != null && t.getInhalt() != null) {
                 bp = new BestellParam(t, cn.getConnection());
                 // Länderauswahl setzen
@@ -214,30 +211,26 @@ public final class BestellformAction extends DispatchAction {
 
             // read Cookie
             final Cookie[] cookies = rq.getCookies();
-
-            if (cookies == null) {
-                LOG.ludicrous("no Cookie set!");
-            } else {
-                final CodeString codeString = new CodeString();
-
+            if (cookies != null) {
+                final Base64String base64String = new Base64String();
                 final int max = cookies.length;
                 for (int i = 0; i < max; i++) {
-
                     if (cookies[i].getName() != null && cookies[i].getName().equals("doctordoc-bestellform")) {
-                        String cookietext = codeString.decodeString(cookies[i].getValue());
+                        String cookietext = base64String.decodeString(cookies[i].getValue());
                         if (cookietext != null && cookietext.contains("---")) {
                             try {
                                 of.setKundenvorname(cookietext.substring(0, cookietext.indexOf("---")));
                                 cookietext = cookietext.substring(cookietext.indexOf("---") + 3);
                                 of.setKundenname(cookietext.substring(0, cookietext.indexOf("---")));
                                 cookietext = cookietext.substring(cookietext.indexOf("---") + 3);
-                                of.setKundenmail(cookietext);
+                                of.setKundenmail(cookietext.substring(0, cookietext.indexOf("---")));
+                                cookietext = cookietext.substring(cookietext.indexOf("---") + 3);
+                                of.setKundenkategorieID(cookietext);
                             } catch (final Exception e) { //
                                 LOG.error("Error while reading cookie!: " + e.toString());
                                 System.out.println("Error while reading cookie!: " + e.toString());
                             }
                         }
-
                     }
                 }
             }
@@ -448,14 +441,14 @@ public final class BestellformAction extends DispatchAction {
                 if (message.getMessage() == null) {
 
                     of.setKundenmail(extractEmail(of.getKundenmail())); // remove invalid characters
-                    final CodeString codeString = new CodeString();
-                    // Cookie Base64 coded for better privacy
-                    final Cookie cookie = new Cookie("doctordoc-bestellform", codeString.encodeString(of.getKundenvorname()
-                            + "---" + of.getKundenname() + "---" + of.getKundenmail()));
+                    final Base64String base64String = new Base64String();
+                    // Cookie Base64 encoded for better privacy
+                    final Cookie cookie = new Cookie("doctordoc-bestellform", base64String.encodeString(of.getKundenvorname()
+                            + "---" + of.getKundenname() + "---" + of.getKundenmail() + "---" + of.getKundenkategorieID()));
                     cookie.setMaxAge(-1); // only valid for session
                     cookie.setVersion(1);
-                    try { // if there were invalid not-ASCI-characters, the order will still be processed and no cookie
-                        // set.
+                    try {
+                        // if there were invalid not-ASCI-characters, the order will still be processed and no cookie set.
                         rp.addCookie(cookie);
                     } catch (final Exception e) {
                         LOG.error("Setting Cookie: " + e.toString());
@@ -1337,28 +1330,21 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * holt anhand einer PMID alle Artikelangaben
+     * Gets from a PMID all article details.
      */
     public OrderForm resolvePmid(final String pmid) {
-
-        // automatisches Vervollständigen der Artikelangaben anhand der PMID (Pubmed-ID):
-        // http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=3966282
 
         OrderForm of = new OrderForm();
         final ConvertOpenUrl couInstance = new ConvertOpenUrl();
         final OpenUrl openUrlInstance = new OpenUrl();
         final Http http = new Http();
-        //        final String link = "http://www.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=" + pmid;
         final String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=" + pmid;
-        // TODO: Pubmed XML-Auswertung umstellen
         String content = "";
 
         try {
-
             content = http.getWebcontent(link, TIMEOUT, RETRYS);
             final ContextObject co = openUrlInstance.readXmlPubmed(content);
             of = couInstance.makeOrderform(co);
-
         } catch (final Exception e) {
             LOG.error("resolvePmid: " + pmid + "\040" + e.toString());
         }
@@ -1367,10 +1353,9 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * holt die PMID anhand von Artikelangaben
+     * Gets the PMID from the article details.
      *
-     * @param OrderForm
-     *            og
+     * @param OrderForm of
      * @return String pmid
      */
     public String getPmid(final OrderForm of) {
@@ -1394,10 +1379,9 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * holt die PMID aus dem Webcontent
+     * Extracts the PMID from the web content.
      *
-     * @param String
-     *            webcontent
+     * @param String content
      * @return String pmid
      */
     public String getPmid(final String content) {
@@ -1418,7 +1402,7 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * stellt den Suchlink zusammen um die PMID anhand von Artikelangaben zu holen
+     * Creates the search link to get the PMID from the article details.
      */
     public String composePubmedlinkToPmid(final OrderForm pageForm) {
 
@@ -1453,7 +1437,7 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * prüft, ob wichtige of-Werte fehlen (ISSN, Zeitschriftentitel, Author, Jahr, Jahrgang, Heft, Seitenzahlen)
+     * Checks if there are missing relevant article details (ISSN, journal title, author, year, volume, issue, pages).
      */
     public boolean areArticleValuesMissing(final OrderForm of) {
 

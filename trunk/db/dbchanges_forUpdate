@@ -1,3 +1,13 @@
+-- Revision 123 --
+
+ALTER TABLE `holdings` ADD INDEX ( `coden` ) 
+
+ALTER TABLE `holdings` ADD INDEX ( `zdbid` ) 
+
+`ALTER TABLE holdings DROP INDEX KID`
+
+ALTER TABLE `holdings` ADD INDEX ( `KID`,`titel` ) 
+
 -- Revision 122 --
 
 ALTER TABLE `bestellform_param` ADD `category` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `abteilung` 

@@ -21,18 +21,14 @@ import java.io.IOException;
 
 import org.grlea.log.SimpleLogger;
 
-public class CodeString {
+public class Base64String {
 
-    private static final SimpleLogger LOG = new SimpleLogger(CodeString.class);
+    private static final SimpleLogger LOG = new SimpleLogger(Base64String.class);
 
     /**
-     * Codiert und DeCodiert einen String mit Base64. Keine Verschlüsselung sondern nur
-     * Codierung!
-     * @param args
+     * Encodes and decodes a string with Base64. Not meant to be an encryption but rather a simple encoding!
+     * This method is used to hide the user details in the cookie of the order form.
      */
-
-    // wird zum Maskieren der Benutzerangaben im Cookie des Bestellformulares benötigt.
-    // Besserer Datenschutz!
 
     public String encodeString(final String psString) {
         if (psString == null) { return ""; }
@@ -46,7 +42,7 @@ public class CodeString {
         try {
             return new String(new sun.misc.BASE64Decoder()
             .decodeBuffer(psString));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error("decodeString: " + psString + "\040" + e.toString());
             return null;
         }

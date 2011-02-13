@@ -160,7 +160,7 @@
      <td>&nbsp;</td>
    </tr>
    <tr>
-     <td><bean:message key="modifykontousers.category" />&nbsp;</td>
+     <td><a href="usercategories.do?method=prepareCategories" target="_blank"><bean:message key="modifykontousers.category" /></a>&nbsp;</td>
      <td align="center"><input type="checkbox" name="category" <logic:equal name="bestellform" property="category" value="true">checked="checked"</logic:equal> /></td>
      <td align="center"><input type="checkbox" name="category_required" <logic:equal name="bestellform" property="category_required" value="true">checked="checked"</logic:equal> /></td>
      <td>&nbsp;</td>
