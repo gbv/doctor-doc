@@ -153,8 +153,8 @@ public class VKontoBenutzer extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement(
             "SELECT count(vkbid) FROM `v_konto_benutzer` WHERE `KID` = ? AND `UID` = ?");
-            pstmt.setString(1, kid.toString());
-            pstmt.setString(2, uid.toString());
+            pstmt.setLong(1, kid);
+            pstmt.setLong(2, uid);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 anzahl = rs.getInt("count(vkbid)");
@@ -327,7 +327,7 @@ public class VKontoBenutzer extends AbstractIdEntity {
         pstmt.setString(17, userBestellung);
         pstmt.setString(18, gbvBestellung);
         if (user.getBilling() != null) {
-            pstmt.setString(19, user.getBilling().toString());
+            pstmt.setLong(19, user.getBilling());
         } else {
             pstmt.setString(19, "");
         }

@@ -942,8 +942,7 @@ public class Bestellungen extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement(sortOrder(
                     "SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE "
-                    + "k.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder));
+                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder));
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -1001,24 +1000,21 @@ public class Bestellungen extends AbstractIdEntity {
             String mysql = "";
             if (!subitocheck) {
                 mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                        + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                        + "WHERE k.kid=? AND state=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+                        + "ON ( b.UID = u.UID ) WHERE b.kid=? AND state=? AND orderdate >= ? AND orderdate <= ? "
+                        + "ORDER BY ", sort, sortorder);
                 if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                            + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                            + "WHERE k.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? "
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? "
                             + "ORDER BY ", sort, sortorder);
                 }
             }
             if (subitocheck) {
                 mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                        + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                        + "WHERE k.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
+                        + "ON ( b.UID = u.UID ) WHERE b.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
                         + "ORDER BY ", sort, sortorder);
                 if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                            + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                            + "WHERE k.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? "
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? "
                             + "AND orderdate <= ? ORDER BY ", sort, sortorder);
                 }
             }
@@ -1373,7 +1369,7 @@ public class Bestellungen extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT BID, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY BID ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1431,7 +1427,7 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT sum( kaufpreis ) AS summe, bestellquelle, waehrung, bestellquelle, "
                     + "COUNT(*) AS anzahl FROM bestellungen WHERE KID=? AND orderdate >= ? AND orderdate <= ? "
                     + "GROUP BY bestellquelle ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1498,7 +1494,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT kaufpreis, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY kaufpreis ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1588,7 +1584,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT sum( kaufpreis ) AS summe, waehrung FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung ORDER BY summe DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1648,7 +1644,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT deloptions, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY deloptions ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1708,7 +1704,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT mediatype, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY mediatype ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1768,7 +1764,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT fileformat, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY fileformat ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1830,7 +1826,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT orderpriority, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY orderpriority ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1906,10 +1902,9 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT anrede, UID, COUNT(*) AS anzahl FROM ( "
                     + "SELECT anrede, UID, COUNT(*) AS z FROM ( SELECT anrede, u.UID FROM `bestellungen` AS b "
-                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) "
-                    + "ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ) "
+                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) "
                     + "AS temp GROUP by UID ) AS x GROUP BY anrede ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -1993,10 +1988,9 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT institut, UID, COUNT(*) AS anzahl "
                     + "FROM ( SELECT institut, UID, COUNT(*) AS z FROM ( SELECT institut, u.UID FROM `bestellungen` "
-                    + "AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) "
-                    + "ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp "
+                    + "AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp "
                     + "GROUP by UID ) AS x GROUP BY institut ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2084,10 +2078,9 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT abteilung, UID, COUNT(*) AS anzahl "
                     + "FROM ( SELECT abteilung, UID, COUNT(*) AS z FROM "
                     + "( SELECT abteilung, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                    + "WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
+                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
                     + "GROUP BY abteilung ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2124,6 +2117,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setStatistik(list); // ...OrderStatistikForm für Rückgabe abfüllen
             os.setTotal(total);
             os.setTotal_two(totalOrders);
+
+            // TODO: addCategoryPerDepartment(os, kid, cn);
 
         } catch (final Exception e) {
             LOG.error("countAbteilungPerKonto(Long kid, "
@@ -2172,10 +2167,9 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT category, UID, COUNT(*) AS anzahl "
                     + "FROM ( SELECT category, UID, COUNT(*) AS z FROM "
                     + "( SELECT category, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                    + "WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
+                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
                     + "GROUP BY category ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2259,10 +2253,10 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT plz, ort, UID, COUNT(*) AS anzahl "
                     + "FROM ( SELECT plz, ort, UID, COUNT(*) AS z "
                     + "FROM ( SELECT u.plz, u.ort, u.UID FROM `bestellungen` AS b "
-                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) "
-                    + "ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp "
+                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
+                    + "WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp "
                     + "GROUP by UID ) AS x GROUP BY plz ORDER BY plz ASC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2347,10 +2341,9 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT land, UID, COUNT(*) AS anzahl "
                     + "FROM ( SELECT land, UID, COUNT(*) AS z "
                     + "FROM ( SELECT u.land, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) "
-                    + "WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
+                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
                     + "GROUP BY land ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2432,7 +2425,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT issn, zeitschrift, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY issn ORDER BY anzahl DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2507,7 +2500,7 @@ public class Bestellungen extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT sum( kaufpreis ) AS summe, waehrung, "
                     + feldbezeichnung + " FROM bestellungen WHERE KID=? AND "
                     + feldbezeichnung + " = ? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, wert);
             pstmt.setString(3, dateFrom);
             pstmt.setString(4, dateTo);
@@ -2593,7 +2586,7 @@ public class Bestellungen extends AbstractIdEntity {
                     + "INNER JOIN (`benutzer` AS u ) ON (b.UID=u.UID) WHERE u."
                     + feldbezeichnung + " = ? AND KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung");
             pstmt.setString(1, wert);
-            pstmt.setString(2, kid.toString());
+            pstmt.setLong(2, kid);
             pstmt.setString(3, dateFrom);
             pstmt.setString(4, dateTo);
 
@@ -2677,7 +2670,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT COUNT(*) FROM ( SELECT UID, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY UID ) AS temp");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -2730,7 +2723,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT COUNT(*) FROM ( SELECT UID, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND issn = ? AND orderdate >= ? AND orderdate <= ? GROUP BY UID ) AS temp");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, iss);
             pstmt.setString(3, dateFrom);
             pstmt.setString(4, dateTo);
@@ -2789,10 +2782,9 @@ public class Bestellungen extends AbstractIdEntity {
         try {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT COUNT(*) FROM ( SELECT BID FROM `bestellungen` AS b "
-                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) "
-                    + "ON ( b.KID = k.KID ) WHERE k.KID=? AND u." + benutzerfeld + "=? "
+                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.KID=? AND u." + benutzerfeld + "=? "
                     + "AND orderdate >= ? AND orderdate <= ? ) AS temp");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, inhalt);
             pstmt.setString(3, dateFrom);
             pstmt.setString(4, dateTo);
@@ -2857,7 +2849,7 @@ public class Bestellungen extends AbstractIdEntity {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT jahr, COUNT(*) AS anzahl FROM bestellungen "
                     + "WHERE KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY jahr ORDER BY jahr DESC");
-            pstmt.setString(1, kid.toString());
+            pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
 
@@ -3261,13 +3253,13 @@ public class Bestellungen extends AbstractIdEntity {
         ps.setLong(1, b.getKonto().getId());
         ps.setLong(2, b.getBenutzer().getId());
         if (b.getLieferant() == null || b.getLieferant().getLid() == null
-                || b.getLieferant().getLid().toString().equals("")
-                || b.getLieferant().getLid().toString().equals("0")) {
+                || "".equals(b.getLieferant().getLid().toString())
+                || "0".equals(b.getLieferant().getLid().toString())) {
             ps.setString(3, "1");
         } else {
-            ps.setString(3, b.getLieferant().getLid().toString());
+            ps.setLong(3, b.getLieferant().getLid());
         }
-        if (b.getPriority() == null || b.getPriority().equals("")) {
+        if (b.getPriority() == null || "".equals(b.getPriority())) {
             ps.setString(4, "normal");
         } else {
             ps.setString(4, b.getPriority());

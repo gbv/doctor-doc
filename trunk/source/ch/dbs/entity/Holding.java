@@ -164,7 +164,7 @@ public class Holding extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ? "
                     + "AND (issn = ? OR coden = ? OR zdbid = ?)");
-            pstmt.setString(1, kId.toString());
+            pstmt.setLong(1, kId);
             pstmt.setString(2, identifier);
             pstmt.setString(3, identifier);
             pstmt.setString(4, identifier);

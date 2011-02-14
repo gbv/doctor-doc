@@ -233,7 +233,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement(
             "SELECT * FROM benutzer WHERE uid=?");
-            pstmt.setString(1, uid.toString());
+            pstmt.setLong(1, uid);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 u = getUser(rs, cn);
@@ -877,7 +877,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         pstmt.setString(17, userBestellung);
         pstmt.setString(18, gbvBestellung);
         if (u.getBilling() != null) {
-            pstmt.setString(19, u.getBilling().toString());
+            pstmt.setLong(19, u.getBilling());
         } else {
             pstmt.setString(19, "0");
         }

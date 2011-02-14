@@ -225,7 +225,7 @@ public class Text extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `inhalt`=?");
-            pstmt.setString(1, tyid.toString());
+            pstmt.setLong(1, tyid);
             pstmt.setString(2, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -326,7 +326,7 @@ public class Text extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TID`=?");
-            pstmt.setString(1, id.toString());
+            pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
@@ -366,8 +366,8 @@ public class Text extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TID`=? AND `KID`=?");
-            pstmt.setString(1, id.toString());
-            pstmt.setString(2, kid.toString());
+            pstmt.setLong(1, id);
+            pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
@@ -408,9 +408,9 @@ public class Text extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TID`=? AND `KID`=? AND `TYID`=?");
-            pstmt.setString(1, id.toString());
-            pstmt.setString(2, kid.toString());
-            pstmt.setString(3, tyid.toString());
+            pstmt.setLong(1, id);
+            pstmt.setLong(2, kid);
+            pstmt.setLong(3, tyid);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
@@ -629,7 +629,7 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? AND KID=? ORDER BY inhalt");
             pstmt.setLong(1, t.getId());
-            pstmt.setString(2, kid.toString());
+            pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -670,7 +670,7 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? AND (KID IS null OR KID=?) ORDER BY inhalt");
             pstmt.setLong(1, t.getId());
-            pstmt.setString(2, kid.toString());
+            pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {

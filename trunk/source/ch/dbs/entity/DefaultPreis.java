@@ -161,8 +161,8 @@ public class DefaultPreis extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT DPID FROM `default_preise` WHERE `lid`=? AND `KID`=?");
-            pstmt.setString(1, lId.toString());
-            pstmt.setString(2, kId.toString());
+            pstmt.setLong(1, lId);
+            pstmt.setLong(2, kId);
 
             rs = pstmt.executeQuery();
 
@@ -203,7 +203,7 @@ public class DefaultPreis extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `default_preise` WHERE `KID`=? AND `bezeichnung`=?");
-            pstmt.setString(1, kId.toString());
+            pstmt.setLong(1, kId);
             pstmt.setString(2, lieferant);
 
             rs = pstmt.executeQuery();
@@ -251,7 +251,7 @@ public class DefaultPreis extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `default_preise` WHERE `KID`=?");
-            pstmt.setString(1, kId.toString());
+            pstmt.setLong(1, kId);
 
             rs = pstmt.executeQuery();
 
