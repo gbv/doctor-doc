@@ -685,7 +685,7 @@ public final class BestellformAction extends DispatchAction {
                             if (k.getEzbid() != null && !k.getEzbid().equals("")) {
                                 bibid = k.getEzbid();
                             }
-                            final String link = "http://rzblx1.uni-regensburg.de/ezeit/searchres.phtml?bibid="
+                            final String link = "http://ezb.uni-regensburg.de/ezeit/searchres.phtml?bibid="
                                 + bibid
                                 + "&colors=7&lang=de&jq_type1=KT&jq_term1=&jq_bool2=AND&jq_not2=+&jq_type2="
                                 + "KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+"
