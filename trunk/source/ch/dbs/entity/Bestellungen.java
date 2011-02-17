@@ -1937,6 +1937,8 @@ public class Bestellungen extends AbstractIdEntity {
                 osf.setLabel("stats.notSpecified");
                 osf.setAnzahl(unknown);
                 osf.setAnzahl_two(unknownOrders);
+                osf.setPreiswaehrung(costsPerFieldInnerJoin(
+                        kid, dateFrom, dateTo, "anrede", "", cn));
                 list.add(osf);
             }
 
@@ -2021,6 +2023,7 @@ public class Bestellungen extends AbstractIdEntity {
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
                 osf.setAnzahl_two(unknownOrders);
+                osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "institut", "", cn));
                 list.add(osf);
             }
 
@@ -2111,6 +2114,7 @@ public class Bestellungen extends AbstractIdEntity {
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
                 osf.setAnzahl_two(unknownOrders);
+                osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "abteilung", "", cn));
                 list.add(osf);
             }
 
@@ -2186,7 +2190,7 @@ public class Bestellungen extends AbstractIdEntity {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
-                    osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "category", label, cn));
+                    osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "category", category.getId().toString(), cn));
                     list.add(osf);
                 } else {
                     unknown = unknown + count;
@@ -2200,6 +2204,7 @@ public class Bestellungen extends AbstractIdEntity {
                 osf.setLabel("k.A.");
                 osf.setAnzahl(unknown);
                 osf.setAnzahl_two(unknownOrders);
+                osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "category", "0", cn));
                 list.add(osf);
             }
 
