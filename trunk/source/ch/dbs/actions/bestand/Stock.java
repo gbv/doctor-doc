@@ -900,12 +900,11 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkStockID(int lineCount, final String content) {
+    private Message checkStockID(final int lineCount, final String content) {
 
         final Message msg = new Message();
 
         if (!"".equals(content)) { // the ID may be empty
-            lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid number
             if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
                 msg.setMessage("error.import.stid");
@@ -923,12 +922,11 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkHoldingID(int lineCount, final String content) {
+    private Message checkHoldingID(final int lineCount, final String content) {
 
         final Message msg = new Message();
 
         if (!"".equals(content)) { // the ID may be empty
-            lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid number
             if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
                 msg.setMessage("error.import.hoid");
@@ -946,12 +944,11 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkLocationID(int lineCount, final String content) {
+    private Message checkLocationID(final int lineCount, final String content) {
 
         final Message msg = new Message();
 
         if (!"".equals(content)) { // the ID may be empty
-            lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid number
             if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
                 msg.setMessage("error.import.locationid");
@@ -969,12 +966,11 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkTitle(int lineCount, final String content) {
+    private Message checkTitle(final int lineCount, final String content) {
 
         final Message msg = new Message();
         final Check ck = new Check();
 
-        lineCount++; // raise lineCount +1, because List starts at 0
         // if not empty it must be a valid number
         if (!ck.isMinLength(content, 1)) {
             msg.setMessage("error.import.title");
@@ -991,13 +987,12 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkISSN(int lineCount, final String content) {
+    private Message checkISSN(final int lineCount, final String content) {
 
         final Message msg = new Message();
         final Check ck = new Check();
 
         if (!"".equals(content)) { // the ISSN may be empty
-            lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid ISSN
             if (!ck.isExactLength(content, 9)) { // length must be 9 characters
                 msg.setMessage("error.import.issn.length");
@@ -1019,13 +1014,12 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkStartyear(int lineCount, final String content) {
+    private Message checkStartyear(final int lineCount, final String content) {
 
         final Message msg = new Message();
         final Check ck = new Check();
 
         if (!ck.isYear(content)) {
-            lineCount++; // raise lineCount +1, because List starts at 0
             msg.setMessage("error.import.startyear");
             msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
@@ -1040,13 +1034,12 @@ public class Stock extends DispatchAction {
      * @param String content
      * @return Message
      */
-    private Message checkEndyear(int lineCount, final String content) {
+    private Message checkEndyear(final int lineCount, final String content) {
 
         final Message msg = new Message();
         final Check ck = new Check();
 
         if (!"".equals(content)) { // the endyear may be empty
-            lineCount++; // raise lineCount +1, because List starts at 0
             // if not empty it must be a valid year
             if (!ck.isYear(content)) {
                 msg.setMessage("error.import.endyear");
