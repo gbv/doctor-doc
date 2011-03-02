@@ -27,6 +27,7 @@ import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 
 import org.grlea.log.SimpleLogger;
 
@@ -108,7 +109,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.setSentDate(new Date()); // Sendedatum setzen
             String subject = "";
             if (msg.getSubject() != null) { subject = msg.getSubject(); }
-            m.setSubject(subject); // Betreff setzen
+            m.setSubject(MimeUtility.encodeText(subject, UTF8, null)); // Betreff setzen
             m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
@@ -170,7 +171,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.setSentDate(new Date()); // Sendedatum setzen
             String subject = "";
             if (msg.getSubject() != null) { subject = msg.getSubject(); }
-            m.setSubject(subject); // Betreff setzen
+            m.setSubject(MimeUtility.encodeText(subject, UTF8, null)); // Betreff setzen
             m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
@@ -229,7 +230,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             msg.setFrom(addressFrom);
 
             // Setting the Subject and Content Type
-            msg.setSubject(subject);
+            msg.setSubject(MimeUtility.encodeText(subject, UTF8, null));
             msg.setSentDate(new Date());
             msg.setContent(message, "text/plain");
 
@@ -279,7 +280,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             msg.setReplyTo(addressReplyTo);
 
             // Setting the Subject and Content Type
-            msg.setSubject(subject);
+            msg.setSubject(MimeUtility.encodeText(subject, UTF8, null));
             msg.setSentDate(new Date());
             msg.setContent(message, "text/plain");
 

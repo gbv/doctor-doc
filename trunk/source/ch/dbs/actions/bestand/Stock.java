@@ -63,7 +63,7 @@ public class Stock extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(Stock.class);
     private static final int COLUMNS = 21; // Number of columns per import line
-    private static final int FILESIZELIMIT = 6000000; // Limits the file size for upload to avoid OutOfMemory errors
+    private static final int FILESIZELIMIT = 500000; // ca. 500 KB. Limits the file size for upload to avoid OutOfMemory errors
     private static final char DELIMITER_CSV = ';'; // Delimiter for CSV-Export
 
     //Delimiter for Tab delimited txt-Export (Excel can't read UTF-8 in CSV...)
