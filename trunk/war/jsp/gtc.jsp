@@ -4,7 +4,7 @@
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
@@ -15,19 +15,22 @@
  </head>
  <body>
  
-<tiles:insert page="import/header.jsp" flush="true" />
+<logic:present name="userinfo" property="benutzer">
+	<logic:notEmpty name="userinfo" property="benutzer.gtc"> 
+		<tiles:insert page="import/header.jsp" flush="true" />
+	</logic:notEmpty>
+</logic:present>
 
 <div class="content">
 
 <br />
 <h3>General Terms and Conditions (Version 1):</h3>
-<logic:present name="userinfo" property="benutzer.gtc">
-	<logic:equal name="userinfo" property="benutzer.gtc" value="">
-		<div id="italic"><bean:message key="gtc.comment" /></div> 
-	</logic:equal>
-</logic:present>
+<logic:empty name="userinfo" property="benutzer.gtc">
+    <div id="italic"><bean:message key="gtc.comment" /></div>
+</logic:empty>
 
 <p></p>
+ 
  
 <p>
 
@@ -36,8 +39,8 @@
 </p>
 
 
- <logic:present name="userinfo" property="benutzer.gtc">
- <logic:equal name="userinfo" property="benutzer.gtc" value="">
+<logic:present name="userinfo" property="benutzer.gtc">
+<logic:equal name="userinfo" property="benutzer.gtc" value=""> 
  <html:form action="gtc_" method="post">
 
 <table>
@@ -67,19 +70,20 @@
  <input type="hidden" name="artikeltitel_encoded" value="<bean:write name="orderform" property="artikeltitel_encoded" />" />
  <input type="hidden" name="author_encoded" value="<bean:write name="orderform" property="author_encoded" />" />
  <input type="hidden" name="foruser" value="<bean:write name="orderform" property="foruser" />" />
+ <input type="hidden" name="category" value="<bean:write name="orderform" property="kundenkategorieID" />" />
  </logic:present>
 
 
-	<tr>
-		<td><html:submit property="method" value="accept" /></td>
-		<td><br /></td>
-		<td><html:submit property="method" value="decline" /></td>
-	</tr>
+  <tr>
+    <td><html:submit property="method" value="accept" /></td>
+    <td><br /></td>
+    <td><html:submit property="method" value="decline" /></td>
+  </tr>
 </table>
 
- </html:form>
- </logic:equal>
- </logic:present>
+	 </html:form>
+	</logic:equal>
+</logic:present> 
 
 </div>
 
