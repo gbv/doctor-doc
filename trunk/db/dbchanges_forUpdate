@@ -1,10 +1,51 @@
+-- Revision 132 --
+
+ALTER TABLE `konto` ADD `DID` BIGINT NULL DEFAULT NULL AFTER `KID` 
+
+CREATE TABLE `bestellform_daia` (
+  `DID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `KID` bigint(20) NOT NULL,
+  `baseurl` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `link_agb` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `link_fees` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `first_param` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '?',
+  `protocol` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'internal' COMMENT 'internal / openurl / custom',
+  `redirect` tinyint(1) NOT NULL DEFAULT '0',
+  `map_mediatype` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_authors` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_atitle` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_btitle` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_chapter` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_journal` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_publisher` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_issn` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_isbn` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_date` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_volume` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_issue` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_pages` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_pmid` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_doi` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `limitations` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`DID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+-- Revision 128 --
+
+ALTER TABLE bestellungen DROP INDEX state
+
+ALTER TABLE `bestellungen` ADD INDEX ( `KID`, `state`, `orderdate` ) 
+
+ALTER TABLE `bestellungen` ADD INDEX ( `UID`, `state`, `orderdate` ) 
+
 -- Revision 123 --
 
 ALTER TABLE `holdings` ADD INDEX ( `coden` ) 
 
 ALTER TABLE `holdings` ADD INDEX ( `zdbid` ) 
 
-`ALTER TABLE holdings DROP INDEX KID`
+ALTER TABLE holdings DROP INDEX KID
 
 ALTER TABLE `holdings` ADD INDEX ( `KID`,`titel` ) 
 

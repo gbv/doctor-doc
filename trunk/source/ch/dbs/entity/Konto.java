@@ -173,6 +173,9 @@ public class Konto extends AbstractIdEntity {
 
     private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("KID"));
+        if (rs.getString("DID") != null) { // avoid setting Long to 0
+            this.setDid(rs.getLong("DID"));
+        }
         this.setBibliotheksname(rs.getString("biblioname"));
         this.setIsil(rs.getString("isil"));
         this.setAdresse(rs.getString("adresse"));
