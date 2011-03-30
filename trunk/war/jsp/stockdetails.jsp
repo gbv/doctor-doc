@@ -39,15 +39,58 @@
 			<bean:write name="konto" property="land" />-<bean:write name="konto" property="PLZ" />&nbsp;<bean:write name="konto" property="ort" />
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a href="mailto:<bean:write name="konto" property="bibliotheksmail" />"><bean:write name="konto" property="dbsmail" /></a>
-		</td>
-	</tr>
-
+	
+	<logic:notPresent name="daiaparam">
+		<tr>
+			<td>
+				<a href="mailto:<bean:write name="konto" property="bibliotheksmail" />"><bean:write name="konto" property="dbsmail" /></a>
+			</td>
+		</tr>
+	</logic:notPresent>
 </table>
 
+<p></p>
+
 <table>
+
+	<logic:present name="daiaparam">
+		<tr>
+			<td>
+				<bean:message key="tabmenu.slide.gtc" />:
+			</td>
+			<td>
+				<a href="<bean:write name="daiaparam" property="linkAGB" />" target="_blank"><bean:write name="daiaparam" property="linkAGB" /></a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<bean:message key="bestellform.gebuehren" />:
+			</td>
+			<td>
+				<a href="<bean:write name="daiaparam" property="linkFees" />" target="_blank"><bean:write name="daiaparam" property="linkFees" /></a>
+			</td>
+		</tr>
+	<logic:notEmpty name="daiaparam" property="limitations">
+		<tr>
+			<td>
+				<bean:message key="bestellform.bemerkungen" />:
+			</td>
+			<td>
+				<bean:write name="daiaparam" property="limitations" />
+			</td>
+		</tr>
+	</logic:notEmpty>
+		<tr>
+			<td colspan="2"><p></p></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<a href="<bean:write name="daiaparam" property="linkout" />" target="_blank"><bean:message key="bestellform.bestellformular" /> <bean:write name="konto" property="bibliotheksname" /></a>
+			</td>
+		</tr>	
+		
+	</logic:present>
+
 
 	<logic:notEmpty name="orderform" property="issn">
 	<!-- Show only when we have an ISSN -->
@@ -194,7 +237,9 @@
      	
 </table>
 
-<tiles:insert page="import/footer.jsp" flush="true" />
+<logic:notPresent name="daiaparam">
+	<tiles:insert page="import/footer.jsp" flush="true" />	
+</logic:notPresent>
  
  </body>
 </html>

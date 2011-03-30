@@ -989,6 +989,7 @@
             scope="request"
             type="ch.dbs.actions.bestand.Stockdetails">
       <forward name="success" path="/stockdetails.do"/>
+      <forward name="redirect" path="/jsp/redirectdaia.jsp"/>
       <forward name="failure" path="/error.do"/>
     </action>
     

@@ -42,6 +42,7 @@ public class Konto extends AbstractIdEntity {
 
     private static final SimpleLogger LOG = new SimpleLogger(Konto.class);
 
+    private Long did;
     private String bibliotheksname;
     private String isil; // International Standard Identifier for Libraries and Related Organizations (must be null)
     private String Adresse;
@@ -794,6 +795,16 @@ public class Konto extends AbstractIdEntity {
             pstmt.setDate(41, null);
         }
         return pstmt;
+    }
+
+
+
+    public Long getDid() {
+        return did;
+    }
+
+    public void setDid(final Long did) {
+        this.did = did;
     }
 
     public java.sql.Date getExpdate() {

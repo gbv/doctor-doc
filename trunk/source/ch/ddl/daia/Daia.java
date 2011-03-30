@@ -92,6 +92,8 @@ public class Daia extends Action {
         try {
 
             rp.setContentType("text/xml");
+            // set a max-age header (in seconds) to make it possible to cache the content
+            rp.setHeader("Cache-Control", "max-age=86400");
             rp.flushBuffer();
             final PrintWriter pw = rp.getWriter();
             // use writer to render text

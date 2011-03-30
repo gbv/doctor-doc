@@ -145,7 +145,6 @@ public class DaiaXMLResponse {
                 // Limitation tag (for countries: CH, DE, AT...)
                 // for now we use only one configuration: the country of the library
                 // TODO: allow multiple, configurable countries
-                // TODO: allow groups (tag "group")
                 atts.clear();
                 atts.addAttribute("", "", "id", CDATA, "country");
                 hd.startElement("", "", "limitation", atts);
@@ -153,6 +152,17 @@ public class DaiaXMLResponse {
                 text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "limitation");
+
+                // Limitation tag for ILL indicating true/false
+                // needs a DID (DAIAParam) in the konto
+                if (b.getHolding().getKonto().getDid() != null)  {
+                    atts.clear();
+                    atts.addAttribute("", "", "id", CDATA, "ILL");
+                    hd.startElement("", "", "limitation", atts);
+                    text = "true";
+                    hd.characters(text.toCharArray(), 0, text.length());
+                    hd.endElement("", "", "limitation");
+                }
 
                 hd.endElement("", "", "available");
                 hd.endElement("", "", "item");
