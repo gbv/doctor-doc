@@ -156,64 +156,108 @@ public class Stockdetails extends Action {
 
     private void linkoutCustom(final StringBuffer linkout, final DaiaParam dp, final OrderForm of) {
 
-        if (of.getMediatype() != null && !"".equals(of.getMediatype())) {
+        if (of.getMediatype() != null && !"".equals(of.getMediatype())
+                && dp.getMapMediatype() != null) {
             linkout.append(dp.getMapMediatype());
+            linkout.append('=');
             linkout.append(of.getMediatype());
         }
-        if (of.getJahr() != null && !"".equals(of.getJahr())) {
+        if (of.getJahr() != null && !"".equals(of.getJahr())
+                && dp.getMapDate() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapDate());
+            linkout.append('=');
             linkout.append(of.getJahr());
         }
-        if (of.getJahrgang() != null && !"".equals(of.getJahrgang())) {
+        if (of.getJahrgang() != null && !"".equals(of.getJahrgang())
+                && dp.getMapVolume() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapVolume());
+            linkout.append('=');
             linkout.append(of.getJahrgang());
         }
-        if (of.getHeft() != null && !"".equals(of.getHeft())) {
+        if (of.getHeft() != null && !"".equals(of.getHeft())
+                && dp.getMapIssue() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapIssue());
+            linkout.append('=');
             linkout.append(of.getHeft());
         }
-        if (of.getSeiten() != null && !"".equals(of.getSeiten())) {
+        if (of.getSeiten() != null && !"".equals(of.getSeiten())
+                && dp.getMapPages() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapPages());
+            linkout.append('=');
             linkout.append(of.getSeiten());
         }
-        if (of.getSeiten() != null && !"".equals(of.getIssn())) {
+        if (of.getSeiten() != null && !"".equals(of.getIssn())
+                && dp.getMapIssn() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapIssn());
+            linkout.append('=');
             linkout.append(of.getIssn());
         }
-        if (of.getSeiten() != null && !"".equals(of.getIsbn())) {
+        if (of.getSeiten() != null && !"".equals(of.getIsbn())
+                && dp.getMapIsbn() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapIsbn());
+            linkout.append('=');
             linkout.append(of.getIsbn());
         }
-        if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())) {
+        if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())
+                && dp.getMapJournal() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapJournal());
+            linkout.append('=');
             linkout.append(of.getZeitschriftentitel());
         }
-        if (of.getArtikeltitel() !=  null && !"".equals(of.getArtikeltitel())) {
+        if (of.getArtikeltitel() !=  null && !"".equals(of.getArtikeltitel())
+                && dp.getMapAtitle() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapAtitle());
+            linkout.append('=');
             linkout.append(of.getArtikeltitel());
         }
-        if (of.getAuthor() != null && !"".equals(of.getAuthor())) {
+        if (of.getAuthor() != null && !"".equals(of.getAuthor())
+                && dp.getMapAuthors() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapAuthors());
+            linkout.append('=');
             linkout.append(of.getAuthor());
         }
-        if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())) {
+        if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())
+                && dp.getMapBtitle() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapBtitle());
+            linkout.append('=');
             linkout.append(of.getBuchtitel());
         }
-        if (of.getKapitel() != null && !"".equals(of.getKapitel())) {
+        if (of.getKapitel() != null && !"".equals(of.getKapitel())
+                && dp.getMapChapter() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapChapter());
+            linkout.append('=');
             linkout.append(of.getKapitel());
         }
-        if (of.getVerlag() != null && !"".equals(of.getVerlag())) {
+        if (of.getVerlag() != null && !"".equals(of.getVerlag())
+                && dp.getMapPublisher() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapPublisher());
+            linkout.append('=');
             linkout.append(of.getVerlag());
         }
-        if (of.getPmid() != null && !"".equals(of.getPmid())) {
+        if (of.getPmid() != null && !"".equals(of.getPmid())
+                && dp.getMapPmid() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapPmid());
+            linkout.append('=');
             linkout.append(of.getPmid());
         }
-        if (of.getDoi() != null && !"".equals(of.getDoi())) {
+        if (of.getDoi() != null && !"".equals(of.getDoi())
+                && dp.getMapDoi() != null) {
+            appendParam(linkout);
             linkout.append(dp.getMapDoi());
+            linkout.append('=');
             linkout.append(of.getDoi());
         }
 
@@ -278,6 +322,16 @@ public class Stockdetails extends Action {
         if (of.getDoi() != null && !"".equals(of.getDoi())) {
             linkout.append("&doi=");
             linkout.append(of.getDoi());
+        }
+
+    }
+
+    private void appendParam(final StringBuffer buf) {
+
+        // check to see if we already have an ? or an & at the end
+        if (buf.length() > 0 && (buf.charAt(buf.length() - 1) != '?'
+            || buf.charAt(buf.length() - 1) != '&')) {
+            buf.append('&'); // if not, append
         }
 
     }
