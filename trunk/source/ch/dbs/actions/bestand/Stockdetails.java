@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import util.CodeUrl;
 import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
@@ -156,109 +157,111 @@ public class Stockdetails extends Action {
 
     private void linkoutCustom(final StringBuffer linkout, final DaiaParam dp, final OrderForm of) {
 
+        final CodeUrl url = new CodeUrl();
+
         if (of.getMediatype() != null && !"".equals(of.getMediatype())
                 && dp.getMapMediatype() != null) {
             linkout.append(dp.getMapMediatype());
             linkout.append('=');
-            linkout.append(of.getMediatype());
+            linkout.append(url.encodeUTF8(of.getMediatype()));
         }
         if (of.getJahr() != null && !"".equals(of.getJahr())
                 && dp.getMapDate() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapDate());
             linkout.append('=');
-            linkout.append(of.getJahr());
+            linkout.append(url.encodeUTF8(of.getJahr()));
         }
         if (of.getJahrgang() != null && !"".equals(of.getJahrgang())
                 && dp.getMapVolume() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapVolume());
             linkout.append('=');
-            linkout.append(of.getJahrgang());
+            linkout.append(url.encodeUTF8(of.getJahrgang()));
         }
         if (of.getHeft() != null && !"".equals(of.getHeft())
                 && dp.getMapIssue() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapIssue());
             linkout.append('=');
-            linkout.append(of.getHeft());
+            linkout.append(url.encodeUTF8(of.getHeft()));
         }
         if (of.getSeiten() != null && !"".equals(of.getSeiten())
                 && dp.getMapPages() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapPages());
             linkout.append('=');
-            linkout.append(of.getSeiten());
+            linkout.append(url.encodeUTF8(of.getSeiten()));
         }
         if (of.getSeiten() != null && !"".equals(of.getIssn())
                 && dp.getMapIssn() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapIssn());
             linkout.append('=');
-            linkout.append(of.getIssn());
+            linkout.append(url.encodeUTF8(of.getIssn()));
         }
         if (of.getSeiten() != null && !"".equals(of.getIsbn())
                 && dp.getMapIsbn() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapIsbn());
             linkout.append('=');
-            linkout.append(of.getIsbn());
+            linkout.append(url.encodeUTF8(of.getIsbn()));
         }
         if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())
                 && dp.getMapJournal() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapJournal());
             linkout.append('=');
-            linkout.append(of.getZeitschriftentitel());
+            linkout.append(url.encodeUTF8(of.getZeitschriftentitel()));
         }
         if (of.getArtikeltitel() !=  null && !"".equals(of.getArtikeltitel())
                 && dp.getMapAtitle() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapAtitle());
             linkout.append('=');
-            linkout.append(of.getArtikeltitel());
+            linkout.append(url.encodeUTF8(of.getArtikeltitel()));
         }
         if (of.getAuthor() != null && !"".equals(of.getAuthor())
                 && dp.getMapAuthors() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapAuthors());
             linkout.append('=');
-            linkout.append(of.getAuthor());
+            linkout.append(url.encodeUTF8(of.getAuthor()));
         }
         if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())
                 && dp.getMapBtitle() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapBtitle());
             linkout.append('=');
-            linkout.append(of.getBuchtitel());
+            linkout.append(url.encodeUTF8(of.getBuchtitel()));
         }
         if (of.getKapitel() != null && !"".equals(of.getKapitel())
                 && dp.getMapChapter() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapChapter());
             linkout.append('=');
-            linkout.append(of.getKapitel());
+            linkout.append(url.encodeUTF8(of.getKapitel()));
         }
         if (of.getVerlag() != null && !"".equals(of.getVerlag())
                 && dp.getMapPublisher() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapPublisher());
             linkout.append('=');
-            linkout.append(of.getVerlag());
+            linkout.append(url.encodeUTF8(of.getVerlag()));
         }
         if (of.getPmid() != null && !"".equals(of.getPmid())
                 && dp.getMapPmid() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapPmid());
             linkout.append('=');
-            linkout.append(of.getPmid());
+            linkout.append(url.encodeUTF8(of.getPmid()));
         }
         if (of.getDoi() != null && !"".equals(of.getDoi())
                 && dp.getMapDoi() != null) {
             appendParam(linkout);
             linkout.append(dp.getMapDoi());
             linkout.append('=');
-            linkout.append(of.getDoi());
+            linkout.append(url.encodeUTF8(of.getDoi()));
         }
 
     }
@@ -329,8 +332,8 @@ public class Stockdetails extends Action {
     private void appendParam(final StringBuffer buf) {
 
         // check to see if we already have an ? or an & at the end
-        if (buf.length() > 0 && (buf.charAt(buf.length() - 1) != '?'
-            || buf.charAt(buf.length() - 1) != '&')) {
+        if (buf.length() > 0 && buf.charAt(buf.length() - 1) != '?'
+            && buf.charAt(buf.length() - 1) != '&') {
             buf.append('&'); // if not, append
         }
 
