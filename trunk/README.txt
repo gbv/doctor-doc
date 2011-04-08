@@ -1,7 +1,7 @@
   README - 31.10.2010
   
   Doctor-Doc is a webbased and a easy-to-use tracking and
-  managing system for scientific literature
+  managing system for scientific literature.
   
   Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
 
