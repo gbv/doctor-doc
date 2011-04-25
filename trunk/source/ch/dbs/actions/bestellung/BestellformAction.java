@@ -48,6 +48,7 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.BestellParam;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Countries;
+import ch.dbs.entity.DaiaParam;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
@@ -346,8 +347,6 @@ public final class BestellformAction extends DispatchAction {
 
         }
 
-        cn.close();
-
         // if this Bestellform is deactivated show an error message
         if (bp.isDeactivated()) {
             final ErrorMessage em = new ErrorMessage("error.deactivated", "login.do");
@@ -355,8 +354,21 @@ public final class BestellformAction extends DispatchAction {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("bestellform");
             rq.setAttribute(ACTIVEMENUS, mf);
-            forward = FAILURE;
+            cn.close(); // direct return => close
+            return mp.findForward(FAILURE);
         }
+
+        // redirect to external order form
+        if (bp.getUse_did() != null) {
+            final DaiaParam dp = new DaiaParam(bp.getUse_did(), cn.getConnection());
+            // set linkout dependent on protocol
+            dp.setLinkout(dp, of);
+            rq.setAttribute("daiaparam", dp);
+            // redirect to linkout directly
+            if (dp.isRedirect()) { forward = "redirect"; }
+        }
+
+        cn.close();
 
         return mp.findForward(forward);
     }

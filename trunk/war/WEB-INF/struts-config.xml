@@ -453,6 +453,7 @@
             scope="request"
             type="ch.dbs.actions.bestellung.BestellformAction">
       <forward name="success" path="/bestellformjsp.do"/>
+      <forward name="redirect" path="/jsp/redirectdaia.jsp"/>
       <forward name="failure" path="/jsp/error.jsp"/>
     </action>
     

@@ -1,3 +1,7 @@
+-- Revision 137 --
+
+ALTER TABLE `bestellform_param` ADD `USE_DID` BIGINT( 20 ) NULL DEFAULT NULL COMMENT 'use bestellform_daia instead of bestellform_param' AFTER `TYID` 
+
 -- Revision 132 --
 
 ALTER TABLE `konto` ADD `DID` BIGINT NULL DEFAULT NULL AFTER `KID` 

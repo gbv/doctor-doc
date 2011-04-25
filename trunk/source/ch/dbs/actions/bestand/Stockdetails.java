@@ -11,7 +11,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import util.CodeUrl;
 import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
@@ -72,14 +71,13 @@ public class Stockdetails extends Action {
 
         // get Konto from holding
         final Konto k = holdings.get(0).getHolding().getKonto();
-        //        k.setDid(Long.valueOf("1"));
 
         // set DaiaParam into request, if we have an DID in the Konto
         if (k.getDid() != null) {
             final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
             k.close();
             // set linkout dependent on protocol
-            dp.setLinkout(createLinkout(dp, of));
+            dp.setLinkout(dp, of);
             rq.setAttribute("daiaparam", dp);
             // redirect to linkout directly
             if (dp.isRedirect()) { forward = "redirect"; }
@@ -127,216 +125,6 @@ public class Stockdetails extends Action {
 
         cn.close();
         return holdings;
-    }
-
-    private String createLinkout(final DaiaParam dp, final OrderForm of) {
-
-        final StringBuffer linkout = new StringBuffer(dp.getBaseurl());
-
-        linkout.append(dp.getFirstParam());
-
-        if ("openurl".equals(dp.getProtocol())) {
-            linkoutOpenURL(linkout, dp, of);
-        } else if ("custom".equals(dp.getProtocol())) {
-            linkoutCustom(linkout, dp, of);
-        } else { // default value "internal"
-            linkoutInternal(linkout, dp, of);
-        }
-
-        return linkout.toString();
-    }
-
-    private void linkoutOpenURL(final StringBuffer linkout, final DaiaParam dp, final OrderForm of) {
-
-        // create a new OpenURL object
-        final ContextObject co = new ConvertOpenUrl().makeContextObject(of);
-        final String openurl = new OpenUrl().composeOpenUrl(co);
-        linkout.append(openurl);
-
-    }
-
-    private void linkoutCustom(final StringBuffer linkout, final DaiaParam dp, final OrderForm of) {
-
-        final CodeUrl url = new CodeUrl();
-
-        if (of.getMediatype() != null && !"".equals(of.getMediatype())
-                && dp.getMapMediatype() != null) {
-            linkout.append(dp.getMapMediatype());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getMediatype()));
-        }
-        if (of.getJahr() != null && !"".equals(of.getJahr())
-                && dp.getMapDate() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapDate());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getJahr()));
-        }
-        if (of.getJahrgang() != null && !"".equals(of.getJahrgang())
-                && dp.getMapVolume() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapVolume());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getJahrgang()));
-        }
-        if (of.getHeft() != null && !"".equals(of.getHeft())
-                && dp.getMapIssue() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapIssue());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getHeft()));
-        }
-        if (of.getSeiten() != null && !"".equals(of.getSeiten())
-                && dp.getMapPages() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapPages());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getSeiten()));
-        }
-        if (of.getSeiten() != null && !"".equals(of.getIssn())
-                && dp.getMapIssn() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapIssn());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getIssn()));
-        }
-        if (of.getSeiten() != null && !"".equals(of.getIsbn())
-                && dp.getMapIsbn() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapIsbn());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getIsbn()));
-        }
-        if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())
-                && dp.getMapJournal() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapJournal());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getZeitschriftentitel()));
-        }
-        if (of.getArtikeltitel() !=  null && !"".equals(of.getArtikeltitel())
-                && dp.getMapAtitle() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapAtitle());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getArtikeltitel()));
-        }
-        if (of.getAuthor() != null && !"".equals(of.getAuthor())
-                && dp.getMapAuthors() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapAuthors());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getAuthor()));
-        }
-        if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())
-                && dp.getMapBtitle() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapBtitle());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getBuchtitel()));
-        }
-        if (of.getKapitel() != null && !"".equals(of.getKapitel())
-                && dp.getMapChapter() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapChapter());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getKapitel()));
-        }
-        if (of.getVerlag() != null && !"".equals(of.getVerlag())
-                && dp.getMapPublisher() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapPublisher());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getVerlag()));
-        }
-        if (of.getPmid() != null && !"".equals(of.getPmid())
-                && dp.getMapPmid() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapPmid());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getPmid()));
-        }
-        if (of.getDoi() != null && !"".equals(of.getDoi())
-                && dp.getMapDoi() != null) {
-            appendParam(linkout);
-            linkout.append(dp.getMapDoi());
-            linkout.append('=');
-            linkout.append(url.encodeUTF8(of.getDoi()));
-        }
-
-    }
-
-    private void linkoutInternal(final StringBuffer linkout, final DaiaParam dp, final OrderForm of) {
-
-        linkout.append("mediatype=");
-        linkout.append(of.getMediatype());
-        if (of.getJahr() != null && !"".equals(of.getJahr())) {
-            linkout.append("&jahr=");
-            linkout.append(of.getJahr());
-        }
-        if (of.getJahrgang() != null && !"".equals(of.getJahrgang())) {
-            linkout.append("&jahrgang=");
-            linkout.append(of.getJahrgang());
-        }
-        if (of.getHeft() != null && !"".equals(of.getHeft())) {
-            linkout.append("&heft=");
-            linkout.append(of.getHeft());
-        }
-        if (of.getSeiten() != null && !"".equals(of.getSeiten())) {
-            linkout.append("&seiten=");
-            linkout.append(of.getSeiten());
-        }
-        if (of.getIssn() != null && !"".equals(of.getIssn())) {
-            linkout.append("&issn=");
-            linkout.append(of.getIssn());
-        }
-        if (of.getIsbn() != null && !"".equals(of.getIsbn())) {
-            linkout.append("&isbn=");
-            linkout.append(of.getIsbn());
-        }
-        if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())) {
-            linkout.append("&zeitschriftentitel=");
-            linkout.append(of.getZeitschriftentitel());
-        }
-        if (of.getArtikeltitel() != null && !"".equals(of.getArtikeltitel())) {
-            linkout.append("&artikeltitel=");
-            linkout.append(of.getArtikeltitel());
-        }
-        if (of.getAuthor() != null && !"".equals(of.getAuthor())) {
-            linkout.append("&author=");
-            linkout.append(of.getAuthor());
-        }
-        if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())) {
-            linkout.append("&buchtitel=");
-            linkout.append(of.getBuchtitel());
-        }
-        if (of.getKapitel() != null && !"".equals(of.getKapitel())) {
-            linkout.append("&kapitel=");
-            linkout.append(of.getKapitel());
-        }
-        if (of.getVerlag() != null && !"".equals(of.getVerlag())) {
-            linkout.append("&verlag=");
-            linkout.append(of.getVerlag());
-        }
-        if (of.getPmid() != null && !"".equals(of.getPmid())) {
-            linkout.append("&pmid=");
-            linkout.append(of.getPmid());
-        }
-        if (of.getDoi() != null && !"".equals(of.getDoi())) {
-            linkout.append("&doi=");
-            linkout.append(of.getDoi());
-        }
-
-    }
-
-    private void appendParam(final StringBuffer buf) {
-
-        // check to see if we already have an ? or an & at the end
-        if (buf.length() > 0 && buf.charAt(buf.length() - 1) != '?'
-            && buf.charAt(buf.length() - 1) != '&') {
-            buf.append('&'); // if not, append
-        }
-
     }
 
 }

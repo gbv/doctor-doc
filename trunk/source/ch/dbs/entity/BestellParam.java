@@ -43,6 +43,7 @@ public class BestellParam extends ValidatorForm {
     // we'll have 1 orderform for several IPs within the same account
     private Long kid;
     private Long tyid;
+    private Long use_did; // use external order form for this case
     private String kennung;
     // defines, if this order will be additionally saved in the database
     // an email will always be sent. This can be configured differently for each orderform.
@@ -390,6 +391,10 @@ public class BestellParam extends ValidatorForm {
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
         this.setTyid(rs.getLong("TYID"));
+        // only set if we have a USE_DID. If not, leave null!
+        if (rs.getString("USE_DID") != null) {
+            this.setUse_did(rs.getLong("USE_DID"));
+        }
         this.setKennung(rs.getString("kennung"));
         this.setSaveorder(rs.getBoolean("saveorder"));
         this.setDeactivated(rs.getBoolean("deactivated"));
@@ -448,7 +453,7 @@ public class BestellParam extends ValidatorForm {
      * Setzt die Werte im Preparestatement der Methoden update() sowie save()
      *
      */
-    public PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp, final Connection cn)
+    private PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp, final Connection cn)
     throws Exception {
 
         pstmt.setLong(1, bp.getKid());
@@ -595,6 +600,14 @@ public class BestellParam extends ValidatorForm {
 
     public void setTyid(final Long tyid) {
         this.tyid = tyid;
+    }
+
+    public Long getUse_did() {
+        return use_did;
+    }
+
+    public void setUse_did(final Long useDid) {
+        use_did = useDid;
     }
 
     public String getKennung() {

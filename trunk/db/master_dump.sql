@@ -1,19 +1,19 @@
 --
--- works with  >= Revision 132 (see also dbchanges_forUpdate, e.g. if using SVN)
+-- works with  >= Revision 137 (see also dbchanges_forUpdate, e.g. if using SVN)
 --
 -- phpMyAdmin SQL Dump
 -- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 30. März 2011 um 12:40
+-- Erstellungszeit: 25. April 2011 um 20:21
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Datenbank: `dd_os`
+--
 --
 
 -- --------------------------------------------------------
@@ -125,6 +125,7 @@ CREATE TABLE IF NOT EXISTS `bestellform_param` (
   `BPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
   `TYID` bigint(20) NOT NULL,
+  `USE_DID` bigint(20) DEFAULT NULL COMMENT 'use bestellform_daia instead of bestellform_param',
   `kennung` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `saveorder` tinyint(1) NOT NULL,
   `deactivated` tinyint(1) NOT NULL DEFAULT '0',

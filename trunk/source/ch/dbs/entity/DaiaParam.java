@@ -24,6 +24,12 @@ import java.sql.SQLException;
 
 import org.grlea.log.SimpleLogger;
 
+import util.CodeUrl;
+import ch.dbs.actions.openurl.ContextObject;
+import ch.dbs.actions.openurl.ConvertOpenUrl;
+import ch.dbs.actions.openurl.OpenUrl;
+import ch.dbs.form.OrderForm;
+
 /**
  * Class to transmit DAIA requests to an (external) order form.
  * <p/>
@@ -123,6 +129,216 @@ public class DaiaParam extends AbstractIdEntity {
         this.setMapPmid(rs.getString("map_pmid"));
         this.setMapDoi(rs.getString("map_doi"));
         this.setLimitations(rs.getString("limitations"));
+
+    }
+
+    public void setLinkout(final DaiaParam dp, final OrderForm of) {
+
+        final StringBuffer link = new StringBuffer(dp.getBaseurl());
+
+        link.append(dp.getFirstParam());
+
+        if ("openurl".equals(dp.getProtocol())) {
+            linkoutOpenURL(link, dp, of);
+        } else if ("custom".equals(dp.getProtocol())) {
+            linkoutCustom(link, dp, of);
+        } else { // default value "internal"
+            linkoutInternal(link, dp, of);
+        }
+
+        dp.setLinkout(link.toString());
+    }
+
+    private void linkoutOpenURL(final StringBuffer link, final DaiaParam dp, final OrderForm of) {
+
+        // create a new OpenURL object
+        final ContextObject co = new ConvertOpenUrl().makeContextObject(of);
+        final String openurl = new OpenUrl().composeOpenUrl(co);
+        link.append(openurl);
+
+    }
+
+    private void linkoutCustom(final StringBuffer link, final DaiaParam dp, final OrderForm of) {
+
+        final CodeUrl url = new CodeUrl();
+
+        if (of.getMediatype() != null && !"".equals(of.getMediatype())
+                && dp.getMapMediatype() != null) {
+            link.append(dp.getMapMediatype());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getMediatype()));
+        }
+        if (of.getJahr() != null && !"".equals(of.getJahr())
+                && dp.getMapDate() != null) {
+            appendParam(link);
+            link.append(dp.getMapDate());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getJahr()));
+        }
+        if (of.getJahrgang() != null && !"".equals(of.getJahrgang())
+                && dp.getMapVolume() != null) {
+            appendParam(link);
+            link.append(dp.getMapVolume());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getJahrgang()));
+        }
+        if (of.getHeft() != null && !"".equals(of.getHeft())
+                && dp.getMapIssue() != null) {
+            appendParam(link);
+            link.append(dp.getMapIssue());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getHeft()));
+        }
+        if (of.getSeiten() != null && !"".equals(of.getSeiten())
+                && dp.getMapPages() != null) {
+            appendParam(link);
+            link.append(dp.getMapPages());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getSeiten()));
+        }
+        if (of.getSeiten() != null && !"".equals(of.getIssn())
+                && dp.getMapIssn() != null) {
+            appendParam(link);
+            link.append(dp.getMapIssn());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getIssn()));
+        }
+        if (of.getSeiten() != null && !"".equals(of.getIsbn())
+                && dp.getMapIsbn() != null) {
+            appendParam(link);
+            link.append(dp.getMapIsbn());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getIsbn()));
+        }
+        if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())
+                && dp.getMapJournal() != null) {
+            appendParam(link);
+            link.append(dp.getMapJournal());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getZeitschriftentitel()));
+        }
+        if (of.getArtikeltitel() !=  null && !"".equals(of.getArtikeltitel())
+                && dp.getMapAtitle() != null) {
+            appendParam(link);
+            link.append(dp.getMapAtitle());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getArtikeltitel()));
+        }
+        if (of.getAuthor() != null && !"".equals(of.getAuthor())
+                && dp.getMapAuthors() != null) {
+            appendParam(link);
+            link.append(dp.getMapAuthors());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getAuthor()));
+        }
+        if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())
+                && dp.getMapBtitle() != null) {
+            appendParam(link);
+            link.append(dp.getMapBtitle());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getBuchtitel()));
+        }
+        if (of.getKapitel() != null && !"".equals(of.getKapitel())
+                && dp.getMapChapter() != null) {
+            appendParam(link);
+            link.append(dp.getMapChapter());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getKapitel()));
+        }
+        if (of.getVerlag() != null && !"".equals(of.getVerlag())
+                && dp.getMapPublisher() != null) {
+            appendParam(link);
+            link.append(dp.getMapPublisher());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getVerlag()));
+        }
+        if (of.getPmid() != null && !"".equals(of.getPmid())
+                && dp.getMapPmid() != null) {
+            appendParam(link);
+            link.append(dp.getMapPmid());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getPmid()));
+        }
+        if (of.getDoi() != null && !"".equals(of.getDoi())
+                && dp.getMapDoi() != null) {
+            appendParam(link);
+            link.append(dp.getMapDoi());
+            link.append('=');
+            link.append(url.encodeUTF8(of.getDoi()));
+        }
+
+    }
+
+    private void linkoutInternal(final StringBuffer link, final DaiaParam dp, final OrderForm of) {
+
+        link.append("mediatype=");
+        link.append(of.getMediatype());
+        if (of.getJahr() != null && !"".equals(of.getJahr())) {
+            link.append("&jahr=");
+            link.append(of.getJahr());
+        }
+        if (of.getJahrgang() != null && !"".equals(of.getJahrgang())) {
+            link.append("&jahrgang=");
+            link.append(of.getJahrgang());
+        }
+        if (of.getHeft() != null && !"".equals(of.getHeft())) {
+            link.append("&heft=");
+            link.append(of.getHeft());
+        }
+        if (of.getSeiten() != null && !"".equals(of.getSeiten())) {
+            link.append("&seiten=");
+            link.append(of.getSeiten());
+        }
+        if (of.getIssn() != null && !"".equals(of.getIssn())) {
+            link.append("&issn=");
+            link.append(of.getIssn());
+        }
+        if (of.getIsbn() != null && !"".equals(of.getIsbn())) {
+            link.append("&isbn=");
+            link.append(of.getIsbn());
+        }
+        if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())) {
+            link.append("&zeitschriftentitel=");
+            link.append(of.getZeitschriftentitel());
+        }
+        if (of.getArtikeltitel() != null && !"".equals(of.getArtikeltitel())) {
+            link.append("&artikeltitel=");
+            link.append(of.getArtikeltitel());
+        }
+        if (of.getAuthor() != null && !"".equals(of.getAuthor())) {
+            link.append("&author=");
+            link.append(of.getAuthor());
+        }
+        if (of.getBuchtitel() != null && !"".equals(of.getBuchtitel())) {
+            link.append("&buchtitel=");
+            link.append(of.getBuchtitel());
+        }
+        if (of.getKapitel() != null && !"".equals(of.getKapitel())) {
+            link.append("&kapitel=");
+            link.append(of.getKapitel());
+        }
+        if (of.getVerlag() != null && !"".equals(of.getVerlag())) {
+            link.append("&verlag=");
+            link.append(of.getVerlag());
+        }
+        if (of.getPmid() != null && !"".equals(of.getPmid())) {
+            link.append("&pmid=");
+            link.append(of.getPmid());
+        }
+        if (of.getDoi() != null && !"".equals(of.getDoi())) {
+            link.append("&doi=");
+            link.append(of.getDoi());
+        }
+
+    }
+
+    private void appendParam(final StringBuffer buf) {
+
+        // check to see if we already have an ? or an & at the end
+        if (buf.length() > 0 && buf.charAt(buf.length() - 1) != '?'
+            && buf.charAt(buf.length() - 1) != '&') {
+            buf.append('&'); // if not, append
+        }
 
     }
 
