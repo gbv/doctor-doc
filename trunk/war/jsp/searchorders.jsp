@@ -164,7 +164,7 @@
       </select>
     </td>
     <td>
-      <input name="input1" value="" type="text" size="50" maxlength="100" />
+      <input name="input1" value="" type="search" size="50" maxlength="100" />
     </td>
     <td>
       <select name="boolean1" size="1">
@@ -191,7 +191,7 @@
       </select>
     </td>
     <td>
-      <input name="input2" value="" type="text" size="50" maxlength="100" />
+      <input name="input2" value="" type="search" size="50" maxlength="100" />
     </td>
     <td>
       &nbsp;

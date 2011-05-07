@@ -146,7 +146,7 @@
       </td>
     </tr>
     <tr>
-      <td><input name="gbvsearch" type="text" size="98" /></td>
+      <td><input name="gbvsearch" type="search" size="98" /></td>
     </tr>
     <tr>
       <td><br /></td>

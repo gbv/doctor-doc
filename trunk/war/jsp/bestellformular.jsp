@@ -220,7 +220,7 @@
       <td><b><bean:message key="bestellform.email" />*&nbsp;</b></td>
       <td><input name="kundenmail"
         value="<bean:write name="orderform" property="kundenmail" />"
-        type="text" size="60" maxlength="100" /></td>
+        type="email" size="60" maxlength="100" /></td>
     </tr>
     
 <!-- Hier folgen allf&auml;llige zus&auml;tzliche Bestellformular-Parameter -->
@@ -393,7 +393,7 @@
         </td>
         <td><input name="kundentelefon"
           value="<bean:write name="orderform" property="kundentelefon" />"
-          type="text" size="25" maxlength="100" />
+          type="tel" size="25" maxlength="100" />
         </td>
       </tr>      
     </logic:equal>

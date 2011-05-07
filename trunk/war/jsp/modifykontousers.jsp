@@ -73,17 +73,17 @@
       <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text" size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.name" />"</logic:present> /><font color=red><html:errors property="name" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.email" />*</b></td><td><input name="email" type="text" size="50" maxlength="50" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.email" />"</logic:present> />
+      <td><b><bean:message key="adressen.email" />*</b></td><td><input name="email" type="email" size="50" maxlength="50" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.email" />"</logic:present> />
       <font color="red"><html:errors property="email" /></font></td>
     </tr>
         <tr>
       <td><bean:message key="modifykontousers.newpassword" /></td><td><input name="password" type="text" size="50" maxlength="50" /></td>
     </tr>   
     <tr>
-      <td><bean:message key="showkontousers.telefon_g" /></td><td><input name="telefonnrg" type="text" size="30" maxlength="30" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.telefonnrg" />"</logic:present> /></td>
+      <td><bean:message key="showkontousers.telefon_g" /></td><td><input name="telefonnrg" type="tel" size="30" maxlength="30" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.telefonnrg" />"</logic:present> /></td>
     </tr>
     <tr>
-      <td><bean:message key="showkontousers.telefon_p" /></td><td><input name="telefonnrp" type="text" size="30" maxlength="30" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.telefonnrp" />"</logic:present> /></td>
+      <td><bean:message key="showkontousers.telefon_p" /></td><td><input name="telefonnrp" type="tel" size="30" maxlength="30" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.telefonnrp" />"</logic:present> /></td>
     </tr>
     <tr>
       <td><bean:message key="bestellform.institution" /></td><td><input name="institut" type="text" size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.institut" />"</logic:present> /></td>

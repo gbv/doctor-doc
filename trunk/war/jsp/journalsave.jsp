@@ -260,7 +260,7 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
 <logic:present name="userinfo" property="benutzer">
   <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">    
     <tr>
-      <td><bean:message key="save.preis" /></td><td><input name="preisvorkomma" value="<bean:write name="orderform" property="preisvorkomma" />" type="text" style="text-align:right;" size="3" maxlength="3" /> , <input name="preisnachkomma" value="<bean:write name="orderform" property="preisnachkomma" />" type="text" style="text-align:right;" size="2" maxlength="2" /> <font color="white"><i><bean:message key="save.preis_comment" /></i></font> <bean:message key="save.waehrung" />: 
+      <td><bean:message key="save.preis" /></td><td><input name="preisvorkomma" value="<bean:write name="orderform" property="preisvorkomma" />" type="number" style="text-align:right;" size="3" maxlength="3" /> , <input name="preisnachkomma" value="<bean:write name="orderform" property="preisnachkomma" />" type="number" style="text-align:right;" size="2" maxlength="2" /> <font color="white"><i><bean:message key="save.preis_comment" /></i></font> <bean:message key="save.waehrung" />: 
       <select name="waehrung">
       <logic:iterate id="w" name="orderform" property="waehrungen">
       <bean:define id="tmp" name="w" property="inhalt" type="java.lang.String"/>

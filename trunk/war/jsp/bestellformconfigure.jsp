@@ -268,7 +268,7 @@
     <td><bean:message key="bestellform.link" />&nbsp;</td>
     <td><input name="option_linkout"
         value="<bean:write name="bestellform" property="option_linkout" />"
-        type="text" size="100" maxlength="200" /></td>
+        type="url" size="100" maxlength="200" /></td>
   </tr>
   <tr>
     <td><bean:message key="bestellform.linkname" />&nbsp;</td>
@@ -308,14 +308,14 @@
     <td align="center"><input type="checkbox" name="gebuehren" <logic:equal name="bestellform" property="gebuehren" value="true">checked="checked"</logic:equal> /></td>
     <td><input name="link_gebuehren"
         value="<bean:write name="bestellform" property="link_gebuehren" />"
-        type="text" size="100" maxlength="200" /></td>
+        type="url" size="100" maxlength="200" /></td>
   </tr>
   <tr>
     <td><bean:message key="bestellform.agb" />&nbsp;</td>
     <td align="center"><input type="checkbox" name="agb" <logic:equal name="bestellform" property="agb" value="true">checked="checked"</logic:equal> /></td>
     <td><input name="link_agb"
         value="<bean:write name="bestellform" property="link_agb" />"
-        type="text" size="100" maxlength="200" /></td>
+        type="url" size="100" maxlength="200" /></td>
   </tr>
 </table>
 

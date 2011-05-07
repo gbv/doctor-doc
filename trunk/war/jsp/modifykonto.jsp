@@ -124,15 +124,15 @@
       </td>      
     </tr>  
     <tr>
-      <td><b><bean:message key="modifykonto.telefon" />*</b></td><td><input name="telefon" type="text"<logic:present name="kontoform" property="telefon"> value="<bean:write name="kontoform" property="telefon" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="telefon" /></font></td>
+      <td><b><bean:message key="modifykonto.telefon" />*</b></td><td><input name="telefon" type="tel"<logic:present name="kontoform" property="telefon"> value="<bean:write name="kontoform" property="telefon" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="telefon" /></font></td>
     </tr>
     <tr>
-      <td><bean:message key="modifykonto.localfax" /></td><td><input name="fax_extern" type="text"<logic:present name="kontoform" property="fax_extern"> value="<bean:write name="kontoform" property="fax_extern" />"</logic:present> size="50" maxlength="100" /></td>
+      <td><bean:message key="modifykonto.localfax" /></td><td><input name="fax_extern" type="tel"<logic:present name="kontoform" property="fax_extern"> value="<bean:write name="kontoform" property="fax_extern" />"</logic:present> size="50" maxlength="100" /></td>
     </tr>
      <logic:present name="userinfo" property="benutzer">
    <logic:equal name="userinfo" property="benutzer.rechte" value="3">
     <tr>
-      <td><bean:message key="modifykonto.ddfaxnum" /></td><td><input name="faxno" type="text"<logic:present name="kontoform" property="faxno"> value="<bean:write name="kontoform" property="faxno" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="faxno" /></font></td>
+      <td><bean:message key="modifykonto.ddfaxnum" /></td><td><input name="faxno" type="tel"<logic:present name="kontoform" property="faxno"> value="<bean:write name="kontoform" property="faxno" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="faxno" /></font></td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.ddfaxid" /></td><td><input name="faxusername" type="text"<logic:present name="kontoform" property="faxusername"> value="<bean:write name="kontoform" property="faxusername" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="faxusername" /></font></td>
@@ -144,10 +144,10 @@
     </logic:equal>
     </logic:present>
     <tr>
-      <td><b><bean:message key="modifykonto.libraryemail" />*</b></td><td><input name="bibliotheksmail" type="text"<logic:notPresent name="kontoform" property="bibliotheksmail"> value="<bean:message key="register.bibliomail_explain" />"</logic:notPresent><logic:present name="kontoform" property="bibliotheksmail"> value="<bean:write name="kontoform" property="bibliotheksmail" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="email" /></font></td>
+      <td><b><bean:message key="modifykonto.libraryemail" />*</b></td><td><input name="bibliotheksmail" type="email"<logic:notPresent name="kontoform" property="bibliotheksmail"> value="<bean:message key="register.bibliomail_explain" />"</logic:notPresent><logic:present name="kontoform" property="bibliotheksmail"> value="<bean:write name="kontoform" property="bibliotheksmail" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="email" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="modifykonto.email_delivery" />*</b></td><td><input name="dbsmail" type="text"<logic:notPresent name="kontoform" property="dbsmail"> value="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="email" /></font></td>
+      <td><b><bean:message key="modifykonto.email_delivery" />*</b></td><td><input name="dbsmail" type="email"<logic:notPresent name="kontoform" property="dbsmail"> value="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="email" /></font></td>
     </tr>
     <logic:notPresent name="userinfo" property="konto.faxno">
     <!-- Nur für nicht Faxserverkunden relevant -->
@@ -181,7 +181,7 @@
     </tr>
     <tr title="<bean:message key="modifykonto.instlogo_explain" />">
       <td><bean:message key="modifykonto.instlogo" /><img src="img/info.png" alt="<bean:message key="modifykonto.instlogo_explain" />" /></td>
-      <td><input name="instlogolink" type="text"<logic:present name="kontoform" property="instlogolink"> value="<bean:write name="kontoform" property="instlogolink" />"</logic:present> size="50" maxlength="254" /> [jpg, jpeg, gif, png]</td>
+      <td><input name="instlogolink" type="url"<logic:present name="kontoform" property="instlogolink"> value="<bean:write name="kontoform" property="instlogolink" />"</logic:present> size="50" maxlength="254" /> [jpg, jpeg, gif, png]</td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.checkzdb" />&nbsp;</td><td><select name="zdb">
@@ -241,10 +241,10 @@
      </tr>
      -->
      <tr>
-       <td><bean:message key="modifykonto.maxcustomyear" /></td><td><input name="maxordersutotal" type="text"<logic:present name="kontoform" property="maxordersutotal"> value="<bean:write name="kontoform" property="maxordersutotal" />"</logic:present> size="5" maxlength="10" /> <i><font color="white"><bean:message key="modifykonto.unlimited" /> </font></i> <font color="red"><html:errors property="maxordersutotal" /></font></td>
+       <td><bean:message key="modifykonto.maxcustomyear" /></td><td><input name="maxordersutotal" type="number"<logic:present name="kontoform" property="maxordersutotal"> value="<bean:write name="kontoform" property="maxordersutotal" />"</logic:present> size="5" maxlength="10" /> <i><font color="white"><bean:message key="modifykonto.unlimited" /> </font></i> <font color="red"><html:errors property="maxordersutotal" /></font></td>
      </tr>
       <tr>
-       <td><bean:message key="modifykonto.maxtotalyear" />&nbsp;</td><td><input name="maxordersj" type="text"<logic:present name="kontoform" property="maxordersj"> value="<bean:write name="kontoform" property="maxordersj" />"</logic:present> size="5" maxlength="10" /> <i><font color="white"><bean:message key="modifykonto.unlimited" /> </font></i> <font color="red"><html:errors property="maxordersj" /></font></td>
+       <td><bean:message key="modifykonto.maxtotalyear" />&nbsp;</td><td><input name="maxordersj" type="number"<logic:present name="kontoform" property="maxordersj"> value="<bean:write name="kontoform" property="maxordersj" />"</logic:present> size="5" maxlength="10" /> <i><font color="white"><bean:message key="modifykonto.unlimited" /> </font></i> <font color="red"><html:errors property="maxordersj" /></font></td>
      </tr>
 
       

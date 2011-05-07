@@ -31,11 +31,11 @@
       <td><p>&nbsp;</p></td><td></td>
     </tr>
     <tr>
-      <td><bean:message key="login.email" /></td><td><html:text property="email" size="50" maxlength="50" />
+      <td><bean:message key="login.email" /></td><td><input name="email" type="email" size="50" maxlength="50" />
      <font color=red><html:errors property="email" /></font></td>
     </tr>
     <tr>
-      <td><bean:message key="login.password" /></td><td><html:password property="password" size="50" maxlength="50" />
+      <td><bean:message key="login.password" /></td><td><input name="password" type="password" size="50" maxlength="50" />
      <font color=red><html:errors property="password" /></font><p /> 
      <input type="hidden" name="method" value="overview" /></td>
     </tr>

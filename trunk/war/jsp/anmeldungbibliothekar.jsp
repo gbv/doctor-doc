@@ -50,10 +50,10 @@
       <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text"<logic:present name="userform" property="name"> value="<bean:write name="userform" property="name" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="name" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.email" />*</b> ( = Login-ID)&nbsp;</td><td><input name="email" type="text"<logic:present name="userform" property="email"> value="<bean:write name="userform" property="email" />"</logic:present> size="50" maxlength="50" /><font color=red><html:errors property="email" /></font> <bean:message key="register.email_comment" /></td>
+      <td><b><bean:message key="adressen.email" />*</b> ( = Login-ID)&nbsp;</td><td><input name="email" type="email"<logic:present name="userform" property="email"> value="<bean:write name="userform" property="email" />"</logic:present> size="50" maxlength="50" /><font color=red><html:errors property="email" /></font> <bean:message key="register.email_comment" /></td>
     </tr>   
     <tr>
-      <td><bean:message key="adressen.telefon_g" /></td><td><input name="telefonnrg" type="text"<logic:present name="userform" property="telefonnrg"> value="<bean:write name="userform" property="telefonnrg" />"</logic:present> size="30" maxlength="30" /></td>
+      <td><bean:message key="adressen.telefon_g" /></td><td><input name="telefonnrg" type="tel"<logic:present name="userform" property="telefonnrg"> value="<bean:write name="userform" property="telefonnrg" />"</logic:present> size="30" maxlength="30" /></td>
     </tr>
     <tr>
       <td><b><bean:message arg0="<%=appName%>" key="register.dd_pw" />*</b>&nbsp;</td><td><html:password property="password" size="50" maxlength="50" /> <bean:message key="register.dd_pw_min" /></td>
