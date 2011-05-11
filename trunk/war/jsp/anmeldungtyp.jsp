@@ -20,6 +20,7 @@
  <body>
  
  <bean:define id="appName" type="java.lang.String"><bean:message bundle="systemConfig" key="application.name"/></bean:define>
+ <bean:define id="allowRegister" type="java.lang.String"><bean:message bundle="systemConfig" key="allow.registerLibraryAccounts"/></bean:define>
 
 <tiles:insert page="import/header.jsp" flush="true" />
 
@@ -55,7 +56,9 @@
 <tr><td colspan="3"><p /><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /></td></tr>
 </table>
 
-<p><b><bean:message key="anmeldungtyp.register" /></b></p>
+<logic:equal name="allowRegister" value="true">
+	<p><b><bean:message key="anmeldungtyp.register" /></b></p>
+</logic:equal>
 
 <tiles:insert page="import/footer.jsp" flush="true" />
 

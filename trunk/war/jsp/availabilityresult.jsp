@@ -183,7 +183,7 @@ h += 96;
       <td><a href="http://www.google.ch/search?as_q=&num=10&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images" target="_blank">Google</a></td>
     </tr>
     <tr>
-      <td><a href="http://gateway-bayern.bib-bvb.de/aleph-cgi/bvb_suche?sid=ZDB&find_code_1=ZDB&find_request_1=<bean:write name="orderform" property="zdbid" />" target="_blank">BVB</a></td>
+      <td><a href="http://sfx.bib-bvb.de/sfx_bvb?sid=nodata&__char_set=utf8&sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">BVB</a></td>
       <td><a href="http://www.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-chvk.cgi?maske=vk_schweiz&header=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-header_de_10_06_01.html&footer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-footer_de_29_11_05.html&spacer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-spacer_de.html&css=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fchvk%2Fvk_schweiz-result_01_07.css&target=_blank&kataloge=VKCH_BASEL&kataloge=HELVETICAT&kataloge=VKCH_CONS_GENEVE&kataloge=VKCH_SGB&kataloge=VKCH_GLARUS&kataloge=VKCH_CONS_LAUSANNE&kataloge=VKCH_LAUSANNE&kataloge=VKCH_LUZERN&kataloge=VKCH_SOLOTHURN&kataloge=VKCH_STGALLEN&kataloge=LIECHTENSTEIN&kataloge=VKCH_ZUG&kataloge=VKCH_ZUERICH&kataloge=VKCH_NEBIS&kataloge=VKCH_KUNSTHAUS&kataloge=ALEXANDRIA&kataloge=CHZK_BGR&kataloge=VKCH_THURGAU&kataloge=VKCH_RERO&kataloge=SCHAFFHAUSEN&kataloge=CHZK_SBT&kataloge=STGALLENNETZ&TI=&PY=&AU=&SB=&CI=&SS=<bean:write name="orderform" property="issn" />&ST=&PU=&sortiert=nein" target="_blank">CHVK</a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
@@ -211,7 +211,7 @@ h += 96;
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td><a href="http://rhea.hbz-nrw.de/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">DigiBib</a></td>
+      <td><a href="http://www.digibib.net/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">DigiBib</a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
@@ -252,12 +252,12 @@ h += 96;
     <tr>
       <td width="20%"><a href="http://zdb-opac.de" target="_blank">ZDB</a></td>
       <td width="15%"><a href="http://ead.nb.admin.ch/web/swiss-serials/psp_de.html" target="_blank">SZP</a></td>
-      <td width="20%"><a href="http://opac.obvsg.at/acc01" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
+      <td width="20%"><a href="http://aleph20-prod-acc.obvsg.at/F?CON_LNG=ger&func=file&file_name=start&local_base=acczs" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
       <td width="20%"><a href="sessionbritishlibrary.do?method=redirect&issn=<bean:write name="orderform" property="issn" />" target="_blank">British Library</a></td>
       <td width="25%"><a href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images" target="_blank">Google</a></td>
     </tr>
         <tr>
-      <td><a href="http://opac.bib-bvb.de:8080/InfoGuideClient.fasttestsis/start.do?" target="_blank">BVB</a></td>
+      <td><a href="https://opac.bib-bvb.de/InfoGuideClient.fasttestsis/start.do" target="_blank">BVB</a></td>
       <td><a href="http://www.chvk.ch/" target="_blank">CHVK</a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
@@ -285,14 +285,14 @@ h += 96;
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td><a href="http://rhea.hbz-nrw.de/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">DigiBib</a></td>
+      <td><a href="http://www.digibib.net/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">DigiBib</a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
     </tr>
     <tr>
-      <td><a href="http://www.kobv.de" target="_blank">KOBV</a></td>
+      <td><a href="http://sfx.kobv.de/cgi-bin/fernleihe3/cgi/nachauth" target="_blank">KOBV</a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
