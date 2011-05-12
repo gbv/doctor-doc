@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import util.Auth;
 import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
@@ -72,15 +73,29 @@ public class Stockdetails extends Action {
         // get Konto from holding
         final Konto k = holdings.get(0).getHolding().getKonto();
 
-        // set DaiaParam into request, if we have an DID in the Konto
+        // if we have an DID in the Konto, we will redirect to an order form
         if (k.getDid() != null) {
             final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
             k.close();
-            // set linkout dependent on protocol
-            dp.setLinkout(dp, of);
-            rq.setAttribute("daiaparam", dp);
-            // redirect to linkout directly
-            if (dp.isRedirect()) { forward = "redirect"; }
+
+            // additional check if request comes out of the IP range of the accounts IP range
+
+            // get Konto from IP
+            final Auth auth = new Auth();
+            final Text t = auth.grantAccess(rq);
+
+            // use IP based order form if applicable
+            if (useIP_BasedForm(k, t) && dp.isIp_overrides()) {
+                rq.setAttribute("ofjo", of);
+                forward = "redirectIP";
+                // redirect to order form defined in dp
+            } else {
+                // set linkout dependent on protocol
+                dp.setLinkout(dp, of);
+                rq.setAttribute("daiaparam", dp);
+                // redirect to linkout directly
+                if (dp.isRedirect()) { forward = "redirect"; }
+            }
         }
 
         // in any case set parameters into request
@@ -125,6 +140,17 @@ public class Stockdetails extends Action {
 
         cn.close();
         return holdings;
+    }
+
+    private boolean useIP_BasedForm(final Konto k, final Text t) {
+        boolean result = false;
+
+        if (t.getKonto() != null
+                && k.getId().equals(t.getKonto().getId())) {
+            result = true;
+        }
+
+        return result;
     }
 
 }

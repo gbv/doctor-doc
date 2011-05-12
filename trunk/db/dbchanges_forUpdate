@@ -1,3 +1,7 @@
+-- Revision 140 --
+
+ALTER TABLE `bestellform_daia` ADD `ip_overrides` TINYINT( 1 ) NOT NULL DEFAULT '0' COMMENT 'Shall IP based requests use the IP based order form instead.' AFTER `redirect` 
+
 -- Revision 137 --
 
 ALTER TABLE `bestellform_param` ADD `USE_DID` BIGINT( 20 ) NULL DEFAULT NULL COMMENT 'use bestellform_daia instead of bestellform_param' AFTER `TYID` 

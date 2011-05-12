@@ -46,6 +46,7 @@ public class DaiaParam extends AbstractIdEntity {
     private String firstParam = "?";
     private String protocol = "internal"; // internal / openurl / custom
     private boolean redirect;
+    private boolean ip_overrides;
     private String mapMediatype;
     private String mapAuthors;
     private String mapAtitle;
@@ -113,6 +114,7 @@ public class DaiaParam extends AbstractIdEntity {
         this.setFirstParam(rs.getString("first_param"));
         this.setProtocol(rs.getString("protocol"));
         this.setRedirect(rs.getBoolean("redirect"));
+        this.setIp_overrides(rs.getBoolean("ip_overrides"));
         this.setMapMediatype(rs.getString("map_mediatype"));
         this.setMapAuthors(rs.getString("map_authors"));
         this.setMapAtitle(rs.getString("map_atitle"));
@@ -384,6 +386,12 @@ public class DaiaParam extends AbstractIdEntity {
     }
     public void setRedirect(final boolean redirect) {
         this.redirect = redirect;
+    }
+    public boolean isIp_overrides() {
+        return ip_overrides;
+    }
+    public void setIp_overrides(final boolean ipOverrides) {
+        ip_overrides = ipOverrides;
     }
     public String getMapMediatype() {
         return mapMediatype;
