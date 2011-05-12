@@ -127,9 +127,8 @@ public final class OrderAction extends DispatchAction {
                 // ***Funktion Autocomplete ein erstes Mal ausführen
                 if (!pageForm.isAutocomplete()) { pageForm.setAutocomplete(autoComplete(form, rq)); }
 
-                if (!auth.isBenutzer(rq) || // Automatische Google-Suche für Bibliothekare und Admins...
-                        // ...und für User, falls aufgrund der SystemConfigurations erlaubt.
-                        ReadSystemConfigurations.isAllowPatronAutomaticGoogleSearch()) {
+                // Automatic Google search
+                if (google(rq, auth)) {
 
                     // ...nur Google-Suche durchführen, falls nicht captcha.jsp dazwischengeschaltet wurde!
                     if (pageForm.getCaptcha_id() == null && pageForm.getCaptcha_text() == null) {
@@ -3288,6 +3287,19 @@ public final class OrderAction extends DispatchAction {
 
 
         return output;
+    }
+
+    private boolean google(final HttpServletRequest rq, final Auth auth) {
+        boolean result = false;
+
+        if (ReadSystemConfigurations.isActivatedGoogleSearch() // Google search must be globally activated
+                && (!auth.isBenutzer(rq) || // and the user must be a librarian or an admin...
+                        // ...or the configuration for users must be set to true.
+                        ReadSystemConfigurations.isAllowPatronAutomaticGoogleSearch())) {
+            result = true;
+        }
+
+        return result;
     }
 
 

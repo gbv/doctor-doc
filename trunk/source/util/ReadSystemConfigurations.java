@@ -66,6 +66,10 @@ public final class ReadSystemConfigurations {
         return AbstractReadSystemConfigurations.ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH;
     }
 
+    public static boolean isActivatedGoogleSearch() {
+        return AbstractReadSystemConfigurations.ACTIVATE_GOOGLE_SEARCH;
+    }
+
     public static boolean isGTC() {
         return AbstractReadSystemConfigurations.ACTIVATE_GTC;
     }

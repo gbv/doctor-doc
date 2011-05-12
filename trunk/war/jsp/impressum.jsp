@@ -75,6 +75,7 @@
     <tr>
       <td>
         <ul>
+          <li><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=doctor-doc-general" target="_blank">News</a></li>
           <li><a href="http://www.doctor-doc.com/Newsletter6.pdf">Newsletter 6</a> (26-Mai-2010)</li>
           <li><a href="http://www.doctor-doc.com/Newsletter5.pdf">Newsletter 5</a> (04-Jan-2010)</li>
           <li><a href="http://www.doctor-doc.com/Newsletter4.pdf">Newsletter 4</a> (24-Aug-2009)</li>
@@ -83,6 +84,12 @@
           <li><a href="http://www.doctor-doc.com/Newsletter.pdf">Newsletter 1</a> (08-<bean:message key="impressum.march" />-2009)</li>
         </ul>
       </td>
+    </tr>
+    <tr><td><br></br></td></tr>
+    <tr>
+    	<td>
+    		<script type="text/javascript" src="http://www.ohloh.net/p/483914/widgets/project_thin_badge.js"></script>
+    	</td>    
     </tr>
 
 </table>
