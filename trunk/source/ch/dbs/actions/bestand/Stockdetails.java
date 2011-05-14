@@ -78,7 +78,7 @@ public class Stockdetails extends Action {
             final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
             k.close();
 
-            // additional check if request comes out of the IP range of the accounts IP range
+            // additional check if the request comes out of the IP range of the account
 
             // get Konto from IP
             final Auth auth = new Auth();

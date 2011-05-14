@@ -66,6 +66,7 @@
           <li><a href="http://www.gbv.de/wikis/cls/Doctor-Doc-GBV-Schnittstelle" target="_blank">GBV-Wiki</a></li>
           <li><a href="http://www.egms.de/static/de/journals/mbi/2010-10/mbi000189.shtml" target="_blank">GMS - German Medical Science: AGMB Meeting 2009</a></li>
           <li><a href="https://sourceforge.net/apps/mediawiki/doctor-doc/index.php?title=Main_Page" target="_blank">Wiki Doctor-Doc</a></li>
+          <li><a href="https://sourceforge.net/apps/mediawiki/doctor-doc/index.php?title=Help:Contents" target="_blank">Help Pages</a></li>
         </ul>
       </td>
     </tr>
