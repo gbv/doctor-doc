@@ -404,7 +404,7 @@ public final class KontoAction extends DispatchAction {
                         + "an IP-range instead of a single IP, ask your IT)\n\nCheck out the How-To to use ");
                 mg.append(ReadSystemConfigurations.getApplicationName());
                 mg.append(" as a linkresolver (in connection with the services of EZB/ZDB): "
-                        + "http://www.doctor-doc.com/version1.0/howto_openurl.do\012\012"
+                        + ReadSystemConfigurations.getServerInstallation() + "/howto_openurl.do\012\012"
                         + "Your team consists of several librarians and you want each one of them to have their "
                         + "own ID + PW? Create their accounts as normal patrons and contact us which addresses "
                         + "should be granted as librarians.\012\012");

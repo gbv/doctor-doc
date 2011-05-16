@@ -813,13 +813,14 @@ public final class BestellformAction extends DispatchAction {
                     m.append('\n');
 
                     // Prepare a direct login link for librarians, to save order details
-                    final String loginlink = "http://www.doctor-doc.com/version1.0/pl.do?"
-                        + couInstance.makeGetMethodString(of) + "&foruser=" + of.getForuser();
+                    final String loginlink = ReadSystemConfigurations.getServerInstallation()
+                    + "/pl.do?" + couInstance.makeGetMethodString(of) + "&foruser=" + of.getForuser();
 
                     String adduserlink = "";
                     if (u.getId() == null) { // User unknown => Prepare a direct login link for librarians, to save new
                         // user
-                        adduserlink = "http://www.doctor-doc.com/version1.0/add.do?" + createUrlParamsForAddUser(of);
+                        adduserlink = ReadSystemConfigurations.getServerInstallation()
+                        + "/add.do?" + createUrlParamsForAddUser(of);
                     }
 
                     String prio = "3"; // Email priority 3 = normal

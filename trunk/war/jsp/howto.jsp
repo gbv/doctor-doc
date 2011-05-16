@@ -188,7 +188,15 @@ OpenURL - Linkresolver
 </table>
 
 <p><bean:message key="bestellformconfigureselect.kontakt" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message bundle="systemConfig" key="systemEmail.email"/></a></p>
-    
+
+	
+   <h3>
+     <bean:message key="bestellformconfigureselect.external.title" />
+   </h3>
+   
+   <p><bean:message arg0="<%=appName%>" key="bestellformconfigureselect.external.text" />
+   
+   <a href="https://sourceforge.net/apps/mediawiki/doctor-doc/index.php?title=Help:Contents#Can_I_use_the_official_orderform_of_my_institution.3F" target="_blank"><bean:message key="bestellformconfigureselect.anleitung" /></a></p>
    
    <h3>
      Demo

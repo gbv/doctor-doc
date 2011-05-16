@@ -50,6 +50,7 @@
 <tr><td><bean:message key="anmeldungtyp.dropdown" /></td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.ip" /></td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.kennung" />&nbsp;</td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
+<tr><td><a href="howto.do?activesubmenu=bestellformular&activemenu=howto"><bean:message key="bestellformconfigureselect.external.title" /></a>&nbsp;</td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.openurl" /></td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.linkresolver" /></td><td align="center"><img src="img/checkboxchecked.png" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.faxtopdf" /></td><td align="center">&nbsp;</td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
