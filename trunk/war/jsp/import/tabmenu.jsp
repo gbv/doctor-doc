@@ -7,11 +7,12 @@
 
 <bean:define id="wdth" type="java.lang.String">12.5%</bean:define>
 
-<table width="100%">
+<table border="0" width="100%">
   <tr>
     <td align="left">
-
+    
 <div id="menu">
+
 <!--*** User not logged in - Menu outside ***-->
 <logic:notPresent name="userinfo" property="benutzer">
 <table border="0" style="width:1120px;">
@@ -20,7 +21,7 @@
       <logic:present name="orderform" property="resolver"><logic:equal name="orderform" property="resolver" value="true"><a href="pl.do?<logic:present name="orderform">mediatype=<bean:write name="orderform" property="mediatype" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&isbn=<bean:write name="orderform" property="isbn" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&author=<bean:write name="orderform" property="author_encoded" />&kapitel=<bean:write name="orderform" property="kapitel_encoded" />&buchtitel=<bean:write name="orderform" property="buchtitel_encoded" />&verlag=<bean:write name="orderform" property="verlag_encoded" />&rfr_id=<bean:write name="orderform" property="rfr_id" />&genre=<bean:write name="orderform" property="genre" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />&sici=<bean:write name="orderform" property="sici" />&zdbid=<bean:write name="orderform" property="zdbid" />&lccn=<bean:write name="orderform" property="lccn" />&artikeltitel_encoded=<bean:write name="orderform" property="artikeltitel_encoded" />&author_encoded=<bean:write name="orderform" property="author_encoded" /></logic:present>"><bean:message key="tabmenu.slide.login" /></a></logic:equal><logic:equal name="orderform" property="resolver" value="false"><a href="login.do?activemenu=login"><bean:message key="tabmenu.slide.login" /></a></logic:equal></logic:present><logic:notPresent name="orderform" property="resolver"><a href="login.do?activemenu=login"><bean:message key="tabmenu.slide.login" /></logic:notPresent></a>
     </td>
     <td width="<%=wdth%>" <logic:equal name="ActiveMenus" property="activemenu" value="bestellform">id="menuActive"</logic:equal>>
-      <a href="bestellform.do?method=validate&activemenu=bestellform<logic:present name="orderform" property="kkid">&kkid=<bean:write name="orderform" property="kkid" /></logic:present><logic:present name="orderform" property="bkid">&bkid=<bean:write name="orderform" property="bkid" /></logic:present>"><bean:message key="tabmenu.slide.order" /></a>
+      <a href="bestellform.do?method=validate&amp;activemenu=bestellform<logic:present name="orderform" property="kkid">&kkid=<bean:write name="orderform" property="kkid" /></logic:present><logic:present name="orderform" property="bkid">&bkid=<bean:write name="orderform" property="bkid" /></logic:present>"><bean:message key="tabmenu.slide.order" /></a>
     </td>
     <logic:notEqual name="ActiveMenus" property="activemenu" value="bestellform">
     <logic:notEqual name="ActiveMenus" property="activemenu" value="suchenbestellen">
@@ -36,7 +37,7 @@
       <a href="impressum.do?activemenu=impressum"><bean:message key="tabmenu.slide.about" /></a>
     </td>
     <td width="<%=wdth%>" <logic:equal name="ActiveMenus" property="activemenu" value="howto">id="menuActive"</logic:equal>>
-      <a href="howto.do?activemenu=howto&activesubmenu=OpenURL"><bean:message key="tabmenu.slide.howto" /></a>
+      <a href="howto.do?activemenu=howto&amp;activesubmenu=OpenURL"><bean:message key="tabmenu.slide.howto" /></a>
     </td>
     </logic:notEqual>
     </logic:notEqual>
@@ -44,6 +45,7 @@
       &nbsp;
     </td>
   </tr>
+</table>
 </logic:notPresent>
 
 <!--*** User logged in - Menu inside ***-->
@@ -86,7 +88,7 @@
     </logic:notEqual>
 <!--*** Section visible to all users  ***-->
     <td width="<%=wdth%>"  <logic:equal name="ActiveMenus" property="activemenu" value="howto">id="menuActive"</logic:equal>>
-      <a href="howto.do?activemenu=howto&activesubmenu=OpenURL"><bean:message key="tabmenu.slide.howto" /></a>
+      <a href="howto.do?activemenu=howto&amp;activesubmenu=OpenURL"><bean:message key="tabmenu.slide.howto" /></a>
     </td>
     <logic:equal name="activateGTC" value="true">
     <td width="<%=wdth%>" <logic:equal name="ActiveMenus" property="activemenu" value="agb">id="menuActive"</logic:equal>>
@@ -97,28 +99,30 @@
       &nbsp;
     </td>
   </tr>
-</logic:present>
 </table>
-
-</td>
+</logic:present>
 
 </div>
+
+</td>
 
 <logic:notPresent name="orderform" property="resolver">
 <!-- To minimize the risk of loosing parameters of an order during the change of locales -->
   <td align="right">
     <table border="0" align="right">
+     <tr>
       <td align="right">
-             <a href="language.do?request_locale=fr"><img src="img/fr.png" class="whiteborder">
+        <a href="language.do?request_locale=fr"><img src="img/fr.png" alt="Fran&#231;ais" class="whiteborder" /></a>
       </td>
       <td>&nbsp;</td>
       <td align="right">
-        <a href="language.do?request_locale=en"><img src="img/en.png" class="whiteborder">
+        <a href="language.do?request_locale=en"><img src="img/en.png" alt="English" class="whiteborder" /></a>
       </td>
       <td>&nbsp;</td>
       <td align="right">
-             <a href="language.do?request_locale=de"><img src="img/de.png" class="whiteborder">
+        <a href="language.do?request_locale=de"><img src="img/de.png" alt="Deutsch" class="whiteborder" /></a>
       </td>
+     </tr>
     </table>
   </td>
 </logic:notPresent>
@@ -128,15 +132,15 @@
   <td align="right">
     <table border="0" align="right">
       <td align="right">
-             <a href="language.do?request_locale=fr"><img src="img/fr.png" class="whiteborder">
+        <a href="language.do?request_locale=fr"><img src="img/fr.png" alt="Fran&#231;ais" class="whiteborder" /></a>
       </td>
       <td>&nbsp;</td>
       <td align="right">
-        <a href="language.do?request_locale=en"><img src="img/en.png" class="whiteborder">
+        <a href="language.do?request_locale=en"><img src="img/en.png" alt="English" class="whiteborder" /></a>
       </td>
       <td>&nbsp;</td>
       <td align="right">
-             <a href="language.do?request_locale=de"><img src="img/de.png" class="whiteborder">
+        <a href="language.do?request_locale=de"><img src="img/de.png" alt="Deutsch" class="whiteborder" /></a>
       </td>
     </table>
   </td>
@@ -145,5 +149,3 @@
 
   </tr>
 </table>
-
-

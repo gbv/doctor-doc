@@ -57,7 +57,7 @@
 <p><bean:message key="bestellformsuccess.danke" /></p>
 <p><bean:message key="bestellformsuccess.emailstart" /> <b><bean:write name="orderform" property="kundenmail" /></b> <bean:message key="bestellformsuccess.emailend" /></p>
 <br />
-<p><bean:message key="bestellformsuccess.neubestellung" /> <a href="bestellform.do?method=validate&activemenu=bestellform<logic:present name="orderform" property="kkid">&kkid=<bean:write name="orderform" property="kkid" /></logic:present><logic:present name="orderform" property="bkid">&bkid=<bean:write name="orderform" property="bkid" /></logic:present>"><bean:message key="bestellformsuccess.back" /></a></p>
+<p><bean:message key="bestellformsuccess.neubestellung" /> <a href="bestellform.do?method=validate&amp;activemenu=bestellform<logic:present name="orderform" property="kkid">&kkid=<bean:write name="orderform" property="kkid" /></logic:present><logic:present name="orderform" property="bkid">&bkid=<bean:write name="orderform" property="bkid" /></logic:present>"><bean:message key="bestellformsuccess.back" /></a></p>
 
 <table>
 

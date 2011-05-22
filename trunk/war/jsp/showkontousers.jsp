@@ -33,7 +33,7 @@
   </tr>
  <logic:present name="userform" property="users">
    <logic:iterate id="u" name="userform" property="users">
-     <tr>
+  <tr>
       <td style="text-align:center; text-valign:center;"><a href="edituserdetail.do?method=changeuserdetails&bid=<bean:write name="u" property="id" />"><img border="0" src="img/edit.png" alt="<bean:message key="showkontousers.info_edit" />" title="<bean:message key="showkontousers.info_edit" />"/></a></td>
       <td style="text-align:center; text-valign:center;"><a href="edituserdetail.do?method=changeuserdetails&bid=<bean:write name="u" property="id" />&delete=true"> <img border="0" src="img/drop.png" alt="<bean:message key="showkontousers.info_delete" />" title="<bean:message key="showkontousers.info_delete" />"/></a></td>
       <td><bean:write name="u" property="anrede" />&nbsp;</td>
@@ -51,7 +51,7 @@
       <td align="center"><logic:equal name="u" property="gbvbestellung" value="true"><i><font color="white"><bean:message key="modifykonto.yes" /></font></i></logic:equal><logic:equal name="u" property="gbvbestellung" value="false"><i><font color="red"><bean:message key="modifykonto.no" /></font></i></logic:equal>&nbsp;</td>
       </logic:equal>
       <td align="center"><logic:equal name="u" property="kontostatus" value="true"><i><font color="white"><bean:message key="modifykonto.yes" /></font></i></logic:equal><logic:equal name="u" property="kontostatus" value="false"><i><font color="red"><bean:message key="modifykonto.no" /></font></i></logic:equal>&nbsp;</td>
-    <td nowrap="nowrap"><bean:write name="u" property="telefonnrg" />&nbsp;</td>
+      <td nowrap="nowrap"><bean:write name="u" property="telefonnrg" />&nbsp;</td>
       <td nowrap="nowrap"><bean:write name="u" property="telefonnrp" />&nbsp;</td>
       <td><bean:write name="u" property="institut" />&nbsp;</td>
       <td><bean:write name="u" property="abteilung" />&nbsp;</td>
@@ -60,7 +60,7 @@
       <td><bean:write name="u" property="adresszusatz" />&nbsp;</td>
       <td><bean:write name="u" property="plz" />&nbsp;</td>
       <td><bean:write name="u" property="ort" />&nbsp;</td>
-    </tr>
+  </tr>
    </logic:iterate>
 </logic:present>
 

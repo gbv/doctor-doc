@@ -31,11 +31,11 @@
       <td><p>&nbsp;</p></td><td></td>
     </tr>
     <tr>
-      <td><bean:message key="login.email" /></td><td><input name="email" type="email" size="50" maxlength="50" />
+      <td><label for="email_login"><bean:message key="login.email" /></label></td><td><input id="email_login" name="email" type="email" size="50" maxlength="50" />
      <font color=red><html:errors property="email" /></font></td>
     </tr>
     <tr>
-      <td><bean:message key="login.password" /></td><td><input name="password" type="password" size="50" maxlength="50" />
+      <td><label for="password"><bean:message key="login.password" /></label></td><td><input id="password" name="password" type="password" size="50" maxlength="50" />
      <font color=red><html:errors property="password" /></font><p /> 
      <input type="hidden" name="method" value="overview" /></td>
     </tr>
@@ -106,18 +106,18 @@
      <td><html:submit property="action" value="login" /></td>
   </tr>
  
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
-    <tr><td><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br /></td></tr>
   
  </html:form>
 
@@ -125,10 +125,10 @@
   
     <tr>
       <td colspan="2">
-      	<bean:message key="login.vergessen" /> <bean:message key="login.email" />&nbsp; <html:text property="email" size="39" maxlength="50" />
+      	<bean:message key="login.vergessen" /> <label for="email_resend"><bean:message key="login.email" /></label>&nbsp; <input type="email" id="email_resend" name="email" size="39" maxlength="50" />
  		<font color=red><html:errors property="email" /></font>
 		<input type="hidden" name="method" value="pwreset" />
-  		<input type="submit" value="<bean:message key="login.submitpwrt" />" />  
+  		<input type="submit" value="<bean:message key="login.submitpwrt" />" />
   		</td>
      </tr>
   </html:form>
