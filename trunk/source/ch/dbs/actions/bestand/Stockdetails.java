@@ -74,7 +74,7 @@ public class Stockdetails extends Action {
         final Konto k = holdings.get(0).getHolding().getKonto();
 
         // if we have an DID in the Konto, we will redirect to an order form
-        if (k.getDid() != null) {
+        if (k.getDid() != null && stid != null) {
             final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
             k.close();
 
