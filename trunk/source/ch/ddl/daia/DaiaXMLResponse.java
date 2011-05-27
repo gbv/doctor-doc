@@ -30,7 +30,8 @@ public class DaiaXMLResponse {
     private static final SimpleLogger LOG = new SimpleLogger(DaiaXMLResponse.class);
     private static final String UTF8 = "UTF-8";
     private static final String CDATA = "CDATA";
-    private static final String URN = "urn:x-domain:" + ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do:";
+    private static final String URL = ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do?";
+    private static final String URN = "urn:x-domain:" + URL;
 
     public String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
 
@@ -50,17 +51,20 @@ public class DaiaXMLResponse {
             // SAX2.0 ContentHandler
             final ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
-            //    hd.processingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"http://ws.gbv.de/daia/daia.xsl\"");
+            hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"jsp/import/xsl/daia.xsl\"");
 
             final AttributesImpl atts = new AttributesImpl();
 
             final Date d = new Date();
-            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 
             // ROOT tag
-            atts.addAttribute("", "", "timestamp", CDATA, datum);
+            atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
             atts.addAttribute("", "", "version", CDATA, "0.5");
+            atts.addAttribute("", "", "xmlns:xsi", CDATA, "http://www.w3.org/2001/XMLSchema-instance");
+            atts.addAttribute("", "", "xsi:schemaLocation", CDATA, "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
+            atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
 
             // Institution tag
@@ -84,7 +88,8 @@ public class DaiaXMLResponse {
             for (final Bestand b : bestaende) {
                 // Document tag
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, URN + "holding:" + b.getHolding().getId().toString()); // Holding-ID
+                atts.addAttribute("", "", "id", CDATA, URN + "holding=" + b.getHolding().getId().toString()); // Holding-ID
+                atts.addAttribute("", "", "href", CDATA, URL + "holding=" + b.getHolding().getId().toString()); // URL to holding
                 hd.startElement("", "", "document", atts);
 
                 // Message tag (used for journal title)
@@ -97,7 +102,8 @@ public class DaiaXMLResponse {
 
                 // Item tag
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, URN + "stock:" + b.getId().toString()); // Stock-ID
+                atts.addAttribute("", "", "id", CDATA, URN + "stock=" + b.getId().toString()); // Stock-ID
+                atts.addAttribute("", "", "href", CDATA, URL + "stock=" + b.getId().toString()); // URL to stock
                 hd.startElement("", "", "item", atts);
 
                 // Message tag (used for 'remarks' of a holding)
@@ -117,7 +123,8 @@ public class DaiaXMLResponse {
 
                 // Department tag
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, URN + "library:" + b.getHolding().getKid().toString());
+                atts.addAttribute("", "", "id", CDATA, URN + "library=" + b.getHolding().getKid().toString());
+                atts.addAttribute("", "", "href", CDATA, URL + "library=" + b.getHolding().getKid().toString()); // URL to all holdings of library
                 hd.startElement("", "", "department", atts);
                 text = b.getHolding().getKonto().getBibliotheksname() + "\040"
                 + b.getHolding().getKonto().getOrt() + "\040"
@@ -129,28 +136,18 @@ public class DaiaXMLResponse {
                 // Storage tag
                 atts.clear();
                 hd.startElement("", "", "storage", atts);
-                // additional tag location
-                atts.clear();
-                hd.startElement("", "", "location", atts);
                 text = StringEscapeUtils.escapeXml(b.getStandort().getInhalt());
                 hd.characters(text.toCharArray(), 0, text.length());
-                hd.endElement("", "", "location");
                 hd.endElement("", "", "storage");
 
                 // Available tag
                 atts.clear();
-                atts.addAttribute("", "", "service", CDATA, "interloan");
+                // default service presentation
+                text = "presentation";
+                // if we have a DID set service to interloan
+                if (b.getHolding().getKonto().getDid() != null)  { text = "interloan"; }
+                atts.addAttribute("", "", "service", CDATA, text);
                 hd.startElement("", "", "available", atts);
-
-                // Limitation tag for ILL indicating true/false
-                // needs a DID (DAIAParam) in the konto
-                text = "false";
-                if (b.getHolding().getKonto().getDid() != null)  { text = "true"; }
-                atts.clear();
-                atts.addAttribute("", "", "id", CDATA, "ILL");
-                hd.startElement("", "", "limitation", atts);
-                hd.characters(text.toCharArray(), 0, text.length());
-                hd.endElement("", "", "limitation");
 
                 // Limitation tag (for countries: CH, DE, AT...)
                 // for now we use only one configuration: the country of the library

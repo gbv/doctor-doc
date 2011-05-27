@@ -160,24 +160,14 @@ public class DaiaRequest {
                                     final NodeList textStorageList = storageElement.getChildNodes();
                                     if (textStorageList.getLength() > 0) {
                                         value = ((Node) textStorageList.item(0)).getNodeValue().trim();
-                                    } else {
-                                        value = "";
-                                    }
-                                }
-
-                                // Location
-                                final NodeList standortList = firstItemElement.getElementsByTagName("location");
-                                if (standortList.getLength() > 0) {
-                                    final Element standortElement = (Element) standortList.item(0);
-                                    final NodeList textStandortList = standortElement.getChildNodes();
-                                    if (textStandortList.getLength() > 0) {
-                                        value = StringEscapeUtils.unescapeXml(((Node) textStandortList.item(0))
+                                        value = StringEscapeUtils.unescapeXml(((Node) textStorageList.item(0))
                                                 .getNodeValue().trim());
                                     } else {
                                         value = "";
                                     }
                                     bestand.getStandort().setInhalt(value);
                                 }
+
 
                                 // Read available tag and limitations
                                 final NodeList availableList = firstItemElement.getElementsByTagName("available");
@@ -193,7 +183,6 @@ public class DaiaRequest {
                                         final Element countryElement = (Element) availableLimitationList.item(m);
                                         id = countryElement.getAttribute("id");
                                         // make sure limitation tag has id=country
-                                        // TODO: read also other tags like "groups"
                                         if ("country".equals(id)) {
                                             final NodeList textCountryList = countryElement.getChildNodes();
                                             if (textCountryList.getLength() > 0) {
@@ -201,14 +190,12 @@ public class DaiaRequest {
                                             } else {
                                                 value = "";
                                             }
-                                            // TODO: use a separate filter form, instead of setting the country
                                             bestand.getHolding().getKonto().setLand(value);
                                         }
                                     }
 
                                     bestaende.add(bestand);
                                 }
-
                             }
                         }
                     }
@@ -241,9 +228,9 @@ public class DaiaRequest {
     private Long urnExtractID(final String urn) {
         Long id = null;
 
-        if (urn.contains(":")) {
+        if (urn.contains("=")) {
             try {
-                id = Long.valueOf(urn.substring(urn.lastIndexOf(':') + 1));
+                id = Long.valueOf(urn.substring(urn.lastIndexOf('=') + 1));
             } catch (final Exception e) {
                 LOG.error("resolveUrn(final String urn): " + e.toString());
             }

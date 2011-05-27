@@ -319,12 +319,14 @@ h += 96;
       <tr>
         <th id="th-left"><bean:message key="availresult.library" /></th>
         <th><bean:message key="bestellform.zeitschrift" /></th>
+        <th><bean:message key="bestellform.bemerkungen" /></th>
         <th>&nbsp;</th>
       </tr>
       <logic:iterate id="hold" name="holdings">
           <tr>
             <td><bean:write name="hold" property="holding.konto.bibliotheksname" /></td>
             <td><bean:write name="hold" property="holding.titel" /></td>
+            <td><bean:write name="hold" property="bemerkungen" /></td>
             <td>
             	<logic:present name="hold" property="holding.baseurl">
             		<a href="<bean:write name="hold" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="hold" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" 
