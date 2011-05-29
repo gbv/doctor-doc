@@ -427,20 +427,25 @@ public class Stock extends DispatchAction {
     public List<Bestand> checkGeneralStockAvailability(final OrderForm pageForm, final boolean internal) {
 
         List<Bestand> bestaende = new ArrayList<Bestand>();
+        final Text cn = new Text();
+        final Holding ho = new Holding();
+        final Bestand be = new Bestand();
 
-        if (pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
-            final Text cn = new Text();
+        // get Holdings from ISSN
+        if (pageForm.getIssn() != null && !"".equals(pageForm.getIssn())) {
 
             final List<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn.getConnection());
-
-            final Holding ho = new Holding();
             final List<String> hoids = ho.getAllHOIDs(setIssn, cn.getConnection());
-
-            final Bestand be = new Bestand();
             bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn.getConnection());
 
-            cn.close();
+            // get Holdings from title
+        } else if (pageForm.getZeitschriftentitel() != null && !"".equals(pageForm.getZeitschriftentitel())) {
+
+            final List<String> hoids = ho.getAllHOIDs(pageForm.getZeitschriftentitel(), cn.getConnection());
+            bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn.getConnection());
         }
+
+        cn.close();
 
         return bestaende;
 
@@ -463,18 +468,29 @@ public class Stock extends DispatchAction {
         final Bestand be = new Bestand();
         final Holding ho = new Holding();
 
-        if (tip.getKonto() != null && tip.getKonto().getId() != null) { // Nur prüfen, falls Konto vorhanden
+        // Do only check if we have an account (Konto)
+        if (tip.getKonto() != null && tip.getKonto().getId() != null) {
 
-            final List<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn);
+            // get Holdings from ISSN
+            if (pageForm.getIssn() != null && !"".equals(pageForm.getIssn())) {
 
-            final List<String> hoids = ho.getAllHOIDsForKonto(setIssn, tip.getKonto().getId(), cn);
+                final List<String> setIssn = getRelatedIssn(pageForm.getIssn(), cn);
+                final List<String> hoids = ho.getAllHOIDsForKonto(setIssn, tip.getKonto().getId(), cn);
+                bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn);
 
-            bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn);
+                // get Holdings from title
+            } else if (pageForm.getZeitschriftentitel() != null && !"".equals(pageForm.getZeitschriftentitel())) {
+
+                final List<String> hoids = ho.getAllHOIDsForKonto(pageForm.getZeitschriftentitel(), tip.getKonto().getId(), cn);
+                bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn);
+
+            }
         }
 
         return bestaende;
 
     }
+
 
     /**
      * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable to Bestand().

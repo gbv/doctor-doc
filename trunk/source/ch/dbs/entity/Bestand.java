@@ -440,7 +440,8 @@ public class Bestand extends AbstractIdEntity {
 
             final int searchMode = getSearchMode(pageForm);
 
-            if (searchMode > 0) { // only proceed if there has been found a search modus (at least an ISSN)
+            // only proceed if there has been found a search modus (at least an ISSN or a journal title)
+            if (searchMode > 0) {
 
                 final StringBuffer sqlQuery = new StringBuffer(getSQL(searchMode));
 
@@ -659,19 +660,30 @@ public class Bestand extends AbstractIdEntity {
     private int getSearchMode(final OrderForm of) {
         int mode = 0;
 
-        if (!of.getIssn().equals("")) { // cases with an ISSN!
-            if (!of.getJahr().equals("") && of.getJahrgang().equals("") && of.getHeft().equals("")) {
-                mode = 2; // ISSN, Year
+        // cases with an ISSN!
+        if (of.getIssn() != null && !"".equals(of.getIssn())) {
+            mode = searchModeHelper(of);
+            // case with journal title
+        } else if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())) {
+            mode = searchModeHelper(of);
+        }
 
-            } else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && of.getHeft().equals("")) {
-                mode = 3; // ISSN, Year, Volume
-            } else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && !of.getHeft().equals("")) {
-                mode = 4; // ISSN, Year, Volume, Issue
-            } else if (!of.getJahr().equals("") && of.getJahrgang().equals("") && !of.getHeft().equals("")) {
-                mode = 5; // ISSN, Year, Issue
-            } else {
-                mode = 1; // everything else without a year and at least an ISSN
-            }
+        return mode;
+    }
+
+    private int searchModeHelper(final OrderForm of) {
+        int mode = 0;
+
+        if (!of.getJahr().equals("") && of.getJahrgang().equals("") && of.getHeft().equals("")) {
+            mode = 2; // ISSN, Year
+        } else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && of.getHeft().equals("")) {
+            mode = 3; // ISSN, Year, Volume
+        } else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && !of.getHeft().equals("")) {
+            mode = 4; // ISSN, Year, Volume, Issue
+        } else if (!of.getJahr().equals("") && of.getJahrgang().equals("") && !of.getHeft().equals("")) {
+            mode = 5; // ISSN, Year, Issue
+        } else {
+            mode = 1; // everything else without a year and at least an ISSN
         }
 
         return mode;

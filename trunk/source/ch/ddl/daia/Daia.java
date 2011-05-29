@@ -28,8 +28,8 @@ public class Daia extends Action {
     private static final SimpleLogger LOG = new SimpleLogger(Daia.class);
 
     /**
-     * Schnittstelle um Bestände in D-D über OpenURL abzufragen und Antworten
-     * per XML im DAIA-Format zu erhalten
+     * Interface to query holdings in D-D using OpenURL requests. The response
+     * will be in DAIA/XML.
      */
     public ActionForward execute(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -45,27 +45,31 @@ public class Daia extends Action {
         final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
         ofjo.completeOrderForm(ofjo, convertOpenUrlInstance.makeOrderform(co));
 
-        // Parameter für indirekte Nutzung über einen Metakatalog (z.B. Vufind)
-        final String daiaIP = rq.getParameter("ip"); // in der URL übermittelte Originalanfrage-IP
-        boolean showInternal = false; // opt. Parameter um auch Bestände anzuzeigen, die mit "intern" gekennzeichnet sind
+        // Parameters for indirect use in a metacatalogue (e.g. Vufind)
+        final String daiaIP = rq.getParameter("ip"); // requesting IP transmitted in the URL
+        boolean showInternal = false; // optional parameter, that will cause to show holdings that are marked as "internal"
         if (rq.getParameter("in") != null && rq.getParameter("in").equals("1")) { showInternal = true; }
 
         final Stock stock = new Stock();
         List<Bestand> bestaende = new ArrayList<Bestand>();
-        String msgBestand = ""; // msgBestand ist nicht DAIA-standardkonform. Wird nur bei Abfrage DAIA + IP verwendet
 
-        if (ofjo.getIssn() != null && !ofjo.getIssn().equals("")) {
+        // msgBestand is not compliant to the DAIA standard. It is used only for requests DAIA + IP.
+        String msgBestand = "";
+
+        // check for ISSN or journal title
+        if (isSearchable(ofjo)) {
 
             if (daiaIP == null) {
                 bestaende = stock.checkGeneralStockAvailability(ofjo, false);
-            } else { // Bestände für ein bestimmtes Konto prüfen (IP-basiert)
+            } else { // IP based ckeck for a given account (Konto)
                 msgBestand = "No holdings found";
                 final Text cn = new Text();
-                // Text mit Konto anhand IP holen
+                // get Text with account (Konto)
                 final IPChecker ipck = new IPChecker();
                 final Text tip = ipck.contains(daiaIP, cn.getConnection());
 
-                if (tip.getKonto() != null && tip.getKonto().getId() != null) { // Nur prüfen, falls Konto vorhanden
+                // Only run the availability checks if we have an account (Konto)
+                if (tip.getKonto() != null && tip.getKonto().getId() != null) {
                     bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());
                 } else {
                     msgBestand = "Your location is unknown";
@@ -73,21 +77,20 @@ public class Daia extends Action {
                 cn.close();
             }
 
-        } else if (daiaIP != null && !daiaIP.equals("")) { // msgBestand ist
+            // mostly requests coming from Vufind
+        } else if (daiaIP != null && !daiaIP.equals("")) {
             msgBestand = "Missing ISSN";
         }
 
         final DaiaXMLResponse xml = new DaiaXMLResponse();
 
-        if (!bestaende.isEmpty()) { // es gibt Bestände
+        if (!bestaende.isEmpty()) { // output for found holdings
             output =  xml.listHoldings(bestaende, ofjo.getRfr_id());
-        } else { // es gibt keine Bestände
+        } else { // output for no holdings
             output = xml.noHoldings(msgBestand, ofjo.getRfr_id());
         }
 
-        //    if (isJson(outputformat)) {
-        //      // TODO: umwandeln
-        //    }
+        // TODO: optionally convert to JSON
 
         try {
 
@@ -108,18 +111,23 @@ public class Daia extends Action {
             LOG.error(e.toString());
         }
 
-        return mp.findForward("failure"); // geht ggf. auf Fehlerseite
+        return mp.findForward("failure"); // when we get here, there is an error
     }
 
-    //  private boolean isJson(String outputformat) {
-    //    boolean check = false;
-    //
-    //    if (outputformat != null && !outputformat.equals("")
-    //      && outputformat.equalsIgnoreCase("json")) {
-    //      check = true;
-    //    }
-    //
-    //    return check;
-    //  }
+    /**
+     * Checks if we have an ISSN or at least a journal title (may be extended).
+     *
+     */
+    private boolean isSearchable(final OrderForm ofjo) {
+        boolean check = false;
+
+        if (ofjo.getIssn() != null && !"".equals(ofjo.getIssn())
+                || ofjo.getZeitschriftentitel() != null && !"".equals(ofjo.getZeitschriftentitel())) {
+
+            check = true;
+        }
+
+        return check;
+    }
 
 }

@@ -59,7 +59,7 @@ public class Holding extends AbstractIdEntity {
     }
 
     /**
-     * Erstellt ein Holding aus einem ResultSet
+     * Creates a holding from a ResultSet
      *
      * @param cn Connection
      * @param rs ResultSet
@@ -108,7 +108,7 @@ public class Holding extends AbstractIdEntity {
     }
 
     /**
-     * Erstellt ein Holding anhand einer Verbindung und der ID
+     * Creates a holding from a connection at it's ID.
      *
      * @param Long hoid
      * @param Connection cn
@@ -145,55 +145,6 @@ public class Holding extends AbstractIdEntity {
                 }
             }
         }
-    }
-
-    /**
-     * Holt ein Holding eines Kontos anhand einer Verbindung und dem Identifier (ISSN oder ZDB-ID)
-     *
-     * @param Long kid
-     * @param String identwert
-     * @param Connection cn
-     * @return Holding holding
-     */
-    public Holding getHolding(final Long kId, final String identifier, final Connection cn) {
-
-        Holding ho = new Holding();
-
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ? "
-                    + "AND (issn = ? OR coden = ? OR zdbid = ?)");
-            pstmt.setLong(1, kId);
-            pstmt.setString(2, identifier);
-            pstmt.setString(3, identifier);
-            pstmt.setString(4, identifier);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                ho = setRsstValues(cn, rs);
-            }
-
-        } catch (final Exception e) {
-            LOG.error("getHolding (Long kid, String identifier, Connection cn): " + e.toString());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-        }
-
-        return ho;
     }
 
     /**
@@ -260,95 +211,34 @@ public class Holding extends AbstractIdEntity {
     }
 
     /**
-     * Holt alle Holdings anhand einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID) und einer Verbindung
-     *
-     * @param ArrayList<String> identifiers
-     * @param Connection cn
-     * @return List<Holding> holdings
-     */
-    public List<Holding> getAllHoldings(final List<String> identifiers, final Connection cn) {
-
-        final List<Holding> list = new ArrayList<Holding>();
-
-        if (!identifiers.isEmpty()) {
-
-            final StringBuffer sqlQuery = new StringBuffer(226);
-
-            sqlQuery.append("SELECT * FROM holdings WHERE issn = ? OR coden = ? OR zdbid = ?");
-
-            final int max = identifiers.size();
-            for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
-                sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
-            }
-
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            try {
-                pstmt = cn.prepareStatement(sqlQuery.toString());
-                int pos = 1;
-                for (final String identifier : identifiers) {
-                    pstmt.setString(pos, identifier);
-                    pstmt.setString(pos + 1, identifier);
-                    pstmt.setString(pos + 2, identifier);
-                    pos = pos + 3;
-                }
-
-                rs = pstmt.executeQuery();
-
-                while (rs.next()) {
-                    final Holding ho = setRsstValues(cn, rs);
-                    list.add(ho);
-                }
-
-            } catch (final Exception e) {
-                LOG.error("getAllHoldings (ArrayList<String> identifier, Connection cn): " + e.toString());
-            } finally {
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (final SQLException e) {
-                        LOG.error(e.toString());
-                    }
-                }
-                if (pstmt != null) {
-                    try {
-                        pstmt.close();
-                    } catch (final SQLException e) {
-                        LOG.error(e.toString());
-                    }
-                }
-            }
-        }
-
-        return list;
-    }
-
-    /**
-     * Gets all holdings for a given library from its KID and a connection
+     * Holt ein Holding eines Kontos anhand einer Verbindung und dem Identifier (ISSN oder ZDB-ID)
      *
      * @param Long kid
+     * @param String identwert
      * @param Connection cn
-     * @return List<Holding> holdings
+     * @return Holding holding
      */
-    public List<Holding> getAllHoldingsForKonto(final Long kId, final Connection cn) {
+    public Holding getHolding(final Long kId, final String identifier, final Connection cn) {
 
-        final List<Holding> list = new ArrayList<Holding>();
+        Holding ho = new Holding();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ?");
+            pstmt = cn.prepareStatement("SELECT * FROM holdings WHERE KID = ? "
+                    + "AND (issn = ? OR coden = ? OR zdbid = ?)");
             pstmt.setLong(1, kId);
-
+            pstmt.setString(2, identifier);
+            pstmt.setString(3, identifier);
+            pstmt.setString(4, identifier);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final Holding ho = setRsstValues(cn, rs);
-                list.add(ho);
+                ho = setRsstValues(cn, rs);
             }
 
         } catch (final Exception e) {
-            LOG.error("getAllHoldingsForKonto (Long kid, Connection cn): " + e.toString());
+            LOG.error("getHolding (Long kid, String identifier, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -366,81 +256,11 @@ public class Holding extends AbstractIdEntity {
             }
         }
 
-        return list;
-    }
-
-
-    /**
-     * Gets all holdings for a given library from its KID, a list of all related
-     * identifieres (ISSN, Coden or ZDB-ID) and a connection
-     *
-     * @param ArrayList<String> identifiers
-     * @param Long kid
-     * @param Connection cn
-     * @return List<Holding> holdings
-     */
-    public List<Holding> getAllHoldingsForKonto(final List<String> identifiers, final Long kId, final Connection cn) {
-
-        final List<Holding> list = new ArrayList<Holding>();
-
-        if (!identifiers.isEmpty()) {
-
-            final StringBuffer sqlQuery = new StringBuffer(242);
-            sqlQuery.append("SELECT * FROM holdings WHERE KID = ? AND (issn = ? OR coden = ? OR zdbid = ?");
-
-            final int max = identifiers.size();
-            for (int i = 1; i < max; i++) { // nur ausführen falls length > 1
-                sqlQuery.append(" OR issn = ? OR coden = ? OR zdbid = ?");
-            }
-
-            sqlQuery.append(')');
-
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            try {
-                pstmt = cn.prepareStatement(sqlQuery.toString());
-                pstmt.setLong(1, kId);
-                int pos = 2;
-                for (final String identifier : identifiers) {
-                    pstmt.setString(pos, identifier);
-                    pstmt.setString(pos + 1, identifier);
-                    pstmt.setString(pos + 2, identifier);
-                    pos = pos + 3;
-                }
-
-                rs = pstmt.executeQuery();
-
-                while (rs.next()) {
-                    final Holding ho = setRsstValues(cn, rs);
-                    list.add(ho);
-                }
-
-            } catch (final Exception e) {
-                LOG.error("getAllHoldingsForKonto (ArrayList<String> identifier, Long kid, "
-                        + "Connection cn): " + e.toString());
-            } finally {
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (final SQLException e) {
-                        LOG.error(e.toString());
-                    }
-                }
-                if (pstmt != null) {
-                    try {
-                        pstmt.close();
-                    } catch (final SQLException e) {
-                        LOG.error(e.toString());
-                    }
-                }
-            }
-        }
-
-        return list;
+        return ho;
     }
 
     /**
-     * Holt alle HOIDs anhand einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID) und einer Verbindung
+     * Gets all HOIDs from a list of related identifiers (ISSN, Coden or ZDB-ID).
      *
      * @param ArrayList<String> identifiers
      * @param Connection cn
@@ -479,7 +299,7 @@ public class Holding extends AbstractIdEntity {
                 }
 
             } catch (final Exception e) {
-                LOG.error("ArrayList<String> getAllHOIDs(ArrayList<String> identifier, "
+                LOG.error("List<String> getAllHOIDs(ArrayList<String> identifier, "
                         + "Connection cn): " + e.toString());
             } finally {
                 if (rs != null) {
@@ -503,9 +323,60 @@ public class Holding extends AbstractIdEntity {
     }
 
     /**
-     * Holt alle HOIDs eines spezifischen Kontos anhand der KID,
-     * einer Liste aller verwandten Identifier (ISSN, Coden oder ZDB-ID)
-     * und einer Verbindung
+     * Gets all HOIDs from a title. May not be very accurate!
+     *
+     * @param String title
+     * @param Connection cn
+     * @return List<String> HOIDs
+     */
+    public List<String> getAllHOIDs(final String title, final Connection cn) {
+
+        final List<String> list = new ArrayList<String>();
+
+        // build search
+        final StringBuffer sqlQuery = new StringBuffer();
+        sqlQuery.append('%');
+        sqlQuery.append(title);
+        sqlQuery.append('%');
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT HOID FROM holdings WHERE titel LIKE ?");
+            pstmt.setString(1, sqlQuery.toString());
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                list.add(rs.getString("HOID"));
+            }
+
+        } catch (final Exception e) {
+            LOG.error("List<String> getAllHOIDs(final String title, final Connection cn): "
+                    + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Gets all HOIDs for a specific account by the KID and a list of related
+     * identifiers (ISSN, Coden oder ZDB-ID).
      *
      * @param ArrayList<String> identifiers
      * @param Long kid
@@ -548,8 +419,8 @@ public class Holding extends AbstractIdEntity {
                 }
 
             } catch (final Exception e) {
-                LOG.error("ArrayList<String> getAllHOIDsForKonto(ArrayList<String> identifier, Long kid, "
-                        + "Connection cn): " + e.toString());
+                LOG.error("List<String> getAllHOIDsForKonto(ArrayList<String> identifier, Long kid, Connection cn): "
+                        + e.toString());
             } finally {
                 if (rs != null) {
                     try {
@@ -564,6 +435,61 @@ public class Holding extends AbstractIdEntity {
                     } catch (final SQLException e) {
                         LOG.error(e.toString());
                     }
+                }
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Gets all HOIDs for a specific account by the KID and a the journal title.
+     * May not be very accurate!
+     *
+     * @param String title
+     * @param Long kid
+     * @param Connection cn
+     * @return List<String> HOIDs
+     */
+    public List<String> getAllHOIDsForKonto(final String title, final Long kId, final Connection cn) {
+
+        final List<String> list = new ArrayList<String>();
+
+        // build search
+        final StringBuffer sqlQuery = new StringBuffer();
+        sqlQuery.append('%');
+        sqlQuery.append(title);
+        sqlQuery.append('%');
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT HOID FROM holdings WHERE KID LIKE ? AND titel LIKE ?");
+            pstmt.setLong(1, kId);
+            pstmt.setString(2, sqlQuery.toString());
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                list.add(rs.getString("HOID"));
+            }
+
+        } catch (final Exception e) {
+            LOG.error("List<String> getAllHOIDsForKonto(final String title, final Long kId, final Connection cn): "
+                    + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
