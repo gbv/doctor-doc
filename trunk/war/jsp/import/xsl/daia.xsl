@@ -67,7 +67,7 @@
     <p> 
       This is a 
       <a href="http://purl.org/NET/DAIA" target="_blank">DAIA</a>
-      response from an installation of <a href="http://sourceforge.net/projects/doctor-doc/" target="_blank">http://sourceforge.net/projects/doctor-doc/</a>.
+      response from an installation of Doctor-Doc available at <a href="http://sourceforge.net/projects/doctor-doc/" target="_blank">http://sourceforge.net/projects/doctor-doc/</a>.
       <xsl:if test="@timestamp or @version">
         <xsl:text>The response </xsl:text>
         <xsl:if test="@timestamp">
@@ -83,7 +83,7 @@
       </xsl:if>
       The full XML source is <a href="#rawxml">shown below</a>.
     </p>
-    <p>This is an interface designed for machine readability and not as a user interface: use it in connection with other installations of Doctor-Doc or
+    <p>This interface is designed for machine readability and not as user interface: use it in connection with other installations of Doctor-Doc or
     with your own applications.
     </p>
     <p>
