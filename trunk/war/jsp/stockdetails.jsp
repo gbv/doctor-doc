@@ -163,8 +163,8 @@
 			<bean:message key="availresult.titel" />:&nbsp;
 		</td>
 		<td>
-    		<logic:notEmpty name="stock" property="startyear"><bean:write name="stock" property="startyear" />;</logic:notEmpty><logic:notEmpty name="stock" property="startvolume"><bean:write name="stock" property="startvolume" /></logic:notEmpty><logic:notEmpty name="stock" property="startissue">(<bean:write name="stock" property="startissue" />)</logic:notEmpty> -
-    		<logic:notEmpty name="stock" property="endyear"><bean:write name="stock" property="endyear" />;</logic:notEmpty><logic:notEmpty name="stock" property="endvolume"><bean:write name="stock" property="endvolume" /></logic:notEmpty><logic:notEmpty name="stock" property="endissue">(<bean:write name="stock" property="endissue" />)</logic:notEmpty> 
+    		<logic:notEmpty name="stock" property="startyear"><bean:write name="stock" property="startyear" /></logic:notEmpty><logic:notEmpty name="stock" property="startvolume">, <bean:message key="availresult.volume" /> <bean:write name="stock" property="startvolume" /></logic:notEmpty><logic:notEmpty name="stock" property="startissue">, <bean:message key="availresult.issue" /> <bean:write name="stock" property="startissue" /></logic:notEmpty> -
+    		<logic:notEmpty name="stock" property="endyear"><bean:write name="stock" property="endyear" /></logic:notEmpty><logic:notEmpty name="stock" property="endvolume">, <bean:message key="availresult.volume" /> <bean:write name="stock" property="endvolume" /></logic:notEmpty><logic:notEmpty name="stock" property="endissue">, <bean:message key="availresult.issue" /> <bean:write name="stock" property="endissue" /></logic:notEmpty> 
     	</td>
     </tr>
     <logic:notEmpty name="stock" property="bemerkungen">
