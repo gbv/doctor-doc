@@ -320,6 +320,7 @@ h += 96;
         <th id="th-left"><bean:message key="availresult.library" /></th>
         <th><bean:message key="bestellform.zeitschrift" /></th>
         <th><bean:message key="availresult.titel" /></th>
+        <th><bean:message key="stockimport.loc" /></th>
         <th><bean:message key="bestellform.bemerkungen" /></th>
         <th>&nbsp;</th>
       </tr>
@@ -337,6 +338,7 @@ h += 96;
     			<logic:notEmpty name="hold" property="endyear"><bean:write name="hold" property="endyear" /></logic:notEmpty><logic:notEmpty name="hold" property="endvolume">, <bean:message key="availresult.volume" /> <bean:write name="hold" property="endvolume" /></logic:notEmpty><logic:notEmpty name="hold" property="endissue">, <bean:message key="availresult.issue" /> <bean:write name="hold" property="endissue" /></logic:notEmpty>
     		  </logic:notPresent>
             </td>
+            <td><bean:write name="hold" property="standort.inhalt" />&nbsp;</td>
             <td><bean:write name="hold" property="bemerkungen" />&nbsp;</td>
             <td>
             	<logic:present name="hold" property="holding.baseurl">
