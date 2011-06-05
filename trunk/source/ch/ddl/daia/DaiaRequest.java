@@ -58,8 +58,8 @@ public class DaiaRequest {
 
                 // Get a list of all holdings
                 final NodeList listOfHoldings = doc.getElementsByTagName("document");
-                final int totalHoldings = listOfHoldings.getLength();
-                System.out.println("Total no of holdings: " + totalHoldings);
+                //                final int totalHoldings = listOfHoldings.getLength();
+                //                System.out.println("Total no of holdings: " + totalHoldings);
 
                 // process each holding
                 for (int s = 0; s < listOfHoldings.getLength(); s++) {
@@ -83,8 +83,8 @@ public class DaiaRequest {
 
                         // List of stock elements for one holding
                         final NodeList listOfItems = firstHoldingElement.getElementsByTagName("item");
-                        final int totalItems = listOfItems.getLength();
-                        System.out.println("Total no of items: " + totalItems);
+                        //                        final int totalItems = listOfItems.getLength();
+                        //                        System.out.println("Total no of items: " + totalItems);
 
                         // process each stock element
                         for (int n = 0; n < listOfItems.getLength(); n++) {
@@ -102,7 +102,7 @@ public class DaiaRequest {
                                 // URN and stock ID
                                 final Element firstItemElement = (Element) firstItemNode;
                                 value = firstItemElement.getAttribute("id");
-                                System.out.println("Stock-URN: " + value);
+                                //                                System.out.println("Stock-URN: " + value);
                                 bestand.setId(urnExtractID(value));
 
                                 // Remarks
@@ -139,7 +139,7 @@ public class DaiaRequest {
                                     final Element kontoElement = (Element) kontoList.item(0);
                                     value = kontoElement.getAttribute("id");
                                     final Long kid = urnExtractID(value);
-                                    System.out.println("Konto-URN: " + value);
+                                    //                                    System.out.println("Konto-URN: " + value);
                                     bestand.getHolding().setKid(kid);
                                     bestand.getHolding().getKonto().setId(kid);
 
