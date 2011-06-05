@@ -91,9 +91,10 @@
     (<a href="http://sourceforge.net/apps/mediawiki/doctor-doc/index.php?title=Help:Contents#Print_holdings_availability" target="_blank">more information</a>):</p>
 
     <!-- content -->
-    <xsl:apply-templates select="d:message"/>
     <xsl:apply-templates select="d:institution"/>
-
+    <p>
+    <xsl:apply-templates select="d:message"/>
+	</p>
     <!-- show documents -->
     <xsl:variable name="docs" select="d:document"/>
 

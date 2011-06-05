@@ -53,8 +53,8 @@ public class Daia extends Action {
         final Stock stock = new Stock();
         List<Bestand> bestaende = new ArrayList<Bestand>();
 
-        // msgBestand is not compliant to the DAIA standard. It is used only for requests DAIA + IP.
-        String msgBestand = "";
+        // Default message, only used if we have no holdings
+        String msgBestand = "No holdings found";
 
         // check for ISSN or journal title
         if (isSearchable(ofjo)) {
@@ -62,7 +62,6 @@ public class Daia extends Action {
             if (daiaIP == null) {
                 bestaende = stock.checkGeneralStockAvailability(ofjo, false);
             } else { // IP based ckeck for a given account (Konto)
-                msgBestand = "No holdings found";
                 final Text cn = new Text();
                 // get Text with account (Konto)
                 final IPChecker ipck = new IPChecker();

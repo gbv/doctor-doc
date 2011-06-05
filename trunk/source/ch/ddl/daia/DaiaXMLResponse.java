@@ -201,27 +201,32 @@ public class DaiaXMLResponse {
             // SAX2.0 ContentHandler
             final  ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
-            //    hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"http://ws.gbv.de/daia/daia.xsl\"");
+            hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"jsp/import/xsl/daia.xsl\"");
 
             final AttributesImpl atts = new AttributesImpl();
 
             final Date d = new Date();
-            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
 
             // ROOT tag
-            atts.addAttribute("", "", "timestamp", CDATA, datum);
+            atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
             atts.addAttribute("", "", "version", CDATA, "0.5");
+            atts.addAttribute("", "", "xmlns:xsi", CDATA, "http://www.w3.org/2001/XMLSchema-instance");
+            atts.addAttribute("", "", "xsi:schemaLocation", CDATA, "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
+            atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
 
             // Institution tag
             atts.clear();
-            atts.addAttribute("", "", "href", CDATA, "http://www.doctor-doc.com/");
+            atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
             hd.startElement("", "", "institution", atts);
             String text = "Register Doctor-Doc";
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "institution");
 
+            // used for DAIA-Driver in Vufind: setting ID back in response from rfr_id
+            // this has to be the first message element!
             if (rfr_id != null && !rfr_id.equals("")) {
                 // Message tag (used for the rfr_id of a OpenURL request)
                 atts.clear();
@@ -232,57 +237,13 @@ public class DaiaXMLResponse {
                 hd.endElement("", "", "message");
             }
 
-
-            // Document tag
-            atts.clear();
-            atts.addAttribute("", "", "id", CDATA, "0"); // Holding-ID
-            hd.startElement("", "", "document", atts);
-
-            // Item tag
-            atts.clear();
-            atts.addAttribute("", "", "id", CDATA, "0"); // Stock-ID
-            hd.startElement("", "", "item", atts);
-
-            // Message tag
+            // official/additional message tag
             atts.clear();
             atts.addAttribute("", "", "lang", CDATA, "de");
             hd.startElement("", "", "message", atts);
-            text = StringEscapeUtils.escapeXml("No holdings found");
-            hd.characters(text.toCharArray(), 0, text.length());
-            hd.endElement("", "", "message");
-
-            // Department tag
-            atts.clear();
-            atts.addAttribute("", "", "id", CDATA, "0");
-            hd.startElement("", "", "department", atts);
             text = StringEscapeUtils.escapeXml(msg);
             hd.characters(text.toCharArray(), 0, text.length());
-            hd.endElement("", "", "department");
-
-            // Storage tag
-            atts.clear();
-            hd.startElement("", "", "storage", atts);
-            // additional tag location
-            atts.clear();
-            hd.startElement("", "", "location", atts);
-            text = StringEscapeUtils.escapeXml("");
-            hd.characters(text.toCharArray(), 0, text.length());
-            hd.endElement("", "", "location");
-            hd.endElement("", "", "storage");
-
-            // Unavailable tag
-            atts.clear();
-            atts.addAttribute("", "", "service", CDATA, "interloan");
-            hd.startElement("", "", "unavailable", atts);
-
-
-            hd.endElement("", "", "unavailable");
-            hd.endElement("", "", "item");
-
-
-            hd.endElement("", "", "document");
-
-
+            hd.endElement("", "", "message");
 
             hd.endElement("", "", "daia");
             hd.endDocument();
