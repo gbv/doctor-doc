@@ -1,12 +1,12 @@
 --
--- works with  >= Revision 155 (see also dbchanges_forUpdate, e.g. if using SVN)
+-- works with  >= Revision 156 (see also dbchanges_forUpdate, e.g. if using SVN)
 
 -- phpMyAdmin SQL Dump
 -- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 12. Juni 2011 um 10:27
+-- Erstellungszeit: 12. Juni 2011 um 15:32
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `bestellform_daia` (
   `map_pages` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `map_pmid` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `map_doi` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `map_reference` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'combine volume/date/issue/pages',
   `limitations` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`DID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

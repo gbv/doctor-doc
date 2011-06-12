@@ -63,6 +63,8 @@ public class DaiaParam extends AbstractIdEntity {
     private String mapPages;
     private String mapPmid;
     private String mapDoi;
+    private String mapReference;
+    private String referenceValue;
     private String limitations;
 
     // linkout composed upon baseurl and protocol
@@ -132,6 +134,7 @@ public class DaiaParam extends AbstractIdEntity {
         this.setMapPages(rs.getString("map_pages"));
         this.setMapPmid(rs.getString("map_pmid"));
         this.setMapDoi(rs.getString("map_doi"));
+        this.setMapReference(rs.getString("map_reference"));
         this.setLimitations(rs.getString("limitations"));
 
     }
@@ -140,7 +143,10 @@ public class DaiaParam extends AbstractIdEntity {
 
         final StringBuffer link = new StringBuffer(dp.getBaseurl());
 
-        // TODO: set combined reference
+        // set combined reference
+        if (dp.getMapReference() != null) {
+            dp.setReferenceValue(combineReference(of));
+        }
 
         // do append parameters to baseurl only for GET method
         if (!dp.isPost()) {
@@ -352,6 +358,34 @@ public class DaiaParam extends AbstractIdEntity {
 
     }
 
+    private String combineReference(final OrderForm of) {
+        final StringBuffer ref = new StringBuffer();
+
+        if (of.getJahr() != null) {
+            ref.append(of.getJahr());
+        }
+        ref.append(';');
+        if (of.getJahrgang() != null) {
+            ref.append(of.getJahrgang());
+        }
+        ref.append('(');
+        if (of.getHeft() != null) {
+            ref.append(of.getHeft());
+        }
+        ref.append(')');
+        ref.append(':');
+        if (of.getSeiten() != null) {
+            ref.append(of.getSeiten());
+        }
+
+        // no reference at all
+        if (";():".equals(ref.toString())) {
+            return "";
+        }
+
+        return ref.toString();
+    }
+
 
     public Long getKid() {
         return kid;
@@ -496,6 +530,18 @@ public class DaiaParam extends AbstractIdEntity {
     }
     public void setMapDoi(final String mapDoi) {
         this.mapDoi = mapDoi;
+    }
+    public String getMapReference() {
+        return mapReference;
+    }
+    public void setMapReference(final String mapReference) {
+        this.mapReference = mapReference;
+    }
+    public String getReferenceValue() {
+        return referenceValue;
+    }
+    public void setReferenceValue(final String referenceValue) {
+        this.referenceValue = referenceValue;
     }
     public String getLinkout() {
         return linkout;

@@ -1,3 +1,7 @@
+-- Revision 156 --
+
+ALTER TABLE `bestellform_daia` ADD `map_reference` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'combine volume/date/issue/pages' AFTER `map_doi` 
+
 -- Revision 155 --
 
 ALTER TABLE `bestellform_daia` ADD `post` TINYINT( 1 ) NOT NULL DEFAULT '0' COMMENT 'Using POST/GET method' AFTER `redirect` 

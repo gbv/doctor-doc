@@ -79,7 +79,6 @@ public class Daia extends Action {
 
             // mostly requests coming from Vufind
         } else if (daiaIP != null && !daiaIP.equals("")) {
-            // TODO: delete "Missing ISSN"
             msgBestand = "Unknown";
         }
 

@@ -67,11 +67,13 @@
 <logic:notEmpty name="daiaparam" property="mapDoi">
   <input type="hidden" name="<bean:write name="daiaparam" property="mapDoi"/>" value="<bean:write name="ofjo" property="doi"/>" />
 </logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="mapReference">
+  <input type="hidden" name="<bean:write name="daiaparam" property="mapReference"/>" value="<bean:write name="daiaparam" property="referenceValue"/>" />
+</logic:notEmpty>
   
-  <p>You are being redirected automatically.</p>
+  <p><bean:message key="redirect.auto"/>.</p>
   
-  <p>If not, then you do not have JavaScript enabled.  
-  Please click here: <input type="submit" value="Continue..." /></p>
+  <p><bean:message key="redirect.auto.alt"/>: <input type="submit" value="<bean:message key="findfree.submit"/>" /></p>
   
 </form>
 
