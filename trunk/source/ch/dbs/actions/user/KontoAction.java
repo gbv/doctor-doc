@@ -403,8 +403,9 @@ public final class KontoAction extends DispatchAction {
                 mg.append(".\n\nThis link will show you your IP: http://www.whatismyip.com (if your institution uses "
                         + "an IP-range instead of a single IP, ask your IT)\n\nCheck out the How-To to use ");
                 mg.append(ReadSystemConfigurations.getApplicationName());
-                mg.append(" as a linkresolver (in connection with the services of EZB/ZDB): "
-                        + ReadSystemConfigurations.getServerInstallation() + "/howto_openurl.do\012\012"
+                mg.append(" as a linkresolver (in connection with the services of EZB/ZDB): ");
+                mg.append(ReadSystemConfigurations.getServerInstallation());
+                mg.append("/howto_openurl.do\012\012"
                         + "Your team consists of several librarians and you want each one of them to have their "
                         + "own ID + PW? Create their accounts as normal patrons and contact us which addresses "
                         + "should be granted as librarians.\012\012");

@@ -920,12 +920,10 @@ public class Stock extends DispatchAction {
 
         final Message msg = new Message();
 
-        if (!"".equals(content)) { // the ID may be empty
-            // if not empty it must be a valid number
-            if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
-                msg.setMessage("error.import.stid");
-                msg.setSystemMessage(composeSystemMessage(lineCount, content));
-            }
+        // the ID may be empty && if not empty it must be a valid number
+        if (!"".equals(content) && !org.apache.commons.lang.StringUtils.isNumeric(content)) {
+            msg.setMessage("error.import.stid");
+            msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
 
         return msg;
@@ -942,12 +940,10 @@ public class Stock extends DispatchAction {
 
         final Message msg = new Message();
 
-        if (!"".equals(content)) { // the ID may be empty
-            // if not empty it must be a valid number
-            if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
-                msg.setMessage("error.import.hoid");
-                msg.setSystemMessage(composeSystemMessage(lineCount, content));
-            }
+        // the ID may be empty && if not empty it must be a valid number
+        if (!"".equals(content) && !org.apache.commons.lang.StringUtils.isNumeric(content)) {
+            msg.setMessage("error.import.hoid");
+            msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
 
         return msg;
@@ -964,12 +960,10 @@ public class Stock extends DispatchAction {
 
         final Message msg = new Message();
 
-        if (!"".equals(content)) { // the ID may be empty
-            // if not empty it must be a valid number
-            if (!org.apache.commons.lang.StringUtils.isNumeric(content)) {
-                msg.setMessage("error.import.locationid");
-                msg.setSystemMessage(composeSystemMessage(lineCount, content));
-            }
+        // the ID may be empty && if not empty it must be a valid number
+        if (!"".equals(content) && !org.apache.commons.lang.StringUtils.isNumeric(content)) {
+            msg.setMessage("error.import.locationid");
+            msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
 
         return msg;
@@ -1055,12 +1049,10 @@ public class Stock extends DispatchAction {
         final Message msg = new Message();
         final Check ck = new Check();
 
-        if (!"".equals(content)) { // the endyear may be empty
-            // if not empty it must be a valid year
-            if (!ck.isYear(content)) {
-                msg.setMessage("error.import.endyear");
-                msg.setSystemMessage(composeSystemMessage(lineCount, content));
-            }
+        // the endyear may be empty && if not empty it must be a valid year
+        if (!"".equals(content) && !ck.isYear(content)) {
+            msg.setMessage("error.import.endyear");
+            msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
 
         return msg;

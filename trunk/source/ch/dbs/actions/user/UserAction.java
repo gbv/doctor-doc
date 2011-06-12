@@ -922,7 +922,7 @@ public final class UserAction extends DispatchAction {
                         ui.getKonto().getId(), cn.getConnection());
                 cn.close();
                 // only set into request, if we have at least one category
-                if (categories.size() > 0) {
+                if (!categories.isEmpty()) {
                     rq.setAttribute("categories", categories);
                 }
             } else {
@@ -983,7 +983,7 @@ public final class UserAction extends DispatchAction {
                     final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
 
                     // only set into request, if we have at least one category
-                    if (categories.size() > 0) {
+                    if (!categories.isEmpty()) {
                         rq.setAttribute("categories", categories);
                     }
 
@@ -1014,7 +1014,7 @@ public final class UserAction extends DispatchAction {
                             final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
 
                             // only set into request, if we have at least one category
-                            if (categories.size() > 0) {
+                            if (!categories.isEmpty()) {
                                 rq.setAttribute("categories", categories);
                             }
 

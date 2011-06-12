@@ -1004,7 +1004,7 @@ public final class OrderAction extends DispatchAction {
 
             if (!internalHoldings.isEmpty()) { // we have own holdings
                 forward = "freeezb";
-                ff = getFindFreeForInternalHoldings(ff, internalHoldings, link);
+                ff = getFindFreeForInternalHoldings(ff, link);
                 pageForm.setLieferant(ff.getLieferant()); // Bestellquelle setzen (Internet / abonniert)...
                 pageForm.setDeloptions(ff.getDeloptions()); // // Deloptions setzen (Online / Email)...
                 rq.setAttribute("internalHoldings", internalHoldings);
@@ -1768,7 +1768,7 @@ public final class OrderAction extends DispatchAction {
      * vorhandener Einträge
      *
      */
-    private FindFree getFindFreeForInternalHoldings(final FindFree ff, final List<Bestand> internalHoldings, final String link) {
+    private FindFree getFindFreeForInternalHoldings(final FindFree ff, final String link) {
 
         final Lieferanten lieferantenInstance = new Lieferanten();
         final Text t = new Text();

@@ -141,17 +141,17 @@ public class DaiaParam extends AbstractIdEntity {
         link.append(dp.getFirstParam());
 
         if ("openurl".equals(dp.getProtocol())) {
-            linkoutOpenURL(link, dp, of);
+            linkoutOpenURL(link, of);
         } else if ("custom".equals(dp.getProtocol())) {
             linkoutCustom(link, dp, of);
         } else { // default value "internal"
-            linkoutInternal(link, dp, of);
+            linkoutInternal(link, of);
         }
 
         dp.setLinkout(link.toString());
     }
 
-    private void linkoutOpenURL(final StringBuffer link, final DaiaParam dp, final OrderForm of) {
+    private void linkoutOpenURL(final StringBuffer link, final OrderForm of) {
 
         // create a new OpenURL object
         final ContextObject co = new ConvertOpenUrl().makeContextObject(of);
@@ -271,7 +271,7 @@ public class DaiaParam extends AbstractIdEntity {
 
     }
 
-    private void linkoutInternal(final StringBuffer link, final DaiaParam dp, final OrderForm of) {
+    private void linkoutInternal(final StringBuffer link, final OrderForm of) {
 
         link.append("mediatype=");
         link.append(of.getMediatype());

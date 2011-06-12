@@ -318,7 +318,7 @@ public class BestellParam extends ValidatorForm {
                     + "`adr_required` , `str_required` , `plz_required` , `ort_required` , `land_required` , "
                     + "`tel_required` , `benutzernr_required`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?)"), bp, cn);
+                    + "?, ?, ?, ?, ?, ?)"), bp);
 
             pstmt.executeUpdate();
 
@@ -370,7 +370,7 @@ public class BestellParam extends ValidatorForm {
                     + "`gebuehren_link` = ?, `agb` = ?, `agb_link` = ?, `inst_required` = ?, `abt_required` = ?, "
                     + "`category_required` = ?, `frei1_required` = ?, `frei2_required` = ?, `frei3_required` = ?, `adr_required` = ?, "
                     + "`str_required` = ?, `plz_required` = ?, `ort_required` = ?, `land_required` = ?, "
-                    + "`tel_required` = ?, `benutzernr_required` = ? WHERE `BPID` =?"), bp, cn);
+                    + "`tel_required` = ?, `benutzernr_required` = ? WHERE `BPID` =?"), bp);
             pstmt.setLong(54, bp.getId());
             pstmt.executeUpdate();
 
@@ -453,7 +453,7 @@ public class BestellParam extends ValidatorForm {
      * Setzt die Werte im Preparestatement der Methoden update() sowie save()
      *
      */
-    private PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp, final Connection cn)
+    private PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp)
     throws Exception {
 
         pstmt.setLong(1, bp.getKid());
