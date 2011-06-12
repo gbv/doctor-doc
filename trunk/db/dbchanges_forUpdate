@@ -1,3 +1,7 @@
+-- Revision 155 --
+
+ALTER TABLE `bestellform_daia` ADD `post` TINYINT( 1 ) NOT NULL DEFAULT '0' COMMENT 'Using POST/GET method' AFTER `redirect` 
+
 -- Revision 140 --
 
 ALTER TABLE `bestellform_daia` ADD `ip_overrides` TINYINT( 1 ) NOT NULL DEFAULT '0' COMMENT 'Shall IP based requests use the IP based order form instead.' AFTER `redirect` 

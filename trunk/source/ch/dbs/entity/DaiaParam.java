@@ -46,6 +46,7 @@ public class DaiaParam extends AbstractIdEntity {
     private String firstParam = "?";
     private String protocol = "internal"; // internal / openurl / custom
     private boolean redirect;
+    private boolean post;
     private boolean ip_overrides;
     private String mapMediatype;
     private String mapAuthors;
@@ -114,6 +115,7 @@ public class DaiaParam extends AbstractIdEntity {
         this.setFirstParam(rs.getString("first_param"));
         this.setProtocol(rs.getString("protocol"));
         this.setRedirect(rs.getBoolean("redirect"));
+        this.setPost(rs.getBoolean("post"));
         this.setIp_overrides(rs.getBoolean("ip_overrides"));
         this.setMapMediatype(rs.getString("map_mediatype"));
         this.setMapAuthors(rs.getString("map_authors"));
@@ -138,14 +140,20 @@ public class DaiaParam extends AbstractIdEntity {
 
         final StringBuffer link = new StringBuffer(dp.getBaseurl());
 
-        link.append(dp.getFirstParam());
+        // TODO: set combined reference
 
-        if ("openurl".equals(dp.getProtocol())) {
-            linkoutOpenURL(link, of);
-        } else if ("custom".equals(dp.getProtocol())) {
-            linkoutCustom(link, dp, of);
-        } else { // default value "internal"
-            linkoutInternal(link, of);
+        // do append parameters to baseurl only for GET method
+        if (!dp.isPost()) {
+
+            link.append(dp.getFirstParam());
+
+            if ("openurl".equals(dp.getProtocol())) {
+                linkoutOpenURL(link, of);
+            } else if ("custom".equals(dp.getProtocol())) {
+                linkoutCustom(link, dp, of);
+            } else { // default value "internal"
+                linkoutInternal(link, of);
+            }
         }
 
         dp.setLinkout(link.toString());
@@ -386,6 +394,12 @@ public class DaiaParam extends AbstractIdEntity {
     }
     public void setRedirect(final boolean redirect) {
         this.redirect = redirect;
+    }
+    public boolean isPost() {
+        return post;
+    }
+    public void setPost(final boolean post) {
+        this.post = post;
     }
     public boolean isIp_overrides() {
         return ip_overrides;

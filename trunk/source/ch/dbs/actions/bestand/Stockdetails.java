@@ -94,8 +94,17 @@ public class Stockdetails extends Action {
                 // set linkout dependent on protocol
                 dp.setLinkout(dp, of);
                 rq.setAttribute("daiaparam", dp);
-                // redirect to linkout directly
-                if (dp.isRedirect()) { forward = "redirect"; }
+                // redirect to linkout...
+                if (dp.isRedirect()) {
+                    // ...using POST method
+                    if (dp.isPost()) {
+                        rq.setAttribute("ofjo", of);
+                        forward = "redirectpost";
+                        // ...using GET method
+                    } else {
+                        forward = "redirect";
+                    }
+                }
             }
         }
 

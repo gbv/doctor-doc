@@ -454,6 +454,7 @@
             type="ch.dbs.actions.bestellung.BestellformAction">
       <forward name="success" path="/bestellformjsp.do"/>
       <forward name="redirect" path="/jsp/redirectdaia.jsp"/>
+      <forward name="redirectpost" path="/jsp/redirectdaiapost.jsp"/>
       <forward name="failure" path="/jsp/error.jsp"/>
     </action>
     
@@ -991,6 +992,7 @@
             type="ch.dbs.actions.bestand.Stockdetails">
       <forward name="success" path="/stockdetails.do"/>
       <forward name="redirect" path="/jsp/redirectdaia.jsp"/>
+      <forward name="redirectpost" path="/jsp/redirectdaiapost.jsp"/>
       <forward name="redirectIP" path="/bestellform.do?method=validate"/>
       <forward name="failure" path="/error.do"/>
     </action>

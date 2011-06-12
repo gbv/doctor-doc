@@ -71,6 +71,7 @@ public class Daia extends Action {
                 if (tip.getKonto() != null && tip.getKonto().getId() != null) {
                     bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());
                 } else {
+                    // TODO: rename: The location is unknown
                     msgBestand = "Your location is unknown";
                 }
                 cn.close();
@@ -78,7 +79,8 @@ public class Daia extends Action {
 
             // mostly requests coming from Vufind
         } else if (daiaIP != null && !daiaIP.equals("")) {
-            msgBestand = "Missing ISSN";
+            // TODO: delete "Missing ISSN"
+            msgBestand = "Unknown";
         }
 
         final DaiaXMLResponse xml = new DaiaXMLResponse();

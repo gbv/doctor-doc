@@ -1,20 +1,16 @@
 --
--- works with  >= Revision 137 (see also dbchanges_forUpdate, e.g. if using SVN)
---
+-- works with  >= Revision 155 (see also dbchanges_forUpdate, e.g. if using SVN)
+
 -- phpMyAdmin SQL Dump
 -- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 25. April 2011 um 20:21
+-- Erstellungszeit: 12. Juni 2011 um 10:27
 -- Server Version: 5.1.33
 -- PHP-Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
---
---
---
 
 -- --------------------------------------------------------
 
@@ -90,6 +86,8 @@ CREATE TABLE IF NOT EXISTS `bestellform_daia` (
   `first_param` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '?',
   `protocol` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'internal' COMMENT 'internal / openurl / custom',
   `redirect` tinyint(1) NOT NULL DEFAULT '0',
+  `post` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Using POST/GET method',
+  `ip_overrides` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Shall IP based requests use the IP based order form instead.',
   `map_mediatype` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `map_authors` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `map_atitle` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1303,3 +1301,5 @@ CREATE TABLE IF NOT EXISTS `zdb_id` (
 --
 -- Daten für Tabelle `zdb_id`
 --
+
+
