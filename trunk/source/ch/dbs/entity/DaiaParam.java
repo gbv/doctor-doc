@@ -67,6 +67,30 @@ public class DaiaParam extends AbstractIdEntity {
     private String referenceValue;
     private String limitations;
 
+    // additional paramateres not from database
+    private String source;
+    private String sourceValue;
+    private String identification;
+    private String password;
+    private String free1;
+    private String free1Value;
+    private String free2;
+    private String free2Value;
+    private String free3;
+    private String free3Value;
+    private String free4;
+    private String free4Value;
+    private String free5;
+    private String free5Value;
+    private String free6;
+    private String free6Value;
+    private String free7;
+    private String free7Value;
+    private String free8;
+    private String free8Value;
+    private String free9;
+    private String free9Value;
+
     // linkout composed upon baseurl and protocol
     private String linkout;
 
@@ -554,6 +578,138 @@ public class DaiaParam extends AbstractIdEntity {
     }
     public void setLimitations(final String limitations) {
         this.limitations = limitations;
+    }
+    public String getSource() {
+        return source;
+    }
+    public void setSource(final String source) {
+        this.source = source;
+    }
+    public String getIdentification() {
+        return identification;
+    }
+    public void setIdentification(final String identification) {
+        this.identification = identification;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+    public String getSourceValue() {
+        return sourceValue;
+    }
+    public void setSourceValue(final String sourceValue) {
+        this.sourceValue = sourceValue;
+    }
+    public String getFree1() {
+        return free1;
+    }
+    public void setFree1(final String free1) {
+        this.free1 = free1;
+    }
+    public String getFree1Value() {
+        return free1Value;
+    }
+    public void setFree1Value(final String free1Value) {
+        this.free1Value = free1Value;
+    }
+    public String getFree2() {
+        return free2;
+    }
+    public void setFree2(final String free2) {
+        this.free2 = free2;
+    }
+    public String getFree2Value() {
+        return free2Value;
+    }
+    public void setFree2Value(final String free2Value) {
+        this.free2Value = free2Value;
+    }
+    public String getFree3() {
+        return free3;
+    }
+    public void setFree3(final String free3) {
+        this.free3 = free3;
+    }
+    public String getFree3Value() {
+        return free3Value;
+    }
+    public void setFree3Value(final String free3Value) {
+        this.free3Value = free3Value;
+    }
+    public String getFree4() {
+        return free4;
+    }
+    public void setFree4(final String free4) {
+        this.free4 = free4;
+    }
+    public String getFree4Value() {
+        return free4Value;
+    }
+    public void setFree4Value(final String free4Value) {
+        this.free4Value = free4Value;
+    }
+    public String getFree5() {
+        return free5;
+    }
+    public void setFree5(final String free5) {
+        this.free5 = free5;
+    }
+    public String getFree5Value() {
+        return free5Value;
+    }
+    public void setFree5Value(final String free5Value) {
+        this.free5Value = free5Value;
+    }
+    public String getFree6() {
+        return free6;
+    }
+    public void setFree6(final String free6) {
+        this.free6 = free6;
+    }
+    public String getFree6Value() {
+        return free6Value;
+    }
+    public void setFree6Value(final String free6Value) {
+        this.free6Value = free6Value;
+    }
+    public String getFree7() {
+        return free7;
+    }
+    public void setFree7(final String free7) {
+        this.free7 = free7;
+    }
+    public String getFree7Value() {
+        return free7Value;
+    }
+    public void setFree7Value(final String free7Value) {
+        this.free7Value = free7Value;
+    }
+    public String getFree8() {
+        return free8;
+    }
+    public void setFree8(final String free8) {
+        this.free8 = free8;
+    }
+    public String getFree8Value() {
+        return free8Value;
+    }
+    public void setFree8Value(final String free8Value) {
+        this.free8Value = free8Value;
+    }
+    public String getFree9() {
+        return free9;
+    }
+    public void setFree9(final String free9) {
+        this.free9 = free9;
+    }
+    public String getFree9Value() {
+        return free9Value;
+    }
+    public void setFree9Value(final String free9Value) {
+        this.free9Value = free9Value;
     }
 
 }

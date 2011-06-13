@@ -12,7 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
 
 <head>
-  <title>Test</title>
+  <title>Redirect</title>
 </head>
 
 <body onload="submit_form();">
@@ -70,7 +70,35 @@
 <logic:notEmpty name="daiaparam" property="mapReference">
   <input type="hidden" name="<bean:write name="daiaparam" property="mapReference"/>" value="<bean:write name="daiaparam" property="referenceValue"/>" />
 </logic:notEmpty>
-  
+
+<logic:notEmpty name="daiaparam" property="free1">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free1"/>" value="<bean:write name="daiaparam" property="free1Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free2">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free2"/>" value="<bean:write name="daiaparam" property="free2Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free3">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free3"/>" value="<bean:write name="daiaparam" property="free3Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free4">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free4"/>" value="<bean:write name="daiaparam" property="free4Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free5">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free5"/>" value="<bean:write name="daiaparam" property="free5Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free6">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free6"/>" value="<bean:write name="daiaparam" property="free6Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free7">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free7"/>" value="<bean:write name="daiaparam" property="free7Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free8">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free8"/>" value="<bean:write name="daiaparam" property="free8Value" />" />
+</logic:notEmpty>
+<logic:notEmpty name="daiaparam" property="free9">
+  <input type="hidden" name="<bean:write name="daiaparam" property="free9"/>" value="<bean:write name="daiaparam" property="free9Value" />" />
+</logic:notEmpty>
+
   <p><bean:message key="redirect.auto"/>.</p>
   
   <p><bean:message key="redirect.auto.alt"/>: <input type="submit" value="<bean:message key="findfree.submit"/>" /></p>

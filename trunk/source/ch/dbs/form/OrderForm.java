@@ -68,6 +68,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String prio = "";
     private String author = "";
     private String author_encoded = "";
+    private String author_encodedUTF8 = "";
     private String seiten = "";
     private String foruser = "0"; // ID of patron/customer. 0 = "Please select" in the select menu
     private String sessionid;
@@ -81,6 +82,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String faxno;
     private String zeitschriftentitel = "";
     private String zeitschriftentitel_encoded = "";
+    private String zeitschriftentitel_encodedUTF8 = "";
     private String contents;
     private String link;
     private String anmerkungen = "";
@@ -115,11 +117,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String rfr_id = ""; // Referrent-ID (Angabe woher die OpenURL-Anfrage stammt)
     private String mediatype = "Artikel"; // Artikel, Buch oder Teilkopie Buch, Defaultwert Artikel
     private String verlag = ""; // Buchverlag
-    private String verlag_encoded = ""; // Buchverlag
+    private String verlag_encoded = "";
+    private String verlag_encodedUTF8 = "";
     private String kapitel = "";
     private String kapitel_encoded = "";
+    private String kapitel_encodedUTF8 = "";
     private String buchtitel = "";
     private String buchtitel_encoded = "";
+    private String buchtitel_encodedUTF8 = "";
     private String kundenvorname;
     private String kundenname;
     private String kundenmail;
@@ -327,11 +332,21 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         try {
             of.setArtikeltitel_encoded(codeUrl.encodeLatin1(of.getArtikeltitel()));
             of.setArtikeltitel_encodedUTF8(codeUrl.encodeUTF8(of.getArtikeltitel()));
+
             of.setAuthor_encoded(codeUrl.encodeLatin1(of.getAuthor()));
+            of.setAuthor_encodedUTF8(codeUrl.encodeUTF8(of.getAuthor()));
+
             of.setZeitschriftentitel_encoded(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+            of.setZeitschriftentitel_encodedUTF8(codeUrl.encodeUTF8(of.getZeitschriftentitel()));
+
             of.setVerlag_encoded(codeUrl.encodeLatin1(of.getVerlag()));
+            of.setVerlag_encodedUTF8(codeUrl.encodeUTF8(of.getVerlag()));
+
             of.setKapitel_encoded(codeUrl.encodeLatin1(of.getKapitel()));
+            of.setKapitel_encodedUTF8(codeUrl.encodeUTF8(of.getKapitel()));
+
             of.setBuchtitel_encoded(codeUrl.encodeLatin1(of.getBuchtitel()));
+            of.setBuchtitel_encodedUTF8(codeUrl.encodeUTF8(of.getBuchtitel()));
 
         } catch (final Exception e) {
             LOG.error("encodeOrderForm(OrderForm of): " + e.toString());
@@ -1317,6 +1332,45 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.carelit = carelit;
     }
 
+    public String getAuthor_encodedUTF8() {
+        return author_encodedUTF8;
+    }
+
+    public void setAuthor_encodedUTF8(final String authorEncodedUTF8) {
+        author_encodedUTF8 = authorEncodedUTF8;
+    }
+
+    public String getZeitschriftentitel_encodedUTF8() {
+        return zeitschriftentitel_encodedUTF8;
+    }
+
+    public void setZeitschriftentitel_encodedUTF8(final String zeitschriftentitelEncodedUTF8) {
+        zeitschriftentitel_encodedUTF8 = zeitschriftentitelEncodedUTF8;
+    }
+
+    public String getVerlag_encodedUTF8() {
+        return verlag_encodedUTF8;
+    }
+
+    public void setVerlag_encodedUTF8(final String verlagEncodedUTF8) {
+        verlag_encodedUTF8 = verlagEncodedUTF8;
+    }
+
+    public String getKapitel_encodedUTF8() {
+        return kapitel_encodedUTF8;
+    }
+
+    public void setKapitel_encodedUTF8(final String kapitelEncodedUTF8) {
+        kapitel_encodedUTF8 = kapitelEncodedUTF8;
+    }
+
+    public String getBuchtitel_encodedUTF8() {
+        return buchtitel_encodedUTF8;
+    }
+
+    public void setBuchtitel_encodedUTF8(final String buchtitelEncodedUTF8) {
+        buchtitel_encodedUTF8 = buchtitelEncodedUTF8;
+    }
 
     /**
      * Liefert je nach <br>
