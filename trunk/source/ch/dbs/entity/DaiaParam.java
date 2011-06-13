@@ -382,7 +382,7 @@ public class DaiaParam extends AbstractIdEntity {
 
     }
 
-    private String combineReference(final OrderForm of) {
+    public String combineReference(final OrderForm of) {
         final StringBuffer ref = new StringBuffer();
 
         if (of.getJahr() != null) {

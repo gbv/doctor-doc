@@ -32,7 +32,7 @@ public class OrderUBBaselAction extends DispatchAction {
         dp.setMapJournal("Journal");
         dp.setMapIssn("ISSN");
         dp.setMapDate("Year");
-        dp.setMapVolume("Volumee");
+        dp.setMapVolume("Volume");
         dp.setMapIssue("Issue");
         dp.setMapPages("Pages");
         dp.setMapPmid("meduid");
@@ -57,6 +57,10 @@ public class OrderUBBaselAction extends DispatchAction {
         dp.setFree7Value("on");
         dp.setFree8("B1");
         dp.setFree8Value("Bestellung abschicken");
+
+        // set reference into remarks due to indication bug (missing issue) at UB Basel
+        dp.setFree9("bemerkung");
+        dp.setFree9Value(dp.combineReference(ofjo));
 
         rq.setAttribute("ofjo", ofjo);
         rq.setAttribute("daiaparam", dp);
