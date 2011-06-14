@@ -17,9 +17,6 @@
 
 <body onload="submit_form();">
 
-<bean:define id="url" name="daiaparam" property="linkout" type="java.lang.String"/>
-
-
 <form name="myform" action="<bean:write name="daiaparam" property="linkout"/>" method="post">
 
 <logic:notEmpty name="daiaparam" property="mapMediatype">

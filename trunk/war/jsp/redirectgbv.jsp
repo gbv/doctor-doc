@@ -24,7 +24,7 @@
    
  </head>
  <tiles:insert page="import/header.jsp" flush="true" />
- <body onload="window.setTimeout('popup()',1000)">
+ <body onload="window.setTimeout('popup()',700)">
  
  <bean:define id="appName" type="java.lang.String"><bean:message bundle="systemConfig" key="application.name"/></bean:define>
  
