@@ -63,6 +63,8 @@ public class Konto extends AbstractIdEntity {
     private String gbvbenutzername;
     private String gbvpasswort;
     private String gbvrequesterid; // ID jeder einzelnen Bibliothek beim GBV
+    private String idsid; // ID for IDS consortia in Switzerland
+    private String idspasswort;
     private String ezbid;
     private String instlogolink; // Link to a logo/image on a remote server
     // gibt an, ob die Bibliothek seinen Bestand in der ZDB eingepflegt hat (Verfügbarkeitsprüfung)
@@ -135,6 +137,8 @@ public class Konto extends AbstractIdEntity {
         this.gbvbenutzername = kf.getGbvbenutzername();
         this.gbvpasswort = kf.getGbvpasswort();
         this.gbvrequesterid = kf.getGbvrequesterid();
+        this.idsid = kf.getIdsid();
+        this.idspasswort = kf.getIdspasswort();
         if (kf.getEzbid() != null) { this.ezbid = kf.getEzbid(); }
         this.instlogolink = kf.getInstlogolink();
         this.zdb = kf.isZdb(); // ZDB-Teilnehmer
@@ -201,6 +205,8 @@ public class Konto extends AbstractIdEntity {
         this.setGbvbenutzername(rs.getString("gbvbn"));
         this.setGbvpasswort(rs.getString("gbvpw"));
         this.setGbvrequesterid(rs.getString("gbv_requester_id"));
+        this.setIdsid(rs.getString("ids_id"));
+        this.setIdspasswort(rs.getString("ids_passwort"));
         this.setEzbid(rs.getString("ezbid"));
         this.setInstlogolink(rs.getString("instlogolink"));
         this.setZdb(rs.getBoolean("zdb"));
@@ -317,12 +323,12 @@ public class Konto extends AbstractIdEntity {
             pstmt = kontoInstance.setKontoValues(cn.prepareStatement("INSERT INTO `konto` (`biblioname` , `isil` , "
                     + "`adresse` , `adresszusatz` , `plz` , `ort` , `land` , `timezone` , `telefon` , `faxno` , "
                     + "`faxusername` , `faxpassword` , `popfaxend` , `fax2` , `bibliomail` , `dbsmail` , "
-                    + "`dbsmailpw` , `gbvbn` , `gbvpw` , `gbv_requester_id` , `ezbid` , `instlogolink` , `zdb` , "
-                    + "`billing` , `billingtype` , `accounting_rhythmvalue` , `accounting_rhythmday` , "
-                    + "`accounting_rhythmtimeout` , `billingschwellwert` , `maxordersu` ,`maxordersutotal`, "
-                    + "`maxordersj` , `orderlimits` , `userlogin` , `userbestellung` , `gbvbestellung` , "
+                    + "`dbsmailpw` , `gbvbn` , `gbvpw` , `gbv_requester_id` , `ids_id` , `ids_passwort` , `ezbid` , "
+                    + "`instlogolink` , `zdb` , `billing` , `billingtype` , `accounting_rhythmvalue` , "
+                    + "`accounting_rhythmday` , `accounting_rhythmtimeout` , `billingschwellwert` , `maxordersu` ,"
+                    + "`maxordersutotal`, `maxordersj` , `orderlimits` , `userlogin` , `userbestellung` , `gbvbestellung` , "
                     + "`kontostatus` , `kontotyp` , `default_deloptions` , `paydate`, `expdate`,`edatum`) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"), this);
 
             pstmt.executeUpdate();
@@ -366,10 +372,10 @@ public class Konto extends AbstractIdEntity {
             pstmt = setKontoValues(cn.prepareStatement("UPDATE `konto` SET biblioname=?, isil=?, "
                     + "adresse=?, adresszusatz=?, plz=?, ort=?, land=?, timezone=?, telefon=?, faxno=?, "
                     + "faxusername=? , faxpassword=?, popfaxend=?, fax2=?, bibliomail=?, dbsmail=?, dbsmailpw=?, "
-                    + "gbvbn=?, gbvpw=?, gbv_requester_id=?, ezbid=?, instlogolink=?, zdb=?, billing=?, "
-                    + "billingtype=?, accounting_rhythmvalue=?, accounting_rhythmday=?, accounting_rhythmtimeout=?, "
-                    + "billingschwellwert=?, maxordersu=?, maxordersutotal=?, maxordersj=?, orderlimits=?, "
-                    + "userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, "
+                    + "gbvbn=?, gbvpw=?, gbv_requester_id=?, ids_id=?, ids_passwort=?, ezbid=?, instlogolink=?, "
+                    + "zdb=?, billing=?, billingtype=?, accounting_rhythmvalue=?, accounting_rhythmday=?, "
+                    + "accounting_rhythmtimeout=?, billingschwellwert=?, maxordersu=?, maxordersutotal=?, maxordersj=?, "
+                    + "orderlimits=?, userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, "
                     + "default_deloptions=?, paydate=?, expdate=? "
                     + "WHERE `KID` = " + this.getId()), this);
 
@@ -716,86 +722,96 @@ public class Konto extends AbstractIdEntity {
         } else {
             pstmt.setString(20, k.getGbvrequesterid());
         }
-        if (k.getEzbid() != null) {
-            pstmt.setString(21, k.getEzbid());
+        if (k.getIdsid() == null || k.getIdsid().equals("")) {
+            pstmt.setString(21, null);
         } else {
-            pstmt.setString(21, "");
+            pstmt.setString(21, k.getIdsid());
         }
-        if (k.getInstlogolink() == null || k.getInstlogolink().equals("")) {
+        if (k.getIdspasswort() == null || k.getIdspasswort().equals("")) {
             pstmt.setString(22, null);
         } else {
-            pstmt.setString(22, k.getInstlogolink());
+            pstmt.setString(22, k.getIdspasswort());
+        }
+        if (k.getEzbid() != null) {
+            pstmt.setString(23, k.getEzbid());
+        } else {
+            pstmt.setString(23, "");
+        }
+        if (k.getInstlogolink() == null || k.getInstlogolink().equals("")) {
+            pstmt.setString(24, null);
+        } else {
+            pstmt.setString(24, k.getInstlogolink());
         } // set null if empty
         if (!k.isZdb()) {
-            pstmt.setString(23, "0");
+            pstmt.setString(25, "0");
         } else {
-            pstmt.setString(23, "1");
+            pstmt.setString(25, "1");
         }
         if (k.getBilling() != null) {
-            pstmt.setString(24, k.getBilling().toString());
+            pstmt.setString(26, k.getBilling().toString());
         } else {
-            pstmt.setString(24, "");
+            pstmt.setString(26, "");
         }
         if (k.getBillingtype() != null) {
-            pstmt.setString(25, k.getBillingtype().toString());
+            pstmt.setString(27, k.getBillingtype().toString());
         } else {
-            pstmt.setString(25, "");
+            pstmt.setString(27, "");
         }
         if (k.getAccounting_rhythmvalue() == 0) {
-            pstmt.setString(26, "0");
-        } else {
-            pstmt.setString(26, "1");
-        }
-        if (k.getAccounting_rhythmday() == 0) {
-            pstmt.setString(27, "0");
-        } else {
-            pstmt.setString(27, "1");
-        }
-        if (k.getAccounting_rhythmtimeout() == 0) {
             pstmt.setString(28, "0");
         } else {
             pstmt.setString(28, "1");
         }
-        if (k.getThreshold_value() == 0) {
+        if (k.getAccounting_rhythmday() == 0) {
             pstmt.setString(29, "0");
         } else {
             pstmt.setString(29, "1");
         }
-        pstmt.setInt(30, k.getMaxordersu());
-        pstmt.setInt(31, k.getMaxordersutotal());
-        pstmt.setInt(32, k.getMaxordersj());
-        pstmt.setInt(33, k.getOrderlimits());
+        if (k.getAccounting_rhythmtimeout() == 0) {
+            pstmt.setString(30, "0");
+        } else {
+            pstmt.setString(30, "1");
+        }
+        if (k.getThreshold_value() == 0) {
+            pstmt.setString(31, "0");
+        } else {
+            pstmt.setString(31, "1");
+        }
+        pstmt.setInt(32, k.getMaxordersu());
+        pstmt.setInt(33, k.getMaxordersutotal());
+        pstmt.setInt(34, k.getMaxordersj());
+        pstmt.setInt(35, k.getOrderlimits());
         if (!k.isUserlogin()) {
-            pstmt.setString(34, "0");
-        } else {
-            pstmt.setString(34, "1");
-        }
-        if (!k.isUserbestellung()) {
-            pstmt.setString(35, "0");
-        } else {
-            pstmt.setString(35, "1");
-        }
-        if (!k.isGbvbestellung()) {
             pstmt.setString(36, "0");
         } else {
             pstmt.setString(36, "1");
         }
-        if (!k.isKontostatus()) {
+        if (!k.isUserbestellung()) {
             pstmt.setString(37, "0");
         } else {
             pstmt.setString(37, "1");
         }
-        pstmt.setInt(38, k.getKontotyp());
-        pstmt.setString(39, k.getDefault_deloptions());
-        if (k.getPaydate() != null) {
-            pstmt.setDate(40, k.getPaydate());
+        if (!k.isGbvbestellung()) {
+            pstmt.setString(38, "0");
         } else {
-            pstmt.setDate(40, null);
+            pstmt.setString(38, "1");
+        }
+        if (!k.isKontostatus()) {
+            pstmt.setString(39, "0");
+        } else {
+            pstmt.setString(39, "1");
+        }
+        pstmt.setInt(40, k.getKontotyp());
+        pstmt.setString(41, k.getDefault_deloptions());
+        if (k.getPaydate() != null) {
+            pstmt.setDate(42, k.getPaydate());
+        } else {
+            pstmt.setDate(42, null);
         }
         if (k.getExpdate() != null) {
-            pstmt.setDate(41, k.getExpdate());
+            pstmt.setDate(43, k.getExpdate());
         } else {
-            pstmt.setDate(41, null);
+            pstmt.setDate(43, null);
         }
         return pstmt;
     }
@@ -1119,6 +1135,22 @@ public class Konto extends AbstractIdEntity {
 
     public void setGbvrequesterid(final String gbvrequesterid) {
         this.gbvrequesterid = gbvrequesterid;
+    }
+
+    public String getIdsid() {
+        return idsid;
+    }
+
+    public void setIdsid(final String idsid) {
+        this.idsid = idsid;
+    }
+
+    public String getIdspasswort() {
+        return idspasswort;
+    }
+
+    public void setIdspasswort(final String idspasswort) {
+        this.idspasswort = idspasswort;
     }
 
     public String getEzbid() {

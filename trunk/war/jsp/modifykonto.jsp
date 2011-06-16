@@ -150,7 +150,7 @@
       <td><b><bean:message key="modifykonto.email_delivery" />*</b></td><td><input name="dbsmail" type="email"<logic:notPresent name="kontoform" property="dbsmail"> value="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color="red"><html:errors property="email" /></font></td>
     </tr>
     <logic:notPresent name="userinfo" property="konto.faxno">
-    <!-- Nur für nicht Faxserverkunden relevant -->
+    <!-- Only relevant for customer without fax option -->
     <tr>
       <td><bean:message key="modifykonto.subito_standard" />&nbsp;</td><td><select name="default_deloptions">
           <option value="post"<logic:present name="kontoform" property="default_deloptions"><logic:equal name="kontoform" property="default_deloptions" value="post"> selected</logic:equal></logic:present>>Post</option>
@@ -164,6 +164,12 @@
     </tr>    
     <tr>
       <td><bean:message key="modifykonto.pwgbv" /></td><td><input name="gbvpasswort" type="password"<logic:present name="kontoform" property="gbvpasswort"> value="<bean:write name="kontoform" property="gbvpasswort" />"</logic:present> size="50" maxlength="100" /></td>
+    </tr>
+    <tr>
+      <td><bean:message key="modifykonto.idids" /></td><td><input name="idsid" type="text"<logic:present name="kontoform" property="idsid"> value="<bean:write name="kontoform" property="idsid" />"</logic:present> size="50" maxlength="100" /></td>
+    </tr>    
+    <tr>
+      <td><bean:message key="modifykonto.pwids" /></td><td><input name="idspasswort" type="password"<logic:present name="kontoform" property="idspasswort"> value="<bean:write name="kontoform" property="idspasswort" />"</logic:present> size="50" maxlength="100" /></td>
     </tr>
     <logic:present name="userinfo" property="benutzer">
    <logic:equal name="userinfo" property="benutzer.rechte" value="3">

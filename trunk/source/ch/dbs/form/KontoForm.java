@@ -59,6 +59,8 @@ public final class KontoForm extends ValidatorForm {
     private String gbvbenutzername;
     private String gbvpasswort;
     private String gbvrequesterid; // ID jeder einzelnen Bibliothek beim GBV
+    private String idsid; // ID for IDS consortia in Switzerland
+    private String idspasswort;
     private String ezbid;
     private String instlogolink; // Link to a logo/image on a remote server
     private boolean zdb;
@@ -516,6 +518,26 @@ public final class KontoForm extends ValidatorForm {
 
     public void setGbvrequesterid(final String gbvrequesterid) {
         this.gbvrequesterid = gbvrequesterid;
+    }
+
+
+    public String getIdsid() {
+        return idsid;
+    }
+
+
+    public void setIdsid(final String idsid) {
+        this.idsid = idsid;
+    }
+
+
+    public String getIdspasswort() {
+        return idspasswort;
+    }
+
+
+    public void setIdspasswort(final String idspasswort) {
+        this.idspasswort = idspasswort;
     }
 
 
@@ -1031,6 +1053,8 @@ public final class KontoForm extends ValidatorForm {
         this.gbvbenutzername = konto.getGbvbenutzername();
         this.gbvpasswort = konto.getGbvpasswort();
         this.gbvrequesterid = konto.getGbvrequesterid();
+        this.idsid = konto.getIdsid();
+        this.idspasswort = konto.getIdspasswort();
         if (konto.getEzbid() != null) { this.ezbid = konto.getEzbid(); }
         this.instlogolink = konto.getInstlogolink();
         this.zdb = konto.isZdb(); // ZDB-Teilnehmer

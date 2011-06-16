@@ -559,6 +559,8 @@ public final class KontoAction extends DispatchAction {
                 }
                 kf.setGbvbenutzername(k.getGbvbenutzername());
                 kf.setGbvpasswort(k.getGbvpasswort());
+                kf.setIdsid(k.getIdsid());
+                kf.setIdspasswort(k.getIdspasswort());
                 kf.setPopfaxend(k.getPopfaxend());
                 kf.setEzbid(k.getEzbid());
                 kf.setInstlogolink(k.getInstlogolink());
@@ -715,6 +717,16 @@ public final class KontoAction extends DispatchAction {
                             } else {
                                 k.setGbvpasswort(kf.getGbvpasswort().trim());
                             } // null wegen Anzeigelogik
+                            if (kf.getIdsid() == null || kf.getIdsid().equals("")) {
+                                k.setIdsid(null);
+                            } else {
+                                k.setIdsid(kf.getIdsid().trim());
+                            }
+                            if (kf.getIdspasswort() == null || kf.getIdspasswort().equals("")) {
+                                k.setIdspasswort(null);
+                            } else {
+                                k.setIdspasswort(kf.getIdspasswort().trim());
+                            }
                             if (kf.getBiblioname() != null) {
                                 k.setBibliotheksname(kf.getBiblioname().trim());
                             } else {

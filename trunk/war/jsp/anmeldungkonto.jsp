@@ -66,7 +66,7 @@
       <td><b><bean:message key="modifykonto.land" />*</b></td>
       <td>
       	<select name="land">
-      		<option value="0" selected><bean:message key="modifykonto.countrychoose" /></option>
+      		<option value="0" selected="selected"><bean:message key="modifykonto.countrychoose" /></option>
  			<logic:iterate id="c" name="kontoform" property="countries">
 				<bean:define id="tmp" name="c" property="countrycode" type="java.lang.String"/>
      				<option value="<bean:write name="c" property="countrycode" />"<logic:present name="kontoform" property="land"><logic:equal name="kontoform" property="land" value="<%=tmp%>"> selected</logic:equal></logic:present>><bean:write name="c" property="countryname" /></option>
@@ -96,11 +96,11 @@
     </tr>   
     <tr>
       <td><b><bean:message key="modifykonto.libraryemail" />*</b></td>
-      <td><input name="bibliotheksmail" type="text"<logic:notPresent name="kontoform" property="bibliotheksmail"> value="<bean:message key="register.bibliomail_explain" />"</logic:notPresent><logic:present name="kontoform" property="bibliotheksmail"> value="<bean:write name="kontoform" property="bibliotheksmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
+      <td><input name="bibliotheksmail" type="email"<logic:notPresent name="kontoform" property="bibliotheksmail"> value="<bean:message key="register.bibliomail_explain" />"</logic:notPresent><logic:present name="kontoform" property="bibliotheksmail"> value="<bean:write name="kontoform" property="bibliotheksmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
     </tr>
     <tr>
       <td><b><bean:message key="modifykonto.email_delivery" />*</b></td>
-      <td><input name="dbsmail" type="text"<logic:notPresent name="kontoform" property="dbsmail"> value="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
+      <td><input name="dbsmail" type="email"<logic:notPresent name="kontoform" property="dbsmail"> value="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.idgbv" /></td>
@@ -111,8 +111,16 @@
       <td><input name="gbvpasswort" type="password"<logic:present name="kontoform" property="gbvpasswort"> value="<bean:write name="kontoform" property="gbvpasswort" />"</logic:present> size="50" maxlength="100" /></td>
     </tr>
     <tr>
+      <td><bean:message key="modifykonto.idids" /></td>
+      <td><input name="idsid" type="text"<logic:present name="kontoform" property="idsid"> value="<bean:write name="kontoform" property="idsid" />"</logic:present> size="50" maxlength="100" /></td>
+    </tr>    
+    <tr>
+      <td><bean:message key="modifykonto.pwids" /></td>
+      <td><input name="idspasswort" type="password"<logic:present name="kontoform" property="idspasswort"> value="<bean:write name="kontoform" property="idspasswort" />"</logic:present> size="50" maxlength="100" /></td>
+    </tr>
+    <tr>
       <td><bean:message key="register.ezb_url" /></td>
-      <td><input name="ezbid" type="text"<logic:notPresent name="kontoform" property="ezbid"> value="<bean:message key="register.ezb_url_comment" />"</logic:notPresent><logic:present name="kontoform" property="ezbid"> value="<bean:write name="kontoform" property="ezbid" />"</logic:present> size="50" maxlength="300" /> <bean:message key="register.ezb_url_explain" /></td>
+      <td><input name="ezbid" type="url"<logic:notPresent name="kontoform" property="ezbid"> value="<bean:message key="register.ezb_url_comment" />"</logic:notPresent><logic:present name="kontoform" property="ezbid"> value="<bean:write name="kontoform" property="ezbid" />"</logic:present> size="50" maxlength="300" /> <bean:message key="register.ezb_url_explain" /></td>
     </tr>
     <tr title="<bean:message key="modifykonto.isil_explain" />">
       <td><bean:message key="modifykonto.isil" /><img src="img/info.png" alt="<bean:message key="modifykonto.isil_explain" />" /></td>

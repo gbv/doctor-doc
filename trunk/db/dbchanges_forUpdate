@@ -1,3 +1,7 @@
+-- Revision 160 --
+
+ALTER TABLE `konto`  ADD `ids_id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `gbv_requester_id`,  ADD `ids_passwort` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `ids_id`
+
 -- Revision 156 --
 
 ALTER TABLE `bestellform_daia` ADD `map_reference` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'combine volume/date/issue/pages' AFTER `map_doi` 
