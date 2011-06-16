@@ -18,7 +18,7 @@ import ch.dbs.form.UserInfo;
 /**
  * Prepares a POST method to order over SFX at UB Basel.
  */
-public class OrderUBBaselAction extends DispatchAction {
+public class OrderMBCZurichAction extends DispatchAction {
 
     private static final String ACTIVEMENUS = "ActiveMenus";
     private static final String ERRORMESSAGE = "errormessage";
@@ -40,7 +40,7 @@ public class OrderUBBaselAction extends DispatchAction {
                 final DaiaParam dp = new DaiaParam();
 
                 // set parameters for UB Basel
-                dp.setLinkout("http://www.ub.unibas.ch/cgi-bin/sfx_dod_m.pl");
+                dp.setLinkout("http://www.hbz.unizh.ch/docdel/docdel_usb.php");
                 dp.setMapAuthors("Author");
                 dp.setMapAtitle("Article");
                 dp.setMapJournal("Journal");
@@ -52,36 +52,30 @@ public class OrderUBBaselAction extends DispatchAction {
                 dp.setMapPmid("meduid");
 
                 // Identification
-                dp.setFree1("Source");
+                dp.setFree1("sid");
                 dp.setFree1Value("doctor-doc");
-                // get Values from Konto
-                dp.setFree2("uid");
-                if (ui.getKonto().getIdsid() != null) {
-                    dp.setFree2Value(ui.getKonto().getIdsid());
-                } else {
-                    dp.setFree2Value("");
-                }
-                dp.setFree3("pwd");
-                if (ui.getKonto().getIdspasswort() != null) {
-                    dp.setFree3Value(ui.getKonto().getIdspasswort());
-                } else {
-                    dp.setFree3Value("");
-                }
-                // additional parameters
-                dp.setFree4("action");
-                dp.setFree4Value("submit");
-                dp.setFree5("pickup");
-                dp.setFree5Value("EMAIL - E-Mail");
-                dp.setFree6("sfxurl");
-                dp.setFree6Value("#sfxurl");
-                dp.setFree7("legal");
-                dp.setFree7Value("on");
-                dp.setFree8("B1");
-                dp.setFree8Value("Bestellung abschicken");
+                dp.setFree2("UserName");
+                dp.setFree2Value("sfxuser");
 
-                // set reference into remarks due to indication bug (missing issue) at UB Basel
-                dp.setFree9("bemerkung");
-                dp.setFree9Value(dp.combineReference(ofjo));
+                // get Values from Konto
+                dp.setFree3("Name");
+                dp.setFree3Value(ui.getBenutzer().getName() + " " + ui.getBenutzer().getVorname());
+                dp.setFree4("Usernum");
+                if (ui.getKonto().getIdsid() != null) {
+                    dp.setFree4Value(ui.getKonto().getIdsid());
+                } else {
+                    dp.setFree4Value("");
+                }
+                dp.setFree5("Institut");
+                dp.setFree5Value(ui.getKonto().getBibliotheksname());
+                dp.setFree6("Strasse");
+                dp.setFree6Value(ui.getKonto().getAdresse() + " " + ui.getKonto().getAdressenzusatz());
+                dp.setFree7("Ort");
+                dp.setFree7Value(ui.getKonto().getPLZ() + " " + ui.getKonto().getOrt());
+                dp.setFree8("Telefon");
+                dp.setFree8Value(ui.getKonto().getTelefon());
+                dp.setFree9("Useremail");
+                dp.setFree9Value(ui.getKonto().getDbsmail());
 
                 rq.setAttribute("ofjo", ofjo);
                 rq.setAttribute("daiaparam", dp);

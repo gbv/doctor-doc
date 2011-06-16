@@ -566,6 +566,13 @@
 			<forward name="redirect" path="/jsp/redirectdaiapost.jsp" />
 			<forward name="failure" path="/error.do" />
 		</action>
+		
+		<action path="/redirectmbczurich" name="OrderForm" validate="false"
+			parameter="method" scope="request"
+			type="ch.dbs.actions.bestellung.OrderMBCZurichAction">
+			<forward name="redirect" path="/jsp/redirectdaiapostiso.jsp" />
+			<forward name="failure" path="/error.do" />
+		</action>
 
 		<!--
 			*************************************************Bestellungen ändern*************************************************

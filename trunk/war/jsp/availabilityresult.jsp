@@ -224,7 +224,7 @@ h += 96;
     <tr>
       <td><a href="http://sfx.kobv.de/cgi-bin/fernleihe3/cgi/nachauth?zdb_id=<bean:write name="orderform" property="zdbid" />" target="_blank">KOBV</a></td>
       <td><a href="http://ml.metabib.ch/V/?func=quick-1-check1&mode=advanced&find_request_1=&find_code_2=ISSN&find_op_1=AND&find_code_3=WRD&find_request_3=&group_number=000002060&find_request_2=<bean:write name="orderform" property="issn" />" target="_blank">MBC Z&uuml;rich</a></td>
-      <td><a href="http://www.hbz.uzh.ch/index.php?option=com_content&view=article&id=344&Itemid=37&lang=de" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
+      <td><a href="redirectmbczurich.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded"/>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
@@ -303,7 +303,7 @@ h += 96;
     <tr>
       <td><a href="http://sfx.kobv.de/cgi-bin/fernleihe3/cgi/nachauth" target="_blank">KOBV</a></td>
       <td><a href="http://ml.metabib.ch/V/?func=quick-1-check1&mode=advanced&find_request_1=&find_code_2=WRD&find_op_1=AND&find_code_3=WRD&find_request_3=&group_number=000002060&find_request_2=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />" target="_blank">MBC Z&uuml;rich</a></td>
-      <td><a href="http://www.hbz.uzh.ch/index.php?option=com_content&view=article&id=344&Itemid=37&lang=de" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
+      <td><a href="redirectmbczurich.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded"/>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
