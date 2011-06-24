@@ -1471,7 +1471,7 @@ public final class OrderAction extends DispatchAction {
             }
 
             while ((run < x) && (!autocomplete)) {
-                link = composeLinkWorldCat(artikeltitelWC, pageForm, run);
+                link = getWorldCatLinkBaseSearch(artikeltitelWC, pageForm, run);
                 autocomplete = searchWorldCat(link, pageForm);
                 run = run + 1;
                 // prüft, ob Umlaute vorhanden sind und verhindert ggf. eine unötige WorldCat-Abfrage
@@ -1483,8 +1483,11 @@ public final class OrderAction extends DispatchAction {
         return autocomplete;
     }
 
-
-    private String composeLinkWorldCat(final String artikeltitelWC, final OrderForm pageForm, final int run) {
+    /**
+     * Create the link to search World Cat. The search of this link will return several records. It is necessary to
+     * redirect on the detail page (getWorldCatLinkDetailPage) of a record to retrieve the metadata from from Z39.88.
+     */
+    private String getWorldCatLinkBaseSearch(final String artikeltitelWC, final OrderForm pageForm, final int run) {
         String linkWC = "";
         String tmpWC = "";
         String link = "";
@@ -1553,49 +1556,68 @@ public final class OrderAction extends DispatchAction {
         return linkWC;
     }
 
+    /**
+     * Get Link of Worldcat detail page.
+     */
+    private String getWorldCatLinkDetailPage(final String content) {
 
-    private boolean searchWorldCat(final String link, final OrderForm pageForm) {
+        final StringBuffer link = new StringBuffer("http://www.worldcat.org");
+        link.append(content.substring(content.lastIndexOf("href=\"", content.indexOf("&referer=brief_results")) + 6,
+                content.indexOf("&referer=brief_results") + 22));
+
+        return link.toString();
+    }
+
+
+    private boolean searchWorldCat(String link, final OrderForm pageForm) {
 
         boolean worldcat = false;
         String content = "";
         String openURL = "";
 
-        content = getWebcontent(link, TIMEOUT_2, RETRYS_3);
+        content = getWebcontent(link, TIMEOUT_2, RETRYS_2);
 
-        // Hier folgt die Auswertung nach Z39.88
-        // bei nicht eindeutigem Treffer wird einfach der erste genommen...
-        if (content.contains("url_ver=Z39.88")) {
-            worldcat = true;
-            pageForm.setRuns_autocomplete(+1);
+        // reload to detail page of first record
+        if (content.contains("&referer=brief_results")) {
+            // get and create link to detail page
+            link = getWorldCatLinkDetailPage(content);
 
-            openURL = content.substring(content.indexOf("url_ver=Z39.88"),
-                    content.indexOf('>', content.indexOf("url_ver=Z39.88")));
-            //                System.out.println("String OpenURL: " + OpenURL);
-            openURL = correctWorldCat(openURL);
+            content = getWebcontent(link, TIMEOUT_2, RETRYS_2);
 
-            // Hier folgt die OpenURL-Auswertung
-            final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-            final OpenUrl openUrlInstance = new OpenUrl();
-            // ContextObject mit Inhalten von content abfüllen
-            final ContextObject co = openUrlInstance.readOpenUrlFromString(openURL);
-            final OrderForm of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
+            // get article details from Z39.88
+            if (content.contains("url_ver=Z39.88")) {
+                worldcat = true;
+                pageForm.setRuns_autocomplete(+1);
 
-            // Artikeltitel als User-Eingabe muss behalten werden
-            pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
-            pageForm.setIssn(of.getIssn());
-            pageForm.setJahr(of.getJahr());
-            pageForm.setJahrgang(of.getJahrgang());
-            pageForm.setHeft(of.getHeft());
-            pageForm.setSeiten(of.getSeiten());
-            pageForm.setAuthor(of.getAuthor());
-            pageForm.setFlag_noissn(of.isFlag_noissn());
+                openURL = content.substring(content.indexOf("url_ver=Z39.88"),
+                        content.indexOf('>', content.indexOf("url_ver=Z39.88")));
+                //                System.out.println("String OpenURL: " + OpenURL);
+                openURL = correctWorldCat(openURL);
+
+                // Hier folgt die OpenURL-Auswertung
+                final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
+                final OpenUrl openUrlInstance = new OpenUrl();
+                // ContextObject mit Inhalten von content abfüllen
+                final ContextObject co = openUrlInstance.readOpenUrlFromString(openURL);
+                final OrderForm of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
+
+                // Artikeltitel als User-Eingabe muss behalten werden
+                pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
+                pageForm.setIssn(of.getIssn());
+                pageForm.setJahr(of.getJahr());
+                pageForm.setJahrgang(of.getJahrgang());
+                pageForm.setHeft(of.getHeft());
+                pageForm.setSeiten(of.getSeiten());
+                pageForm.setAuthor(of.getAuthor());
+                pageForm.setFlag_noissn(of.isFlag_noissn());
+
+            }
 
         }
 
         return worldcat;
 
     }
-
 
     private boolean isPubmedSearchWithoutPmidPossible(final OrderForm pageForm) {
         boolean check = false;
