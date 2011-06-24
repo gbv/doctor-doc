@@ -87,7 +87,7 @@ public final class OrderAction extends DispatchAction {
     private static final String ERRORMESSAGE = "errormessage";
 
     /**
-     * Methode zum pruefen, ob das Journal frei verfuegbar ist
+     * Check if an article is freely available in the Internet.
      */
     public ActionForward findForFree(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -107,12 +107,12 @@ public final class OrderAction extends DispatchAction {
         final CodeUrl codeUrl = new CodeUrl();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
 
-        // hier wird eine allfällige PMID aufgelöst
+        // resolve a PMID entered by an user
         if (pageForm.getArtikeltitel().toLowerCase().contains("pmid:")) {
             pageForm = bfInstance.resolvePmid(bfInstance.extractPmid(pageForm
                     .getArtikeltitel()));
-            pageForm.setAutocomplete(true); // vermeiden, dass noch zusätzlich Autocomplete ausgeführt wird
-            // hier hat die Auflösung nicht geklappt => zurück zum Eingabeformular
+            pageForm.setAutocomplete(true); // avoid additional autocomplete runs
+            // resolving pmid failed => back to search
             if (pageForm.getArtikeltitel().equals("")) { forward = "pmidfailure"; }
         }
 
@@ -124,25 +124,23 @@ public final class OrderAction extends DispatchAction {
 
             if (!"pmidfailure".equals(forward)) {
 
-                // ***Funktion Autocomplete ein erstes Mal ausführen
-                if (!pageForm.isAutocomplete()) { pageForm.setAutocomplete(autoComplete(form, rq)); }
+                // *** run autocomplete for the first time
+                if (!pageForm.isAutocomplete()) { pageForm.setAutocomplete(autoComplete(pageForm, rq)); }
 
                 // Automatic Google search
                 if (google(rq, auth)) {
 
-                    // ...nur Google-Suche durchführen, falls nicht captcha.jsp dazwischengeschaltet wurde!
+                    // ...only search Google, if there we don't come from captcha.jsp!
                     if (pageForm.getCaptcha_id() == null && pageForm.getCaptcha_text() == null) {
-
-                        // Methoden um Verfuegbarkeit zu pruefen
 
                         // Google
 
-                        //  Suchstufen:
+                        //  Search steps:
                         // 1. phrase + allintitle: + filetype:pdf
-                        // 2. phrase + allintitle + pdf extrahieren
-                        // 3. "meinten Sie" phrase => Pruefung 1 und 2
-                        // 4. Stufe: Titel als Phrase + [text] pdf OR "full-text" => Ergebnis ohne PDF-Pruefung
-                        // 5. "meinten Sie" => Pruefung 4
+                        // 2. phrase + allintitle + extract pdf
+                        // 3. "did you mean" phrase => rerun checks 1 and 2
+                        // 4. title as phrase + [text] pdf OR "full-text" => result without check for PDFs
+                        // 5. "did you mean" => rerun check 4
 
                         int searches = 0;
                         boolean ergebnis = false;
@@ -192,9 +190,9 @@ public final class OrderAction extends DispatchAction {
                             }
 
 
-                            if (searches < 4) { compare = "[PDF]"; } else { compare = "class=g>"; }  // neu
+                            if (searches < 4) { compare = "[PDF]"; } else { compare = "class=g>"; }
 
-                            //   Sicherstellen, dass Google nicht mit Captcha reagiert
+                            //   make sure Google did not respond with Captcha
                             if (!check.containsGoogleCaptcha(content)) {
 
                                 if (content.contains(compare)) {
@@ -222,15 +220,15 @@ public final class OrderAction extends DispatchAction {
                                         jdGoogle.setUrl_text(textLinkPdfGoogle);
                                         hitsGoogle.add(jdGoogle);
 
-                                        if (searches < 4) { // nur bei PDF-Suche Google-Cache benutzen
+                                        if (searches < 4) { // use Google-Cache only, if looking for PDFs
                                             String cache = "";
                                             int cachePosition = 0;
                                             int end = 0;
                                             if (searches < 4) { // eigentlich: if ((searches < 5) || (searches == 7))
-                                                // class=w => Anfang des naechsten Datensatzes
+                                                // class=w => start of next record
                                                 end = content2.indexOf("class=w", start);
                                             } else {
-                                                // class=g => Anfang des naechsten Datensatzes
+                                                // class=g => start of next record
                                                 end = content2.indexOf(compare, start);
                                             }
 
@@ -251,7 +249,7 @@ public final class OrderAction extends DispatchAction {
 
                                         content2 = content2.substring(start);
                                     }
-                                    searches = 6; // = Suche erfolgreich
+                                    searches = 6; // search successful
 
                                     final FindFree ff = new FindFree();
                                     ff.setZeitschriften(hitsGoogle);
@@ -279,7 +277,7 @@ public final class OrderAction extends DispatchAction {
                                     }
                                 }
 
-                            } else { // Google Captcha Schlaufe => forward um Captcha auzulösen
+                            } else { // Google captcha => forward to resolve Captcha
 
                                 searches = 6;
 
@@ -287,11 +285,8 @@ public final class OrderAction extends DispatchAction {
                                 m = handleGoogleCaptcha(content);
                                 forward = "captcha";
                                 rq.setAttribute("message", m);
-
                             }
-
-
-                        } // Ende while-Schlaufe
+                        }
 
                         // Google Scholar
 
@@ -329,7 +324,7 @@ public final class OrderAction extends DispatchAction {
 
                             content = getWebcontent(linkGS, TIMEOUT_1, RETRYS_3);
 
-                            // Sicherstellen, dass Google Scholar nicht mit Captcha reagiert
+                            // make sure Google Scholar does not respond with Captcha
                             if (!check.containsGoogleCaptcha(content)) {
 
                                 // Change this, to adapt to any major changes of GoogleScholars sourcecode.
@@ -407,7 +402,7 @@ public final class OrderAction extends DispatchAction {
                                     }
                                 }
 
-                            } else { // Google-Scholar Captcha  => forward um Captcha auzulösen
+                            } else { // Google-Scholar captcha  => forward to resolve Captcha
 
                                 searches = 2;
 
@@ -420,7 +415,7 @@ public final class OrderAction extends DispatchAction {
 
                         }
 
-                    } else { // Captcha auflösen...
+                    } else { // resolve captcha...
 
                         // Suche ausführen mit test, dann folgendes aufrufen:
                         // http://www.google.ch/sorry/?continue=http://www.google.ch/search?hl=de&q=test&btnG=Google-Suche&meta=
@@ -440,7 +435,7 @@ public final class OrderAction extends DispatchAction {
                             mh.sendErrorMail("Catchpa has been successfully resolved!", "Cheers...\012");
                         }
 
-                        // Captcha: manuelle Google-Suche vorbereiten
+                        // Captcha: prepare manual Google search
                         linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
                             + pageForm.getArtikeltitel_encoded()
                             + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
@@ -472,7 +467,7 @@ public final class OrderAction extends DispatchAction {
 
                 } else {
 
-                    // User: manuelle Google-Suche vorbereiten
+                    // User: prepare manual Google search
                     linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
                         + pageForm.getArtikeltitel_encoded()
                         + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
@@ -525,29 +520,27 @@ public final class OrderAction extends DispatchAction {
                 }
             }
 
-            //*** ggf. nochmals Funktion AutoComplete ausführen
+            //*** rerun autoComplete if necessary
             // weder bei vorliegendem Captcha noch nach dessen Auflösung...
             if (!"captcha".equals(forward) && pageForm.getCaptcha_id() == null
                     && !pageForm.isAutocomplete()) {
 
-                // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
+                // if we haven't tried googleDidYouMean yet => run
                 if (pageForm.getDidYouMean().length() == 0) {
                     pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));
                 }
-                if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
+                if (pageForm.getDidYouMean().length() != 0) { // run autocomplete with "did you mean"
                     pageForm.setCheckDidYouMean(true);
-                    pageForm.setAutocomplete(autoComplete(form, rq));
+                    pageForm.setAutocomplete(autoComplete(pageForm, rq));
                 }
 
             }
-            //        System.out.println("Ergebnis autocomplete: " + pageForm.isAutocomplete());
-            //        System.out.println("Testausgabe ISSN: " + pageForm.getIssn());
 
-            // fehlende pmid bestimmen und ggf. fehlende Artikelangaben über Pubmed ergänzen
+            // if we do not have a PMID, try to get it and complete any missing article details over Pubmed
             if (isPubmedSearchWithoutPmidPossible(pageForm)
-                    && pageForm.isAutocomplete()) { // Autocomplete musste erfolgreich sein
-                pageForm.setPmid(bfInstance.getPmid(pageForm)); // falls nicht eindeutig => pmid = ""
-                // falls eine PMID vorhanden und wichtige Artikel-Angaben fehlen:
+                    && pageForm.isAutocomplete()) { // autocomplete nust have been successful
+                pageForm.setPmid(bfInstance.getPmid(pageForm)); // if we have several hits => set pmid = ""
+                // complete any missing article details:
                 if (!pageForm.getPmid().equals("") && bfInstance.areArticleValuesMissing(pageForm)) {
                     OrderForm of = new OrderForm();
                     of = bfInstance.resolvePmid(bfInstance.extractPmid(pageForm.getPmid()));
@@ -555,15 +548,14 @@ public final class OrderAction extends DispatchAction {
                 }
             }
 
-            // um zu verhindern, dass vor dem ISSN-Assistent nochmals erfolglos versucht wir Autocomplete auszuführen...
+            // avoid in issnAssistent that autocomplete will be run again...
             if (!"captcha".equals(forward)) { pageForm.setRuns_autocomplete(1); }
 
-            // ersetzt eigentlich nur griechisches Alphabet zu alpha, beta etc.
+            // replace greek alphabet to alpha, beta etc.
             pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
-
         }
 
-        // für Get-Methode in PrepareLogin of URL-codieren
+        // URL encode for GET method in PrepareLogin
         pageForm = pageForm.encodeOrderForm(pageForm);
 
         rq.setAttribute("orderform", pageForm);
@@ -753,7 +745,7 @@ public final class OrderAction extends DispatchAction {
         if (pageForm.getArtikeltitel().length() != 0
                 && (pageForm.getRuns_autocomplete() == 0 && pageForm.getIssn().length() != 0)) {
             //*** Funktion AutoComplete ausführen
-            pageForm.setAutocomplete(autoComplete(form, rq));
+            pageForm.setAutocomplete(autoComplete(pageForm, rq));
             if (!pageForm.isAutocomplete()) {
 
                 // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
@@ -762,7 +754,7 @@ public final class OrderAction extends DispatchAction {
                 }
                 if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
                     pageForm.setCheckDidYouMean(true);
-                    pageForm.setAutocomplete(autoComplete(form, rq));
+                    pageForm.setAutocomplete(autoComplete(pageForm, rq));
                 }
 
             }
@@ -1441,32 +1433,29 @@ public final class OrderAction extends DispatchAction {
         return issn;
     }
 
-    private boolean autoComplete(final ActionForm form, final HttpServletRequest rq) {
+    private boolean autoComplete(final OrderForm pageForm, final HttpServletRequest rq) {
 
         boolean autocomplete = false;
         String link = "";
 
         // Syntax WorldCat z.B. http://www.worldcat.org/search?q=ti%3AAntioxidant+supplementation+sepsis+and+systemic+inflammatory+response+syndrome+issn%3A0090-3493&qt=advanced
-        // &fq=+dt%3Aart+%3E&qt=advanced (Einschränkung auf nur Artikelsuche)
+        // &fq=+dt%3Aart+%3E&qt=advanced (search only for articles)
 
-
-        final OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
-        // Sicherstellen, dass die Action nur von eingeloggten Benutzern aufgerufen wi
 
+        // make sure that this method will only be run, if the user is logged in
         if (auth.isLogin(rq)) {
 
             // first correction, e.g. for β => beta
             final String artikeltitelWC = prepareWorldCat2(pageForm.getArtikeltitel());
             int run = 0;
 
-            // *** bis zu 4 WorldCat Prüfungen
-            // Verscheidene Varianten von Umlauten erstetzen und ggf. meinten_sie
+            // *** up to 4 runs on WorldCat
+            // replace different versions of umlauts and use of "did you mean"
             int x = 2;
 
-            // sicherstellen, dass WorldCat meinten_sie nur bei vorhandenem meinten-sie ausgeführt wird.
             if (pageForm.isCheckDidYouMean()) {
-                run = 2; // verhindert, dass bei einer meinten_sie Prüfung wieder von vorne begonnen wird...
+                run = 2; // avoid loop for "did you mean"
                 x = 4;
             }
 
@@ -1474,7 +1463,7 @@ public final class OrderAction extends DispatchAction {
                 link = getWorldCatLinkBaseSearch(artikeltitelWC, pageForm, run);
                 autocomplete = searchWorldCat(link, pageForm);
                 run = run + 1;
-                // prüft, ob Umlaute vorhanden sind und verhindert ggf. eine unötige WorldCat-Abfrage
+                // checks for umlauts and avoids an additional run on WorldCat
                 if (run < x && !checkPrepareWorldCat1(artikeltitelWC)) { run = run + 1; }
             }
 
@@ -1500,9 +1489,9 @@ public final class OrderAction extends DispatchAction {
         }
 
 
-        if (artikeltitelEncoded.contains("--")) { // Untertitel nicht in Feld Titel suchbar
-            tmpWC = artikeltitelEncoded.substring(artikeltitelEncoded.indexOf("--") + 2); // Untertitel
-            artikeltitelEncoded = artikeltitelEncoded.substring(0, artikeltitelEncoded.indexOf("--"));  // Titel
+        if (artikeltitelEncoded.contains("--")) { // The subtitle can not be search in the title field
+            tmpWC = artikeltitelEncoded.substring(artikeltitelEncoded.indexOf("--") + 2); // Subtitle
+            artikeltitelEncoded = artikeltitelEncoded.substring(0, artikeltitelEncoded.indexOf("--"));  // Title
         }
 
 
@@ -2145,7 +2134,7 @@ public final class OrderAction extends DispatchAction {
             if (!pageForm.isAutocomplete() && pageForm.getRuns_autocomplete() == 0
                     && pageForm.getArtikeltitel().length() != 0) { // noch kein autocomplete ausgeführt...
                 //            *** Funktion AutoComplete ausführen
-                pageForm.setAutocomplete(autoComplete(form, rq));
+                pageForm.setAutocomplete(autoComplete(pageForm, rq));
                 if (!pageForm.isAutocomplete()) {
 
                     // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
@@ -2155,7 +2144,7 @@ public final class OrderAction extends DispatchAction {
                     }
                     if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
                         pageForm.setCheckDidYouMean(true);
-                        pageForm.setAutocomplete(autoComplete(form, rq));
+                        pageForm.setAutocomplete(autoComplete(pageForm, rq));
                     }
 
                 }
