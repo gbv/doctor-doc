@@ -663,10 +663,10 @@ public class Bestand extends AbstractIdEntity {
             result.append(hold.getStartyear());
 
             if (!isEmpty(hold.getStartvolume()) || !isEmpty(hold.getStartissue())) {
-                result.append(',');
+                result.append(", ");
             }
             if (!isEmpty(hold.getStartvolume())) {
-                result.append(" Vol. ");
+                result.append("Vol. ");
                 result.append(hold.getStartvolume());
                 if (!isEmpty(hold.getStartissue())) {
                     result.append(", ");
@@ -683,11 +683,11 @@ public class Bestand extends AbstractIdEntity {
                 result.append(hold.getEndyear());
 
                 if (!isEmpty(hold.getEndvolume()) || !isEmpty(hold.getEndissue())) {
-                    result.append(',');
+                    result.append(", ");
                 }
 
                 if (!isEmpty(hold.getEndvolume())) {
-                    result.append(" Vol. ");
+                    result.append("Vol. ");
                     result.append(hold.getEndvolume());
                     if (!isEmpty(hold.getEndissue())) {
                         result.append(", ");

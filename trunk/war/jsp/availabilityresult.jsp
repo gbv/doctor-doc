@@ -62,6 +62,15 @@ h += 96;
   			<a href="<bean:write name="ezb" property="linkezb"/>" target="_blank">powered by EZB and ZDB</a>
 		</th>
 	</tr>
+<logic:empty name="ezb" property="online">
+	<logic:empty name="ezb" property="print">
+		<tr>
+			<td colspan="7">
+				<bean:message key="availresult.nohits"/>
+			</td>
+		</tr>
+	</logic:empty>
+</logic:empty>
 <logic:notEmpty name="ezb" property="online">
 	<logic:iterate id="ref" name="ezb" property="online">
 		<tr>

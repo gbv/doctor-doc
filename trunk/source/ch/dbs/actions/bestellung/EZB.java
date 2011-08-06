@@ -115,6 +115,10 @@ public class EZB {
                     } else if (online.getState() == 5) {
                         online.setAmpel("red");
                         online.setComment("availresult.timeperiode");
+                        // not indexed
+                    } else if (online.getState() == 10) {
+                        online.setAmpel("red");
+                        online.setComment("availresult.nohits");
                     } else {
                         online.setAmpel("red");
                         online.setComment("availresult.not_licensed");
