@@ -64,6 +64,10 @@ import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
 import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
+import ch.dbs.form.EZBDataOnline;
+import ch.dbs.form.EZBDataPrint;
+import ch.dbs.form.EZBForm;
+import ch.dbs.form.EZBReference;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.FindFree;
 import ch.dbs.form.JournalDetails;
@@ -781,9 +785,9 @@ public final class OrderAction extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // will be needed for the ezbid
         OrderForm pageForm = (OrderForm) form;
         final BestellformAction bfInstance = new BestellformAction();
-        Text t = new Text();
+        Text cn = new Text();
         final Auth auth = new Auth();
-        FindFree ff = new FindFree();
+        EZBForm ezbform = new EZBForm();
 
         final ExecutorService executor = Executors.newCachedThreadPool();
         // GBV-Thread-Management
@@ -797,13 +801,9 @@ public final class OrderAction extends DispatchAction {
         Future<String> carelitcontent = null;
 
         String forward = FAILURE;
-        String bibid = "AAAAA"; // ID in the EZB for an 'undefined' library
-        String land = "";
-        String link = "";
-        String content = "";
+        String bibid = null;
         long daiaId = 0;
         long kid = 0;
-        boolean zdb = false;
 
         // if coming from getOpenUrlRequest or prepareReorder
         if (rq.getAttribute("ofjo") != null) {
@@ -814,31 +814,28 @@ public final class OrderAction extends DispatchAction {
 
         // falls nicht eingeloggt, aus Request lesen (falls vorhanden)
         if (!auth.isLogin(rq)) {
-            t = (Text) rq.getAttribute("ip");
-            // Text mit Kontoangaben anhand Broker-Kennung holen
-            if (t.getTexttyp().getId() == 11) { pageForm.setBkid(t.getInhalt()); }
-            // Text mit Kontoangaben anhand Konto-Kennung holen
-            if (t.getTexttyp().getId() == 12) { pageForm.setKkid(t.getInhalt()); }
+            cn = (Text) rq.getAttribute("ip");
+            if (cn != null) {
+                // Text mit Kontoangaben anhand Broker-Kennung holen
+                if (cn.getTexttyp().getId() == 11) { pageForm.setBkid(cn.getInhalt()); }
+                // Text mit Kontoangaben anhand Konto-Kennung holen
+                if (cn.getTexttyp().getId() == 12) { pageForm.setKkid(cn.getInhalt()); }
+            }
         }
 
-        // get bibid and land (country) from ui
+        // get bibid from ui
         if (ui != null) {
             if (ui.getKonto().getEzbid() != null && !ui.getKonto().getEzbid().equals("")) {
                 bibid = ui.getKonto().getEzbid();
             }
-            land = ui.getKonto().getLand();
-            zdb = ui.getKonto().isZdb();
             daiaId = getDaiaId(ui.getKonto().getId());
             kid = ui.getKonto().getId();
         } else {
-            if (t.getInhalt() != null) { // ggf. bibid und land aus IP-basiertem Zugriff abfüllen
-                if (pageForm.getBkid() == null && t.getKonto().getEzbid() != null
-                        && !t.getKonto().getEzbid().equals("")) { bibid = t.getKonto().getEzbid(); }
-                if (t.getKonto().getLand() != null
-                        && !t.getKonto().getLand().equals("")) { land = t.getKonto().getLand(); }
-                zdb = t.getKonto().isZdb();
-                daiaId = t.getKonto().getId();
-                kid = t.getKonto().getId();
+            if (cn != null && cn.getInhalt() != null) { // ggf. bibid aus IP-basiertem Zugriff abfüllen
+                if (pageForm.getBkid() == null && cn.getKonto().getEzbid() != null
+                        && !cn.getKonto().getEzbid().equals("")) { bibid = cn.getKonto().getEzbid(); }
+                daiaId = cn.getKonto().getId();
+                kid = cn.getKonto().getId();
             }
         }
 
@@ -863,8 +860,7 @@ public final class OrderAction extends DispatchAction {
         boolean gbvThread = false;
         if (auth.isLogin(rq) && pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
             // gets zdbid from database (will be an e-journal)
-            pageForm.setZdbid(getZdbidFromIssn(pageForm.getIssn(), t.getConnection()));
-            t.close();
+            pageForm.setZdbid(getZdbidFromIssn(pageForm.getIssn(), cn.getConnection()));
             // System.out.println("ZDB-ID aus dbs: " + pageForm.getZdbid());
             // Try to get from e-ZDB-ID a p-ZDB-ID from GBV using a seperate thread.
             if (pageForm.getZdbid() != null && !pageForm.getZdbid().equals("")) {
@@ -879,12 +875,12 @@ public final class OrderAction extends DispatchAction {
         }
 
         // eingeloggt, oder Zugriff IP-basiert/kkid/bkid
-        if (auth.isLogin(rq) || t.getInhalt() != null) {
+        if (auth.isLogin(rq) || (cn != null && cn.getInhalt() != null)) {
             forward = "notfreeebz";
 
             // set link in request if there is institution logo for this account
-            if (t.getInhalt() != null && t.getKonto().getInstlogolink() != null) {
-                rq.setAttribute("logolink", t.getKonto().getInstlogolink());
+            if (cn.getInhalt() != null && cn.getKonto().getInstlogolink() != null) {
+                rq.setAttribute("logolink", cn.getKonto().getInstlogolink());
             }
 
             ContextObject co = new ContextObject();
@@ -897,20 +893,19 @@ public final class OrderAction extends DispatchAction {
             // damit auf Checkavailability codierte OpenURL-Anfragen zusammengestellt werden können (z.B. Carelit)
             pageForm.setLink(openurl);
 
-            // Link für Abfrage EZB/ZDB-Schnittstelle (nur D)
-            if ("DE".equals(land) && zdb && !"AAAAA".equals(bibid)) {
-
-                link = "http://services.d-nb.de/fize-service/gvr/html-service.htm?"; // baseurl
-                link = link  + openurl + "&pid=bibid=" + bibid;
-
-            } else { // Link für Vascoda-Schnittstelle (alle anderen Länder und für Nicht-ZDB-Teilnehmer in D)
-
-                // BaseURL: http://ezb.uni-regensburg.de/ezeit/vascoda/openURL
-                link = "http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?";
-
-                link = link + openurl + "&bibid=" + bibid;
+            // use link to services from ZDB/EZB
+            // http://services.d-nb.de/fize-service/gvr/html-service.htm?
+            final StringBuffer linkEZB = new StringBuffer("http://services.d-nb.de/fize-service/gvr/full.xml?");
+            linkEZB.append(openurl);
+            if (bibid != null) {
+                // use bibid from account
+                linkEZB.append("&pid=bibid=");
+                linkEZB.append(bibid);
+            } else {
+                // use IP for request
+                linkEZB.append("client_ip=");
+                linkEZB.append(rq.getRemoteAddr());
             }
-
 
             if (ReadSystemConfigurations.isSearchCarelit()) {
                 carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
@@ -918,64 +913,31 @@ public final class OrderAction extends DispatchAction {
                 carelitcontent = executor.submit(carelitthread);
             }
 
-            content = getWebcontent(link, TIMEOUT_3, RETRYS_2);
-            content = content.replaceAll("\012", ""); // Layout-Umbrueche entfernen
+            // get content as String and parse it as XML later. In this way we can control timeouts and retries.
+            final String content = getWebcontent(linkEZB.toString(), TIMEOUT_3, RETRYS_2);
 
-            // Hier folgt die Prüfung über die EZB
-            // Schnittstelle EZB/ZDB für Deutschland, bei EZB-Teilnehmern, die auch in der ZDB dabei sind...
-            if ("DE".equals(land) && zdb && !"AAAAA".equals(bibid)) {
+            // read EZB response as XML
+            final EZB ezb = new EZB();
+            ezbform = ezb.read(content);
 
-                if (auth.isLogin(rq) || ((content.contains("../icons/e")
-                        && !content.contains("/e4_html.gif")) // Online vorhanden
-                        || (content.contains("../icons/p") && !content.contains("/p4_html.gif")))) { // Print vorhanden
-                    // falls eingeloggt immer auf availabilityresult.jsp (wegen Wahl SUBITO / GBV),
-                    // IP-basiert nur falls etwas zugänglich ist...
-                    forward = "freeezb";
-                    ff = getFindFreeFromEzbZdb(content, link);
-
-                    // Link nach ZDB aus Content extrahieren, da der Katalog sich unzuverlässig auf
-                    // die eigentlich logische Suchsyntax verhält....
-                    final SpecialCharacters specialCharacters = new SpecialCharacters();
-                    String zdbLink = specialCharacters.replace(getZdbLinkFromEzbZdb(content));
-                    if (!zdbLink.contains("&HOLDINGS_YEAR=") && !pageForm.getJahr().equals("")) {
-                        zdbLink = zdbLink + "&HOLDINGS_YEAR=" + pageForm.getJahr();
-                    }
-                    ff.setZdb_link(zdbLink);
-
-                    // bestehende Angaben werden korrekterweise überschrieben:
-                    pageForm.setLieferant(ff.getLieferant());  // Bestellquelle setzen (Internet / abonniert)...
-                    pageForm.setDeloptions(ff.getDeloptions()); // // Deloptions setzen (Online / Email)...
-
-                }
-
-            } else {
-                // Schnittstelle EZB/Vascoda, für alle anderen Länder und nicht ZDB-Teilnehmer in D
-                if (auth.isLogin(rq) || ((content.contains("img/free.gif"))
-                        //                 || (content.contains("img/rest.gif")) // kostenpflichtig...
-                        || (content.contains("img/subsread.gif"))
-                        // eigentlich ident. mit img/subsread.gif wird aber in der OpenUrl-Auflösung der EZB verwendet.
-                        || (content.contains("img/subs.gif"))
-                        || (content.contains("img/light6.gif")))) {
-                    // falls eingeloggt immer auf availabilityresult.jsp (wegen Wahl SUBITO / GBV),
-                    // IP-basiert nur falls etwas zugänglich ist...
-                    forward = "freeezb";
-                    ff = getFindFreeFromEzbVascoda(content, link);
-                    pageForm.setLieferant(ff.getLieferant()); // Bestellquelle setzen (Internet / abonniert)...
-                    pageForm.setDeloptions(ff.getDeloptions()); // // Deloptions setzen (Online / Email)...
-
-                }
-
-                // z.B. The American Naturalist
-                if ((pageForm.getZeitschriftentitel() == null || pageForm.getZeitschriftentitel().equals(""))
-                        && content.contains("warpto")) {
-                    // Zeitschriftentitel extrahieren
-                    final int start = content.indexOf("warpto");
-                    final String zeitschriftentitelRB = content.substring(content.indexOf('>', start) + 1,
-                            content.indexOf('<', start));
-                    pageForm.setZeitschriftentitel(zeitschriftentitelRB);
-                }
-
+            // if logged in go to availabilityresult.jsp or if we have found some holdings
+            if (auth.isLogin(rq) || analyzeEZBResult(ezbform, pageForm, cn.getConnection())) {
+                forward = "freeezb";
             }
+
+            // compose link to EZB for UI
+            final StringBuffer linkUIezb = new StringBuffer("http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?");
+            linkUIezb.append(openurl);
+            if (bibid != null) {
+                // use bibid from account
+                linkUIezb.append("&pid=bibid=");
+                linkUIezb.append(bibid);
+            } else {
+                // use IP for request
+                linkUIezb.append("client_ip=");
+                linkUIezb.append(rq.getRemoteAddr());
+            }
+            ezbform.setLinkezb(linkUIezb.toString());
 
             // Check for internal / external Holdings using DAIA Document Availability Information API
             List<Bestand> allHoldings = new ArrayList<Bestand>();
@@ -996,9 +958,7 @@ public final class OrderAction extends DispatchAction {
 
             if (!internalHoldings.isEmpty()) { // we have own holdings
                 forward = "freeezb";
-                ff = getFindFreeForInternalHoldings(ff, link);
-                pageForm.setLieferant(ff.getLieferant()); // Bestellquelle setzen (Internet / abonniert)...
-                pageForm.setDeloptions(ff.getDeloptions()); // // Deloptions setzen (Online / Email)...
+                addInternalHoldings(ezbform, pageForm, internalHoldings, cn.getConnection());
                 rq.setAttribute("internalHoldings", internalHoldings);
             }
             if (!externalHoldings.isEmpty()) { // there external holdings
@@ -1082,17 +1042,98 @@ public final class OrderAction extends DispatchAction {
         }
 
         pageForm.setAutocomplete(false); // Variable zurückstellen
-        rq.setAttribute("findfree", ff);
+        rq.setAttribute("ezb", ezbform);
 
         // for get-method in PrepareLogin encode pageForm
         pageForm = pageForm.encodeOrderForm(pageForm);
 
         rq.setAttribute("orderform", pageForm);
-
+        if (cn != null) { cn.close(); }
 
         return mp.findForward(forward);
     }
 
+
+    private void addInternalHoldings(final EZBForm ezbform, final OrderForm pageForm, final List<Bestand> internalHoldings, final Connection cn) {
+
+        // set Supplier in pageForm
+        final Lieferanten supplier = new Lieferanten();
+        pageForm.setLieferant(supplier.getLieferantFromName("abonniert", cn));
+        pageForm.setDeloptions("email");
+
+        for (final Bestand hold : internalHoldings) {
+
+            // set Print data
+            final EZBDataPrint print = new EZBDataPrint();
+            print.setLocation(hold.getStandort().getInhalt());
+            print.setCallnr(hold.getShelfmark());
+            print.setCoverage(hold.getCoverage(hold));
+            print.setComment("availresult.print");
+            print.setAmpel("yellow");
+
+            // set new Reference for Print
+            final EZBReference ref = new EZBReference();
+
+            // set link for D-D holdings
+            final StringBuffer buf = new StringBuffer();
+            if (hold.getHolding().getBaseurl() != null) {
+                // holding from remote register
+                buf.append(hold.getHolding().getBaseurl());
+                buf.append("/stockinfo.do?stock=");
+                buf.append(hold.getId());
+                buf.append('&');
+                buf.append(pageForm.getLink());
+                ref.setUrl(buf.toString());
+            } else {
+                // holding from local register
+                buf.append("stockinfo.do?stock=");
+                buf.append(hold.getId());
+                buf.append('&');
+                buf.append(pageForm.getLink());
+                ref.setUrl(buf.toString());
+                ref.setUrl(buf.toString());
+            }
+
+            ref.setLabel("availresult.link_title_print");
+            print.setInfo(ref);
+
+            ezbform.getPrint().add(print);
+
+        }
+
+    }
+
+    private boolean analyzeEZBResult(final EZBForm ezbform, final OrderForm pageForm, final Connection cn) {
+
+        boolean result = false;
+        final Lieferanten supplier = new Lieferanten();
+
+        for (final EZBDataOnline online : ezbform.getOnline()) {
+            // 0 free accessible ; 1 partially free accesible
+            if (online.getState() == 0 || online.getState() == 1) {
+                result = true;
+                pageForm.setLieferant(supplier.getLieferantFromName("Internet", cn));
+                pageForm.setDeloptions("email");
+                // 2 licensed ; 3 partially licensed
+            } else if (online.getState() == 2 || online.getState() == 3) {
+                result = true;
+                pageForm.setLieferant(supplier.getLieferantFromName("abonniert", cn));
+                pageForm.setDeloptions("email");
+                //
+            }
+        }
+
+        for (final EZBDataPrint print : ezbform.getPrint()) {
+            // in stock ; partially in stock
+            if (print.getState() == 2 || print.getState() == 3) {
+                result = true;
+                pageForm.setLieferant(supplier.getLieferantFromName("abonniert", cn));
+                pageForm.setDeloptions("email");
+            }
+        }
+
+        return result;
+    }
 
     public List<JournalDetails> searchJournalseek(final String zeitschriftentitel_encoded, final String artikeltitel_encoded,
             final OrderForm pageForm, final String concurrentCopyZeitschriftentitel) {
@@ -1628,181 +1669,6 @@ public final class OrderAction extends DispatchAction {
     }
 
     /**
-     * Holt den Link zum Artikel/Journal der Online Version Dienst EZB/ZDB
-     *
-     */
-    private FindFree getFindFreeFromEzbZdb(final String content, final String link) {
-
-        final FindFree ff = new FindFree();
-        final Text t = new Text();
-        final Lieferanten lieferantenInstance = new Lieferanten();
-        // Achtung: es erfolgt eine Priorisierung (abonniert, gratis etc.). U.U. kann ein Artikel sowohl gratis über
-        // einen anderen Kanal, als auch abonniert zur Verfügung stehen.
-        try {
-
-            // Check auf Online-Bestand
-            if (content.contains("../icons/e") && content.contains("/e2_html.gif")) {
-                ff.setLink(getOnlineLinkFromEzbZdb(content));
-                ff.setLinktitle("availresult.link_title_online");
-                ff.setMessage("availresult.abonniert");
-                ff.setE_ampel("yellow");
-                ff.setLieferant(lieferantenInstance.getLieferantFromName("abonniert", t.getConnection()));
-                ff.setDeloptions("email");
-                ff.setLink_search(link); // Suchlink zu ZDB/EZB
-
-            } else {
-                if (content.contains("../icons/e") && content.contains("/e0_html.gif")) {
-                    ff.setLink(getOnlineLinkFromEzbZdb(content));
-                    ff.setLinktitle("availresult.link_title_online");
-                    ff.setMessage("availresult.free");
-                    ff.setE_ampel("green");
-                    ff.setLieferant(lieferantenInstance.getLieferantFromName("Internet", t.getConnection()));
-                    ff.setDeloptions("online");
-                    ff.setLink_search(link); // Suchlink zu ZDB/EZB
-
-                } else {
-                    if (content.contains("../icons/e") && content.contains("/e1_html.gif")) {
-                        ff.setLink(getOnlineLinkFromEzbZdb(content));
-                        ff.setLinktitle("availresult.link_title_online");
-                        ff.setMessage("availresult.partially_free");
-                        ff.setE_ampel("green");
-                        ff.setLieferant(lieferantenInstance.getLieferantFromName("Internet", t.getConnection()));
-                        ff.setDeloptions("online");
-                        ff.setLink_search(link); // Suchlink zu ZDB/EZB
-
-                    } else {
-                        if (content.contains("../icons/e") && content.contains("/e3_html.gif")) {
-                            ff.setLink(link);
-                            ff.setLinktitle("availresult.link_title_ezb_zdb");
-                            ff.setMessage("availresult.timeperiode");
-                            ff.setE_ampel("red");
-
-                        } else {
-                            ff.setLink(link);
-                            ff.setLinktitle("availresult.link_title_ezb_zdb");
-                            ff.setMessage("availresult.not_licensed");
-                            ff.setE_ampel("red");
-                        }
-                    }
-                }
-            }
-
-            // Check auf Print-Bestand
-            if (content.contains("../icons/p") && !content.contains("/p4_html.gif")) {
-                ff.setLink_print(link);
-                ff.setLinktitle_print("availresult.link_title_print");
-                ff.setMessage_print("availresult.print");
-                ff.setP_ampel("yellow");
-                ff.setLieferant(lieferantenInstance.getLieferantFromName("abonniert", t.getConnection()));
-                ff.setDeloptions("email");
-            }
-
-
-        } catch (final Exception e) {
-            LOG.error("getFindFreeFromEzbZdb in OrderAction: " + e.toString() + "\012" + content);
-
-            ff.setLink(link);
-            ff.setLinktitle("availresult.manual");
-            ff.setMessage("availresult.failed");
-
-        } finally {
-            t.close();
-        }
-
-        return ff;
-    }
-
-    /**
-     * Holt den Link zum Artikel/Journal der Online Version Dienst EZB/Vascoda
-     *
-     */
-    private FindFree getFindFreeFromEzbVascoda(final String content, final String link) {
-
-        final FindFree ff = new FindFree();
-        final Text t = new Text();
-        final Lieferanten lieferantenInstance = new Lieferanten();
-
-        try {
-
-            if (content.contains("img/subsread.gif") || content.contains("img/subs.gif")) {
-                ff.setLink(getOnlineLinkFromEzbVascoda(content));
-                ff.setLinktitle("availresult.link_title_online");
-                ff.setMessage("availresult.abonniert");
-                ff.setE_ampel("yellow");
-                ff.setLieferant(lieferantenInstance.getLieferantFromName("abonniert", t.getConnection()));
-                ff.setDeloptions("email");
-
-            } else {
-                if (content.contains("img/free.gif")) {
-                    ff.setLink(getOnlineLinkFromEzbVascoda(content));
-                    ff.setLinktitle("availresult.link_title_online");
-                    ff.setMessage("availresult.free");
-                    ff.setE_ampel("green");
-                    ff.setLieferant(lieferantenInstance.getLieferantFromName("Internet", t.getConnection()));
-                    ff.setDeloptions("online");
-
-                } else {
-                    if (content.contains("img/light6.gif")) {
-                        ff.setLink(getOnlineLinkFromEzbVascoda(content));
-                        ff.setLinktitle("availresult.link_title_online");
-                        ff.setMessage("availresult.partially_free");
-                        ff.setE_ampel("green");
-                        ff.setLieferant(lieferantenInstance.getLieferantFromName("Internet", t.getConnection()));
-                        ff.setDeloptions("online");
-
-                    } else {
-                        ff.setLink(link);
-                        ff.setLinktitle("availresult.link_title_ezb");
-                        ff.setMessage("availresult.not_licensed");
-                        ff.setE_ampel("red");
-                    }
-                }
-            }
-
-
-        } catch (final Exception e) {
-            LOG.error("getFindFreeFromEzbVascoda in OrderAction: " + e.toString() + "\012" + content);
-
-            ff.setLink(link);
-            ff.setLinktitle("availresult.manual");
-            ff.setMessage("availresult.failed");
-
-        } finally {
-            t.close();
-        }
-
-        return ff;
-    }
-
-    /**
-     * Erstellt ein FindFree für die internen Bestände unter Berücksichtigung
-     * vorhandener Einträge
-     *
-     */
-    private FindFree getFindFreeForInternalHoldings(final FindFree ff, final String link) {
-
-        final Lieferanten lieferantenInstance = new Lieferanten();
-        final Text t = new Text();
-
-        if (ff.getLink() == null) { // Online-Bestand auf Rot setzen, falls nicht schon abgefüllt
-            ff.setLink(link);
-            ff.setLinktitle("availresult.link_title_ezb");
-            ff.setMessage("availresult.not_licensed");
-            ff.setE_ampel("red");
-        }
-        ff.setLink_print(link);
-        ff.setLinktitle_print("availresult.link_title_print");
-        ff.setMessage_print("availresult.print");
-        ff.setP_ampel("yellow");
-        ff.setLieferant(lieferantenInstance.getLieferantFromName("abonniert", t.getConnection()));
-        ff.setDeloptions("email");
-
-        t.close();
-
-        return ff;
-    }
-
-    /**
      * Holt den Artikeltitel aus eine EZB-Seite
      *
      */
@@ -1849,78 +1715,6 @@ public final class OrderAction extends DispatchAction {
     }
 
     /**
-     * Holt den Link zum Artikel/Journal der Online Version aus Dienst EZB/ZDB
-     *
-     */
-    private String getOnlineLinkFromEzbZdb(final String content) {
-
-        String link = "";
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
-
-        // es wird nicht gewichtet nach den verschiedenen Zugangsmethoden (gratis, abonniert etc.).
-        // der direkteste Zugang wird ausgegeben...
-
-        try {
-
-            if (content.contains("Zum Artikel")) {
-
-                link = content.substring(content.lastIndexOf("http://", content.indexOf("Zum Artikel")),
-                        content.lastIndexOf("\">", content.indexOf("Zum Artikel")));
-
-            } else {
-
-                if (content.contains("Zur Zeitschrift")) {
-
-                    link = content.substring(content.lastIndexOf("http://", content.indexOf("Zur Zeitschrift")),
-                            content.lastIndexOf("\">", content.indexOf("Zur Zeitschrift")));
-
-                }
-            }
-        } catch (final Exception e) {
-            LOG.error("getOnlineLinkFromEzbZdb in OrderAction: " + e.toString() + "\012" + content);
-        }
-
-        link = specialCharacters.replace(link);
-
-        return link;
-    }
-
-    /**
-     * Holt den Link zur ZDB aus der Verfügbarkeitsanzeige von EZB/ZDB
-     *
-     */
-    private String getZdbLinkFromEzbZdb(final String content) {
-
-        String link = "";
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
-
-        try {
-
-            if (content.contains("\"http://dispatch.opac.d-nb.de")) {
-                link = content.substring(content.indexOf("\"http://dispatch.opac.d-nb.de") + 1,
-                        content.indexOf('"', content.indexOf("\"http://dispatch.opac.d-nb.de") + 1));
-            } else {
-                if (content.contains("Recherche nach Best&auml;nden im ZDB-Katalog")) {
-                    link = content.substring(content.lastIndexOf("http:",
-                            content.indexOf("Recherche nach Best&auml;nden im ZDB-Katalog")), content.lastIndexOf("\">",
-                                    content.indexOf("Recherche nach Best&auml;nden im ZDB-Katalog")));
-                    // Important message
-                    final MHelper mh = new MHelper();
-                    mh.sendErrorMail("Adressänderung in ZDB! Vermutlich zu http://zdb-opac.de",
-                            "getZdbLinkFromEzbZdb in OrderAction:\012" + content);
-                }
-            }
-
-        } catch (final Exception e) {
-            LOG.error("getZdbLinkFromEzbZdb in OrderAction: " + e.toString() + "\012" + content);
-        }
-
-        link = specialCharacters.replace(link);
-
-        return link;
-    }
-
-    /**
      * Trys to get zdbid from an ISSN out of the local DB
      *
      */
@@ -1962,49 +1756,6 @@ public final class OrderAction extends DispatchAction {
         }
 
         return zdbid;
-    }
-
-    /**
-     * Holt den Link zum Artikel/Journal der Online Version aus Dienst EZB/Vascoda
-     *
-     */
-    private String getOnlineLinkFromEzbVascoda(final String content) {
-
-        String link = "";
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
-
-
-        if (content.contains("class=\"linkingtext\">")) { // erster Versuch Link auf Artikelebene
-
-            try {
-
-                final int start = content.indexOf("href=\"", content.indexOf("class=\"linkingtext\">"));
-                link = "http://ezb.uni-regensburg.de" + content.substring(start + 6, content.indexOf('"', start + 6));
-
-            } catch (final Exception e) {
-                LOG.error("getOnlineLinkFromEzbVascoda class=linking in OrderAction: "
-                        + e.toString() + "\012" + content);
-            }
-
-        }
-
-        if ("".equals(link) && content.contains("warpto")) { // zweiter Versuch Link auf Journalebene
-
-            try {
-
-                final int start = content.indexOf("warpto");
-                link = "http://ezb.uni-regensburg.de/ezeit/" + content.substring(start, content.indexOf('"', start));
-
-            } catch (final Exception e) {
-                LOG.error("getOnlineLinkFromEzbVascoda warpto in OrderAction: " + e.toString() + "\012" + content);
-            }
-        }
-
-
-
-        link = specialCharacters.replace(link);
-
-        return link;
     }
 
     /**

@@ -651,6 +651,57 @@ public class Bestand extends AbstractIdEntity {
         return sql;
     }
 
+    public String getCoverage(final Bestand hold) {
+
+        final StringBuffer result = new StringBuffer();
+
+        // 2003, Vol. 23, (1) -
+
+        // we should always have a startyear, except when using a remot DAIA register
+        if (hold.getStartyear() != null) {
+
+            result.append(hold.getStartyear());
+
+            if (!isEmpty(hold.getStartvolume()) || !isEmpty(hold.getStartissue())) {
+                result.append(',');
+            }
+            if (!isEmpty(hold.getStartvolume())) {
+                result.append(" Vol. ");
+                result.append(hold.getStartvolume());
+                if (!isEmpty(hold.getStartissue())) {
+                    result.append(", ");
+                }
+            }
+            if (!isEmpty(hold.getStartissue())) {
+                result.append(hold.getStartissue());
+            }
+
+            // always append
+            result.append(" - ");
+
+            if (!isEmpty(hold.getEndyear())) {
+                result.append(hold.getEndyear());
+
+                if (!isEmpty(hold.getEndvolume()) || !isEmpty(hold.getEndissue())) {
+                    result.append(',');
+                }
+
+                if (!isEmpty(hold.getEndvolume())) {
+                    result.append(" Vol. ");
+                    result.append(hold.getEndvolume());
+                    if (!isEmpty(hold.getEndissue())) {
+                        result.append(", ");
+                    }
+                }
+                if (!isEmpty(hold.getEndissue())) {
+                    result.append(hold.getEndissue());
+                }
+            }
+        }
+
+        return result.toString();
+    }
+
     /**
      * Evaluates the orderform to find the appropriate search mode
      * @param OrderForm of
@@ -792,6 +843,13 @@ public class Bestand extends AbstractIdEntity {
 
     public void setInternal(final boolean internal) {
         this.internal = internal;
+    }
+
+    private boolean isEmpty(final String input) {
+
+        if (input == null || "".equals(input.trim())) { return true; }
+
+        return false;
     }
 
 }

@@ -52,96 +52,65 @@ h += 96;
     <logic:notEmpty name="orderform" property="pmid">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEmpty>
   </div>
 
-<logic:present name="findfree" property="link">            
+
+
 <h3><bean:message key="availresult.intern" /></h3>
 
-<table border="1" cellspacing="0" cellpadding="3">
-<tr>
-<th id="th-left">
-<logic:present name="findfree" property="link_search">
-  <a href="<bean:write name="findfree" property="link_search"/>" target="_blank">powered by EZB and ZDB</a>
-</logic:present>
-<logic:notPresent name="findfree" property="link_search">
-  powered by EZB and ZDB
-</logic:notPresent>
-</th>
-</tr>
-<tr>
-  <td>
-<table>
-<logic:present name="findfree" property="link">
-  <tr>
-    <td>
-      <bean:define id="linkTit" name="findfree" property="linktitle" type="java.lang.String"/>
-      <a href="<bean:write name="findfree" property="link"/>" target="_blank"><bean:message key="<%=linkTit%>" /></a>
-    </td>
-    <td><br />&nbsp;</td>
-    <td>
-      <logic:present name="findfree" property="message">
-        <bean:define id="ffMessage" name="findfree" property="message" type="java.lang.String"/>
-        <bean:message key="<%=ffMessage%>" />
-      </logic:present>
-    </td>
-    <td><br />&nbsp;</td>
-    <td>
-      <logic:present name="findfree" property="e_ampel"><logic:equal name="findfree" property="e_ampel" value="green"><img src='img/green.gif' alt="<bean:message key="availresult.img_alt_green" />" title="<bean:message key="availresult.img_alt_green" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="findfree" property="e_ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_yellow" />" title="<bean:message key="availresult.img_alt_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="findfree" property="e_ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_red" />" title="<bean:message key="availresult.img_alt_red" />" height="20" width="42" border="0" /></logic:equal></logic:present>
-    </td>
-  </tr>
-</logic:present>
-
-<logic:present name="findfree" property="link_print">
-  <tr>
-    <td>
-      <bean:define id="linkTitPrint" name="findfree" property="linktitle_print" type="java.lang.String"/>
-      <a href="<bean:write name="findfree" property="link_print"/>" target="_blank"><bean:message key="<%=linkTitPrint%>" /></a>
-    </td>
-    <td><br />&nbsp;</td>
-    <td>
-      <logic:present name="findfree" property="message_print">
-        <bean:define id="ffMessagePrint" name="findfree" property="message_print" type="java.lang.String"/>
-        <bean:message key="<%=ffMessagePrint%>" />
-      </logic:present>
-    </td>
-    <td><br />&nbsp;</td>
-    <td>
-      <logic:present name="findfree" property="p_ampel"><logic:equal name="findfree" property="p_ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal></logic:present>
-    </td>
-  </tr>
-  <logic:present name="internalHoldings">
-  <tr>
-    <td align="center" colspan="5">
-      <table border="1">
-      	<logic:iterate id="location" name="internalHoldings">
-            <td align="center">
-            	<bean:write name="location" property="standort.inhalt" /><br />
-            	<bean:write name="location" property="shelfmark" />
-            </td>
-        </logic:iterate>
-        <tr>
-        <logic:iterate id="location" name="internalHoldings">        	
-        	<td align="center">
-        		<logic:present name="location" property="holding.baseurl">
-            		<a href="<bean:write name="location" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" 
-            		target="popup" onclick="wopen('<bean:write name="location" property="holding.baseurl" />/stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />', 'popup', 1040, 880); return false;"><bean:message key="availresult.details" /></a>
-            	</logic:present>
-            	<logic:notPresent name="location" property="holding.baseurl">
-            		<a href="stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" 
-            		target="popup" onclick="wopen('stockinfo.do?stock=<bean:write name="location" property="id" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<logic:present name="orderform" property="zeitschriftentitel_encoded"><bean:write name="orderform" property="zeitschriftentitel_encoded"/></logic:present>&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />', 'popup', 1040, 880); return false;"><bean:message key="availresult.details" /></a>
-            	</logic:notPresent>
-        	</td>        	
-       	 </logic:iterate>
-       	 </tr>
-      </table>  
-    </td>
-  </tr>
-  </logic:present>
-</logic:present>
+<table style="border-style: solid;" cellspacing="1" cellpadding="4">
+	<tr>
+		<th id="th-left" colspan="7">
+  			<a href="<bean:write name="ezb" property="linkezb"/>" target="_blank">powered by EZB and ZDB</a>
+		</th>
+	</tr>
+<logic:notEmpty name="ezb" property="online">
+	<logic:iterate id="ref" name="ezb" property="online">
+		<tr>
+			<td style="width:10px;" nowrap="nowrap">
+				<logic:equal name="ref" property="ampel" value="green"><img src='img/green.gif' alt="<bean:message key="availresult.img_alt_green" />" title="<bean:message key="availresult.img_alt_green" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_yellow" />" title="<bean:message key="availresult.img_alt_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_red" />" title="<bean:message key="availresult.img_alt_red" />" height="20" width="42" border="0" /></logic:equal>
+				<logic:notEmpty name="ref" property="readme"><a href="<bean:write name="ref" property="readme"/>" alt="Readme" title="Readme" target="_blank"><img border="0" src="img/info.gif" alt="<bean:message key="info.issn" />" /></a></logic:notEmpty>
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
+				<bean:message key="<%=result%>" />
+			</td>
+			<td colspan="5">
+				<a href="<bean:write name="ref" property="url"/>" alt="<bean:write name="ref" property="level"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
+				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>
+			</td>
+		</tr>
+	</logic:iterate>
+</logic:notEmpty>
+<logic:notEmpty name="ezb" property="print">
+	<logic:iterate id="ref" name="ezb" property="print">
+		<tr>
+			<td style="width:10px;" nowrap="nowrap">
+				<logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal>
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
+				<bean:message key="<%=result%>" />
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				<bean:define id="label" name="ref" property="info.label" type="java.lang.String"/>
+				<a href="<bean:write name="ref" property="info.url"/>" alt="Info" title="Info" target="_blank"><bean:message key="<%=label%>" /></a>
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				<logic:notEmpty name="ref" property="coverage">
+					(<bean:write name="ref" property="coverage"/>)
+				</logic:notEmpty>
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				<bean:write name="ref" property="location"/>
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				<bean:write name="ref" property="callnr"/>
+			</td>
+			<td>
+			</td>
+		</tr>
+	</logic:iterate>
+</logic:notEmpty>
 </table>
-  </td>
-</tr>
-</table>
-<p></p>
-</logic:present>
 
 <logic:present name="userinfo" property="benutzer">
 <p />
@@ -171,12 +140,7 @@ h += 96;
       <th id="th-left"><bean:message key="availresult.general" /></th>
     </tr>
     <tr>
-      <logic:present name="findfree" property="zdb_link">
-      <td><a href="<bean:write name="findfree" property="zdb_link" />" target="_blank"><bean:message key="availresult.zdb" /></a></td>
-      </logic:present>
-      <logic:notPresent name="findfree" property="zdb_link">
       <td width="20%"><a href="http://zdb-opac.de/CHARSET=ISO-8859-1/DB=1.1/PRS=HOL/CMD?ACT=SRCHA&IKT=8&SRT=YOP&TRM=<bean:write name="orderform" property="issn" />+mat-o&HOLDINGS_YEAR=<bean:write name="orderform" property="jahr" />" target="_blank"><bean:message key="availresult.zdb" /></a></td>
-      </logic:notPresent>
       <td colspan="2"><a href="http://www.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-kvk2.cgi?maske=chzk&timeout=20&title=Schweizer+Zeitschriftenportal+SZP+%3A+Ergebnisanzeige&header=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeige_de.htm&spacer=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeigetop_de.htm&footer=http%3A%2F%2Fead.nb.admin.ch%2Fweb%2Fswiss-serials%2Fanzeigemail_de.htm&lang=de&zeiten=nein&kvk-session=P0ER4LN0&flexpositon_start=1&RERO=&DEUTSCHSCHWEIZ=&WEITERE=&kataloge=CHZK_FRIB&kataloge=CHZK_GENF&kataloge=CHZK_RCBN&kataloge=CHZK_VALAIS&kataloge=CHZK_VAUD&kataloge=CHZK_BASEL&kataloge=CHZK_LUZERN&kataloge=CHZK_STGALLEN&kataloge=ZUERICH&kataloge=CHZK_NEBIS&kataloge=ALEXANDRIA&kataloge=CHZK_BGR&kataloge=HELVETICAT&kataloge=CHZK_SBT&kataloge=CHZK_SGBN&kataloge=LIECHTENSTEIN&kataloge=CHZK_CERN&kataloge=VKCH_KUNSTHAUS&kataloge=CHZK_RPVZ&ALL=&SE=&VORT=&CI=&target=_blank&Timeout=20&SS=<bean:write name="orderform" property="issn" />&inhibit_redirect=1" target="_blank">SZP</a></td>
       <td><a href="http://aleph20-prod-acc.obvsg.at/F?func=find-b&find_code=ISN&request=<bean:write name="orderform" property="issn" />" target="_blank"><bean:message key="availresult.gesamtkatalog" /></a></td>
       <td><a href="sessionbritishlibrary.do?method=redirect&issn=<bean:write name="orderform" property="issn" />" target="_blank">British Library</a></td>

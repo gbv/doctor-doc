@@ -1425,22 +1425,22 @@ public final class BestellformAction extends DispatchAction {
         link.append("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=");
         link.append(pageForm.getIssn());
         link.append("[TA]");
-        if (pageForm.getJahrgang() != null && !pageForm.getJahrgang().equals("")) {
+        if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang())) {
             link.append("+AND+");
             link.append(pageForm.getJahrgang());
             link.append("[VI]");
         }
-        if (pageForm.getHeft() != null && !pageForm.getHeft().equals("")) {
+        if (pageForm.getHeft() != null && !"".equals(pageForm.getHeft())) {
             link.append("+AND+");
             link.append(pageForm.getHeft());
             link.append("[IP]");
         }
-        if (pageForm.getSeiten() != null && !pageForm.getSeiten().equals("")) {
+        if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten())) {
             link.append("+AND+");
             link.append(couInstance.extractSpage(pageForm.getSeiten()));
             link.append("[PG]");
         }
-        if (pageForm.getJahr() != null && !pageForm.getJahr().equals("")) {
+        if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr())) {
             link.append("+AND+");
             link.append(pageForm.getJahr());
             link.append("[DP]");
