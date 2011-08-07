@@ -958,15 +958,15 @@ public final class OrderAction extends DispatchAction {
                 // read EZB response as XML
                 final EZB ezb = new EZB();
                 ezbform = ezb.read(ezbanswer);
-                ezbform.setLinkezb(linkUIezb.toString());
             } else {
                 // use alternate Vascoda API
                 // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
 
                 final EZBVascoda vascoda = new EZBVascoda();
                 // &pid=format%3Dxml => output as XML
-                ezbform = vascoda.read(getWebcontent(linkUIezb.toString() + "&pid=format%3Dxml", 2000, 2));
-                ezbform.setLinkezb(linkUIezb.toString());
+                final EZBForm efVascoda = vascoda.read(getWebcontent(linkUIezb.toString() + "&pid=format%3Dxml", 2000, 2));
+                // returns only online holdings. Keep local print holdings...
+                ezbform.setOnline(efVascoda.getOnline());
 
                 // only show error in UI if library has ZDB holdings
                 if (ui != null && ui.getKonto().isZdb()
@@ -977,6 +977,9 @@ public final class OrderAction extends DispatchAction {
                     ezbform.getPrint().add(timeout);
                 }
             }
+
+            // set Link for "Powered by EZB/ZDB" for manual checks by the user
+            ezbform.setLinkezb(linkUIezb.toString());
 
             if (!internalHoldings.isEmpty()) { // we have own holdings
                 //                forward = "freeezb";

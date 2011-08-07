@@ -100,9 +100,9 @@ h += 96;
 				<bean:message key="<%=result%>" />
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
-			<logic:notEmpty name="info">
+			<logic:notEmpty name="ref" property="info">
 				<bean:define id="label" name="ref" property="info.label" type="java.lang.String"/>
-				<a href="<bean:write name="ref" property="info.url"/>" alt="Info" title="Info" target="_blank"><bean:message key="<%=label%>" /></a>
+				<a href="<bean:write name="ref" property="info.url"/>" target="popup" onclick="wopen('<bean:write name="ref" property="info.url"/>', 'popup', 1040, 880); return false;"><bean:message key="<%=label%>" /></a>
 			</logic:notEmpty>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
