@@ -93,15 +93,17 @@ h += 96;
 	<logic:iterate id="ref" name="ezb" property="print">
 		<tr>
 			<td style="width:10px;" nowrap="nowrap">
-				<logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal>
+				<logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
 				<bean:message key="<%=result%>" />
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
+			<logic:notEmpty name="info">
 				<bean:define id="label" name="ref" property="info.label" type="java.lang.String"/>
 				<a href="<bean:write name="ref" property="info.url"/>" alt="Info" title="Info" target="_blank"><bean:message key="<%=label%>" /></a>
+			</logic:notEmpty>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<logic:notEmpty name="ref" property="coverage">

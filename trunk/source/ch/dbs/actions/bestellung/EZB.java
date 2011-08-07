@@ -50,6 +50,10 @@ public class EZB {
 
     private static final SimpleLogger LOG = new SimpleLogger(EZB.class);
 
+
+    /**
+     * This class/method uses the official EZB/ZDB API from http://services.d-nb.de/fize-service/gvr/full.xml.
+     */
     public EZBForm read(final String content) {
 
         final EZBForm ezbform = new EZBForm();

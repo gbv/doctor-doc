@@ -927,14 +927,13 @@ public final class OrderAction extends DispatchAction {
             linkUIezb.append(openurl);
             if (bibid != null) {
                 // use bibid from account
-                linkUIezb.append("&pid=bibid=");
+                linkUIezb.append("&bibid=");
                 linkUIezb.append(bibid);
             } else {
                 // use IP for request
                 linkUIezb.append("client_ip=");
                 linkUIezb.append(rq.getRemoteAddr());
             }
-            ezbform.setLinkezb(linkUIezb.toString());
 
             // Check for internal / external Holdings using DAIA Document Availability Information API
             List<Bestand> allHoldings = new ArrayList<Bestand>();
@@ -959,15 +958,25 @@ public final class OrderAction extends DispatchAction {
                 // read EZB response as XML
                 final EZB ezb = new EZB();
                 ezbform = ezb.read(ezbanswer);
+                ezbform.setLinkezb(linkUIezb.toString());
             } else {
-                // TODO: use alternate API over http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml&genre=article&issn=1538-3598&bibid=AAAAA
+                // use alternate Vascoda API
                 // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
-                final EZBDataOnline timeout = new EZBDataOnline();
-                timeout.setAmpel("red");
-                timeout.setComment("error.ezb_timeout");
-                ezbform.getOnline().add(timeout);
-            }
 
+                final EZBVascoda vascoda = new EZBVascoda();
+                // &pid=format%3Dxml => output as XML
+                ezbform = vascoda.read(getWebcontent(linkUIezb.toString() + "&pid=format%3Dxml", 2000, 2));
+                ezbform.setLinkezb(linkUIezb.toString());
+
+                // only show error in UI if library has ZDB holdings
+                if (ui != null && ui.getKonto().isZdb()
+                        || cn != null && cn.getKonto() != null && cn.getKonto().isZdb()) {
+                    final EZBDataPrint timeout = new EZBDataPrint();
+                    timeout.setAmpel("red");
+                    timeout.setComment("error.zdb_timeout");
+                    ezbform.getPrint().add(timeout);
+                }
+            }
 
             if (!internalHoldings.isEmpty()) { // we have own holdings
                 //                forward = "freeezb";
