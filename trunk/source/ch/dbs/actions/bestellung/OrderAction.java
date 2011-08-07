@@ -789,7 +789,10 @@ public final class OrderAction extends DispatchAction {
         final Auth auth = new Auth();
         EZBForm ezbform = new EZBForm();
 
-        final ExecutorService executor = Executors.newCachedThreadPool();
+        final ExecutorService executor = Executors.newFixedThreadPool(4);
+        // EZB-Thread-Management
+        final ThreadedWebcontent ezbthread = new ThreadedWebcontent();
+        Future<String> ezbcontent = null;
         // GBV-Thread-Management
         final ThreadedWebcontent gbvthread = new ThreadedWebcontent();
         Future<String> gbvcontent = null;
@@ -893,6 +896,12 @@ public final class OrderAction extends DispatchAction {
             // damit auf Checkavailability codierte OpenURL-Anfragen zusammengestellt werden können (z.B. Carelit)
             pageForm.setLink(openurl);
 
+            if (ReadSystemConfigurations.isSearchCarelit()) {
+                carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
+                        + openurl);
+                carelitcontent = executor.submit(carelitthread);
+            }
+
             // use link to services from ZDB/EZB
             // http://services.d-nb.de/fize-service/gvr/html-service.htm?
             final StringBuffer linkEZB = new StringBuffer("http://services.d-nb.de/fize-service/gvr/full.xml?");
@@ -907,23 +916,11 @@ public final class OrderAction extends DispatchAction {
                 linkEZB.append(rq.getRemoteAddr());
             }
 
-            if (ReadSystemConfigurations.isSearchCarelit()) {
-                carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
-                        + openurl);
-                carelitcontent = executor.submit(carelitthread);
-            }
-
-            // get content as String and parse it as XML later. In this way we can control timeouts and retries.
-            final String content = getWebcontent(linkEZB.toString(), TIMEOUT_3, RETRYS_2);
-
-            // read EZB response as XML
-            final EZB ezb = new EZB();
-            ezbform = ezb.read(content);
-
-            // if logged in go to availabilityresult.jsp or if we have found some holdings
-            if (auth.isLogin(rq) || analyzeEZBResult(ezbform, pageForm, cn.getConnection())) {
-                forward = "freeezb";
-            }
+            // set EZB request into thread, get back after timeout and if empty use alternate API over
+            // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
+            // http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml&genre=article&issn=1538-3598&bibid=AAAAA
+            ezbthread.setLink(linkEZB.toString());
+            ezbcontent = executor.submit(ezbthread);
 
             // compose link to EZB for UI
             final StringBuffer linkUIezb = new StringBuffer("http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?");
@@ -956,8 +953,24 @@ public final class OrderAction extends DispatchAction {
             internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
             externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
 
+            // get back EZB thread
+            final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
+            if (ezbanswer != null) {
+                // read EZB response as XML
+                final EZB ezb = new EZB();
+                ezbform = ezb.read(ezbanswer);
+            } else {
+                // TODO: use alternate API over http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml&genre=article&issn=1538-3598&bibid=AAAAA
+                // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
+                final EZBDataOnline timeout = new EZBDataOnline();
+                timeout.setAmpel("red");
+                timeout.setComment("error.ezb_timeout");
+                ezbform.getOnline().add(timeout);
+            }
+
+
             if (!internalHoldings.isEmpty()) { // we have own holdings
-                forward = "freeezb";
+                //                forward = "freeezb";
                 addInternalHoldings(ezbform, pageForm, internalHoldings, cn.getConnection());
                 rq.setAttribute("internalHoldings", internalHoldings);
             }
@@ -965,70 +978,43 @@ public final class OrderAction extends DispatchAction {
                 rq.setAttribute("holdings", externalHoldings);
             }
 
-            // hier wird der GBV-Thread mit einem zusätzlich Maximum Timeout von 2 Sekunden zurückgeholt
+            // if logged in go to availabilityresult.jsp or if we have found some holdings
+            if (auth.isLogin(rq) || analyzeEZBResult(ezbform, pageForm, cn.getConnection())) {
+                forward = "freeezb";
+            }
+
+            // ge back GBV thread
             if (gbvThread) {
-                try {
-                    final String gbvanswer = gbvcontent.get(2, TimeUnit.SECONDS);
-                    // holt aus ggf. mehreren möglichen Umleitungen die letztmögliche
-                    if (gbvanswer != null) {
-                        final String pZdbid = OrderGbvAction.getPrintZdbidIgnoreMultipleHits(gbvanswer);
-                        if (pZdbid != null) {
-                            pageForm.setZdbid(pZdbid); // e-ZDB-ID wird nur überschrieben, falls p-ZDB-ID erhalten
-                            //              System.out.println("p-ZDB-ID aus GBV: " + pageForm.getZdbid());
-                        }
+                final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 2, "GBV");
+                // holt aus ggf. mehreren möglichen Umleitungen die letztmögliche
+                if (gbvanswer != null) {
+                    final String pZdbid = OrderGbvAction.getPrintZdbidIgnoreMultipleHits(gbvanswer);
+                    if (pZdbid != null) {
+                        pageForm.setZdbid(pZdbid); // e-ZDB-ID wird nur überschrieben, falls p-ZDB-ID erhalten
                     }
-                } catch (final TimeoutException e) {
-                    log.warn("GBV-TimeoutException: " + e.toString());
-                } catch (final Exception e) {
-                    LOG.error("GBV-Thread failed in checkAvailability: " + e.toString());
-                } finally {
-                    // ungefährlich, falls der Task schon beendet ist.
-                    // Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
-                    gbvcontent.cancel(true);
                 }
             }
-            // hier wird der Pubmed-Thread mit einem zusätzlich Maximum Timeout von 1 Sekunden zurückgeholt
+
+            // get back Pubmed thread
             if (isPubmedSearchWithoutPmidPossible(pageForm)) {
-                try {
-                    final String pubmedanswer = pubmedcontent.get(1, TimeUnit.SECONDS);
-                    if (pubmedanswer != null) { pageForm.setPmid(bfInstance.getPmid(pubmedanswer)); }
+                final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 1, "Pubmed");
+                if (pubmedanswer != null) { pageForm.setPmid(bfInstance.getPmid(pubmedanswer)); }
 
-                    if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
-                            bfInstance.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
-                        final OrderForm of = bfInstance.resolvePmid(pageForm.getPmid());
-                        pageForm.completeOrderForm(pageForm, of);  // ergänzen
-                    }
-
-                } catch (final TimeoutException e) {
-                    log.warn("Pubmed-TimeoutException: " + e.toString());
-                } catch (final Exception e) {
-                    LOG.error("Pubmed-thread (Pos. 2) failed in checkavailability: " + e.toString());
-                } finally {
-                    // ungefährlich, falls der Task schon beendet ist.
-                    // Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
-                    pubmedcontent.cancel(true);
+                if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
+                        bfInstance.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
+                    final OrderForm of = bfInstance.resolvePmid(pageForm.getPmid());
+                    pageForm.completeOrderForm(pageForm, of);  // ergänzen
                 }
             }
 
+            // get back Carelit thread
             if (ReadSystemConfigurations.isSearchCarelit()) {
-                // hier wird der Carelit-Thread mit einem zusätzlich Maximum Timeout von 1 Sekunde zurückgeholt
-                try {
-                    final String carelitanswer = carelitcontent.get(1, TimeUnit.SECONDS);
-                    if (carelitanswer != null
-                            && carelitanswer.contains("<span id=\"drdoc\" style=\"display:block\">1</span>")) {
-                        System.out.println("Es gibt Volltexte bei Carelit!");
-                        pageForm.setCarelit(true); // Anzeige für den Moment unterdrückt...
-                        forward = "freeezb";
-                    }
-
-                } catch (final TimeoutException e) {
-                    log.warn("Carelit-TimeoutException: " + e.toString());
-                } catch (final Exception e) {
-                    LOG.error("Carelitthread failed in checkAvailability: " + e.toString());
-                } finally {
-                    // ungefährlich, falls der Task schon beendet ist.
-                    // Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
-                    carelitcontent.cancel(true);
+                final String carelitanswer = getBackThreadedWebcontent(carelitcontent, 1, "Carelit");
+                if (carelitanswer != null
+                        && carelitanswer.contains("<span id=\"drdoc\" style=\"display:block\">1</span>")) {
+                    System.out.println("Es gibt Volltexte bei Carelit!");
+                    pageForm.setCarelit(true); // Anzeige für den Moment unterdrückt...
+                    forward = "freeezb";
                 }
             }
 
@@ -1052,7 +1038,6 @@ public final class OrderAction extends DispatchAction {
 
         return mp.findForward(forward);
     }
-
 
     private void addInternalHoldings(final EZBForm ezbform, final OrderForm pageForm, final List<Bestand> internalHoldings, final Connection cn) {
 
@@ -3059,6 +3044,24 @@ public final class OrderAction extends DispatchAction {
                         // ...or the configuration for users must be set to true.
                         ReadSystemConfigurations.isAllowPatronAutomaticGoogleSearch())) {
             result = true;
+        }
+
+        return result;
+    }
+
+    private String getBackThreadedWebcontent(final Future<String> webcontent, final int i, final String serviceName) {
+        String result = null;
+
+        try {
+            result = webcontent.get(i, TimeUnit.SECONDS);
+
+        } catch (final TimeoutException e) {
+            log.warn(serviceName + " TimeoutException: " + e.toString());
+        } catch (final Exception e) {
+            LOG.error(serviceName + " Thread failed in checkAvailability: " + e.toString());
+        } finally {
+            // secure if task is finished already.
+            webcontent.cancel(true);
         }
 
         return result;
