@@ -982,7 +982,7 @@ public final class OrderAction extends DispatchAction {
             ezbform.setLinkezb(linkUIezb.toString());
 
             if (!internalHoldings.isEmpty()) { // we have own holdings
-                //                forward = "freeezb";
+                forward = "freeezb";
                 addInternalHoldings(ezbform, pageForm, internalHoldings, cn.getConnection());
                 rq.setAttribute("internalHoldings", internalHoldings);
             }
