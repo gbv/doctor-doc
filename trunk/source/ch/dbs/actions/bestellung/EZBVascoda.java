@@ -173,6 +173,16 @@ public class EZBVascoda {
                     ezbform.getOnline().add(online);
                 }
 
+                // Title not found
+                if (resultListE.getLength() == 0) {
+                    final EZBDataOnline online = new EZBDataOnline();
+                    online.setAmpel("red");
+                    online.setComment("availresult.nohits");
+                    online.setState(10); // translate state to EZB/ZDB-API
+
+                    ezbform.getOnline().add(online);
+                }
+
             }
 
         } catch (final XPathExpressionException e) {

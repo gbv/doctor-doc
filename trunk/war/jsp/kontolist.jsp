@@ -22,13 +22,6 @@
 <br />
 <h3>Administration</h3>
 
-Datei erneut senden: <html:form action="/sendfaxagain" method="post" enctype="multipart/form-data">
-
-<html:file property="file"/> 
-<input type="hidden" name="method" value="resendfaxtomail"  />
-<html:submit>Upload File</html:submit>
-
-</html:form>
 <table border="1">
   <tr>
     <th>Bibliotheksname</th>

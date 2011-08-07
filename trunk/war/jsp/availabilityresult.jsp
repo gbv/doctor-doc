@@ -66,7 +66,7 @@ h += 96;
 	<logic:empty name="ezb" property="print">
 		<tr>
 			<td colspan="7">
-				<bean:message key="error.ezb_timeout"/>
+				<bean:message key="error.zdb_timeout"/>
 			</td>
 		</tr>
 	</logic:empty>

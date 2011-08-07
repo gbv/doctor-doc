@@ -156,13 +156,6 @@
 			<forward name="success" path="/jsp/message.jsp" />
 		</action>
 
-		<!-- Fax erneut von Faxserver ausliefern lassen -->
-		<action path="/sendfaxagain" name="FileForm" parameter="method"
-			validate="false" scope="request" type="ch.dbs.actions.user.KontoAction">
-			<forward name="failure" path="/error.do" />
-			<forward name="success" path="/jsp/message.jsp" />
-		</action>
-
 		<!-- Servertest für Admins beliebiger Methoden -->
 		<action path="/test" validate="false" scope="request"
 			type="ch.dbs.admin.AdminServerTest">
@@ -722,10 +715,6 @@
 		<!--
 			*************************************************Cronjobs*************************************************
 		-->
-		<action path="/checkpopfax" scope="request" type="ch.dbs.cronjobs.PopFax">
-			<forward name="failure" path="/error.do" />
-			<forward name="success" path="/jsp/message.jsp" />
-		</action>
 		<action path="/autobilling" scope="request" name="KontoForm"
 			validate="false" parameter="method" type="ch.dbs.cronjobs.KontoCron">
 		</action>

@@ -47,14 +47,12 @@ import ch.dbs.admin.KontoAdmin;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Bibliothekar;
 import ch.dbs.entity.Countries;
-import ch.dbs.entity.Fax;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 import ch.dbs.entity.VKontoBenutzer;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.BillingForm;
 import ch.dbs.form.ErrorMessage;
-import ch.dbs.form.FileForm;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.LoginForm;
 import ch.dbs.form.Message;
@@ -841,53 +839,6 @@ public final class KontoAction extends DispatchAction {
         cn.close();
         return mp.findForward(forward);
     }
-
-    /**
-     * Sich eine Faxlieferung erneut per Mail zustellen lassen
-     */
-    public ActionForward resendfaxtomail(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
-
-        String forward = FAILURE;
-        final FileForm fileForm = (FileForm) fm;
-        final String fileName = fileForm.getFile().getFileName().toLowerCase(); // make case insensitive
-
-        final Auth auth = new Auth();
-        final Check ck = new Check();
-
-        if (auth.isLogin(rq)) {
-            if (auth.isAdmin(rq)) {
-                //        Wird ein Fax-to Mail File übertragen (PDF)?
-                if (ck.isFiletypeExtension(fileName, ".pdf")) {
-                    final String popfaxid = fileName.substring(0, fileName.indexOf(".pdf"));
-
-                    final Fax f = new Fax();
-                    //Wird ein Eintrag der Popfaxid in der DB gefunden und kann auch gelöscht werden?
-                    if (f.deletePopfaxId(f.getConnection(), popfaxid) == 0) {
-                        final ErrorMessage em = new ErrorMessage("error.resendfax", "searchfree.do");
-                        rq.setAttribute(ERRORMESSAGE, em);
-                    } else {
-                        final Message m = new Message("message.resendfax", fileForm.getFile().getFileName(), "searchfree.do");
-                        rq.setAttribute("message", m);
-                        forward = SUCCESS;
-                    }
-                    // Kein PDF!
-                } else {
-                    final ErrorMessage em = new ErrorMessage("error.faxfile", "searchfree.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
-                }
-                // Nicht Administrator!
-            } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
-            }
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-        }
-        return mp.findForward(forward);
-    }
-
 
     /**
      * Auflistung Kontos fuer Admins zum Kontos deaktivieren oder reaktivieren
