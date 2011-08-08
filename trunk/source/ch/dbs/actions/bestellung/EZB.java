@@ -144,6 +144,16 @@ public class EZB {
                     ezbform.getOnline().add(online);
                 }
 
+                // Title not found
+                if (resultListE.getLength() == 0) {
+                    final EZBDataOnline online = new EZBDataOnline();
+                    online.setAmpel("red");
+                    online.setComment("availresult.nohits");
+                    online.setState(10);
+
+                    ezbform.getOnline().add(online);
+                }
+
                 // references print data
                 final XPathExpression exprRefP = xpath.compile("//PrintData/References/Reference");
                 final NodeList resultListRefP = (NodeList) exprRefP.evaluate(doc, XPathConstants.NODESET);
