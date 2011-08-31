@@ -53,6 +53,7 @@
 <tr><td><a href="howto.do?activesubmenu=bestellformular&activemenu=howto"><bean:message key="bestellformconfigureselect.external.title" /></a>&nbsp;</td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.openurl" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td><bean:message key="anmeldungtyp.linkresolver" /></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
+<tr><td><a href="daia.do" target="_blank"><bean:message arg0="<%=appName%>" key="anmeldungtyp.api" /></a></td><td align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td colspan="2"><p /><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /></td></tr>
 </table>
 

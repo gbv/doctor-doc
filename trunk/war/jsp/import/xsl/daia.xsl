@@ -83,12 +83,64 @@
       </xsl:if>
       The full XML source is <a href="#rawxml">shown below</a>.
     </p>
-    <p>This interface is designed for machine readability and not as user interface: use it in connection with other installations of Doctor-Doc or
-    with your own applications.
+    <p>This interface is designed for machine readability. Use it in connection with other installations of Doctor-Doc or
+    for your own applications.
     </p>
     <p>
-    You may query this interface by sending OpenURL requests to this URL 
-    (<a href="http://sourceforge.net/apps/mediawiki/doctor-doc/index.php?title=Help:Contents#Print_holdings_availability" target="_blank">more information</a>):</p>
+    You may query this interface by sending OpenURL requests to <xsl:value-of select="d:institution/@href"/>
+    (<a href="http://sourceforge.net/apps/mediawiki/doctor-doc/index.php?title=Help:Contents#Print_holdings_availability" target="_blank">more information</a>) or by using this form:
+    </p>
+    
+    <xsl:variable name="searchlink" select="d:institution/@href"/>
+    
+    <form method="LINK">
+    	<table>
+    		<tr>
+    			<td>
+    				ISSN:
+    			</td>
+    			<td colspan="3">
+    				<input name="issn" />
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>
+    				Year:
+    			</td>
+    			<td>
+    				<input name="date" />
+    			</td>
+    			<td>
+    				Volume:
+    			</td>
+    			<td>
+    				<input name="volume" />
+    			</td>
+    			<td>
+    				Issue:
+    			</td>
+    			<td>
+    				<input name="issue" />
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>
+    				Journal:
+    			</td>
+    			<td colspan="3">
+    				<input name="jtitle" />
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>
+    			</td>
+    			<td colspan="3">
+    				<input type="submit" value="submit" />
+    			</td>
+    		</tr>
+    	</table>    	
+    </form>  
+
 
     <!-- content -->
     <xsl:apply-templates select="d:institution"/>

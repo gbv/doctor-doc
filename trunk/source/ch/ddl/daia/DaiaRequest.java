@@ -36,6 +36,8 @@ public class DaiaRequest {
 
         final List<Bestand> bestaende = new ArrayList<Bestand>();
 
+        // TODO: use cached Threadpool with timeouts
+
         for (final String host : ReadSystemConfigurations.getDaiaHosts()) {
 
             final String url = host + "?" + openurl;

@@ -782,7 +782,7 @@ public final class OrderAction extends DispatchAction {
     public ActionForward checkAvailabilityOpenUrl(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
-        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // will be needed for the ezbid
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         OrderForm pageForm = (OrderForm) form;
         final BestellformAction bfInstance = new BestellformAction();
         Text cn = new Text();
@@ -815,7 +815,7 @@ public final class OrderAction extends DispatchAction {
             rq.setAttribute("ofjo", pageForm);
         }
 
-        // falls nicht eingeloggt, aus Request lesen (falls vorhanden)
+        // if not logged in, try to get account from request
         if (!auth.isLogin(rq)) {
             cn = (Text) rq.getAttribute("ip");
             if (cn != null) {
@@ -826,15 +826,16 @@ public final class OrderAction extends DispatchAction {
             }
         }
 
-        // get bibid from ui
         if (ui != null) {
+            // get bibid from ui
             if (ui.getKonto().getEzbid() != null && !ui.getKonto().getEzbid().equals("")) {
                 bibid = ui.getKonto().getEzbid();
             }
             daiaId = getDaiaId(ui.getKonto().getId());
             kid = ui.getKonto().getId();
         } else {
-            if (cn != null && cn.getInhalt() != null) { // ggf. bibid aus IP-basiertem Zugriff abfüllen
+            // get bibid from IP based access
+            if (cn != null && cn.getInhalt() != null) {
                 if (pageForm.getBkid() == null && cn.getKonto().getEzbid() != null
                         && !cn.getKonto().getEzbid().equals("")) { bibid = cn.getKonto().getEzbid(); }
                 daiaId = cn.getKonto().getId();
@@ -877,7 +878,7 @@ public final class OrderAction extends DispatchAction {
             }
         }
 
-        // eingeloggt, oder Zugriff IP-basiert/kkid/bkid
+        // logged in or access IP based/kkid/bkid
         if (auth.isLogin(rq) || (cn != null && cn.getInhalt() != null)) {
             forward = "notfreeebz";
 
@@ -893,7 +894,7 @@ public final class OrderAction extends DispatchAction {
             final OpenUrl openUrlInstance = new OpenUrl();
             final String openurl = openUrlInstance.composeOpenUrl(co);
 
-            // damit auf Checkavailability codierte OpenURL-Anfragen zusammengestellt werden können (z.B. Carelit)
+            // needed for  creating OpenURL links on checkavailability.jsp (e.g. Carelit)
             pageForm.setLink(openurl);
 
             if (ReadSystemConfigurations.isSearchCarelit()) {
@@ -1039,7 +1040,7 @@ public final class OrderAction extends DispatchAction {
             rq.setAttribute(ERRORMESSAGE, em);
         }
 
-        pageForm.setAutocomplete(false); // Variable zurückstellen
+        pageForm.setAutocomplete(false); // reset
         rq.setAttribute("ezb", ezbform);
 
         // for get-method in PrepareLogin encode pageForm
