@@ -48,7 +48,7 @@
       </head>
       <body>
         <!-- preambel -->
-        <h1>Availability Information (Beta)</h1>
+        <h1>Availability Information API (Beta)</h1>
         <!-- content -->
         <xsl:apply-templates select="d:daia"/>
         <!-- source -->
