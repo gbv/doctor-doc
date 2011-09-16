@@ -14,20 +14,24 @@
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
  </head>
  <body>
- 
-<logic:present name="userinfo" property="benutzer">
-	<logic:notEmpty name="userinfo" property="benutzer.gtc"> 
-		<tiles:insert page="import/header.jsp" flush="true" />
-	</logic:notEmpty>
+
+<logic:present name="userinfo">
+	<logic:present name="userinfo" property="benutzer">
+		<logic:notEmpty name="userinfo" property="benutzer.gtc"> 
+			<tiles:insert page="import/header.jsp" flush="true" />
+		</logic:notEmpty>
+	</logic:present>
 </logic:present>
 
 <div class="content">
 
 <br />
 <h3>General Terms and Conditions (Version 1):</h3>
-<logic:empty name="userinfo" property="benutzer.gtc">
-    <div id="italic"><bean:message key="gtc.comment" /></div>
-</logic:empty>
+<logic:present name="userinfo">
+	<logic:empty name="userinfo" property="benutzer.gtc">
+	    <div id="italic"><bean:message key="gtc.comment" /></div>
+	</logic:empty>
+</logic:present>
 
 <p></p>
  
@@ -39,6 +43,7 @@
 </p>
 
 
+<logic:present name="userinfo">
 <logic:present name="userinfo" property="benutzer.gtc">
 <logic:equal name="userinfo" property="benutzer.gtc" value=""> 
  <html:form action="gtc_" method="post">
@@ -83,6 +88,7 @@
 
 	 </html:form>
 	</logic:equal>
+</logic:present>
 </logic:present> 
 
 </div>
