@@ -57,7 +57,13 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_epage() != null && !co.getRft_epage().equals("")) {
-            of.setSeiten(of.getSeiten() + "-" + co.getRft_epage());
+        	// Worldcat repeats the startpage in the endpage
+        	if (co.getRft_epage().contains("-")) {
+        		// only use last number
+        		of.setSeiten(of.getSeiten() + co.getRft_epage().substring(co.getRft_epage().indexOf("-")));
+        	} else {
+        		of.setSeiten(of.getSeiten() + "-" + co.getRft_epage());	
+        	}
         }
 
         if (co.getRft_pages() != null && !co.getRft_pages().equals("")) { // überschreibt spage und epage
