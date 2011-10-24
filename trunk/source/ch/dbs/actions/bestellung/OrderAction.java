@@ -789,7 +789,7 @@ public final class OrderAction extends DispatchAction {
         final Auth auth = new Auth();
         EZBForm ezbform = new EZBForm();
 
-        final ExecutorService executor = Executors.newFixedThreadPool(4);
+        final ExecutorService executor = Executors.newCachedThreadPool();
         // EZB-Thread-Management
         final ThreadedWebcontent ezbthread = new ThreadedWebcontent();
         Future<String> ezbcontent = null;
