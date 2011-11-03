@@ -24,6 +24,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -57,8 +59,10 @@ import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Bestand;
+import ch.dbs.entity.BestellParam;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.DefaultPreis;
+import ch.dbs.entity.Konto;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
@@ -305,24 +309,24 @@ public final class OrderAction extends DispatchAction {
                             if (searches == 0) { // phrase + allintitle + filetype:pdf
                                 if (!didYouMean) {
                                     linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                        + pageForm.getArtikeltitel_encoded()
-                                        + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
+                                            + pageForm.getArtikeltitel_encoded()
+                                            + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
                                 }
                                 if (didYouMean) {
                                     linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                        + pageForm.getDidYouMean()
-                                        + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
+                                            + pageForm.getDidYouMean()
+                                            + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
                                 }
                             }
                             if (searches == 1) { // phrase + allintitle
                                 if (!didYouMean) {
                                     linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                        + pageForm.getArtikeltitel_encoded()
-                                        + "%22&hl=de&lr=&btnG=Suche&lr=";
+                                            + pageForm.getArtikeltitel_encoded()
+                                            + "%22&hl=de&lr=&btnG=Suche&lr=";
                                 }
                                 if (didYouMean) {
                                     linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                        + pageForm.getDidYouMean() + "%22&hl=de&lr=&btnG=Suche&lr=";
+                                            + pageForm.getDidYouMean() + "%22&hl=de&lr=&btnG=Suche&lr=";
                                 }
                             }
 
@@ -333,7 +337,7 @@ public final class OrderAction extends DispatchAction {
 
                                 // Change this, to adapt to any major changes of GoogleScholars sourcecode.
                                 final String identifierHitsGoogleScholar =
-                                    "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
+                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
 
                                 if (content.contains(identifierHitsGoogleScholar)) {
                                     ergebnis = true;
@@ -365,7 +369,7 @@ public final class OrderAction extends DispatchAction {
                                         textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("<em>", "");
                                         textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("</em>", "");
                                         textLinkPdfGoogleScholar = textLinkPdfGoogleScholar
-                                        .replaceAll("<font color=#CC0033>", "");
+                                                .replaceAll("<font color=#CC0033>", "");
                                         textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("</font>", "");
                                         textLinkPdfGoogleScholar = specialCharacters.replace(textLinkPdfGoogleScholar);
 
@@ -430,7 +434,7 @@ public final class OrderAction extends DispatchAction {
                         // müssen => man landet auf Google Grundseite...
 
                         linkGoogle = "http://www.google.ch/sorry/Captcha?continue=http://www.google.ch/search?hl=de&id="
-                            + pageForm.getCaptcha_id() + "&captcha=" + pageForm.getCaptcha_text();
+                                + pageForm.getCaptcha_id() + "&captcha=" + pageForm.getCaptcha_text();
                         content = getWebcontent(linkGoogle, TIMEOUT_1, RETRYS_1);
 
                         if (!check.containsGoogleCaptcha(content)) {
@@ -441,8 +445,8 @@ public final class OrderAction extends DispatchAction {
 
                         // Captcha: prepare manual Google search
                         linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
-                            + pageForm.getArtikeltitel_encoded()
-                            + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
+                                + pageForm.getArtikeltitel_encoded()
+                                + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
 
                         final JournalDetails jdGoogleCaptcha = new JournalDetails();
                         jdGoogleCaptcha.setLink(linkGoogle);
@@ -455,8 +459,8 @@ public final class OrderAction extends DispatchAction {
 
                         // needs to be UTF-8 encoded
                         linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
-                            + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
-                            + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
+                                + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
+                                + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
 
                         final JournalDetails jdGoogleScholarCaptcha = new JournalDetails();
                         jdGoogleScholarCaptcha.setLink(linkGS);
@@ -473,8 +477,8 @@ public final class OrderAction extends DispatchAction {
 
                     // User: prepare manual Google search
                     linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
-                        + pageForm.getArtikeltitel_encoded()
-                        + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
+                            + pageForm.getArtikeltitel_encoded()
+                            + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
 
                     final JournalDetails jdGoogleManual = new JournalDetails();
                     jdGoogleManual.setLink(linkGoogle);
@@ -487,8 +491,8 @@ public final class OrderAction extends DispatchAction {
 
                     // needs to be UTF-8 encoded
                     linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
-                        + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
-                        + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=";
+                            + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
+                            + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=";
 
                     final JournalDetails jdGoogleScholarManual = new JournalDetails();
                     jdGoogleScholarManual.setLink(linkGS);
@@ -869,9 +873,9 @@ public final class OrderAction extends DispatchAction {
             // Try to get from e-ZDB-ID a p-ZDB-ID from GBV using a seperate thread.
             if (pageForm.getZdbid() != null && !pageForm.getZdbid().equals("")) {
                 final String gbvlink =
-                    "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
-                    + pageForm.getZdbid()
-                    + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
+                        "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
+                                + pageForm.getZdbid()
+                                + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
                 gbvthread.setLink(gbvlink);
                 gbvcontent = executor.submit(gbvthread);
                 gbvThread = true;
@@ -1143,7 +1147,7 @@ public final class OrderAction extends DispatchAction {
         // erster Versuch ueber Journalseek
 
         String link =
-            "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query=";
+                "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query=";
         link = link + zeitschriftentitel_encoded;
 
         //      System.out.println("Suchstring ISSN Journalseek erster Versuch: " + link + "\012");
@@ -1159,8 +1163,8 @@ public final class OrderAction extends DispatchAction {
 
             zeitschriftentitelEncodedTrunkiert = codeUrl.encodeLatin1(zeitschriftentitelEncodedTrunkiert);
             link =
-                "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query="
-                + zeitschriftentitelEncodedTrunkiert;
+                    "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query="
+                            + zeitschriftentitelEncodedTrunkiert;
 
             //          System.out.println("Suchstring ISSN Journalseek zweiter Versuch: " + link + "\012");
             content = getWebcontent(link, TIMEOUT_2, RETRYS_3);
@@ -2020,12 +2024,12 @@ public final class OrderAction extends DispatchAction {
                                 // Für Subito nur Artikel zugelassen...
                                 || (!pageForm.getSubmit().equals("GBV") && auth.isBenutzer(rq)
                                         && (pageForm.getMediatype() == null
-                                                || !pageForm.getMediatype().equals("Artikel")))
-                                                || pageForm.getSubmit().contains("meine Bibliothek")
-                                                || pageForm.getSubmit().contains("my library")
-                                                || pageForm.getSubmit().contains("ma bibliothèque")
-                                                // der Kunde will das Doku bei seiner Bibliothek bestellen
-                                                || pageForm.getSubmit().contains("bestellform")) {
+                                        || !pageForm.getMediatype().equals("Artikel")))
+                                        || pageForm.getSubmit().contains("meine Bibliothek")
+                                        || pageForm.getSubmit().contains("my library")
+                                        || pageForm.getSubmit().contains("ma bibliothèque")
+                                        // der Kunde will das Doku bei seiner Bibliothek bestellen
+                                        || pageForm.getSubmit().contains("bestellform")) {
 
                     forward = "bestellform";
                     if (pageForm.getDeloptions() == null || // Defaultwert deloptions
@@ -2160,6 +2164,11 @@ public final class OrderAction extends DispatchAction {
                 pageForm.setBestellquelle(l.getName());
 
                 if (pageForm.getStatus() == null) { pageForm.setStatus("bestellt"); } // Default
+
+                // deloptions
+                Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
+
+                rq.setAttribute("delopts", dynamicDeloptions);
 
                 rq.setAttribute("orderform", pageForm);
 
@@ -2422,13 +2431,17 @@ public final class OrderAction extends DispatchAction {
                     final DefaultPreis dp = new DefaultPreis();
                     pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
 
+                    // deloptions
+                    Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
+
+                    rq.setAttribute("delopts", dynamicDeloptions);
                     rq.setAttribute("orderform", pageForm);
 
                     if (b.checkAnonymize(b)) {
 
                         forward = FAILURE;
                         final ErrorMessage em = new ErrorMessage("error.anonymised",
-                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                                "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute(ERRORMESSAGE, em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     }
@@ -2439,7 +2452,7 @@ public final class OrderAction extends DispatchAction {
                         System.out.println("URL-hacking... ;-)");
                         forward = FAILURE;
                         final ErrorMessage em = new ErrorMessage("error.hack",
-                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                                "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute(ERRORMESSAGE, em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
@@ -2451,7 +2464,7 @@ public final class OrderAction extends DispatchAction {
                         System.out.println("URL-hacking... ;-)");
                         forward = FAILURE;
                         final ErrorMessage em = new ErrorMessage("error.hack",
-                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                                "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute(ERRORMESSAGE, em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
@@ -2460,7 +2473,7 @@ public final class OrderAction extends DispatchAction {
                 } else {
                     forward = FAILURE;
                     final ErrorMessage em = new ErrorMessage("error.hack",
-                    "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                            "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                     rq.setAttribute(ERRORMESSAGE, em);
                     rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
@@ -2520,7 +2533,7 @@ public final class OrderAction extends DispatchAction {
                 mf.setActivemenu("uebersicht");
                 rq.setAttribute(ACTIVEMENUS, mf);
                 final ErrorMessage em = new ErrorMessage("error.hack",
-                "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                 rq.setAttribute(ERRORMESSAGE, em);
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 LOG.info("prepareDeleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
@@ -2577,7 +2590,7 @@ public final class OrderAction extends DispatchAction {
                 mf.setActivemenu("uebersicht");
                 rq.setAttribute(ACTIVEMENUS, mf);
                 final ErrorMessage em = new ErrorMessage("error.hack",
-                "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                 rq.setAttribute(ERRORMESSAGE, em);
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 LOG.info("deleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
@@ -2597,7 +2610,7 @@ public final class OrderAction extends DispatchAction {
         String year = "";
         // Search pattern works from 14th century till 22th century. This sould be usable for some time...
         final Pattern p = Pattern.compile(
-        "13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
+                "13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
         final Matcher m = p.matcher(date);
         try {
             if (m.find()) { // Only takes the first hit...
@@ -2608,6 +2621,23 @@ public final class OrderAction extends DispatchAction {
         }
 
         return year;
+    }
+
+    private Set<String> getDeloptions(Konto konto, Connection cn) {
+
+        Set<String> result = new TreeSet<String>();
+
+        BestellParam bp = new BestellParam();
+        // get all Bestellparams for the account
+        List<BestellParam> bps = bp.getAllBestellParam(konto, cn);
+
+        for (BestellParam param : bps) {
+            if (param.getLieferart_value1() != null) { result.add(param.getLieferart_value1()); }
+            if (param.getLieferart_value2() != null) { result.add(param.getLieferart_value2()); }
+            if (param.getLieferart_value3() != null) { result.add(param.getLieferart_value3()); }
+        }
+
+        return result;
     }
 
     private String extractSubitonummer(String subitonr) {

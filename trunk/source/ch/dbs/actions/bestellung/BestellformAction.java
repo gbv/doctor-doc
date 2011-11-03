@@ -698,11 +698,11 @@ public final class BestellformAction extends DispatchAction {
                                 bibid = k.getEzbid();
                             }
                             final String link = "http://ezb.uni-regensburg.de/ezeit/searchres.phtml?bibid="
-                                + bibid
-                                + "&colors=7&lang=de&jq_type1=KT&jq_term1=&jq_bool2=AND&jq_not2=+&jq_type2="
-                                + "KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+"
-                                + "&jq_type4=IS&offset=-1&hits_per_page=50&search_journal=Suche+starten&"
-                                + "Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=4&jq_term4=";
+                                    + bibid
+                                    + "&colors=7&lang=de&jq_type1=KT&jq_term1=&jq_bool2=AND&jq_not2=+&jq_type2="
+                                    + "KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+"
+                                    + "&jq_type4=IS&offset=-1&hits_per_page=50&search_journal=Suche+starten&"
+                                    + "Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=4&jq_term4=";
 
                             m.append("EZB link: ");
                             m.append(link);
@@ -814,13 +814,13 @@ public final class BestellformAction extends DispatchAction {
 
                     // Prepare a direct login link for librarians, to save order details
                     final String loginlink = ReadSystemConfigurations.getServerInstallation()
-                    + "/pl.do?" + couInstance.makeGetMethodString(of) + "&foruser=" + of.getForuser();
+                            + "/pl.do?" + couInstance.makeGetMethodString(of) + "&foruser=" + of.getForuser();
 
                     String adduserlink = "";
                     if (u.getId() == null) { // User unknown => Prepare a direct login link for librarians, to save new
                         // user
                         adduserlink = ReadSystemConfigurations.getServerInstallation()
-                        + "/add.do?" + createUrlParamsForAddUser(of);
+                                + "/add.do?" + createUrlParamsForAddUser(of);
                     }
 
                     String prio = "3"; // Email priority 3 = normal
@@ -843,15 +843,15 @@ public final class BestellformAction extends DispatchAction {
                             mh.sendMailReplyTo(toemail, "Article: " + of.getZeitschriftentitel() + "\040"
                                     + of.getJahr() + ";" + of.getJahrgang() + "(" + of.getHeft() + "):"
                                     + of.getSeiten(), m.toString() + "\012Save order details in "
-                                    + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink, of
-                                    .getKundenmail(), prio);
+                                            + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink, of
+                                            .getKundenmail(), prio);
                         } else { // User unknown
                             mh.sendMailReplyTo(toemail, "Article: " + of.getZeitschriftentitel() + "\040"
                                     + of.getJahr() + ";" + of.getJahrgang() + "(" + of.getHeft() + "):"
                                     + of.getSeiten(), m.toString() + "\012Unknown Email! Save patron in "
-                                    + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink + "\012"
-                                    + "\012Save order details in " + ReadSystemConfigurations.getApplicationName()
-                                    + ":\012" + loginlink, of.getKundenmail(), prio);
+                                            + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink + "\012"
+                                            + "\012Save order details in " + ReadSystemConfigurations.getApplicationName()
+                                            + ":\012" + loginlink, of.getKundenmail(), prio);
                         }
                     }
 
@@ -871,8 +871,8 @@ public final class BestellformAction extends DispatchAction {
                         } else { // User unknown
                             mh.sendMailReplyTo(toemail, "Book part: " + of.getBuchtitel() + "\040" + of.getJahr() + ":"
                                     + of.getSeiten(), m.toString() + "\012Unknown Email! Save patron in "
-                                    + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink, of
-                                    .getKundenmail(), prio);
+                                            + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink, of
+                                            .getKundenmail(), prio);
                         }
                     }
 
@@ -1241,10 +1241,10 @@ public final class BestellformAction extends DispatchAction {
 
             if (!"".equals(sessionid)) { // erlaubt Suche in Subset Journals
                 link = "http://catalogue.bl.uk/F/" + sessionid + "?func=find-b&request=" + pageForm.getIssn()
-                + "&find_code=ISSN&adjacent=Y&image.x=41&image.y=13";
+                        + "&find_code=ISSN&adjacent=Y&image.x=41&image.y=13";
             } else { // Suche durch alles, auch einzelne Artikel etc.
                 link = "http://catalogue.bl.uk/F/?func=find-b&request=" + pageForm.getIssn()
-                + "&find_code=ISSN&adjacent=Y&image.x=37&image.y=9";
+                        + "&find_code=ISSN&adjacent=Y&image.x=37&image.y=9";
             }
 
             pageForm.setLink(link);

@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
 import org.grlea.log.SimpleLogger;
@@ -220,7 +222,7 @@ public class BestellParam extends ValidatorForm {
                 if (t.getTexttyp().getId().equals(Long.valueOf(9))) { t.setInhalt(""); }
 
                 pstmt = cn
-                .prepareStatement("SELECT * FROM bestellform_param WHERE KID = ? AND TYID = ? AND kennung = ?");
+                        .prepareStatement("SELECT * FROM bestellform_param WHERE KID = ? AND TYID = ? AND kennung = ?");
                 pstmt.setLong(1, t.getKonto().getId());
                 pstmt.setLong(2, t.getTexttyp().getId());
                 pstmt.setString(3, t.getInhalt());
@@ -293,6 +295,49 @@ public class BestellParam extends ValidatorForm {
                 }
             }
         }
+    }
+
+    /**
+     * Gets all existing BestellParams for a given account.
+     *
+     * @param Konto k
+     * @param Connection cn
+     * @return List<String> BestellParam result
+     */
+    public List<BestellParam> getAllBestellParam(final Konto k, final Connection cn) {
+
+        List<BestellParam> result = new ArrayList<BestellParam>();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE KID = ?");
+            pstmt.setLong(1, k.getId());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                result.add(new BestellParam(rs));
+            }
+
+        } catch (final Exception e) {
+            LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -387,6 +432,71 @@ public class BestellParam extends ValidatorForm {
         }
     }
 
+    private BestellParam(final ResultSet rs) throws SQLException {
+
+        this.setId(rs.getLong("BPID"));
+        this.setKid(rs.getLong("KID"));
+        this.setTyid(rs.getLong("TYID"));
+        // only set if we have a USE_DID. If not, leave null!
+        if (rs.getString("USE_DID") != null) {
+            this.setUse_did(rs.getLong("USE_DID"));
+        }
+        this.setKennung(rs.getString("kennung"));
+        this.setSaveorder(rs.getBoolean("saveorder"));
+        this.setDeactivated(rs.getBoolean("deactivated"));
+        this.setInstitution(rs.getBoolean("institution"));
+        this.setAbteilung(rs.getBoolean("abteilung"));
+        this.setCategory(rs.getBoolean("category"));
+        this.setAdresse(rs.getBoolean("adresse"));
+        this.setStrasse(rs.getBoolean("strasse"));
+        this.setPlz(rs.getBoolean("plz"));
+        this.setOrt(rs.getBoolean("ort"));
+        this.setTelefon(rs.getBoolean("telefon"));
+        this.setBenutzernr(rs.getBoolean("benutzernr"));
+        this.setLand(rs.getBoolean("land"));
+        this.setPrio(rs.getBoolean("prio"));
+        this.setLieferart(rs.getBoolean("lieferart"));
+        this.setLieferart_value1(rs.getString("lieferart_value1"));
+        this.setLieferart_value2(rs.getString("lieferart_value2"));
+        this.setLieferart_value3(rs.getString("lieferart_value3"));
+        this.setFreitxt1(rs.getBoolean("frei1"));
+        this.setFreitxt2(rs.getBoolean("frei2"));
+        this.setFreitxt3(rs.getBoolean("frei3"));
+        this.setFreitxt1_name(rs.getString("frei1_name"));
+        this.setFreitxt2_name(rs.getString("frei2_name"));
+        this.setFreitxt3_name(rs.getString("frei3_name"));
+        this.setComment1(rs.getString("comment1"));
+        this.setComment2(rs.getString("comment2"));
+        this.setOption(rs.getBoolean("option"));
+        this.setOption_name(rs.getString("option_name"));
+        this.setOption_comment(rs.getString("option_comment"));
+        this.setOption_linkout(rs.getString("option_linkout"));
+        this.setOption_linkoutname(rs.getString("option_linkoutname"));
+        this.setOption_value1(rs.getString("option_value1"));
+        this.setOption_value2(rs.getString("option_value2"));
+        this.setOption_value3(rs.getString("option_value3"));
+        this.setGebuehren(rs.getBoolean("gebuehren"));
+        this.setLink_gebuehren(rs.getString("gebuehren_link"));
+        this.setAgb(rs.getBoolean("agb"));
+        this.setLink_agb(rs.getString("agb_link"));
+        this.setInst_required(rs.getBoolean("inst_required"));
+        this.setAbt_required(rs.getBoolean("abt_required"));
+        this.setCategory_required(rs.getBoolean("category_required"));
+        this.setInst_required(rs.getBoolean("inst_required"));
+        this.setFreitxt1_required(rs.getBoolean("frei1_required"));
+        this.setFreitxt2_required(rs.getBoolean("frei2_required"));
+        this.setFreitxt3_required(rs.getBoolean("frei3_required"));
+        this.setAdr_required(rs.getBoolean("adr_required"));
+        this.setStr_required(rs.getBoolean("str_required"));
+        this.setPlz_required(rs.getBoolean("plz_required"));
+        this.setOrt_required(rs.getBoolean("ort_required"));
+        this.setLand_required(rs.getBoolean("land_required"));
+        this.setTelefon_required(rs.getBoolean("tel_required"));
+        this.setBenutzernr_required(rs.getBoolean("benutzernr_required"));
+
+    }
+
+
     private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
@@ -454,7 +564,7 @@ public class BestellParam extends ValidatorForm {
      *
      */
     private PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp)
-    throws Exception {
+            throws Exception {
 
         pstmt.setLong(1, bp.getKid());
         pstmt.setLong(2, bp.getTyid());

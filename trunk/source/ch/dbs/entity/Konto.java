@@ -41,9 +41,9 @@ import ch.dbs.form.UserInfo;
  */
 public class Konto extends AbstractIdEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final SimpleLogger LOG = new SimpleLogger(Konto.class);
+    private static final SimpleLogger LOG = new SimpleLogger(Konto.class);
 
     private Long did;
     private String bibliotheksname;
@@ -546,7 +546,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement(
-            "SELECT k.* FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
+                    "SELECT k.* FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
             pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
 

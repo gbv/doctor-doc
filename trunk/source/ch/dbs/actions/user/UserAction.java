@@ -737,7 +737,7 @@ public final class UserAction extends DispatchAction {
                 //Test, ob alle Sollangaben gemacht wurden
                 if (name && vorname && email && kont && land) {
 
-                    final String[] kontos = (String[]) uf.getKontos();
+                    final String[] kontos = uf.getKontos();
 
                     forward = SUCCESS;
                     AbstractBenutzer u = new Benutzer();
@@ -955,11 +955,11 @@ public final class UserAction extends DispatchAction {
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                final String id = (String) rq.getParameter("id");
-                final String sav = (String) rq.getParameter("sav");
-                final String del = (String) rq.getParameter("del");
-                final String mod = (String) rq.getParameter("mod");
-                final String category = (String) rq.getParameter("category");
+                final String id = rq.getParameter("id");
+                final String sav = rq.getParameter("sav");
+                final String del = rq.getParameter("del");
+                final String mod = rq.getParameter("mod");
+                final String category = rq.getParameter("category");
                 boolean save = false;
                 boolean delete = false;
                 boolean modify = false;
@@ -1334,7 +1334,7 @@ public final class UserAction extends DispatchAction {
         final int max = searches.size();
         for (int i = 0; i < max; i++) {
 
-            SearchesForm sf = (SearchesForm) searches.get(i);
+            SearchesForm sf = searches.get(i);
 
             sf = searchMapping(sf); // ggf. Suchwerte in Datenbankwerte übersetzen...
 
@@ -1370,7 +1370,7 @@ public final class UserAction extends DispatchAction {
         boolean stop = false;
         for (int i = 0; i < max && !stop; i++) {
 
-            final SearchesForm sf = (SearchesForm) searches.get(i);
+            final SearchesForm sf = searches.get(i);
 
             if (composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("name")
                     || composeSearchLogicTable(sf.getField(), sf.getCondition()).equals("vorname")
@@ -1382,7 +1382,7 @@ public final class UserAction extends DispatchAction {
                 }
                 if (pstmt == null) {
                     throw new Exception(
-                    "Data privacy: exceeded allowed search range for name, firts name, email, remarks");
+                            "Data privacy: exceeded allowed search range for name, firts name, email, remarks");
                 }
             }
 
@@ -1414,7 +1414,7 @@ public final class UserAction extends DispatchAction {
         final int max = searches.size();
         for (int i = 0; i < max; i++) {
 
-            SearchesForm sf = (SearchesForm) searches.get(i);
+            SearchesForm sf = searches.get(i);
 
             sf = searchMapping(sf); // ggf. Suchwerte in Datenbankwerte übersetzen...
 
@@ -1447,7 +1447,7 @@ public final class UserAction extends DispatchAction {
 
         for (int i = 0; i < max; i++) {
 
-            final SearchesForm sf = (SearchesForm) searches.get(i);
+            final SearchesForm sf = searches.get(i);
 
             String truncation = ""; // Normalerweise keine Trunkierung
             if (sf.getCondition().contains("contains")) { truncation = "%"; } // Trunkierung für LIKE
@@ -1507,13 +1507,13 @@ public final class UserAction extends DispatchAction {
 
         } else { // Suche nach allen Feldern
             table = "MATCH (artikeltitel,autor,fileformat,heft,notizen,issn,heft,jahr,bestellquelle,"
-                + "jahrgang,bestellquelle,deloptions,seiten,subitonr,gbvnr,internenr,zeitschrift,doi,"
-                + "pmid,isbn,mediatype,verlag,buchkapitel,buchtitel) ";
+                    + "jahrgang,bestellquelle,deloptions,seiten,subitonr,gbvnr,internenr,zeitschrift,doi,"
+                    + "pmid,isbn,mediatype,verlag,buchkapitel,buchtitel) ";
             // hier wird die Suche von AND zu AND NOT umgekehrt
             if ("contains not".equals(condition) || "is not".equals(condition)) {
                 table = "NOT MATCH (artikeltitel,autor,fileformat,heft,notizen,issn,heft,jahr,bestellquelle,"
-                    + "jahrgang,bestellquelle,deloptions,seiten,subitonr,gbvnr,internenr,zeitschrift,doi,pmid,"
-                    + "isbn,mediatype,verlag,buchkapitel,buchtitel) ";
+                        + "jahrgang,bestellquelle,deloptions,seiten,subitonr,gbvnr,internenr,zeitschrift,doi,pmid,"
+                        + "isbn,mediatype,verlag,buchkapitel,buchtitel) ";
             }
         }
 

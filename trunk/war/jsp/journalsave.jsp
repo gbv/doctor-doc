@@ -151,20 +151,21 @@ function wahrung(a)
         <td><bean:write name="orderform" property="mediatype" /></td>
       </tr>
   </logic:present>
-
-  <!--
-   The hidden deloptions element at the end of the section, keeps other values than
-   specified in the radio buttons (saved through custom orderfrom from patron)
-   -->
-   <tr>
-      <td><bean:message key="bestellform.bestellart" /></td><td>
-    <input type="radio" name="deloptions" value="online"<logic:equal name="orderform" property="deloptions" value="online"> checked="checked"</logic:equal> /><bean:message key="save.online" />
-    <input type="radio" name="deloptions" value="email"<logic:equal name="orderform" property="deloptions" value="email"> checked="checked"</logic:equal> /><bean:message key="save.email" />
-    <input type="radio" name="deloptions" value="post"<logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal> /><bean:message key="save.post" />
-    <input type="radio" name="deloptions" value="fax"<logic:equal name="orderform" property="deloptions" value="fax"> checked="checked"</logic:equal> /><bean:message key="save.fax" />
-    <input type="radio" name="deloptions" value="fax to pdf"<logic:equal name="orderform" property="deloptions" value="fax to pdf"> checked="checked"</logic:equal> /><bean:message key="save.faxtopdf" />
-    <input name="deloptions" type="hidden" value="<bean:write name="orderform" property="deloptions" />" />
-      <br /></td>
+    
+    <tr>
+    	<td><bean:message key="bestellform.bestellart" /></td>
+    	<td>
+    		<input type="radio" name="deloptions" value="online"<logic:equal name="orderform" property="deloptions" value="online"> checked="checked"</logic:equal> /><bean:message key="save.online" />
+    		<input type="radio" name="deloptions" value="email"<logic:equal name="orderform" property="deloptions" value="email"> checked="checked"</logic:equal> /><bean:message key="save.email" />
+    		<input type="radio" name="deloptions" value="post"<logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal> /><bean:message key="save.post" />
+    		<input type="radio" name="deloptions" value="fax"<logic:equal name="orderform" property="deloptions" value="fax"> checked="checked"</logic:equal> /><bean:message key="save.fax" />
+    		<input type="radio" name="deloptions" value="fax to pdf"<logic:equal name="orderform" property="deloptions" value="fax to pdf"> checked="checked"</logic:equal> /><bean:message key="save.faxtopdf" />
+    		<! -- custom deloptions -->
+    		<logic:iterate id="del" name="delopts">
+    			<bean:define id="val"><bean:write name="del" /></bean:define>
+    				<input type="radio" name="deloptions" value="<bean:write name="del" />"<logic:equal name="orderform" property="deloptions" value="<%=val%>"> checked="checked"</logic:equal> /><bean:write name="del" />
+    		</logic:iterate>
+    	</td>
     </tr>
     
    <tr><td><br /></td></tr>
