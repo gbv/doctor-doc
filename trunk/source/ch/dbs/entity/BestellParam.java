@@ -587,19 +587,19 @@ public class BestellParam extends ValidatorForm {
             pstmt.setString(18, null);
             bp.setLieferart_value1(null);
         } else {
-            pstmt.setString(18, bp.getLieferart_value1());
+            pstmt.setString(18, bp.getLieferart_value1().trim());
         }
         if (bp.getLieferart_value2() == null || bp.getLieferart_value2().equals("")) {
             pstmt.setString(19, null);
             bp.setLieferart_value2(null);
         } else {
-            pstmt.setString(19, bp.getLieferart_value2());
+            pstmt.setString(19, bp.getLieferart_value2().trim());
         }
         if (bp.getLieferart_value3() == null || bp.getLieferart_value3().equals("")) {
             pstmt.setString(20, null);
             bp.setLieferart_value3(null);
         } else {
-            pstmt.setString(20, bp.getLieferart_value3());
+            pstmt.setString(20, bp.getLieferart_value3().trim());
         }
         pstmt.setBoolean(21, bp.isFreitxt1());
         pstmt.setBoolean(22, bp.isFreitxt2());
