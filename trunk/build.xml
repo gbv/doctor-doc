@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="version1.0" default="info" basedir=".">
+	
+  <!-- Set path to your tomcat installation -->
+  <property name="tomcat-home" value="/home/flyingfischer/Programme/apache-tomcat-5.5.28-DD" />
 
   <!-- Customisable properties -->
   <property name="app.name" value="version1.0"/>
@@ -20,6 +23,7 @@
   <property name="dist.dir"          value="${basedir}/dist"/>
   <property name="war.dir"           value="${basedir}/war"/>
   <property name="webinf.dir"        value="${war.dir}/WEB-INF"/>
+  <property name="junit.dir"         value="${basedir}/libs"/>
   <property name="webinflib.dir"     value="${webinf.dir}/lib"/>
   <!-- <property name="compile-deps.dir"  value="${basedir}/deps/compile"/> <property name="config.dir"        value="${basedir}/source/config"/>     
   <copy todir="${classes.dir}">
@@ -56,6 +60,14 @@
       <include name="**"/>
     </dirset>
     <fileset dir="${webinflib.dir}">
+      <include name="*.jar"/>
+      <include name="*.zip"/>
+    </fileset>
+  	<fileset dir="${tomcat-home}/common/lib">
+  		<include name="*.jar"/>
+  		<include name="*.zip"/>
+  	</fileset>
+    <fileset dir="${junit.dir}">
       <include name="*.jar"/>
       <include name="*.zip"/>
     </fileset>
@@ -99,6 +111,7 @@
            debug="${debug}"
            encoding="${src.charset}"
            optimize="${optimize}"
+    	   includeantruntime="false"
            source="1.5">
     </javac>
     <copy todir="${classes.dir}">
