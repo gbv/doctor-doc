@@ -585,16 +585,19 @@ public class BestellParam extends ValidatorForm {
         pstmt.setBoolean(17, bp.isLieferart());
         if (bp.getLieferart_value1() == null || bp.getLieferart_value1().equals("")) {
             pstmt.setString(18, null);
+            bp.setLieferart_value1(null);
         } else {
             pstmt.setString(18, bp.getLieferart_value1());
         }
         if (bp.getLieferart_value2() == null || bp.getLieferart_value2().equals("")) {
             pstmt.setString(19, null);
+            bp.setLieferart_value2(null);
         } else {
             pstmt.setString(19, bp.getLieferart_value2());
         }
         if (bp.getLieferart_value3() == null || bp.getLieferart_value3().equals("")) {
             pstmt.setString(20, null);
+            bp.setLieferart_value3(null);
         } else {
             pstmt.setString(20, bp.getLieferart_value3());
         }
