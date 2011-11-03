@@ -17,6 +17,7 @@
 
 package ch.dbs.entity;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,9 +39,11 @@ import ch.dbs.form.UserInfo;
  * <p/>
  * @author Pascal Steiner
  */
-public class Konto extends AbstractIdEntity {
+public class Konto extends AbstractIdEntity implements Serializable {
 
-    private static final SimpleLogger LOG = new SimpleLogger(Konto.class);
+	private static final long serialVersionUID = 1L;
+
+	private static final SimpleLogger LOG = new SimpleLogger(Konto.class);
 
     private Long did;
     private String bibliotheksname;
