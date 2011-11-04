@@ -959,7 +959,7 @@ public final class OrderAction extends DispatchAction {
 
             // get back EZB thread
             final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
-            if (ezbanswer != null && !ezbanswer.contains("<Error code=\"unknown\">")) {
+            if (ezbanswer != null && !ezbanswer.contains("<Error code=")) {
                 // read EZB response as XML
                 final EZB ezb = new EZB();
                 ezbform = ezb.read(ezbanswer);
