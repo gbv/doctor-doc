@@ -13,8 +13,44 @@
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <script src="jsp/import/js/jquery.min.js" type="text/javascript"></script>
+  <script src="jsp/import/js/jquery.hoverIntent.min.js" type="text/javascript"></script>
+  <script src="jsp/import/js/jquery.cluetip.min.js" type="text/javascript"></script>
+  
+  		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$('span[title]').css({borderBottom: '1px solid #900'}).cluetip({
+					  splitTitle: '|',
+					  arrows: true,
+					  dropShadow: false,
+					  hoverIntent: true,
+					  sticky: true,
+					  mouseOutClose: true,
+					  closePosition: 'title',
+					  closeText: '<img src="img/drop.png" title="<bean:message key="showkontousers.close" />" alt="<bean:message key="showkontousers.close" />" />',										  
+					  cluetipClass: 'jtip'}
+					);
+
+  				$('a.title').cluetip({
+  	  				  splitTitle: '|',
+  	  				  arrows: true,
+					  dropShadow: false,
+					  hoverIntent: true,
+					  sticky: true,
+					  mouseOutClose: true,
+					  closePosition: 'title',
+					  closeText: '<a href="test"><img src="img/drop.png" title="<bean:message key="showkontousers.close" />" alt="<bean:message key="showkontousers.close" />" /></a>',										  
+					  cluetipClass: 'jtip'}
+	  				);
+
+		});
+		</script>
+		
+		<link rel="stylesheet" type="text/css" href="jsp/import/js/jquery.cluetip.css" />
+		<link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
+  
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="uebersicht.titel" /></title>
-  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css"> 
  </head>
  <body>
   
@@ -69,6 +105,9 @@
 
 <html:form action="/searchorder">
 
+<table border="0" width="100%">
+	<tr>
+		<td align="center">
 <table border="0" align="center">
 <logic:present name="userinfo" property="benutzer">
 <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
@@ -104,6 +143,9 @@
   </tr>  
 </logic:notEqual>
 </logic:present>
+</table>
+		</td>
+	</tr>
 </table>
 
 <input type="hidden" name="yfrom" value="<bean:write name="overviewform" property="yfrom" />">
@@ -335,13 +377,55 @@
       <td align="center"><bean:write name="b" property="deloptions" />&nbsp;</td>
       <td align="center">
         <logic:equal name="b" property="mediatype" value="Artikel">
-          <a href="mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.journalorder" />:%20%22<bean:write name="b" property="artikeltitel" />%22"><bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></a>
+          <span class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
+          	&nbsp;<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
+          	<bean:write name="b" property="benutzer.category.inhalt" />|
+          	<bean:write name="b" property="benutzer.librarycard" />|
+          	&nbsp;|
+          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.journalorder" />:%20%22<bean:write name="b" property="artikeltitel" />%22'><bean:write name="b" property="benutzer.email" /></a>|
+          	&nbsp;|
+          	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
+          	<logic:notEmpty name="b" property="benutzer.telefonnrg"> <bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
+          	<bean:write name="b" property="benutzer.anrede" />|
+          	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
+          	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
+          	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
+          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" >
+          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></span>
         </logic:equal>
         <logic:equal name="b" property="mediatype" value="Buch">
-          <a href="mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookorder" />:%20%22<bean:write name="b" property="buchtitel" />%22"><bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></a>
+        	<span class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
+          	&nbsp;<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
+          	<bean:write name="b" property="benutzer.category.inhalt" />|
+          	<bean:write name="b" property="benutzer.librarycard" />|
+          	&nbsp;|
+          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookorder" />:%20%22<bean:write name="b" property="buchtitel" />%22'><bean:write name="b" property="benutzer.email" /></a>|
+          	&nbsp;|
+          	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
+          	<logic:notEmpty name="b" property="benutzer.telefonnrg"><bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
+          	<bean:write name="b" property="benutzer.anrede" />|
+          	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
+          	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
+          	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
+          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" >
+          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></span>
         </logic:equal>
         <logic:equal name="b" property="mediatype" value="Teilkopie Buch">
-          <a href="mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookpartorder" />:%20%22<bean:write name="b" property="artikeltitel" />%22"><bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></a>
+        	<span class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
+          	&nbsp;<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
+          	<bean:write name="b" property="benutzer.category.inhalt" />|
+          	<bean:write name="b" property="benutzer.librarycard" />|
+          	&nbsp;|
+          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookpartorder" />:%20%22<bean:write name="b" property="kapitel" />%22'><bean:write name="b" property="benutzer.email" /></a>|
+          	&nbsp;|
+          	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
+          	<logic:notEmpty name="b" property="benutzer.telefonnrg"><bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
+          	<bean:write name="b" property="benutzer.anrede" />|
+          	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
+          	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
+          	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
+          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" >
+          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></span>
         </logic:equal>
         &nbsp;
       </td>
