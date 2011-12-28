@@ -382,7 +382,8 @@
           	<bean:write name="b" property="benutzer.category.inhalt" />|
           	<bean:write name="b" property="benutzer.librarycard" />|
           	&nbsp;|
-          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.journalorder" />:%20%22<bean:write name="b" property="artikeltitel" />%22'><bean:write name="b" property="benutzer.email" /></a>|
+          	<bean:define id="tit" name="b" property="artikeltitel" type="java.lang.String"/>
+          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.journalorder" />:%20%22<% out.println(tit.replaceAll("\"", "").replaceAll("'", "")); %>%22'><bean:write name="b" property="benutzer.email" /></a>|
           	&nbsp;|
           	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
           	<logic:notEmpty name="b" property="benutzer.telefonnrg"> <bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
@@ -399,7 +400,8 @@
           	<bean:write name="b" property="benutzer.category.inhalt" />|
           	<bean:write name="b" property="benutzer.librarycard" />|
           	&nbsp;|
-          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookorder" />:%20%22<bean:write name="b" property="buchtitel" />%22'><bean:write name="b" property="benutzer.email" /></a>|
+          	<bean:define id="tit" name="b" property="buchtitel" type="java.lang.String"/>
+          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookorder" />:%20%22<% out.println(tit.replaceAll("\"", "").replaceAll("'", "")); %>%22'><bean:write name="b" property="benutzer.email" /></a>|
           	&nbsp;|
           	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
           	<logic:notEmpty name="b" property="benutzer.telefonnrg"><bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
@@ -416,7 +418,8 @@
           	<bean:write name="b" property="benutzer.category.inhalt" />|
           	<bean:write name="b" property="benutzer.librarycard" />|
           	&nbsp;|
-          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookpartorder" />:%20%22<bean:write name="b" property="kapitel" />%22'><bean:write name="b" property="benutzer.email" /></a>|
+          	<bean:define id="tit" name="b" property="kapitel" type="java.lang.String"/>
+          	<a href='mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookpartorder" />:%20%22<% out.println(tit.replaceAll("\"", "").replaceAll("'", "")); %>%22'><bean:write name="b" property="benutzer.email" /></a>|
           	&nbsp;|
           	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
           	<logic:notEmpty name="b" property="benutzer.telefonnrg"><bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
@@ -430,7 +433,17 @@
         &nbsp;
       </td>
       <td><bean:write name="b" property="artikeltitel" /><bean:write name="b" property="kapitel" />&nbsp;</td>
-      <td><bean:write name="b" property="zeitschrift" /><bean:write name="b" property="buchtitel" />&nbsp;</td>
+      <td>
+      	<span class="title" title="<bean:write name="b" property="jahr" /><logic:notEmpty name="b" property="jahrgang">;<bean:write name="b" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="b" property="heft">(<bean:write name="b" property="heft" />)</logic:notEmpty><logic:notEmpty name="b" property="seiten">:<bean:write name="b" property="seiten" /></logic:notEmpty>|
+      		<bean:write name="b" property="autor" />|
+      		<bean:write name="b" property="verlag" />|  
+      		<bean:write name="b" property="issn" /><bean:write name="b" property="isbn" />|    		
+		    <logic:notEmpty name="b" property="pmid">PMID: <a href='http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="b" property="pmid" />' target='_blank'><bean:write name="b" property="pmid" /></a>|</logic:notEmpty>
+		    <logic:notEmpty name="b" property="doi">DOI: <a href='http://dx.doi.org/<bean:write name="b" property="doi" />' target='_blank'><bean:write name="b" property="doi" /></a>|</logic:notEmpty>
+      		">
+      		<bean:write name="b" property="zeitschrift" /><bean:write name="b" property="buchtitel" />&nbsp;
+      	</span>
+      </td>
       <td>      
       
        <html:form method="post" action="changenotes">
