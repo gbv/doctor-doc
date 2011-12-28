@@ -144,10 +144,8 @@
         <input name="author" type="hidden"
           value="<bean:write name="orderform" property="author" />" />
       </logic:present>
-      <input name="didYouMean" type="hidden" value="<bean:write name="orderform" property="didYouMean" />" />
-       <input name="checkDidYouMean" type="hidden" value="<bean:write name="orderform" property="checkDidYouMean" />" />
 
-    </html:form>
+</html:form>
 
     <tr>
       <td><br />

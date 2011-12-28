@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.grlea.log.SimpleLogger;
 
 public class Http {
@@ -69,6 +70,10 @@ public class Http {
         final HttpClientParams params = new HttpClientParams();
         final HttpClient client = new HttpClient(params);
         client.getHttpConnectionManager().getParams().setConnectionTimeout(timeoutMs); // funzt!
+
+        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
+                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
         String contents = "";
         String redirectLocation = "";
         int trys = 0;
@@ -145,6 +150,10 @@ public class Http {
 
         final HttpClient client = new HttpClient();
         client.getHttpConnectionManager().getParams().setConnectionTimeout(timeoutMs); // funzt!
+
+        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
+                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
         boolean connection = false;
         int trys = 0;
         while (!connection && trys < retrys) {

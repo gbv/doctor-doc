@@ -94,8 +94,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private boolean preisdefault;
     private BigDecimal kaufpreis;
     private String orderlink;
-    private String didYouMean = "";
-    private boolean checkDidYouMean;
     private boolean autocomplete; // wird zur Kontrolle für die Funktion Autocomplete verwendet
     private boolean flag_noissn; // wird gesetzt, falls Autocomplete keine ISSN liefert
     private int runs_autocomplete;
@@ -756,14 +754,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.anmerkungen = anmerkungen;
     }
 
-    public String getDidYouMean() {
-        return didYouMean;
-    }
-
-    public void setDidYouMean(final String didYouMean) {
-        this.didYouMean = didYouMean;
-    }
-
     public String getNotizen() {
         return notizen;
     }
@@ -1258,14 +1248,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
     public void setPreisdefault(final boolean preisdefault) {
         this.preisdefault = preisdefault;
-    }
-
-    public boolean isCheckDidYouMean() {
-        return checkDidYouMean;
-    }
-
-    public void setCheckDidYouMean(final boolean checkDidYouMean) {
-        this.checkDidYouMean = checkDidYouMean;
     }
 
     public boolean isAutocomplete() {

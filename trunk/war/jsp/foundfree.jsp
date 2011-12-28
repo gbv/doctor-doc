@@ -68,11 +68,8 @@
   </logic:present>
   <logic:present name="orderform" property="doi">
      <input name="doi" type="hidden" value="<bean:write name="orderform" property="doi" />" />
-  </logic:present>
-     <input name="didYouMean" type="hidden" value="<bean:write name="orderform" property="didYouMean" />" />
-     <input name="checkDidYouMean" type="hidden" value="<bean:write name="orderform" property="checkDidYouMean" />" />
-  
-  </form>
+  </logic:present>  
+</form>
   
 <logic:present name="treffer_gs" property="zeitschriften">
   <p><i>powered by Google Scholar</i></p>

@@ -146,37 +146,27 @@ public final class OrderAction extends DispatchAction {
                         //  Search steps:
                         // 1. phrase + allintitle: + filetype:pdf
                         // 2. phrase + allintitle + extract pdf
-                        // 3. "did you mean" phrase => rerun checks 1 and 2
-                        // 4. title as phrase + [text] pdf OR "full-text" => result without check for PDFs
-                        // 5. "did you mean" => rerun check 4
+                        // 3. title as phrase + [text] pdf OR "full-text" => result without check for PDFs 3
 
                         int searches = 0;
                         boolean ergebnis = false;
-                        boolean didYouMean = false;
                         int start = 0;
                         String compare = "";
 
-                        while ((!ergebnis) && (searches < 6)) {
+                        while ((!ergebnis) && (searches < 3)) {
 
-                            if ((searches == 0)
-                                    || (searches == 2)) { // phrase + allintitle + filetype:pdf
+                            if (searches == 0) { // phrase + allintitle + filetype:pdf
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=pdf&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
-                            if ((searches == 1)
-                                    || (searches == 3)) { // phrase + allintitle
+                            if (searches == 1) { // phrase + allintitle
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
-                            if ((searches > 3)
-                                    && (searches < 6)) {
+                            if (searches == 2) {
                                 //    Nummerierung auf 5 gestellt. Ev. auf 3 anpassen...!!!
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
-                            if (!didYouMean) {
-                                linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
-                            }
-                            if (didYouMean) { // Verwendung von String aus Methode googleDidYouMean
-                                linkGoogle = linkGoogle + pageForm.getDidYouMean();
-                            }
+
+                            linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
 
                             content = getWebcontent(linkGoogle, TIMEOUT_1, RETRYS_3);
 
@@ -198,7 +188,7 @@ public final class OrderAction extends DispatchAction {
                             }
 
 
-                            if (searches < 4) { compare = "[PDF]"; } else { compare = "class=g>"; }
+                            if (searches < 2) { compare = "[PDF]"; } else { compare = "class=g>"; }
 
                             //   make sure Google did not respond with Captcha
                             if (!check.containsGoogleCaptcha(content)) {
@@ -228,11 +218,11 @@ public final class OrderAction extends DispatchAction {
                                         jdGoogle.setUrl_text(textLinkPdfGoogle);
                                         hitsGoogle.add(jdGoogle);
 
-                                        if (searches < 4) { // use Google-Cache only, if looking for PDFs
+                                        if (searches < 2) { // use Google-Cache only, if looking for PDFs
                                             String cache = "";
                                             int cachePosition = 0;
                                             int end = 0;
-                                            if (searches < 4) { // eigentlich: if ((searches < 5) || (searches == 7))
+                                            if (searches < 2) {
                                                 // class=w => start of next record
                                                 end = content2.indexOf("class=w", start);
                                             } else {
@@ -257,7 +247,7 @@ public final class OrderAction extends DispatchAction {
 
                                         content2 = content2.substring(start);
                                     }
-                                    searches = 6; // search successful
+                                    searches = 3; // search successful
 
                                     final FindFree ff = new FindFree();
                                     ff.setZeitschriften(hitsGoogle);
@@ -265,24 +255,6 @@ public final class OrderAction extends DispatchAction {
 
                                 } else {
                                     searches = searches + 1;
-
-                                    if ((searches == 2)
-                                            && (!didYouMean)) { // zweite Kondition eigentlich unnoetig...
-                                        didYouMean = true;
-                                        pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));
-                                        if (pageForm.getDidYouMean().equals("")) {
-                                            searches = searches + 2; // Zaehler vorwaertssetzen
-                                            didYouMean = false;
-                                        }
-                                    }
-                                    if (searches == 4) { didYouMean = false; }
-                                    if (searches == 5) {
-                                        didYouMean = true;
-                                        if (pageForm.getDidYouMean().equals("")) {
-                                            searches = searches + 1; // Zaehler vorwaertssetzen
-                                            didYouMean = false;
-                                        }
-                                    }
                                 }
 
                             } else { // Google captcha => forward to resolve Captcha
@@ -300,34 +272,19 @@ public final class OrderAction extends DispatchAction {
 
                         searches = 0;
                         ergebnis = false;
-                        didYouMean = false;
                         start = 0;
-                        pageForm.setDidYouMean("");
 
                         while ((!ergebnis) && (searches < 2)) {
 
                             if (searches == 0) { // phrase + allintitle + filetype:pdf
-                                if (!didYouMean) {
-                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                            + pageForm.getArtikeltitel_encoded()
-                                            + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
-                                }
-                                if (didYouMean) {
-                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                            + pageForm.getDidYouMean()
-                                            + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
-                                }
+                                linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                        + pageForm.getArtikeltitel_encoded()
+                                        + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
                             }
                             if (searches == 1) { // phrase + allintitle
-                                if (!didYouMean) {
-                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                            + pageForm.getArtikeltitel_encoded()
-                                            + "%22&hl=de&lr=&btnG=Suche&lr=";
-                                }
-                                if (didYouMean) {
-                                    linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                            + pageForm.getDidYouMean() + "%22&hl=de&lr=&btnG=Suche&lr=";
-                                }
+                                linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                        + pageForm.getArtikeltitel_encoded()
+                                        + "%22&hl=de&lr=&btnG=Suche&lr=";
                             }
 
                             content = getWebcontent(linkGS, TIMEOUT_1, RETRYS_3);
@@ -399,15 +356,6 @@ public final class OrderAction extends DispatchAction {
 
                                 } else {
                                     searches = searches + 1;
-
-                                    if ((searches == 2) && (!didYouMean)) {
-                                        didYouMean = true;
-                                        pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));
-                                        if (!pageForm.getDidYouMean().equals("")) {
-                                            searches = 0; // Zaehler zuruecksetzen
-                                        }
-
-                                    }
                                 }
 
                             } else { // Google-Scholar captcha  => forward to resolve Captcha
@@ -526,22 +474,6 @@ public final class OrderAction extends DispatchAction {
                 } else {
                     forward = "found";
                 }
-            }
-
-            //*** rerun autoComplete if necessary
-            // weder bei vorliegendem Captcha noch nach dessen Auflösung...
-            if (!"captcha".equals(forward) && pageForm.getCaptcha_id() == null
-                    && !pageForm.isAutocomplete()) {
-
-                // if we haven't tried googleDidYouMean yet => run
-                if (pageForm.getDidYouMean().length() == 0) {
-                    pageForm.setDidYouMean(googleDidYouMean(pageForm.getArtikeltitel_encoded()));
-                }
-                if (pageForm.getDidYouMean().length() != 0) { // run autocomplete with "did you mean"
-                    pageForm.setCheckDidYouMean(true);
-                    pageForm.setAutocomplete(autoComplete(pageForm, rq));
-                }
-
             }
 
             // if we do not have a PMID, try to get it and complete any missing article details over Pubmed
@@ -752,20 +684,9 @@ public final class OrderAction extends DispatchAction {
         }
         if (pageForm.getArtikeltitel().length() != 0
                 && (pageForm.getRuns_autocomplete() == 0 && pageForm.getIssn().length() != 0)) {
-            //*** Funktion AutoComplete ausführen
+            // Funktion AutoComplete ausführen
             pageForm.setAutocomplete(autoComplete(pageForm, rq));
-            if (!pageForm.isAutocomplete()) {
 
-                // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
-                if (pageForm.getDidYouMean().length() == 0) {
-                    pageForm.setDidYouMean(googleDidYouMean(artikeltitelEnc));
-                }
-                if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
-                    pageForm.setCheckDidYouMean(true);
-                    pageForm.setAutocomplete(autoComplete(pageForm, rq));
-                }
-
-            }
             //        System.out.println("Ergebnis autocomplete: " + pageForm.isAutocomplete());
             //        System.out.println("Testausgabe ISSN: " + pageForm.getIssn());
 
@@ -1493,14 +1414,9 @@ public final class OrderAction extends DispatchAction {
             final String artikeltitelWC = prepareWorldCat2(pageForm.getArtikeltitel());
             int run = 0;
 
-            // *** up to 4 runs on WorldCat
+            // *** up to 2 runs on WorldCat
             // replace different versions of umlauts and use of "did you mean"
             int x = 2;
-
-            if (pageForm.isCheckDidYouMean()) {
-                run = 2; // avoid loop for "did you mean"
-                x = 4;
-            }
 
             while ((run < x) && (!autocomplete)) {
                 link = getWorldCatLinkBaseSearch(artikeltitelWC, pageForm, run);
@@ -1527,11 +1443,6 @@ public final class OrderAction extends DispatchAction {
 
         String artikeltitelEncoded = artikeltitelWC;
 
-        if ((pageForm.isCheckDidYouMean()) && ((run == 2) || (run == 3))) {
-            artikeltitelEncoded = pageForm.getDidYouMean().replaceAll("%22", "");
-        }
-
-
         if (artikeltitelEncoded.contains("--")) { // The subtitle can not be search in the title field
             tmpWC = artikeltitelEncoded.substring(artikeltitelEncoded.indexOf("--") + 2); // Subtitle
             artikeltitelEncoded = artikeltitelEncoded.substring(0, artikeltitelEncoded.indexOf("--"));  // Title
@@ -1553,18 +1464,6 @@ public final class OrderAction extends DispatchAction {
             }
         }
         if (run == 1) {
-            artikeltitelEncoded = prepareWorldCat1(artikeltitelEncoded);
-            if (tmpWC.length() != 0) {
-                tmpWC = prepareWorldCat1(tmpWC);
-            }
-        }
-        if ((run == 2) && (pageForm.isCheckDidYouMean())) {
-            artikeltitelEncoded = prepareWorldCat2(artikeltitelEncoded);
-            if (tmpWC.length() != 0) {
-                tmpWC = prepareWorldCat2(tmpWC);
-            }
-        }
-        if ((run == 3) && (pageForm.isCheckDidYouMean())) {
             artikeltitelEncoded = prepareWorldCat1(artikeltitelEncoded);
             if (tmpWC.length() != 0) {
                 tmpWC = prepareWorldCat1(tmpWC);
@@ -1886,21 +1785,9 @@ public final class OrderAction extends DispatchAction {
 
             if (!pageForm.isAutocomplete() && pageForm.getRuns_autocomplete() == 0
                     && pageForm.getArtikeltitel().length() != 0) { // noch kein autocomplete ausgeführt...
-                //            *** Funktion AutoComplete ausführen
+                // ...Funktion AutoComplete ausführen
                 pageForm.setAutocomplete(autoComplete(pageForm, rq));
-                if (!pageForm.isAutocomplete()) {
 
-                    // falls bis jetzt keine googleDidYouMean Prüfung stattgefunden hat => ausführen
-                    if (pageForm.getDidYouMean().length() == 0) {
-                        final CodeUrl codeUrl = new CodeUrl();
-                        pageForm.setDidYouMean(googleDidYouMean(codeUrl.encodeLatin1(pageForm.getArtikeltitel())));
-                    }
-                    if (pageForm.getDidYouMean().length() != 0) { // autocomplete mit meinten_sie ausführen
-                        pageForm.setCheckDidYouMean(true);
-                        pageForm.setAutocomplete(autoComplete(pageForm, rq));
-                    }
-
-                }
                 // basically replaces greek alphabet to alpha, beta...
                 pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
 
@@ -2661,20 +2548,6 @@ public final class OrderAction extends DispatchAction {
         return http.getWebcontent(link, timeoutMs, retrys);
     }
 
-    private String googleDidYouMean(final String artikeltitelEncoded) {
-        String didYouMean = "";
-
-        final String googleLink = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=" + artikeltitelEncoded;
-        final String googleContent = getWebcontent(googleLink, TIMEOUT_1, RETRYS_3);
-
-        if (googleContent.contains("Meinten Sie:")) {
-            int start = googleContent.indexOf("Meinten Sie:");
-            start = googleContent.indexOf("q=", start) + 2;
-            didYouMean = googleContent.substring(start, googleContent.indexOf('&', start + 2));
-        }
-
-        return didYouMean;
-    }
 
     private String shortenGoogleSearchPhrase(String artikeltitel) {
 
