@@ -387,7 +387,7 @@
           	&nbsp;|
           	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
           	<logic:notEmpty name="b" property="benutzer.telefonnrg"> <bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
-          	<bean:write name="b" property="benutzer.anrede" />|
+          	<logic:equal name="b" property="benutzer.anrede" value="Frau"><bean:message key="adressen.anrede_frau" /></logic:equal><logic:equal name="b" property="benutzer.anrede" value="Herr"><bean:message key="adressen.anrede_herr" /></logic:equal>|
           	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
           	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
@@ -405,7 +405,7 @@
           	&nbsp;|
           	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
           	<logic:notEmpty name="b" property="benutzer.telefonnrg"><bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
-          	<bean:write name="b" property="benutzer.anrede" />|
+          	<logic:equal name="b" property="benutzer.anrede" value="Frau"><bean:message key="adressen.anrede_frau" /></logic:equal><logic:equal name="b" property="benutzer.anrede" value="Herr"><bean:message key="adressen.anrede_herr" /></logic:equal>|
           	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
           	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
@@ -423,7 +423,7 @@
           	&nbsp;|
           	<logic:notEmpty name="b" property="benutzer.telefonnrp"><bean:message key="showkontousers.telefon_p" />: <bean:write name="b" property="benutzer.telefonnrp" />|<logic:empty name="b" property="benutzer.telefonnrg">&nbsp;|</logic:empty></logic:notEmpty>
           	<logic:notEmpty name="b" property="benutzer.telefonnrg"><bean:message key="showkontousers.telefon_g" />: <bean:write name="b" property="benutzer.telefonnrg" />|&nbsp;|</logic:notEmpty>
-          	<bean:write name="b" property="benutzer.anrede" />|
+          	<logic:equal name="b" property="benutzer.anrede" value="Frau"><bean:message key="adressen.anrede_frau" /></logic:equal><logic:equal name="b" property="benutzer.anrede" value="Herr"><bean:message key="adressen.anrede_herr" /></logic:equal>|
           	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
           	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
