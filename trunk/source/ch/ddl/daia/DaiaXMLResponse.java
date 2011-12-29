@@ -127,8 +127,8 @@ public class DaiaXMLResponse {
                 atts.addAttribute("", "", "href", CDATA, URL + "library=" + b.getHolding().getKid().toString()); // URL to all holdings of library
                 hd.startElement("", "", "department", atts);
                 text = b.getHolding().getKonto().getBibliotheksname() + "\040"
-                + b.getHolding().getKonto().getOrt() + "\040"
-                + b.getHolding().getKonto().getLand();
+                        + b.getHolding().getKonto().getOrt() + "\040"
+                        + b.getHolding().getKonto().getLand();
                 text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "department");
@@ -153,9 +153,8 @@ public class DaiaXMLResponse {
                 // for now we use only one configuration: the country of the library
                 // TODO: allow multiple, configurable countries
                 atts.clear();
-                atts.addAttribute("", "", "id", CDATA, "country");
                 hd.startElement("", "", "limitation", atts);
-                text = b.getHolding().getKonto().getLand();
+                text = "Country: " + b.getHolding().getKonto().getLand();
                 text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "limitation");

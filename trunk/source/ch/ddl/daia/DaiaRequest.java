@@ -80,7 +80,7 @@ public class DaiaRequest {
                         final NodeList textTitelList = titelElement.getChildNodes();
                         String titel = "";
                         if (textTitelList.getLength() > 0) {
-                            titel = StringEscapeUtils.unescapeXml(((Node) textTitelList.item(0)).getNodeValue().trim());
+                            titel = StringEscapeUtils.unescapeXml(textTitelList.item(0).getNodeValue().trim());
                         }
 
                         // List of stock elements for one holding
@@ -113,7 +113,7 @@ public class DaiaRequest {
                                     final Element bemerkungenElement = (Element) bemerkungenList.item(0);
                                     final NodeList textBemerkungenList = bemerkungenElement.getChildNodes();
                                     if (textBemerkungenList.getLength() > 0) {
-                                        value = StringEscapeUtils.unescapeXml(((Node) textBemerkungenList.item(0))
+                                        value = StringEscapeUtils.unescapeXml(textBemerkungenList.item(0)
                                                 .getNodeValue().trim());
                                     } else {
                                         value = "";
@@ -127,7 +127,7 @@ public class DaiaRequest {
                                     final Element shelfmarkElement = (Element) shelfmarkList.item(0);
                                     final NodeList textShelfmarkList = shelfmarkElement.getChildNodes();
                                     if (textShelfmarkList.getLength() > 0) {
-                                        value = StringEscapeUtils.unescapeXml(((Node) textShelfmarkList.item(0))
+                                        value = StringEscapeUtils.unescapeXml(textShelfmarkList.item(0)
                                                 .getNodeValue().trim());
                                     } else {
                                         value = "";
@@ -147,7 +147,7 @@ public class DaiaRequest {
 
                                     final NodeList textKontoList = kontoElement.getChildNodes();
                                     if (textKontoList.getLength() > 0) {
-                                        value = StringEscapeUtils.unescapeXml(((Node) textKontoList.item(0)).getNodeValue()
+                                        value = StringEscapeUtils.unescapeXml(textKontoList.item(0).getNodeValue()
                                                 .trim());
                                     } else {
                                         value = "";
@@ -161,8 +161,8 @@ public class DaiaRequest {
                                     final Element storageElement = (Element) storageList.item(0);
                                     final NodeList textStorageList = storageElement.getChildNodes();
                                     if (textStorageList.getLength() > 0) {
-                                        value = ((Node) textStorageList.item(0)).getNodeValue().trim();
-                                        value = StringEscapeUtils.unescapeXml(((Node) textStorageList.item(0))
+                                        value = textStorageList.item(0).getNodeValue().trim();
+                                        value = StringEscapeUtils.unescapeXml(textStorageList.item(0)
                                                 .getNodeValue().trim());
                                     } else {
                                         value = "";
@@ -179,22 +179,17 @@ public class DaiaRequest {
                                     // Limitations
                                     final Element availableElement = (Element) availableList.item(0);
                                     final NodeList availableLimitationList = availableElement.getElementsByTagName("limitation");
-
+                                    value = "";
+                                    // there may be other limitations than country...
                                     for (int m = 0; m < availableLimitationList.getLength(); m++) {
-                                        String id = "";
                                         final Element countryElement = (Element) availableLimitationList.item(m);
-                                        id = countryElement.getAttribute("id");
-                                        // make sure limitation tag has id=country
-                                        if ("country".equals(id)) {
-                                            final NodeList textCountryList = countryElement.getChildNodes();
-                                            if (textCountryList.getLength() > 0) {
-                                                value = ((Node) textCountryList.item(0)).getNodeValue().trim();
-                                            } else {
-                                                value = "";
-                                            }
-                                            bestand.getHolding().getKonto().setLand(value);
+                                        final NodeList textCountryList = countryElement.getChildNodes();
+                                        if (textCountryList.getLength() > 0 && textCountryList.item(0).getNodeValue().startsWith("Country: ")) {
+                                            value = textCountryList.item(0).getNodeValue().substring(9).trim();
                                         }
                                     }
+
+                                    bestand.getHolding().getKonto().setLand(value);
 
                                     bestaende.add(bestand);
                                 }
