@@ -39,6 +39,7 @@
 					  hoverIntent: true,
 					  sticky: true,
 					  mouseOutClose: true,
+					  clickThrough:     true,
 					  closePosition: 'title',
 					  closeText: '<a href="test"><img src="img/drop.png" title="<bean:message key="showkontousers.close" />" alt="<bean:message key="showkontousers.close" />" /></a>',										  
 					  cluetipClass: 'jtip'}
@@ -377,7 +378,7 @@
       <td align="center"><bean:write name="b" property="deloptions" />&nbsp;</td>
       <td align="center">
         <logic:equal name="b" property="mediatype" value="Artikel">
-          <span class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
+          <a class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
           	&nbsp;<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.category.inhalt" />|
           	<bean:write name="b" property="benutzer.librarycard" />|
@@ -391,11 +392,12 @@
           	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
           	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
-          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" >
-          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></span>
+          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" 
+          	href="mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.journalorder" />:%20%22<% out.println(tit.replaceAll("\"", "").replaceAll("'", "")); %>%22">
+          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></a>
         </logic:equal>
         <logic:equal name="b" property="mediatype" value="Buch">
-        	<span class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
+        	<a class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
           	&nbsp;<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.category.inhalt" />|
           	<bean:write name="b" property="benutzer.librarycard" />|
@@ -409,11 +411,12 @@
           	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
           	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
-          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" >
-          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></span>
+          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" 
+          	href="mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookorder" />:%20%22<% out.println(tit.replaceAll("\"", "").replaceAll("'", "")); %>%22">
+          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></a>
         </logic:equal>
         <logic:equal name="b" property="mediatype" value="Teilkopie Buch">
-        	<span class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
+        	<a class="title" title="<a title='<bean:message key="showkontousers.info_edit" />' href='edituserdetail.do?method=changeuserdetails&bid=<bean:write name="b" property="benutzer.id" />'> <img src='img/edit.png' alt='<bean:message key="showkontousers.info_edit" />' /></a>
           	&nbsp;<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.category.inhalt" />|
           	<bean:write name="b" property="benutzer.librarycard" />|
@@ -427,8 +430,9 @@
           	<bean:write name="b" property="benutzer.vorname" /> <bean:write name="b" property="benutzer.name" />|
           	<bean:write name="b" property="benutzer.institut" />|<bean:write name="b" property="benutzer.abteilung" />|
           	<bean:write name="b" property="benutzer.adresse" />|<bean:write name="b" property="benutzer.adresszusatz" />|
-          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" >
-          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></span>
+          	<bean:write name="b" property="benutzer.land" /><logic:notEmpty name="b" property="benutzer.plz">-<bean:write name="b" property="benutzer.plz" /></logic:notEmpty> <bean:write name="b" property="benutzer.ort" />" 
+          	href="mailto:<bean:write name="b" property="benutzer.email" />?subject=<bean:message key="uebersicht.bookpartorder" />:%20%22<% out.println(tit.replaceAll("\"", "").replaceAll("'", "")); %>%22">
+          	<bean:write name="b" property="benutzer.name" /> <bean:write name="b" property="benutzer.vorname" /></a>
         </logic:equal>
         &nbsp;
       </td>
