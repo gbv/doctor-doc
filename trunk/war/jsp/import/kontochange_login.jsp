@@ -5,7 +5,7 @@
 <%--********  Konto wechseln  ********--%>
 <logic:present name="userinfo" property="kontos">
   <html:form action="/changekonto">
-    <select name="kid">
+    <select name="kid" onchange="this.form.submit()">
        <logic:iterate id="ui" name="userinfo" property="kontos">
            <option value="<bean:write name="ui" property="id" />"><bean:write name="ui" property="bibliotheksname" /></option>
          </logic:iterate>
