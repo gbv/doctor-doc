@@ -1412,18 +1412,15 @@ public final class OrderAction extends DispatchAction {
 
             // first correction, e.g. for β => beta
             final String artikeltitelWC = prepareWorldCat2(pageForm.getArtikeltitel());
-            int run = 0;
 
             // *** up to 2 runs on WorldCat
             // replace different versions of umlauts and use of "did you mean"
-            int x = 2;
 
-            while ((run < x) && (!autocomplete)) {
-                link = getWorldCatLinkBaseSearch(artikeltitelWC, pageForm, run);
+            for (int i = 0; i < 2 && !autocomplete; i++) {
+                link = getWorldCatLinkBaseSearch(artikeltitelWC, pageForm, i);
                 autocomplete = searchWorldCat(link, pageForm);
-                run = run + 1;
                 // checks for umlauts and avoids an additional run on WorldCat
-                if (run < x && !checkPrepareWorldCat1(artikeltitelWC)) { run = run + 1; }
+                if (i < 1 && !checkPrepareWorldCat1(artikeltitelWC)) { i++; }
             }
 
         }
