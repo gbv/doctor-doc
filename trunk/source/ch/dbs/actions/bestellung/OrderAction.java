@@ -294,7 +294,8 @@ public final class OrderAction extends DispatchAction {
 
                                 // Change this, to adapt to any major changes of GoogleScholars sourcecode.
                                 final String identifierHitsGoogleScholar =
-                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
+                                        "[PDF]</span> <a href=\"";
+                                //                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
 
                                 if (content.contains(identifierHitsGoogleScholar)) {
                                     ergebnis = true;
