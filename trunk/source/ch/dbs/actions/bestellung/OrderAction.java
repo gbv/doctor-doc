@@ -2027,7 +2027,7 @@ public final class OrderAction extends DispatchAction {
                 long id = 2; // Bestellstati
                 tty.setId(id);
                 pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
-                pageForm.setQuellen(lieferantenInstance.getListForKontoAndCountry(
+                pageForm.setQuellen(lieferantenInstance.getAll(
                         ui.getKonto().getLand(), ui.getKonto().getId(), cn.getConnection()));
                 id = 7; // Waehrungen
                 tty.setId(id);
@@ -2307,7 +2307,7 @@ public final class OrderAction extends DispatchAction {
                     pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
 
                     final Lieferanten lieferantenInstance = new Lieferanten();
-                    pageForm.setQuellen(lieferantenInstance.getListForKontoAndCountry(
+                    pageForm.setQuellen(lieferantenInstance.getAll(
                             ui.getKonto().getLand(), ui.getKonto().getId(), cn.getConnection()));
                     id = 7; // Waehrungen
                     tty.setId(id);

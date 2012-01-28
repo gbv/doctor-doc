@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2005 - 2012  Markus Fischer, Pascal Steiner
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -26,13 +26,9 @@ import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
+import ch.dbs.form.SupplierForm;
 
-/**
- * Abstract base class for entities having a {@link Long} unique
- * identifier, this provides the base functionality for them.
- * <p/>
- * @author Markus Fischer
- */
+
 public class Lieferanten extends AbstractIdEntity {
 
     private static final SimpleLogger LOG = new SimpleLogger(Lieferanten.class);
@@ -41,6 +37,7 @@ public class Lieferanten extends AbstractIdEntity {
     private Long kid;
     private String sigel;
     private String name;
+    private String emailILL;
     private String countryCode;
     private boolean land_allgemein;
 
@@ -55,30 +52,34 @@ public class Lieferanten extends AbstractIdEntity {
         this.setKid(rs.getLong("kid"));
         this.setSigel(rs.getString("siegel"));
         this.setName(rs.getString("lieferant"));
+        this.setEmailILL(rs.getString("emailILL"));
         this.setCountryCode(rs.getString("countryCode"));
         this.setLand_allgemein(rs.getBoolean("allgemein"));
     }
 
-    public List<Lieferanten> getListForKontoAndCountry(final String land, final Long kId, final Connection cn) {
+    /**
+     * Gets all private Lieferanten for a given account. These suppliers may be editable.
+     */
+    public List<SupplierForm> getPrivates(final Long kId, final Connection cn) {
 
-        final List<Lieferanten> list = new ArrayList<Lieferanten>();
+        final List<SupplierForm> result = new ArrayList<SupplierForm>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? OR `allgemein`='1' OR "
-                    + "`countryCode`=? ORDER BY siegel ASC, lieferant ASC");
+            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? ORDER BY siegel ASC, lieferant ASC");
             pstmt.setLong(1, kId);
-            pstmt.setString(2, land);
 
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                list.add(getLieferanten(rs));
+                final SupplierForm sf = new SupplierForm();
+                sf.setSupplier(new Lieferanten(rs));
+                result.add(sf);
             }
 
         } catch (final Exception e) {
-            LOG.error("getListForKontoAndCountry(): " + e.toString());
+            LOG.error("List<SupplierForm> getPrivates(final Long kId, final Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -96,8 +97,95 @@ public class Lieferanten extends AbstractIdEntity {
             }
         }
 
-        return list;
+        return result;
+    }
 
+    /**
+     * Gets all public Lieferanten for a given country and all general Lieferanten. These suppliers should not be editable.
+     */
+    public List<SupplierForm> getPublics(final String land, final Connection cn) {
+
+        final List<SupplierForm> result = new ArrayList<SupplierForm>();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid` IS NULL AND (`allgemein`='1' OR "
+                    + "`countryCode`=?) ORDER BY siegel ASC, lieferant ASC");
+
+            pstmt.setString(1, land);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                final SupplierForm sf = new SupplierForm();
+                sf.setSupplier(new Lieferanten(rs));
+                result.add(sf);
+            }
+
+        } catch (final Exception e) {
+            LOG.error("List<SupplierForm> getPublics(final String land, final Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets all private and public Lieferanten for a given account and country.
+     */
+    public List<Lieferanten> getAll(final String land, final Long kId, final Connection cn) {
+
+        final List<Lieferanten> result = new ArrayList<Lieferanten>();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? OR `allgemein`='1' OR "
+                    + "`countryCode`=? ORDER BY siegel ASC, lieferant ASC");
+            pstmt.setLong(1, kId);
+            pstmt.setString(2, land);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                result.add(new Lieferanten(rs));
+            }
+
+        } catch (final Exception e) {
+            LOG.error("getAll(): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return result;
     }
 
     public Lieferanten getLieferantFromName(final String lName, final Connection cn) {
@@ -113,7 +201,7 @@ public class Lieferanten extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                l = getLieferanten(rs);
+                l = new Lieferanten(rs);
             }
 
         } catch (final Exception e) {
@@ -152,7 +240,7 @@ public class Lieferanten extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                l = getLieferanten(rs);
+                l = new Lieferanten(rs);
             }
 
         } catch (final Exception e) {
@@ -178,78 +266,48 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    private Lieferanten getLieferanten(final ResultSet rs) throws Exception {
-
-        final Lieferanten l = new Lieferanten();
-
-        try {
-
-            l.setLid(rs.getLong("LID"));
-            l.setKid(rs.getLong("kid"));
-            l.setSigel(rs.getString("siegel"));
-            l.setName(rs.getString("lieferant"));
-            l.setCountryCode(rs.getString("countryCode"));
-            l.setLand_allgemein(rs.getBoolean("allgemein"));
-
-        } catch (final Exception e) {
-            LOG.error("getLieferanten(ResultSet rs): " + e.toString());
-        }
-
-        return l;
-    }
-
 
     public Long getKid() {
         return kid;
     }
-
-
     public void setKid(final Long kid) {
         this.kid = kid;
     }
-
     public String getCountryCode() {
         return countryCode;
     }
-
     public void setCountryCode(final String countryCode) {
         this.countryCode = countryCode;
     }
-
     public boolean isLand_allgemein() {
         return land_allgemein;
     }
-
     public void setLand_allgemein(final boolean land_allgemein) {
         this.land_allgemein = land_allgemein;
     }
-
     public Long getLid() {
         return lid;
     }
-
     public void setLid(final Long lid) {
         this.lid = lid;
     }
-
     public String getName() {
         return name;
     }
-
-
     public void setName(final String name) {
         this.name = name;
     }
-
-
     public String getSigel() {
         return sigel;
     }
-
-
     public void setSigel(final String sigel) {
         this.sigel = sigel;
     }
-
+    public String getEmailILL() {
+        return emailILL;
+    }
+    public void setEmailILL(final String emailILL) {
+        this.emailILL = emailILL;
+    }
 
 }

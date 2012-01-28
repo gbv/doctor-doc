@@ -27,6 +27,7 @@
 		<form-bean name="GbvSruForm" type="ch.dbs.form.GbvSruForm" />
 		<form-bean name="PreisWaehrungForm" type="ch.dbs.form.PreisWaehrungForm" />
 		<form-bean name="SearchesForm" type="ch.dbs.form.SearchesForm" />
+		<form-bean name="SupplierForm" type="ch.dbs.form.SupplierForm" />
 	</form-beans>
 
 	<global-exceptions />
@@ -164,7 +165,7 @@
 		</action>
 
 		<!--
-			*************************************************Kontoübersicht*************************************************
+			*************************************************Bestellübersicht*************************************************
 		-->
 
 		<action path="/listkontobestellungen" name="OverviewForm"
@@ -328,6 +329,27 @@
 			<forward name="success" path="/jsp/billinglist.jsp" />
 			<forward name="failure" path="/error.do" />
 		</action>
+		
+		<!--
+			*************************************************Lieferantenverwaltung*************************************************
+		-->
+		
+		<action path="/listsuppliers" input="/jsp/suppliers.jsp" name="SupplierForm"
+			parameter="method" scope="request" type="ch.dbs.actions.suppliers.PrepareList">
+			<forward name="success" path="/suppliers.do" />
+			<forward name="failure" path="/error.do" />
+		</action>
+		
+		<action forward="/jsp/suppliers.jsp" path="/suppliers" />
+		
+		<action path="/supplier" input="/jsp/suppliers.jsp" name="SupplierForm"
+			parameter="method" scope="request" type="ch.dbs.actions.suppliers.Supplier">
+			<forward name="success" path="/listsuppliers.do" />
+			<forward name="edit" path="/supplieredit.do" />
+			<forward name="failure" path="/error.do" />
+		</action>
+		
+		<action forward="/jsp/supplieredit.jsp" path="/supplieredit" />
 
 		<!--
 			*************************************************ISSN-Search*************************************************

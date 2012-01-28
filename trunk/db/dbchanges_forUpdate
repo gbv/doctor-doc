@@ -1,3 +1,7 @@
+-- Revision 198 --
+
+ALTER TABLE `lieferanten` ADD `emailILL` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER `lieferant` 
+
 -- Revision 160 --
 
 ALTER TABLE `konto`  ADD `ids_id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `gbv_requester_id`,  ADD `ids_passwort` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `ids_id`
