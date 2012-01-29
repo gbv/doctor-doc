@@ -18,7 +18,6 @@
 package ch.dbs.actions.suppliers;
 
 import java.sql.Connection;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +28,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import util.Auth;
-import ch.dbs.entity.Countries;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
@@ -60,19 +58,13 @@ public class Supplier extends DispatchAction {
                 final Text cn = new Text();
 
                 // make sure sid is not null and is editable
-                if (validLieferant(sid, ui, cn.getConnection())) {
+                if (editable(sid, ui, cn.getConnection())) {
 
                     Lieferanten sup = new Lieferanten();
-                    final Countries country = new Countries();
 
                     sup = sup.getLieferantFromLid(sid, cn.getConnection());
 
-                    final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-
-                    // TODO: remove "andere"
-
                     rq.setAttribute("supplier", sup);
-                    rq.setAttribute("countries", allPossCountries);
 
                     forward = "edit";
 
@@ -114,14 +106,8 @@ public class Supplier extends DispatchAction {
                 final Text cn = new Text();
 
                 final Lieferanten sup = new Lieferanten();
-                final Countries country = new Countries();
-
-                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-
-                // TODO: remove "andere"
 
                 rq.setAttribute("supplier", sup);
-                rq.setAttribute("countries", allPossCountries);
 
                 forward = "create";
 
@@ -152,7 +138,6 @@ public class Supplier extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final SupplierForm sf = (SupplierForm) form;
 
-
         // catching session timeouts
         if (auth.isLogin(rq)) {
             // restrict editing suppliers to librarians and admins only
@@ -160,15 +145,19 @@ public class Supplier extends DispatchAction {
 
                 final Text cn = new Text();
 
-                // TODO: update
+                // update
                 if (sf.getLid() != null) {
 
                     // make sure lid is editable
-                    if (validLieferant(sf.getLid().toString(), ui, cn.getConnection())) {
+                    if (editable(sf.getLid().toString(), ui, cn.getConnection())) {
 
                         Lieferanten sup = new Lieferanten();
-
                         sup = sup.getLieferantFromLid(sf.getLid().toString(), cn.getConnection());
+
+                        // set Lieferanten values from SupplierForm
+                        sup.setFormValues(sup, sf, ui);
+
+                        sup.update(sup, cn.getConnection());
 
                         rq.setAttribute("supplier", sup);
 
@@ -181,7 +170,14 @@ public class Supplier extends DispatchAction {
                     }
 
                 } else {
-                    // TODO: save as new
+                    // save new supplier
+                    final Lieferanten sup = new Lieferanten();
+
+                    // set Lieferanten values from SupplierForm
+                    sup.setFormValues(sup, sf, ui);
+
+                    sup.save(sup, cn.getConnection());
+
                     forward = "success";
                 }
 
@@ -220,11 +216,11 @@ public class Supplier extends DispatchAction {
                 final Text cn = new Text();
 
                 // make sure sid is not null and is editable
-                if (validLieferant(sid, ui, cn.getConnection())) {
+                if (deleteable(sid, ui, cn.getConnection())) {
 
+                    // delete supplier
                     final Lieferanten sup = new Lieferanten();
-
-                    // TODO: delete supplier
+                    sup.delete(sid, cn.getConnection());
 
                     forward = "success";
 
@@ -252,12 +248,45 @@ public class Supplier extends DispatchAction {
         return mp.findForward(forward);
     }
 
-    private boolean validLieferant(final String sid, final UserInfo ui, final Connection connection) {
+    private boolean editable(final String sid, final UserInfo ui, final Connection cn) {
 
         boolean result = false;
 
         if (sid != null) {
-            result = true;
+
+            // get original supplier from lid
+            Lieferanten l = new Lieferanten();
+            l = l.getLieferantFromLid(sid, cn);
+
+            // make sure we got an supplier back...
+            if (l.getLid() != null) {
+
+                // we have a matching KID => individual supplier
+                if ((l.getKid() != null && l.getKid().equals(ui.getKonto().getId()))
+                        // suppliers from the own country
+                        || ui.getKonto().getLand().equals(l.getCountryCode())) {
+                    result = true;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private boolean deleteable(final String sid, final UserInfo ui, final Connection cn) {
+
+        boolean result = false;
+
+        if (sid != null) {
+
+            // get original supplier from lid
+            Lieferanten l = new Lieferanten();
+            l = l.getLieferantFromLid(sid, cn);
+
+            // we have a matching KID => individual supplier
+            if (l.getKid() != null && l.getKid().equals(ui.getKonto().getId())) {
+                result = true;
+            }
         }
 
         return result;

@@ -46,22 +46,20 @@
 		<td><bean:message key="adressen.email" />:</td>
 		<td><input type="text" name="emailILL" value="<bean:write name="supplier" property="emailILL" />" size="50" maxlength="100" /></td>
 	</tr>
-	<logic:equal name="supplier" property="kid" value="0">
+	<logic:notEqual name="supplier" property="kid" value="0">
+		<tr>
+			<td>
+				<bean:message key="supplier.private" />:
+			</td>
+			<td>
+				<input type="checkbox" name="individual" <logic:notEqual name="supplier" property="kid" value="0">checked="checked"</logic:notEqual> />
+			</td>
+		</tr>
+	</logic:notEqual>
 	<tr>
-		<td><bean:message key="suppliers.show4country" />:</td>
-		<td>
-			<select name="countryCode">
-      			<option value="0" selected="selected"><bean:message key="suppliers.all" /></option>
-					<logic:iterate id="c" name="countries">
-					<bean:define id="tmp" name="supplier" property="countryCode" type="java.lang.String"/>
-		    			<option value="<bean:write name="c" property="countrycode" />"<logic:equal name="c" property="countrycode" value="<%=tmp%>"> selected</logic:equal>><bean:write name="c" property="countryname" /></option>
-		   			</logic:iterate>
-		   	</select>
+		<td colspan="2">
+			<input type="hidden" name="lid" value="<bean:write name="supplier" property="lid" />" /><br />
 		</td>
-	</tr>
-	</logic:equal>
-	<tr>
-		<td><input type="hidden" name="lid" value="<bean:write name="supplier" property="lid" />" /><br /></td>
 	</tr>
 	<tr>
 		<td><input type="submit" value="<bean:message key="bestellform.save" />" /></td>

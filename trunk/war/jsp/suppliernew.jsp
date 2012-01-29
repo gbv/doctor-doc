@@ -47,14 +47,11 @@
 		<td><input type="text" name="emailILL" value="<bean:write name="supplier" property="emailILL" />" size="50" maxlength="100" /></td>
 	</tr>
 	<tr>
-		<td><bean:message key="suppliers.show4country" />:</td>
 		<td>
-			<select name="countryCode">
-      			<option value="0" selected="selected"><bean:message key="suppliers.all" /></option>
-					<logic:iterate id="c" name="countries">
-		    			<option value="<bean:write name="c" property="countrycode" />"><bean:write name="c" property="countryname" /></option>
-		   			</logic:iterate>
-		   	</select>
+			<bean:message key="supplier.private" />:
+		</td>
+		<td>
+			<input type="checkbox" name="individual" checked="checked" />
 		</td>
 	</tr>
 	<tr>

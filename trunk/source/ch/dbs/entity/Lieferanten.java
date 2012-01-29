@@ -27,6 +27,7 @@ import java.util.List;
 import org.grlea.log.SimpleLogger;
 
 import ch.dbs.form.SupplierForm;
+import ch.dbs.form.UserInfo;
 
 
 public class Lieferanten extends AbstractIdEntity {
@@ -264,6 +265,149 @@ public class Lieferanten extends AbstractIdEntity {
 
         return l;
 
+    }
+
+    public void update(final Lieferanten l, final Connection cn) {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("UPDATE `lieferanten` SET `siegel` = ? , `lieferant` = ? , `emailILL` = ? , "
+                    + "`countryCode` = ? , `allgemein` = ? , `KID` = ? WHERE `lieferanten`.`LID` =?");
+            pstmt.setString(1, l.getSigel());
+            pstmt.setString(2, l.getName());
+            pstmt.setString(3, l.getEmailILL());
+            pstmt.setString(4, l.getCountryCode());
+            pstmt.setBoolean(5, l.isLand_allgemein());
+            if (l.getKid() != null) {
+                pstmt.setLong(6, l.getKid());
+            } else {
+                pstmt.setString(6, null);
+            }
+            pstmt.setLong(7, l.getLid());
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("update(final Lieferanten l, final Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
+
+
+    public void save(final Lieferanten l, final Connection cn) {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("INSERT INTO `lieferanten` (`siegel` , `lieferant` , `emailILL` , "
+                    + "`countryCode` , `allgemein` , `KID`) VALUES (?, ?, ?, ?, ?, ?)");
+            pstmt.setString(1, l.getSigel());
+            pstmt.setString(2, l.getName());
+            pstmt.setString(3, l.getEmailILL());
+            pstmt.setString(4, l.getCountryCode());
+            pstmt.setBoolean(5, l.isLand_allgemein());
+            if (l.getKid() != null) {
+                pstmt.setLong(6, l.getKid());
+            } else {
+                pstmt.setString(6, null);
+            }
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("save(final Lieferanten l, final Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
+
+
+    public void delete(final String sid, final Connection cn) {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("DELETE FROM `lieferanten` WHERE `LID` =?");
+            pstmt.setString(1, sid);
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("delete(final String sid, final Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
+
+    public void setFormValues(final Lieferanten sup, final SupplierForm sf, final UserInfo ui) {
+
+        if (!isEmpty(sf.getKid())) {
+            sup.setKid(sf.getKid());
+        } else {
+            sup.setKid(null);
+        }
+        if (!isEmpty(sf.getSigel())) {
+            sup.setSigel(sf.getSigel());
+        } else {
+            sup.setSigel("");
+        }
+        if (!isEmpty(sf.getName())) {
+            sup.setName(sf.getName());
+        } else {
+            sup.setName("k.A.");
+        }
+        if (!isEmpty(sf.getEmailILL())) {
+            sup.setEmailILL(sf.getEmailILL());
+        } else {
+            sup.setEmailILL("");
+        }
+        // choose between individual suppliers and suppliers for the country of the account
+        if (sf.isIndividual()) {
+            sup.setKid(ui.getKonto().getId());
+            sup.setLand_allgemein(false);
+            sup.setCountryCode("");
+        } else {
+            sup.setCountryCode(ui.getKonto().getLand());
+            sup.setLand_allgemein(false);
+            sup.setKid(null);
+        }
+
+    }
+
+    private boolean isEmpty(final String input) {
+
+        boolean result = false;
+
+        if (input == null || "".equals(input.trim())) {
+            result = true;
+        }
+
+        return result;
+    }
+
+    private boolean isEmpty(final Long input) {
+
+        boolean result = false;
+
+        if (input == null || "0".equals(input)) {
+            result = true;
+        }
+
+        return result;
     }
 
 

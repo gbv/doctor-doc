@@ -33,7 +33,7 @@ public final class SupplierForm extends ValidatorForm {
     private String emailILL;
     private String countryCode;
     private boolean land_allgemein;
-
+    private boolean individual; // used for checkbox in UI
 
 
     public SupplierForm() {
@@ -48,6 +48,9 @@ public final class SupplierForm extends ValidatorForm {
         this.setEmailILL(l.getEmailILL());
         this.setCountryCode(l.getCountryCode());
         this.setLand_allgemein(l.isLand_allgemein());
+        if (l.getKid() != null) {
+            this.setIndividual(true);
+        }
     }
 
 
@@ -93,6 +96,12 @@ public final class SupplierForm extends ValidatorForm {
     }
     public void setLand_allgemein(final boolean land_allgemein) {
         this.land_allgemein = land_allgemein;
+    }
+    public boolean isIndividual() {
+        return individual;
+    }
+    public void setIndividual(final boolean individual) {
+        this.individual = individual;
     }
 
 }
