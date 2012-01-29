@@ -34,6 +34,7 @@ import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
+import ch.dbs.form.SupplierForm;
 import ch.dbs.form.UserInfo;
 
 
@@ -68,15 +69,120 @@ public class Supplier extends DispatchAction {
 
                     final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
 
+                    // TODO: remove "andere"
+
                     rq.setAttribute("supplier", sup);
                     rq.setAttribute("countries", allPossCountries);
 
-                    forward = "success";
+                    forward = "edit";
 
                 } else {
                     final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                    m.setLink("searchfree.do");
+                    m.setLink("listsuppliers.do");
                     rq.setAttribute("errormessage", m);
+                }
+
+                cn.close();
+            }  else {
+                final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                m.setLink("searchfree.do");
+                rq.setAttribute("errormessage", m);
+            }
+
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute("ActiveMenus", mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
+
+        return mp.findForward(forward);
+    }
+
+    public ActionForward create(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+
+        String forward = "failure";
+        final Auth auth = new Auth();
+
+        // catching session timeouts
+        if (auth.isLogin(rq)) {
+            // restrict editing suppliers to librarians and admins only
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+
+                final Text cn = new Text();
+
+                final Lieferanten sup = new Lieferanten();
+                final Countries country = new Countries();
+
+                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+
+                // TODO: remove "andere"
+
+                rq.setAttribute("supplier", sup);
+                rq.setAttribute("countries", allPossCountries);
+
+                forward = "create";
+
+                cn.close();
+
+            }  else {
+                final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                m.setLink("searchfree.do");
+                rq.setAttribute("errormessage", m);
+            }
+
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute("ActiveMenus", mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
+
+        return mp.findForward(forward);
+    }
+
+    public ActionForward save(final ActionMapping mp, final ActionForm form,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+
+        String forward = "failure";
+        final Auth auth = new Auth();
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final SupplierForm sf = (SupplierForm) form;
+
+
+        // catching session timeouts
+        if (auth.isLogin(rq)) {
+            // restrict editing suppliers to librarians and admins only
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+
+                final Text cn = new Text();
+
+                // TODO: update
+                if (sf.getLid() != null) {
+
+                    // make sure lid is editable
+                    if (validLieferant(sf.getLid().toString(), ui, cn.getConnection())) {
+
+                        Lieferanten sup = new Lieferanten();
+
+                        sup = sup.getLieferantFromLid(sf.getLid().toString(), cn.getConnection());
+
+                        rq.setAttribute("supplier", sup);
+
+                        forward = "success";
+
+                    } else {
+                        final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                        m.setLink("listsuppliers.do");
+                        rq.setAttribute("errormessage", m);
+                    }
+
+                } else {
+                    // TODO: save as new
+                    forward = "success";
                 }
 
                 cn.close();
@@ -124,7 +230,7 @@ public class Supplier extends DispatchAction {
 
                 } else {
                     final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                    m.setLink("searchfree.do");
+                    m.setLink("listsuppliers.do");
                     rq.setAttribute("errormessage", m);
                 }
 

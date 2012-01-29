@@ -29,7 +29,12 @@
 
 <br />
 
+<h3><bean:message key="suppliers.new" /></h3>
+
+<a href="supplier.do?method=create"><bean:message key="suppliers.new" /></a>
+
 <h3><bean:message key="suppliers.privates" /></h3>
+<logic:notEmpty name="privsuppliers">
 <table border="1">
 	<tr>
 		<th id="th-left">
@@ -51,27 +56,31 @@
 	<logic:iterate id="priv" name="privsuppliers">
 		<tr>
 			<td>
-				<a href="supplier.do?method=edit&sid=<bean:write name="priv" property="supplier.lid" />">
+				<a href="supplier.do?method=edit&sid=<bean:write name="priv" property="lid" />">
           		<img border="0" src="img/edit.png" alt="<bean:message key="suppliers.edit" />" title="<bean:message key="suppliers.edit" />"/></a>
 			</td>
 			<td>
-				<bean:write name="priv" property="supplier.sigel" />
+				<bean:write name="priv" property="sigel" />
 			</td>
 			<td>
-				<bean:write name="priv" property="supplier.name" />
+				<bean:write name="priv" property="name" />
 			</td>
 			<td>
-				<bean:write name="priv" property="supplier.emailILL" />
+				<bean:write name="priv" property="emailILL" />
 			</td>
 			<td>
-				<a href="supplier.do?method=delete&sid=<bean:write name="priv" property="supplier.lid" />"><img border="0" src="img/drop.png" alt="<bean:message key="suppliers.delete" />" title="<bean:message key="suppliers.delete" />"/></a>
+				<a href="supplier.do?method=delete&sid=<bean:write name="priv" property="lid" />"><img border="0" src="img/drop.png" alt="<bean:message key="suppliers.delete" />" title="<bean:message key="suppliers.delete" />"/></a>
 			</td>
 		</tr>
 	</logic:iterate>
 </table>
+</logic:notEmpty>
+<logic:empty name="privsuppliers">
+	<bean:message key="suppliers.none" />
+</logic:empty>
 
 <h3><bean:message key="suppliers.publics" /></h3>
-
+<logic:notEmpty name="pubsuppliers">
 <table border="1">
 	<tr>
 		<th id="th-left">
@@ -87,46 +96,41 @@
 			<bean:message key="adressen.email" />
 		</th>
 		<th id="th-left">
-			<bean:message key="modifykonto.land" />
+			<bean:message key="suppliers.show4country" />
 		</th>
 	</tr>
 	<logic:iterate id="pub" name="pubsuppliers">
 		<tr>
 			<td>
-				<a href="supplier.do?method=edit&sid=<bean:write name="pub" property="supplier.lid" />">
-          		<img border="0" src="img/edit.png" alt="<bean:message key="suppliers.edit" />" title="<bean:message key="suppliers.edit" />"/></a>
+				<logic:notEqual name="pub" property="land_allgemein" value="true">
+					<a href="supplier.do?method=edit&sid=<bean:write name="pub" property="lid" />">
+	          		<img border="0" src="img/edit.png" alt="<bean:message key="suppliers.edit" />" title="<bean:message key="suppliers.edit" />"/></a>
+          		</logic:notEqual>
 			</td>
 			<td>
-				<bean:write name="pub" property="supplier.sigel" />
+				<bean:write name="pub" property="sigel" />
 			</td>
 			<td>
-				<bean:write name="pub" property="supplier.name" />
+				<bean:write name="pub" property="name" />
 			</td>
 			<td>
-				<bean:write name="pub" property="supplier.emailILL" />
+				<bean:write name="pub" property="emailILL" />
 			</td>
 			<td>
-				<logic:notEmpty name="pub" property="supplier.countryCode">
-					<bean:write name="pub" property="supplier.countryCode" />
+				<logic:notEmpty name="pub" property="countryCode">
+					<bean:write name="pub" property="countryCode" />
 				</logic:notEmpty>
-				<logic:empty name="pub" property="supplier.countryCode">
+				<logic:empty name="pub" property="countryCode">
 					<bean:message key="suppliers.all" />
 				</logic:empty>
 			</td>
 		</tr>
 	</logic:iterate>
 </table>
-
-<!-- 
-
-				<select name="land">
-      				<option value="0" selected="selected"><bean:message key="modifykonto.countrychoose" /></option>
-						<logic:iterate id="c" name="countries">
-						<bean:define id="tmp" name="pub" property="supplier.countryCode" type="java.lang.String"/>
-		     				<option value="<bean:write name="c" property="countrycode" />"<logic:equal name="c" property="countrycode" value="<%=tmp%>"> selected</logic:equal>><bean:write name="c" property="countryname" /></option>
-		   				</logic:iterate>
-		   		</select>
- -->
+</logic:notEmpty>
+<logic:empty name="pubsuppliers">
+	<bean:message key="suppliers.none" />
+</logic:empty>
 
 <p><br /></p>
 

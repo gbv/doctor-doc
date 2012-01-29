@@ -73,8 +73,8 @@ public class Lieferanten extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final SupplierForm sf = new SupplierForm();
-                sf.setSupplier(new Lieferanten(rs));
+                final Lieferanten l = new Lieferanten(rs);
+                final SupplierForm sf = new SupplierForm(l);
                 result.add(sf);
             }
 
@@ -118,8 +118,8 @@ public class Lieferanten extends AbstractIdEntity {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final SupplierForm sf = new SupplierForm();
-                sf.setSupplier(new Lieferanten(rs));
+                final Lieferanten l = new Lieferanten(rs);
+                final SupplierForm sf = new SupplierForm(l);
                 result.add(sf);
             }
 

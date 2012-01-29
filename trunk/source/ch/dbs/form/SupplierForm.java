@@ -17,16 +17,22 @@
 
 package ch.dbs.form;
 
-import org.apache.struts.action.ActionForm;
+import org.apache.struts.validator.ValidatorForm;
 
 import ch.dbs.entity.Lieferanten;
 
 
-public final class SupplierForm extends ActionForm {
+public final class SupplierForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
 
-    private transient Lieferanten supplier;
+    private Long lid;
+    private Long kid;
+    private String sigel;
+    private String name;
+    private String emailILL;
+    private String countryCode;
+    private boolean land_allgemein;
 
 
 
@@ -34,12 +40,59 @@ public final class SupplierForm extends ActionForm {
 
     }
 
-
-    public Lieferanten getSupplier() {
-        return supplier;
+    public SupplierForm(final Lieferanten l) {
+        this.setLid(l.getLid());
+        this.setKid(l.getKid());
+        this.setSigel(l.getSigel());
+        this.setName(l.getName());
+        this.setEmailILL(l.getEmailILL());
+        this.setCountryCode(l.getCountryCode());
+        this.setLand_allgemein(l.isLand_allgemein());
     }
-    public void setSupplier(final Lieferanten supplier) {
-        this.supplier = supplier;
+
+
+
+    public Long getLid() {
+        return lid;
+    }
+    public void setLid(final Long lid) {
+        this.lid = lid;
+    }
+    public Long getKid() {
+        return kid;
+    }
+    public void setKid(final Long kid) {
+        this.kid = kid;
+    }
+    public String getSigel() {
+        return sigel;
+    }
+    public void setSigel(final String sigel) {
+        this.sigel = sigel;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(final String name) {
+        this.name = name;
+    }
+    public String getEmailILL() {
+        return emailILL;
+    }
+    public void setEmailILL(final String emailILL) {
+        this.emailILL = emailILL;
+    }
+    public String getCountryCode() {
+        return countryCode;
+    }
+    public void setCountryCode(final String countryCode) {
+        this.countryCode = countryCode;
+    }
+    public boolean isLand_allgemein() {
+        return land_allgemein;
+    }
+    public void setLand_allgemein(final boolean land_allgemein) {
+        this.land_allgemein = land_allgemein;
     }
 
 }
