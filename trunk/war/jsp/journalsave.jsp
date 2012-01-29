@@ -115,7 +115,7 @@ function wahrung(a)
 </logic:present>
 
 
-<a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>?subject=<bean:message arg0="<%=appName%>" key="save.newsupplier_email" />"><bean:message key="save.newsupplier" /></a>
+<a href="supplier.do?method=create"><bean:message key="suppliers.new" /></a>
   
 
   <table>
