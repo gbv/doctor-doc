@@ -17,13 +17,20 @@
 
 package ch.dbs.form;
 
-import org.apache.struts.validator.ValidatorForm;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
+import org.apache.struts.validator.ValidatorForm;
+import org.grlea.log.SimpleLogger;
+
+import ch.dbs.entity.Konto;
 import ch.dbs.entity.Lieferanten;
 
 
 public final class SupplierForm extends ValidatorForm {
 
+    private static final SimpleLogger LOG = new SimpleLogger(SupplierForm.class);
     private static final long serialVersionUID = 1L;
 
     private Long lid;
@@ -33,7 +40,12 @@ public final class SupplierForm extends ValidatorForm {
     private String emailILL;
     private String countryCode;
     private boolean land_allgemein;
+
+    // additional parameters
     private boolean individual; // used for checkbox in UI
+    private boolean showprivsuppliers;
+    private boolean showpubsuppliers;
+    private boolean changedsettings; // hidden value in form to indicate we have changed settings
 
 
     public SupplierForm() {
@@ -53,7 +65,29 @@ public final class SupplierForm extends ValidatorForm {
         }
     }
 
+    public void updateAccount(final SupplierForm sf, final Konto konto, final Connection cn) {
 
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("UPDATE `doctor-doc_com_dbs`.`konto` SET `showprivsuppliers` = ?, "
+                    + "`showpubsuppliers` = ? WHERE `konto`.`KID` = ?");
+            pstmt.setBoolean(1, sf.isShowprivsuppliers());
+            pstmt.setBoolean(2, sf.isShowpubsuppliers());
+            pstmt.setLong(3, konto.getId());
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("updateAccount(final SupplierForm sf, final Konto konto, final Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
 
     public Long getLid() {
         return lid;
@@ -102,6 +136,24 @@ public final class SupplierForm extends ValidatorForm {
     }
     public void setIndividual(final boolean individual) {
         this.individual = individual;
+    }
+    public boolean isShowprivsuppliers() {
+        return showprivsuppliers;
+    }
+    public void setShowprivsuppliers(final boolean showprivsuppliers) {
+        this.showprivsuppliers = showprivsuppliers;
+    }
+    public boolean isShowpubsuppliers() {
+        return showpubsuppliers;
+    }
+    public void setShowpubsuppliers(final boolean showpubsuppliers) {
+        this.showpubsuppliers = showpubsuppliers;
+    }
+    public boolean isChangedsettings() {
+        return changedsettings;
+    }
+    public void setChangedsettings(final boolean changedsettings) {
+        this.changedsettings = changedsettings;
     }
 
 }

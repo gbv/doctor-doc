@@ -47,6 +47,7 @@ public class PrepareList extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final SupplierForm sf = (SupplierForm) form;
 
         // catching session timeouts
         if (auth.isLogin(rq)) {
@@ -62,6 +63,18 @@ public class PrepareList extends DispatchAction {
 
                 rq.setAttribute("pubsuppliers", pubSuppliers);
                 rq.setAttribute("privsuppliers", privSuppliers);
+                rq.setAttribute("conf", sf);
+
+                // TODO: control that in any case we have at least the general suppliers
+
+                // we do have changed settings for this account
+                if (sf.isChangedsettings()) {
+                    if (privSuppliers.isEmpty() && !sf.isShowpubsuppliers()) {
+                        sf.setShowpubsuppliers(true);
+                    }
+                    sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
+                    // TODO: get back updated account and set it into ui in session
+                }
 
                 forward = "success";
 

@@ -29,11 +29,18 @@
 
 <br />
 
+<form action="" method="post">
+
 <h3><bean:message key="suppliers.new" /></h3>
 
 <a href="supplier.do?method=create"><bean:message key="suppliers.new" /></a>
 
 <h3><bean:message key="suppliers.privates" /></h3>
+
+<p><input type="checkbox" name="showprivsuppliers" <logic:equal name="conf" property="showprivsuppliers" value="true">checked="checked"</logic:equal> /> <bean:message key="suppliers.showprivates" /></p>
+<input type="hidden" name="changedsettings" value="true" />
+<p><input type="submit" value="<bean:message key="bestellform.save" />" /></p>
+
 <logic:notEmpty name="privsuppliers">
 <table border="1">
 	<tr>
@@ -80,6 +87,10 @@
 </logic:empty>
 
 <h3><bean:message key="suppliers.publics" /></h3>
+
+<p><input type="checkbox" name="showpubsuppliers" <logic:equal name="conf" property="showpubsuppliers" value="true">checked="checked"</logic:equal> /> <bean:message key="suppliers.showpublics" /></p>
+<p><input type="submit" value="<bean:message key="bestellform.save" />" /></p>
+
 <logic:notEmpty name="pubsuppliers">
 <table border="1">
 	<tr>
@@ -131,6 +142,8 @@
 <logic:empty name="pubsuppliers">
 	<bean:message key="suppliers.none" />
 </logic:empty>
+
+</form>
 
 <p><br /></p>
 
