@@ -59,6 +59,30 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
     /**
+     * Gets all private Lieferanten for a given account. This is a wrapper method, executing the
+     * appropriate method depending on the settings for an account.
+     */
+    public List<Lieferanten> getLieferanten(final UserInfo ui, final Connection cn) {
+
+        List<Lieferanten> result = new ArrayList<Lieferanten>();
+
+        // three cases:
+
+        if (ui.getKonto().isShowprivsuppliers() && ui.getKonto().isShowpubsuppliers()) {
+            // show private and public suppliers
+            result = getAll(ui.getKonto().getLand(), ui.getKonto().getId(), cn);
+        } else if (ui.getKonto().isShowprivsuppliers() && !ui.getKonto().isShowpubsuppliers()) {
+            // show private suppliers
+            result = getPrivate(ui.getKonto().getId(), cn);
+        } else {
+            // show public suppliers
+            result = getPublic(ui.getKonto().getLand(), cn);
+        }
+
+        return result;
+    }
+
+    /**
      * Gets all private Lieferanten for a given account. These suppliers may be editable.
      */
     public List<SupplierForm> getPrivates(final Long kId, final Connection cn) {
@@ -147,9 +171,96 @@ public class Lieferanten extends AbstractIdEntity {
     }
 
     /**
+     * Gets all private Lieferanten for a given account. These suppliers may be editable.
+     */
+    private List<Lieferanten> getPrivate(final Long kId, final Connection cn) {
+
+        final List<Lieferanten> result = new ArrayList<Lieferanten>();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid`=? ORDER BY siegel ASC, lieferant ASC");
+            pstmt.setLong(1, kId);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                final Lieferanten l = new Lieferanten(rs);
+                result.add(l);
+            }
+
+        } catch (final Exception e) {
+            LOG.error("List<SupplierForm> getPrivates(final Long kId, final Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets all public Lieferanten for a given country and all general Lieferanten. These suppliers should not be editable.
+     */
+    private List<Lieferanten> getPublic(final String land, final Connection cn) {
+
+        final List<Lieferanten> result = new ArrayList<Lieferanten>();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `kid` IS NULL AND (`allgemein`='1' OR "
+                    + "`countryCode`=?) ORDER BY siegel ASC, lieferant ASC");
+
+            pstmt.setString(1, land);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                final Lieferanten l = new Lieferanten(rs);
+                result.add(l);
+            }
+
+        } catch (final Exception e) {
+            LOG.error("List<SupplierForm> getPublics(final String land, final Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
      * Gets all private and public Lieferanten for a given account and country.
      */
-    public List<Lieferanten> getAll(final String land, final Long kId, final Connection cn) {
+    private List<Lieferanten> getAll(final String land, final Long kId, final Connection cn) {
 
         final List<Lieferanten> result = new ArrayList<Lieferanten>();
 
@@ -403,7 +514,7 @@ public class Lieferanten extends AbstractIdEntity {
 
         boolean result = false;
 
-        if (input == null || "0".equals(input)) {
+        if (input == null || 0 == input) {
             result = true;
         }
 

@@ -221,8 +221,8 @@ public class PrepareTestObjects {
         try {
             pstmt = cn.prepareStatement(
                     "SELECT * FROM `benutzer` AS b " +
-                    "WHERE b.mail = ? AND b.pw = ? " +
-            "AND b.rechte = 1 ");
+                            "WHERE b.mail = ? AND b.pw = ? " +
+                    "AND b.rechte = 1 ");
             pstmt.setString(1, BNEMAIL);
             pstmt.setString(2, e.makeSHA(LOGINPW));
             rs = pstmt.executeQuery();
@@ -267,8 +267,8 @@ public class PrepareTestObjects {
         try {
             pstmt = cn.prepareStatement(
                     "SELECT * FROM `benutzer` AS b " +
-                    "WHERE b.mail = ? AND b.pw = ? " +
-            "AND b.rechte = 2 ");
+                            "WHERE b.mail = ? AND b.pw = ? " +
+                    "AND b.rechte = 2 ");
             pstmt.setString(1, BNEMAIL);
             pstmt.setString(2, e.makeSHA(LOGINPW));
             rs = pstmt.executeQuery();
@@ -311,7 +311,7 @@ public class PrepareTestObjects {
         try {
             pstmt = cn.prepareStatement(
                     "SELECT * FROM `konto` AS k " +
-            "WHERE k.biblioname = ?");
+                    "WHERE k.biblioname = ?");
             pstmt.setString(1, kontoname);
             rs = pstmt.executeQuery();
 

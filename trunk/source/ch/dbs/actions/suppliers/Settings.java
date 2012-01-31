@@ -32,7 +32,6 @@ import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
-import ch.dbs.form.Message;
 import ch.dbs.form.SupplierForm;
 import ch.dbs.form.UserInfo;
 
@@ -40,7 +39,7 @@ import ch.dbs.form.UserInfo;
 /**
  * Prepares the list of suppliers for a given account to be edited and configured.
  */
-public class PrepareList extends DispatchAction {
+public class Settings extends DispatchAction {
 
     public ActionForward execute(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -59,21 +58,26 @@ public class PrepareList extends DispatchAction {
                 final Text cn = new Text();
 
                 final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
-                final List<SupplierForm> pubSuppliers = sup.getPublics(ui.getKonto().getLand(), cn.getConnection());
 
-                // get existing account settings from UserInfo
-                sf.setShowprivsuppliers(ui.getKonto().isShowprivsuppliers());
-                sf.setShowpubsuppliers(ui.getKonto().isShowpubsuppliers());
-
-                // give back a success message
-                if (sf.isChangedsettings()) {
-                    final Message msg = new Message("message.settings");
-                    rq.setAttribute("message", msg);
+                // we do not have any private suppliers...
+                if (privSuppliers.isEmpty()) {
+                    // ...there is only one logical display option
+                    sf.setShowprivsuppliers(false);
+                    sf.setShowpubsuppliers(true);
                 }
 
-                rq.setAttribute("pubsuppliers", pubSuppliers);
-                rq.setAttribute("privsuppliers", privSuppliers);
-                rq.setAttribute("conf", sf);
+                // update account with new settings
+                sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
+
+                // set back updated UserInfo / account into session
+                ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
+                ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
+                rq.getSession().setAttribute("userinfo", ui);
+
+                // trigger update message
+                sf.setChangedsettings(true);
+
+                rq.setAttribute("form", sf);
 
                 forward = "success";
 

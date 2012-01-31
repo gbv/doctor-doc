@@ -29,11 +29,16 @@
 
 <br />
 
-<form action="" method="post">
+<form action="suppliersettings.do" method="post">
 
 <h3><bean:message key="suppliers.new" /></h3>
 
 <a href="supplier.do?method=create"><bean:message key="suppliers.new" /></a>
+
+<logic:present name="message">
+<bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>
+<div id="italic"><p><bean:message key="<%=translationKey%>" /></p></div>
+</logic:present>
 
 <h3><bean:message key="suppliers.privates" /></h3>
 

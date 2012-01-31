@@ -8,7 +8,7 @@ class MyCallable implements Callable<String> {
 
     private final transient String link;
 
-    MyCallable( final String link ) {
+    MyCallable(final String link) {
         this.link = link;
     }
     public String call() {

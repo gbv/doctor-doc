@@ -27,7 +27,7 @@ public class Whois {
     }
 
     public Whois(final String hostname, final int port)
-    throws UnknownHostException {
+            throws UnknownHostException {
         this(InetAddress.getByName(hostname), port);
     }
 

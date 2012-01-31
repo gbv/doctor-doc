@@ -1992,7 +1992,7 @@ public final class OrderAction extends DispatchAction {
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
         final Text cn = new Text();
-        final Lieferanten lieferantenInstance = new Lieferanten();
+        final Lieferanten supplier = new Lieferanten();
         if (rq.getAttribute("ofjo") != null) {
             pageForm = (OrderForm) rq.getAttribute("ofjo");
             rq.setAttribute("ofjo", null);
@@ -2027,8 +2027,7 @@ public final class OrderAction extends DispatchAction {
                 long id = 2; // Bestellstati
                 tty.setId(id);
                 pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
-                pageForm.setQuellen(lieferantenInstance.getAll(
-                        ui.getKonto().getLand(), ui.getKonto().getId(), cn.getConnection()));
+                pageForm.setQuellen(supplier.getLieferanten(ui, cn.getConnection()));
                 id = 7; // Waehrungen
                 tty.setId(id);
                 pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
@@ -2039,7 +2038,7 @@ public final class OrderAction extends DispatchAction {
                 Lieferanten l = new Lieferanten();
                 if (pageForm.getLid() != null && !pageForm.getLid().equals("")
                         && !pageForm.getLid().equals("0")) { // lid wurde übermittelt aus pageForm
-                    l = lieferantenInstance.getLieferantFromLid(pageForm.getLid(), cn.getConnection());
+                    l = supplier.getLieferantFromLid(pageForm.getLid(), cn.getConnection());
                 } else {
                     l.setName("k.A.");
                     l.setLid(Long.valueOf(0));
@@ -2051,7 +2050,7 @@ public final class OrderAction extends DispatchAction {
                 if (pageForm.getStatus() == null) { pageForm.setStatus("bestellt"); } // Default
 
                 // deloptions
-                Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
+                final Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
 
                 rq.setAttribute("delopts", dynamicDeloptions);
 
@@ -2306,9 +2305,8 @@ public final class OrderAction extends DispatchAction {
                     tty.setId(id);
                     pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
 
-                    final Lieferanten lieferantenInstance = new Lieferanten();
-                    pageForm.setQuellen(lieferantenInstance.getAll(
-                            ui.getKonto().getLand(), ui.getKonto().getId(), cn.getConnection()));
+                    final Lieferanten supplier = new Lieferanten();
+                    pageForm.setQuellen(supplier.getLieferanten(ui, cn.getConnection()));
                     id = 7; // Waehrungen
                     tty.setId(id);
                     pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
@@ -2317,7 +2315,7 @@ public final class OrderAction extends DispatchAction {
                     pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
 
                     // deloptions
-                    Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
+                    final Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
 
                     rq.setAttribute("delopts", dynamicDeloptions);
                     rq.setAttribute("orderform", pageForm);
@@ -2508,15 +2506,15 @@ public final class OrderAction extends DispatchAction {
         return year;
     }
 
-    private Set<String> getDeloptions(Konto konto, Connection cn) {
+    private Set<String> getDeloptions(final Konto konto, final Connection cn) {
 
-        Set<String> result = new TreeSet<String>();
+        final Set<String> result = new TreeSet<String>();
 
-        BestellParam bp = new BestellParam();
+        final BestellParam bp = new BestellParam();
         // get all Bestellparams for the account
-        List<BestellParam> bps = bp.getAllBestellParam(konto, cn);
+        final List<BestellParam> bps = bp.getAllBestellParam(konto, cn);
 
-        for (BestellParam param : bps) {
+        for (final BestellParam param : bps) {
             if (param.getLieferart_value1() != null) { result.add(param.getLieferart_value1()); }
             if (param.getLieferart_value2() != null) { result.add(param.getLieferart_value2()); }
             if (param.getLieferart_value3() != null) { result.add(param.getLieferart_value3()); }

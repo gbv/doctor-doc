@@ -97,7 +97,7 @@ public class Auth {
                     }
                     if (((Inet6Address) a6).isIPv4CompatibleAddress()) {
                         final Inet4Address a4 = (Inet4Address) InetAddress.getByName(a6.getHostName());
-                        System.out.println("umgewandelte IP6 to IP4: " + a4.getHostAddress());
+                        LOG.warn("umgewandelte IP6 to IP4: " + a4.getHostAddress());
                         ip = a4.getHostAddress(); // Umwandlung in IP4 // TODO: IPv6 grundsätzlich ermöglichen
                     }
                 }

@@ -527,8 +527,8 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND orderdate >= ? AND orderdate <= ? "
-                + "ORDER BY ";
+                    + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND orderdate >= ? AND orderdate <= ? "
+                    + "ORDER BY ";
             sql = sortOrder(sql, sort, sortorder);
             pstmt = cn.prepareStatement(sql);
             pstmt.setLong(1, u.getId());
@@ -547,7 +547,7 @@ public class Bestellungen extends AbstractIdEntity {
                     if (checkAnonymize(b)) { b = anonymize(b); }
                     bl.add(b);
                 } else { //Bestellung bereits abgefüllt, nur noch korrekter Status setzen
-                    b = (Bestellungen) bl.get(bl.size() - 1);
+                    b = bl.get(bl.size() - 1);
                     b.setStatustext(rs.getString("state"));
                     b.setStatusdate(rs.getString("statedate"));
                     if (checkAnonymize(b)) { b = anonymize(b); }
@@ -642,7 +642,7 @@ public class Bestellungen extends AbstractIdEntity {
                     if (checkAnonymize(b)) { b = anonymize(b); }
                     bl.add(b);
                 } else { //Bestellung bereits abgefüllt, nur noch korrekter Status setzen
-                    b = (Bestellungen) bl.get(bl.size() - 1);
+                    b = bl.get(bl.size() - 1);
                     b.setStatustext(rs.getString("state"));
                     b.setStatusdate(rs.getString("statedate"));
                     if (checkAnonymize(b)) { b = anonymize(b); }
@@ -689,8 +689,8 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? "
-                + "ORDER BY ";
+                    + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? "
+                    + "ORDER BY ";
             sql = sortOrder(sql, sort, sortorder);
             pstmt = cn.prepareStatement(sql);
             pstmt.setLong(1, k.getId());
@@ -890,7 +890,7 @@ public class Bestellungen extends AbstractIdEntity {
             final String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
             // SQL ausführen
             pstmt = cn.prepareStatement(
-            "SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
+                    "SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, uid);
             pstmt.setString(3, datum);
@@ -942,7 +942,7 @@ public class Bestellungen extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement(sortOrder(
                     "SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder));
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder));
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -1113,20 +1113,25 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String sql
      * @return
      */
-    public String sortOrder(String sql, final String sort, final String sortorder) {
+    public String sortOrder(final String sql, final String sort, final String sortorder) {
+
+        final StringBuffer result = new StringBuffer(sql);
 
         if ("zeitschrift".equals(sort) || "buchtitel".equals(sort)) {
-            sql = sql + "CONCAT( zeitschrift, buchtitel ) " + sortorder;
+            result.append("CONCAT( zeitschrift, buchtitel ) ");
+            result.append(sortorder);
         } else {
             if ("artikeltitel".equals(sort) || "kapitel".equals(sort)) {
-                sql = sql + "CONCAT( artikeltitel, buchkapitel ) " + sortorder;
+                result.append("CONCAT( artikeltitel, buchkapitel ) ");
+                result.append(sortorder);
             } else {
-                sql = sql + sort + "\040" + sortorder;
+                result.append(sort);
+                result.append('\040');
+                result.append(sortorder);
             }
         }
 
-
-        return sql;
+        return result.toString();
     }
 
     /**
@@ -1206,11 +1211,11 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String datum
      * @return String datum
      */
-    public String removeMilliseconds(String datum) { // 2007-11-01 08:56:07.0
+    public String removeMilliseconds(final String datum) { // 2007-11-01 08:56:07.0
 
         try {
             if (datum.contains(".")) {
-                datum = datum.substring(0, datum.indexOf('.'));
+                return datum.substring(0, datum.indexOf('.'));
             }
         } catch (final Exception e) {
             LOG.error("removeMilliseconds(String datum):\012" + e.toString());

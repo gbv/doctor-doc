@@ -105,6 +105,8 @@ public class Konto extends AbstractIdEntity implements Serializable {
     private Date edatum; // Erstellungsdatum des kontos
     private String gtc; // enthält GTC-Version (General Terms and Conditions)
     private String gtcdate; // Datum der Annahme durch User
+    private boolean showprivsuppliers;
+    private boolean showpubsuppliers = true; // default to true
 
 
 
@@ -164,6 +166,8 @@ public class Konto extends AbstractIdEntity implements Serializable {
         this.kontostatus = kf.isKontostatus(); // Aktiv / Inaktiv
         this.kontotyp = kf.getKontotyp();
         this.default_deloptions = kf.getDefault_deloptions();
+        this.showprivsuppliers = kf.isShowprivsuppliers();
+        this.showpubsuppliers = kf.isShowpubsuppliers();
         //      this.Date edatum; // Erstellungsdatum des kontos
         //      this.gtc; // enthält GTC-Version (General Terms and Conditions)
         //      this.gtcdate; // Datum der Annahme durch User
@@ -231,6 +235,8 @@ public class Konto extends AbstractIdEntity implements Serializable {
         this.setEdatum(rs.getDate("edatum"));
         this.setGtc(rs.getString("gtc"));
         this.setGtcdate(rs.getString("gtcdate"));
+        this.setShowprivsuppliers(rs.getBoolean("showprivsuppliers"));
+        this.setShowpubsuppliers(rs.getBoolean("showpubsuppliers"));
     }
 
 
@@ -322,17 +328,18 @@ public class Konto extends AbstractIdEntity implements Serializable {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            final Konto kontoInstance = new Konto();
-            pstmt = kontoInstance.setKontoValues(cn.prepareStatement("INSERT INTO `konto` (`biblioname` , `isil` , "
+            final Konto k = new Konto();
+            pstmt = k.setKontoValues(cn.prepareStatement("INSERT INTO `konto` (`biblioname` , `isil` , "
                     + "`adresse` , `adresszusatz` , `plz` , `ort` , `land` , `timezone` , `telefon` , `faxno` , "
                     + "`faxusername` , `faxpassword` , `popfaxend` , `fax2` , `bibliomail` , `dbsmail` , "
                     + "`dbsmailpw` , `gbvbn` , `gbvpw` , `gbv_requester_id` , `ids_id` , `ids_passwort` , `ezbid` , "
                     + "`instlogolink` , `zdb` , `billing` , `billingtype` , `accounting_rhythmvalue` , "
                     + "`accounting_rhythmday` , `accounting_rhythmtimeout` , `billingschwellwert` , `maxordersu` ,"
                     + "`maxordersutotal`, `maxordersj` , `orderlimits` , `userlogin` , `userbestellung` , `gbvbestellung` , "
-                    + "`kontostatus` , `kontotyp` , `default_deloptions` , `paydate`, `expdate`,`edatum`) "
+                    + "`kontostatus` , `kontotyp` , `default_deloptions` , `paydate` , `expdate` , `edatum` , "
+                    + "`showprivsuppliers` , `showpubsuppliers`) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"), this);
+                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)"), this);
 
             pstmt.executeUpdate();
 
@@ -379,7 +386,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
                     + "zdb=?, billing=?, billingtype=?, accounting_rhythmvalue=?, accounting_rhythmday=?, "
                     + "accounting_rhythmtimeout=?, billingschwellwert=?, maxordersu=?, maxordersutotal=?, maxordersj=?, "
                     + "orderlimits=?, userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, "
-                    + "default_deloptions=?, paydate=?, expdate=? "
+                    + "default_deloptions=?, paydate=?, expdate=?, showprivsuppliers=?, showpubsuppliers=? "
                     + "WHERE `KID` = " + this.getId()), this);
 
             pstmt.executeUpdate();
@@ -443,7 +450,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
                 y++;
             }
         } catch (final Exception e) {
-            LOG.error("etAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn): " + e.toString());
+            LOG.error("getAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn): " + e.toString());
         }
 
         return allPossKontos;
@@ -745,11 +752,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
         } else {
             pstmt.setString(24, k.getInstlogolink());
         } // set null if empty
-        if (!k.isZdb()) {
-            pstmt.setString(25, "0");
-        } else {
-            pstmt.setString(25, "1");
-        }
+        pstmt.setBoolean(25, k.isZdb());
         if (k.getBilling() != null) {
             pstmt.setString(26, k.getBilling().toString());
         } else {
@@ -784,26 +787,10 @@ public class Konto extends AbstractIdEntity implements Serializable {
         pstmt.setInt(33, k.getMaxordersutotal());
         pstmt.setInt(34, k.getMaxordersj());
         pstmt.setInt(35, k.getOrderlimits());
-        if (!k.isUserlogin()) {
-            pstmt.setString(36, "0");
-        } else {
-            pstmt.setString(36, "1");
-        }
-        if (!k.isUserbestellung()) {
-            pstmt.setString(37, "0");
-        } else {
-            pstmt.setString(37, "1");
-        }
-        if (!k.isGbvbestellung()) {
-            pstmt.setString(38, "0");
-        } else {
-            pstmt.setString(38, "1");
-        }
-        if (!k.isKontostatus()) {
-            pstmt.setString(39, "0");
-        } else {
-            pstmt.setString(39, "1");
-        }
+        pstmt.setBoolean(36, k.isUserlogin());
+        pstmt.setBoolean(37, k.isUserbestellung());
+        pstmt.setBoolean(38, k.isGbvbestellung());
+        pstmt.setBoolean(39, k.isKontostatus());
         pstmt.setInt(40, k.getKontotyp());
         pstmt.setString(41, k.getDefault_deloptions());
         if (k.getPaydate() != null) {
@@ -816,6 +803,8 @@ public class Konto extends AbstractIdEntity implements Serializable {
         } else {
             pstmt.setDate(43, null);
         }
+        pstmt.setBoolean(44, k.isShowprivsuppliers());
+        pstmt.setBoolean(45, k.isShowpubsuppliers());
         return pstmt;
     }
 
@@ -824,19 +813,15 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public Long getDid() {
         return did;
     }
-
     public void setDid(final Long did) {
         this.did = did;
     }
-
     public java.sql.Date getExpdate() {
         return expdate;
     }
-
     public void setExpdate(final java.sql.Date expdate) {
         this.expdate = expdate;
     }
-
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll. (in Tagen)
      * @return Returns the accounting_rhythmday.
@@ -844,8 +829,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getAccounting_rhythmday() {
         return accounting_rhythmday;
     }
-
-
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll. (in Tagen)
      * @param accounting_rhythmday The accounting_rhythmday to set.
@@ -853,7 +836,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setAccounting_rhythmday(final int accounting_rhythmday) {
         this.accounting_rhythmday = accounting_rhythmday;
     }
-
     /**
      * Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach .... trotzdem
      * eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
@@ -862,8 +844,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getAccounting_rhythmtimeout() {
         return accounting_rhythmtimeout;
     }
-
-
     /**
      * Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach ....
      * trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
@@ -872,16 +852,12 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setAccounting_rhythmtimeout(final int accounting_rhythmtimeout) {
         this.accounting_rhythmtimeout = accounting_rhythmtimeout;
     }
-
-
     public boolean isZdb() {
         return zdb;
     }
-
     public void setZdb(final boolean zdb) {
         this.zdb = zdb;
     }
-
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll in Fr.-
      * @return Returns the accounting_rhythmvalue.
@@ -889,9 +865,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getAccounting_rhythmvalue() {
         return accounting_rhythmvalue;
     }
-
-
-
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll in Fr.-
      * @param accounting_rhythmvalue The accounting_rhythmvalue to set.
@@ -899,39 +872,30 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setAccounting_rhythmvalue(final int accounting_rhythmvalue) {
         this.accounting_rhythmvalue = accounting_rhythmvalue;
     }
-
     public String getAdresse() {
         return Adresse;
     }
-
     public void setAdresse(final String adresse) {
         Adresse = adresse;
     }
-
     public String getAdressenzusatz() {
         return Adressenzusatz;
     }
-
     public void setAdressenzusatz(final String adressenzusatz) {
         Adressenzusatz = adressenzusatz;
     }
-
     public String getBibliotheksmail() {
         return Bibliotheksmail;
     }
-
     public void setBibliotheksmail(final String bibliotheksmail) {
         Bibliotheksmail = bibliotheksmail;
     }
-
     public String getBibliotheksname() {
         return bibliotheksname;
     }
-
     public void setBibliotheksname(final String bibname) {
         bibliotheksname = bibname;
     }
-
     /**
      * Globale Einstellung, von wem die Rechnungen beglichen werden soll.
      * Diese Einstellung kann durch den Wert welcher beim User hinterlegt ist berschrieben werden.
@@ -940,7 +904,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public Text getBilling() {
         return billing;
     }
-
     /**
      * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll.
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
@@ -949,7 +912,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setBilling(final Text billing) {
         this.billing = billing;
     }
-
     /**
      * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll.
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
@@ -958,11 +920,9 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public Text getBillingtype() {
         return billingtype;
     }
-
     public void setBillingtype(final Text billingtype) {
         this.billingtype = billingtype;
     }
-
     /**
      * This is the email that receives ILL deliveries
      * @return Returns the dbsmail.
@@ -970,7 +930,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public String getDbsmail() {
         return dbsmail;
     }
-
     /**
      * This is the email that receives ILL deliveries
      * @param dbsmail The dbsmail to set.
@@ -978,72 +937,54 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setDbsmail(final String dbsmail) {
         this.dbsmail = dbsmail;
     }
-
     public String getDbsmailpw() {
         return dbsmailpw;
     }
-
     public void setDbsmailpw(final String dbsmailpw) {
         this.dbsmailpw = dbsmailpw;
     }
-
     public Date getEdatum() {
         return edatum;
     }
-
     public void setEdatum(final Date edatum) {
         this.edatum = edatum;
     }
-
     public boolean isKontostatus() {
         return kontostatus;
     }
-
-
     public void setKontostatus(final boolean kontostatus) {
         this.kontostatus = kontostatus;
     }
-
     public String getDefault_deloptions() {
         return default_deloptions;
     }
-
     public void setDefault_deloptions(final String default_deloptions) {
         this.default_deloptions = default_deloptions;
     }
-
     public String getGtc() {
         return gtc;
     }
-
     public void setGtc(final String gtc) {
         this.gtc = gtc;
     }
-
     public String getGtcdate() {
         return gtcdate;
     }
-
     public void setGtcdate(final String gtcdate) {
         this.gtcdate = gtcdate;
     }
-
     public String getLand() {
         return Land;
     }
-
     public void setLand(final String land) {
         Land = land;
     }
-
     public String getTimezone() {
         return timezone;
     }
-
     public void setTimezone(final String timezone) {
         this.timezone = timezone;
     }
-
     /**
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
      * @return Returns the maxordersj.
@@ -1051,7 +992,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getMaxordersj() {
         return maxordersj;
     }
-
     /**
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
      * @param maxordersj The maxordersj to set.
@@ -1059,7 +999,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setMaxordersj(final int maxordersj) {
         this.maxordersj = maxordersj;
     }
-
     /**
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
      * @return Returns the maxordersu.
@@ -1067,7 +1006,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getMaxordersu() {
         return maxordersu;
     }
-
     /**
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
      * @param maxordersu The maxordersu to set.
@@ -1075,7 +1013,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setMaxordersu(final int maxordersu) {
         this.maxordersu = maxordersu;
     }
-
     /**
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
      * @return Returns the maxordersutotal.
@@ -1083,7 +1020,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getMaxordersutotal() {
         return maxordersutotal;
     }
-
     /**
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
      * @param maxordersutotal The maxordersutotal to set.
@@ -1091,89 +1027,66 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setMaxordersutotal(final int maxordersutotal) {
         this.maxordersutotal = maxordersutotal;
     }
-
     public int getOrderlimits() {
         return orderlimits;
     }
-
     public void setOrderlimits(final int orderlimits) {
         this.orderlimits = orderlimits;
     }
-
     public String getOrt() {
         return Ort;
     }
-
     public void setOrt(final String ort) {
         Ort = ort;
     }
-
     public String getPLZ() {
         return PLZ;
     }
-
     public void setPLZ(final String plz) {
         PLZ = plz;
     }
-
     public String getGbvbenutzername() {
         return gbvbenutzername;
     }
-
     public void setGbvbenutzername(final String gbvbenutzername) {
         this.gbvbenutzername = gbvbenutzername;
     }
-
     public String getGbvpasswort() {
         return gbvpasswort;
     }
-
     public void setGbvpasswort(final String gbvpasswort) {
         this.gbvpasswort = gbvpasswort;
     }
-
     public String getGbvrequesterid() {
         return gbvrequesterid;
     }
-
     public void setGbvrequesterid(final String gbvrequesterid) {
         this.gbvrequesterid = gbvrequesterid;
     }
-
     public String getIdsid() {
         return idsid;
     }
-
     public void setIdsid(final String idsid) {
         this.idsid = idsid;
     }
-
     public String getIdspasswort() {
         return idspasswort;
     }
-
     public void setIdspasswort(final String idspasswort) {
         this.idspasswort = idspasswort;
     }
-
     public String getEzbid() {
         return ezbid;
     }
-
-
     public void setEzbid(final String ezbid) {
         this.ezbid = ezbid;
     }
-
-
     public String getInstlogolink() {
         return instlogolink;
     }
-
     public void setInstlogolink(final String instlogolink) {
         this.instlogolink = instlogolink;
     }
-
     /**
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
      * @return Returns the threshold_value.
@@ -1181,7 +1094,6 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public int getThreshold_value() {
         return threshold_value;
     }
-
     /**
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
      * @param threshold_value The threshold_value to set.
@@ -1189,121 +1101,104 @@ public class Konto extends AbstractIdEntity implements Serializable {
     public void setThreshold_value(final int threshold_value) {
         this.threshold_value = threshold_value;
     }
-
     /**
      * @return Returns the userbestellung.
      */
     public boolean isUserbestellung() {
         return userbestellung;
     }
-
     /**
      * @param userbestellung The userbestellung to set.
      */
     public void setUserbestellung(final boolean userbestellung) {
         this.userbestellung = userbestellung;
     }
-
-
     public boolean isGbvbestellung() {
         return gbvbestellung;
     }
-
     public void setGbvbestellung(final boolean gbvbestellung) {
         this.gbvbestellung = gbvbestellung;
     }
-
     public boolean isUserlogin() {
         return userlogin;
     }
-
     public void setUserlogin(final boolean userlogin) {
         this.userlogin = userlogin;
     }
-
     public boolean isSelected() {
         return selected;
     }
-
     public void setSelected(final boolean selected) {
         this.selected = selected;
     }
-
     public String getTelefon() {
         return Telefon;
     }
-
     public void setTelefon(final String telefon) {
         Telefon = telefon;
     }
-
-
     public String getFaxno() {
         return faxno;
     }
-
     public void setFaxno(final String faxno) {
         this.faxno = faxno;
     }
-
     public String getFaxpassword() {
         return faxpassword;
     }
-
     public void setFaxpassword(final String faxpassword) {
         this.faxpassword = faxpassword;
     }
-
     public String getPopfaxend() {
         return popfaxend;
     }
-
     public void setPopfaxend(final String popfaxend) {
         this.popfaxend = popfaxend;
     }
-
     public String getFaxusername() {
         return faxusername;
     }
-
     public void setFaxusername(final String faxusername) {
         this.faxusername = faxusername;
     }
-
     public String getFax_extern() {
         return fax_extern;
     }
-
     public void setFax_extern(final String fax_extern) {
         this.fax_extern = fax_extern;
     }
-
     public int getKontotyp() {
         return kontotyp;
     }
-
     public void setKontotyp(final int kontotyp) {
         this.kontotyp = kontotyp;
     }
-
     /*
      * Zahlungseingang Betrag bei Doctor-Doc.com
      */
     public java.sql.Date getPaydate() {
         return paydate;
     }
-
     public void setPaydate(final java.sql.Date paydate) {
         this.paydate = paydate;
     }
-
     public String getIsil() {
         return isil;
     }
-
     public void setIsil(final String isil) {
         this.isil = isil;
     }
-
+    public boolean isShowprivsuppliers() {
+        return showprivsuppliers;
+    }
+    public void setShowprivsuppliers(final boolean showprivsuppliers) {
+        this.showprivsuppliers = showprivsuppliers;
+    }
+    public boolean isShowpubsuppliers() {
+        return showpubsuppliers;
+    }
+    public void setShowpubsuppliers(final boolean showpubsuppliers) {
+        this.showpubsuppliers = showpubsuppliers;
+    }
 
 }

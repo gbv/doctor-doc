@@ -352,6 +352,12 @@
 		
 		<action forward="/jsp/supplieredit.jsp" path="/supplieredit" />
 		<action forward="/jsp/suppliernew.jsp" path="/suppliernew" />
+		
+		<action path="/suppliersettings" input="/jsp/suppliers.jsp" validate="false" name="SupplierForm"
+			parameter="method" scope="request" type="ch.dbs.actions.suppliers.Settings">
+			<forward name="success" path="/listsuppliers.do" />
+			<forward name="failure" path="/error.do" />
+		</action>
 
 		<!--
 			*************************************************ISSN-Search*************************************************

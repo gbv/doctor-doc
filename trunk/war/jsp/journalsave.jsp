@@ -115,7 +115,7 @@ function wahrung(a)
 </logic:present>
 
 
-<a href="supplier.do?method=create"><bean:message key="suppliers.new" /></a>
+<a href="listsuppliers.do"><bean:message key="suppliers.admin" /></a>
   
 
   <table>
@@ -160,7 +160,7 @@ function wahrung(a)
     		<input type="radio" name="deloptions" value="post"<logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal> /><bean:message key="save.post" />
     		<input type="radio" name="deloptions" value="fax"<logic:equal name="orderform" property="deloptions" value="fax"> checked="checked"</logic:equal> /><bean:message key="save.fax" />
     		<input type="radio" name="deloptions" value="fax to pdf"<logic:equal name="orderform" property="deloptions" value="fax to pdf"> checked="checked"</logic:equal> /><bean:message key="save.faxtopdf" />
-    		<! -- custom deloptions -->
+    		<!-- custom deloptions -->
     		<logic:iterate id="del" name="delopts">
     			<bean:define id="val"><bean:write name="del" /></bean:define>
     				<input type="radio" name="deloptions" value="<bean:write name="del" />"<logic:equal name="orderform" property="deloptions" value="<%=val%>"> checked="checked"</logic:equal> /><bean:write name="del" />
@@ -356,18 +356,19 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
     </tr>     
 
      <tr><td><br /></td></tr>
+     
+     <tr>
+  		<td><input type="submit" name="submit" value="<bean:message key="save.speichern" />"></input></td>
+  	</tr>
+  	
+  	  <input name="method" type="hidden" value="saveOrder" />
+  	</html:form>
       
      </table>
   
   <p />
-  <table>
-  <tr>
-  	<td><input type="submit" name="submit" value="<bean:message key="save.speichern" />"></input></td>
-  </tr>
-  </table><p></p>
+  <p></p>
   
-  <input name="method" type="hidden" value="saveOrder" />
-  </html:form>
   <logic:present name="message" property="error">
     <p class=miss><bean:write name="message" property="error" /></p>
   </logic:present>
