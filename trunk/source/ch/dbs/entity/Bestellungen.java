@@ -169,8 +169,8 @@ public class Bestellungen extends AbstractIdEntity {
             PreparedStatement pstmt = null;
             ResultSet rs = null;
             try {
-                pstmt = cn.prepareStatement("SELECT * FROM bestellungen b INNER JOIN konto k USING(KID)INNER JOIN "
-                        + "benutzer u USING(UID)INNER JOIN lieferanten l USING(LID)WHERE b.bid=?");
+                pstmt = cn.prepareStatement("SELECT * FROM bestellungen AS b INNER JOIN konto AS k USING(KID) INNER JOIN "
+                        + "benutzer AS u USING(UID) WHERE b.bid=?");
                 pstmt.setLong(1, id);
                 rs = pstmt.executeQuery();
 
@@ -198,7 +198,6 @@ public class Bestellungen extends AbstractIdEntity {
                 }
             }
         }
-
     }
 
     /**
@@ -1237,7 +1236,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     private void getBestellung(final ResultSet rs, final Connection cn) throws Exception {
         this.setId(rs.getLong("BID"));
-
+        final Lieferanten supplier = new Lieferanten();
         //    Falls vorname nicht im rs ist kein Benutzer abfüllen
         try {  rs.findColumn("vorname");
         final AbstractBenutzer b = new AbstractBenutzer();
@@ -1247,15 +1246,10 @@ public class Bestellungen extends AbstractIdEntity {
         try {  rs.findColumn("biblioname");
         this.setKonto(new Konto(rs));
         } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString()); }
-        //Falls CH nicht im rs ist kein Lieferant abfüllen
-        try {
-            this.setLieferant(new Lieferanten(rs));
-        } catch (final SQLException se) {
-            LOG.ludicrous("getBestellung(ResultSet rs) Pos. 3: " + se.toString());
-            final Lieferanten l = new Lieferanten();
-            l.setLid(Long.valueOf(1));
-            l.setName("k.A.");
-            this.setLieferant(l);
+        this.setLieferant(supplier.getLieferantFromLid(rs.getLong("lid"), cn));
+        if (this.getLieferant().getLid() == null) {
+            this.getLieferant().setLid(Long.valueOf(1));
+            this.getLieferant().setName("k.A.");
         }
         this.setBestellquelle(rs.getString("bestellquelle"));
         if (this.getBestellquelle() == null || this.getBestellquelle().equals("")
@@ -1302,7 +1296,7 @@ public class Bestellungen extends AbstractIdEntity {
     private Bestellungen getBestellung(final Bestellungen b, final ResultSet rs, final Connection cn) throws Exception {
 
         b.setId(rs.getLong("BID"));
-        final Lieferanten instance = new Lieferanten();
+        final Lieferanten supplier = new Lieferanten();
         final AbstractBenutzer ab = new AbstractBenutzer();
 
         try {
@@ -1311,7 +1305,7 @@ public class Bestellungen extends AbstractIdEntity {
             b.setKonto(new Konto(rs));
         } catch (final SQLException se) {
             //einfach nix machen ;-)
-            LOG.error("getBestellungen(Bestellungen b, ResultSet rs, Connection cn): " + se.toString());
+            LOG.ludicrous("getBestellungen(Bestellungen b, ResultSet rs, Connection cn): " + se.toString());
         }
         b.setZeitschrift(rs.getString("zeitschrift"));
         b.setAutor(rs.getString("autor"));
@@ -1343,7 +1337,7 @@ public class Bestellungen extends AbstractIdEntity {
         b.setDeloptions(rs.getString("deloptions"));
         b.setFileformat(rs.getString("fileformat"));
 
-        b.setLieferant(instance.getLieferantFromLid(rs.getString("lid"), cn));
+        b.setLieferant(supplier.getLieferantFromLid(rs.getLong("lid"), cn));
         b.setBestellquelle(rs.getString("bestellquelle"));
         if (b.getBestellquelle() == null || b.getBestellquelle().equals("") || b.getBestellquelle().equals("0")) {
             b.setBestellquelle("k.A."); // Wenn keine Lieferantenangaben gemacht wurden den Eintrag auf "k.A." setzen

@@ -2038,7 +2038,7 @@ public final class OrderAction extends DispatchAction {
                 Lieferanten l = new Lieferanten();
                 if (pageForm.getLid() != null && !pageForm.getLid().equals("")
                         && !pageForm.getLid().equals("0")) { // lid wurde übermittelt aus pageForm
-                    l = supplier.getLieferantFromLid(pageForm.getLid(), cn.getConnection());
+                    l = supplier.getLieferantFromLid(Long.valueOf(pageForm.getLid()), cn.getConnection());
                 } else {
                     l.setName("k.A.");
                     l.setLid(Long.valueOf(0));
@@ -2091,7 +2091,7 @@ public final class OrderAction extends DispatchAction {
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) form;
-        final Lieferanten lieferantenInstance = new Lieferanten();
+        final Lieferanten supplier = new Lieferanten();
         final OrderState orderstate = new OrderState();
         // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
@@ -2165,7 +2165,7 @@ public final class OrderAction extends DispatchAction {
                     b.setKonto(ui.getKonto());
                     b.setBenutzer(kunde);
 
-                    b.setLieferant(lieferantenInstance.getLieferantFromLid(pageForm.getLid(), cn.getConnection()));
+                    b.setLieferant(supplier.getLieferantFromLid(Long.valueOf(pageForm.getLid()), cn.getConnection()));
                     if (b.getLieferant().getSigel() == null || b.getLieferant().getSigel().equals("")) {
                         // doppelter Eintrag um Sortieren und Suche zu ermöglichen/vereinfachen
                         b.setBestellquelle(b.getLieferant().getName());

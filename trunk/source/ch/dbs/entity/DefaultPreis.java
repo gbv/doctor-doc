@@ -57,8 +57,8 @@ public class DefaultPreis extends AbstractIdEntity {
     public DefaultPreis() { }
 
     public DefaultPreis(final OrderForm of, final UserInfo ui) {
-        final Lieferanten instance = new Lieferanten();
-        this.l = instance.getLieferantFromLid(of.getLid(), this.getConnection());
+        final Lieferanten supplier = new Lieferanten();
+        this.l = supplier.getLieferantFromLid(Long.valueOf(of.getLid()), this.getConnection());
         this.setLid(l.getLid());
         this.setBezeichnung(l.getName());
         this.waehrungstext = new Text(this.getConnection(), of.getWaehrung());

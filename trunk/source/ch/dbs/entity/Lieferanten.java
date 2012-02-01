@@ -47,8 +47,7 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten(final ResultSet rs) throws Exception {
-
+    private Lieferanten(final ResultSet rs) throws Exception {
         this.setLid(rs.getLong("LID"));
         this.setKid(rs.getLong("kid"));
         this.setSigel(rs.getString("siegel"));
@@ -339,7 +338,7 @@ public class Lieferanten extends AbstractIdEntity {
 
     }
 
-    public Lieferanten getLieferantFromLid(final String lId, final Connection cn) {
+    public Lieferanten getLieferantFromLid(final Long lId, final Connection cn) {
 
         Lieferanten l = new Lieferanten();
 
@@ -347,7 +346,7 @@ public class Lieferanten extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM lieferanten WHERE `LID`=?");
-            pstmt.setLong(1, Long.valueOf(lId));
+            pstmt.setLong(1, lId);
 
             rs = pstmt.executeQuery();
 

@@ -58,11 +58,11 @@ public class Supplier extends DispatchAction {
                 final Text cn = new Text();
 
                 // make sure sid is not null and is editable
-                if (editable(sid, ui, cn.getConnection())) {
+                if (editable(Long.valueOf(sid), ui, cn.getConnection())) {
 
                     Lieferanten sup = new Lieferanten();
 
-                    sup = sup.getLieferantFromLid(sid, cn.getConnection());
+                    sup = sup.getLieferantFromLid(Long.valueOf(sid), cn.getConnection());
 
                     rq.setAttribute("supplier", sup);
 
@@ -149,10 +149,10 @@ public class Supplier extends DispatchAction {
                 if (sf.getLid() != null) {
 
                     // make sure lid is editable
-                    if (editable(sf.getLid().toString(), ui, cn.getConnection())) {
+                    if (editable(sf.getLid(), ui, cn.getConnection())) {
 
                         Lieferanten sup = new Lieferanten();
-                        sup = sup.getLieferantFromLid(sf.getLid().toString(), cn.getConnection());
+                        sup = sup.getLieferantFromLid(sf.getLid(), cn.getConnection());
 
                         // set Lieferanten values from SupplierForm
                         sup.setFormValues(sup, sf, ui);
@@ -248,7 +248,7 @@ public class Supplier extends DispatchAction {
         return mp.findForward(forward);
     }
 
-    private boolean editable(final String sid, final UserInfo ui, final Connection cn) {
+    private boolean editable(final Long sid, final UserInfo ui, final Connection cn) {
 
         boolean result = false;
 
@@ -281,7 +281,7 @@ public class Supplier extends DispatchAction {
 
             // get original supplier from lid
             Lieferanten l = new Lieferanten();
-            l = l.getLieferantFromLid(sid, cn);
+            l = l.getLieferantFromLid(Long.valueOf(sid), cn);
 
             // we have a matching KID => individual supplier
             if (l.getKid() != null && l.getKid().equals(ui.getKonto().getId())) {
