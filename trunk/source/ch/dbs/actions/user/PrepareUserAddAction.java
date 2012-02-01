@@ -45,8 +45,8 @@ public final class PrepareUserAddAction extends Action {
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         UserForm uf = (UserForm) form;
-        final Countries countriesInstance = new Countries();
-        final Konto kontoInstance = new Konto();
+        final Countries country = new Countries();
+        final Konto konto = new Konto();
         final UserForm ufLoginAction = (UserForm) rq.getAttribute("userform"); // get from Login
         if (ufLoginAction != null) {
             uf = ufLoginAction;
@@ -61,7 +61,7 @@ public final class PrepareUserAddAction extends Action {
             forward = "adduser";
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            final List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+            final List<Konto> allPossKontos = konto.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
             final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
 
             for (final Konto k : allPossKontos) {
@@ -70,7 +70,7 @@ public final class PrepareUserAddAction extends Action {
                 lkf.add(kf);
             }
 
-            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+            final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
             final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
                     ui.getKonto().getId(), cn.getConnection());
 

@@ -91,7 +91,7 @@ public final class BestellformAction extends DispatchAction {
         String forward = FAILURE;
         OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
-        final Countries countriesInstance = new Countries();
+        final Countries country = new Countries();
 
         if (rq.getAttribute("ofjo") != null) {
             of = (OrderForm) rq.getAttribute("ofjo"); // if coming from checkAvailability and getOpenUrlRequest
@@ -182,7 +182,7 @@ public final class BestellformAction extends DispatchAction {
             if (t != null && t.getInhalt() != null) {
                 bp = new BestellParam(t, cn.getConnection());
                 // Länderauswahl setzen
-                final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                 of.setCountries(allPossCountries);
                 if (of.getRadiobutton().equals("")) {
                     of.setRadiobutton(bp.getOption_value1());
@@ -278,7 +278,7 @@ public final class BestellformAction extends DispatchAction {
 
                 // set country select
                 if (bp != null && bp.getId() != null) {
-                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                     of.setCountries(allPossCountries);
                     if (of.getRadiobutton().equals("")) {
                         of.setRadiobutton(bp.getOption_value1());
@@ -384,8 +384,8 @@ public final class BestellformAction extends DispatchAction {
         String forward = FAILURE;
         OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
-        final Countries countriesInstance = new Countries();
-        final ConvertOpenUrl couInstance = new ConvertOpenUrl();
+        final Countries country = new Countries();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
 
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         Konto k = new Konto();
@@ -428,14 +428,14 @@ public final class BestellformAction extends DispatchAction {
             if (!auth.isLogin(rq) && t != null && t.getInhalt() != null) {
                 bp = new BestellParam(t, cn.getConnection());
                 // Länderauswahl setzen
-                final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                 of.setCountries(allPossCountries);
             } else {
                 if (auth.isLogin(rq)) {
                     k = ui.getKonto();
                     bp = new BestellParam(k, cn.getConnection());
                     // Länderauswahl setzen
-                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                     of.setCountries(allPossCountries);
                 }
             }
@@ -814,7 +814,7 @@ public final class BestellformAction extends DispatchAction {
 
                     // Prepare a direct login link for librarians, to save order details
                     final String loginlink = ReadSystemConfigurations.getServerInstallation()
-                            + "/pl.do?" + couInstance.makeGetMethodString(of) + "&foruser=" + of.getForuser();
+                            + "/pl.do?" + openurlConv.makeGetMethodString(of) + "&foruser=" + of.getForuser();
 
                     String adduserlink = "";
                     if (u.getId() == null) { // User unknown => Prepare a direct login link for librarians, to save new
@@ -1129,7 +1129,7 @@ public final class BestellformAction extends DispatchAction {
         final Auth auth = new Auth();
 
         BestellParam bp = (BestellParam) fm;
-        final Countries countriesInstance = new Countries();
+        final Countries country = new Countries();
 
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
@@ -1159,7 +1159,7 @@ public final class BestellformAction extends DispatchAction {
 
                             // analog wie in validate()
                             // Länderauswahl setzen
-                            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn
+                            final List<Countries> allPossCountries = country.getAllCountries(cn
                                     .getConnection());
                             of.setCountries(allPossCountries);
                             if (of.getRadiobutton().equals("")) {
@@ -1312,8 +1312,8 @@ public final class BestellformAction extends DispatchAction {
         // http://generator.ocoins.info/ [Eingabe: 10.1002/hec.1381 ]
 
         OrderForm of = new OrderForm();
-        final ConvertOpenUrl couInstance = new ConvertOpenUrl();
-        final OpenUrl openUrlInstance = new OpenUrl();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+        final OpenUrl openurl = new OpenUrl();
         final Http http = new Http();
         final String link = "http://generator.ocoins.info/?doi=" + doi;
         // String link = "http://generator.ocoins.info/crossref?handle=" + doi;
@@ -1330,8 +1330,8 @@ public final class BestellformAction extends DispatchAction {
             if (!content.contains("DOI Resolution Error")
                     && content.contains("rfr_id=info%3Asid%2Focoins.info%3Agenerator")) {
 
-                final ContextObject co = openUrlInstance.readOpenUrlFromString(content);
-                of = couInstance.makeOrderform(co);
+                final ContextObject co = openurl.readOpenUrlFromString(content);
+                of = openurlConv.makeOrderform(co);
 
             }
 
@@ -1348,16 +1348,16 @@ public final class BestellformAction extends DispatchAction {
     public OrderForm resolvePmid(final String pmid) {
 
         OrderForm of = new OrderForm();
-        final ConvertOpenUrl couInstance = new ConvertOpenUrl();
-        final OpenUrl openUrlInstance = new OpenUrl();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+        final OpenUrl openurl = new OpenUrl();
         final Http http = new Http();
         final String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id=" + pmid;
         String content = "";
 
         try {
             content = http.getWebcontent(link, TIMEOUT, RETRYS);
-            final ContextObject co = openUrlInstance.readXmlPubmed(content);
-            of = couInstance.makeOrderform(co);
+            final ContextObject co = openurl.readXmlPubmed(content);
+            of = openurlConv.makeOrderform(co);
         } catch (final Exception e) {
             LOG.error("resolvePmid: " + pmid + "\040" + e.toString());
         }
@@ -1419,7 +1419,7 @@ public final class BestellformAction extends DispatchAction {
      */
     public String composePubmedlinkToPmid(final OrderForm pageForm) {
 
-        final ConvertOpenUrl couInstance = new ConvertOpenUrl();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
 
         final StringBuffer link = new StringBuffer(128);
         link.append("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=");
@@ -1437,7 +1437,7 @@ public final class BestellformAction extends DispatchAction {
         }
         if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten())) {
             link.append("+AND+");
-            link.append(couInstance.extractSpage(pageForm.getSeiten()));
+            link.append(openurlConv.extractSpage(pageForm.getSeiten()));
             link.append("[PG]");
         }
         if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr())) {

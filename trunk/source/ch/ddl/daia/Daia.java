@@ -39,11 +39,11 @@ public class Daia extends Action {
         String output = "";
         //    String outputformat = rq.getParameter("format");
 
-        final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-        final OpenUrl openUrlInstance = new OpenUrl();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+        final OpenUrl openurl = new OpenUrl();
 
-        final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
-        ofjo.completeOrderForm(ofjo, convertOpenUrlInstance.makeOrderform(co));
+        final ContextObject co = openurl.readOpenUrlFromRequest(rq);
+        ofjo.completeOrderForm(ofjo, openurlConv.makeOrderform(co));
 
         // Parameters for indirect use in a metacatalogue (e.g. Vufind)
         final String daiaIP = rq.getParameter("ip"); // requesting IP transmitted in the URL

@@ -47,23 +47,23 @@ public final class GetIllFormatRequest extends Action {
 
         final Text cn = new Text();
         String forward = "failure";
-        final IllHandler ihInstance = new IllHandler();
+        final IllHandler illHandler = new IllHandler();
 
         try {
 
             forward = "success";
 
-            final IllForm ill = ihInstance.readIllRequest(rq);
-            final String returnvalue = ihInstance.updateOrderState(ill, cn.getConnection());
+            final IllForm illform = illHandler.readIllRequest(rq);
+            final String returnvalue = illHandler.updateOrderState(illform, cn.getConnection());
 
             if ("OK".equals(returnvalue)) {
-                ill.setStatus("OK");
+                illform.setStatus("OK");
             } else {
-                ill.setStatus("ERROR");
-                ill.setComment(returnvalue);
+                illform.setStatus("ERROR");
+                illform.setComment(returnvalue);
             }
 
-            rq.setAttribute("illform", ill);
+            rq.setAttribute("illform", illform);
 
         } catch (final Exception e) {
             LOG.error("getIllFormatRequest - execute: " + e.toString());

@@ -102,7 +102,7 @@ public final class OrderAction extends DispatchAction {
         final ArrayList<JournalDetails> hitsGoogle = new ArrayList<JournalDetails>();
         final ArrayList<JournalDetails> hitsGoogleScholar = new ArrayList<JournalDetails>();
         final Check check = new Check();
-        final BestellformAction bfInstance = new BestellformAction();
+        final BestellformAction bfAction = new BestellformAction();
         String content = "";
         String linkGoogle = "";
         String linkGS = "";
@@ -117,7 +117,7 @@ public final class OrderAction extends DispatchAction {
 
         // resolve a PMID entered by an user
         if (pageForm.getArtikeltitel().toLowerCase().contains("pmid:")) {
-            pageForm = bfInstance.resolvePmid(bfInstance.extractPmid(pageForm
+            pageForm = bfAction.resolvePmid(bfAction.extractPmid(pageForm
                     .getArtikeltitel()));
             pageForm.setAutocomplete(true); // avoid additional autocomplete runs
             // resolving pmid failed => back to search
@@ -480,11 +480,11 @@ public final class OrderAction extends DispatchAction {
             // if we do not have a PMID, try to get it and complete any missing article details over Pubmed
             if (isPubmedSearchWithoutPmidPossible(pageForm)
                     && pageForm.isAutocomplete()) { // autocomplete nust have been successful
-                pageForm.setPmid(bfInstance.getPmid(pageForm)); // if we have several hits => set pmid = ""
+                pageForm.setPmid(bfAction.getPmid(pageForm)); // if we have several hits => set pmid = ""
                 // complete any missing article details:
-                if (!pageForm.getPmid().equals("") && bfInstance.areArticleValuesMissing(pageForm)) {
+                if (!pageForm.getPmid().equals("") && bfAction.areArticleValuesMissing(pageForm)) {
                     OrderForm of = new OrderForm();
-                    of = bfInstance.resolvePmid(bfInstance.extractPmid(pageForm.getPmid()));
+                    of = bfAction.resolvePmid(bfAction.extractPmid(pageForm.getPmid()));
                     pageForm.completeOrderForm(pageForm, of);
                 }
             }
@@ -512,7 +512,7 @@ public final class OrderAction extends DispatchAction {
 
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
-        final BestellformAction bfInstance = new BestellformAction();
+        final BestellformAction bfAction = new BestellformAction();
         final CodeUrl codeUrl = new CodeUrl();
 
         final String artikeltitelEnc = codeUrl.encodeLatin1(pageForm.getArtikeltitel());
@@ -666,7 +666,7 @@ public final class OrderAction extends DispatchAction {
 
             } else { // PMID eingegeben => Auflösung
                 forward = "noresult"; // d.h. direkt zurück zum Engabeformular
-                pageForm = bfInstance.resolvePmid(bfInstance
+                pageForm = bfAction.resolvePmid(bfAction
                         .extractPmid(pageForm.getPmid()));
                 pageForm.setAutocomplete(true); // unterdrückt die Funktion Autocomplete
                 pageForm.setRuns_autocomplete(1);
@@ -710,7 +710,7 @@ public final class OrderAction extends DispatchAction {
 
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         OrderForm pageForm = (OrderForm) form;
-        final BestellformAction bfInstance = new BestellformAction();
+        final BestellformAction bfAction = new BestellformAction();
         Text cn = new Text();
         final Auth auth = new Auth();
         EZBForm ezbform = new EZBForm();
@@ -770,18 +770,18 @@ public final class OrderAction extends DispatchAction {
         }
 
         // normalize PMID if available
-        pageForm.setPmid(bfInstance.extractPmid(pageForm.getPmid()));
+        pageForm.setPmid(bfAction.extractPmid(pageForm.getPmid()));
 
         // PMID available and there are article references missing
         if (pageForm.getPmid() != null && !pageForm.getPmid().equals("")
-                && bfInstance.areArticleValuesMissing(pageForm)) {
+                && bfAction.areArticleValuesMissing(pageForm)) {
             OrderForm of = new OrderForm();
-            of = bfInstance.resolvePmid(pageForm.getPmid());
+            of = bfAction.resolvePmid(pageForm.getPmid());
             pageForm.completeOrderForm(pageForm, of);
         } else {
             // try to get missing PMID and complete missing article references
             if (isPubmedSearchWithoutPmidPossible(pageForm)) {
-                pubmedthread.setLink(bfInstance.composePubmedlinkToPmid(pageForm));
+                pubmedthread.setLink(bfAction.composePubmedlinkToPmid(pageForm));
                 pubmedcontent = executor.submit(pubmedthread);
             }
         }
@@ -814,11 +814,11 @@ public final class OrderAction extends DispatchAction {
             }
 
             ContextObject co = new ContextObject();
-            final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-            co = convertOpenUrlInstance.makeContextObject(pageForm);
+            final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+            co = openurlConv.makeContextObject(pageForm);
 
-            final OpenUrl openUrlInstance = new OpenUrl();
-            final String openurl = openUrlInstance.composeOpenUrl(co);
+            final OpenUrl openU = new OpenUrl();
+            final String openurl = openU.composeOpenUrl(co);
 
             // needed for  creating OpenURL links on checkavailability.jsp (e.g. Carelit)
             pageForm.setLink(openurl);
@@ -937,11 +937,11 @@ public final class OrderAction extends DispatchAction {
             // get back Pubmed thread
             if (isPubmedSearchWithoutPmidPossible(pageForm)) {
                 final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 1, "Pubmed");
-                if (pubmedanswer != null) { pageForm.setPmid(bfInstance.getPmid(pubmedanswer)); }
+                if (pubmedanswer != null) { pageForm.setPmid(bfAction.getPmid(pubmedanswer)); }
 
                 if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
-                        bfInstance.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
-                    final OrderForm of = bfInstance.resolvePmid(pageForm.getPmid());
+                        bfAction.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
+                    final OrderForm of = bfAction.resolvePmid(pageForm.getPmid());
                     pageForm.completeOrderForm(pageForm, of);  // ergänzen
                 }
             }
@@ -1524,11 +1524,11 @@ public final class OrderAction extends DispatchAction {
                 openURL = correctWorldCat(openURL);
 
                 // Hier folgt die OpenURL-Auswertung
-                final ConvertOpenUrl convertOpenUrlInstance = new ConvertOpenUrl();
-                final OpenUrl openUrlInstance = new OpenUrl();
+                final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+                final OpenUrl openurl = new OpenUrl();
                 // ContextObject mit Inhalten von content abfüllen
-                final ContextObject co = openUrlInstance.readOpenUrlFromString(openURL);
-                final OrderForm of = convertOpenUrlInstance.makeOrderform(co); // in ein OrderForm übersetzen
+                final ContextObject co = openurl.readOpenUrlFromString(openURL);
+                final OrderForm of = openurlConv.makeOrderform(co); // in ein OrderForm übersetzen
 
                 // Artikeltitel als User-Eingabe muss behalten werden
                 pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
@@ -1666,7 +1666,7 @@ public final class OrderAction extends DispatchAction {
         final OrderForm pageForm = (OrderForm) form;
         final OrderState orderstate = new OrderState();
         final Auth auth = new Auth();
-        final BestellformAction instance = new BestellformAction();
+        final BestellformAction bfAction = new BestellformAction();
         // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
         if (auth.isLogin(rq)) {
@@ -1680,8 +1680,8 @@ public final class OrderAction extends DispatchAction {
                 // URL-hacking unterdrücken!
                 if (auth.isLegitimateOrder(rq, order)) {
 
-                    order.setPmid(instance.extractPmid(order.getPmid()));
-                    order.setDoi(instance.extractDoi(order.getDoi()));
+                    order.setPmid(bfAction.extractPmid(order.getPmid()));
+                    order.setDoi(bfAction.extractDoi(order.getDoi()));
                     pageForm.setBestellung(order);
                     pageForm.setStates(orderstate.getOrderState(order, cn.getConnection()));
                     rq.setAttribute("orderform", pageForm);

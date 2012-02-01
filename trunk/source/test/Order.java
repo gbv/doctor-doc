@@ -42,10 +42,10 @@ public class Order {
         //Bestellung Schreiben und ID auslesen
         final Bestellungen b = new Bestellungen();
         final AbstractBenutzer ab = new AbstractBenutzer();
-        final Lieferanten lieferantenInstance = new Lieferanten();
+        final Lieferanten supplier = new Lieferanten();
         b.setKonto(new Konto(Long.valueOf(1),b.getSingleConnection()));
         b.setBenutzer(ab.getUser(Long.valueOf(1), b.getSingleConnection()));
-        b.setLieferant(lieferantenInstance.getLieferantFromName("Subito", b.getSingleConnection()));
+        b.setLieferant(supplier.getLieferantFromName("Subito", b.getSingleConnection()));
         b.setPriority("normal");
         b.setDeloptions("email"); // Lieferbedingungen. In Subito neu "deliveryway". Nur noch "post" und "fax" möglich
         b.setFileformat("Fax to PDF");

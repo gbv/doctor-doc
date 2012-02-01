@@ -474,8 +474,8 @@ public final class UserAction extends DispatchAction {
         String forward = FAILURE;
         ErrorMessage em = new ErrorMessage();
         final Text cn = new Text();
-        final Countries countriesInstance = new Countries();
-        final Konto kontoInstance = new Konto();
+        final Countries country = new Countries();
+        final Konto konto = new Konto();
         final Auth auth = new Auth();
 
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
@@ -492,7 +492,7 @@ public final class UserAction extends DispatchAction {
                 rq.getSession().setAttribute("ofjo", null);
             }
 
-            final List<Konto> allPossKontos = kontoInstance.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+            final List<Konto> allPossKontos = konto.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
             final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
 
             for (final Konto k : allPossKontos) {
@@ -501,7 +501,7 @@ public final class UserAction extends DispatchAction {
                 lkf.add(kf);
             }
 
-            final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+            final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
             final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
                     ui.getKonto().getId(), cn.getConnection());
 
@@ -537,7 +537,7 @@ public final class UserAction extends DispatchAction {
 
         String forward = FAILURE;
         ErrorMessage em = new ErrorMessage();
-        final Countries countriesInstance = new Countries();
+        final Countries country = new Countries();
         final Text cn = new Text();
         final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
@@ -574,7 +574,7 @@ public final class UserAction extends DispatchAction {
                         lkf.add(kf);
                     }
 
-                    final List<Countries> allPossCountries = countriesInstance.getAllCountries(cn.getConnection());
+                    final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                     final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
                             ui.getKonto().getId(), cn.getConnection());
 

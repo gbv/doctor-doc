@@ -185,8 +185,8 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_date() != null && !co.getRft_date().equals("")) {
-            final OrderAction oaInstance = new OrderAction();
-            of.setJahr(oaInstance.extractYear(co.getRft_date()));
+            final OrderAction orderAction = new OrderAction();
+            of.setJahr(orderAction.extractYear(co.getRft_date()));
         }
 
         if (co.getRft_volume() != null && !co.getRft_volume().equals("")) {

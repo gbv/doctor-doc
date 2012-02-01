@@ -172,11 +172,11 @@ public class ZDBIDObject extends AbstractIdEntity {
     }
 
     public ZDBIDObject(final Connection cn, final ResultSet rs) {
-        final Issn issnInstance = new Issn();
+        final Issn is = new Issn();
 
         try {
             this.setId(rs.getLong("ZID"));
-            this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
+            this.setIssn(is.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
             this.setIdentifier(rs.getString("identifier"));
             this.setIdentifier_id(rs.getString("identifier_id"));
             this.setZdbid(rs.getString("zdbid"));
@@ -186,9 +186,9 @@ public class ZDBIDObject extends AbstractIdEntity {
     }
 
     private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
-        final Issn issnInstance = new Issn();
+        final Issn is = new Issn();
         this.setId(rs.getLong("ZID"));
-        this.setIssn(issnInstance.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
+        this.setIssn(is.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
         this.setIdentifier(rs.getString("identifier"));
         this.setIdentifier_id(rs.getString("identifier_id"));
         this.setZdbid(rs.getString("zdbid"));

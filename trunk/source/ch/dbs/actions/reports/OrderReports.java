@@ -111,9 +111,9 @@ public final class OrderReports extends DispatchAction {
                     List<Bestellungen> orders = null;
 
                     if (!searches.isEmpty()) { // hier liegt Liste aus Suche vor...
-                        final UserAction uaInstance = new UserAction();
+                        final UserAction userAction = new UserAction();
                         PreparedStatement pstmt = null;
-                        pstmt = uaInstance.composeSearchLogic(searches, ui.getKonto(),
+                        pstmt = userAction.composeSearchLogic(searches, ui.getKonto(),
                                 of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
                         orders = b.searchOrdersPerKonto(pstmt, cn.getConnection());
                         if (pstmt != null) {

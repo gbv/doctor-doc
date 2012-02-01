@@ -82,9 +82,9 @@ public final class OrderGbvAction extends DispatchAction {
         String forward = FAILURE;
         OrderForm of = (OrderForm) fm;
         final OrderState orderstate = new OrderState();
-        final OrderAction oaInstance = new OrderAction();
-        final IllHandler ihInstance = new IllHandler();
-        final Lieferanten lInstance = new Lieferanten();
+        final OrderAction orderAction = new OrderAction();
+        final IllHandler illHandler = new IllHandler();
+        final Lieferanten supplier = new Lieferanten();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text t = new Text();
         final Check ck = new Check();
@@ -141,7 +141,7 @@ public final class OrderGbvAction extends DispatchAction {
                                             // ...ist das Bestellobjekt da und kein E-Journal?
                                             if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
                                                 // 2. Chance anhand der vorhandenen ISSN
-                                                of.setZdbid(oaInstance.getZdbidFromIssn(
+                                                of.setZdbid(orderAction.getZdbidFromIssn(
                                                         of.getIssn(), t.getConnection()));
                                                 // hier kann es sein dass dbs keine zdbid liefert
                                                 // => ggf. Suche anhand ISSN
@@ -180,7 +180,7 @@ public final class OrderGbvAction extends DispatchAction {
                                         } else {
                                             // handelt es sich um eine Zeitschrift?
                                             if (ck.isMinLength(of.getIssn(), 2)) {
-                                                of.setZdbid(oaInstance.getZdbidFromIssn(
+                                                of.setZdbid(orderAction.getZdbidFromIssn(
                                                         of.getIssn(), t.getConnection()));
                                                 // hier kann es sein dass dbs keine zdbid liefert
                                                 // => ggf. Suche anhand ISSN
@@ -328,14 +328,14 @@ public final class OrderGbvAction extends DispatchAction {
                                             } else { // *** automatische Bestellung
                                                 of.setPpn(gsf.getPpn_003AT());
                                                 IllForm gbv = new IllForm();
-                                                gbv = ihInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                                final String gbvanswer = ihInstance.sendIllRequest(gbv, BASEURL);
-                                                final String returnValue = ihInstance.readGbvIllAnswer(gbvanswer);
+                                                gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                                final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
+                                                final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
                                                 forward = "ordersuccess";
                                                 if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
                                                     AbstractBenutzer kunde = new AbstractBenutzer();
                                                     kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
-                                                    of.setLieferant(lInstance.getLieferantFromName(
+                                                    of.setLieferant(supplier.getLieferantFromName(
                                                             "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
                                                     // doppelter Eintrag um Sortieren und Suche zu ermöglichen
                                                     of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
@@ -409,14 +409,14 @@ public final class OrderGbvAction extends DispatchAction {
                                             }
                                         } else { // *** automatische Bestellung
                                             IllForm gbv = new IllForm();
-                                            gbv = ihInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                            final String gbvanswer = ihInstance.sendIllRequest(gbv, BASEURL);
-                                            final String returnValue = ihInstance.readGbvIllAnswer(gbvanswer);
+                                            gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                            final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
+                                            final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
                                             forward = "ordersuccess";
                                             if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
                                                 AbstractBenutzer kunde = new AbstractBenutzer();
                                                 kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
-                                                of.setLieferant(lInstance.getLieferantFromName(
+                                                of.setLieferant(supplier.getLieferantFromName(
                                                         "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
                                                 // doppelter Eintrag um Sortieren und Suche zu ermöglichen
                                                 of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
@@ -559,14 +559,14 @@ public final class OrderGbvAction extends DispatchAction {
                                                     + "LOAN%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
                                         } else { // *** automatische Bestellung
                                             IllForm gbv = new IllForm();
-                                            gbv = ihInstance.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                            final String gbvanswer = ihInstance.sendIllRequest(gbv, BASEURL);
-                                            final String returnValue = ihInstance.readGbvIllAnswer(gbvanswer);
+                                            gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                            final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
+                                            final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
                                             forward = "ordersuccess";
                                             if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
                                                 AbstractBenutzer kunde = new AbstractBenutzer();
                                                 kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
-                                                of.setLieferant(lInstance.getLieferantFromName(
+                                                of.setLieferant(supplier.getLieferantFromName(
                                                         "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
                                                 // doppelter Eintrag um Sortieren und Suche zu ermöglichen
                                                 of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
@@ -1020,7 +1020,7 @@ public final class OrderGbvAction extends DispatchAction {
     private static GbvSruForm readSruRecord(String content) {
 
         final GbvSruForm record = new GbvSruForm();
-        final ConvertOpenUrl ouInstance = new ConvertOpenUrl();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
 
         try {
 
@@ -1112,7 +1112,7 @@ public final class OrderGbvAction extends DispatchAction {
                 record.setIsmn_004F(getSruDatafield("004F", content));
             }
             if (content.contains("<datafield tag=\"005A\">")) {
-                record.setIssn_005A_multipel(ouInstance.normalizeIssn(getSruDatafield("005A", content)));
+                record.setIssn_005A_multipel(openurlConv.normalizeIssn(getSruDatafield("005A", content)));
             }
             if (content.contains("<datafield tag=\"029E\">")) {
                 record.setKoerperschaft_als_interpret_029E_multipel(getSruDatafield("029E", content));

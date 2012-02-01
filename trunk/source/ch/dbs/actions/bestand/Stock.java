@@ -375,8 +375,8 @@ public class Stock extends DispatchAction {
                         hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
                     } else if (hf.isDel()) { // delete the given Text() / location
                         // Check if there still exist holdings for this location
-                        final Bestand bestandInstance = new Bestand();
-                        final ArrayList<Bestand> sl = new ArrayList<Bestand>(bestandInstance.getAllBestandForStandortId(
+                        final Bestand bestand = new Bestand();
+                        final ArrayList<Bestand> sl = new ArrayList<Bestand>(bestand.getAllBestandForStandortId(
                                 txt.getId(), t.getConnection()));
                         if (sl == null || sl.isEmpty()) {
                             txt.deleteText(t.getConnection(), txt);
@@ -900,9 +900,9 @@ public class Stock extends DispatchAction {
      */
     private List<String> getRelatedIssn(final String issn, final Connection cn) {
 
-        final Issn issnInstance = new Issn();
+        final Issn is = new Issn();
 
-        final List<String> issns = issnInstance.getAllIssnsFromOneIssn(issn, cn);
+        final List<String> issns = is.getAllIssnsFromOneIssn(issn, cn);
 
         if (issns.isEmpty()) { issns.add(issn); } // if there has been no hit, return the ISSN from the input
 

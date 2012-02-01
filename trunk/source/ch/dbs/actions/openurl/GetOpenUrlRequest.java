@@ -53,10 +53,10 @@ public final class GetOpenUrlRequest extends Action {
         final Auth auth = new Auth();
         String forward = "failure";
         OrderForm of = (OrderForm) form;
-        final BestellformAction bfInstance = new BestellformAction();
+        final BestellformAction bfAction = new BestellformAction();
         of.setResolver(true); // markiert, dass Angaben bereits aufgelöst wurden
-        final ConvertOpenUrl ouInstance = new ConvertOpenUrl();
-        final OpenUrl openUrlInstance = new OpenUrl();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+        final OpenUrl openurl = new OpenUrl();
 
         final String query = rq.getQueryString();
 
@@ -82,29 +82,29 @@ public final class GetOpenUrlRequest extends Action {
                     String pmid = "";
                     if (query.contains("sid=Entrez:PubMed&id=pmid:")) {
                         pmid = query.substring(query.indexOf("sid=Entrez:PubMed&id=pmid:"));
-                        of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
+                        of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
                         of.setRfr_id("Entrez:PubMed");
                     }
                     if (query.contains("sid=google&id=pmid:")) {
                         pmid = query.substring(query.indexOf("sid=google&id=pmid:"));
-                        of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
+                        of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
                         of.setRfr_id("Google Scholar");
                     }
 
                 } else { // Übergabe aus Linkresolver
                     if (query != null) {
-                        final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
-                        of = ouInstance.makeOrderform(co);
+                        final ContextObject co = openurl.readOpenUrlFromRequest(rq);
+                        of = openurlConv.makeOrderform(co);
                         // nur bei Übergabe über OpenURL Rfr_id abfüllen. Nicht bei WorldCat!
                         // Deshalb hier nachträglich...
                         if (co.getRfr_id() != null && !co.getRfr_id().equals("")) { of.setRfr_id(co.getRfr_id()); }
 
                         // Falls Doi vorhanden aber wichtige Angaben fehlen...
                         if (of.getDoi() != null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")
-                                && bfInstance.areArticleValuesMissing(of)) {
+                                && bfAction.areArticleValuesMissing(of)) {
 
                             OrderForm ofDoi = new OrderForm();
-                            ofDoi = bfInstance.resolveDoi(bfInstance.extractDoi(of
+                            ofDoi = bfAction.resolveDoi(bfAction.extractDoi(of
                                     .getDoi()));
                             if ("".equals(of.getIssn()) && !"".equals(ofDoi.getIssn())) { of.setIssn(ofDoi.getIssn()); }
                             if ("".equals(of.getZeitschriftentitel()) && !"".equals(ofDoi.getZeitschriftentitel())) {
@@ -184,19 +184,19 @@ public final class GetOpenUrlRequest extends Action {
                         String pmid = "";
                         if (query.contains("sid=Entrez:PubMed&id=pmid:")) {
                             pmid = query.substring(query.indexOf("sid=Entrez:PubMed&id=pmid:"));
-                            of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
+                            of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
                             of.setRfr_id("Entrez:PubMed");
                         }
                         if (query.contains("sid=google&id=pmid:")) {
                             pmid = query.substring(query.indexOf("sid=google&id=pmid:"));
-                            of = bfInstance.resolvePmid(bfInstance.extractPmid(pmid));
+                            of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
                             of.setRfr_id("Google Scholar");
                         }
 
                     } else { // Übergabe aus Linkresolver
                         if (query != null) {
-                            final ContextObject co = openUrlInstance.readOpenUrlFromRequest(rq);
-                            of = ouInstance.makeOrderform(co);
+                            final ContextObject co = openurl.readOpenUrlFromRequest(rq);
+                            of = openurlConv.makeOrderform(co);
                             // nur bei Übergabe über OpenURL Rfr_id abfüllen.
                             // Nicht bei WorldCat! Deshalb hier nachträglich...
                             if (co.getRfr_id() != null && !co.getRfr_id().equals("")) { of.setRfr_id(co.getRfr_id()); }
@@ -204,10 +204,10 @@ public final class GetOpenUrlRequest extends Action {
                             // Falls Doi vorhanden aber wichtige Angaben fehlen...
                             if (of.getDoi() != null && !of.getDoi().equals("")
                                     && of.getMediatype().equals("Artikel")
-                                    && bfInstance.areArticleValuesMissing(of)) {
+                                    && bfAction.areArticleValuesMissing(of)) {
 
                                 OrderForm ofDoi = new OrderForm();
-                                ofDoi = bfInstance.resolveDoi(bfInstance.extractDoi(of
+                                ofDoi = bfAction.resolveDoi(bfAction.extractDoi(of
                                         .getDoi()));
                                 if (of.getIssn().equals("") && !ofDoi.getIssn().equals("")) {
                                     of.setIssn(ofDoi.getIssn());
