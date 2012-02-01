@@ -1,16 +1,16 @@
---
--- works with  >= Revision 160 (see also dbchanges_forUpdate, e.g. if using SVN)
+-- works with  >= Revision 202 (see also dbchanges_forUpdate, e.g. if using SVN)
 
 -- phpMyAdmin SQL Dump
--- version 3.1.3.1
+-- version 3.4.5deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 15. Juni 2011 um 14:16
--- Server Version: 5.1.33
--- PHP-Version: 5.2.9
+-- Erstellungszeit: 01. Feb 2012
+-- Server Version: 5.1.58
+-- PHP-Version: 5.3.6-13ubuntu3.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
@@ -18,7 +18,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Tabellenstruktur für Tabelle `benutzer`
 --
 
-DROP TABLE IF EXISTS `benutzer`;
 CREATE TABLE IF NOT EXISTS `benutzer` (
   `UID` bigint(20) NOT NULL AUTO_INCREMENT,
   `institut` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -76,7 +75,6 @@ INSERT INTO `benutzer` (`UID`, `institut`, `abteilung`, `category`, `anrede`, `v
 -- Tabellenstruktur für Tabelle `bestellform_daia`
 --
 
-DROP TABLE IF EXISTS `bestellform_daia`;
 CREATE TABLE IF NOT EXISTS `bestellform_daia` (
   `DID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -108,18 +106,12 @@ CREATE TABLE IF NOT EXISTS `bestellform_daia` (
   PRIMARY KEY (`DID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `bestellform_daia`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `bestellform_param`
 --
 
-DROP TABLE IF EXISTS `bestellform_param`;
 CREATE TABLE IF NOT EXISTS `bestellform_param` (
   `BPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -182,18 +174,12 @@ CREATE TABLE IF NOT EXISTS `bestellform_param` (
   KEY `deactivated` (`deactivated`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `bestellform_param`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `bestellstatus`
 --
 
-DROP TABLE IF EXISTS `bestellstatus`;
 CREATE TABLE IF NOT EXISTS `bestellstatus` (
   `BSID` bigint(20) NOT NULL AUTO_INCREMENT,
   `BID` bigint(20) NOT NULL,
@@ -207,18 +193,12 @@ CREATE TABLE IF NOT EXISTS `bestellstatus` (
   KEY `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `bestellstatus`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `bestellungen`
 --
 
-DROP TABLE IF EXISTS `bestellungen`;
 CREATE TABLE IF NOT EXISTS `bestellungen` (
   `BID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -275,18 +255,12 @@ CREATE TABLE IF NOT EXISTS `bestellungen` (
   KEY `UID_2` (`UID`,`state`,`orderdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `bestellungen`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `billing`
 --
 
-DROP TABLE IF EXISTS `billing`;
 CREATE TABLE IF NOT EXISTS `billing` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `UID` bigint(20) DEFAULT NULL,
@@ -305,26 +279,15 @@ CREATE TABLE IF NOT EXISTS `billing` (
   KEY `zahlungseingang` (`zahlungseingang`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `billing`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `c3p0TestTable`
 --
 
-DROP TABLE IF EXISTS `c3p0TestTable`;
 CREATE TABLE IF NOT EXISTS `c3p0TestTable` (
   `a` char(1) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Daten für Tabelle `c3p0TestTable`
---
-
 
 -- --------------------------------------------------------
 
@@ -332,7 +295,6 @@ CREATE TABLE IF NOT EXISTS `c3p0TestTable` (
 -- Tabellenstruktur für Tabelle `ddl_billing`
 --
 
-DROP TABLE IF EXISTS `ddl_billing`;
 CREATE TABLE IF NOT EXISTS `ddl_billing` (
   `DBID` bigint(20) NOT NULL AUTO_INCREMENT,
   `UID` bigint(20) NOT NULL,
@@ -342,18 +304,12 @@ CREATE TABLE IF NOT EXISTS `ddl_billing` (
   PRIMARY KEY (`DBID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `ddl_billing`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `ddl_billingstatus`
 --
 
-DROP TABLE IF EXISTS `ddl_billingstatus`;
 CREATE TABLE IF NOT EXISTS `ddl_billingstatus` (
   `BSID` bigint(20) NOT NULL AUTO_INCREMENT,
   `DBID` bigint(20) NOT NULL,
@@ -361,18 +317,12 @@ CREATE TABLE IF NOT EXISTS `ddl_billingstatus` (
   PRIMARY KEY (`BSID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `ddl_billingstatus`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `ddl_positionen`
 --
 
-DROP TABLE IF EXISTS `ddl_positionen`;
 CREATE TABLE IF NOT EXISTS `ddl_positionen` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
   `UID` bigint(20) NOT NULL COMMENT 'Endkunde / Bibliothekskunde',
@@ -395,18 +345,12 @@ CREATE TABLE IF NOT EXISTS `ddl_positionen` (
   PRIMARY KEY (`pid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `ddl_positionen`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `default_preise`
 --
 
-DROP TABLE IF EXISTS `default_preise`;
 CREATE TABLE IF NOT EXISTS `default_preise` (
   `DPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `TID_bezeichnung` bigint(20) NOT NULL,
@@ -423,10 +367,20 @@ CREATE TABLE IF NOT EXISTS `default_preise` (
   KEY `KID` (`KID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
 --
--- Daten für Tabelle `default_preise`
+-- Tabellenstruktur für Tabelle `ezb_id`
 --
 
+CREATE TABLE IF NOT EXISTS `ezb_id` (
+  `EID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ezb_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `zdb_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`EID`),
+  KEY `zdb_id` (`zdb_id`),
+  KEY `ezb_id` (`ezb_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=46707 ;
 
 -- --------------------------------------------------------
 
@@ -434,7 +388,6 @@ CREATE TABLE IF NOT EXISTS `default_preise` (
 -- Tabellenstruktur für Tabelle `fax`
 --
 
-DROP TABLE IF EXISTS `fax`;
 CREATE TABLE IF NOT EXISTS `fax` (
   `FID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -447,18 +400,12 @@ CREATE TABLE IF NOT EXISTS `fax` (
   PRIMARY KEY (`FID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `fax`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `faxrun`
 --
 
-DROP TABLE IF EXISTS `faxrun`;
 CREATE TABLE IF NOT EXISTS `faxrun` (
   `FRID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -467,18 +414,12 @@ CREATE TABLE IF NOT EXISTS `faxrun` (
   PRIMARY KEY (`FRID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `faxrun`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `holdings`
 --
 
-DROP TABLE IF EXISTS `holdings`;
 CREATE TABLE IF NOT EXISTS `holdings` (
   `HOID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -496,18 +437,12 @@ CREATE TABLE IF NOT EXISTS `holdings` (
   KEY `KID` (`KID`,`titel`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `holdings`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `iso_countries`
 --
 
-DROP TABLE IF EXISTS `iso_countries`;
 CREATE TABLE IF NOT EXISTS `iso_countries` (
   `rowId` int(11) NOT NULL AUTO_INCREMENT,
   `countryId` int(11) NOT NULL,
@@ -823,7 +758,6 @@ INSERT INTO `iso_countries` (`rowId`, `countryId`, `locale`, `countryCode`, `cou
 -- Tabellenstruktur für Tabelle `issn`
 --
 
-DROP TABLE IF EXISTS `issn`;
 CREATE TABLE IF NOT EXISTS `issn` (
   `IID` bigint(20) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(10) CHARACTER SET utf8 NOT NULL,
@@ -841,18 +775,12 @@ CREATE TABLE IF NOT EXISTS `issn` (
   KEY `issn` (`issn`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `issn`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `konto`
 --
 
-DROP TABLE IF EXISTS `konto`;
 CREATE TABLE IF NOT EXISTS `konto` (
   `KID` bigint(20) NOT NULL AUTO_INCREMENT,
   `DID` bigint(20) DEFAULT NULL,
@@ -902,6 +830,8 @@ CREATE TABLE IF NOT EXISTS `konto` (
   `edatum` date NOT NULL,
   `gtc` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gtcdate` datetime DEFAULT NULL,
+  `showprivsuppliers` tinyint(1) NOT NULL DEFAULT '1',
+  `showpubsuppliers` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`KID`),
   KEY `biblioname` (`biblioname`),
   KEY `kontotyp` (`kontotyp`)
@@ -911,8 +841,8 @@ CREATE TABLE IF NOT EXISTS `konto` (
 -- Daten für Tabelle `konto`
 --
 
-INSERT INTO `konto` (`KID`, `DID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `plz`, `ort`, `land`, `timezone`, `telefon`, `faxno`, `faxusername`, `faxpassword`, `popfaxend`, `fax2`, `bibliomail`, `dbsmail`, `dbsmailpw`, `gbvbn`, `gbvpw`, `gbv_requester_id`, `ids_id`, `ids_passwort`, `ezbid`, `instlogolink`, `zdb`, `billing`, `billingtype`, `accounting_rhythmvalue`, `accounting_rhythmday`, `accounting_rhythmtimeout`, `billingschwellwert`, `maxordersu`, `maxordersutotal`, `maxordersj`, `orderlimits`, `userlogin`, `userbestellung`, `gbvbestellung`, `kontostatus`, `kontotyp`, `default_deloptions`, `paydate`, `expdate`, `edatum`, `gtc`, `gtcdate`) VALUES
-(1, NULL, 'My Library', NULL, 'Adress / Institution', 'Street 10', '10000', 'My City', 'CH', NULL, '+41 (0)43 111 11 11', '+41 (0)43 111 11 12', '', '', NULL, NULL, 'mail@mylibrary.ch', 'mail@mylibrary.ch', '', NULL, NULL, NULL, NULL, NULL, '', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 'post', NULL, NULL, '2010-05-15', NULL, NULL);
+INSERT INTO `konto` (`KID`, `DID`, `biblioname`, `isil`, `adresse`, `adresszusatz`, `plz`, `ort`, `land`, `timezone`, `telefon`, `faxno`, `faxusername`, `faxpassword`, `popfaxend`, `fax2`, `bibliomail`, `dbsmail`, `dbsmailpw`, `gbvbn`, `gbvpw`, `gbv_requester_id`, `ids_id`, `ids_passwort`, `ezbid`, `instlogolink`, `zdb`, `billing`, `billingtype`, `accounting_rhythmvalue`, `accounting_rhythmday`, `accounting_rhythmtimeout`, `billingschwellwert`, `maxordersu`, `maxordersutotal`, `maxordersj`, `orderlimits`, `userlogin`, `userbestellung`, `gbvbestellung`, `kontostatus`, `kontotyp`, `default_deloptions`, `paydate`, `expdate`, `edatum`, `gtc`, `gtcdate`, `showprivsuppliers`, `showpubsuppliers`) VALUES
+(1, NULL, 'My Library', NULL, 'Adress / Institution', 'Street 10', '10000', 'My City', 'CH', NULL, '+41 (0)43 111 11 11', '+41 (0)43 111 11 12', '', '', NULL, NULL, 'mail@mylibrary.ch', 'mail@mylibrary.ch', '', NULL, NULL, NULL, NULL, NULL, '', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 'post', NULL, NULL, '2010-05-15', NULL, NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -920,202 +850,244 @@ INSERT INTO `konto` (`KID`, `DID`, `biblioname`, `isil`, `adresse`, `adresszusat
 -- Tabellenstruktur für Tabelle `lieferanten`
 --
 
-DROP TABLE IF EXISTS `lieferanten`;
 CREATE TABLE IF NOT EXISTS `lieferanten` (
   `LID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Lieferanten ID',
   `siegel` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lieferant` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `emailILL` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `countryCode` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
   `allgemein` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Diesen Lieferanten sehen alle Bibliothekskonten',
   `KID` bigint(20) DEFAULT NULL COMMENT 'Speziallieferant dieses Kunden',
   PRIMARY KEY (`LID`),
   KEY `siegel` (`siegel`),
   KEY `KID` (`KID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=398 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=452 ;
 
 --
 -- Daten für Tabelle `lieferanten`
 --
 
-INSERT INTO `lieferanten` (`LID`, `siegel`, `lieferant`, `countryCode`, `allgemein`, `KID`) VALUES
-(38, '', 'Liechtensteinische Landesbibliothek', 'CH', 0, NULL),
-(33, '', 'IDS Basel/Bern', 'CH', 0, NULL),
-(50, '', 'Réseau valaisan', 'CH', 0, NULL),
-(43, '', 'CERN Document Server', 'CH', 0, NULL),
-(36, '', 'IDS Zürich Universität', 'CH', 0, NULL),
-(37, '', 'Nebis', 'CH', 0, NULL),
-(35, '', 'IDS Luzern', 'CH', 0, NULL),
-(39, '', 'Kunsthaus Zürich', 'CH', 0, NULL),
-(34, '', 'IDS St.Gallen', 'CH', 0, NULL),
-(41, '', 'SGBN - St. Galler Bibliotheksnetz', 'CH', 0, NULL),
-(42, '', 'BGR Bibliotheksverbund Graubünden', 'CH', 0, NULL),
-(56, '', 'GBV - Gemeinsamer Bibliotheksverbund', '', 1, NULL),
-(53, '', 'andere', '', 1, NULL),
-(46, '', 'RPVZ - Schweizerischer Zeitschrfitengesamtkatalog', 'CH', 0, NULL),
-(47, '', 'Réseau des bibliothèques genevoises', 'CH', 0, NULL),
-(48, '', 'Réseau des bibliothèques neuchâteloises et jurassiennes', 'CH', 0, NULL),
-(45, '', 'Schweizerische Nationalbibliothek Bern', 'CH', 0, NULL),
-(49, '', 'Réseau Fribourgeois', 'CH', 0, NULL),
-(44, '', 'Alexandria', 'CH', 0, NULL),
-(51, '', 'Réseau vaudois', 'CH', 0, NULL),
-(52, '', 'British Library', '', 1, NULL),
-(55, '', 'Verlag', '', 1, NULL),
-(32, '', 'Subito', '', 1, NULL),
-(31, '', 'abonniert', '', 1, NULL),
-(30, '', 'Internet', '', 1, NULL),
-(40, '', 'Sbt - Sistema bibliotecario ticinese', 'CH', 0, NULL),
-(167, 'B 106', 'Robert-Koch-Institut Berlin, Hauptbibliothek Wedding', 'DE', 0, NULL),
-(166, 'B 1513', 'Robert-Koch-Institut Berlin, Bibliothek Seestraße', 'DE', 0, NULL),
-(170, '46', 'Staats- und Universitätsbibliothek Bremen', 'DE', 0, NULL),
-(173, '1a', 'Staatsbibliothek zu Berlin - Preußischer Kulturbesitz, Haus Potsdamer Straße', 'DE', 0, NULL),
-(174, '1', 'Staatsbibliothek zu Berlin - Preußischer Kulturbesitz, Haus Unter den Linden', 'DE', 0, NULL),
-(163, 'Ma 14', 'Otto-von-Guericke-Universität Magdeburg, Universitätsbibliothek, Medizinische Zentralbibliothek', 'DE', 0, NULL),
-(171, '18', 'Staats- und Universitätsbibliothek Hamburg Carl von Ossietzky Hamburg', 'DE', 0, NULL),
-(161, 'Gö 116  ', 'Otto-Hahn-Bibliothek des Max-Planck-Instituts für biophysikalische Chemie Göttingen', 'DE', 0, NULL),
-(160, 'Hv 131', 'Niedersächsisches Ministerium für den ländlichen Raum Hannover, Ernährung, Landwirtschaft und Verbraucherschutz', 'DE', 0, NULL),
-(169, '109/720', 'Senatsbibliothek in der Stiftung Zentral- und Landesbibliothek Berlin', 'DE', 0, NULL),
-(162, 'Ma 9', 'Otto-von-Guericke-Universität Magdeburg, Universitätsbibliothek', 'DE', 0, NULL),
-(164, 'Bs 68', 'Physikalisch-Technische Bundesanstalt Braunschweig', 'DE', 0, NULL),
-(175, 'Bv 2', 'Stiftung Alfred-Wegener-Institut (AWI) für Polar- und Meeresforschung in der Helmholtz-Gemeinschaft Bremerhaven', 'DE', 0, NULL),
-(168, 'Ner 1', 'Ruppiner Kliniken GmbH Neuruppin', 'DE', 0, NULL),
-(165, 'B 108', 'Physikalisch-Technische Bundesanstalt, Institut Berlin', 'DE', 0, NULL),
-(158, '7/0001', 'Niedersächsische Staats- und Universitätsbibliothek Göttingen, Forstwissenschaften und Waldökologie', 'DE', 0, NULL),
-(156, '354', 'Medizinische Hochschule Hannover', 'DE', 0, NULL),
-(153, 'Ha 94', 'Max-Planck-Institut für Mikrostrukturphysik Halle/Saale', 'DE', 0, NULL),
-(139, 'Ha 93', 'Leibniz-Institut für Pflanzenbiochemie Halle/Saale', 'DE', 0, NULL),
-(154, 'B 787', 'Max-Planck-Institut für molekulare Genetik Berlin', 'DE', 0, NULL),
-(159, 'Hv 14', 'Niedersächsischer Landtag Hannover', 'DE', 0, NULL),
-(152, 'Gö 134', 'Max-Planck-Institut für experimentelle Medizin Göttingen, Karl-Thomas-Bibliothek', 'DE', 0, NULL),
-(151, 'Ma 54', 'Max-Planck-Institut für Dynamik Komplexer Technischer Systeme Magdeburg', 'DE', 0, NULL),
-(150, 'J 126', 'Max-Planck-Institut für Chemische Ökologie und Max-Planck-Institut für Biogeochemie Jena', 'DE', 0, NULL),
-(149, 'B 1532', 'Max-Planck-Institut für Bildungsforschung Berlin', 'DE', 0, NULL),
-(148, 'B 2225', 'Max-Delbrück-Centrum für Molekulare Medizin Berlin', 'DE', 0, NULL),
-(125, 'R 71', 'Johann Heinrich von Thünen-Institut Hamburg, BFI für Ländliche Räume, Wald, Fischerei, IZ Fischerei, Rostock', 'DE', 0, NULL),
-(143, 'R 134', 'Marineamt Rostock, Fachinformationsstelle', 'DE', 0, NULL),
-(147, 'Ki 29', 'Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und Lebensmittel, Kiel', 'DE', 0, NULL),
-(142, 'B 30', 'Lorberg-Bibliothek des Instituts für Gärungsgewerbe und Biotechnologie Berlin', 'DE', 0, NULL),
-(141, 'Mun 1', 'Leibniz-Zentrum für Agrarlandschaftsforschung (ZALF) e. V. Müncheberg', 'DE', 0, NULL),
-(157, '7', 'Niedersächsische Staats- und Universitätsbibliothek Göttingen', 'DE', 0, NULL),
-(155, 'Po 80', 'Max-Planck-Institut für Molekulare Pflanzenphysiologie Potsdam', 'DE', 0, NULL),
-(146, 'Ka 51', 'Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und Lebensmittel, Karlsruhe', 'DE', 0, NULL),
-(145, 'Wim 21', 'Materialforschungs- und -prüfanstalt (MFPA) an der Bauhaus-Universität Weimar', 'DE', 0, NULL),
-(144, 'Eb 15', 'Martin Gropius Krankenhaus GmbH Eberswalde', 'DE', 0, NULL),
-(140, 'B 2042', 'Leibniz-Institut für Zoo- und Wildtierforschung im Forschungsverbund Berlin e.V. (IZW)', 'DE', 0, NULL),
-(138, 'Ma 45', 'Leibniz-Institut für Neurobiologie Magdeburg', 'DE', 0, NULL),
-(137, 'Ki 109', 'Leibniz-Institut für Meereswissenschaften Kiel, IFM-GEOMAR, Bibliothek Westufer', 'DE', 0, NULL),
-(127, 'B 85', 'Julius Kühn-Institut, Bundesforschungsinstitut für Kulturpflanzen, Berlin-Dahlem', 'DE', 0, NULL),
-(135, 'B 259', 'Leibniz-Institut für Gewässerökologie und Binnenfischerei im Forschungsverbund Berlin e.V.', 'DE', 0, NULL),
-(134, 'Po 61', 'Landeslabor Brandenburg Potsdam', 'DE', 0, NULL),
-(133, 'B 2096', 'Länderinstitut für Bienenkunde Hohen Neuendorf e.V.', 'DE', 0, NULL),
-(132, 'FR 1', 'Klinikum Frankfurt/Oder GmbH', 'DE', 0, NULL),
-(131, 'Po 30', 'Klinikum ''Ernst von Bergmann'' gGmbH Potsdam', 'DE', 0, NULL),
-(130, 'Kle 2', 'Julius Kühn-Institut, Bundesforschungsinstitutfür Kulturpflanzen, Kleinmachnow', 'DE', 0, NULL),
-(129, 'Q 1', 'Julius Kühn-Institut, Bundesforschungsinstitut für Kulturpflanzen, Quedlinburg', 'DE', 0, NULL),
-(120, '11/18', 'Humboldt-Universität zu Berlin, Agrarwissenschaften, Teilbibliothek Tierzucht', 'DE', 0, NULL),
-(122, '11/148', 'Humboldt-Universität zu Berlin, Fremdsprachliche Philologien, Teilbibliothek Anglistik / Amerikanistik', 'DE', 0, NULL),
-(124, 'H 140', 'Johann Heinrich von Thünen-Institut Hamburg, BFI für Ländliche Räume, Wald, Fischerei, IZ Fischerei, Hamburg', 'DE', 0, NULL),
-(123, '204', 'Ibero-Amerikanisches Institut Preußischer Kulturbesitz Berlin', 'DE', 0, NULL),
-(128, 'Bs 66', 'Julius Kühn-Institut, Bundesforschungsinstitut für Kulturpflanzen, Braunschweig', 'DE', 0, NULL),
-(121, '11/84', 'Humboldt-Universität zu Berlin, Zweigbibliothek Biologie', 'DE', 0, NULL),
-(136, 'Ki 130', 'Leibniz-Institut für Meereswissenschaften Kiel, IFM-GEOMAR, Bibliothek Ostufer', 'DE', 0, NULL),
-(119, '11/42', 'Humboldt-Universität zu Berlin, Agrarwissenschaften, Institut für Gartenbauwissenschaften, Pflanzenzüchtung', 'DE', 0, NULL),
-(193, '3/76', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zweigbibliothek Physiologische Chemie', 'DE', 0, NULL),
-(126, 'H 105', 'Johann Heinrich von Thünen-Institut Hamburg, BFI für Ländliche Räume, Wald, Fischerei, IZ Wald', 'DE', 0, NULL),
-(118, '11', 'Humboldt-Universität zu Berlin, Universitätsbibliothek, Zentralbibliothek', 'DE', 0, NULL),
-(117, '705', 'Helmut-Schmidt-Universität, Universität der Bundeswehr Hamburg', 'DE', 0, NULL),
-(99, 'Eb 1', 'Fachhochschule Eberswalde', 'DE', 0, NULL),
-(106, '188/846', 'Freie Universität Berlin, Fachbereich Veterinärmedizin', 'DE', 0, NULL),
-(114, 'B 113', 'Fritz-Haber-Institut der Max-Planck-Gesellschaft Berlin', 'DE', 0, NULL),
-(113, 'Ce 4', 'Friedrich-Loeffler-Institut, Bundesforschungsinstitut für Tiergesundheit Celle, Institut für Tierschutz und Tierhaltung', 'DE', 0, NULL),
-(112, 'Wus 1', 'Friedrich-Loeffler-Institut Wusterhausen, Bundesforschungsinstitut für Tiergesundheit', 'DE', 0, NULL),
-(111, 'J 120', 'Friedrich-Loeffler-Institut Jena, Bundesforschungsinstitut für Tiergesundheit', 'DE', 0, NULL),
-(115, 'B 1505', 'Hahn-Meitner-Institut Berlin GmbH Berlin, Zentralbibliothek', 'DE', 0, NULL),
-(109, 'Tü 67', 'Friedrich-Loeffler-Institut (FLI) Tübingen, Bundesforschungsinstitut für Tiergesundheit, Institut für Immunologie', 'DE', 0, NULL),
-(108, '188', 'Freie Universität Berlin', 'DE', 0, NULL),
-(105, '188/726', 'Freie Universität Berlin, Fachbereich Erziehungswissenschaft und Psychologie', 'DE', 0, NULL),
-(101, 'H 23', 'Freie und Hansestadt Hamburg, Behörde für Soziales und Gesundheit, Amt für Gesundheit und Verbraucherschutz', 'DE', 0, NULL),
-(103, '188/24', 'Freie Universität Berlin, Botanischer Garten und Botanisches Museum Berlin-Dahlem', 'DE', 0, NULL),
-(102, '188/808', 'Freie Universität Berlin, Fachbereich Rechtswissenschaft', 'DE', 0, NULL),
-(107, '188/820', 'Freie Universität Berlin, Fachbereich Wirtschaftswissenschaft', 'DE', 0, NULL),
-(100, 'H 27', 'Freie und Hansestadt Hamburg, Behörde für Soziales und Gesundheit, Institut für Hygiene und Umwelt', 'DE', 0, NULL),
-(116, 'B 2018', 'HELIOS Zentralbibliothek Berlin', 'DE', 0, NULL),
-(98, 'B 1514', 'Fachbibliothek Umwelt des Umweltbundesamtes, Berlin', 'DE', 0, NULL),
-(97, 'B 1531', 'Deutsches Rheuma-Forschungszentrum und Max-Planck-Institut für Infektionsbiologie Berlin', 'DE', 0, NULL),
-(96, 'Po 6', 'Deutsches Institut für Ernährungsforschung (DIfE) Potsdam-Rehbrücke', 'DE', 0, NULL),
-(110, 'Gr 61', 'Friedrich-Loeffler-Institut, Bundesforschungsinstitut für Tiergesundheit Greifswald', 'DE', 0, NULL),
-(95, '206', 'Deutsche Zentralbibliothek für Wirtschaftswissenschaften (ZBW) / Leibniz-Informationszentrum Wirtschaft, Kiel', 'DE', 0, NULL),
-(89, 'Co 2', 'Carl-Thiem-Klinikum Cottbus gGmbH', 'DE', 0, NULL),
-(87, 'B 12', 'Bundesinstitut für Risikobewertung (BfR)', 'DE', 0, NULL),
-(94, '206 H', 'Deutsche Zentralbibliothek für Wirtschaftswissenschaften (ZBW) / Leibniz-Informationszentrum Wirtschaft, Hamburg', 'DE', 0, NULL),
-(93, '578/897', 'Charité - Universitätsmedizin Berlin, Zentrum für Human- und Gesundheitswissenschaften, Institut für Arbeitsmedizin', 'DE', 0, NULL),
-(91, '578/2', 'Charité - Universitätsmedizin Berlin, Campus Charité Mitte', 'DE', 0, NULL),
-(90, '578/1', 'Charité - Universitätsmedizin Berlin, Campus Benjamin Franklin', 'DE', 0, NULL),
-(92, '578/3', 'Charité - Universitätsmedizin Berlin, Campus Virchow-Klinikum', 'DE', 0, NULL),
-(176, '89', 'Technische Informationsbibliothek und Universitätsbibliothek Hannover (TIB/UB)', 'DE', 0, NULL),
-(88, 'B 1574', 'Bundeswehrkrankenhaus Berlin', 'DE', 0, NULL),
-(86, 'B 43', 'Bundesanstalt für Materialforschung und -prüfung Berlin', 'DE', 0, NULL),
-(207, '83', 'Zentralbibliothek der Technischen Universität Berlin', 'DE', 0, NULL),
-(84, 'B 1565', 'Bundesamt für Verbraucherschutz und Lebensmittelsicherheit (BVL) Berlin', 'DE', 0, NULL),
-(82, 'B 4', 'Berlin-Brandenburgische Akademie der Wissenschaften', 'DE', 0, NULL),
-(83, 'Co 1', 'Brandenburgische Technische Universität Cottbus', 'DE', 0, NULL),
-(81, 'Wim 2', 'Bauhaus-Universität Weimar', 'DE', 0, NULL),
-(80, '287', 'Akademie der Bundeswehr für Information und Telefon Strausberg', 'DE', 0, NULL),
-(85, 'B 424', 'Bundesanstalt für Arbeitsschutz und Arbeitsmedizin Berlin', 'DE', 0, NULL),
-(177, '830', 'Technische Universität Hamburg-Harburg', 'DE', 0, NULL),
-(178, 'J 123', 'Thüringer Landesanstalt für Landwirtschaft Jena', 'DE', 0, NULL),
-(179, 'J 121', 'Thüringer Landesanstalt für Umwelt und Geologie Jena', 'DE', 0, NULL),
-(180, 'Sb 1', 'Thüringer Landesanstalt für Umwelt und Geologie Weinbergen, Staatliche Vogelschutzwarte Seebach', 'DE', 0, NULL),
-(181, '27', 'Thüringer Universitäts- und Landesbibliothek Jena', 'DE', 0, NULL),
-(191, '3/21', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Fachbereich Physik', 'DE', 0, NULL),
-(183, '83/1230', 'TU Berlin, Institut für Chemie, Arbeitsgruppe Biochemie und Molekulare Biologie', 'DE', 0, NULL),
-(184, '83/1032', 'TU Berlin, Institut für Geodäsie und Geoinformationstechnik', 'DE', 0, NULL),
-(185, '83/1111', 'TU Berlin, Universitätsbibliothek, Bereichbibliothek TIB-Gelände, FG Lebensmittelchemie', 'DE', 0, NULL),
-(349, '715', 'Informations-, Bibliotheks- und IT-Dienste (IBIT)Oldenburg', 'DE', 0, NULL),
-(187, '517', 'Universität Potsdam', 'DE', 0, NULL),
-(188, '39', 'Universitäts- und Forschungsbibliothek Erfurt/Gotha, Forschungsbibliothek Gotha', 'DE', 0, NULL),
-(189, '547', 'Universitäts- und Forschungsbibliothek Erfurt/Gotha, Universitätsbibliothek Erfurt', 'DE', 0, NULL),
-(198, '104', 'Universitätsbibliothek Clausthal-Zellerfeld', 'DE', 0, NULL),
-(196, '9', 'Universitätsbibliothek Greifswald', 'DE', 0, NULL),
-(194, '3/11', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zweigbibliothek Rechtswissenschaft', 'DE', 0, NULL),
-(195, '3/55', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Merseburg, Zweigbibliothek Technik', 'DE', 0, NULL),
-(190, '3', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zentrale', 'DE', 0, NULL),
-(197, '28', 'Universitätsbibliothek Rostock', 'DE', 0, NULL),
-(182, '95', 'Tierärztliche Hochschule Hannover', 'DE', 0, NULL),
-(199, '700', 'Universitätsbibliothek Osnabrück', 'DE', 0, NULL),
-(200, 'Lün 4', 'Universitätsbibliothek Lüneburg', 'DE', 0, NULL),
-(203, 'Ilm 1', 'Universitätsbibliothek Ilmenau', 'DE', 0, NULL),
-(186, '83/1001', 'TU Berlin, WiWiDok - Fachbibliothek Wirtschaft, Recht & Statistik', 'DE', 0, NULL),
-(201, '84', 'Universitätsbibliothek Braunschweig', 'DE', 0, NULL),
-(204, '8', 'Universitätsbibliothek Kiel', 'DE', 0, NULL),
-(205, '578/821', 'Universitätsmedizin Berlin, Campus Benjamin Franklin, Klinik und Poliklinik für Zahn-, Mund- und Kieferheilkunde', 'DE', 0, NULL),
-(208, 'Bre 14', 'Zentrum für Marine Tropenökologie an der Universität Bremen (ZMT), ZB der TU Berlin', 'DE', 0, NULL),
-(206, '109', 'Zentral- und Landesbibliothek Berlin, Haus Amerika-Gedenkbibliothek und Haus Berliner Stadt- & Senatsbibliothek', 'DE', 0, NULL),
-(104, '188/823', 'Freie Universität Berlin, Fachbereich Biologie, Chemie, Pharmazie, Mineralogie, Geowissenschaften', 'DE', 0, NULL),
-(345, '100', 'Universitätsbibliothek Hohenheim, Stuttgart', 'DE', 0, NULL),
-(202, 'Hil 2', 'Universitätsbibliothek Hildesheim', 'DE', 0, NULL),
-(357, 'L 97', 'Helmholtz-Zentrum für Umweltforschung GmbH - UFZ, Leipzig', 'DE', 0, NULL),
-(346, '', 'GBV (BVB - Bibliotheksverbund Bayern)', '', 1, NULL),
-(347, '', 'GBV (HeBIS - Hessisches BibliotheksInformationsSystem)', '', 1, NULL),
-(362, '253', 'Johann Heinrich von Thünen-Institut,\nBFI für Ländliche Räume, Wald und Fischerei, Braunschweig', 'DE', 0, NULL),
-(192, '3/ 4', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zweigbibliothek Landwirtschaft', 'DE', 0, NULL),
-(359, 'Det 2', 'Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und\nLebensmittel, Detmold', 'DE', 0, NULL),
-(355, 'Dm 19', 'Bundesanstalt für Arbeitsschutz und Arbeitsmedizin, Bibliothek', 'DE', 0, NULL),
-(348, '', 'GBV (SWB - Südwestdeutscher Bibliotheksverbund)', '', 1, NULL),
-(358, 'Sra 5', 'Fachhochschule Stralsund, Hochschulbibliothek', 'DE', 0, NULL),
-(356, 'B 1512', 'Bundesinstitut für Arzneimittel und Medizinprodukte (BfArM), Bibliothek', 'DE', 0, NULL),
-(361, 'B 198', 'Deutsche Rentenversicherung Bund, Bibliothek, Berlin', 'DE', 0, NULL),
-(1, NULL, 'k.A.', '', 0, NULL),
-(363, 'F 20', 'Paul-Ehrlich-Institut, Langen', 'DE', 0, NULL),
-(364, '', 'Loansome Doc', '', 1, NULL),
-(388, '66', 'Hochschul- und Landesbibliothek Fulda', 'DE', 0, NULL),
-(389, 'B 15', 'Senckenberg Deutsches Entomologisches Institut', 'DE', 0, NULL),
-(390, '', 'ETH Zürich', 'CH', 0, NULL),
-(391, '', 'ZB Zürich', 'CH', 0, NULL),
-(392, '', 'Carelit-Volltexte', '', 1, NULL),
-(394, '101', 'Deutsche Nationalbibliothek', 'DE', 0, NULL),
-(395, '', 'Deutsche Nationalbibliothek', 'CH', 0, NULL),
-(396, 'Wa 1', 'Leibniz-Institut für Ostseeforschung Warnemünde', 'DE', 0, NULL),
-(397, 'Gt 1', 'Helmholtz-Zentrum Geesthacht', 'DE', 0, NULL);
+INSERT INTO `lieferanten` (`LID`, `siegel`, `lieferant`, `emailILL`, `countryCode`, `allgemein`, `KID`) VALUES
+(33, '', 'IDS Basel/Bern', '', 'CH', 0, NULL),
+(50, '', 'Réseau valaisan', '', 'CH', 0, NULL),
+(36, '', 'IDS Zürich Universität', '', 'CH', 0, NULL),
+(37, '', 'Nebis', '', 'CH', 0, NULL),
+(35, '', 'IDS Luzern', '', 'CH', 0, NULL),
+(34, '', 'IDS St.Gallen', '', 'CH', 0, NULL),
+(41, '', 'SGBN - St. Galler Bibliotheksnetz', '', 'CH', 0, NULL),
+(42, '', 'BGR Bibliotheksverbund Graubünden', '', 'CH', 0, NULL),
+(56, '', 'GBV - Gemeinsamer Bibliotheksverbund', '', 'DE', 0, NULL),
+(53, '', 'andere', '', '', 1, NULL),
+(47, '', 'Réseau des bibliothèques genevoises', '', 'CH', 0, NULL),
+(48, '', 'Réseau des bibliothèques neuchâteloises et jurassiennes', '', 'CH', 0, NULL),
+(45, '', 'Schweizerische Nationalbibliothek Bern', '', 'CH', 0, NULL),
+(49, '', 'Réseau Fribourgeois', '', 'CH', 0, NULL),
+(44, '', 'Alexandria', '', 'CH', 0, NULL),
+(51, '', 'Réseau vaudois', '', 'CH', 0, NULL),
+(52, '', 'British Library', '', '', 1, NULL),
+(55, '', 'Verlag', '', '', 1, NULL),
+(32, '', 'Subito', '', '', 1, NULL),
+(31, '', 'abonniert', '', '', 1, NULL),
+(30, '', 'Internet', '', '', 1, NULL),
+(40, '', 'Sbt - Sistema bibliotecario ticinese', '', 'CH', 0, NULL),
+(167, 'B 106', 'Robert-Koch-Institut Berlin, Hauptbibliothek Wedding', '', 'DE', 0, NULL),
+(166, 'B 1513', 'Robert-Koch-Institut Berlin, Bibliothek Seestraße', '', 'DE', 0, NULL),
+(170, '46', 'Staats- und Universitätsbibliothek Bremen', '', 'DE', 0, NULL),
+(173, '1a', 'Staatsbibliothek zu Berlin - Preußischer Kulturbesitz, Haus Potsdamer Straße', '', 'DE', 0, NULL),
+(174, '1', 'Staatsbibliothek zu Berlin - Preußischer Kulturbesitz, Haus Unter den Linden', '', 'DE', 0, NULL),
+(163, 'Ma 14', 'Otto-von-Guericke-Universität Magdeburg, Universitätsbibliothek, Medizinische Zentralbibliothek', '', 'DE', 0, NULL),
+(171, '18', 'Staats- und Universitätsbibliothek Hamburg Carl von Ossietzky Hamburg', '', 'DE', 0, NULL),
+(161, 'Gö 116  ', 'Otto-Hahn-Bibliothek des Max-Planck-Instituts für biophysikalische Chemie Göttingen', '', 'DE', 0, NULL),
+(160, 'Hv 131', 'Niedersächsisches Ministerium für den ländlichen Raum Hannover, Ernährung, Landwirtschaft und Verbraucherschutz', '', 'DE', 0, NULL),
+(169, '109/720', 'Senatsbibliothek in der Stiftung Zentral- und Landesbibliothek Berlin', '', 'DE', 0, NULL),
+(162, 'Ma 9', 'Otto-von-Guericke-Universität Magdeburg, Universitätsbibliothek', '', 'DE', 0, NULL),
+(164, 'Bs 68', 'Physikalisch-Technische Bundesanstalt Braunschweig', '', 'DE', 0, NULL),
+(175, 'Bv 2', 'Stiftung Alfred-Wegener-Institut (AWI) für Polar- und Meeresforschung in der Helmholtz-Gemeinschaft Bremerhaven', '', 'DE', 0, NULL),
+(168, 'Ner 1', 'Ruppiner Kliniken GmbH Neuruppin', '', 'DE', 0, NULL),
+(165, 'B 108', 'Physikalisch-Technische Bundesanstalt, Institut Berlin', '', 'DE', 0, NULL),
+(158, '7/0001', 'Niedersächsische Staats- und Universitätsbibliothek Göttingen, Forstwissenschaften und Waldökologie', '', 'DE', 0, NULL),
+(156, '354', 'Medizinische Hochschule Hannover', '', 'DE', 0, NULL),
+(153, 'Ha 94', 'Max-Planck-Institut für Mikrostrukturphysik Halle/Saale', '', 'DE', 0, NULL),
+(139, 'Ha 93', 'Leibniz-Institut für Pflanzenbiochemie Halle/Saale', '', 'DE', 0, NULL),
+(154, 'B 787', 'Max-Planck-Institut für molekulare Genetik Berlin', '', 'DE', 0, NULL),
+(159, 'Hv 14', 'Niedersächsischer Landtag Hannover', '', 'DE', 0, NULL),
+(152, 'Gö 134', 'Max-Planck-Institut für experimentelle Medizin Göttingen, Karl-Thomas-Bibliothek', '', 'DE', 0, NULL),
+(151, 'Ma 54', 'Max-Planck-Institut für Dynamik Komplexer Technischer Systeme Magdeburg', '', 'DE', 0, NULL),
+(150, 'J 126', 'Max-Planck-Institut für Chemische Ökologie und Max-Planck-Institut für Biogeochemie Jena', '', 'DE', 0, NULL),
+(149, 'B 1532', 'Max-Planck-Institut für Bildungsforschung Berlin', '', 'DE', 0, NULL),
+(148, 'B 2225', 'Max-Delbrück-Centrum für Molekulare Medizin Berlin', '', 'DE', 0, NULL),
+(125, 'R 71', 'Johann Heinrich von Thünen-Institut Hamburg, BFI für Ländliche Räume, Wald, Fischerei, IZ Fischerei, Rostock', '', 'DE', 0, NULL),
+(143, 'R 134', 'Marineamt Rostock, Fachinformationsstelle', '', 'DE', 0, NULL),
+(147, 'Ki 29', 'Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und Lebensmittel, Kiel', '', 'DE', 0, NULL),
+(142, 'B 30', 'Lorberg-Bibliothek des Instituts für Gärungsgewerbe und Biotechnologie Berlin', '', 'DE', 0, NULL),
+(141, 'Mun 1', 'Leibniz-Zentrum für Agrarlandschaftsforschung (ZALF) e. V. Müncheberg', '', 'DE', 0, NULL),
+(157, '7', 'Niedersächsische Staats- und Universitätsbibliothek Göttingen', '', 'DE', 0, NULL),
+(155, 'Po 80', 'Max-Planck-Institut für Molekulare Pflanzenphysiologie Potsdam', '', 'DE', 0, NULL),
+(146, 'Ka 51', 'Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und Lebensmittel, Karlsruhe', '', 'DE', 0, NULL),
+(145, 'Wim 21', 'Materialforschungs- und -prüfanstalt (MFPA) an der Bauhaus-Universität Weimar', '', 'DE', 0, NULL),
+(144, 'Eb 15', 'Martin Gropius Krankenhaus GmbH Eberswalde', '', 'DE', 0, NULL),
+(140, 'B 2042', 'Leibniz-Institut für Zoo- und Wildtierforschung im Forschungsverbund Berlin e.V. (IZW)', '', 'DE', 0, NULL),
+(138, 'Ma 45', 'Leibniz-Institut für Neurobiologie Magdeburg', '', 'DE', 0, NULL),
+(137, 'Ki 109', 'Leibniz-Institut für Meereswissenschaften Kiel, IFM-GEOMAR, Bibliothek Westufer', '', 'DE', 0, NULL),
+(127, 'B 85', 'Julius Kühn-Institut, Bundesforschungsinstitut für Kulturpflanzen, Berlin-Dahlem', '', 'DE', 0, NULL),
+(135, 'B 259', 'Leibniz-Institut für Gewässerökologie und Binnenfischerei im Forschungsverbund Berlin e.V.', '', 'DE', 0, NULL),
+(134, 'Po 61', 'Landeslabor Brandenburg Potsdam', '', 'DE', 0, NULL),
+(133, 'B 2096', 'Länderinstitut für Bienenkunde Hohen Neuendorf e.V.', '', 'DE', 0, NULL),
+(132, 'FR 1', 'Klinikum Frankfurt/Oder GmbH', '', 'DE', 0, NULL),
+(131, 'Po 30', 'Klinikum ''Ernst von Bergmann'' gGmbH Potsdam', '', 'DE', 0, NULL),
+(130, 'Kle 2', 'Julius Kühn-Institut, Bundesforschungsinstitutfür Kulturpflanzen, Kleinmachnow', '', 'DE', 0, NULL),
+(129, 'Q 1', 'Julius Kühn-Institut, Bundesforschungsinstitut für Kulturpflanzen, Quedlinburg', '', 'DE', 0, NULL),
+(120, '11/18', 'Humboldt-Universität zu Berlin, Agrarwissenschaften, Teilbibliothek Tierzucht', '', 'DE', 0, NULL),
+(122, '11/148', 'Humboldt-Universität zu Berlin, Fremdsprachliche Philologien, Teilbibliothek Anglistik / Amerikanistik', '', 'DE', 0, NULL),
+(124, 'H 140', 'Johann Heinrich von Thünen-Institut Hamburg, BFI für Ländliche Räume, Wald, Fischerei, IZ Fischerei, Hamburg', '', 'DE', 0, NULL),
+(123, '204', 'Ibero-Amerikanisches Institut Preußischer Kulturbesitz Berlin', '', 'DE', 0, NULL),
+(128, 'Bs 66', 'Julius Kühn-Institut, Bundesforschungsinstitut für Kulturpflanzen, Braunschweig', '', 'DE', 0, NULL),
+(121, '11/84', 'Humboldt-Universität zu Berlin, Zweigbibliothek Biologie', '', 'DE', 0, NULL),
+(136, 'Ki 130', 'Leibniz-Institut für Meereswissenschaften Kiel, IFM-GEOMAR, Bibliothek Ostufer', '', 'DE', 0, NULL),
+(119, '11/42', 'Humboldt-Universität zu Berlin, Agrarwissenschaften, Institut für Gartenbauwissenschaften, Pflanzenzüchtung', '', 'DE', 0, NULL),
+(193, '3/76', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zweigbibliothek Physiologische Chemie', '', 'DE', 0, NULL),
+(126, 'H 105', 'Johann Heinrich von Thünen-Institut Hamburg, BFI für Ländliche Räume, Wald, Fischerei, IZ Wald', '', 'DE', 0, NULL),
+(118, '11', 'Humboldt-Universität zu Berlin, Universitätsbibliothek, Zentralbibliothek', '', 'DE', 0, NULL),
+(117, '705', 'Helmut-Schmidt-Universität, Universität der Bundeswehr Hamburg', '', 'DE', 0, NULL),
+(99, 'Eb 1', 'Fachhochschule Eberswalde', '', 'DE', 0, NULL),
+(106, '188/846', 'Freie Universität Berlin, Fachbereich Veterinärmedizin', '', 'DE', 0, NULL),
+(114, 'B 113', 'Fritz-Haber-Institut der Max-Planck-Gesellschaft Berlin', '', 'DE', 0, NULL),
+(113, 'Ce 4', 'Friedrich-Loeffler-Institut, Bundesforschungsinstitut für Tiergesundheit Celle, Institut für Tierschutz und Tierhaltung', '', 'DE', 0, NULL),
+(112, 'Wus 1', 'Friedrich-Loeffler-Institut Wusterhausen, Bundesforschungsinstitut für Tiergesundheit', '', 'DE', 0, NULL),
+(111, 'J 120', 'Friedrich-Loeffler-Institut Jena, Bundesforschungsinstitut für Tiergesundheit', '', 'DE', 0, NULL),
+(115, 'B 1505', 'Hahn-Meitner-Institut Berlin GmbH Berlin, Zentralbibliothek', '', 'DE', 0, NULL),
+(109, 'Tü 67', 'Friedrich-Loeffler-Institut (FLI) Tübingen, Bundesforschungsinstitut für Tiergesundheit, Institut für Immunologie', '', 'DE', 0, NULL),
+(108, '188', 'Freie Universität Berlin', '', 'DE', 0, NULL),
+(105, '188/726', 'Freie Universität Berlin, Fachbereich Erziehungswissenschaft und Psychologie', '', 'DE', 0, NULL),
+(101, 'H 23', 'Freie und Hansestadt Hamburg, Behörde für Soziales und Gesundheit, Amt für Gesundheit und Verbraucherschutz', '', 'DE', 0, NULL),
+(103, '188/24', 'Freie Universität Berlin, Botanischer Garten und Botanisches Museum Berlin-Dahlem', '', 'DE', 0, NULL),
+(102, '188/808', 'Freie Universität Berlin, Fachbereich Rechtswissenschaft', '', 'DE', 0, NULL),
+(107, '188/820', 'Freie Universität Berlin, Fachbereich Wirtschaftswissenschaft', '', 'DE', 0, NULL),
+(100, 'H 27', 'Freie und Hansestadt Hamburg, Behörde für Soziales und Gesundheit, Institut für Hygiene und Umwelt', '', 'DE', 0, NULL),
+(116, 'B 2018', 'HELIOS Zentralbibliothek Berlin', '', 'DE', 0, NULL),
+(98, 'B 1514', 'Fachbibliothek Umwelt des Umweltbundesamtes, Berlin', '', 'DE', 0, NULL),
+(97, 'B 1531', 'Deutsches Rheuma-Forschungszentrum und Max-Planck-Institut für Infektionsbiologie Berlin', '', 'DE', 0, NULL),
+(96, 'Po 6', 'Deutsches Institut für Ernährungsforschung (DIfE) Potsdam-Rehbrücke', '', 'DE', 0, NULL),
+(110, 'Gr 61', 'Friedrich-Loeffler-Institut, Bundesforschungsinstitut für Tiergesundheit Greifswald', '', 'DE', 0, NULL),
+(95, '206', 'Deutsche Zentralbibliothek für Wirtschaftswissenschaften (ZBW) / Leibniz-Informationszentrum Wirtschaft, Kiel', '', 'DE', 0, NULL),
+(89, 'Co 2', 'Carl-Thiem-Klinikum Cottbus gGmbH', '', 'DE', 0, NULL),
+(87, 'B 12', 'Bundesinstitut für Risikobewertung (BfR)', '', 'DE', 0, NULL),
+(94, '206 H', 'Deutsche Zentralbibliothek für Wirtschaftswissenschaften (ZBW) / Leibniz-Informationszentrum Wirtschaft, Hamburg', '', 'DE', 0, NULL),
+(93, '578/897', 'Charité - Universitätsmedizin Berlin, Zentrum für Human- und Gesundheitswissenschaften, Institut für Arbeitsmedizin', '', 'DE', 0, NULL),
+(91, '578/2', 'Charité - Universitätsmedizin Berlin, Campus Charité Mitte', '', 'DE', 0, NULL),
+(90, '578/1', 'Charité - Universitätsmedizin Berlin, Campus Benjamin Franklin', '', 'DE', 0, NULL),
+(92, '578/3', 'Charité - Universitätsmedizin Berlin, Campus Virchow-Klinikum', '', 'DE', 0, NULL),
+(176, '89', 'Technische Informationsbibliothek und Universitätsbibliothek Hannover (TIB/UB)', '', 'DE', 0, NULL),
+(88, 'B 1574', 'Bundeswehrkrankenhaus Berlin', '', 'DE', 0, NULL),
+(86, 'B 43', 'Bundesanstalt für Materialforschung und -prüfung Berlin', '', 'DE', 0, NULL),
+(207, '83', 'Zentralbibliothek der Technischen Universität Berlin', '', 'DE', 0, NULL),
+(84, 'B 1565', 'Bundesamt für Verbraucherschutz und Lebensmittelsicherheit (BVL) Berlin', '', 'DE', 0, NULL),
+(82, 'B 4', 'Berlin-Brandenburgische Akademie der Wissenschaften', '', 'DE', 0, NULL),
+(83, 'Co 1', 'Brandenburgische Technische Universität Cottbus', '', 'DE', 0, NULL),
+(81, 'Wim 2', 'Bauhaus-Universität Weimar', '', 'DE', 0, NULL),
+(80, '287', 'Akademie der Bundeswehr für Information und Telefon Strausberg', '', 'DE', 0, NULL),
+(85, 'B 424', 'Bundesanstalt für Arbeitsschutz und Arbeitsmedizin Berlin', '', 'DE', 0, NULL),
+(177, '830', 'Technische Universität Hamburg-Harburg', '', 'DE', 0, NULL),
+(178, 'J 123', 'Thüringer Landesanstalt für Landwirtschaft Jena', '', 'DE', 0, NULL),
+(179, 'J 121', 'Thüringer Landesanstalt für Umwelt und Geologie Jena', '', 'DE', 0, NULL),
+(180, 'Sb 1', 'Thüringer Landesanstalt für Umwelt und Geologie Weinbergen, Staatliche Vogelschutzwarte Seebach', '', 'DE', 0, NULL),
+(181, '27', 'Thüringer Universitäts- und Landesbibliothek Jena', '', 'DE', 0, NULL),
+(191, '3/21', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Fachbereich Physik', '', 'DE', 0, NULL),
+(183, '83/1230', 'TU Berlin, Institut für Chemie, Arbeitsgruppe Biochemie und Molekulare Biologie', '', 'DE', 0, NULL),
+(184, '83/1032', 'TU Berlin, Institut für Geodäsie und Geoinformationstechnik', '', 'DE', 0, NULL),
+(185, '83/1111', 'TU Berlin, Universitätsbibliothek, Bereichbibliothek TIB-Gelände, FG Lebensmittelchemie', '', 'DE', 0, NULL),
+(349, '715', 'Informations-, Bibliotheks- und IT-Dienste (IBIT)Oldenburg', '', 'DE', 0, NULL),
+(187, '517', 'Universität Potsdam', '', 'DE', 0, NULL),
+(188, '39', 'Universitäts- und Forschungsbibliothek Erfurt/Gotha, Forschungsbibliothek Gotha', '', 'DE', 0, NULL),
+(189, '547', 'Universitäts- und Forschungsbibliothek Erfurt/Gotha, Universitätsbibliothek Erfurt', '', 'DE', 0, NULL),
+(198, '104', 'Universitätsbibliothek Clausthal-Zellerfeld', '', 'DE', 0, NULL),
+(196, '9', 'Universitätsbibliothek Greifswald', '', 'DE', 0, NULL),
+(194, '3/11', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zweigbibliothek Rechtswissenschaft', '', 'DE', 0, NULL),
+(195, '3/55', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Merseburg, Zweigbibliothek Technik', '', 'DE', 0, NULL),
+(190, '3', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zentrale', '', 'DE', 0, NULL),
+(197, '28', 'Universitätsbibliothek Rostock', '', 'DE', 0, NULL),
+(182, '95', 'Tierärztliche Hochschule Hannover', '', 'DE', 0, NULL),
+(199, '700', 'Universitätsbibliothek Osnabrück', '', 'DE', 0, NULL),
+(200, 'Lün 4', 'Universitätsbibliothek Lüneburg', '', 'DE', 0, NULL),
+(203, 'Ilm 1', 'Universitätsbibliothek Ilmenau', '', 'DE', 0, NULL),
+(186, '83/1001', 'TU Berlin, WiWiDok - Fachbibliothek Wirtschaft, Recht & Statistik', '', 'DE', 0, NULL),
+(201, '84', 'Universitätsbibliothek Braunschweig', '', 'DE', 0, NULL),
+(204, '8', 'Universitätsbibliothek Kiel', '', 'DE', 0, NULL),
+(205, '578/821', 'Universitätsmedizin Berlin, Campus Benjamin Franklin, Klinik und Poliklinik für Zahn-, Mund- und Kieferheilkunde', '', 'DE', 0, NULL),
+(208, 'Bre 14', 'Zentrum für Marine Tropenökologie an der Universität Bremen (ZMT), ZB der TU Berlin', '', 'DE', 0, NULL),
+(206, '109', 'Zentral- und Landesbibliothek Berlin, Haus Amerika-Gedenkbibliothek und Haus Berliner Stadt- & Senatsbibliothek', '', 'DE', 0, NULL),
+(104, '188/823', 'Freie Universität Berlin, Fachbereich Biologie, Chemie, Pharmazie, Mineralogie, Geowissenschaften', '', 'DE', 0, NULL),
+(345, '100', 'Universitätsbibliothek Hohenheim, Stuttgart', '', 'DE', 0, NULL),
+(202, 'Hil 2', 'Universitätsbibliothek Hildesheim', '', 'DE', 0, NULL),
+(357, 'L 97', 'Helmholtz-Zentrum für Umweltforschung GmbH - UFZ, Leipzig', '', 'DE', 0, NULL),
+(346, '', 'GBV (BVB - Bibliotheksverbund Bayern)', '', 'DE', 0, NULL),
+(347, '', 'GBV (HeBIS - Hessisches BibliotheksInformationsSystem)', '', 'DE', 0, NULL),
+(362, '253', 'Johann Heinrich von Thünen-Institut,\nBFI für Ländliche Räume, Wald und Fischerei, Braunschweig', '', 'DE', 0, NULL),
+(192, '3/ 4', 'Universitäts- und Landesbibliothek Sachsen-Anhalt, Halle/Saale, Zweigbibliothek Landwirtschaft', '', 'DE', 0, NULL),
+(359, 'Det 2', 'Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und\nLebensmittel, Detmold', '', 'DE', 0, NULL),
+(355, 'Dm 19', 'Bundesanstalt für Arbeitsschutz und Arbeitsmedizin, Bibliothek', '', 'DE', 0, NULL),
+(348, '', 'GBV (SWB - Südwestdeutscher Bibliotheksverbund)', '', 'DE', 0, NULL),
+(358, 'Sra 5', 'Fachhochschule Stralsund, Hochschulbibliothek', '', 'DE', 0, NULL),
+(356, 'B 1512', 'Bundesinstitut für Arzneimittel und Medizinprodukte (BfArM), Bibliothek', '', 'DE', 0, NULL),
+(361, 'B 198', 'Deutsche Rentenversicherung Bund, Bibliothek, Berlin', '', 'DE', 0, NULL),
+(1, NULL, 'k.A.', '', '', 0, NULL),
+(363, 'F 20', 'Paul-Ehrlich-Institut, Langen', '', 'DE', 0, NULL),
+(364, '', 'Loansome Doc', '', '', 1, NULL),
+(388, '66', 'Hochschul- und Landesbibliothek Fulda', '', 'DE', 0, NULL),
+(389, 'B 15', 'Senckenberg Deutsches Entomologisches Institut', '', 'DE', 0, NULL),
+(390, '', 'ETH Zürich', '', 'CH', 0, NULL),
+(391, '', 'ZB Zürich', '', 'CH', 0, NULL),
+(392, '', 'Carelit-Volltexte', '', '', 1, NULL),
+(394, '101', 'Deutsche Nationalbibliothek', '', 'DE', 0, NULL),
+(395, '', 'Deutsche Nationalbibliothek', '', 'CH', 0, NULL),
+(396, '30', 'Universitätsbibliothek Frankfurt am Main', '', 'DE', 0, NULL),
+(397, '18/306', 'Zentrum für Marine und Atmosphärische Wissenschaften (ZMAW), Hamburg ', '', 'DE', 0, NULL),
+(398, 'Juel 1', 'Forschungszentrum Jülich GmbH, Zentralbibliothek', '', 'DE', 0, NULL),
+(399, 'Pn 1', 'Max-Planck-Institut für Evolutionsbiologie, Plön', '', 'DE', 0, NULL),
+(400, 'Nsr 1', 'Friedrich-Loeffler-Institut, Neustadt am Rübenberge', '', 'DE', 0, NULL),
+(401, '', 'GEOUM', '', 'DE', 0, NULL),
+(402, '11/87Ch', 'Humboldt-Universität zu Berlin, Zweigbibliothek Naturwissenschaften (Chemie)', '', 'DE', 0, NULL),
+(403, '', 'NLM', '', '', 1, NULL),
+(404, 'B 103', 'Bibliothek des Wissenschaftsparks Albert Einstein Potsdam', '', 'DE', 0, NULL),
+(405, 'GAT 1', 'Leibniz-Institut für Pflanzengenetik und Kulturpflanzenforschung', '', 'DE', 0, NULL),
+(407, 'H 2', 'Bundesamt für Seeschifffahrt und Hydrographie, Hamburg', '', 'DE', 0, NULL),
+(408, '11/97', 'Humboldt-Universität zu Berlin, Zweigbibliothek Agrarwissenschaften', '', 'DE', 0, NULL),
+(409, 'Bre 11', 'Max-Planck-Institut für Marine Mikrobiologie, Bremen', '', 'DE', 0, NULL),
+(410, '', 'GENIOS', '', '', 1, NULL),
+(411, 'Gt 1', 'Helmholtz-Zentrum Geesthacht', '', 'DE', 0, NULL),
+(412, 'R 133', 'Max-Planck-Institut für Demografische Forschung', '', 'DE', 0, NULL),
+(414, '291/415', 'Leibniz-Institut für Neue Materialien, Saarbrücken', '', 'DE', 0, NULL),
+(415, '', 'Österreichische Zentralbibliothek für Physik', '', 'AT', 0, NULL),
+(416, 'Wa 1', 'Leibniz-Institut für Ostseeforschung Warnemünde', '', 'DE', 0, NULL),
+(417, '185', 'Leibniz-Institut für Länderkunde e.V., Geographische Zentralbibliothek', '', 'DE', 0, NULL),
+(419, '841', 'Zentrale Hochschulbibliothek Lübeck', '', 'DE', 0, NULL),
+(420, '', 'Bibliothek der Gesellschaft der Ärzte in Wien / Billrothhaus', '', 'AT', 0, NULL),
+(421, 'R 48', 'Leibniz-Institut für Nutztierbiologie, Dummerstorf', '', 'DE', 0, NULL),
+(422, 'R 65', 'Leibniz-Institut für Katalyse, Rostock', '', 'DE', 0, NULL),
+(423, 'B 16', 'Museum für Naturkunde Berlin', '', 'DE', 0, NULL),
+(424, 'R 104', 'Bundesamt für Seeschifffahrt und Hydrographie, Rostock', '', 'DE', 0, NULL),
+(425, 'Sra 6', 'Deutsches Meeresmuseum, Stralsund', '', 'DE', 0, NULL),
+(427, 'Ki 131', 'Wehrtechnische Dienststelle für Schiffe und Marinewaffen, Maritime Technologie und Forschung, Kiel', '', 'DE', 0, NULL),
+(428, 'Kue 3', 'IAP Leibniz-Institut für Atmosphärenphysik e.V. Kühlungsborn', '', 'DE', 0, NULL),
+(429, '29', 'Universitätsbibliothek Erlangen-Nürnberg, Hauptbibliothek', '', 'DE', 0, NULL),
+(430, '', 'Universitätsbibliothek Wien', '', 'AT', 0, NULL),
+(431, '', 'Bibliothek der Technischen Universität Wien', '', 'AT', 0, NULL),
+(432, '', 'Bibliothek der Universität für Bodenkultur Wien', '', 'AT', 0, NULL),
+(436, '578/876', 'Charité - Universitätsmedizin Berlin, ZHGB, Institut für Geschichte der Medizin', '', 'DE', 0, NULL),
+(437, '578/905 ', 'Charité - Universitätsmedizin Berlin, ZHGB, Bibliothek für Soziale Medizin', '', 'DE', 0, NULL),
+(438, '4/573', 'Zentrale Medizinische Bibliothek, Marburg', '', 'DE', 0, NULL),
+(439, '14/32', 'Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden, Zweigbibliothek Medizin', '', 'DE', 0, NULL),
+(440, '15/292', 'Universität Leipzig, Universitätsbibliothek, Zentralbibliothek Medizin', '', 'DE', 0, NULL),
+(441, '16/300', 'Medizinische Fakultät Mannheim der Universität Heidelberg', '', 'DE', 0, NULL),
+(442, '18/64', 'Universitätsklinikum Hamburg-Eppendorf, Ärztliche Zentralbibliothek', '', 'DE', 0, NULL),
+(443, '21/123', 'Medizinbibliothek Tübingen', '', 'DE', 0, NULL),
+(444, '77/005', 'Universität Mainz, Fachbibliothek Medizin', '', 'DE', 0, NULL),
+(445, '82', 'Hochschulbibliothek der RWTH Aachen', '', 'DE', 0, NULL),
+(446, '289', 'Universität Ulm, Kommunikations- und Informationszentrum, Bibliotheksservices', '', 'DE', 0, NULL),
+(447, '294/14', 'Medizinische Fakultät der Universität Bochum', '', 'DE', 0, NULL),
+(448, 'L 294', 'Herzzentrum Leipzig GmbH und Park-Krankenhaus Leipzig-Südost GmbH, Somatische Kliniken', '', 'DE', 0, NULL),
+(450, 'L 321', 'Max-Planck-Institut für evolutionäre Anthropologie, Leipzig', '', 'DE', 0, NULL),
+(451, 'B 1562', 'Deutsches Zentrum für Altersfragen (DZA) Berlin', '', 'DE', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -1123,7 +1095,6 @@ INSERT INTO `lieferanten` (`LID`, `siegel`, `lieferant`, `countryCode`, `allgeme
 -- Tabellenstruktur für Tabelle `stock`
 --
 
-DROP TABLE IF EXISTS `stock`;
 CREATE TABLE IF NOT EXISTS `stock` (
   `STID` bigint(20) NOT NULL AUTO_INCREMENT,
   `HOID` bigint(20) NOT NULL,
@@ -1150,18 +1121,12 @@ CREATE TABLE IF NOT EXISTS `stock` (
   KEY `standort` (`standort`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `stock`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `stock_missing`
 --
 
-DROP TABLE IF EXISTS `stock_missing`;
 CREATE TABLE IF NOT EXISTS `stock_missing` (
   `NLID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Negative-List-ID',
   `STID` bigint(20) NOT NULL,
@@ -1176,18 +1141,12 @@ CREATE TABLE IF NOT EXISTS `stock_missing` (
   PRIMARY KEY (`NLID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `stock_missing`
---
-
-
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `text`
 --
 
-DROP TABLE IF EXISTS `text`;
 CREATE TABLE IF NOT EXISTS `text` (
   `TID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) DEFAULT NULL,
@@ -1230,7 +1189,6 @@ INSERT INTO `text` (`TID`, `KID`, `TYID`, `inhalt`) VALUES
 -- Tabellenstruktur für Tabelle `texttyp`
 --
 
-DROP TABLE IF EXISTS `texttyp`;
 CREATE TABLE IF NOT EXISTS `texttyp` (
   `TYID` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) DEFAULT NULL,
@@ -1265,7 +1223,6 @@ INSERT INTO `texttyp` (`TYID`, `KID`, `inhalt`) VALUES
 -- Tabellenstruktur für Tabelle `v_konto_benutzer`
 --
 
-DROP TABLE IF EXISTS `v_konto_benutzer`;
 CREATE TABLE IF NOT EXISTS `v_konto_benutzer` (
   `vkbid` bigint(20) NOT NULL AUTO_INCREMENT,
   `KID` bigint(20) NOT NULL,
@@ -1289,7 +1246,6 @@ INSERT INTO `v_konto_benutzer` (`vkbid`, `KID`, `UID`) VALUES
 -- Tabellenstruktur für Tabelle `zdb_id`
 --
 
-DROP TABLE IF EXISTS `zdb_id`;
 CREATE TABLE IF NOT EXISTS `zdb_id` (
   `ZID` bigint(20) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(20) NOT NULL,
@@ -1300,9 +1256,3 @@ CREATE TABLE IF NOT EXISTS `zdb_id` (
   KEY `zdbid` (`zdbid`),
   KEY `identifier_id` (`identifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `zdb_id`
---
-
-
