@@ -17,8 +17,6 @@
 
 package util;
 
-import java.io.IOException;
-
 import org.grlea.log.SimpleLogger;
 
 public class Base64String {
@@ -33,16 +31,15 @@ public class Base64String {
     public String encodeString(final String psString) {
         if (psString == null) { return ""; }
 
-        return new sun.misc.BASE64Encoder().encode(psString.getBytes());
+        return new String(org.apache.commons.codec.binary.Base64.encodeBase64(psString.getBytes()));
     }
 
     public String decodeString(final String psString) {
         if (psString == null || psString.equals("")) { return null; }
 
         try {
-            return new String(new sun.misc.BASE64Decoder()
-            .decodeBuffer(psString));
-        } catch (final IOException e) {
+            return new String(org.apache.commons.codec.binary.Base64.decodeBase64(psString.getBytes()));
+        } catch (final Exception e) {
             LOG.error("decodeString: " + psString + "\040" + e.toString());
             return null;
         }
