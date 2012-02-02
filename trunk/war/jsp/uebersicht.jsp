@@ -333,19 +333,33 @@
       <td align="center"><bean:write name="b" property="orderdate" />&nbsp;</td>
       <td>
         <logic:empty name="b" property="subitonr">
+        <!-- non Subito orders -->
           <logic:present name="b" property="gbvnr">
+          <!-- GBV orders -->
         <a href="https://www.gbv.de/cbs4/bestellverlauf.pl?BestellID=<bean:write name="b" property="gbvnr" />" target="_blank"><bean:write name="b" property="bestellquelle" /></a>&nbsp;
       </logic:present>
       <logic:notPresent name="b" property="gbvnr">
+      <!-- all other orders -->
             <logic:notEqual name="b" property="bestellquelle" value="k.A.">
-              <bean:write name="b" property="bestellquelle" />&nbsp;
+            <!-- normal orders -->
+              <logic:empty name="b" property="lieferant.emailILL">
+              <!-- no ILL email defined -->
+              	<bean:write name="b" property="bestellquelle" />&nbsp;
+              </logic:empty>
+              <logic:notEmpty name="b" property="lieferant.emailILL">
+              <!-- ILL email defined -->
+              	<span class="title" title="<bean:write name="b" property="bestellquelle" />|<a href='mailto:<bean:write name="b" property="lieferant.emailILL" />'><bean:write name="b" property="lieferant.emailILL" /></a>">
+              	<bean:write name="b" property="bestellquelle" />&nbsp;</span>              
+              </logic:notEmpty>
             </logic:notEqual>
             <logic:equal name="b" property="bestellquelle" value="k.A.">
+            <!-- no supplier defined -->
               <bean:message key="stats.notSpecified" />&nbsp;
             </logic:equal>
           </logic:notPresent>
         </logic:empty>
         <logic:notEmpty name="b" property="subitonr">
+        <!-- Subito orders -->
           <a href="http://www.subito-doc.de/index.php?mod=subo&task=trackingdetail&tgq=<bean:write name="b" property="subitonr" />" target="_blank"><bean:write name="b" property="bestellquelle" /></a>&nbsp;
         </logic:notEmpty>
       </td>
