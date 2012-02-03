@@ -5,18 +5,21 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.grlea.log.SimpleLogger;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestand;
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Gives a DAIA response in XML to a OpenURL request.
@@ -41,15 +44,20 @@ public class DaiaXMLResponse {
 
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            // XERCES
-            final OutputFormat of = new OutputFormat("XML", UTF8, true);
-            of.setIndent(1);
-            of.setIndenting(true);
-            //    of.setDoctype(null,"daia.dtd");
-            final XMLSerializer serializer = new XMLSerializer(out, of);
+            final StreamResult streamResult = new StreamResult(out);
+            final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+
+            final TransformerHandler hd = tf.newTransformerHandler();
+            final Transformer serializer = hd.getTransformer();
+            serializer.setOutputProperty(OutputKeys.ENCODING,"UTF8");
+            serializer.setOutputProperty(OutputKeys.METHOD, "xml");
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            //            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
+            hd.setResult(streamResult);
 
             // SAX2.0 ContentHandler
-            final ContentHandler hd = serializer.asContentHandler();
+            //            final ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
             hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"jsp/import/xsl/daia.xsl\"");
 
@@ -190,15 +198,21 @@ public class DaiaXMLResponse {
 
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            // XERCES
-            final OutputFormat of = new OutputFormat("XML", UTF8, true);
-            of.setIndent(1);
-            of.setIndenting(true);
-            //    of.setDoctype(null, "daia.dtd");
-            final XMLSerializer serializer = new XMLSerializer(out, of);
+            final StreamResult streamResult = new StreamResult(out);
+            final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+
+            final TransformerHandler hd = tf.newTransformerHandler();
+            final Transformer serializer = hd.getTransformer();
+            serializer.setOutputProperty(OutputKeys.ENCODING,"UTF8");
+            serializer.setOutputProperty(OutputKeys.METHOD, "xml");
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            //            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
+
+            hd.setResult(streamResult);
 
             // SAX2.0 ContentHandler
-            final  ContentHandler hd = serializer.asContentHandler();
+            //            final  ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
             hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"jsp/import/xsl/daia.xsl\"");
 
