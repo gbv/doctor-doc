@@ -38,10 +38,10 @@
   <logic:present name="userinfo" property="konto">
   <table border="1">
   <tr>
-    <td><bean:message key="ilv-report.labelfrom" /><bean:write name="userinfo" property="konto.isil" /><br />
-      <bean:write name="userinfo" property="konto.bibliotheksname" />
-          
-        </td>
+    <td valign="top">
+    	<bean:message key="ilv-report.labelfrom" /><bean:write name="userinfo" property="konto.isil" /><br />
+      	<bean:write name="userinfo" property="konto.bibliotheksname" />
+    </td>
 <%     
   OrderForm pageForm = (OrderForm) request.getAttribute("orderform");  
   String lieferant = "";
@@ -54,10 +54,15 @@
     }   
   }
 %>
-    <td><bean:message key="ilv-report.labelto" /> <br />
-      <input name="lieferant" type="text" size="30" value="<%=lieferant%>" />
+    <td>
+    	<table>
+    		<tr>
+    			<td valign="top"><bean:message key="ilv-report.labelto" /></td>
+    			<td><textarea name="lieferant" cols="30" rows="2"><%=lieferant%></textarea></td>
+    		</tr>
+    	</table>
     </td>
-    <td>Signatur: <br />
+    <td valign="top">Signatur: <br />
       <input name="signatur" type="text" size="30" value="" />
     </td>
   </tr>
