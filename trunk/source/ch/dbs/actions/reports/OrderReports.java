@@ -136,7 +136,7 @@ public final class OrderReports extends DispatchAction {
                     }
 
                     final Collection<ConcurrentHashMap<String, String>> al =
-                        new ArrayList<ConcurrentHashMap<String, String>>();
+                            new ArrayList<ConcurrentHashMap<String, String>>();
 
                     final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
                     tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
@@ -222,7 +222,7 @@ public final class OrderReports extends DispatchAction {
                     param.put("today", tf.format(cal.getTime(), ui.getKonto().getTimezone()));
 
                     //Reportauswahl, Verbindung zum Report aufbauen
-                    if (of.getReport() == null) { of.setReport("reports/Orders.jasper"); }
+                    if (of.getReport() == null) { of.setReport("/reports/Orders.jasper"); }
                     final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                             .getResourceAsStream(of.getReport()));
 
@@ -253,7 +253,7 @@ public final class OrderReports extends DispatchAction {
             } else {
                 final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
-                "login.do");
+                        "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
