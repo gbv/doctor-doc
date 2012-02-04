@@ -222,6 +222,7 @@ public final class OrderReports extends DispatchAction {
                     param.put("today", tf.format(cal.getTime(), ui.getKonto().getTimezone()));
 
                     //Reportauswahl, Verbindung zum Report aufbauen
+                    // JasperReports need absolute paths!
                     if (of.getReport() == null) { of.setReport("/reports/Orders.jasper"); }
                     final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                             .getResourceAsStream(of.getReport()));
@@ -275,7 +276,8 @@ public final class OrderReports extends DispatchAction {
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         final OverviewForm of = (OverviewForm) fm;
-        of.setReport("reports/AllOrdersOrdersource.jasper");
+        // JasperReports need absolute paths!
+        of.setReport("/reports/AllOrdersOrdersource.jasper");
         of.setSort("bestellquelle");
         fm = of;
         orderspdf(mp, fm, rq, rp);

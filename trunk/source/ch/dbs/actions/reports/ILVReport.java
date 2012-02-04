@@ -79,9 +79,9 @@ public final class ILVReport extends DispatchAction {
 
             try {
 
-                // this is a small hack, because the ILV report is beeing
+                // this is a small hack, because the ILV report is being
                 // composed on the JSP, where we can't exchange the country
-                // codes (CH / DE / US) against the fullname of the country
+                // codes (CH / DE / US) against the full name of the country
                 final Countries country = new Countries(pageForm.getKonto().getLand(), cn.getConnection());
                 pageForm.getKonto().setLand(country.getCountryname());
 
@@ -189,7 +189,8 @@ public final class ILVReport extends DispatchAction {
                         + ": " + ReadSystemConfigurations.getServerWelcomepage());
 
                 //Reportauswahl, Verbindung zum Report aufbauen
-                final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("reports/ILV-Form.jasper"));
+                // JasperReports need absolute paths!
+                final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
 
                 //Ausgabestream vorbereiten
                 rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
@@ -220,7 +221,7 @@ public final class ILVReport extends DispatchAction {
             } else {
                 final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
-                "login.do");
+                        "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
