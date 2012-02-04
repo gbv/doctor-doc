@@ -74,10 +74,10 @@ public class Konto extends AbstractIdEntity implements Serializable {
     private boolean zdb;
     // Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese Einstellung kann durch den
     // Wert welcher beim User hinterlegt ist überschrieben werden.
-    private Text billing;
+    private transient Text billing;
     // Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll. Verweis auf die Tabelle
     // Text mit dem Texttyp Billingtype
-    private Text billingtype;
+    private transient Text billingtype;
     // Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll in Fr.-
     private int accounting_rhythmvalue;
     // Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden soll. (in Tagen)

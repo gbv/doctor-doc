@@ -50,7 +50,7 @@ public final class HoldingForm extends ValidatorForm {
 
     // Ablauftechn. Eigenschaften
     private String submit = "";
-    private List<Text> standorte;
+    private transient List<Text> standorte;
     private Long stid; // Standort-ID
     private String identifierdescription; // ISSN, ZDB-ID etc.
     private String identifier; // value

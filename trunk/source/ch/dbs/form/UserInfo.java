@@ -32,7 +32,7 @@ public final class UserInfo extends ValidatorForm {
     private transient Konto konto;
     private List<Konto> kontos;
     private List<SearchesForm> searches; // wird für die Sortierung bei der Suche benötigt
-    private List<Countries> countries;
+    private transient List<Countries> countries;
     private int kontoanz; // Anzahl Kontos in welchen der Benutzer berechtigungen hat
     // Kontrollvariable falls Orderangaben beim Benutzererstellen mitgeschickt werden sollen
     private boolean keepordervalues;

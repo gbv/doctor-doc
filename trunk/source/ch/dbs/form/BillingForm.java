@@ -40,11 +40,11 @@ public final class BillingForm extends ActionForm {
     private Long userid;
     private transient AbstractBenutzer user;
     private transient Billing bill;
-    private List<Billing> billings;
+    private transient List<Billing> billings;
     private transient Konto konto;
     private Long kontoid;
     private transient Text rechnungsgrund;
-    private List<Text> rechnungsgrundliste;
+    private transient List<Text> rechnungsgrundliste;
     private String rechnungsgrundstring = "";
     private Long rechnungsgrundid;
     private double betrag;

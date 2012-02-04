@@ -29,8 +29,8 @@ public final class UserForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
     private int kid;
-    private List<Bestellungen> bestellungen;
-    private List<AbstractBenutzer> users;
+    private transient List<Bestellungen> bestellungen;
+    private transient List<AbstractBenutzer> users;
     private String[] kontos;
     private String anrede;
     private String vorname;
@@ -46,7 +46,7 @@ public final class UserForm extends ValidatorForm {
     private String plz;
     private String ort;
     private String land;
-    private List<Countries> countries;
+    private transient List<Countries> countries;
     private String countryid;
     private String password;
     private String method;

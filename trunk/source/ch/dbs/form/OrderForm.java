@@ -40,12 +40,12 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private static final SimpleLogger LOG = new SimpleLogger(OrderForm.class);
 
     private static final long serialVersionUID = 1L;
-    private List<Bestellungen> bestellungen;
-    private List<OrderState> states;
-    private List<Text> statitexts;
-    private List<Lieferanten> quellen;
-    private List<Text> waehrungen;
-    private List<DefaultPreis> defaultpreise;
+    private transient List<Bestellungen> bestellungen;
+    private transient List<OrderState> states;
+    private transient List<Text> statitexts;
+    private transient List<Lieferanten> quellen;
+    private transient List<Text> waehrungen;
+    private transient List<DefaultPreis> defaultpreise;
     private transient Bestellungen bestellung;
     private transient Lieferanten lieferant; // neue Verknüpfung zu Tabelle Lieferanten
     private String bestellquelle; // dient lediglich noch der Führung des doppelten Eintrages in der DB
@@ -102,7 +102,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private boolean delete;
     private String origin; // kann für forward benutzt werden, (nicht direkt, nur mit Werteprüfung!)
     private List<ErrorMessage> links;
-    private List<AbstractBenutzer> kontouser;
+    private transient List<AbstractBenutzer> kontouser;
     // u.a. ip-basiertes Kunden-Bestellform
     private String language; // Sprache des Dokumentes
     private String doi = ""; // Digital  Object Identifier
@@ -142,7 +142,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String kundenplz;
     private String kundenort;
     private String kundenland;
-    private List<Countries> countries;
+    private transient List<Countries> countries;
     private String kundentelefon;
     private String kundenbenutzernr;
     private String freitxt3_label;

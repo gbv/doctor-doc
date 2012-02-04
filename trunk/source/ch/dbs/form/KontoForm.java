@@ -45,7 +45,7 @@ public final class KontoForm extends ValidatorForm {
     private String Ort;
     private String Land;
     private String timezone = ReadSystemConfigurations.getSystemTimezone();
-    private List<Countries> countries;
+    private transient List<Countries> countries;
     private String countryid;
     private String faxno; // DD-Faxservernummer, nur durch Admin editierbar!
     private String faxusername;
