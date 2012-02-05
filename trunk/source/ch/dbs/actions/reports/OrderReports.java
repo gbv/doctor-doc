@@ -19,6 +19,8 @@ package ch.dbs.actions.reports;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -28,10 +30,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -84,7 +86,7 @@ public final class OrderReports extends DispatchAction {
                 // Klassen vorbereiten
                 OverviewForm of = (OverviewForm) fm; //Parameter für Einschraenkungen
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                ServletOutputStream out = null;
+                OutputStream out = null;
                 final Text cn = new Text();
 
                 // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
@@ -135,8 +137,7 @@ public final class OrderReports extends DispatchAction {
 
                     }
 
-                    final Collection<ConcurrentHashMap<String, String>> al =
-                            new ArrayList<ConcurrentHashMap<String, String>>();
+                    final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
 
                     final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
                     tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
@@ -212,7 +213,7 @@ public final class OrderReports extends DispatchAction {
                     }
 
                     //Parameter abfüllen
-                    final ConcurrentHashMap<String, String> param = new ConcurrentHashMap<String, String>();
+                    final Map<String, Object> param = new ConcurrentHashMap<String, Object>();
                     final Date from = new SimpleDateFormat("yyyy-MM-dd").parse(of.getFromdate());
                     final Date to = new SimpleDateFormat("yyyy-MM-dd").parse(of.getTodate());
                     param.put("from", new SimpleDateFormat("dd.MM.yyyy").format(from));
@@ -224,8 +225,7 @@ public final class OrderReports extends DispatchAction {
                     //Reportauswahl, Verbindung zum Report aufbauen
                     // JasperReports need absolute paths!
                     if (of.getReport() == null) { of.setReport("/reports/Orders.jasper"); }
-                    final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
-                            .getResourceAsStream(of.getReport()));
+                    final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream(of.getReport()));
 
                     //Ausgabestream vorbereiten
                     rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
@@ -233,8 +233,7 @@ public final class OrderReports extends DispatchAction {
 
                     //Daten zusammenstellen und abfüllen
                     final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-                    JasperRunManager.runReportToPdfStream(reportStream, out,
-                            param, ds);
+                    JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
 
                 } catch (final Exception e) {
                     // ServletOutputStream konnte nicht erstellt werden

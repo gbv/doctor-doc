@@ -62,7 +62,7 @@
     		</tr>
     	</table>
     </td>
-    <td valign="top">Signatur: <br />
+    <td valign="top"><bean:message key="stockimport.sig" />: <br />
       <input name="signatur" type="text" size="30" value="" />
     </td>
   </tr>
@@ -153,6 +153,7 @@
   <input type="hidden" name="reporttitle" value="<bean:message key="ilv-report.title" />" />
   <input type="hidden" name="labelfrom" value="<bean:message key="ilv-report.labelfrom" />" />
   <input type="hidden" name="labelto" value="<bean:message key="ilv-report.labelto" />" />
+  <input type="hidden" name="labelsignatur" value="<bean:message key="stockimport.sig" />" />
   <input type="hidden" name="labeljournaltitel" value="<bean:message key="ilv-report.labeljournaltitel" />" />
   <input type="hidden" name="labelcustomer" value="<bean:message key="ilv-report.labelcustomer" />" />
   <input type="hidden" name="labelname" value="<bean:message key="ilv-report.labelname" />" />
@@ -173,10 +174,8 @@
   <input type="hidden" name="labelnotesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
   <input type="submit" value="<bean:message key="ilv-report.submit" />" />
   
-  
-  </form>
-  
   </logic:present>
+  </form>
   
    </logic:present>
      

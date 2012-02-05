@@ -19,14 +19,17 @@ package ch.dbs.actions.reports;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -129,7 +132,7 @@ public final class ILVReport extends DispatchAction {
                 // Klassen vorbereiten
                 final IlvReportForm ilvf = (IlvReportForm) fm;
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                ServletOutputStream out = null;
+                OutputStream out = null;
                 final RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
                 final Konto k = (Konto) nullValues.remove(ui.getKonto());
 
@@ -139,11 +142,12 @@ public final class ILVReport extends DispatchAction {
                 cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
 
                 // Labels vorbereiten
-                final ConcurrentHashMap<String, String> values = new ConcurrentHashMap<String, String>();
+                final Map<String, Object> values = new ConcurrentHashMap<String, Object>();
                 values.put("reporttitle", ilvf.getReporttitle() + " "
                         + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
                 values.put("labelfrom", ilvf.getLabelfrom());
                 values.put("labelto", ilvf.getLabelto());
+                values.put("labelsignatur", ilvf.getLabelsignatur());
                 values.put("labeljournaltitel", ilvf.getLabeljournaltitel());
                 values.put("labelcustomer", ilvf.getLabelcustomer());
                 values.put("labelname", ilvf.getLabelname());
@@ -190,14 +194,15 @@ public final class ILVReport extends DispatchAction {
 
                 //Reportauswahl, Verbindung zum Report aufbauen
                 // JasperReports need absolute paths!
-                final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
+                //                final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
+                final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
 
                 //Ausgabestream vorbereiten
                 rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
                 try {
                     out = rp.getOutputStream();
                     //Daten dem Report übergeben
-                    final ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
+                    final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
                     final HashMap<String, String> hm = new HashMap<String, String>();
                     hm.put("Fake", "Daten damit Report nicht leer wird..");
                     al.add(hm);
@@ -206,6 +211,7 @@ public final class ILVReport extends DispatchAction {
                     JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);
                 } catch (final Exception e) {
                     // ServletOutputStream konnte nicht erstellt werden
+                    e.printStackTrace();
                     LOG.error("ILV-Report konnte nicht erstellt werden: " + e.toString());
                 } finally {
                     // Report an den Browser senden
