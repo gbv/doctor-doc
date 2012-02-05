@@ -32,13 +32,14 @@ public class RemoveNullValuesFromObject {
 
     /**
      * Replace all null values from an object in his .getters & .setters with String as GenericReturnType()
-     * & GenericParameterTypes
+     * & GenericParameterTypes. Does not work reliable!
      *
      * @author Pascal Steiner
      * @param Object o
      * @return Object o without null values in his getters and setters methods
      *
      */
+    @ Deprecated
     public Object remove(final Object o) {
 
         final Method[] methods = o.getClass().getMethods();

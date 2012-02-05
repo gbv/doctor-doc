@@ -32,10 +32,8 @@ import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
 
 import util.Auth;
-import util.RemoveNullValuesFromObject;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestand;
-import ch.dbs.entity.Holding;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
@@ -108,7 +106,7 @@ public final class HoldingsReport extends DispatchAction {
             } else {
                 final ErrorMessage em = new ErrorMessage(
                         "error.berechtigung",
-                "login.do");
+                        "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
@@ -143,51 +141,119 @@ public final class HoldingsReport extends DispatchAction {
 
 
 
-    private String getExportLine(Bestand b, final char delimiter) {
+    private String getExportLine(final Bestand b, final char delimiter) {
 
         final StringBuffer buf = new StringBuffer(336);
-        final RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
 
-        b = (Bestand) nullValues.remove(b);
-        b.setHolding((Holding) nullValues.remove(b.getHolding()));
-
-        buf.append("\"" + b.getId() + "\"");
+        if (b.getId() != null) {
+            buf.append("\"" + b.getId() + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + b.getHolding().getId() + "\"");
+        if (b.getHolding().getId() != null) {
+            buf.append("\"" + b.getHolding().getId() + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + b.getStandort().getId() + "\"");
+        if (b.getStandort().getId() != null) {
+            buf.append("\"" + b.getStandort().getId() + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + b.getStandort().getInhalt() + "\"");
+        if (b.getStandort().getInhalt() != null) {
+            buf.append("\"" + b.getStandort().getInhalt() + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getShelfmark()) + "\"");
+        if (b.getShelfmark() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getShelfmark()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getHolding().getTitel()) + "\"");
+        if (b.getHolding().getTitel() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getHolding().getTitel()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getHolding().getCoden()) + "\"");
+        if (b.getHolding().getCoden() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getHolding().getCoden()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getHolding().getVerlag()) + "\"");
+        if (b.getHolding().getVerlag() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getHolding().getVerlag()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getHolding().getOrt()) + "\"");
+        if (b.getHolding().getOrt() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getHolding().getOrt()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getHolding().getIssn()) + "\"");
+        if (b.getHolding().getIssn() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getHolding().getIssn()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getHolding().getZdbid()) + "\"");
+        if (b.getHolding().getZdbid() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getHolding().getZdbid()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getStartyear()) + "\"");
+        if (b.getStartyear() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getStartyear()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getStartvolume()) + "\"");
+        if (b.getStartvolume() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getStartvolume()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getStartissue()) + "\"");
+        if (b.getStartissue() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getStartissue()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getEndyear()) + "\"");
+        if (b.getEndyear() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getEndyear()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getEndvolume()) + "\"");
+        if (b.getEndvolume() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getEndvolume()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getEndissue()) + "\"");
+        if (b.getEndissue() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getEndissue()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
         buf.append("\"" + b.getSuppl() + "\"");
         buf.append(delimiter);
-        buf.append("\"" + removeSpecialCharacters(b.getBemerkungen()) + "\"");
+        if (b.getBemerkungen() != null) {
+            buf.append("\"" + removeSpecialCharacters(b.getBemerkungen()) + "\"");
+        } else {
+            buf.append("\"\"");
+        }
         buf.append(delimiter);
         buf.append("\"" + b.isEissue() + "\"");
         buf.append(delimiter);

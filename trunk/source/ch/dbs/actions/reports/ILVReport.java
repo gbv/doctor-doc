@@ -44,7 +44,6 @@ import org.grlea.log.SimpleLogger;
 
 import util.Auth;
 import util.ReadSystemConfigurations;
-import util.RemoveNullValuesFromObject;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
@@ -133,8 +132,7 @@ public final class ILVReport extends DispatchAction {
                 final IlvReportForm ilvf = (IlvReportForm) fm;
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 OutputStream out = null;
-                final RemoveNullValuesFromObject nullValues = new RemoveNullValuesFromObject();
-                final Konto k = (Konto) nullValues.remove(ui.getKonto());
+                final Konto k = ui.getKonto();
 
                 final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
                 tf.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
@@ -168,8 +166,12 @@ public final class ILVReport extends DispatchAction {
                 values.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
 
                 // Values abfüllen
-                values.put("isil", k.getIsil());
-                values.put("from", k.getBibliotheksname());
+                if (k.getIsil() != null) {
+                    values.put("isil", k.getIsil());
+                } else {
+                    values.put("isil", "");
+                }
+                values.put("from", k.getBibliotheksname()); // cannot be null
                 values.put("to", ilvf.getLieferant());
                 values.put("signatur", ilvf.getSignatur());
                 values.put("journaltitel", ilvf.getJournaltitel());
@@ -181,8 +183,16 @@ public final class ILVReport extends DispatchAction {
                 values.put("volumevintage", ilvf.getVolumevintage());
                 values.put("booklet", ilvf.getBooklet());
                 values.put("phone", ilvf.getPhone());
-                values.put("phonekonto", k.getTelefon());
-                values.put("fax", k.getFax_extern());
+                if (k.getTelefon() != null) {
+                    values.put("phonekonto", k.getTelefon());
+                } else {
+                    values.put("phonekonto", "");
+                }
+                if (k.getFax_extern() != null) {
+                    values.put("fax", k.getFax_extern());
+                } else {
+                    values.put("fax", "");
+                }
                 values.put("adresse", ilvf.getPost());
                 values.put("clinicinstitutedepartment", ilvf.getClinicinstitutedepartment());
                 values.put("pages", ilvf.getPages());
