@@ -96,7 +96,7 @@ h += 96;
 				</span>
 			</td>
 			<td colspan="5">
-				<a href="<bean:write name="ref" property="url"/>" alt="<bean:write name="ref" property="level"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
+				<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
 				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>
 			</td>
 		</tr>

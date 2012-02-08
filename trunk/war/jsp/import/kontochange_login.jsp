@@ -73,6 +73,6 @@
          <input type="hidden" name="kundenland" value="<bean:write name="userform" property="land" />" />
        </logic:present>
      </logic:present>
-    <input type="submit" property="action "value="<bean:message key="kontochange.submit_login" />"></input></p>
+    <input type="submit" name="action "value="<bean:message key="kontochange.submit_login" />"></input></p>
   </html:form>
 </logic:present>

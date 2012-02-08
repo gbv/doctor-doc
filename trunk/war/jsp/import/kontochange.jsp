@@ -12,7 +12,7 @@
          </logic:iterate>
     </select>
     <input type="hidden" name="method" value="changekonto" />
-    <input type="submit" property="action "value="<bean:message key="kontochange.submit" />"></input>
+    <input type="submit" name="action "value="<bean:message key="kontochange.submit" />"></input>
   </html:form>
 </logic:present>
 

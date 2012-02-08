@@ -39,8 +39,8 @@
       <td><select name="anrede" size="1">
           <option value="Frau" ><bean:message key="adressen.anrede_frau" /></option>
           <option value="Herr" ><bean:message key="adressen.anrede_herr" /></option>
-          <font color="red"><html:errors property="anrede" /></font>
-        </select>  
+        </select>
+        <font color="red"><html:errors property="anrede" /></font>
       </td>
     </tr>
     <tr>

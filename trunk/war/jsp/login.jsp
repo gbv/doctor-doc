@@ -24,9 +24,12 @@
  <br />
  <h3><bean:message key="login.message" />:</h3>
  
-  <html:form action="logincheck" focus="email">
+  
  
   <table>
+  
+  <html:form action="logincheck" focus="email">
+  
     <tr>
       <td><p>&nbsp;</p></td><td></td>
     </tr>

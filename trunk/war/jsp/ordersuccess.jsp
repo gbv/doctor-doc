@@ -130,11 +130,11 @@
    
    <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
     <bean:message key="ordersuccess.gbv_manuell" />: <a href="<bean:write name="orderform" property="link" />" target="_blank"><bean:message key="ordersuccess.click" /></a>
+  <div id="italic">
     <p>
-     <div id="italic">
       <bean:message key="save.manuell" />: <a href="prepareJournalSave.do?method=prepareJournalSave&submit=<bean:write name="orderform" property="submit" />&mediatype=<bean:write name="orderform" property="mediatype" /><logic:equal name="orderform" property="mediatype" value="Artikel">&artikeltitel=<bean:write name="orderform" property="artikeltitel" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /></logic:equal><logic:equal name="orderform" property="mediatype" value="Teilkopie Buch">&kapitel=<bean:write name="orderform" property="kapitel" />&buchtitel=<bean:write name="orderform" property="buchtitel" />&isbn=<bean:write name="orderform" property="isbn" />&jahr=<bean:write name="orderform" property="jahr" />&verlag=<bean:write name="orderform" property="verlag" />&seiten=<bean:write name="orderform" property="seiten" /></logic:equal><logic:equal name="orderform" property="mediatype" value="Buch">&buchtitel=<bean:write name="orderform" property="buchtitel" />&isbn=<bean:write name="orderform" property="isbn" />&jahr=<bean:write name="orderform" property="jahr" />&verlag=<bean:write name="orderform" property="verlag" /></logic:equal>&author=<bean:write name="orderform" property="author" />&status=bestellt&lid=56&foruser=<bean:write name="orderform" property="foruser" />&deloptions=<bean:write name="orderform" property="deloptions" />&prio=<bean:write name="orderform" property="prio" />&interne_bestellnr=<bean:write name="orderform" property="interne_bestellnr" />&preisvorkomma=<bean:write name="orderform" property="preisvorkomma" />&preisnachkomma=<bean:write name="orderform" property="preisnachkomma" />&waehrung=<bean:write name="orderform" property="waehrung" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />&anmerkungen=<bean:write name="orderform" property="anmerkungen" />&notizen=<bean:write name="orderform" property="notizen" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" />
-       </div>
-    </p>  
+    </p>
+   </div>
   </logic:notEqual>
   
   <logic:equal name="userinfo" property="benutzer.rechte" value="1">

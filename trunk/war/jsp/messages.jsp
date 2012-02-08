@@ -39,8 +39,9 @@
   <p><bean:message key="<%=translationKey%>" />:
 
   <logic:present name="msgs" property="systemMessage">
-    <bean:write name="msgs" property="systemMessage" /></p>
+    <bean:write name="msgs" property="systemMessage" />
   </logic:present>
+  </p>
 
 </logic:iterate>
 

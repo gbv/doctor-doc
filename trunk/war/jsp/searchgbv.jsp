@@ -47,9 +47,9 @@
   </tr>
 </table>
 
-<logic:present name="userinfo" property="konto">
-
 <div class="content">
+
+<logic:present name="userinfo" property="konto">
 
  <br /> <br />
 

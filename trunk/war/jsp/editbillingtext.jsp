@@ -46,7 +46,7 @@ Folgende Rechnung f&uuml;r das Konto <bean:write name="billingform"
 <hr />
 
 <h3>Rechnung anpassen:</h3>
-<form name="BillingChange" method="post" action="preparebillingtext.do" />
+<form name="BillingChange" method="post" action="preparebillingtext.do">
 <input type="hidden" name="method" value="prepareBillingText" />
 <table border="0">
   <tr>

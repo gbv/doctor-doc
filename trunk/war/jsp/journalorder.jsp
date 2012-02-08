@@ -285,8 +285,6 @@
   </tr>
   
   </logic:notEqual>
-
-  </table>
     <p></p>
     
   <logic:present name="orderform" property="bid">
@@ -297,6 +295,8 @@
   <input name="sici" type="hidden" value="<bean:write name="orderform" property="sici" />" />
   <input name="method" type="hidden" value="validate" />
   </html:form>
+  
+ </table>
   
 </logic:present>
 

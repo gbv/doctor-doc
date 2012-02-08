@@ -25,10 +25,10 @@
   
   <bean:message key="searchorders.comment" />
 
+<html:form action="searchorder.do?method=search" method="post">
   <table>
   
   <tr><td><br /></td></tr>
-  <html:form action="searchorder.do?method=search" method="post">
   
   <tr>
     <td align=center>
@@ -422,10 +422,10 @@
   <tr>
   <td><input type="submit" value="<bean:message key="searchorders.submit" />"></input></td>
   </tr>
-    
-  </html:form>
   
   </table>
+  
+</html:form>
 
 </div>
 

@@ -66,20 +66,20 @@
  
  <bean:define id="url" name="orderform" property="link" type="java.lang.String"/>
  
- <p><a href="<%=url%>" target="_blank" onclick=FensterOeffnen('this.href')><bean:message key="redirect.subito_order" /></a></p>
+ <p><a href="<%=url%>" target="_blank"><bean:message key="redirect.subito_order" /></a></p>
  
  <p><bean:message key="redirect.subito_tip" /></p>
  
+<div id="italic">
  <p>
-   <div id="italic">
      <logic:notPresent name="orderform" property="bid">
         <bean:message key="save.manuell" />: <a href="prepareJournalSave.do?method=prepareJournalSave&submit=<bean:write name="orderform" property="submit" />&mediatype=<bean:write name="orderform" property="mediatype" /><logic:equal name="orderform" property="mediatype" value="Artikel">&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /></logic:equal><logic:equal name="orderform" property="mediatype" value="Teilkopie Buch">&kapitel=<bean:write name="orderform" property="kapitel_encoded" />&buchtitel=<bean:write name="orderform" property="buchtitel_encoded" />&isbn=<bean:write name="orderform" property="isbn" />&jahr=<bean:write name="orderform" property="jahr" />&verlag=<bean:write name="orderform" property="verlag_encoded" />&seiten=<bean:write name="orderform" property="seiten" /></logic:equal><logic:equal name="orderform" property="mediatype" value="Buch">&buchtitel=<bean:write name="orderform" property="buchtitel_encoded" />&isbn=<bean:write name="orderform" property="isbn" />&jahr=<bean:write name="orderform" property="jahr" />&verlag=<bean:write name="orderform" property="verlag_encoded" /></logic:equal>&author=<bean:write name="orderform" property="author_encoded" />&status=bestellt&lid=32&foruser=<bean:write name="orderform" property="foruser" />&deloptions=<bean:write name="orderform" property="deloptions" />&prio=<bean:write name="orderform" property="prio" />&interne_bestellnr=<bean:write name="orderform" property="interne_bestellnr" />&preisvorkomma=<bean:write name="orderform" property="preisvorkomma" />&preisnachkomma=<bean:write name="orderform" property="preisnachkomma" />&waehrung=<bean:write name="orderform" property="waehrung" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />&anmerkungen=<bean:write name="orderform" property="anmerkungen" />&notizen=<bean:write name="orderform" property="notizen" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" />
       </logic:notPresent>
       <logic:present name="orderform" property="bid">
         <bean:message key="save.manuell" />: <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" />
       </logic:present>
-    </div>
  </p>
+</div>
  
 </logic:present>
 

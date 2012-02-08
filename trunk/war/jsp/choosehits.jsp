@@ -116,9 +116,12 @@
   <td><input type="submit" name="submit" value="GBV-Suche"></input></td>
   </tr>    
   </table>
+  
+<div id="italic">
   <p>
-  <div id="italic"><bean:message key="order.doppelklicks" /></div>
+  	<bean:message key="order.doppelklicks" />
   </p><br />
+</div>
   
   <b><bean:write name="orderform" property="treffer_total" /> <bean:message key="choosehits.treffer" /></b><p></p>
   

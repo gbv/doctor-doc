@@ -35,7 +35,7 @@
     <td <logic:notEqual name="holdingform" property="submit" value="minus">id="submenuactive" nowrap</logic:notEqual><logic:equal name="holdingform" property="submit" value="minus">id="submenu" nowrap</logic:equal>
       title="<bean:message key="menu.import_explain" />"><a
       href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
-    <td id="submenu" nowrap="nowrap""
+    <td id="submenu" nowrap="nowrap"
       title="<bean:message key="menu.locations_explain" />"><a
       href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
   </tr>

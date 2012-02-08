@@ -1234,8 +1234,6 @@ public class OpenUrl {
 
         final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
 
-
-        @SuppressWarnings("unchecked")
         final
         Map<String, String[]> paramMap = rq.getParameterMap();
 

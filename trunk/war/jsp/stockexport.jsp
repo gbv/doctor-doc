@@ -35,10 +35,10 @@
   <tr>
     <td id="submenuactive" nowrap="nowrap" title="<bean:message key="menu.export_explain" />"><a
       href="allstock.do?method=prepareExport&activemenu=stock"><bean:message key="menu.export" /></a></td>
-    <td id="submenu" nowrap="nowrap""
+    <td id="submenu" nowrap="nowrap"
       title="<bean:message key="menu.import_explain" />"><a
       href="stock.do?method=prepareImport&activemenu=stock"><bean:message key="menu.import" /></a></td>
-    <td id="submenu" nowrap="nowrap""
+    <td id="submenu" nowrap="nowrap"
       title="<bean:message key="menu.locations_explain" />"><a
       href="modplace.do?method=listStockplaces&activemenu=stock"><bean:message key="menu.locations" /></a></td>
   </tr>
