@@ -71,7 +71,6 @@ public class Daia extends Action {
                 if (tip.getKonto() != null && tip.getKonto().getId() != null) {
                     bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());
                 } else {
-                    // TODO: rename: The location is unknown
                     msgBestand = "Your location is unknown";
                 }
                 cn.close();
@@ -89,8 +88,6 @@ public class Daia extends Action {
         } else { // output for no holdings
             output = xml.noHoldings(msgBestand, ofjo.getRfr_id());
         }
-
-        // TODO: optionally convert to JSON
 
         try {
 

@@ -2121,8 +2121,6 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal(total);
             os.setTotal_two(totalOrders);
 
-            // TODO: addCategoryPerDepartment(os, kid, cn);
-
         } catch (final Exception e) {
             LOG.error("countAbteilungPerKonto(Long kid, "
                     + "String dateFrom, String dateTo, Connection cn): " + e.toString());
