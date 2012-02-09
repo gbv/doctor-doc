@@ -15,6 +15,8 @@
   <title><bean:message key="redirect.subito_titel" /></title>
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
   
+<bean:define id="url" name="orderform" property="link" type="java.lang.String"/>
+  
 <script language="javascript" type="text/javascript">
   function popup() { 
   <bean:define id="url" name="orderform" property="link" type="java.lang.String"/>
