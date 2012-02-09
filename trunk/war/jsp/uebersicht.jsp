@@ -13,7 +13,7 @@
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <script src="jsp/import/js/jquery.min.js" type="text/javascript"></script>
+  <script src="jsp/import/js/jquery.js" type="text/javascript"></script>
   <script src="jsp/import/js/jquery.hoverIntent.min.js" type="text/javascript"></script>
   <script src="jsp/import/js/jquery.cluetip.min.js" type="text/javascript"></script>
   
