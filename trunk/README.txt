@@ -40,6 +40,9 @@ MySQL 5.0 or higher
 ---
 Installation / Configuration:
 
+To install Doctor-Doc in a development environment or how to build a war file,
+you may want to take a look at how-to-checkout.txt  
+
 1. Database
 Use master_dump.sql under /db to create the database and
 a demo-account
