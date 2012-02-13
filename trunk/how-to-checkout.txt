@@ -1,5 +1,8 @@
 How to check out Doctor-Doc in Eclipse
 
+Get in contact with us through our developers mailing list:
+https://lists.sourceforge.net/lists/listinfo/doctor-doc-tech
+
 1. You need "Eclipse Java EE IDE for Web Developers" (WTP version)
 2. Get and install SVN subclipse plugin from Tigris.org: http://subclipse.tigris.org/
 3. Create a new workspace
@@ -48,5 +51,3 @@ All done!
 Start Tomcat by right click on your project => Run as => Run on server
 
 To build a deployable war file, simply right click on the project => export war file
-
-
