@@ -22,10 +22,10 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestand;
 
 /**
- * Gives a DAIA response in XML to a OpenURL request.
- * DAIA = Document Availability Information API
- * http://ws.gbv.de/daia/daia.xsd.htm
+ * Gives a DAIA response in XML to a OpenURL request. DAIA = Document
+ * Availability Information API http://ws.gbv.de/daia/daia.xsd.htm
  * <p/>
+ * 
  * @author Markus Fischer
  */
 public class DaiaXMLResponse {
@@ -49,9 +49,9 @@ public class DaiaXMLResponse {
 
             final TransformerHandler hd = tf.newTransformerHandler();
             final Transformer serializer = hd.getTransformer();
-            serializer.setOutputProperty(OutputKeys.ENCODING,"UTF8");
+            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
             serializer.setOutputProperty(OutputKeys.METHOD, "xml");
-            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             //            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
             hd.setResult(streamResult);
@@ -71,7 +71,8 @@ public class DaiaXMLResponse {
             atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
             atts.addAttribute("", "", "version", CDATA, "0.5");
             atts.addAttribute("", "", "xmlns:xsi", CDATA, "http://www.w3.org/2001/XMLSchema-instance");
-            atts.addAttribute("", "", "xsi:schemaLocation", CDATA, "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
+            atts.addAttribute("", "", "xsi:schemaLocation", CDATA,
+                    "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
             atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
 
@@ -79,7 +80,7 @@ public class DaiaXMLResponse {
             atts.clear();
             atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
             hd.startElement("", "", "institution", atts);
-            String text = "Register " + ReadSystemConfigurations.getApplicationName();
+            String text = ReadSystemConfigurations.getApplicationName();
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "institution");
 
@@ -134,9 +135,8 @@ public class DaiaXMLResponse {
                 atts.addAttribute("", "", "id", CDATA, URN + "library=" + b.getHolding().getKid().toString());
                 atts.addAttribute("", "", "href", CDATA, URL + "library=" + b.getHolding().getKid().toString()); // URL to all holdings of library
                 hd.startElement("", "", "department", atts);
-                text = b.getHolding().getKonto().getBibliotheksname() + "\040"
-                        + b.getHolding().getKonto().getOrt() + "\040"
-                        + b.getHolding().getKonto().getLand();
+                text = b.getHolding().getKonto().getBibliotheksname() + "\040" + b.getHolding().getKonto().getOrt()
+                        + "\040" + b.getHolding().getKonto().getLand();
                 text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "department");
@@ -153,7 +153,9 @@ public class DaiaXMLResponse {
                 // default service presentation
                 text = "presentation";
                 // if we have a DID set service to interloan
-                if (b.getHolding().getKonto().getDid() != null)  { text = "interloan"; }
+                if (b.getHolding().getKonto().getDid() != null) {
+                    text = "interloan";
+                }
                 atts.addAttribute("", "", "service", CDATA, text);
                 hd.startElement("", "", "available", atts);
 
@@ -203,9 +205,9 @@ public class DaiaXMLResponse {
 
             final TransformerHandler hd = tf.newTransformerHandler();
             final Transformer serializer = hd.getTransformer();
-            serializer.setOutputProperty(OutputKeys.ENCODING,"UTF8");
+            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
             serializer.setOutputProperty(OutputKeys.METHOD, "xml");
-            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             //            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
 
@@ -226,7 +228,8 @@ public class DaiaXMLResponse {
             atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
             atts.addAttribute("", "", "version", CDATA, "0.5");
             atts.addAttribute("", "", "xmlns:xsi", CDATA, "http://www.w3.org/2001/XMLSchema-instance");
-            atts.addAttribute("", "", "xsi:schemaLocation", CDATA, "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
+            atts.addAttribute("", "", "xsi:schemaLocation", CDATA,
+                    "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
             atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
 
@@ -234,7 +237,7 @@ public class DaiaXMLResponse {
             atts.clear();
             atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
             hd.startElement("", "", "institution", atts);
-            String text = "Register Doctor-Doc";
+            String text = ReadSystemConfigurations.getApplicationName();
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "institution");
 
@@ -274,6 +277,5 @@ public class DaiaXMLResponse {
 
         return xml;
     }
-
 
 }
