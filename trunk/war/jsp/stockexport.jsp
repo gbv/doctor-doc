@@ -53,14 +53,19 @@
 
 <table>
   <tr>
+    <td>MS-Excel:</td>
+    <td><a href="export-holdings.do?filetype=xls" target="_blank">XLS</a></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
     <td>OpenOffice:</td>
-    <td><a href="export-holdings.do" target="_blank">CSV</a></td>
+    <td><a href="export-holdings.do?filetype=txt" target="_blank">CSV</a></td>
     <td>&nbsp;(<bean:message key="stockexport.no.excel" />)</td>
   </tr>
   <tr>
-    <td>MS-Excel:</td>
+    <td>Text (UTF-8):</td>
     <td><a href="export-holdings.do?filetype=txt" target="_blank">TXT</a></td>
-    <td>&nbsp;(<a href="http://www.doctor-doc.com/howto_export.pdf" target="_blank"><bean:message key="stockexport.excel" /></a>)</td>
+    <td>&nbsp;</td>
   </tr>
 </table>
  

@@ -17,7 +17,6 @@
 
 package ch.dbs.actions.bestand;
 
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,6 +39,7 @@ import org.grlea.log.SimpleLogger;
 import util.Auth;
 import util.CSV;
 import util.Check;
+import util.XLSReader;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Holding;
 import ch.dbs.entity.Issn;
@@ -53,10 +53,9 @@ import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 
-
 /**
  * Class to manage holdings information. Import / Export functions.
- *
+ * 
  * @author Markus Fischer
  */
 public class Stock extends DispatchAction {
@@ -77,8 +76,8 @@ public class Stock extends DispatchAction {
     /**
      * Access control for the holdings export page.
      */
-    public ActionForward prepareExport(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward prepareExport(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Auth auth = new Auth();
@@ -87,7 +86,6 @@ public class Stock extends DispatchAction {
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
                 forward = SUCCESS;
-
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
@@ -104,15 +102,14 @@ public class Stock extends DispatchAction {
             rq.setAttribute(ERRORMESSAGE, em);
         }
 
-
         return mp.findForward(forward);
     }
 
     /**
      * Access control for the holdings import page.
      */
-    public ActionForward prepareImport(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward prepareImport(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Text t = new Text();
@@ -130,7 +127,6 @@ public class Stock extends DispatchAction {
                 hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
 
                 rq.setAttribute("holdingform", hf);
-
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
@@ -154,8 +150,8 @@ public class Stock extends DispatchAction {
     /**
      * Import a file with holdings information.
      */
-    public ActionForward importHoldings(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward importHoldings(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         // Prepare classes
         String forward = FAILURE;
@@ -174,7 +170,8 @@ public class Stock extends DispatchAction {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
                 if (fileForm.isCondition()) { // conditions for upload must be accepted
                     // must be tab delimited or csv file
-                    if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")) {
+                    if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")
+                            || ck.isFiletypeExtension(fileName, ".xls") || ck.isFiletypeExtension(fileName, ".xlsx")) {
                         if (upload.getFileSize() < FILESIZELIMIT) { // limit file size to avoid OutOfMemory errors
 
                             // Excel is able to read UTF-8 encoded tab delimited files. But after editing the file,
@@ -187,8 +184,14 @@ public class Stock extends DispatchAction {
                                 encoding = "CP1250"; // Windows ANSI encoding...
                             }
 
+                            List<List<String>> stockList = new ArrayList<List<String>>();
+
                             // Get an List<List<String>> representation of the file
-                            final List<List<String>> stockList = readImport(upload, delimiter, encoding);
+                            if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")) {
+                                stockList = readCSVImport(upload, delimiter, encoding);
+                            } else {
+                                stockList = readXSLImport(upload);
+                            }
 
                             // Check if the file contains the correct number of columns
                             List<Message> messageList = checkColumns(stockList);
@@ -213,10 +216,9 @@ public class Stock extends DispatchAction {
                                         forward = SUCCESS;
 
                                         final Message msg = new Message("import.success", successMessage,
-                                        "allstock.do?method=prepareExport&activemenu=stock");
+                                                "allstock.do?method=prepareExport&activemenu=stock");
 
                                         rq.setAttribute("message", msg);
-
 
                                     } else { // detailed errors while checking integrity of Bestand() objects
                                         forward = "importError";
@@ -225,7 +227,7 @@ public class Stock extends DispatchAction {
                                         rq.setAttribute(ACTIVEMENUS, mf);
                                         rq.setAttribute("messageList", messageList);
                                         final Message em = new Message("error.import.heading",
-                                        "stock.do?method=prepareImport&activemenu=stock");
+                                                "stock.do?method=prepareImport&activemenu=stock");
                                         rq.setAttribute("singleMessage", em);
                                     }
                                 } else { // basic errors before parsing to Bestand() objects
@@ -235,7 +237,7 @@ public class Stock extends DispatchAction {
                                     rq.setAttribute(ACTIVEMENUS, mf);
                                     rq.setAttribute("messageList", messageList);
                                     final Message em = new Message("error.import.heading",
-                                    "stock.do?method=prepareImport&activemenu=stock");
+                                            "stock.do?method=prepareImport&activemenu=stock");
                                     rq.setAttribute("singleMessage", em);
                                 }
                             } else { // Wrong number of columns
@@ -245,7 +247,7 @@ public class Stock extends DispatchAction {
                                 rq.setAttribute(ACTIVEMENUS, mf);
                                 rq.setAttribute("messageList", messageList);
                                 final Message em = new Message("error.import.heading",
-                                "stock.do?method=prepareImport&activemenu=stock");
+                                        "stock.do?method=prepareImport&activemenu=stock");
                                 rq.setAttribute("singleMessage", em);
                             }
 
@@ -254,7 +256,7 @@ public class Stock extends DispatchAction {
                             mf.setActivemenu("stock");
                             rq.setAttribute(ACTIVEMENUS, mf);
                             final ErrorMessage em = new ErrorMessage("error.filesize",
-                            "stock.do?method=prepareImport&activemenu=stock");
+                                    "stock.do?method=prepareImport&activemenu=stock");
                             rq.setAttribute(ERRORMESSAGE, em);
                         }
                     } else { // Filetype error
@@ -262,7 +264,7 @@ public class Stock extends DispatchAction {
                         mf.setActivemenu("stock");
                         rq.setAttribute(ACTIVEMENUS, mf);
                         final ErrorMessage em = new ErrorMessage("error.filetype",
-                        "stock.do?method=prepareImport&activemenu=stock");
+                                "stock.do?method=prepareImport&activemenu=stock");
                         rq.setAttribute(ERRORMESSAGE, em);
                     }
                 } else { // Did not accept conditions
@@ -270,7 +272,7 @@ public class Stock extends DispatchAction {
                     mf.setActivemenu("stock");
                     rq.setAttribute(ACTIVEMENUS, mf);
                     final ErrorMessage em = new ErrorMessage("error.import.condition",
-                    "stock.do?method=prepareImport&activemenu=stock");
+                            "stock.do?method=prepareImport&activemenu=stock");
                     rq.setAttribute(ERRORMESSAGE, em);
                 }
             } else { // User is not allowed to access this function
@@ -296,8 +298,8 @@ public class Stock extends DispatchAction {
     /**
      * Gets all holding locations for a given library.
      */
-    public ActionForward listStockplaces(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward listStockplaces(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Text t = new Text();
@@ -339,12 +341,11 @@ public class Stock extends DispatchAction {
         return mp.findForward(forward);
     }
 
-
     /**
      * Prepares and changes a given holding location.
      */
-    public ActionForward changeStockplace(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward changeStockplace(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Text t = new Text();
@@ -397,7 +398,6 @@ public class Stock extends DispatchAction {
                     LOG.info("changeStandort: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
-
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
@@ -419,9 +419,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets a list of all holdings from all libraries.
-     *
-     * @param OrderForm pageForm
-     * @param boolean internal
+     * 
+     * @param OrderForm
+     * @param boolean
      * @return list<Bestand>
      */
     public List<Bestand> checkGeneralStockAvailability(final OrderForm pageForm, final boolean internal) {
@@ -453,11 +453,11 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets a list of all holdings for a given library from an IP.
-     *
-     * @param OrderForm pageForm
-     * @param Text tip
-     * @param boolean internal
-     * @param Connection cn
+     * 
+     * @param OrderForm
+     * @param Text
+     * @param boolean
+     * @param Connection
      * @return list<Bestand>
      */
     public List<Bestand> checkStockAvailabilityForIP(final OrderForm pageForm, final Text tip, final boolean internal,
@@ -481,7 +481,8 @@ public class Stock extends DispatchAction {
                 // get Holdings from title
             } else if (pageForm.getZeitschriftentitel() != null && !"".equals(pageForm.getZeitschriftentitel())) {
 
-                final List<String> hoids = ho.getAllHOIDsForKonto(pageForm.getZeitschriftentitel(), tip.getKonto().getId(), cn);
+                final List<String> hoids = ho.getAllHOIDsForKonto(pageForm.getZeitschriftentitel(), tip.getKonto()
+                        .getId(), cn);
                 bestaende = be.getAllBestandForHoldings(hoids, pageForm, internal, cn);
 
             }
@@ -491,12 +492,13 @@ public class Stock extends DispatchAction {
 
     }
 
-
     /**
-     * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable to Bestand().
-     *
-     * @param List<List<String>> stockList
-     * @return List<Message> messageList
+     * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable
+     * to Bestand().
+     * 
+     * @param List
+     *            <List<String>>
+     * @return List<Message>
      */
     private List<Message> checkBasicParsability(final List<List<String>> stockList) {
 
@@ -509,7 +511,9 @@ public class Stock extends DispatchAction {
             for (String line : importLines) {
                 Message msg;
                 column++;
-                if (line == null) { line = ""; }
+                if (line == null) {
+                    line = "";
+                }
                 switch (column) {
                 case 1: // Stock-ID
                     msg = checkStockID(i + 1, line);
@@ -604,11 +608,12 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if the import file has the correct format, by counting
-     * the columns per line.
-     *
-     * @param List<List<String>> stockList
-     * @return List<Message> messageList
+     * Checks if the import file has the correct format, by counting the columns
+     * per line.
+     * 
+     * @param List
+     *            <List<String>>
+     * @return List<Message>
      */
     private List<Message> checkColumns(final List<List<String>> stockList) {
 
@@ -629,11 +634,12 @@ public class Stock extends DispatchAction {
     /**
      * Checks that each Bestand() has all necessary entries and belongs to the
      * account uploading the file.
-     *
-     * @param List<Bestand> bestandList
-     * @param UserInfo ui
-     * @param Connection cn
-     * @return List<Message> messageList
+     * 
+     * @param List
+     *            <Bestand>
+     * @param UserInfo
+     * @param Connection
+     * @return List<Message>
      */
     private List<Message> checkBestandIntegrity(final List<Bestand> bestandList, final UserInfo ui, final Connection cn) {
 
@@ -695,8 +701,8 @@ public class Stock extends DispatchAction {
                         && !b.getStandort().getInhalt().equals(control.getInhalt())) { // locations do not match...
                     final Message msg = new Message();
                     msg.setMessage("error.import.locationsDoNotMatch");
-                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString()
-                            + "/" + b.getStandort().getInhalt()));
+                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString() + "/"
+                            + b.getStandort().getInhalt()));
                     messageList.add(msg);
                 }
             } else if (b.getStandort().getInhalt().equals("")) { // check if location is present
@@ -719,19 +725,18 @@ public class Stock extends DispatchAction {
         return messageList;
     }
 
-
-
     /**
-     * Converts an import file into an ArrayList<List<String>> with all the text line elements.
-     *
-     * @param FormFile upload
-     * @param char delimiter
-     * @param String encoding
-     * @return List<List<String>> list
+     * Converts an CSV/TXT import file into an ArrayList<List<String>> with all
+     * the text line elements.
+     * 
+     * @param FormFile
+     * @param char
+     * @param String
+     * @return List<List<String>>
      */
-    private List<List<String>> readImport(final FormFile upload, final char delimiter, final String encoding) {
+    private List<List<String>> readCSVImport(final FormFile upload, final char delimiter, final String encoding) {
 
-        final List<List<String>> list = new ArrayList<List<String>>();
+        final List<List<String>> result = new ArrayList<List<String>>();
         String line = "";
         BufferedInputStream fileStream = null;
         BufferedReader br = null;
@@ -742,7 +747,7 @@ public class Stock extends DispatchAction {
 
             while ((line = br.readLine()) != null && !line.equals("")) {
                 final CSV importFile = new CSV(delimiter);
-                list.add(importFile.parse(line));
+                result.add(importFile.parse(line));
             }
 
         } catch (final Exception e) {
@@ -756,15 +761,45 @@ public class Stock extends DispatchAction {
             }
         }
 
-        return list;
+        return result;
     }
 
     /**
-     * Converts an ArrayList<List<String>> with import elements into an ArrayList<Bestand>.
-     *
-     * @param List<List<String>> stockList
-     * @param UserInfo ui
-     * @return List<Bestand> bestandList
+     * Converts an XLS/XLSX import file into an ArrayList<List<String>> with all
+     * the text line elements.
+     * 
+     * @param FormFile
+     * @return List<List<String>>
+     */
+    private List<List<String>> readXSLImport(final FormFile upload) {
+
+        List<List<String>> result = new ArrayList<List<String>>();
+        BufferedInputStream fileStream = null;
+
+        try {
+            final XLSReader xlsReader = new XLSReader();
+            fileStream = new BufferedInputStream(upload.getInputStream());
+            result = xlsReader.read(fileStream);
+        } catch (final Exception e) {
+            LOG.error(e.toString());
+        } finally {
+            try {
+                fileStream.close();
+            } catch (final IOException e) {
+                LOG.error(e.toString());
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Converts an ArrayList<List<String>> with import elements into an
+     * ArrayList<Bestand>.
+     * 
+     * @param List<List<String>>
+     * @param UserInfo
+     * @return List<Bestand>
      */
     private List<Bestand> convertToBestand(final List<List<String>> stockList, final UserInfo ui) {
 
@@ -779,13 +814,13 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Converts a List<String> with elements of one import line into a Bestand().
-     * It relies on the assumption, that all integrity checks for formatting
-     * etc. have been run before!
-     *
-     * @param list the list
-     * @param kid the kid
-     * @return List<Bestand> bestandList
+     * Converts a List<String> with elements of one import line into a
+     * Bestand(). It relies on the assumption, that all integrity checks for
+     * formatting etc. have been run before!
+     * 
+     * @param List<String>
+     * @param long
+     * @return Bestand
      */
     private Bestand getBestand(final List<String> list, final long kid) {
         final Bestand b = new Bestand();
@@ -793,7 +828,9 @@ public class Stock extends DispatchAction {
         int column = 0; // column number of CSV entry to check
         for (String line : list) {
             column++;
-            if (line == null) { line = ""; }
+            if (line == null) {
+                line = "";
+            }
 
             switch (column) {
             case 1: // Stock-ID
@@ -890,12 +927,11 @@ public class Stock extends DispatchAction {
         return b;
     }
 
-
     /**
      * Gets from an ISSN a List<String> of all 'related' ISSNs to map them.
-     *
-     * @param String issn
-     * @param Connection cn
+     * 
+     * @param String
+     * @param Connection
      * @return List<String>
      */
     private List<String> getRelatedIssn(final String issn, final Connection cn) {
@@ -904,16 +940,18 @@ public class Stock extends DispatchAction {
 
         final List<String> issns = is.getAllIssnsFromOneIssn(issn, cn);
 
-        if (issns.isEmpty()) { issns.add(issn); } // if there has been no hit, return the ISSN from the input
+        if (issns.isEmpty()) {
+            issns.add(issn);
+        } // if there has been no hit, return the ISSN from the input
 
         return issns;
     }
 
     /**
      * Checks if the string is a parsable Stock-ID.
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkStockID(final int lineCount, final String content) {
@@ -931,9 +969,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a parsable Holding-ID.
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkHoldingID(final int lineCount, final String content) {
@@ -951,9 +989,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a parsable Location-ID.
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkLocationID(final int lineCount, final String content) {
@@ -971,9 +1009,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if there has been specified a title.
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkTitle(final int lineCount, final String content) {
@@ -991,10 +1029,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * If an ISSN has been specified, checks that the string specified is a valid ISSN.
-     *
-     * @param int lineCount
-     * @param String content
+     * If an ISSN has been specified, checks that the string specified is a
+     * valid ISSN.
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkISSN(final int lineCount, final String content) {
@@ -1017,11 +1056,11 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Checks if there has been specified a startyear and
-     * the string is a valid year.
-     *
-     * @param int lineCount
-     * @param String content
+     * Checks if there has been specified a startyear and the string is a valid
+     * year.
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkStartyear(final int lineCount, final String content) {
@@ -1039,9 +1078,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a valid (end)year.
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkEndyear(final int lineCount, final String content) {
@@ -1060,9 +1099,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a valid Supplement (0 / 1 / 2).
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkSuppl(final int lineCount, final String content) {
@@ -1070,9 +1109,7 @@ public class Stock extends DispatchAction {
         final Message msg = new Message();
 
         if (!"".equals(content) // may be empty => we will use default value
-                && !"0".equals(content)
-                && !"1".equals(content)
-                && !"2".equals(content)) {
+                && !"0".equals(content) && !"1".equals(content) && !"2".equals(content)) {
             msg.setMessage("error.import.suppl");
             msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
@@ -1082,9 +1119,9 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a valid boolean value.
-     *
-     * @param int lineCount
-     * @param String content
+     * 
+     * @param int
+     * @param String
      * @return Message
      */
     private Message checkBoolean(final int lineCount, final String content) {
@@ -1092,8 +1129,7 @@ public class Stock extends DispatchAction {
         final Message msg = new Message();
 
         if (!"".equals(content) // may be empty => we will use default value
-                && !"true".equals(content)
-                && !"false".equals(content)) {
+                && !"true".equals(content) && !"false".equals(content)) {
             msg.setMessage("error.import.boolean");
             msg.setSystemMessage(composeSystemMessage(lineCount, content));
         }
@@ -1102,11 +1138,10 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Uses a StringBuffer to compose a String in the form:
-     * Row x: text...
-     *
-     * @param int lineCount
-     * @param String element
+     * Uses a StringBuffer to compose a String in the form: Row x: text...
+     * 
+     * @param int
+     * @param String
      * @return String
      */
     private String composeSystemMessage(final int lineCount, final String element) {
@@ -1122,13 +1157,13 @@ public class Stock extends DispatchAction {
     }
 
     /**
-     * Handles the update, save and delete process for the import file into the DB.
-     * It relies on the assumption, that all integrity checks for formatting
+     * Handles the update, save and delete process for the import file into the
+     * DB. It relies on the assumption, that all integrity checks for formatting
      * etc. have been run before!
-     *
-     * @param List<Bestand> bestandList
-     * @param UserInfo ui
-     * @param Connection cn
+     * 
+     * @param List<Bestand>
+     * @param UserInfo
+     * @param Connection
      * @return String
      */
     private String update(final List<Bestand> bestandList, final UserInfo ui, final Connection cn) {
@@ -1160,15 +1195,14 @@ public class Stock extends DispatchAction {
             // create a location if we do not have a location ID
             if (b.getStandort().getId() == null) {
                 // try to get an existing entry for this account
-                Text loc = new Text(cn, new Texttyp("Standorte", cn),
-                        ui.getKonto().getId(), b.getStandort().getInhalt());
+                Text loc = new Text(cn, new Texttyp("Standorte", cn), ui.getKonto().getId(), b.getStandort()
+                        .getInhalt());
                 if (loc.getId() == null) { // save a new location for this account
                     b.getStandort().setKonto(ui.getKonto());
                     b.getStandort().setTexttyp(new Texttyp("Standorte", cn));
                     loc.saveNewText(cn, b.getStandort());
                     // get back the saved location
-                    loc = new Text(cn, new Texttyp("Standorte", cn),
-                            ui.getKonto().getId(), b.getStandort().getInhalt());
+                    loc = new Text(cn, new Texttyp("Standorte", cn), ui.getKonto().getId(), b.getStandort().getInhalt());
                 }
                 // set the location with ID
                 b.setStandort(loc);
@@ -1196,8 +1230,8 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets the delimiter csv.
-     *
-     * @return char delimiterCsv
+     * 
+     * @return char
      */
     public static char getDelimiterCsv() {
         return DELIMITER_CSV;
@@ -1205,12 +1239,11 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets the delimiter txt.
-     *
-     * @return char delimiterTxt
+     * 
+     * @return char
      */
     public static char getDelimiterTxt() {
         return DELIMITER_TXT;
     }
-
 
 }

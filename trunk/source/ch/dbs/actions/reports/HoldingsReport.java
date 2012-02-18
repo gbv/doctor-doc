@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2005 - 2012  Markus Fischer, Pascal Steiner
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -22,9 +22,14 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -42,9 +47,8 @@ import ch.dbs.form.UserInfo;
 
 /**
  * Creates an export of the holdings of a given library
- *
+ * 
  * @author Markus Fischer
- *
  */
 public final class HoldingsReport extends DispatchAction {
 
@@ -53,22 +57,21 @@ public final class HoldingsReport extends DispatchAction {
     /**
      * Gets all holdings of a given library and creates an Export-File
      */
-    public ActionForward execute(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
 
-        // Get export filetype for export as either CSV with semicolon delimiter or TXT as tab delimited file
-        String filetype = rq.getParameter("filetype");
-        if (filetype == null || !filetype.equals("txt")) { filetype = "csv"; } // set default value csv
+        // Get export filetype for export as either CSV with semicolon delimiter, TXT as tab delimited file or as XLS
+        final String filetype = rq.getParameter("filetype");
+        String contenttype = "text/txt;charset=UTF-8"; // used for CSV and TXT
 
         // Check if the user is logged in and is librarian or admin
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
 
-                // Prepare classes
-                final  UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                 final Date date = new Date();
 
@@ -77,61 +80,79 @@ public final class HoldingsReport extends DispatchAction {
                     final StringBuffer filename = new StringBuffer("holdings-");
                     filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
                     filename.append('.');
-                    filename.append(filetype);
 
-                    // define delimiter
-                    char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // default value
-                    if ("txt".equals(filetype)) { delimiter = ch.dbs.actions.bestand.Stock.getDelimiterTxt(); }
+                    // CSV- or TXT-Export
+                    if (filetype != null && (filetype.equals("csv") || filetype.equals("txt"))) {
+                        char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // ';' as default delimiter
+                        if (filetype.equals("csv")) {
+                            filename.append("csv");
+                        } else {
+                            filename.append("txt");
+                            delimiter = ch.dbs.actions.bestand.Stock.getDelimiterTxt(); // tab as delimiter
+                        }
+                        // Prepare Output
+                        rp.setContentType(contenttype); // Set ContentType in the response for the Browser
+                        rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
+                        rp.setCharacterEncoding("UTF-8");
 
-                    // Prepare Output
-                    rp.setContentType("text/txt;charset=UTF-8"); // Set ContentType in the response for the Browser
-                    rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
-                    rp.setCharacterEncoding("UTF-8");
+                        rp.flushBuffer();
 
-                    rp.flushBuffer();
+                        // Use writer to render text
+                        final PrintWriter pw = rp.getWriter();
+                        pw.write(getCSVContent(ui.getKonto(), delimiter));
+                        pw.flush();
+                        pw.close();
+                    } else { // Excel-Export
+                        filename.append("xls");
+                        contenttype = "application/vnd.ms-excel";
+                        // Prepare Output
+                        rp.setContentType(contenttype); // Set ContentType in the response for the Browser
+                        rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
 
-                    // Use writer to render text
-                    final PrintWriter pw = rp.getWriter();
-                    pw.write(getExportContent(ui.getKonto(), delimiter));
-                    pw.flush();
-                    pw.close();
+                        final ServletOutputStream outputStream = rp.getOutputStream();
+
+                        // get WorkBook and write to output stream
+                        getXLSContent(ui.getKonto()).write(outputStream);
+                        // Flush the stream
+                        outputStream.flush();
+                        outputStream.close();
+
+                    }
 
                 } catch (final IOException e) {
                     // Output failed
+                    LOG.error("Failure in HoldingsReport.execute: " + e.toString());
+                } catch (final Exception e) {
                     LOG.error("Failure in HoldingsReport.execute: " + e.toString());
                 } finally {
                     forward = null;
                 }
 
             } else {
-                final ErrorMessage em = new ErrorMessage(
-                        "error.berechtigung",
-                        "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage(
-                    "error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
 
         return mp.findForward(forward);
     }
 
-    private String getExportContent(final Konto k, final char delimiter) {
+    private String getCSVContent(final Konto k, final char delimiter) {
         final Text cn = new Text();
-
         // get a StringBuffer with a header describing the content of the fields
-        final StringBuffer buf = initStringBuffer(delimiter);
+        final StringBuffer buf = initCSV(delimiter);
 
         // internal holdings are visible
         final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
         for (final Bestand b : stock) {
-            buf.append(getExportLine(b, delimiter));
+            buf.append(getCSVLine(b, delimiter));
         }
 
         cn.close();
@@ -139,9 +160,31 @@ public final class HoldingsReport extends DispatchAction {
         return buf.toString();
     }
 
+    private HSSFWorkbook getXLSContent(final Konto k) {
+        final Text cn = new Text();
+        final Workbook wb = new HSSFWorkbook();
+        final Sheet s = wb.createSheet();
 
+        // add header for XLS
+        initXLS(wb, s);
 
-    private String getExportLine(final Bestand b, final char delimiter) {
+        // internal holdings are visible
+        final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
+
+        short rownumber = 0;
+
+        for (final Bestand b : stock) {
+            rownumber++;
+            // add holdings
+            getXLSLine(wb, s, b, rownumber);
+        }
+
+        cn.close();
+
+        return (HSSFWorkbook) wb;
+    }
+
+    private String getCSVLine(final Bestand b, final char delimiter) {
 
         final StringBuffer buf = new StringBuffer(336);
 
@@ -264,7 +307,107 @@ public final class HoldingsReport extends DispatchAction {
         return buf.toString();
     }
 
-    private StringBuffer initStringBuffer(final char delimiter) {
+    private void getXLSLine(final Workbook wb, final Sheet s, final Bestand b, final short rownumber) {
+
+        final Row row = s.createRow(rownumber);
+
+        if (b.getId() != null) {
+            row.createCell((short) 0).setCellValue(b.getId().toString());
+        } else {
+            row.createCell((short) 0).setCellValue("");
+        }
+        if (b.getHolding().getId() != null) {
+            row.createCell((short) 1).setCellValue(b.getHolding().getId().toString());
+        } else {
+            row.createCell((short) 1).setCellValue("");
+        }
+        if (b.getStandort().getId() != null) {
+            row.createCell((short) 2).setCellValue(b.getStandort().getId().toString());
+        } else {
+            row.createCell((short) 2).setCellValue("");
+        }
+        if (b.getStandort().getInhalt() != null) {
+            row.createCell((short) 3).setCellValue(b.getStandort().getInhalt());
+        } else {
+            row.createCell((short) 3).setCellValue("");
+        }
+        if (b.getShelfmark() != null) {
+            row.createCell((short) 4).setCellValue(removeSpecialCharacters(b.getShelfmark()));
+        } else {
+            row.createCell((short) 4).setCellValue("");
+        }
+        if (b.getHolding().getTitel() != null) {
+            row.createCell((short) 5).setCellValue(removeSpecialCharacters(b.getHolding().getTitel()));
+        } else {
+            row.createCell((short) 5).setCellValue("");
+        }
+        if (b.getHolding().getCoden() != null) {
+            row.createCell((short) 6).setCellValue(removeSpecialCharacters(b.getHolding().getCoden()));
+        } else {
+            row.createCell((short) 6).setCellValue("");
+        }
+        if (b.getHolding().getVerlag() != null) {
+            row.createCell((short) 7).setCellValue(removeSpecialCharacters(b.getHolding().getVerlag()));
+        } else {
+            row.createCell((short) 7).setCellValue("");
+        }
+        if (b.getHolding().getOrt() != null) {
+            row.createCell((short) 8).setCellValue(removeSpecialCharacters(b.getHolding().getOrt()));
+        } else {
+            row.createCell((short) 8).setCellValue("");
+        }
+        if (b.getHolding().getIssn() != null) {
+            row.createCell((short) 9).setCellValue(removeSpecialCharacters(b.getHolding().getIssn()));
+        } else {
+            row.createCell((short) 9).setCellValue("");
+        }
+        if (b.getHolding().getZdbid() != null) {
+            row.createCell((short) 10).setCellValue(removeSpecialCharacters(b.getHolding().getZdbid()));
+        } else {
+            row.createCell((short) 10).setCellValue("");
+        }
+        if (b.getStartyear() != null) {
+            row.createCell((short) 11).setCellValue(removeSpecialCharacters(b.getStartyear()));
+        } else {
+            row.createCell((short) 11).setCellValue("");
+        }
+        if (b.getStartvolume() != null) {
+            row.createCell((short) 12).setCellValue(removeSpecialCharacters(b.getStartvolume()));
+        } else {
+            row.createCell((short) 12).setCellValue("");
+        }
+        if (b.getStartissue() != null) {
+            row.createCell((short) 13).setCellValue(removeSpecialCharacters(b.getStartissue()));
+        } else {
+            row.createCell((short) 13).setCellValue("");
+        }
+        if (b.getEndyear() != null) {
+            row.createCell((short) 14).setCellValue(removeSpecialCharacters(b.getEndyear()));
+        } else {
+            row.createCell((short) 14).setCellValue("");
+        }
+        if (b.getEndvolume() != null) {
+            row.createCell((short) 15).setCellValue(removeSpecialCharacters(b.getEndvolume()));
+        } else {
+            row.createCell((short) 15).setCellValue("");
+        }
+        if (b.getEndissue() != null) {
+            row.createCell((short) 16).setCellValue(removeSpecialCharacters(b.getEndissue()));
+        } else {
+            row.createCell((short) 16).setCellValue("");
+        }
+        row.createCell((short) 17).setCellValue(String.valueOf(b.getSuppl()));
+        if (b.getBemerkungen() != null) {
+            row.createCell((short) 18).setCellValue(removeSpecialCharacters(b.getBemerkungen()));
+        } else {
+            row.createCell((short) 18).setCellValue("");
+        }
+        row.createCell((short) 19).setCellValue(String.valueOf(b.isEissue()));
+        row.createCell((short) 20).setCellValue(String.valueOf(b.isInternal()));
+
+    }
+
+    private StringBuffer initCSV(final char delimiter) {
 
         final StringBuffer buf = new StringBuffer(251);
 
@@ -313,6 +456,33 @@ public final class HoldingsReport extends DispatchAction {
         return buf;
     }
 
+    private void initXLS(final Workbook wb, final Sheet s) {
+
+        final Row rowhead = s.createRow((short) 0);
+        rowhead.createCell((short) 0).setCellValue("Stock ID");
+        rowhead.createCell((short) 1).setCellValue("Holding ID");
+        rowhead.createCell((short) 2).setCellValue("Location ID");
+        rowhead.createCell((short) 3).setCellValue("Location Name");
+        rowhead.createCell((short) 4).setCellValue("Shelfmark");
+        rowhead.createCell((short) 5).setCellValue("Title");
+        rowhead.createCell((short) 6).setCellValue("Coden");
+        rowhead.createCell((short) 7).setCellValue("Publisher");
+        rowhead.createCell((short) 8).setCellValue("Place");
+        rowhead.createCell((short) 9).setCellValue("ISSN");
+        rowhead.createCell((short) 10).setCellValue("ZDB-ID");
+        rowhead.createCell((short) 11).setCellValue("Startyear");
+        rowhead.createCell((short) 12).setCellValue("Startvolume");
+        rowhead.createCell((short) 13).setCellValue("Startissue");
+        rowhead.createCell((short) 14).setCellValue("Endyear");
+        rowhead.createCell((short) 15).setCellValue("Endvolume");
+        rowhead.createCell((short) 16).setCellValue("Endissue");
+        rowhead.createCell((short) 17).setCellValue("Suppl");
+        rowhead.createCell((short) 18).setCellValue("remarks");
+        rowhead.createCell((short) 19).setCellValue("eissue");
+        rowhead.createCell((short) 20).setCellValue("internal");
+
+    }
+
     private String removeSpecialCharacters(String str) {
 
         if (str != null) {
@@ -321,6 +491,5 @@ public final class HoldingsReport extends DispatchAction {
 
         return str;
     }
-
 
 }
