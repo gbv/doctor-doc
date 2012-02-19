@@ -36,14 +36,14 @@ import ch.dbs.form.Message;
 import ch.dbs.form.SupplierForm;
 import ch.dbs.form.UserInfo;
 
-
 /**
- * Prepares the list of suppliers for a given account to be edited and configured.
+ * Prepares the list of suppliers for a given account to be edited and
+ * configured.
  */
 public class PrepareList extends DispatchAction {
 
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -75,10 +75,15 @@ public class PrepareList extends DispatchAction {
                 rq.setAttribute("privsuppliers", privSuppliers);
                 rq.setAttribute("conf", sf);
 
+                // navigation: set 'account/konto' tab as active
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("konto");
+                rq.setAttribute("ActiveMenus", mf);
+
                 forward = "success";
 
                 cn.close();
-            }  else {
+            } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute("errormessage", m);

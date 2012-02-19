@@ -35,14 +35,16 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.SupplierForm;
 import ch.dbs.form.UserInfo;
 
-
 /**
- * Prepares the list of suppliers for a given account to be edited and configured.
+ * Prepares the list of suppliers for a given account to be edited and
+ * configured.
  */
 public class Supplier extends DispatchAction {
 
-    public ActionForward edit(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    private static final String ACTIVEMENUS = "ActiveMenus";
+
+    public ActionForward edit(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -66,6 +68,11 @@ public class Supplier extends DispatchAction {
 
                     rq.setAttribute("supplier", sup);
 
+                    // navigation: set 'account/konto' tab as active
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute(ACTIVEMENUS, mf);
+
                     forward = "edit";
 
                 } else {
@@ -75,7 +82,7 @@ public class Supplier extends DispatchAction {
                 }
 
                 cn.close();
-            }  else {
+            } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute("errormessage", m);
@@ -92,8 +99,8 @@ public class Supplier extends DispatchAction {
         return mp.findForward(forward);
     }
 
-    public ActionForward create(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward create(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -111,9 +118,14 @@ public class Supplier extends DispatchAction {
 
                 forward = "create";
 
+                // navigation: set 'account/konto' tab as active
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("konto");
+                rq.setAttribute(ACTIVEMENUS, mf);
+
                 cn.close();
 
-            }  else {
+            } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute("errormessage", m);
@@ -130,8 +142,8 @@ public class Supplier extends DispatchAction {
         return mp.findForward(forward);
     }
 
-    public ActionForward save(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward save(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -161,6 +173,11 @@ public class Supplier extends DispatchAction {
 
                         rq.setAttribute("supplier", sup);
 
+                        // navigation: set 'account/konto' tab as active
+                        final ActiveMenusForm mf = new ActiveMenusForm();
+                        mf.setActivemenu("konto");
+                        rq.setAttribute(ACTIVEMENUS, mf);
+
                         forward = "success";
 
                     } else {
@@ -182,7 +199,7 @@ public class Supplier extends DispatchAction {
                 }
 
                 cn.close();
-            }  else {
+            } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute("errormessage", m);
@@ -199,8 +216,8 @@ public class Supplier extends DispatchAction {
         return mp.findForward(forward);
     }
 
-    public ActionForward delete(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward delete(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -222,6 +239,11 @@ public class Supplier extends DispatchAction {
                     final Lieferanten sup = new Lieferanten();
                     sup.delete(sid, cn.getConnection());
 
+                    // navigation: set 'account/konto' tab as active
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute("activemenu", mf);
+
                     forward = "success";
 
                 } else {
@@ -231,7 +253,7 @@ public class Supplier extends DispatchAction {
                 }
 
                 cn.close();
-            }  else {
+            } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute("errormessage", m);
@@ -263,7 +285,7 @@ public class Supplier extends DispatchAction {
 
                 // we have a matching KID => individual supplier
                 if ((l.getKid() != null && l.getKid().equals(ui.getKonto().getId()))
-                        // suppliers from the own country
+                // suppliers from the own country
                         || ui.getKonto().getLand().equals(l.getCountryCode())) {
                     result = true;
                 }
