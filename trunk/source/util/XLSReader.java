@@ -173,7 +173,11 @@ public class XLSReader implements HSSFListener {
         }
 
         // and our document input stream (don't want to leak these!)
-        din.close();
+        try {
+            din.close();
+        } catch (final Exception e) {
+            LOG.error(e.toString());
+        }
 
         return getResult();
 

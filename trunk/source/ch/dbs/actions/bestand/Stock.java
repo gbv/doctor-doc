@@ -185,42 +185,67 @@ public class Stock extends DispatchAction {
                             }
 
                             List<List<String>> stockList = new ArrayList<List<String>>();
+                            List<Message> messageList = new ArrayList<Message>();
 
-                            // Get an List<List<String>> representation of the file
-                            if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")) {
-                                stockList = readCSVImport(upload, delimiter, encoding);
-                            } else {
-                                stockList = readXSLImport(upload);
+                            try {
+                                // Get an List<List<String>> representation of the file
+                                if (ck.isFiletypeExtension(fileName, ".txt")
+                                        || ck.isFiletypeExtension(fileName, ".csv")) {
+                                    stockList = readCSVImport(upload, delimiter, encoding);
+                                } else if (ck.isFiletypeExtension(fileName, ".xls")) {
+                                    stockList = readXLSImport(upload);
+                                } else {
+                                    // TODO: add support for XLSX
+                                    final Message msg = new Message("error.import.failed",
+                                            "Filetype XLSX not supported! Use XLS...", "");
+                                    messageList.add(msg);
+                                }
+                            } catch (final Exception e) {
+                                final Message msg = new Message("error.import.failed", e.toString(), "");
+                                messageList.add(msg);
                             }
 
-                            // Check if the file contains the correct number of columns
-                            List<Message> messageList = checkColumns(stockList);
+                            // Check for errors reading file
                             if (messageList.isEmpty()) {
 
-                                // Basic checks and make sure all entries in stockList are parsable
-                                messageList = checkBasicParsability(stockList);
+                                // Check if the file contains the correct number of columns
+                                messageList = checkColumns(stockList);
                                 if (messageList.isEmpty()) {
 
-                                    // Convert to ArrayList<Bestand>
-                                    final List<Bestand> bestandList = convertToBestand(stockList, ui);
-
-                                    // Check integrity of Bestand()
-                                    messageList = checkBestandIntegrity(bestandList, ui, cn.getConnection());
+                                    // Basic checks and make sure all entries in stockList are parsable
+                                    messageList = checkBasicParsability(stockList);
                                     if (messageList.isEmpty()) {
 
-                                        // save or update holdings, delete all other holdings
-                                        final String successMessage = update(bestandList, ui, cn.getConnection());
+                                        // Convert to ArrayList<Bestand>
+                                        final List<Bestand> bestandList = convertToBestand(stockList, ui);
 
-                                        // TODO: check DAIA-ID
+                                        // Check integrity of Bestand()
+                                        messageList = checkBestandIntegrity(bestandList, ui, cn.getConnection());
+                                        if (messageList.isEmpty()) {
 
-                                        forward = SUCCESS;
+                                            // save or update holdings, delete all other holdings
+                                            final String successMessage = update(bestandList, ui, cn.getConnection());
 
-                                        final Message msg = new Message("import.success", successMessage,
-                                                "allstock.do?method=prepareExport&activemenu=stock");
+                                            // TODO: check DAIA-ID
 
-                                        rq.setAttribute("message", msg);
+                                            forward = SUCCESS;
 
-                                    } else { // detailed errors while checking integrity of Bestand() objects
+                                            final Message msg = new Message("import.success", successMessage,
+                                                    "allstock.do?method=prepareExport&activemenu=stock");
+
+                                            rq.setAttribute("message", msg);
+
+                                        } else { // detailed errors while checking integrity of Bestand() objects
+                                            forward = "importError";
+                                            final ActiveMenusForm mf = new ActiveMenusForm();
+                                            mf.setActivemenu("stock");
+                                            rq.setAttribute(ACTIVEMENUS, mf);
+                                            rq.setAttribute("messageList", messageList);
+                                            final Message em = new Message("error.import.heading",
+                                                    "stock.do?method=prepareImport&activemenu=stock");
+                                            rq.setAttribute("singleMessage", em);
+                                        }
+                                    } else { // basic errors before parsing to Bestand() objects
                                         forward = "importError";
                                         final ActiveMenusForm mf = new ActiveMenusForm();
                                         mf.setActivemenu("stock");
@@ -230,7 +255,7 @@ public class Stock extends DispatchAction {
                                                 "stock.do?method=prepareImport&activemenu=stock");
                                         rq.setAttribute("singleMessage", em);
                                     }
-                                } else { // basic errors before parsing to Bestand() objects
+                                } else { // Wrong number of columns
                                     forward = "importError";
                                     final ActiveMenusForm mf = new ActiveMenusForm();
                                     mf.setActivemenu("stock");
@@ -240,7 +265,7 @@ public class Stock extends DispatchAction {
                                             "stock.do?method=prepareImport&activemenu=stock");
                                     rq.setAttribute("singleMessage", em);
                                 }
-                            } else { // Wrong number of columns
+                            } else { // Error reading file
                                 forward = "importError";
                                 final ActiveMenusForm mf = new ActiveMenusForm();
                                 mf.setActivemenu("stock");
@@ -250,7 +275,6 @@ public class Stock extends DispatchAction {
                                         "stock.do?method=prepareImport&activemenu=stock");
                                 rq.setAttribute("singleMessage", em);
                             }
-
                         } else { // Filesize limit
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("stock");
@@ -734,31 +758,27 @@ public class Stock extends DispatchAction {
      * @param String
      * @return List<List<String>>
      */
-    private List<List<String>> readCSVImport(final FormFile upload, final char delimiter, final String encoding) {
+    private List<List<String>> readCSVImport(final FormFile upload, final char delimiter, final String encoding)
+            throws Exception {
 
         final List<List<String>> result = new ArrayList<List<String>>();
         String line = "";
         BufferedInputStream fileStream = null;
         BufferedReader br = null;
 
+        fileStream = new BufferedInputStream(upload.getInputStream());
+        br = new BufferedReader(new InputStreamReader(fileStream, encoding));
+
+        while ((line = br.readLine()) != null && !line.equals("")) {
+            final CSV importFile = new CSV(delimiter);
+            result.add(importFile.parse(line));
+        }
+
         try {
-            fileStream = new BufferedInputStream(upload.getInputStream());
-            br = new BufferedReader(new InputStreamReader(fileStream, encoding));
-
-            while ((line = br.readLine()) != null && !line.equals("")) {
-                final CSV importFile = new CSV(delimiter);
-                result.add(importFile.parse(line));
-            }
-
-        } catch (final Exception e) {
+            br.close();
+            fileStream.close();
+        } catch (final IOException e) {
             LOG.error(e.toString());
-        } finally {
-            try {
-                br.close();
-                fileStream.close();
-            } catch (final IOException e) {
-                LOG.error(e.toString());
-            }
         }
 
         return result;
@@ -771,23 +791,19 @@ public class Stock extends DispatchAction {
      * @param FormFile
      * @return List<List<String>>
      */
-    private List<List<String>> readXSLImport(final FormFile upload) {
+    private List<List<String>> readXLSImport(final FormFile upload) throws Exception {
 
         List<List<String>> result = new ArrayList<List<String>>();
         BufferedInputStream fileStream = null;
 
+        final XLSReader xlsReader = new XLSReader();
+        fileStream = new BufferedInputStream(upload.getInputStream());
+        result = xlsReader.read(fileStream);
+
         try {
-            final XLSReader xlsReader = new XLSReader();
-            fileStream = new BufferedInputStream(upload.getInputStream());
-            result = xlsReader.read(fileStream);
-        } catch (final Exception e) {
+            fileStream.close();
+        } catch (final IOException e) {
             LOG.error(e.toString());
-        } finally {
-            try {
-                fileStream.close();
-            } catch (final IOException e) {
-                LOG.error(e.toString());
-            }
         }
 
         return result;
