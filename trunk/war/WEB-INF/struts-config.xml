@@ -856,8 +856,7 @@
 
 	<!-- ================================ Message Resources Definitions -->
 	<message-resources parameter="resources.MessageResources" />
-	<message-resources key="systemConfig"
-		parameter="resources.SystemConfiguration" />
+	<message-resources parameter="resources.SystemConfiguration" key="systemConfig" />
 
 	<!-- ======================================= Plug Ins Configuration -->
 	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
