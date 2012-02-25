@@ -124,7 +124,7 @@
         <section name="common">
           <attribute name="Implementation-Title"   value="${app.name}"/>
           <attribute name="Implementation-Version" value="${version.string}"/>
-          <attribute name="Implementation-Vendor"  value="Doctor-Doc Team"/>
+          <attribute name="Implementation-Vendor"  value="Team Doctor-Doc"/>
           <attribute name="Sealed" value="false"/>
         </section>
       </manifest>
