@@ -104,10 +104,10 @@
 
 <html:form action="/searchorder">
 
-<table border="0" width="100%">
+<table width="100%">
 	<tr>
 		<td align="center">
-<table border="0" align="center">
+<table align="center">
 <logic:present name="userinfo" property="benutzer">
 <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
 
@@ -160,7 +160,7 @@
 
 <html:form action="/listkontobestellungen">
 
-<table border="0" width="100%">
+<table width="100%">
 <tr>
 <td align="center">
   <select name="dfrom">

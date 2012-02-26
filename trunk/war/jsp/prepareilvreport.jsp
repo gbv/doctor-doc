@@ -85,7 +85,7 @@
   </tr>
   <tr>
     <td colspan="2">
-    <table border="0" width="100%">
+    <table width="100%">
       <tr>
         <td>
           <bean:message key="ilv-report.labelyear" /> <br />

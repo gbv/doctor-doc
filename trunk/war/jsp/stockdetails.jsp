@@ -15,7 +15,7 @@
 
 <h3><bean:message key="availresult.library" /></h3>
 
-<table border="0">
+<table>
 	<tr>
 		<td>
 			<bean:write name="konto" property="bibliotheksname" />
