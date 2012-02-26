@@ -39,7 +39,7 @@
 	</tr>
 	<tr>
 		<td><bean:message key="searchorders.supplier" />:</td>
-		<td><input type="text" name="name" value="<bean:write name="supplier" property="name" />" size="120" maxlength="200" /></td>
+		<td><input type="text" name="name" value="<bean:write name="supplier" property="name" />" size="120" maxlength="200" autofocus /></td>
 	</tr>
 	<tr>
 		<td><bean:message key="adressen.email" />:</td>

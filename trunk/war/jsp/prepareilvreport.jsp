@@ -141,7 +141,7 @@
     <td colspan="2" valign="top"><bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />
       
     </td><td><bean:message key="ilv-report.labelnotesfromrequestinglibrary" /><br />      
-      <textarea name="notesfromrequestinglibrary" cols="25" rows="3"><bean:write name="orderform" property="bestellung.systembemerkung" /></textarea>
+      <textarea name="notesfromrequestinglibrary" cols="25" rows="3" autofocus><bean:write name="orderform" property="bestellung.systembemerkung" /></textarea>
     </td>
   </tr>
   </table>

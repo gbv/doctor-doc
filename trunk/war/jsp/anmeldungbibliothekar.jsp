@@ -24,7 +24,7 @@
               
 <h3><bean:message key="register.header" /></h3>
 
-  <html:form action="anmeldungbibliothekar_.do" method="post" focus="anrede">
+  <html:form action="anmeldungbibliothekar_.do" method="post">
   <table>
     <tr><td><bean:message key="register.step2" /></td><td><bean:message key="register.step2_text" /></td></tr>
     
@@ -43,7 +43,7 @@
       </td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text"<logic:present name="userform" property="vorname"> value="<bean:write name="userform" property="vorname" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="vorname" /></font></td>
+      <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text" autofocus<logic:present name="userform" property="vorname"> value="<bean:write name="userform" property="vorname" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="vorname" /></font></td>
     </tr>
     <tr>
       <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text"<logic:present name="userform" property="name"> value="<bean:write name="userform" property="name" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="name" /></font></td>

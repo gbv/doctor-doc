@@ -121,7 +121,7 @@
 
   </html:form>
 
-  <html:form action="validateBestellform.do" method="post" focus="kundenvorname">
+  <html:form action="validateBestellform.do" method="post">
     
     <logic:equal name="bestellparam" property="lieferart" value="false">
     <logic:notEqual name="orderform" property="mediatype" value="Buch">
@@ -207,7 +207,7 @@
       <td><b><bean:message key="bestellform.vorname" />*&nbsp;</b></td>
       <td><input name="kundenvorname"
         value="<bean:write name="orderform" property="kundenvorname" />"
-        type="text" size="60" maxlength="100" /></td>
+        type="text" size="60" maxlength="100" autofocus /></td>
     </tr>
     <tr>
       <td><b><bean:message key="bestellform.name" />*&nbsp;</b></td>

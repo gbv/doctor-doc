@@ -28,7 +28,7 @@
  <br />
 <h3><bean:message key="modifykontousers.categories" /></h3>
 
-<html:form action="usercategories.do?method=changeCategory" method="post" focus="category">
+<html:form action="usercategories.do?method=changeCategory" method="post">
 
 <table>
 	<tr>
@@ -38,7 +38,7 @@
 	</tr>
 	<tr>
 		<td>
-			<input name="category" <logic:present name="categoryText">value="<bean:write name="categoryText" property="inhalt" />"</logic:present> type="text" size="30" maxlength="50" />
+			<input name="category" <logic:present name="categoryText">value="<bean:write name="categoryText" property="inhalt" />"</logic:present> type="text" size="30" maxlength="50" autofocus />
 		</td>
 	</tr>
 		<tr>

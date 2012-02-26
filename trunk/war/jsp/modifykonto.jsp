@@ -256,7 +256,7 @@
       
   </table>
   <logic:notEqual name="userinfo" property="konto.bibliotheksname" value="Demo-Bibliothek">    
-      <br> </br><input type="submit" value="<bean:message key="modifykonto.save" />"></input>
+      <br /> <input type="submit" value="<bean:message key="modifykonto.save" />"></input>
           <input name="method" type="hidden" value="modifyKonto" />
    </logic:notEqual>
    
