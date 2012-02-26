@@ -165,7 +165,7 @@ public final class OrderAction extends DispatchAction {
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
                             if (searches == 2) {
-                                //    Nummerierung auf 5 gestellt. Ev. auf 3 anpassen...!!!
+                                // Number of result is set to 5.
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
 
@@ -193,7 +193,7 @@ public final class OrderAction extends DispatchAction {
                             if (searches < 2) {
                                 compare = "[PDF]";
                             } else {
-                                compare = "class=g>";
+                                compare = "class=\"r\">";
                             }
 
                             //   make sure Google did not respond with Captcha
