@@ -99,13 +99,11 @@
   
 </form>
 
-<script language="javascript">
-  <!--
-  function submit_form() 
+<script type="text/javascript">
+  function submit_form()
   {
- 	document.myform.submit()
+ 	document.myform.submit();
   }
-  -->
 </script>
 
 </body>

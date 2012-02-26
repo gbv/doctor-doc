@@ -15,7 +15,7 @@
   
 <bean:define id="url" name="orderform" property="link" type="java.lang.String"/>
   
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
   function popup() { 
   <bean:define id="url" name="orderform" property="link" type="java.lang.String"/>
   window.open('<%=url%>','Subito');

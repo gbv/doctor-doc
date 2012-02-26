@@ -12,8 +12,7 @@
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="save.titel" /></title>
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
   
-<script language="javascript">
-<!--
+<script type="text/javascript">
 function vorkomma(a)
 {
         <logic:present name="orderform" property="defaultpreise">
@@ -44,8 +43,6 @@ function wahrung(a)
        </logic:present>
  return(x);
 }
-
-//-->
 </script>
   
  </head>
