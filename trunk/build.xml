@@ -100,7 +100,7 @@
            encoding="${src.charset}"
            optimize="${optimize}"
     	   includeantruntime="false"
-           source="1.5">
+           source="1.6">
     </javac>
     <copy todir="${classes.dir}">
       <fileset dir="${resource.dir}">
