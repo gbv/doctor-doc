@@ -65,9 +65,9 @@
      </logic:iterate>
           
      <logic:iterate id="rb" name="regensburg" property="zeitschriften">
-    <logic:notPresent name="rb" property="issn">
-      <bean:message key="issnresult.nohits" />
-          </logic:notPresent>
+    	<logic:empty name="rb" property="link">
+      		<bean:message key="issnresult.nohits" />
+         </logic:empty>
      </logic:iterate>
      
          </table>

@@ -49,9 +49,11 @@ public class EZBVascoda {
     private static final SimpleLogger LOG = new SimpleLogger(EZBVascoda.class);
 
     /**
-     * This class/method uses the EZB API from http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml.
-     * This API differs from the EZB/ZDB API (http://services.d-nb.de). It brings back no print information and
-     * other information for electronic holdings. It seems to be more stable.
+     * This class uses the EZB API from
+     * http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml. This
+     * API differs from the EZB/ZDB API (http://services.d-nb.de). It brings
+     * back no print information and other information for electronic holdings.
+     * It seems to be more stable.
      */
     public EZBForm read(final String content) {
 
@@ -209,13 +211,11 @@ public class EZBVascoda {
         if (listElement != null) {
             final NodeList textList = listElement.getChildNodes();
             if (textList.getLength() > 0) {
-                result = StringEscapeUtils.unescapeXml(((Node) textList.item(0)).getNodeValue());
+                result = StringEscapeUtils.unescapeXml(textList.item(0).getNodeValue());
             }
         }
 
         return result;
     }
-
-
 
 }

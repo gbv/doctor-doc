@@ -46,13 +46,13 @@ import ch.dbs.form.EZBDataPrint;
 import ch.dbs.form.EZBForm;
 import ch.dbs.form.EZBReference;
 
-public class EZB {
+public class EZBJOP {
 
-    private static final SimpleLogger LOG = new SimpleLogger(EZB.class);
-
+    private static final SimpleLogger LOG = new SimpleLogger(EZBJOP.class);
 
     /**
-     * This class/method uses the official EZB/ZDB API from http://services.d-nb.de/fize-service/gvr/full.xml.
+     * This class uses the official EZB/ZDB API from
+     * http://services.d-nb.de/fize-service/gvr/full.xml.
      */
     public EZBForm read(final String content) {
 
@@ -235,13 +235,11 @@ public class EZB {
         if (listElement != null) {
             final NodeList textList = listElement.getChildNodes();
             if (textList.getLength() > 0) {
-                result = StringEscapeUtils.unescapeXml(((Node) textList.item(0)).getNodeValue());
+                result = StringEscapeUtils.unescapeXml(textList.item(0).getNodeValue());
             }
         }
 
         return result;
     }
-
-
 
 }

@@ -83,7 +83,6 @@ import ch.ddl.daia.DaiaRequest;
 public final class OrderAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(OrderAction.class);
-    private static final int TIMEOUT_3 = 3000;
     private static final int TIMEOUT_2 = 2000;
     private static final int TIMEOUT_1 = 1000;
     private static final int RETRYS_3 = 3;
@@ -103,11 +102,9 @@ public final class OrderAction extends DispatchAction {
         final ArrayList<JournalDetails> hitsGoogleScholar = new ArrayList<JournalDetails>();
         final Check check = new Check();
         final BestellformAction bfAction = new BestellformAction();
-        String content = "";
+        String content;
         String linkGoogle = "";
         String linkGS = "";
-        String linkPdfGoogle = "";
-        String linkPdfGS = "";
 
         String forward = FAILURE;
         OrderForm pageForm = (OrderForm) form;
@@ -201,7 +198,7 @@ public final class OrderAction extends DispatchAction {
 
                                 if (content.contains(compare)) {
                                     ergebnis = true;
-                                    linkPdfGoogle = "";
+                                    String linkPdfGoogle = "";
 
                                     String content2 = content;
 
@@ -304,7 +301,7 @@ public final class OrderAction extends DispatchAction {
                                 if (content.contains(identifierHitsGoogleScholar)) {
                                     ergebnis = true;
 
-                                    linkPdfGS = "";
+                                    String linkPdfGS = "";
 
                                     while (content.contains(identifierHitsGoogleScholar)) {
                                         String content2 = "";
@@ -513,11 +510,11 @@ public final class OrderAction extends DispatchAction {
     public ActionForward issnAssistent(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // für ezbid auslesen
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // to get ezbid
         String bibid = ui.getKonto().getEzbid();
         if (bibid == null || bibid.equals("")) {
-            bibid = "AAAAA";
-        } // entspricht unbestimmter Bibliothek
+            bibid = "AAAAA"; // library unknown
+        }
 
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
@@ -531,20 +528,20 @@ public final class OrderAction extends DispatchAction {
         boolean treffer = false;
         if (auth.isLogin(rq)) {
 
-            // keine PMID eingegeben => normaler ISSN-Assistent-Ablauf
+            // no PMID => ordinary processing of ISSN assistent
             if (pageForm.getPmid() == null || pageForm.getPmid().equals("")) {
                 if (!(pageForm.getIssn().length() == 0 && pageForm.getZeitschriftentitel().length() == 0 && !pageForm
-                        .isAutocomplete())) { // keine Eingabe ohne Autocomplete ausschliessen...
+                        .isAutocomplete())) { // exclude no input without autocomplete...
                     forward = SUCCESS;
                     try {
 
-                        // Autocomplete wurde ausgeführt...
+                        // autocomplete has been already done...
                         if ((pageForm.isAutocomplete())
-                        //...es ist eine Eingabe erfolgt...
+                        //...we have input...
                                 && ((pageForm.getIssn().length() != 0) || (pageForm.getZeitschriftentitel().length() != 0))
-                                // ...und es handelt sich nicht um den Speziafall Autocomplete ohne ISSN!
+                                // ...and it is not the special case autocomplete without ISSN!
                                 && !pageForm.isFlag_noissn()) {
-                            // Eingabe zur Korrektur von autocomplete erfolgt => Formulardaten leeren
+                            // we have input to be corrected by autocomplete => empty data in form
                             pageForm.setAuthor("");
                             pageForm.setJahr("");
                             pageForm.setJahrgang("");
@@ -557,9 +554,7 @@ public final class OrderAction extends DispatchAction {
                         }
 
                         if (pageForm.isAutocomplete() && pageForm.isFlag_noissn()) {
-                            // Seltener Fall Angaben aus autocomplete korrekt aber keine ISSN vorhanden
-                            // z.B. Establishing a national resource:
-                            // a health informatics collection to maintain the legacy of health
+                            // special case: data from autocomplete but no ISSN
 
                             // alle anderen Angaben URL-codieren und vorbereiten für
                             // Übergabe an ff, da Weitergabe über Hyperlink auf jsp läuft
@@ -603,9 +598,8 @@ public final class OrderAction extends DispatchAction {
                         // Anzeige auf 30 limitiert (hits_per_page):
                         final FindFree ffRB = new FindFree();
 
-                        // Print ISSN Regensburg
-                        final List<JournalDetails> issnRB = searchEzbRegensburg(zeitschriftentitelEncoded,
-                                artikeltitelEnc, pageForm, bibid);
+                        // get ISSN from EZB Regensburg
+                        final List<JournalDetails> issnRB = searchEZBxml(pageForm, bibid);
 
                         if (!issnRB.isEmpty()) {
                             treffer = true;
@@ -672,13 +666,13 @@ public final class OrderAction extends DispatchAction {
                     }
 
                 } else {
-                    forward = "noresult"; // Keine Eingabe erfolgt...
+                    forward = "noresult"; // No input...
                 }
 
-            } else { // PMID eingegeben => Auflösung
-                forward = "noresult"; // d.h. direkt zurück zum Engabeformular
+            } else { // PMID present => resolve
+                forward = "noresult"; // back to input form
                 pageForm = bfAction.resolvePmid(bfAction.extractPmid(pageForm.getPmid()));
-                pageForm.setAutocomplete(true); // unterdrückt die Funktion Autocomplete
+                pageForm.setAutocomplete(true); // suppress autocomplete
                 pageForm.setRuns_autocomplete(1);
             }
 
@@ -897,7 +891,7 @@ public final class OrderAction extends DispatchAction {
             if (ezbanswer != null && !ezbanswer.contains("<Error code=")
                     && !ezbanswer.contains("503 Service Temporarily Unavailable")) {
                 // read EZB response as XML
-                final EZB ezb = new EZB();
+                final EZBJOP ezb = new EZBJOP();
                 ezbform = ezb.read(ezbanswer);
             } else {
                 // use alternate Vascoda API
@@ -1098,7 +1092,6 @@ public final class OrderAction extends DispatchAction {
         if (content.contains("no matches")) { // falls keine Treffer => Suchbegriffe trunkieren
             // Achtung Regexp hat * spezielle Bedeutung...
             zeitschriftentitelEncodedTrunkiert = zeitschriftentitelEncodedTrunkiert.replaceAll("\040", "*\040") + "*";
-            //          System.out.println("Sternchentitel; " + zeitschriftentitel_encoded_trunkiert);
 
             zeitschriftentitelEncodedTrunkiert = codeUrl.encodeLatin1(zeitschriftentitelEncodedTrunkiert);
             link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query="
@@ -1152,265 +1145,44 @@ public final class OrderAction extends DispatchAction {
         return issnJS;
     }
 
-    private List<JournalDetails> searchEzbRegensburg(final String zeitschriftentitelEncoded,
-            final String artikeltitelEncoded, final OrderForm pageForm, final String bibid) {
+    private List<JournalDetails> searchEZBxml(final OrderForm pageForm, final String bibid) {
 
+        List<JournalDetails> result = new ArrayList<JournalDetails>();
+        final EZBXML ezb = new EZBXML();
+
+        if (pageForm.getIssn().length() == 0) {
+            result = ezb.searchByTitle(pageForm.getZeitschriftentitel(), bibid);
+        } else {
+            result = ezb.searchByIssn(pageForm.getIssn(), bibid);
+        }
+
+        // due to compatibility of legacy code
         final List<JournalDetails> issnRB = new ArrayList<JournalDetails>();
-
-        String link = "";
-        String content = "";
         final CodeUrl codeUrl = new CodeUrl();
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
+        for (final JournalDetails jdRB : result) {
 
-        if (pageForm.getIssn().length() == 0) { // Suche anhand des Zeitschriftentitels
-            link = "http://ezb.uni-regensburg.de/ezeit/searchres.phtml?colors=7&lang=de&jq_type1=KT&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&offset=-1&hits_per_page=30&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=2&selected_colors%5B%5D=4&bibid=";
-            link = link + bibid + "&jq_term1=" + zeitschriftentitelEncoded;
+            jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
+            jdRB.setArtikeltitel(pageForm.getArtikeltitel());
+            jdRB.setArtikeltitel_encoded(codeUrl.encodeLatin1(pageForm.getArtikeltitel()));
+            jdRB.setZeitschriftentitel_encoded(codeUrl.encodeLatin1(jdRB.getZeitschriftentitel()));
 
-        } else { // Suche anhand ISSN
-            link = "http://ezb.uni-regensburg.de/ezeit/searchres.phtml?colors=5&lang=de&jq_type1=KT&jq_term1=&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+&jq_type4=IS&offset=-1&hits_per_page=50&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=2&selected_colors%5B%5D=4&bibid=";
-            link = link + bibid + "&jq_term4=" + pageForm.getIssn();
-        }
-
-        content = getWebcontent(link, TIMEOUT_3, RETRYS_2);
-        content = content.replaceAll("\012", ""); // Layout-Umbrueche entfernen
-
-        if (content.contains("Treffer")) { // Zusatzschlaufe um bei Treffer >30 eine andere Suche zu versuchen
-
-            final int start = content.indexOf("Treffer");
-            String subcontent = content.substring(start - 7, start - 1);
-            subcontent = subcontent.replaceAll("\040", "");
-            int x = subcontent.indexOf('>') + 1;
-            subcontent = subcontent.substring(x);
-            x = Integer.parseInt(subcontent);
-            //          System.out.println("Anzahl Treffer: " + x);
-            if (x > 30) {
-                //          System.out.println("Ihre Suche hat mehr als 30 Treffer ergeben!");
-                link = "http://ezb.uni-regensburg.de/ezeit/searchres.phtml?colors=7&lang=de&jq_type1=KS&jq_bool2=AND&jq_not2=+&jq_type2=KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&offset=-1&hits_per_page=30&search_journal=Suche+starten&Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=2&selected_colors%5B%5D=4&bibid=";
-                // Unterschied im Suchstring ist &jq_type1=KS statt &jq_type1=KT
-                link = link + bibid + "&jq_term1=" + zeitschriftentitelEncoded;
-                content = getWebcontent(link, TIMEOUT_3, RETRYS_2);
-                content = content.replaceAll("\012", ""); // Layout-Umbrueche entfernen
+            if (pageForm.isFlag_noissn()) {
+                jdRB.setAuthor(pageForm.getAuthor());
+                jdRB.setJahr(pageForm.getJahr());
+                jdRB.setJahrgang(pageForm.getJahrgang());
+                jdRB.setHeft(pageForm.getHeft());
+                jdRB.setSeiten(pageForm.getSeiten());
             }
-        }
-
-        if (content.contains("Treffer")) {
-
-            int start = content.indexOf("Treffer");
-            String subcontent = content.substring(start - 7, start - 1);
-            subcontent = subcontent.replaceAll("\040", "");
-            int x = subcontent.indexOf('>') + 1;
-            subcontent = subcontent.substring(x);
-            x = Integer.parseInt(subcontent);
-
-            if (x == 1) {
-
-                start = content.indexOf("warpto");
-                final int end = content.indexOf("\">", start);
-                String linkRB = "http://ezb.uni-regensburg.de/ezeit/" + content.substring(start, end);
-                linkRB = linkRB.replaceAll("warpto", "detail");
-
-                // Zeitschriftentitel extrahieren
-                final String zeitschriftentitelRB = getZeitschriftentitelFromEzb(content);
-
-                // notwendig, da Titel per Get-Methode weitergeschickt wird, z.B. Pflege & Managament
-                final String zeitschriftentitelRbEncoded = codeUrl.encodeLatin1(zeitschriftentitelRB);
-
-                if (content.contains("P-ISSN(s):")) {
-                    // P-ISSN extrahieren
-                    start = content.indexOf("P-ISSN(s):") + 2; // Startpunkt auf nach P- stellen
-                    int startIssn = content.indexOf('-', start) - 4;
-
-                    final JournalDetails jdRB = new JournalDetails();
-                    jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
-                    jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-                    jdRB.setArtikeltitel_encoded(artikeltitelEncoded);
-                    jdRB.setZeitschriftentitel(zeitschriftentitelRB);
-                    jdRB.setZeitschriftentitel_encoded(zeitschriftentitelRbEncoded);
-                    jdRB.setIssn(content.substring(startIssn, startIssn + 9));
-                    jdRB.setLink(linkRB);
-
-                    if (pageForm.isFlag_noissn()) {
-                        jdRB.setAuthor(pageForm.getAuthor());
-                        jdRB.setJahr(pageForm.getJahr());
-                        jdRB.setJahrgang(pageForm.getJahrgang());
-                        jdRB.setHeft(pageForm.getHeft());
-                        jdRB.setSeiten(pageForm.getSeiten());
-                    }
-
-                    issnRB.add(jdRB);
-                    //                    while (content.startsWith(";", startIssn + 9)) {
-                    while (content.charAt(startIssn + 9) == ';') {
-                        // falls es weitere ISSNs gibt...
-                        content = content.substring(startIssn + 10);
-                        startIssn = content.indexOf('-') - 4;
-                        jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-                        jdRB.setArtikeltitel_encoded(artikeltitelEncoded);
-                        jdRB.setZeitschriftentitel(zeitschriftentitelRB);
-                        jdRB.setZeitschriftentitel_encoded(zeitschriftentitelRbEncoded);
-                        jdRB.setIssn(content.substring(startIssn, startIssn + 9));
-                        jdRB.setLink(linkRB);
-
-                        if (pageForm.isFlag_noissn()) {
-                            jdRB.setAuthor(pageForm.getAuthor());
-                            jdRB.setJahr(pageForm.getJahr());
-                            jdRB.setJahrgang(pageForm.getJahrgang());
-                            jdRB.setHeft(pageForm.getHeft());
-                            jdRB.setSeiten(pageForm.getSeiten());
-                        }
-
-                        issnRB.add(jdRB);
-                    }
-                } else {
-                    if (content.contains("E-ISSN(s):")) {
-                        // Grundsaetzlich Artikel nicht bestellbar => Pruefung Verfuegbarkeit
-                        start = content.indexOf("E-ISSN(s):") + 2; // Startpunkt auf nach P- stellen
-                        int startIssn = content.indexOf('-', start) - 4;
-                        final JournalDetails jdRB = new JournalDetails();
-                        jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
-                        jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-                        jdRB.setArtikeltitel_encoded(artikeltitelEncoded);
-                        jdRB.setZeitschriftentitel(zeitschriftentitelRB + "(E-ISSN, nicht bestellbar)");
-                        jdRB.setZeitschriftentitel_encoded(zeitschriftentitelRbEncoded);
-                        jdRB.setIssn(content.substring(startIssn, startIssn + 9));
-                        jdRB.setLink(linkRB);
-
-                        if (pageForm.isFlag_noissn()) {
-                            jdRB.setAuthor(pageForm.getAuthor());
-                            jdRB.setJahr(pageForm.getJahr());
-                            jdRB.setJahrgang(pageForm.getJahrgang());
-                            jdRB.setHeft(pageForm.getHeft());
-                            jdRB.setSeiten(pageForm.getSeiten());
-                        }
-
-                        issnRB.add(jdRB);
-
-                        //                        while (content.startsWith(";", startIssn + 9)) {
-                        while (content.charAt(startIssn + 9) == ';') {
-                            // falls es weitere ISSNs gibt...
-                            content = content.substring(startIssn + 10);
-                            startIssn = content.indexOf('-') - 4;
-                            jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-                            jdRB.setArtikeltitel_encoded(artikeltitelEncoded);
-                            jdRB.setZeitschriftentitel(zeitschriftentitelRB + "(E-ISSN, nicht bestellbar)");
-                            jdRB.setZeitschriftentitel_encoded(zeitschriftentitelRbEncoded);
-                            jdRB.setIssn(content.substring(startIssn, startIssn + 9));
-                            jdRB.setLink(linkRB);
-
-                            if (pageForm.isFlag_noissn()) {
-                                jdRB.setAuthor(pageForm.getAuthor());
-                                jdRB.setJahr(pageForm.getJahr());
-                                jdRB.setJahrgang(pageForm.getJahrgang());
-                                jdRB.setHeft(pageForm.getHeft());
-                                jdRB.setSeiten(pageForm.getSeiten());
-                            }
-
-                            issnRB.add(jdRB);
-                        }
-                    }
-                }
-
-            }
-            String zeitschriftentitelRB = "";
-            if (x > 1) {
-
-                // Titel und Link extrahieren
-                while (content.contains("warpto")) {
-                    start = content.indexOf("detail");
-                    int end = content.indexOf("\">", start);
-                    String linkRB = "http://ezb.uni-regensburg.de/ezeit/" + content.substring(start, end);
-                    linkRB = linkRB.replaceAll("warpto", "detail");
-                    start = content.indexOf("warpto");
-                    start = content.indexOf('>', start) + 1;
-                    end = content.indexOf('<', start);
-                    zeitschriftentitelRB = specialCharacters.replace(content.substring(start, end));
-
-                    zeitschriftentitelRB = zeitschriftentitelRB.replaceAll("\r", ""); // Korrektur Breaks...
-                    // Korrektur übermässige Leerschläge...
-                    zeitschriftentitelRB = zeitschriftentitelRB.replaceAll("\040\040", "");
-                    //            System.out.println("Zeitschriftentitel_rb: " + zeitschriftentitel_rb);
-                    String zeitschriftentitelRbEncoded = "";
-
-                    // notwendig, da Titel per Get-Methode weitergeschickt wird, z.B. Pflege & Managament
-                    zeitschriftentitelRbEncoded = codeUrl.encodeLatin1(zeitschriftentitelRB);
-
-                    content = content.substring(start + 1);
-
-                    // Methode um ISSN zu bestimmen
-
-                    final String issn = getIssnRegensburg(linkRB);
-
-                    if (!"".equals(issn)) { // nur Treffer mit ISSN zulassen
-
-                        final JournalDetails jdRB = new JournalDetails();
-                        jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
-                        jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-                        jdRB.setArtikeltitel_encoded(artikeltitelEncoded);
-                        jdRB.setZeitschriftentitel(zeitschriftentitelRB);
-                        jdRB.setZeitschriftentitel_encoded(zeitschriftentitelRbEncoded);
-                        jdRB.setIssn(issn);
-                        jdRB.setLink(linkRB);
-
-                        if (pageForm.isFlag_noissn()) {
-                            jdRB.setAuthor(pageForm.getAuthor());
-                            jdRB.setJahr(pageForm.getJahr());
-                            jdRB.setJahrgang(pageForm.getJahrgang());
-                            jdRB.setHeft(pageForm.getHeft());
-                            jdRB.setSeiten(pageForm.getSeiten());
-                        }
-
-                        issnRB.add(jdRB);
-                    }
-                }
-            }
+            issnRB.add(jdRB);
         }
 
         return issnRB;
     }
 
-    private String getIssnRegensburg(final String link) {
-        String issn = "";
-
-        String contentGetIssn = getWebcontent(link, TIMEOUT_3, RETRYS_2);
-
-        if (contentGetIssn.contains("P-ISSN(s):")) {
-            // P-ISSN extrahieren
-            final int start = contentGetIssn.indexOf("P-ISSN(s):") + 2; // Startpunkt auf nach P- stellen
-            int startIssn = contentGetIssn.indexOf('-', start) - 4;
-
-            issn = contentGetIssn.substring(startIssn, startIssn + 9);
-
-            //            while (contentGetIssn.startsWith(";", startIssn + 9)) {
-            while (contentGetIssn.charAt(startIssn + 9) == ';') {
-                // falls es weitere ISSNs gibt...
-                contentGetIssn = contentGetIssn.substring(startIssn + 10);
-                startIssn = contentGetIssn.indexOf('-') - 4;
-
-                issn = contentGetIssn.substring(startIssn, startIssn + 9);
-
-            }
-        } else {
-            if (contentGetIssn.contains("E-ISSN(s):")) {
-                final int start = contentGetIssn.indexOf("E-ISSN(s):") + 2; // Startpunkt auf nach P- stellen
-                int startIssn = contentGetIssn.indexOf('-', start) - 4;
-                issn = contentGetIssn.substring(startIssn, startIssn + 9);
-
-                //                while (contentGetIssn.startsWith(";", startIssn + 9)) {
-                while (contentGetIssn.charAt(startIssn + 9) == ';') {
-                    // falls es weitere ISSNs gibt...
-                    contentGetIssn = contentGetIssn.substring(startIssn + 10);
-                    startIssn = contentGetIssn.indexOf('-') - 4;
-                    issn = contentGetIssn.substring(startIssn, startIssn + 9);
-                }
-            }
-        }
-
-        return issn;
-    }
-
     private boolean autoComplete(final OrderForm pageForm, final HttpServletRequest rq) {
 
         boolean autocomplete = false;
-        String link = "";
+        String link;
 
         // Syntax WorldCat z.B. http://www.worldcat.org/search?q=ti%3AAntioxidant+supplementation+sepsis+and+systemic+inflammatory+response+syndrome+issn%3A0090-3493&qt=advanced
         // &fq=+dt%3Aart+%3E&qt=advanced (search only for articles)
@@ -1447,9 +1219,7 @@ public final class OrderAction extends DispatchAction {
      * from Z39.88.
      */
     private String getWorldCatLinkBaseSearch(final String artikeltitelWC, final OrderForm pageForm, final int run) {
-        String linkWC = "";
         String tmpWC = "";
-        String link = "";
         final CodeUrl codeUrl = new CodeUrl();
 
         String artikeltitelEncoded = artikeltitelWC;
@@ -1479,7 +1249,7 @@ public final class OrderAction extends DispatchAction {
             }
         }
 
-        link = "http://www.worldcat.org/search?q=";
+        String link = "http://www.worldcat.org/search?q=";
         if (tmpWC.length() != 0) {
             link = link + tmpWC + "+";
         }
@@ -1493,7 +1263,7 @@ public final class OrderAction extends DispatchAction {
             LOG.info("composeLinkWorldCat: no issn available" + e.toString());
         }
 
-        linkWC = link + "&fq=+dt%3Aart+%3E&qt=advanced";
+        final String linkWC = link + "&fq=+dt%3Aart+%3E&qt=advanced";
 
         return linkWC;
     }
@@ -1513,10 +1283,8 @@ public final class OrderAction extends DispatchAction {
     private boolean searchWorldCat(String link, final OrderForm pageForm) {
 
         boolean worldcat = false;
-        String content = "";
-        String openURL = "";
 
-        content = getWebcontent(link, TIMEOUT_2, RETRYS_2);
+        String content = getWebcontent(link, TIMEOUT_2, RETRYS_2);
 
         // reload to detail page of first record
         if (content.contains("&referer=brief_results")) {
@@ -1530,7 +1298,7 @@ public final class OrderAction extends DispatchAction {
                 worldcat = true;
                 pageForm.setRuns_autocomplete(+1);
 
-                openURL = content.substring(content.indexOf("url_ver=Z39.88"),
+                String openURL = content.substring(content.indexOf("url_ver=Z39.88"),
                         content.indexOf('>', content.indexOf("url_ver=Z39.88")));
                 //                System.out.println("String OpenURL: " + OpenURL);
                 openURL = correctWorldCat(openURL);
@@ -1577,51 +1345,6 @@ public final class OrderAction extends DispatchAction {
         }
 
         return check;
-    }
-
-    /**
-     * Holt den Artikeltitel aus eine EZB-Seite
-     */
-    private String getZeitschriftentitelFromEzb(final String content) {
-
-        String artikeltitel = "";
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
-
-        try {
-
-            if (content.contains("<h2><a href=\"warpto")) { // Normalfall ohne Zeitraum, Nationallizenz etc.
-
-                int start = content.indexOf("warpto");
-
-                // Zeitschriftentitel extrahieren
-                start = content.indexOf('>', start) + 1;
-                final int end = content.indexOf('<', start);
-                artikeltitel = specialCharacters.replace(content.substring(start, end));
-                artikeltitel = artikeltitel.replaceAll("\r", ""); // Korrektur Breaks...
-                artikeltitel = artikeltitel.replaceAll("\040\040", ""); // Korrektur übermässige Leerschläge...
-
-            } else {
-
-                if (content.contains("<h2>")) { // Spezialfall Nationallizenz, Zeitraum etc.
-
-                    int start = content.indexOf("<h2>"); // etwas fehleranfaellig auf Veraenderungen...
-
-                    // Zeitschriftentitel extrahieren
-                    start = content.indexOf('>', start) + 1;
-                    final int end = content.indexOf('<', start);
-                    artikeltitel = specialCharacters.replace(content.substring(start, end));
-                    artikeltitel = artikeltitel.replaceAll("\r", ""); // Korrektur Breaks...
-                    artikeltitel = artikeltitel.replaceAll("\040\040", ""); // Korrektur übermässige Leerschläge...
-
-                }
-            }
-        } catch (final Exception e) {
-            LOG.error("getZeitschriftentitelFromEzb in OrderAction: " + e.toString() + "\012" + content);
-        }
-
-        artikeltitel = specialCharacters.replace(artikeltitel);
-
-        return artikeltitel;
     }
 
     /**
