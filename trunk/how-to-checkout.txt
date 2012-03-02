@@ -16,7 +16,7 @@ If you can't find the type "Dynamic Web Project", choose "other" and search for 
 7. delete "src" folder and create a new one "source" => next
 8. delete in Content directory "WebContent" and replace with "war" => finish
 
-You now have an empty "Dynamic Web Project". Now let's checkout Doctor-Doc over SVN into this empty project.
+You now have an "Dynamic Web Project". Now let's checkout Doctor-Doc over SVN into this empty project.
 
 9. Right click on your empty project => import => import => type "SVN" => choose "Checkout projects from SVN"
 10. "Create a new repository location"
@@ -33,7 +33,7 @@ You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a tomcat s
 18. choose "Apache Tomcat 7.0" => next
 19. add your "available" project to "configured" => finish
 
-Depending on your configuartion in source/resources/SystemConfiguration you need to configure. Tomcat for pooled connections. See README.txt to get an idea. You can add this configuration
+Depending on your configuartion in source/resources/SystemConfiguration you need to configure Tomcat for pooled connections. See README.txt to get an idea. You can add this configuration
 directly in the available new folder "server" which contains the files context.xml and server.xml. If you don't use pooled connections you're done.
 
 Configure your build path:
