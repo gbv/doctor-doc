@@ -44,10 +44,14 @@ Configure your build path:
 
 To use your normal browser for working on the project:
 
-23. in eclipse go to "Window" => Preferences => type "browser" => add your favorite external browser
+23. in eclipse go to "Window" => Preferences => type "browser" in the search/filter field => General Webbrowser => add your favorite external browser
 
 All done!
 
-Start Tomcat by right click on your project => Run as => Run on server
+Always start Tomcat by right click on your project => Run as => Run on server (this will lauch the project in your browser).
+
+To start/stop/restart Tomcat you also may use the icons in the "Servers" tab in eclipse. To access the project manually, the path is: localhost:8080/[project name in eclispe]/
+
+To debung use Debug as => Debug on server. Breakpoints work only in this mode.
 
 To build a deployable war file, simply right click on the project => export war file
