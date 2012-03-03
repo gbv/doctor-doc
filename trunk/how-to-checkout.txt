@@ -26,15 +26,16 @@ You now have an "Dynamic Web Project". Now let's checkout Doctor-Doc over SVN in
 14. Use the same project name you used in step 6!
 15. Confirm that the existing project will be deleted.
 
-You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a tomcat server configuration.
+You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a Tomcat server configuration.
 
-16. Download and unpack the latest Tomacat server version 7. Earlier version won't work for this setup. However, in production your free to choose any Tomcat server version starting from version 5.0
+16. Download and unpack the latest Tomcat server version 7. Earlier version won't work for this setup. In production may to choose any Tomcat server version.
 17. in eclipse right click in the tab "server" below => "new" => "Server"
 18. choose "Apache Tomcat 7.0" => next
 19. add your "available" project to "configured" => finish
 
-Depending on your configuartion in source/resources/SystemConfiguration you need to configure Tomcat for pooled connections. See README.txt to get an idea. You can add this configuration
-directly in the available new folder "server" which contains the files context.xml and server.xml. If you don't use pooled connections you're done.
+Depending on your configuartion in source/resources/SystemConfiguration you need to configure Tomcat for pooled connections. See README.txt to get an idea.
+You can add this configurationdirectly in the available new folder "server" which contains the files context.xml and server.xml. If you don't use pooled 
+connections you're done.
 
 Configure your build path:
 
@@ -50,7 +51,9 @@ All done!
 
 Always start Tomcat by right click on your project => Run as => Run on server (this will lauch the project in your browser).
 
-To start/stop/restart Tomcat you also may use the icons in the "Servers" tab in eclipse. To access the project manually, the path is: localhost:8080/[project name in eclispe]/
+To start/stop/restart Tomcat you also may use the icons in the "Servers" tab in eclipse. To access the project manually, the path is:
+
+localhost:8080/[project name in eclispe]/
 
 To debung use Debug as => Debug on server. Breakpoints work only in this mode.
 
