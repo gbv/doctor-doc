@@ -32,7 +32,7 @@
     <bean:define id="separator" value=" / " type="java.lang.String"/>
   </logic:notEmpty></logic:notEmpty>
   
-  <form action="ilv-order-pdf.do" target="_blank">
+  <form action="ilv-order-pdf.do">
   <logic:present name="userinfo" property="konto">
   <table border="1">
   <tr>
@@ -147,7 +147,7 @@
   </table>
   <p />
   
-  <input type="hidden" name="method" value="ilv" />
+ 
   <input type="hidden" name="reporttitle" value="<bean:message key="ilv-report.title" />" />
   <input type="hidden" name="labelfrom" value="<bean:message key="ilv-report.labelfrom" />" />
   <input type="hidden" name="labelto" value="<bean:message key="ilv-report.labelto" />" />
@@ -170,7 +170,8 @@
   <input type="hidden" name="labeltitleofessay" value="<bean:message key="ilv-report.labeltitleofessay" />" />
   <input type="hidden" name="labelendorsementsofdeliveringlibrary" value="<bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />" />
   <input type="hidden" name="labelnotesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
-  <input type="submit" value="<bean:message key="ilv-report.submit" />" />
+  <input type="submit" name="method" value="PDF" /> 
+  <input type="submit" name="method" value="mail" />
   
   </logic:present>
   </form>
