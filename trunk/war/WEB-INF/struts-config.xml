@@ -783,6 +783,15 @@
 
 		<action path="/ilv-order-pdf" input="/jsp/orderview.jsp" name="IlvReportForm"
 			scope="request" parameter="method" type="ch.dbs.actions.reports.ILVReport">
+			<forward name="preparemail" path="/jsp/prepareilvmail.jsp" />
+			<forward name="failure" path="/error.do" />
+		</action>
+		
+		<action path="/prepare-ilv-mailorder" input="/jsp/prepareilvreport.jsp"
+			name="OrderForm" scope="request" parameter="method" validate="false"
+			type="ch.dbs.actions.bestellung.OrderAction">
+			<forward name="success"
+				path="/jsp/prepareilvmail.jsp" />
 			<forward name="failure" path="/error.do" />
 		</action>
 
