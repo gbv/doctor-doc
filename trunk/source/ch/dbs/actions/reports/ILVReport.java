@@ -118,7 +118,7 @@ public final class ILVReport extends DispatchAction {
     /**
      * Erstelt ein PDF- Report (ILV-Bestellung)
      */
-    public ActionForward ilv(final ActionMapping mp, final ActionForm fm,
+    public ActionForward PDF(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         String forward = "failure";
@@ -209,6 +209,7 @@ public final class ILVReport extends DispatchAction {
 
                 //Ausgabestream vorbereiten
                 rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
+                rp.setHeader("Content-Disposition","attachment;filename=ilv.pdf");
                 try {
                     out = rp.getOutputStream();
                     //Daten dem Report übergeben
@@ -233,6 +234,74 @@ public final class ILVReport extends DispatchAction {
                     }
                     forward = null;
                 }
+
+            } else {
+                final ErrorMessage em = new ErrorMessage(
+                        "error.berechtigung",
+                        "login.do");
+                rq.setAttribute("errormessage", em);
+            }
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute("ActiveMenus", mf);
+            final ErrorMessage em = new ErrorMessage(
+                    "error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
+
+        return mp.findForward(forward);
+    }
+    
+    /**
+     * Prepare the Mail with attached ilv-pdf (ILV-Bestellung)
+     */
+    public ActionForward mail(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+
+        String forward = "failure";
+        final Auth auth = new Auth();
+
+        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
+        if (auth.isLogin(rq)) {
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+
+            	rq.setAttribute("IlvReportForm", fm);
+                forward = "preparemail";                
+
+            } else {
+                final ErrorMessage em = new ErrorMessage(
+                        "error.berechtigung",
+                        "login.do");
+                rq.setAttribute("errormessage", em);
+            }
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute("ActiveMenus", mf);
+            final ErrorMessage em = new ErrorMessage(
+                    "error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
+
+        return mp.findForward(forward);
+    }
+    
+    /**
+     * Prepare the Mail with attached ilv-pdf (ILV-Bestellung)
+     */
+    public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm,
+            final HttpServletRequest rq, final HttpServletResponse rp) {
+
+        String forward = "failure";
+        final Auth auth = new Auth();
+
+        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
+        if (auth.isLogin(rq)) {
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+
+            	rq.setAttribute("IlvReportForm", fm);
+                forward = "preparemail";                
 
             } else {
                 final ErrorMessage em = new ErrorMessage(
