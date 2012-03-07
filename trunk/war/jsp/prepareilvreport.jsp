@@ -12,7 +12,10 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="order.detailtitle" /></title>
-  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" /> 
+  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
+  <style type="text/css">
+		textarea { width: 100%; border-width: 0; }
+  </style> 
  </head>
  <body>
  
@@ -134,7 +137,7 @@
   </tr>
   <tr>
     <td colspan="2" valign="top"><bean:message key="ilv-report.labeltitleofessay" /><br />
-      <textarea name="titleofessay" cols="57" rows="4"><bean:write name="orderform" property="bestellung.artikeltitel" /></textarea>
+      <textarea name="titleofessay" cols="57" rows="8"><bean:write name="orderform" property="bestellung.artikeltitel" /></textarea>
     </td>
   </tr>
   <tr>

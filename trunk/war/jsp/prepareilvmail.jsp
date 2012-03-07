@@ -5,34 +5,28 @@
 <%@ page import="ch.dbs.entity.*" %>
 <%@ page import="ch.dbs.form.*" %>
 
-<%     
-IlvReportForm pageForm = (IlvReportForm) request.getAttribute("IlvReportForm");  
-  String lieferant = "";
-%>
+
 
 <!DOCTYPE html>
-
 <html> 
-
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="order.detailtitle" /></title>
-  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" /> 
+  <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
+  <style type="text/css">
+		textarea { width: 100%; border-width: 0; }
+  </style> 
  </head>
  <body>
- 
-<tiles:insert page="import/header.jsp" flush="true" />
+  
+  <tiles:insert page="import/header.jsp" flush="true" />
 
 <div class="content">
 
-  <h3>
-  Mail:
-  </h3>
+  <h3>Mail:</h3> <!-- Mailform noch internationalisieren -->
     
-  <logic:present name="IlvReportForm" property="labelto">
-   
-  <form action="ilv-order-pdf.do?method=sendIlvMail" target="_blank">
-  <logic:present name="userinfo" property="konto">
+<logic:present name="IlvReportForm" property="labelto">   
+  <form action="ilv-order-pdf.do?method=sendIlvMail">
   <table border="1">
   <tr>
     <td valign="top">
@@ -40,7 +34,7 @@ IlvReportForm pageForm = (IlvReportForm) request.getAttribute("IlvReportForm");
     </td>
 
     <td>
-    	<input name="to" type="text" size="50" value="Mailadresse@nochabfüllen.ch" />    		
+    	<input name="to" type="text" size="100" value="Mailadresse@nochabfüllen.ch" />    		
     </td>
     
   </tr>
@@ -48,7 +42,7 @@ IlvReportForm pageForm = (IlvReportForm) request.getAttribute("IlvReportForm");
     <td>Betreff: 
     </td>    
     <td>
-    <input name="betreff" type="text" size="50" value="Betreff noch abfüllen" autofocus />
+    <input name="betreff" type="text" size="100" value="Betreff noch abfüllen" autofocus />
     </td>
   </tr>
   <tr>
@@ -59,31 +53,28 @@ IlvReportForm pageForm = (IlvReportForm) request.getAttribute("IlvReportForm");
   
   </table>
   <p />
-  
+
   <input type="hidden" name="method" value="ilv" />
   
   <input type="hidden" name="title" value="<bean:message key="ilv-report.title" />" />
-  <input type="hidden" name="from" value="<bean:message key="ilv-report.labelfrom" />" />
-  <input type="hidden" name="to" value="<bean:message key="ilv-report.labelto" />" />
-  <input type="hidden" name="signatur" value="<bean:message key="stockimport.sig" />" />
-  <input type="hidden" name="journaltitel" value="<bean:message key="ilv-report.labeljournaltitel" />" />
-  <input type="hidden" name="customer" value="<bean:message key="ilv-report.labelcustomer" />" />
-  <input type="hidden" name="name" value="<bean:message key="ilv-report.labelname" />" />
-  <input type="hidden" name="librarycard" value="<bean:message key="ilv-report.labellibrarycard" />" />
-  <input type="hidden" name="issn" value="<bean:message key="ilv-report.labelissn" />" />
-  <input type="hidden" name="pmid" value="<bean:message key="ilv-report.labelpmid" />" />
-  <input type="hidden" name="year" value="<bean:message key="ilv-report.labelyear" />" />
-  <input type="hidden" name="volumevintage" value="<bean:message key="ilv-report.labelvolumevintage" />" />
-  <input type="hidden" name="booklet" value="<bean:message key="ilv-report.labelbooklet" />" />
-  <input type="hidden" name="clinicinstitutedepartment" value="<bean:message key="ilv-report.labelclinicinstitutedepartment" />" />
-  <input type="hidden" name="phone" value="<bean:message key="ilv-report.labelphone" />" />
-  <input type="hidden" name="fax" value="<bean:message key="ilv-report.labelfax" />" />
-  <input type="hidden" name="sendto" value="<bean:message key="ilv-report.labelsendto" />" />
-  <input type="hidden" name="pages" value="<bean:message key="ilv-report.labelpages" />" />
-  <input type="hidden" name="authorofessay" value="<bean:message key="ilv-report.labelauthorofessay" />" />
-  <input type="hidden" name="titleofessay" value="<bean:message key="ilv-report.labeltitleofessay" />" />
-  <input type="hidden" name="endorsementsofdeliveringlibrary" value="<bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />" />
-  <input type="hidden" name="notesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
+  <input type="hidden" name="to" value="<bean:write name="IlvReportForm" property="lieferant" />" />  
+  <input type="hidden" name="signatur" value="<bean:write name="IlvReportForm" property="signatur" />" />
+  <input type="hidden" name="journaltitel" value="<bean:write name="IlvReportForm" property="journaltitel" />" />  
+  <input type="hidden" name="customer" value="<bean:write name="IlvReportForm" property="name" />" />  
+  <input type="hidden" name="librarycard" value="<bean:write name="IlvReportForm" property="librarycard" />" />  
+  <input type="hidden" name="issn" value="<bean:write name="IlvReportForm" property="issn" />" />
+  <input type="hidden" name="pmid" value="<bean:write name="IlvReportForm" property="pmid" />" />
+  <input type="hidden" name="year" value="<bean:write name="IlvReportForm" property="year" />" />
+  <input type="hidden" name="volumevintage" value="<bean:write name="IlvReportForm" property="volumevintage" />" />
+  <input type="hidden" name="booklet" value="<bean:write name="IlvReportForm" property="booklet" />" />
+  <input type="hidden" name="clinicinstitutedepartment" value="<bean:write name="IlvReportForm" property="clinicinstitutedepartment" />" />
+  <input type="hidden" name="phone" value="<bean:write name="IlvReportForm" property="phone" />" />  
+  <input type="hidden" name="pages" value="<bean:write name="IlvReportForm" property="pages" />" />
+  <input type="hidden" name="authorofessay" value="<bean:write name="IlvReportForm" property="authorofessay" />" />
+  <input type="hidden" name="titleofessay" value="<bean:write name="IlvReportForm" property="titleofessay" />" />
+  <input type="hidden" name="notesfromrequestinglibrary" value="<bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />" />
+  <input type="hidden" name="post" value="<bean:write name="IlvReportForm" property="post" />" />
+    
   
   <input type="hidden" name="reporttitle" value="<bean:message key="ilv-report.title" />" />
   <input type="hidden" name="labelfrom" value="<bean:message key="ilv-report.labelfrom" />" />
@@ -109,7 +100,7 @@ IlvReportForm pageForm = (IlvReportForm) request.getAttribute("IlvReportForm");
   <input type="hidden" name="labelnotesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
   <input type="submit" value="<bean:message key="ilv-report.submit" />" />
   
-  </logic:present>
+
   </form>
   
    </logic:present>

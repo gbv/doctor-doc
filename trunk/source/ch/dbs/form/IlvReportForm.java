@@ -25,22 +25,22 @@ public final class IlvReportForm extends ActionForm {
     private static final long serialVersionUID = 1L;
 
     private String lieferant = "";
-    private String signatur = "";
-    private String titleofessay = "";
-    private String name = "";
-    private String librarycard = "";
-    private String issn = "";
-    private String pmid = ""; // Pubmed-ID
-    private String year = "";
-    private String volumevintage = "";
-    private String booklet = "";
-    private String pages = "";
-    private String phone = "";
-    private String clinicinstitutedepartment = "";
-    private String authorofessay = "";
-    private String journaltitel = "";
-    private String notesfromrequestinglibrary = "";
-    private String post = "";
+    private String signatur = ""; // <bean:write name="IlvReportForm" property="signatur" />
+    private String titleofessay = ""; // <bean:write name="IlvReportForm" property="titleofessay" />
+    private String name = ""; // <bean:write name="IlvReportForm" property="name" />
+    private String librarycard = ""; // <bean:write name="IlvReportForm" property="librarycard" />
+    private String issn = ""; // <bean:write name="IlvReportForm" property="issn" />
+    private String pmid = ""; // Pubmed-ID <bean:write name="IlvReportForm" property="pmid" />
+    private String year = ""; // <bean:write name="IlvReportForm" property="year" />
+    private String volumevintage = ""; // <bean:write name="IlvReportForm" property="volumevintage" />
+    private String booklet = ""; // <bean:write name="IlvReportForm" property="booklet" />
+    private String pages = ""; // <bean:write name="IlvReportForm" property="pages" />
+    private String phone = ""; // <bean:write name="IlvReportForm" property="phone" />
+    private String clinicinstitutedepartment = ""; // <bean:write name="IlvReportForm" property="clinicinstitutedepartment" />
+    private String authorofessay = ""; // <bean:write name="IlvReportForm" property="authorofessay" />
+    private String journaltitel = ""; // <bean:write name="IlvReportForm" property="journaltitel" />
+    private String notesfromrequestinglibrary = ""; // <bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />
+    private String post = ""; // <bean:write name="IlvReportForm" property="post" />
 
     private String reporttitle = "";
     private String labelfrom = "";
