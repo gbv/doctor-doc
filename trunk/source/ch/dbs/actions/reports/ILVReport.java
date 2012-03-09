@@ -124,7 +124,7 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        System.out.println("Coming from ILV-Form: " + mp.getPath());
+        System.out.println("Coming from ILV-Form: " + getIlvNumber(mp.getPath()));
 
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
@@ -264,7 +264,7 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        System.out.println("Coming from ILV-Form: " + mp.getPath());
+        System.out.println("Coming from ILV-Form: " + getIlvNumber(mp.getPath()));
 
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
@@ -323,6 +323,25 @@ public final class ILVReport extends DispatchAction {
         }
 
         return mp.findForward(forward);
+    }
+    
+    /**
+     * Get the ILV form number from the wildcard mapping. Defaults to 0, if
+     * mapping is invalid.
+     */
+    private int getIlvNumber(String path) {
+        
+        int number = 0;
+
+        if (path != null && path.contains("-")) {            
+            try {
+                number = Integer.valueOf(path.substring(path.lastIndexOf("-") + 1, path.length()));
+            } catch (NumberFormatException e) {
+                LOG.error(e.toString());
+            }
+        }
+
+        return number;
     }
 
 }
