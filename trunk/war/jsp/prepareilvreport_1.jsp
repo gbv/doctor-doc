@@ -15,7 +15,7 @@
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
   <style type="text/css">
 		textarea { width: 100%; border-width: 0; }
-  </style> 
+  </style>
  </head>
  <body>
  
@@ -35,7 +35,7 @@
     <bean:define id="separator" value=" / " type="java.lang.String"/>
   </logic:notEmpty></logic:notEmpty>
   
-  <form action="ilv-order-pdf.do">
+  <form action="ilv-order-pdf-1.do">
   <logic:present name="userinfo" property="konto">
   <table border="1">
   <tr>

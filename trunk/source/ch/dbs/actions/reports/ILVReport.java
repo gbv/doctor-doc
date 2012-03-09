@@ -124,6 +124,8 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
+        System.out.println("Coming from ILV-Form: " + mp.getPath());
+
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
@@ -261,6 +263,8 @@ public final class ILVReport extends DispatchAction {
 
         String forward = "failure";
         final Auth auth = new Auth();
+
+        System.out.println("Coming from ILV-Form: " + mp.getPath());
 
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
