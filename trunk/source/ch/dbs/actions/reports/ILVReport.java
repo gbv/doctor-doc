@@ -124,10 +124,11 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
+        // get ILV form number from wildcard mapping
         int ilvformnr = getIlvNumber(mp.getPath());
         System.out.println("Coming from ILV-Form: " + ilvformnr);
 
-        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
+        // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
@@ -265,10 +266,11 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
+        // get ILV form number from wildcard mapping
         int ilvformnr = getIlvNumber(mp.getPath());
         System.out.println("Coming from ILV-Form: " + ilvformnr);
 
-        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
+        // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
