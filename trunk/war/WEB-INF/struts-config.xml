@@ -767,17 +767,17 @@
 			<forward name="failure" path="/error.do" />
 		</action>
 
-		<action path="/prepare-ilv-order-pdf" input="/jsp/orderview.jsp"
+		<action path="/prepare-ilv-order-pdf-*" input="/jsp/orderview.jsp"
 			name="OrderForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success"
-				path="/ilv-order-modifymanual.do?method=prepareFormIlv" />
+				path="/ilv-order-modifymanual-{1}.do?method=prepareFormIlv" />
 			<forward name="failure" path="/error.do" />
 		</action>
 
-		<action path="/ilv-order-modifymanual" name="OrderForm" scope="request"
+		<action path="/ilv-order-modifymanual-*" name="OrderForm" scope="request"
 			parameter="method" validate="false" type="ch.dbs.actions.reports.ILVReport">
-			<forward name="success" path="/jsp/prepareilvreport.jsp" />
+			<forward name="success" path="/jsp/prepareilvreport_{1}.jsp" />
 			<forward name="failure" path="/error.do" />
 		</action>
 
@@ -787,7 +787,7 @@
 			<forward name="failure" path="/error.do" />
 		</action>
 		
-		<action path="/prepare-ilv-mailorder" input="/jsp/prepareilvreport.jsp"
+		<action path="/prepare-ilv-mailorder" input="/jsp/prepareilvreport_*"
 			name="OrderForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success"
