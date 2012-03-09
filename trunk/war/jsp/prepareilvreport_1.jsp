@@ -24,7 +24,7 @@
 <div class="content">
 
   <h3>
-  <bean:message key="ilv-report.titleprepare" /> teeest
+  <bean:message key="ilv-report.titleprepare" />
   </h3>
     
   <logic:present name="orderform" property="bestellung">
@@ -44,7 +44,7 @@
       	<bean:write name="userinfo" property="konto.bibliotheksname" />
     </td>
 <%     
-  OrderForm pageForm = (OrderForm) request.getAttribute("orderform");  
+  OrderForm pageForm = (OrderForm) request.getAttribute("orderform");
   String lieferant = "";
   if (pageForm.getBestellung().getLieferant() != null ) {  
     lieferant = pageForm.getBestellung().getLieferant().getName();  
@@ -69,13 +69,17 @@
   </tr>
   <tr>
     <td colspan="2"><bean:message key="ilv-report.labeljournaltitel" /><br />
-      <textarea name="journaltitel" cols="57" rows="3"><bean:write name="orderform" property="bestellung.zeitschrift" /></textarea>      
+      <textarea name="journaltitel" cols="57" rows="3"><bean:write name="orderform" property="bestellung.zeitschrift" /></textarea>
     </td>    
     <td rowspan="2" valign="top"><bean:message key="ilv-report.labelcustomer" /> <br />
-      <input name="name" type="text" size="30" value="<bean:write name="orderform" property="benutzer.vorname" /> <bean:write name="orderform" property="benutzer.name" />" />
-      <p />
-      <bean:message key="ilv-report.labellibrarycard" /> <br />
-      <input name="librarycard" type="text" size="30" value="<bean:write name="orderform" property="benutzer.librarycard" />" />
+      <textarea name="name" cols="25" rows="6">
+<bean:write name="orderform" property="benutzer.vorname" /> <bean:write name="orderform" property="benutzer.name" /><logic:present name="orderform" property="benutzer.category.inhalt">
+<bean:write name="orderform" property="benutzer.category.inhalt" />
+</logic:present><logic:notPresent name="orderform" property="benutzer.category.inhalt">
+</logic:notPresent><logic:notEmpty name="orderform" property="benutzer.adresszusatz"><bean:write name="orderform" property="benutzer.adresszusatz" />
+</logic:notEmpty><logic:notEmpty name="orderform" property="benutzer.adresse"><bean:write name="orderform" property="benutzer.adresse" />
+</logic:notEmpty><logic:notEmpty name="orderform" property="benutzer.plz"><bean:write name="orderform" property="benutzer.plz" /> </logic:notEmpty><bean:write name="orderform" property="benutzer.ort" />
+      </textarea>
     </td>
   </tr>
   <tr>

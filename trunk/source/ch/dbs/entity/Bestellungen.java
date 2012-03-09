@@ -1240,9 +1240,10 @@ public class Bestellungen extends AbstractIdEntity {
         //    Falls vorname nicht im rs ist kein Benutzer abfüllen
         try {  rs.findColumn("vorname");
         final AbstractBenutzer b = new AbstractBenutzer();
-        this.setBenutzer(b.getUser(rs, cn));
+        // rs may be ambigous for Ort and PLZ: get User from UID
+        this.setBenutzer(b.getUser(rs.getLong("UID"), cn));
         } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 1: " + se.toString()); }
-        //Falls biblioname nicht im rs is kein Konto abfüllen
+        // Falls biblioname nicht im rs is kein Konto abfüllen
         try {  rs.findColumn("biblioname");
         this.setKonto(new Konto(rs));
         } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString()); }
@@ -1300,8 +1301,10 @@ public class Bestellungen extends AbstractIdEntity {
         final AbstractBenutzer ab = new AbstractBenutzer();
 
         try {
-            rs.findColumn("biblioname"); // Braucht es nicht ist ein Beispiel
-            b.setBenutzer(ab.getUser(rs, cn));
+            // rs may be ambigous for Ort and PLZ: get User from UID
+            b.setBenutzer(ab.getUser(rs.getLong("UID"), cn));
+            // Falls biblioname nicht im rs is kein Konto abfüllen
+            rs.findColumn("biblioname");
             b.setKonto(new Konto(rs));
         } catch (final SQLException se) {
             //einfach nix machen ;-)
