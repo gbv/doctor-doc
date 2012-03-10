@@ -5,8 +5,6 @@
 <%@ page import="ch.dbs.entity.*" %>
 <%@ page import="ch.dbs.form.*" %>
 
-
-
 <!DOCTYPE html>
 <html> 
  <head>
@@ -19,14 +17,14 @@
  </head>
  <body>
   
-  <tiles:insert page="import/header.jsp" flush="true" />
+ <tiles:insert page="import/header.jsp" flush="true" />
 
 <div class="content">
 
   <h3>Mail:</h3> <!-- Mailform noch internationalisieren -->
     
 <logic:present name="IlvReportForm" property="labelto">   
-  <form action="ilv-order-pdf.do?method=sendIlvMail">
+  <form action="send-ilv-mailorder.do?method=sendIlvMail">
   <table border="1">
   <tr>
     <td valign="top">
@@ -54,7 +52,7 @@
   </table>
   <p />
 
-  <input type="hidden" name="method" value="ilv" />
+  <input type="hidden" name="method" value="sendIlvMail" />
   
   <input type="hidden" name="title" value="<bean:message key="ilv-report.title" />" />
   <input type="hidden" name="to" value="<bean:write name="IlvReportForm" property="lieferant" />" />  
@@ -75,7 +73,6 @@
   <input type="hidden" name="notesfromrequestinglibrary" value="<bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />" />
   <input type="hidden" name="post" value="<bean:write name="IlvReportForm" property="post" />" />
     
-  
   <input type="hidden" name="reporttitle" value="<bean:message key="ilv-report.title" />" />
   <input type="hidden" name="labelfrom" value="<bean:message key="ilv-report.labelfrom" />" />
   <input type="hidden" name="labelto" value="<bean:message key="ilv-report.labelto" />" />
@@ -99,15 +96,9 @@
   <input type="hidden" name="labelendorsementsofdeliveringlibrary" value="<bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />" />
   <input type="hidden" name="labelnotesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
   <input type="submit" value="<bean:message key="ilv-report.submit" />" />
-  
-
   </form>
   
    </logic:present>
-     
-    
  </div>
-
-
  </body>
 </html> 
