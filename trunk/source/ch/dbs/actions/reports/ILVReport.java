@@ -331,7 +331,7 @@ public final class ILVReport extends DispatchAction {
             case 0:  values = reportMainz(ilvf, ui);
                      reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
                      break;
-            case 1:  values = reportCharite();
+            case 1:  values = reportCharite(ilvf, ui);
                      reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_1.jasper"));
                      break;
             default: values = reportMainz(ilvf, ui); // default case for illegal values
@@ -421,11 +421,73 @@ public final class ILVReport extends DispatchAction {
         return result;
     }
 
-    private Map<String, Object> reportCharite() {
+    private Map<String, Object> reportCharite(IlvReportForm ilvf, UserInfo ui) {
 
         Map<String, Object> result = new ConcurrentHashMap<String, Object>();
         
-        // TODO: code
+        final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
+        tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
+        final Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
+
+        // Labels vorbereiten
+        result.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
+        result.put("labelfrom", ilvf.getLabelfrom());
+        result.put("labelto", ilvf.getLabelto());
+        result.put("labelsignatur", ilvf.getLabelsignatur());
+        result.put("labeljournaltitel", ilvf.getLabeljournaltitel());
+        result.put("labelcustomer", ilvf.getLabelcustomer());
+        result.put("labelname", ilvf.getLabelname());
+        result.put("labelissn", ilvf.getLabelissn());
+        result.put("labelpmid", ilvf.getLabelpmid());
+        result.put("labelyear", ilvf.getLabelyear());
+        result.put("labelvolumevintage", ilvf.getLabelvolumevintage());
+        result.put("labelbooklet", ilvf.getLabelbooklet());
+        result.put("labelclinicinstitutedepartment", ilvf.getLabelclinicinstitutedepartment());
+        result.put("labelphone", ilvf.getLabelphone());
+        result.put("labelfax", ilvf.getLabelfax());
+        result.put("labelsendto", ilvf.getLabelsendto());
+        result.put("labelpages", ilvf.getLabelpages());
+        result.put("labelauthorofessay", ilvf.getLabelauthorofessay());
+        result.put("labeltitleofessay", ilvf.getLabeltitleofessay());
+        result.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
+        result.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
+
+        // Values abfüllen
+        if (ui.getKonto().getIsil() != null) {
+            result.put("isil", ui.getKonto().getIsil());
+        } else {
+            result.put("isil", "");
+        }
+        result.put("from", ui.getKonto().getBibliotheksname()); // cannot be null
+        result.put("to", ilvf.getLieferant());
+        result.put("signatur", ilvf.getSignatur());
+        result.put("journaltitel", ilvf.getJournaltitel());
+        result.put("name", ilvf.getName());
+        result.put("issn", ilvf.getIssn());
+        result.put("pmid", ilvf.getPmid());
+        result.put("year", ilvf.getYear());
+        result.put("volumevintage", ilvf.getVolumevintage());
+        result.put("booklet", ilvf.getBooklet());
+        result.put("phone", ilvf.getPhone());
+        if (ui.getKonto().getTelefon() != null) {
+            result.put("phonekonto", ui.getKonto().getTelefon());
+        } else {
+            result.put("phonekonto", "");
+        }
+        if (ui.getKonto().getFax_extern() != null) {
+            result.put("fax", ui.getKonto().getFax_extern());
+        } else {
+            result.put("fax", "");
+        }
+        result.put("adresse", ilvf.getPost());
+        result.put("clinicinstitutedepartment", ilvf.getClinicinstitutedepartment());
+        result.put("pages", ilvf.getPages());
+        result.put("authorofessay", ilvf.getAuthorofessay());
+        result.put("titleofessay", ilvf.getTitleofessay());
+        result.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
+        result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName()
+                + ": " + ReadSystemConfigurations.getServerWelcomepage());
 
         return result;
     }
