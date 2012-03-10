@@ -242,29 +242,18 @@ public final class ILVReport extends DispatchAction {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                 
                 final IlvReportForm ilvf = (IlvReportForm) fm;
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); 
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");                 
 
-                // prepare data for PDF
-                Map<String, Object> values = reportMainz(ilvf, ui);
-                final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                
-                
                 try {
-                    
+
                     // prepare attachement
-                    JasperPrint jasperPrint;
                     DataSource aAttachment = null;
-                    
-                    final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
-                    final HashMap<String, String> hm = new HashMap<String, String>();
-                    hm.put("Fake", "Daten damit Report nicht leer wird..");
-                    al.add(hm);
-                    final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-                    jasperPrint = JasperFillManager.fillReport(reportStream, values, ds);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
-                    aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
                     
+                    // create PDF report using the appropriate ILV form number
+                    runReport(0, ilvf, ui, baos);
+                    
+                    aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
                     
                     // send Mail
                     InternetAddress to[] = new InternetAddress[1];
@@ -332,25 +321,6 @@ public final class ILVReport extends DispatchAction {
         return mp.findForward(forward);
     }
     
-    /**
-     * Get the ILV form number from the wildcard mapping. Defaults to 0, if
-     * mapping is invalid.
-     */
-    private int getIlvNumber(String path) {
-        
-        int number = 0;
-
-        if (path != null && path.contains("-")) {            
-            try {
-                number = Integer.valueOf(path.substring(path.lastIndexOf("-") + 1, path.length()));
-            } catch (NumberFormatException e) {
-                LOG.error(e.toString());
-            }
-        }
-
-        return number;
-    }
-    
     private void runReport(int ilvformnr, IlvReportForm ilvf, UserInfo ui, OutputStream out) {
 
         InputStream reportStream;
@@ -379,6 +349,35 @@ public final class ILVReport extends DispatchAction {
         } catch (final Exception e) {
             LOG.error("Report failed: " + e.toString());
         }        
+    }
+    
+    private void runReport(int ilvformnr, IlvReportForm ilvf, UserInfo ui, ByteArrayOutputStream out) throws JRException {
+
+        InputStream reportStream;
+        Map<String, Object> values;
+
+        switch (ilvformnr) {
+            case 0:  values = reportMainz(ilvf, ui);
+                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
+                     break;
+            case 1:  values = reportCharite();
+                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
+                     break;
+            default: values = reportMainz(ilvf, ui); // default case for illegal values
+                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
+                     break;
+        }
+        
+        JasperPrint jasperPrint;
+        
+        final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
+        final HashMap<String, String> hm = new HashMap<String, String>();
+        hm.put("Fake", "Daten damit Report nicht leer wird..");
+        al.add(hm);
+        final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
+
+        jasperPrint = JasperFillManager.fillReport(reportStream, values, ds);
+        JasperExportManager.exportReportToPdfStream(jasperPrint, out);       
     }
 
     private Map<String, Object> reportMainz(IlvReportForm ilvf, UserInfo ui) {
@@ -461,6 +460,25 @@ public final class ILVReport extends DispatchAction {
         // TODO: code
 
         return result;
-    }    
+    }
+    
+    /**
+     * Get the ILV form number from the wildcard mapping. Defaults to 0, if
+     * mapping is invalid.
+     */
+    private int getIlvNumber(String path) {
+        
+        int number = 0;
+
+        if (path != null && path.contains("-")) {            
+            try {
+                number = Integer.valueOf(path.substring(path.lastIndexOf("-") + 1, path.length()));
+            } catch (NumberFormatException e) {
+                LOG.error(e.toString());
+            }
+        }
+
+        return number;
+    }
 
 }
