@@ -255,7 +255,12 @@ public final class ILVReport extends DispatchAction {
                     JasperPrint jasperPrint;
                     DataSource aAttachment = null;
                     
-                    jasperPrint = JasperFillManager.fillReport(reportStream, values);
+                    final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
+                    final HashMap<String, String> hm = new HashMap<String, String>();
+                    hm.put("Fake", "Daten damit Report nicht leer wird..");
+                    al.add(hm);
+                    final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
+                    jasperPrint = JasperFillManager.fillReport(reportStream, values, ds);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
                     aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
