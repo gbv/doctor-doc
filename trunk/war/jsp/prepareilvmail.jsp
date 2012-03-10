@@ -95,6 +95,7 @@
   <input type="hidden" name="labeltitleofessay" value="<bean:message key="ilv-report.labeltitleofessay" />" />
   <input type="hidden" name="labelendorsementsofdeliveringlibrary" value="<bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />" />
   <input type="hidden" name="labelnotesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
+  <input type="hidden" name="ilvformnr" value="<bean:write name="ilvformnr" />" />
   <input type="submit" value="<bean:message key="ilv-report.submit" />" />
   </form>
   

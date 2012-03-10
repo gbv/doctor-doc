@@ -23,6 +23,8 @@ import org.apache.struts.action.ActionForm;
 public final class IlvReportForm extends ActionForm {
 
     private static final long serialVersionUID = 1L;
+    
+    private int ilvformnr; // ILV form report number
 
     private String lieferant = "";
     private String signatur = ""; // <bean:write name="IlvReportForm" property="signatur" />
@@ -67,6 +69,12 @@ public final class IlvReportForm extends ActionForm {
 
 
 
+    public int getIlvformnr() {
+        return ilvformnr;
+    }
+    public void setIlvformnr(int ilvformnr) {
+        this.ilvformnr = ilvformnr;
+    }
     public String getTitleofessay() {
         return titleofessay;
     }

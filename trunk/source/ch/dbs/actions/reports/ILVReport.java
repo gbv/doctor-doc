@@ -140,10 +140,6 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        // get ILV form number from wildcard mapping
-        int ilvformnr = getIlvNumber(mp.getPath());
-        System.out.println("Coming from ILV-Form: " + ilvformnr);
-
         // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
@@ -151,6 +147,9 @@ public final class ILVReport extends DispatchAction {
                 final IlvReportForm ilvf = (IlvReportForm) fm;
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 OutputStream out = null;
+                
+                // set ILV form number from wildcard mapping
+                ilvf.setIlvformnr(getIlvNumber(mp.getPath()));
 
                 // prepare output stream
                 rp.setContentType("application/pdf");
@@ -158,7 +157,7 @@ public final class ILVReport extends DispatchAction {
                 // run report, depending on ILV form number
                 try {
                     out = rp.getOutputStream();
-                    runReport(ilvformnr, ilvf, ui, out);
+                    runReport(ilvf, ui, out);
                 } catch (final Exception e) {
                     LOG.error("ServletOutputStream failed: " + e.toString());
                 } finally {
@@ -199,15 +198,13 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        // get ILV form number from wildcard mapping
-        int ilvformnr = getIlvNumber(mp.getPath());
-        System.out.println("Coming from ILV-Form: " + ilvformnr);
-
         // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
             	rq.setAttribute("IlvReportForm", fm);
+            	// set ILV form number back into request
+            	rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
                 forward = "preparemail";                
 
             } else {
@@ -242,19 +239,18 @@ public final class ILVReport extends DispatchAction {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                 
                 final IlvReportForm ilvf = (IlvReportForm) fm;
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");                 
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                 try {
-
                     // prepare attachement
                     DataSource aAttachment = null;
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    
+
                     // create PDF report using the appropriate ILV form number
-                    runReport(0, ilvf, ui, baos);
-                    
+                    runReport(ilvf, ui, baos);
+
                     aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
-                    
+
                     // send Mail
                     InternetAddress to[] = new InternetAddress[1];
                     to[0] = new InternetAddress("eldor@eldali.ch");                    
@@ -321,17 +317,17 @@ public final class ILVReport extends DispatchAction {
         return mp.findForward(forward);
     }
     
-    private void runReport(int ilvformnr, IlvReportForm ilvf, UserInfo ui, OutputStream out) {
+    private void runReport(IlvReportForm ilvf, UserInfo ui, OutputStream out) {
 
         InputStream reportStream;
         Map<String, Object> values;
 
-        switch (ilvformnr) {
+        switch (ilvf.getIlvformnr()) {
             case 0:  values = reportMainz(ilvf, ui);
                      reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
                      break;
             case 1:  values = reportCharite();
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
+                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_1.jasper"));
                      break;
             default: values = reportMainz(ilvf, ui); // default case for illegal values
                      reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
@@ -351,17 +347,17 @@ public final class ILVReport extends DispatchAction {
         }        
     }
     
-    private void runReport(int ilvformnr, IlvReportForm ilvf, UserInfo ui, ByteArrayOutputStream out) throws JRException {
+    private void runReport(IlvReportForm ilvf, UserInfo ui, ByteArrayOutputStream out) throws JRException {
 
         InputStream reportStream;
         Map<String, Object> values;
 
-        switch (ilvformnr) {
+        switch (ilvf.getIlvformnr()) {
             case 0:  values = reportMainz(ilvf, ui);
                      reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
                      break;
             case 1:  values = reportCharite();
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
+                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_1.jasper"));
                      break;
             default: values = reportMainz(ilvf, ui); // default case for illegal values
                      reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
