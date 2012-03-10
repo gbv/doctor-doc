@@ -32,20 +32,20 @@
     </td>
 
     <td>
-    	<input name="to" type="text" size="100" value="Mailadresse@nochabfüllen.ch" />    		
+    	<input name="to" type="text" size="100" value="<bean:write name="IlvReportForm" property="to" />" />    		
     </td>
     
   </tr>
   <tr>
-    <td>Betreff: 
+    <td>Subject: 
     </td>    
     <td>
-    <input name="betreff" type="text" size="100" value="Betreff noch abfüllen" autofocus />
+    <input name="subject" type="text" size="100" value="<bean:write name="IlvReportForm" property="subject" />" autofocus />
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <textarea name="text" cols="25" rows="5">Text noch abfüllen</textarea>
+      <textarea name="mailtext" cols="25" rows="15"><bean:write name="IlvReportForm" property="mailtext" /></textarea>
     </td>
   </tr>
   
