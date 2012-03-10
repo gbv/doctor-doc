@@ -345,11 +345,7 @@ public final class ILVReport extends DispatchAction {
         al.add(hm);
         final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
         
-        try {        
-            JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);
-        } catch (final Exception e) {
-            LOG.error("Report failed: " + e.toString());
-        }        
+        JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);     
     }
 
     private Map<String, Object> reportMainz(IlvReportForm ilvf, UserInfo ui) {
