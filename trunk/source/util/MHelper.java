@@ -19,12 +19,13 @@ package util;
 
 import java.util.Date;
 import java.util.Properties;
-
 import javax.mail.Folder;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -177,10 +178,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.saveChanges();
 
             // Mail versenden
-            final Transport bus = session.getTransport("smtp");
-            bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
-            bus.sendMessage(m, addressTo); // An diese Adressen senden
-            bus.close();
+            sendMessage(session, m, addressTo);
+//            final Transport bus = session.getTransport("smtp");
+//            bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
+//            bus.sendMessage(m, addressTo); // An diese Adressen senden
+//            bus.close();
 
         } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String[] to, Message msg, String replyto, String prio): " + e.toString());
@@ -410,7 +412,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
     }
 
-
     /*
      * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
      */
@@ -429,6 +430,27 @@ public class MHelper extends AbstractReadSystemConfigurations {
     public static void main(final String[] args) {
         final MHelper mail = new MHelper();
         mail.process();
+    }
+    
+    
+    /** Gets the MimeMessage */
+    public MimeMessage getMimeMessage(Session session) throws AddressException, MessagingException{
+        // Define message
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SYSTEM_EMAIL));
+        message.addHeader(CHARSET, UTF8); // set Header
+        message.addHeader(XPRIO, PRIORITY);
+        message.setSentDate(new Date()); // set date      
+        return message;
+    }
+    
+    /** send the message to @addressTo*/
+    public void sendMessage(Session session, Message m, InternetAddress[] addressTo) throws MessagingException {
+    	// Mail versenden
+        final Transport bus = session.getTransport("smtp");
+        bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
+        bus.sendMessage(m, addressTo); // An diese Adressen senden
+        bus.close();
     }
 
 }

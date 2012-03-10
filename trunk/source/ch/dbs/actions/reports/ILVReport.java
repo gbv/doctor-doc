@@ -18,21 +18,40 @@
 package ch.dbs.actions.reports;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
@@ -43,6 +62,7 @@ import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
 
 import util.Auth;
+import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Countries;
@@ -134,78 +154,13 @@ public final class ILVReport extends DispatchAction {
 
                 // Klassen vorbereiten
                 final IlvReportForm ilvf = (IlvReportForm) fm;
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                OutputStream out = null;
-                final Konto k = ui.getKonto();
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");                
 
-                final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
-                tf.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
-                final Calendar cal = new GregorianCalendar();
-                cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
+                OutputStream out = null;                
 
                 // Labels vorbereiten
-                final Map<String, Object> values = new ConcurrentHashMap<String, Object>();
-                values.put("reporttitle", ilvf.getReporttitle() + " "
-                        + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
-                values.put("labelfrom", ilvf.getLabelfrom());
-                values.put("labelto", ilvf.getLabelto());
-                values.put("labelsignatur", ilvf.getLabelsignatur());
-                values.put("labeljournaltitel", ilvf.getLabeljournaltitel());
-                values.put("labelcustomer", ilvf.getLabelcustomer());
-                values.put("labelname", ilvf.getLabelname());
-                values.put("labellibrarycard", ilvf.getLabellibrarycard());
-                values.put("labelissn", ilvf.getLabelissn());
-                values.put("labelpmid", ilvf.getLabelpmid());
-                values.put("labelyear", ilvf.getLabelyear());
-                values.put("labelvolumevintage", ilvf.getLabelvolumevintage());
-                values.put("labelbooklet", ilvf.getLabelbooklet());
-                values.put("labelclinicinstitutedepartment", ilvf.getLabelclinicinstitutedepartment());
-                values.put("labelphone", ilvf.getLabelphone());
-                values.put("labelfax", ilvf.getLabelfax());
-                values.put("labelsendto", ilvf.getLabelsendto());
-                values.put("labelpages", ilvf.getLabelpages());
-                values.put("labelauthorofessay", ilvf.getLabelauthorofessay());
-                values.put("labeltitleofessay", ilvf.getLabeltitleofessay());
-                values.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
-                values.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
-
-                // Values abfüllen
-                if (k.getIsil() != null) {
-                    values.put("isil", k.getIsil());
-                } else {
-                    values.put("isil", "");
-                }
-                values.put("from", k.getBibliotheksname()); // cannot be null
-                values.put("to", ilvf.getLieferant());
-                values.put("signatur", ilvf.getSignatur());
-                values.put("journaltitel", ilvf.getJournaltitel());
-                values.put("name", ilvf.getName());
-                values.put("issn", ilvf.getIssn());
-                values.put("pmid", ilvf.getPmid());
-                values.put("librarycard", ilvf.getLibrarycard());
-                values.put("year", ilvf.getYear());
-                values.put("volumevintage", ilvf.getVolumevintage());
-                values.put("booklet", ilvf.getBooklet());
-                values.put("phone", ilvf.getPhone());
-                if (k.getTelefon() != null) {
-                    values.put("phonekonto", k.getTelefon());
-                } else {
-                    values.put("phonekonto", "");
-                }
-                if (k.getFax_extern() != null) {
-                    values.put("fax", k.getFax_extern());
-                } else {
-                    values.put("fax", "");
-                }
-                values.put("adresse", ilvf.getPost());
-                values.put("clinicinstitutedepartment", ilvf.getClinicinstitutedepartment());
-                values.put("pages", ilvf.getPages());
-                values.put("authorofessay", ilvf.getAuthorofessay());
-                values.put("titleofessay", ilvf.getTitleofessay());
-                values.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
-                values.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName()
-                        + ": " + ReadSystemConfigurations.getServerWelcomepage());
-
+                Map<String, Object> values = fillValues(ilvf, ui);
+                
                 //Reportauswahl, Verbindung zum Report aufbauen
                 // JasperReports need absolute paths!
                 //                final BufferedInputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
@@ -222,8 +177,8 @@ public final class ILVReport extends DispatchAction {
                     hm.put("Fake", "Daten damit Report nicht leer wird..");
                     al.add(hm);
                     final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-
                     JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);
+                    
                 } catch (final Exception e) {
                     // ServletOutputStream konnte nicht erstellt werden
                     e.printStackTrace();
@@ -296,7 +251,7 @@ public final class ILVReport extends DispatchAction {
     }
     
     /**
-     * Prepare the Mail with attached ilv-pdf (ILV-Bestellung)
+     * Send the mail with attached ilv-pdf (ILV-Bestellung)
      */
     public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -307,22 +262,88 @@ public final class ILVReport extends DispatchAction {
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+            	
+                final IlvReportForm ilvf = (IlvReportForm) fm;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); 
 
-            	rq.setAttribute("IlvReportForm", fm);
-                forward = "preparemail";                
+                // prepare data for PDF
+                Map<String, Object> values = fillValues(ilvf, ui);
+                final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
+                
+                
+                try {
+                	
+                	// prepare attachement
+                    JasperPrint jasperPrint;
+                    DataSource aAttachment = null;
+                    
+					jasperPrint = JasperFillManager.fillReport(reportStream, values);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+					aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
+					
+					
+					// send Mail
+					InternetAddress to[] = new InternetAddress[1];
+                    to[0] = new InternetAddress("eldor@eldali.ch");                    
+                    String fileAttachment = "ilv.pdf";                
+                    MHelper mh = new MHelper();
+                    Session session = mh.getSession();
 
+                    // Define message
+                    MimeMessage message = mh.getMimeMessage(session);
+                    message.setSubject("Hello JavaMail Attachment");
+
+                    // create the message part 
+                    MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+                    //fill message
+                    messageBodyPart.setText("Hi");
+                    Multipart multipart = new MimeMultipart();
+                    multipart.addBodyPart(messageBodyPart);
+
+                    // Part two is attachment
+                    messageBodyPart = new MimeBodyPart();
+                    DataSource source = aAttachment;
+                    messageBodyPart.setDataHandler(new DataHandler(source));
+                    messageBodyPart.setFileName(fileAttachment);
+                    multipart.addBodyPart(messageBodyPart);
+
+                    // Put parts in message
+                    message.setContent(multipart);
+                    message.saveChanges();
+
+                    // Send the message
+                    mh.sendMessage(session, message, to);
+                    
+                    
+                    forward = "success";                      
+                    final String content = "ordersuccess.confirmation";
+                    final String link = "listkontobestellungen.do?method=overview";
+                    ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
+                	rq.setAttribute("message", mes);
+	                
+				} catch (JRException e1) {
+					//TODO: set correct error
+					final ErrorMessage em = new ErrorMessage("error.sendmail", "listkontobestellungen.do?method=overview");
+	                rq.setAttribute("errormessage", em); 
+				} catch (AddressException e) {
+					final ErrorMessage em = new ErrorMessage("errors.email", "listkontobestellungen.do?method=overview");
+	                rq.setAttribute("errormessage", em); 
+				} catch (MessagingException e) {
+					final ErrorMessage em = new ErrorMessage("error.sendmail", "listkontobestellungen.do?method=overview");
+	                rq.setAttribute("errormessage", em); 
+				}              
+                
             } else {
-                final ErrorMessage em = new ErrorMessage(
-                        "error.berechtigung",
-                        "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage(
-                    "error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
 
@@ -346,6 +367,81 @@ public final class ILVReport extends DispatchAction {
         }
 
         return number;
+    }
+    
+    
+    // fills all values for the report
+    private Map<String, Object> fillValues(IlvReportForm ilvf, UserInfo ui){
+    	
+    	final Konto k = ui.getKonto();
+    	final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
+        tf.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
+        final Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
+        
+    	final Map<String, Object> values = new ConcurrentHashMap<String, Object>();
+    	
+    	// set labels
+        values.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
+        values.put("labelfrom", ilvf.getLabelfrom());
+        values.put("labelto", ilvf.getLabelto());
+        values.put("labelsignatur", ilvf.getLabelsignatur());
+        values.put("labeljournaltitel", ilvf.getLabeljournaltitel());
+        values.put("labelcustomer", ilvf.getLabelcustomer());
+        values.put("labelname", ilvf.getLabelname());
+        values.put("labellibrarycard", ilvf.getLabellibrarycard());
+        values.put("labelissn", ilvf.getLabelissn());
+        values.put("labelpmid", ilvf.getLabelpmid());
+        values.put("labelyear", ilvf.getLabelyear());
+        values.put("labelvolumevintage", ilvf.getLabelvolumevintage());
+        values.put("labelbooklet", ilvf.getLabelbooklet());
+        values.put("labelclinicinstitutedepartment", ilvf.getLabelclinicinstitutedepartment());
+        values.put("labelphone", ilvf.getLabelphone());
+        values.put("labelfax", ilvf.getLabelfax());
+        values.put("labelsendto", ilvf.getLabelsendto());
+        values.put("labelpages", ilvf.getLabelpages());
+        values.put("labelauthorofessay", ilvf.getLabelauthorofessay());
+        values.put("labeltitleofessay", ilvf.getLabeltitleofessay());
+        values.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
+        values.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
+
+        // set values
+        if (k.getIsil() != null) {
+            values.put("isil", k.getIsil());
+        } else {
+            values.put("isil", "");
+        }
+        values.put("from", k.getBibliotheksname()); // cannot be null
+        values.put("to", ilvf.getLieferant());
+        values.put("signatur", ilvf.getSignatur());
+        values.put("journaltitel", ilvf.getJournaltitel());
+        values.put("name", ilvf.getName());
+        values.put("issn", ilvf.getIssn());
+        values.put("pmid", ilvf.getPmid());
+        values.put("librarycard", ilvf.getLibrarycard());
+        values.put("year", ilvf.getYear());
+        values.put("volumevintage", ilvf.getVolumevintage());
+        values.put("booklet", ilvf.getBooklet());
+        values.put("phone", ilvf.getPhone());
+        if (k.getTelefon() != null) {
+            values.put("phonekonto", k.getTelefon());
+        } else {
+            values.put("phonekonto", "");
+        }
+        if (k.getFax_extern() != null) {
+            values.put("fax", k.getFax_extern());
+        } else {
+            values.put("fax", "");
+        }
+        values.put("adresse", ilvf.getPost());
+        values.put("clinicinstitutedepartment", ilvf.getClinicinstitutedepartment());
+        values.put("pages", ilvf.getPages());
+        values.put("authorofessay", ilvf.getAuthorofessay());
+        values.put("titleofessay", ilvf.getTitleofessay());
+        values.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
+        values.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName()
+                + ": " + ReadSystemConfigurations.getServerWelcomepage());
+        return values;
     }
 
 }
