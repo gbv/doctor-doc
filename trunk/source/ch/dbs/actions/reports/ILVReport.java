@@ -46,9 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
@@ -160,7 +157,7 @@ public final class ILVReport extends DispatchAction {
                     out = rp.getOutputStream();
                     runReport(ilvf, ui, out);
                 } catch (final Exception e) {
-                    LOG.error("ServletOutputStream failed: " + e.toString());
+                    LOG.error("OutputStream failed: " + e.toString());
                 } finally {
                     // send report to browser
                     try {
@@ -193,7 +190,7 @@ public final class ILVReport extends DispatchAction {
     /**
      * Prepare the Mail with attached ilv-pdf (ILV-Bestellung) for the preparemail.jsp
      */
-    public ActionForward mail(final ActionMapping mp, final ActionForm fm,
+    public ActionForward Email(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
 
         String forward = "failure";
@@ -325,7 +322,7 @@ public final class ILVReport extends DispatchAction {
         return mp.findForward(forward);
     }
     
-    private void runReport(IlvReportForm ilvf, UserInfo ui, OutputStream out) {
+    private void runReport(IlvReportForm ilvf, UserInfo ui, OutputStream out) throws JRException {
 
         InputStream reportStream;
         Map<String, Object> values;
@@ -353,35 +350,6 @@ public final class ILVReport extends DispatchAction {
         } catch (final Exception e) {
             LOG.error("Report failed: " + e.toString());
         }        
-    }
-    
-    private void runReport(IlvReportForm ilvf, UserInfo ui, ByteArrayOutputStream out) throws JRException {
-
-        InputStream reportStream;
-        Map<String, Object> values;
-
-        switch (ilvf.getIlvformnr()) {
-            case 0:  values = reportMainz(ilvf, ui);
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                     break;
-            case 1:  values = reportCharite();
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_1.jasper"));
-                     break;
-            default: values = reportMainz(ilvf, ui); // default case for illegal values
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                     break;
-        }
-        
-        JasperPrint jasperPrint;
-        
-        final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
-        final HashMap<String, String> hm = new HashMap<String, String>();
-        hm.put("Fake", "Daten damit Report nicht leer wird..");
-        al.add(hm);
-        final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-
-        jasperPrint = JasperFillManager.fillReport(reportStream, values, ds);
-        JasperExportManager.exportReportToPdfStream(jasperPrint, out);       
     }
 
     private Map<String, Object> reportMainz(IlvReportForm ilvf, UserInfo ui) {

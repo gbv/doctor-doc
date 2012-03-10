@@ -178,7 +178,7 @@
   <input type="hidden" name="labelendorsementsofdeliveringlibrary" value="<bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />" />
   <input type="hidden" name="labelnotesfromrequestinglibrary" value="<bean:message key="ilv-report.labelnotesfromrequestinglibrary" />" />
   <input type="submit" name="method" value="PDF" /> 
-  <input type="submit" name="method" value="mail" />
+  <input type="submit" name="method" value="Email" />
   
   </logic:present>
   </form>
