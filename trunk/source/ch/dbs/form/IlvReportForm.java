@@ -43,6 +43,11 @@ public final class IlvReportForm extends ActionForm {
     private String journaltitel = ""; // <bean:write name="IlvReportForm" property="journaltitel" />
     private String notesfromrequestinglibrary = ""; // <bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />
     private String post = ""; // <bean:write name="IlvReportForm" property="post" />
+    
+    // E-Mail fields
+    private String to = ""; // <bean:write name="IlvReportForm" property="subject" /> 
+    private String subject = ""; // <bean:write name="IlvReportForm" property="subject" />
+    private String mailtext = ""; // <bean:write name="IlvReportForm" property="mailtext" />
 
     private String reporttitle = "";
     private String labelfrom = "";
@@ -182,8 +187,26 @@ public final class IlvReportForm extends ActionForm {
     }
     public void setReporttitle(final String reporttitle) {
         this.reporttitle = reporttitle;
-    }
-    public String getLabelfrom() {
+    }    
+    public String getTo() {
+		return to;
+	}
+	public void setTo(String to) {
+		this.to = to;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getMailtext() {
+		return mailtext;
+	}
+	public void setMailtext(String mailtext) {
+		this.mailtext = mailtext;
+	}
+	public String getLabelfrom() {
         return labelfrom;
     }
     public void setLabelfrom(final String labelfrom) {
