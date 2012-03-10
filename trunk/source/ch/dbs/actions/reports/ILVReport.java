@@ -63,6 +63,7 @@ import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Countries;
+import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -190,7 +191,7 @@ public final class ILVReport extends DispatchAction {
     }
     
     /**
-     * Prepare the Mail with attached ilv-pdf (ILV-Bestellung)
+     * Prepare the Mail with attached ilv-pdf (ILV-Bestellung) for the preparemail.jsp
      */
     public ActionForward mail(final ActionMapping mp, final ActionForm fm,
             final HttpServletRequest rq, final HttpServletResponse rp) {
@@ -201,8 +202,15 @@ public final class ILVReport extends DispatchAction {
         // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-
-            	rq.setAttribute("IlvReportForm", fm);
+            	
+            	IlvReportForm ilvf = (IlvReportForm) fm;
+            	Lieferanten l = new Lieferanten();
+            	ilvf.setTo(l.getLieferantFromName(ilvf.getLieferant(), l.getConnection()).getEmailILL());
+            	l.close();
+            	
+            	rq.setAttribute("IlvReportForm", ilvf);
+            	// set ILV form number back into request
+            	rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
             	// set ILV form number back into request
             	rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
                 forward = "preparemail";                
@@ -253,20 +261,20 @@ public final class ILVReport extends DispatchAction {
 
                     // send Mail
                     InternetAddress to[] = new InternetAddress[1];
-                    to[0] = new InternetAddress("eldor@eldali.ch");                    
+                    to[0] = new InternetAddress(ilvf.getTo());                    
                     String fileAttachment = "ilv.pdf";                
                     MHelper mh = new MHelper();
                     Session session = mh.getSession();
 
                     // Define message
                     MimeMessage message = mh.getMimeMessage(session);
-                    message.setSubject("Hello JavaMail Attachment");
+                    message.setSubject(ilvf.getSubject());
 
                     // create the message part 
                     MimeBodyPart messageBodyPart = new MimeBodyPart();
 
                     //fill message
-                    messageBodyPart.setText("Hi");
+                    messageBodyPart.setText(ilvf.getMailtext());
                     Multipart multipart = new MimeMultipart();
                     multipart.addBodyPart(messageBodyPart);
 
