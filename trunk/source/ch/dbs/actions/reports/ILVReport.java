@@ -246,7 +246,7 @@ public final class ILVReport extends DispatchAction {
 
                 // prepare data for PDF
                 Map<String, Object> values = reportMainz(ilvf, ui);
-                final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form.jasper"));
+                final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
                 
                 
                 try {
