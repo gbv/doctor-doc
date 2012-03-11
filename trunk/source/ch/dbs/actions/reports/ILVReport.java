@@ -33,9 +33,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -54,6 +57,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
+
+import com.sun.mail.smtp.SMTPAddressFailedException;
 
 import util.Auth;
 import util.MHelper;
@@ -257,14 +262,19 @@ public final class ILVReport extends DispatchAction {
                     aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
 
                     // send Mail
-                    InternetAddress to[] = new InternetAddress[1];
-                    to[0] = new InternetAddress(ilvf.getTo());                    
+                    InternetAddress to[] = new InternetAddress[2];
+                    to[0] = new InternetAddress(ilvf.getTo());
+                    to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
                     String fileAttachment = "ilv.pdf";                
                     MHelper mh = new MHelper();
-                    Session session = mh.getSession();
+//                    Session session = mh.getSession();
+                 // Get the default Session object.
+                    Session session = Session.getDefaultInstance(mh.getProperties());
 
                     // Define message
                     MimeMessage message = mh.getMimeMessage(session);
+//                    message.addRecipients(Message.RecipientType.TO, ilvf.getTo());
+//                    message.addRecipients(Message.RecipientType.BCC, "mail@test.ch");
                     message.setSubject(ilvf.getSubject());
 
                     // create the message part 
@@ -277,8 +287,7 @@ public final class ILVReport extends DispatchAction {
 
                     // Part two is attachment
                     messageBodyPart = new MimeBodyPart();
-                    DataSource source = aAttachment;
-                    messageBodyPart.setDataHandler(new DataHandler(source));
+                    messageBodyPart.setDataHandler(new DataHandler(aAttachment));
                     messageBodyPart.setFileName(fileAttachment);
                     multipart.addBodyPart(messageBodyPart);
 
@@ -287,7 +296,8 @@ public final class ILVReport extends DispatchAction {
                     message.saveChanges();
 
                     // Send the message
-                    mh.sendMessage(session, message, to);                    
+                    mh.sendMessage(session, message, to);
+//                    Transport.send(message);
                     
                     forward = "success";                      
                     final String content = "ordersuccess.confirmation";
@@ -297,15 +307,18 @@ public final class ILVReport extends DispatchAction {
 	                
 				} catch (JRException e1) {
 					//TODO: set correct error
-					final ErrorMessage em = new ErrorMessage("error.sendmail", "listkontobestellungen.do?method=overview");
+					final ErrorMessage em = new ErrorMessage("error.createilvreport", "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
-				} catch (AddressException e) {
+				} catch (SMTPAddressFailedException e) {
 					final ErrorMessage em = new ErrorMessage("errors.email", "listkontobestellungen.do?method=overview");
+	                rq.setAttribute("errormessage", em); 
+				} catch (AuthenticationFailedException e) {
+					final ErrorMessage em = new ErrorMessage("error.mailserverconnection", "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
 				} catch (MessagingException e) {
 					final ErrorMessage em = new ErrorMessage("error.sendmail", "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
-				}              
+				}             
                 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
