@@ -69,7 +69,7 @@ public final class SupplierForm extends ValidatorForm {
 
         PreparedStatement pstmt = null;
         try {
-            pstmt = cn.prepareStatement("UPDATE `doctor-doc_com_dbs`.`konto` SET `showprivsuppliers` = ?, "
+            pstmt = cn.prepareStatement("UPDATE `konto` SET `showprivsuppliers` = ?, "
                     + "`showpubsuppliers` = ? WHERE `konto`.`KID` = ?");
             pstmt.setBoolean(1, sf.isShowprivsuppliers());
             pstmt.setBoolean(2, sf.isShowpubsuppliers());
