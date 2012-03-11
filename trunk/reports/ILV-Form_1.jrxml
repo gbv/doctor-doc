@@ -189,14 +189,14 @@
 				<textFieldExpression><![CDATA[$P{labelcustomer}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-8" x="370" y="121" width="160" height="16"/>
+				<reportElement key="textField-8" x="370" y="114" width="160" height="13"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{labelname}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-9" x="370" y="137" width="160" height="59"/>
+				<reportElement key="textField-9" x="370" y="127" width="160" height="69"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="11"/>
 				</textElement>
