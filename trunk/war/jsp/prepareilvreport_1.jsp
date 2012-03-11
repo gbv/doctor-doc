@@ -24,10 +24,10 @@
 <div class="content">
 
   <h3>
-  <bean:message key="ilv-report.titleprepare" /> - Vorlage B
+  <bean:message key="ilv-report.titleprepare" /> - <bean:message key="ilv-report.type" /> B
   </h3>
   
-  <p>Vorlage wechseln: <a href="prepare-ilv-order-pdf-0.do?method=journalorderdetail&bid=<bean:write name="orderform" property="bid" />">A</a></p>
+  <p><bean:message key="ilv-report.changeType" />: <a href="prepare-ilv-order-pdf-0.do?method=journalorderdetail&bid=<bean:write name="orderform" property="bid" />">A</a></p>
     
   <logic:present name="orderform" property="bestellung">
   
