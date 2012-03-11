@@ -219,7 +219,7 @@ public final class ILVReport extends DispatchAction {
             		ilvf.setSubject(subject.getInhalt());
             		}
             	if (text.getInhalt() != null){
-            		ilvf.setSubject(text.getInhalt());
+            		ilvf.setMailtext(text.getInhalt());
             		}
             	
             	l.close();

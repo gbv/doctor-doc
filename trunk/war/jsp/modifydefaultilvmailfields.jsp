@@ -23,14 +23,15 @@
 <h3><bean:message key="message.header" />:</h3>
 
 <bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>              
-<p /><pre><bean:message key="<%=translationKey%>" /></pre>
+<p /><bean:message key="<%=translationKey%>" />
 <logic:present name="message" property="systemMessage">
   <p /><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
-  <h3><bean:message key="ilvmail.title" /></h3> Möchten Sie den Mailtext oder den Betreff speichern und als default setzen?
+  <h3><bean:message key="ilvmail.changemailfields" /></h3> 
     
 <logic:present name="IlvReportForm" property="labelto">   
-  <form action="save-ilv-maildefaultfields.do?method=saveMailFields">
+  <form action="save-ilv-maildefaultfields.do">
+  <input type="hidden" name="method" value="saveMailFields" />
   <table border="1">
   <tr>
     <td><bean:message key="ilvmail.subject" /> 
@@ -46,6 +47,7 @@
   </tr>
 </table>
 <input type="submit" value="save this as default" />
+</form>
 </logic:present>
 
 <br></br>
