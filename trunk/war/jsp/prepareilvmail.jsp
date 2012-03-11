@@ -21,14 +21,14 @@
 
 <div class="content">
 
-  <h3>Mail:</h3> <!-- Mailform noch internationalisieren -->
+  <h3><bean:message key="ilvmail.title" /></h3> 
     
 <logic:present name="IlvReportForm" property="labelto">   
   <form action="send-ilv-mailorder.do?method=sendIlvMail">
   <table border="1">
   <tr>
     <td valign="top">
-    	to: 
+    	<bean:message key="ilvmail.to" />  
     </td>
 
     <td>
@@ -37,7 +37,7 @@
     
   </tr>
   <tr>
-    <td>Subject: 
+    <td><bean:message key="ilvmail.subject" /> 
     </td>    
     <td>
     <input name="subject" type="text" size="100" value="<bean:write name="IlvReportForm" property="subject" />" autofocus />
