@@ -803,7 +803,7 @@
 		
 		<action path="/save-ilv-maildefaultfields" input="/jsp/modifydefaultilvmailfields.jsp"
 			name="IlvReportForm" scope="request" parameter="method" validate="false"
-			type="ch.dbs.actions.bestellung.OrderAction">
+			type="ch.dbs.actions.reports.ILVMailfields">
 			<forward name="success" path="/jsp/message.jsp" />
 			<forward name="failure" path="/error.do" />
 		</action>
