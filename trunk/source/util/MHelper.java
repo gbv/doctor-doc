@@ -412,20 +412,20 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
     }
 
-    /*
-     * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
-     */
-    public Session getSession() {
-        //       SMPT Authentifizierung einschalten
-        final Properties props = new Properties();
-        props.put(SMTP_AUTH, TRUE);
-
-        // create some properties and get the default Session
-        final Session session = Session.getInstance(props, null);
-        session.setDebug(false);
-
-        return session;
-    }
+//    /*
+//     * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
+//     */
+//    public Session getSession() {
+//        //       SMPT Authentifizierung einschalten
+//        final Properties props = new Properties();
+//        props.put(SMTP_AUTH, TRUE);
+//
+//        // create some properties and get the default Session
+//        final Session session = Session.getInstance(props, null);
+//        session.setDebug(false);
+//
+//        return session;
+//    }
 
     public static void main(final String[] args) {
         final MHelper mail = new MHelper();
@@ -433,10 +433,22 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     
+    /** Gets the system properties     */
+    public Properties getProperties(){
+    	// Get system properties
+    	Properties props = System.getProperties();
+    	// Setup mail server
+        props.setProperty("mail.smtp.host", SYSTEM_EMAIL_HOST);
+        props.setProperty("mail.user", "SYSTEM_EMAIL_ACCOUNTNAME");
+        props.setProperty("mail.password", "SYSTEM_EMAIL_PASSWORD");
+        props.setProperty(SMTP_AUTH, TRUE);
+    	return props;
+    }
+    
     /** Gets the MimeMessage */
     public MimeMessage getMimeMessage(Session session) throws AddressException, MessagingException{
         // Define message
-        MimeMessage message = new MimeMessage(session);
+        MimeMessage message = new MimeMessage(session);        
         message.setFrom(new InternetAddress(SYSTEM_EMAIL));
         message.addHeader(CHARSET, UTF8); // set Header
         message.addHeader(XPRIO, PRIORITY);
