@@ -318,7 +318,8 @@ public final class ILVReport extends DispatchAction {
                     final String link = "listkontobestellungen.do?method=overview";
                     ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
                 	rq.setAttribute("message", mes);
-	                
+                	rq.setAttribute("IlvReportForm", ilvf);
+                	
 				} catch (JRException e1) {
 					//TODO: set correct error
 					final ErrorMessage em = new ErrorMessage("error.createilvreport", "listkontobestellungen.do?method=overview");

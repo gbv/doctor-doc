@@ -797,6 +797,13 @@
 		<action path="/send-ilv-mailorder" input="/jsp/prepareilvmail.jsp"
 			name="IlvReportForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.reports.ILVReport">
+			<forward name="success" path="/jsp/modifydefaultilvmailfields.jsp" />
+			<forward name="failure" path="/error.do" />
+		</action>
+		
+		<action path="/save-ilv-maildefaultfields" input="/jsp/modifydefaultilvmailfields.jsp"
+			name="IlvReportForm" scope="request" parameter="method" validate="false"
+			type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/message.jsp" />
 			<forward name="failure" path="/error.do" />
 		</action>
