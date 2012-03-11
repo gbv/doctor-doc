@@ -1219,7 +1219,9 @@ INSERT INTO `texttyp` (`TYID`, `KID`, `inhalt`) VALUES
 (12, NULL, 'Kontokennung'),
 (13, NULL, 'Bestellformular eingeloggt'),
 (14, NULL, 'DAIA-ID'),
-(15, NULL, 'Benutzer Kategorie');
+(15, NULL, 'Benutzer Kategorie'),
+(16 , NULL , 'ILV Mailsubject'),
+(17 , NULL , 'ILV Mailtext');
 
 -- --------------------------------------------------------
 

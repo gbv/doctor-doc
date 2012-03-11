@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -67,6 +68,7 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
+import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.IlvReportForm;
@@ -205,9 +207,21 @@ public final class ILVReport extends DispatchAction {
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
             	
+            	final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             	IlvReportForm ilvf = (IlvReportForm) fm;
             	Lieferanten l = new Lieferanten();
             	ilvf.setTo(l.getLieferantFromName(ilvf.getLieferant(), l.getConnection()).getEmailILL());
+            	
+            	// default Subject & Mailtext
+            	Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()), ui.getKonto().getId());
+            	Text text = new Text(l.getConnection(), new Texttyp("ILV Mailtext", l.getConnection()), ui.getKonto().getId());
+            	if (subject.getInhalt() != null){
+            		ilvf.setSubject(subject.getInhalt());
+            		}
+            	if (text.getInhalt() != null){
+            		ilvf.setSubject(text.getInhalt());
+            		}
+            	
             	l.close();
             	
             	rq.setAttribute("IlvReportForm", ilvf);
@@ -300,7 +314,7 @@ public final class ILVReport extends DispatchAction {
 //                    Transport.send(message);
                     
                     forward = "success";                      
-                    final String content = "ordersuccess.confirmation";
+                    final String content = "ilvmail.confirmation";
                     final String link = "listkontobestellungen.do?method=overview";
                     ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
                 	rq.setAttribute("message", mes);

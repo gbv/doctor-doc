@@ -1,3 +1,6 @@
+INSERT INTO `doctor-doc_com_dbs`.`texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailsubject');
+INSERT INTO `doctor-doc_com_dbs`.`texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailtext');
+
 -- Revision 277 --
 
 ALTER TABLE `konto` ADD `ilvformnr` INT( 2 ) NOT NULL DEFAULT '0' AFTER `showpubsuppliers` 
