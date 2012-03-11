@@ -1,3 +1,7 @@
+-- Revision 277 --
+
+ALTER TABLE `konto` ADD `ilvformnr` INT( 2 ) NOT NULL DEFAULT '0' AFTER `showpubsuppliers` 
+
 -- Revision 202 --
 
 ALTER TABLE `konto` ADD `showprivsuppliers` TINYINT( 1 ) NOT NULL DEFAULT '1',

@@ -88,6 +88,7 @@ public final class KontoForm extends ValidatorForm {
     private String gtcdate; // Datum der Annahme durch User
     private boolean showprivsuppliers;
     private boolean showpubsuppliers;
+    private int ilvformnr; // default form number for PDFs and mails for ILV
     private String message;
 
     // dient dazu die Bestellangaben nicht zu verlieren bei Übergabe aus Linkresolver
@@ -677,6 +678,12 @@ public final class KontoForm extends ValidatorForm {
     public void setShowpubsuppliers(final boolean showpubsuppliers) {
         this.showpubsuppliers = showpubsuppliers;
     }
+    public int getIlvformnr() {
+        return ilvformnr;
+    }
+    public void setIlvformnr(int ilvformnr) {
+        this.ilvformnr = ilvformnr;
+    }
 
 
     public void setIsil(String isil) {
@@ -754,6 +761,7 @@ public final class KontoForm extends ValidatorForm {
         this.default_deloptions = konto.getDefault_deloptions();
         this.showprivsuppliers = konto.isShowprivsuppliers();
         this.showpubsuppliers = konto.isShowpubsuppliers();
+        this.ilvformnr = konto.getIlvformnr();
     }
 
 }

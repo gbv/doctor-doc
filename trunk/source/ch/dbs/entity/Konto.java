@@ -209,6 +209,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
         this.default_deloptions = kf.getDefault_deloptions();
         this.showprivsuppliers = kf.isShowprivsuppliers();
         this.showpubsuppliers = kf.isShowpubsuppliers();
+        this.ilvformnr = kf.getIlvformnr();
         //      this.Date edatum; // Erstellungsdatum des kontos
         //      this.gtc; // enthält GTC-Version (General Terms and Conditions)
         //      this.gtcdate; // Datum der Annahme durch User
@@ -280,6 +281,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
         this.setGtcdate(rs.getString("gtcdate"));
         this.setShowprivsuppliers(rs.getBoolean("showprivsuppliers"));
         this.setShowpubsuppliers(rs.getBoolean("showpubsuppliers"));
+        this.setIlvformnr(rs.getInt("ilvformnr"));
     }
 
     /**
@@ -386,9 +388,9 @@ public class Konto extends AbstractIdEntity implements Serializable {
                                     + "`accounting_rhythmday` , `accounting_rhythmtimeout` , `billingschwellwert` , `maxordersu` ,"
                                     + "`maxordersutotal`, `maxordersj` , `orderlimits` , `userlogin` , `userbestellung` , `gbvbestellung` , "
                                     + "`kontostatus` , `kontotyp` , `default_deloptions` , `paydate` , `expdate` , `edatum` , "
-                                    + "`showprivsuppliers` , `showpubsuppliers`) "
+                                    + "`showprivsuppliers` , `showpubsuppliers` , `ilvformnr`) "
                                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)"), this);
+                                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)"), this);
 
             pstmt.executeUpdate();
 
@@ -438,7 +440,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
                             + "zdb=?, billing=?, billingtype=?, accounting_rhythmvalue=?, accounting_rhythmday=?, "
                             + "accounting_rhythmtimeout=?, billingschwellwert=?, maxordersu=?, maxordersutotal=?, maxordersj=?, "
                             + "orderlimits=?, userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, "
-                            + "default_deloptions=?, paydate=?, expdate=?, showprivsuppliers=?, showpubsuppliers=? "
+                            + "default_deloptions=?, paydate=?, expdate=?, showprivsuppliers=?, showpubsuppliers=?, ilvformnr=? "
                             + "WHERE `KID` = " + this.getId()), this);
 
             pstmt.executeUpdate();
@@ -865,6 +867,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
         }
         pstmt.setBoolean(44, k.isShowprivsuppliers());
         pstmt.setBoolean(45, k.isShowpubsuppliers());
+        pstmt.setInt(46, k.getIlvformnr());
         return pstmt;
     }
 
