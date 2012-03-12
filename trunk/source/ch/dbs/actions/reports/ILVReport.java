@@ -327,9 +327,10 @@ public final class ILVReport extends DispatchAction {
 				} catch (AuthenticationFailedException e) {
 					final ErrorMessage em = new ErrorMessage("error.mailserverconnection", "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
+	                //SMTPSendFailedException
 				} catch (MessagingException e) {
 					//TODO: catch wrong internetadresse
-					final ErrorMessage em = new ErrorMessage("error.sendmail", "listkontobestellungen.do?method=overview");
+					final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(), "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
 				}             
                 

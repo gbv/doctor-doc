@@ -441,6 +441,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
         props.setProperty("mail.smtp.host", SYSTEM_EMAIL_HOST);
         props.setProperty("mail.user", "SYSTEM_EMAIL_ACCOUNTNAME");
         props.setProperty("mail.password", "SYSTEM_EMAIL_PASSWORD");
+        /* Antwortadresse setzen 
+        //props.setProperty("mail.smtp.from", "set@reaply.de");
+         * Problem:
+         * SMTP Server verweigert das Senden mit einem falschen Absender 
+         * und man bekommt eine entsprechende Exception (Ausnahme: SMTP-Relay).
+         */
+        
         props.setProperty(SMTP_AUTH, TRUE);
     	return props;
     }
