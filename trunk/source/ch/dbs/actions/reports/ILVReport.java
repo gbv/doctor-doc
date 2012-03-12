@@ -287,6 +287,9 @@ public final class ILVReport extends DispatchAction {
 //                    message.addRecipients(Message.RecipientType.TO, ilvf.getTo());
 //                    message.addRecipients(Message.RecipientType.BCC, "mail@test.ch");
                     message.setSubject(ilvf.getSubject());
+                    
+                    // set reply to adress
+                    message.setReplyTo(new InternetAddress[] {new InternetAddress(ui.getKonto().getBibliotheksmail())});
 
                     // create the message part 
                     MimeBodyPart messageBodyPart = new MimeBodyPart();
