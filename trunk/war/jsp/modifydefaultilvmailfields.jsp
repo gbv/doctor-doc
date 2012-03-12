@@ -27,11 +27,17 @@
 <logic:present name="message" property="systemMessage">
   <p /><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
-  <h3><bean:message key="ilvmail.changemailfields" /></h3> 
+<p />
+<logic:present name="message" property="link">
+  <a href="<bean:write name="message" property="link" />"><bean:message key="message.next" /></a>
+</logic:present>
+<p />  
+<h4><bean:message key="ilvmail.changemailfields" /></h4> 
     
 <logic:present name="IlvReportForm" property="labelto">   
   <form action="save-ilv-maildefaultfields.do">
   <input type="hidden" name="method" value="saveMailFields" />
+  <input type="submit" value="save this as default" />
   <table border="1">
   <tr>
     <td><bean:message key="ilvmail.subject" /> 
@@ -46,14 +52,9 @@
     </td>
   </tr>
 </table>
-<input type="submit" value="save this as default" />
 </form>
 </logic:present>
 
-<br></br>
-<logic:present name="message" property="link">
-  <a href="<bean:write name="message" property="link" />"><bean:message key="message.next" /></a>
-</logic:present>
 </div>
  </body>
 </html>
