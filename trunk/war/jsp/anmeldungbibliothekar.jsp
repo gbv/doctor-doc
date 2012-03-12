@@ -43,13 +43,13 @@
       </td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text" autofocus<logic:present name="userform" property="vorname"> value="<bean:write name="userform" property="vorname" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="vorname" /></font></td>
+      <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text" required autofocus<logic:present name="userform" property="vorname"> value="<bean:write name="userform" property="vorname" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="vorname" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text"<logic:present name="userform" property="name"> value="<bean:write name="userform" property="name" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="name" /></font></td>
+      <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text" required<logic:present name="userform" property="name"> value="<bean:write name="userform" property="name" />"</logic:present> size="50" maxlength="100" /><font color=red><html:errors property="name" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.email" />*</b> ( = Login-ID)&nbsp;</td><td><input name="email" type="email"<logic:present name="userform" property="email"> value="<bean:write name="userform" property="email" />"</logic:present> size="50" maxlength="50" /><font color=red><html:errors property="email" /></font> <bean:message key="register.email_comment" /></td>
+      <td><b><bean:message key="adressen.email" />*</b> ( = Login-ID)&nbsp;</td><td><input name="email" type="email" required<logic:present name="userform" property="email"> value="<bean:write name="userform" property="email" />"</logic:present> size="50" maxlength="50" /><font color=red><html:errors property="email" /></font> <bean:message key="register.email_comment" /></td>
     </tr>   
     <tr>
       <td><bean:message key="adressen.telefon_g" /></td><td><input name="telefonnrg" type="tel"<logic:present name="userform" property="telefonnrg"> value="<bean:write name="userform" property="telefonnrg" />"</logic:present> size="30" maxlength="30" /></td>

@@ -43,11 +43,11 @@
     </tr>
     <tr>
       	<td><b><bean:message key="modifykonto.biblioname" />*</b></td>
-      	<td><input name="biblioname" type="text"<logic:present name="kontoform" property="biblioname"> value="<bean:write name="kontoform" property="biblioname" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="biblioname" /></font></td>
+      	<td><input name="biblioname" type="text" required<logic:present name="kontoform" property="biblioname"> value="<bean:write name="kontoform" property="biblioname" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="biblioname" /></font></td>
     </tr>
     <tr>
       <td><b><bean:message key="modifykonto.adress" />*</b></td>
-      <td><input name="adresse" type="text"<logic:present name="kontoform" property="adresse"> value="<bean:write name="kontoform" property="adresse" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="adresse" /></font></td>
+      <td><input name="adresse" type="text" required<logic:present name="kontoform" property="adresse"> value="<bean:write name="kontoform" property="adresse" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="adresse" /></font></td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.adress_second" /></td>
@@ -55,11 +55,11 @@
     </tr>    
     <tr>
       <td><b><bean:message key="modifykonto.plz" />*</b></td>
-      <td><input name="PLZ" type="text"<logic:present name="kontoform" property="PLZ"> value="<bean:write name="kontoform" property="PLZ" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="plz" /></font></td>
+      <td><input name="PLZ" type="text" required<logic:present name="kontoform" property="PLZ"> value="<bean:write name="kontoform" property="PLZ" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="plz" /></font></td>
     </tr>    
     <tr>
       <td><b><bean:message key="modifykonto.ort" />*</b></td>
-      <td><input name="ort" type="text"<logic:present name="kontoform" property="ort"> value="<bean:write name="kontoform" property="ort" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="ort" /></font></td>
+      <td><input name="ort" type="text" required<logic:present name="kontoform" property="ort"> value="<bean:write name="kontoform" property="ort" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="ort" /></font></td>
     </tr>    
     <tr>
       <td><b><bean:message key="modifykonto.land" />*</b></td>
@@ -87,7 +87,7 @@
     </tr>   
     <tr>
       <td><b><bean:message key="modifykonto.telefon" />*</b></td>
-      <td><input name="telefon" type="text"<logic:present name="kontoform" property="telefon"> value="<bean:write name="kontoform" property="telefon" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="telefon" /></font></td>
+      <td><input name="telefon" type="text" required<logic:present name="kontoform" property="telefon"> value="<bean:write name="kontoform" property="telefon" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="telefon" /></font></td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.localfax" /></td>
@@ -95,11 +95,11 @@
     </tr>   
     <tr>
       <td><b><bean:message key="modifykonto.libraryemail" />*</b></td>
-      <td><input name="bibliotheksmail" type="email"<logic:notPresent name="kontoform" property="bibliotheksmail"> placeholder="<bean:message key="register.bibliomail_explain" />"</logic:notPresent><logic:present name="kontoform" property="bibliotheksmail"> value="<bean:write name="kontoform" property="bibliotheksmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
+      <td><input name="bibliotheksmail" type="email" required<logic:notPresent name="kontoform" property="bibliotheksmail"> placeholder="<bean:message key="register.bibliomail_explain" />"</logic:notPresent><logic:present name="kontoform" property="bibliotheksmail"> value="<bean:write name="kontoform" property="bibliotheksmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
     </tr>
     <tr>
       <td><b><bean:message key="modifykonto.email_delivery" />*</b></td>
-      <td><input name="dbsmail" type="email"<logic:notPresent name="kontoform" property="dbsmail"> placeholder="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
+      <td><input name="dbsmail" type="email" required<logic:notPresent name="kontoform" property="dbsmail"> placeholder="<bean:message key="register.dbsmail_explain" />"</logic:notPresent><logic:present name="kontoform" property="dbsmail"> value="<bean:write name="kontoform" property="dbsmail" />"</logic:present> size="50" maxlength="100" /> <font color=red><html:errors property="email" /></font></td>
     </tr>
     <tr>
       <td><bean:message key="modifykonto.idgbv" /></td>

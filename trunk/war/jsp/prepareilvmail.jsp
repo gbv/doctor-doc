@@ -32,7 +32,7 @@
     </td>
 
     <td>
-    	<input name="to" type="text" size="100" value="<bean:write name="IlvReportForm" property="to" />" />    		
+    	<input name="to" type="email" required size="100" value="<bean:write name="IlvReportForm" property="to" />" />    		
     </td>
     
   </tr>

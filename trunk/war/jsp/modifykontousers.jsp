@@ -65,13 +65,13 @@
       </td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text" size="50" maxlength="100" autofocus <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.vorname" />"</logic:present> /><font color=red><html:errors property="vorname" /></font></td>
+      <td><b><bean:message key="adressen.vorname" />*</b></td><td><input name="vorname" type="text" required autofocus size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.vorname" />"</logic:present> /><font color=red><html:errors property="vorname" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text" size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.name" />"</logic:present> /><font color=red><html:errors property="name" /></font></td>
+      <td><b><bean:message key="adressen.name" />*</b></td><td><input name="name" type="text" required size="50" maxlength="100" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.name" />"</logic:present> /><font color=red><html:errors property="name" /></font></td>
     </tr>
     <tr>
-      <td><b><bean:message key="adressen.email" />*</b></td><td><input name="email" type="email" size="50" maxlength="50" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.email" />"</logic:present> />
+      <td><b><bean:message key="adressen.email" />*</b></td><td><input name="email" type="email" required size="50" maxlength="50" <logic:present name="userform" property="user">value="<bean:write name="userform" property="user.email" />"</logic:present> />
       <font color="red"><html:errors property="email" /></font></td>
     </tr>
         <tr>

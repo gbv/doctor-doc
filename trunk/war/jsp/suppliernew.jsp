@@ -39,11 +39,11 @@
 	</tr>
 	<tr>
 		<td><bean:message key="searchorders.supplier" />:</td>
-		<td><input type="text" name="name" value="<bean:write name="supplier" property="name" />" size="120" maxlength="200" autofocus /></td>
+		<td><input type="text" name="name" value="<bean:write name="supplier" property="name" />" size="120" maxlength="200" required autofocus /></td>
 	</tr>
 	<tr>
 		<td><bean:message key="adressen.email" />:</td>
-		<td><input type="text" name="emailILL" value="<bean:write name="supplier" property="emailILL" />" size="50" maxlength="100" /></td>
+		<td><input type="email" name="emailILL" value="<bean:write name="supplier" property="emailILL" />" size="50" maxlength="100" /></td>
 	</tr>
 	<tr>
 		<td>

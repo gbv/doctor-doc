@@ -57,7 +57,7 @@
    
   <table>
     <tr>
-      <td><p /><bean:message key="bestellform.artikeltitel" />&nbsp;</td><td><input name="artikeltitel" type="search" size="98" /></td>
+      <td><p /><bean:message key="bestellform.artikeltitel" />&nbsp;</td><td><input name="artikeltitel" type="search" required size="98" /></td>
     </tr>
     <tr>
       <td></td><td><bean:message key="findfree.pmid" /></td>
