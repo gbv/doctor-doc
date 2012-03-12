@@ -322,10 +322,10 @@ public final class ILVReport extends DispatchAction {
 					final ErrorMessage em = new ErrorMessage("error.createilvreport", "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
 				} catch (SMTPAddressFailedException e) {
-					final ErrorMessage em = new ErrorMessage("errors.email", "listkontobestellungen.do?method=overview");
+					final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(), "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
 				} catch (AuthenticationFailedException e) {
-					final ErrorMessage em = new ErrorMessage("error.mailserverconnection", "listkontobestellungen.do?method=overview");
+					final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(), "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
 	                //SMTPSendFailedException
 				} catch (MessagingException e) {
