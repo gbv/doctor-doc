@@ -43,6 +43,7 @@ public final class IlvReportForm extends ActionForm {
     private String journaltitel = ""; // <bean:write name="IlvReportForm" property="journaltitel" />
     private String notesfromrequestinglibrary = ""; // <bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />
     private String post = ""; // <bean:write name="IlvReportForm" property="post" />
+    private Long lid = new Long(0);
     
     // E-Mail fields
     private String to = ""; // <bean:write name="IlvReportForm" property="subject" /> 
@@ -180,9 +181,15 @@ public final class IlvReportForm extends ActionForm {
         return post;
     }
     public void setPost(final String post) {
-        this.post = post;
+        this.post = post;        
     }
-    public String getReporttitle() {
+    public Long getLid() {
+		return lid;
+	}
+	public void setLid(Long lid) {
+		this.lid = lid;
+	}
+	public String getReporttitle() {
         return reporttitle;
     }
     public void setReporttitle(final String reporttitle) {

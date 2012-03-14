@@ -207,7 +207,7 @@ public final class ILVReport extends DispatchAction {
             	final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             	IlvReportForm ilvf = (IlvReportForm) fm;
             	Lieferanten l = new Lieferanten();
-            	ilvf.setTo(l.getLieferantFromName(ilvf.getLieferant(), l.getConnection()).getEmailILL());
+            	ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
             	
             	// default Subject & Mailtext
             	Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()), ui.getKonto().getId());
