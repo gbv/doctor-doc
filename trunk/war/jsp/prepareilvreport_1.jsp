@@ -48,13 +48,13 @@
 <%     
   OrderForm pageForm = (OrderForm) request.getAttribute("orderform");
   String lieferant = "";
-  if (pageForm.getBestellung().getLieferant() != null ) {  
-    lieferant = pageForm.getBestellung().getLieferant().getName();  
-    if (pageForm.getBestellung().getLieferant().getSigel() != null) {
-      if (!pageForm.getBestellung().getLieferant().getSigel().equals("")) {
-        lieferant = lieferant + "\040/\040" + pageForm.getBestellung().getLieferant().getSigel();
-      }    
-    }   
+  if (pageForm.getBestellung().getLieferant() != null ) {
+      if (pageForm.getBestellung().getLieferant().getSigel() != null) {
+          if (!pageForm.getBestellung().getLieferant().getSigel().equals("")) {
+            lieferant = lieferant + pageForm.getBestellung().getLieferant().getSigel() + "\040/\040";
+          }
+        }
+    lieferant = lieferant + pageForm.getBestellung().getLieferant().getName();
   }
 %>
     <td>
