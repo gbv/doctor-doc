@@ -54,7 +54,10 @@
             lieferant = lieferant + pageForm.getBestellung().getLieferant().getSigel() + "\040/\040";
           }
         }
-    lieferant = lieferant + pageForm.getBestellung().getLieferant().getName();
+    lieferant = lieferant + pageForm.getBestellung().getLieferant().getName();    
+    if (lieferant.length() > 105) {
+        lieferant = lieferant.substring(0, 105) + "...";
+    }
   }
 %>
     <td>
