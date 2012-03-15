@@ -321,7 +321,6 @@ public final class ILVReport extends DispatchAction {
                 	rq.setAttribute("IlvReportForm", ilvf);
                 	
 				} catch (JRException e1) {
-					//TODO: set correct error
 					final ErrorMessage em = new ErrorMessage("error.createilvreport", "listkontobestellungen.do?method=overview");
 	                rq.setAttribute("errormessage", em); 
 				} catch (SMTPAddressFailedException e) {
