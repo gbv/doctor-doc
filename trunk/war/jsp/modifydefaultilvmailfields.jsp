@@ -20,7 +20,7 @@
 
 <div class="content">
 <br />
-<h3><bean:message key="message.header" />:</h3>
+<h3><bean:message key="ordersuccess.titel" />:</h3>
 
 <bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>              
 <p /><bean:message key="<%=translationKey%>" />
