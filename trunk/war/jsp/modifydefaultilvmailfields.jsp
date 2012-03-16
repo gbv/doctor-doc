@@ -37,7 +37,8 @@
 <logic:present name="IlvReportForm" property="labelto">   
   <form action="save-ilv-maildefaultfields.do">
   <input type="hidden" name="method" value="saveMailFields" />
-  <input type="submit" value="save this as default" />
+  <input type="submit" value="<bean:message key="ilvmail.default" />" />
+  <p />
   <table border="1">
   <tr>
     <td><bean:message key="ilvmail.subject" /> 
