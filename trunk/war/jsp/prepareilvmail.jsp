@@ -55,10 +55,10 @@
   <input type="hidden" name="method" value="sendIlvMail" />
   
   <input type="hidden" name="title" value="<bean:message key="ilv-report.title" />" />
-  <input type="hidden" name="to" value="<bean:write name="IlvReportForm" property="lieferant" />" />  
+  <input type="hidden" name="lieferant" value="<bean:write name="IlvReportForm" property="lieferant" />" />  
   <input type="hidden" name="signatur" value="<bean:write name="IlvReportForm" property="signatur" />" />
   <input type="hidden" name="journaltitel" value="<bean:write name="IlvReportForm" property="journaltitel" />" />  
-  <input type="hidden" name="customer" value="<bean:write name="IlvReportForm" property="name" />" />  
+  <input type="hidden" name="name" value="<bean:write name="IlvReportForm" property="name" />" />  
   <input type="hidden" name="librarycard" value="<bean:write name="IlvReportForm" property="librarycard" />" />  
   <input type="hidden" name="issn" value="<bean:write name="IlvReportForm" property="issn" />" />
   <input type="hidden" name="pmid" value="<bean:write name="IlvReportForm" property="pmid" />" />
