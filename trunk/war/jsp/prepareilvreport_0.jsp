@@ -51,7 +51,7 @@
   if (pageForm.getBestellung().getLieferant() != null ) {
       if (pageForm.getBestellung().getLieferant().getSigel() != null) {
           if (!pageForm.getBestellung().getLieferant().getSigel().equals("")) {
-            lieferant = lieferant + pageForm.getBestellung().getLieferant().getSigel() + "\040/\040";
+            lieferant = lieferant + pageForm.getBestellung().getLieferant().getSigel() + "\040:\040";
           }
         }
     lieferant = lieferant + pageForm.getBestellung().getLieferant().getName();    
