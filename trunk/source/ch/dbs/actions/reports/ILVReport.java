@@ -22,7 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -56,8 +55,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
 
-import com.sun.mail.smtp.SMTPAddressFailedException;
-
 import util.Auth;
 import util.MHelper;
 import util.ReadSystemConfigurations;
@@ -72,6 +69,8 @@ import ch.dbs.form.IlvReportForm;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 
+import com.sun.mail.smtp.SMTPAddressFailedException;
+
 /**
  * Erstellt PDF-Reports
  *
@@ -85,8 +84,8 @@ public final class ILVReport extends DispatchAction {
     /**
      * ILV-Report Formular Daten vorbereiten
      */
-    public ActionForward prepareFormIlv(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward prepareFormIlv(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) fm;
         final Auth auth = new Auth();
@@ -109,7 +108,6 @@ public final class ILVReport extends DispatchAction {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("uebersicht");
                 rq.setAttribute("ActiveMenus", mf);
-
 
             } catch (final Exception e) {
                 forward = "failure";
@@ -136,8 +134,8 @@ public final class ILVReport extends DispatchAction {
     /**
      * Erstelt ein PDF- Report (ILV-Bestellung)
      */
-    public ActionForward PDF(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward PDF(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -149,13 +147,13 @@ public final class ILVReport extends DispatchAction {
                 final IlvReportForm ilvf = (IlvReportForm) fm;
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 OutputStream out = null;
-                
+
                 // set ILV form number from wildcard mapping
                 ilvf.setIlvformnr(getIlvNumber(mp.getPath()));
 
                 // prepare output stream
                 rp.setContentType("application/pdf");
-                rp.setHeader("Content-Disposition","attachment;filename=ilv.pdf");
+                rp.setHeader("Content-Disposition", "attachment;filename=ilv.pdf");
                 // run report, depending on ILV form number
                 try {
                     out = rp.getOutputStream();
@@ -174,28 +172,25 @@ public final class ILVReport extends DispatchAction {
                 }
 
             } else {
-                final ErrorMessage em = new ErrorMessage(
-                        "error.berechtigung",
-                        "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage(
-                    "error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
 
         return mp.findForward(forward);
     }
-    
+
     /**
      * Prepare the Mail with attached ilv-pdf (ILV-Bestellung) for the preparemail.jsp
      */
-    public ActionForward Email(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward Email(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -203,139 +198,33 @@ public final class ILVReport extends DispatchAction {
         // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            	
-            	final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            	IlvReportForm ilvf = (IlvReportForm) fm;
-            	Lieferanten l = new Lieferanten();
-            	ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
-            	
-            	// default Subject & Mailtext
-            	Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()), ui.getKonto().getId());
-            	Text text = new Text(l.getConnection(), new Texttyp("ILV Mailtext", l.getConnection()), ui.getKonto().getId());
-            	if (subject.getInhalt() != null){
-            		ilvf.setSubject(subject.getInhalt());
-            		}
-            	if (text.getInhalt() != null){
-            		ilvf.setMailtext(text.getInhalt());
-            		}
-            	
-            	l.close();
-            	
-            	rq.setAttribute("IlvReportForm", ilvf);
-            	// set ILV form number back into request
-            	rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-            	// set ILV form number back into request
-            	rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-                forward = "preparemail";                
 
-            } else {
-                final ErrorMessage em = new ErrorMessage(
-                        "error.berechtigung",
-                        "login.do");
-                rq.setAttribute("errormessage", em);
-            }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage(
-                    "error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
-        }
-
-        return mp.findForward(forward);
-    }
-    
-    /**
-     * Send the mail with attached ilv-pdf (ILV-Bestellung)
-     */
-    public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
-
-        String forward = "failure";
-        final Auth auth = new Auth();
-
-        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
-        if (auth.isLogin(rq)) {
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                
-                final IlvReportForm ilvf = (IlvReportForm) fm;
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final IlvReportForm ilvf = (IlvReportForm) fm;
+                final Lieferanten l = new Lieferanten();
+                ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
 
-                try {
-                    // prepare attachement
-                    DataSource aAttachment = null;
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                // default Subject & Mailtext
+                final Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()), ui
+                        .getKonto().getId());
+                final Text text = new Text(l.getConnection(), new Texttyp("ILV Mailtext", l.getConnection()), ui
+                        .getKonto().getId());
+                if (subject.getInhalt() != null) {
+                    ilvf.setSubject(subject.getInhalt());
+                }
+                if (text.getInhalt() != null) {
+                    ilvf.setMailtext(text.getInhalt());
+                }
 
-                    // create PDF report using the appropriate ILV form number
-                    runReport(ilvf, ui, baos);
+                l.close();
 
-                    aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf"); 
+                rq.setAttribute("IlvReportForm", ilvf);
+                // set ILV form number back into request
+                rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
+                // set ILV form number back into request
+                rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
+                forward = "preparemail";
 
-                    // send Mail
-                    InternetAddress to[] = new InternetAddress[2];
-                    to[0] = new InternetAddress(ilvf.getTo());
-                    to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
-                    String fileAttachment = "ilv.pdf";                
-                    MHelper mh = new MHelper();
-//                    Session session = mh.getSession();
-                 // Get the default Session object.
-                    Session session = Session.getDefaultInstance(mh.getProperties());
-
-                    // Define message
-                    MimeMessage message = mh.getMimeMessage(session);
-//                    message.addRecipients(Message.RecipientType.TO, ilvf.getTo());
-//                    message.addRecipients(Message.RecipientType.BCC, "mail@test.ch");
-                    message.setSubject(ilvf.getSubject());
-                    
-                    // set reply to address
-                    message.setReplyTo(new InternetAddress[] {new InternetAddress(ui.getKonto().getBibliotheksmail())});
-
-                    // create the message part 
-                    MimeBodyPart messageBodyPart = new MimeBodyPart();
-
-                    //fill message
-                    messageBodyPart.setText(ilvf.getMailtext());
-                    Multipart multipart = new MimeMultipart();
-                    multipart.addBodyPart(messageBodyPart);
-
-                    // Part two is attachment
-                    messageBodyPart = new MimeBodyPart();
-                    messageBodyPart.setDataHandler(new DataHandler(aAttachment));
-                    messageBodyPart.setFileName(fileAttachment);
-                    multipart.addBodyPart(messageBodyPart);
-
-                    // Put parts in message
-                    message.setContent(multipart);
-                    message.saveChanges();
-
-                    // Send the message
-                    mh.sendMessage(session, message, to);
-//                    Transport.send(message);
-                    
-                    forward = "success";                      
-                    final String content = "ilvmail.confirmation";
-                    final String link = "listkontobestellungen.do?method=overview";
-                    ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
-                	rq.setAttribute("message", mes);
-                	rq.setAttribute("IlvReportForm", ilvf);
-                	
-				} catch (JRException e1) {
-					final ErrorMessage em = new ErrorMessage("error.createilvreport", "listkontobestellungen.do?method=overview");
-	                rq.setAttribute("errormessage", em); 
-				} catch (SMTPAddressFailedException e) {
-					final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(), "listkontobestellungen.do?method=overview");
-	                rq.setAttribute("errormessage", em); 
-				} catch (AuthenticationFailedException e) {
-					final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(), "listkontobestellungen.do?method=overview");
-	                rq.setAttribute("errormessage", em); 
-	                //SMTPSendFailedException
-				} catch (MessagingException e) {
-					//TODO: catch wrong internetadresse
-					final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(), "listkontobestellungen.do?method=overview");
-	                rq.setAttribute("errormessage", em); 
-				}             
-                
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute("errormessage", em);
@@ -350,37 +239,151 @@ public final class ILVReport extends DispatchAction {
 
         return mp.findForward(forward);
     }
-    
-    private void runReport(IlvReportForm ilvf, UserInfo ui, OutputStream out) throws JRException {
+
+    /**
+     * Send the mail with attached ilv-pdf (ILV-Bestellung)
+     */
+    public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+
+        String forward = "failure";
+        final Auth auth = new Auth();
+
+        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
+        if (auth.isLogin(rq)) {
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+
+                final IlvReportForm ilvf = (IlvReportForm) fm;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+
+                try {
+                    // prepare attachement
+                    DataSource aAttachment = null;
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                    // create PDF report using the appropriate ILV form number
+                    runReport(ilvf, ui, baos);
+
+                    aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
+
+                    // send Mail
+                    final InternetAddress to[] = new InternetAddress[2];
+                    to[0] = new InternetAddress(ilvf.getTo());
+                    to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
+                    final String fileAttachment = "ilv.pdf";
+                    final MHelper mh = new MHelper();
+                    final Session session = Session.getDefaultInstance(mh.getProperties());
+
+                    // Define message
+                    final MimeMessage message = mh.getMimeMessage(session);
+                    message.setSubject(ilvf.getSubject());
+
+                    // set reply to address
+                    message.setReplyTo(new InternetAddress[] { new InternetAddress(ui.getKonto().getBibliotheksmail()) });
+
+                    // create the message part 
+                    MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+                    //fill message
+                    messageBodyPart.setText(ilvf.getMailtext());
+                    final Multipart multipart = new MimeMultipart();
+                    multipart.addBodyPart(messageBodyPart);
+
+                    // Part two is attachment
+                    messageBodyPart = new MimeBodyPart();
+                    messageBodyPart.setDataHandler(new DataHandler(aAttachment));
+                    messageBodyPart.setFileName(fileAttachment);
+                    multipart.addBodyPart(messageBodyPart);
+
+                    // Put parts in message
+                    message.setContent(multipart);
+                    message.saveChanges();
+
+                    // Send the message
+                    mh.sendMessage(session, message, to);
+                    //                    Transport.send(message);
+
+                    forward = "success";
+                    final String content = "ilvmail.confirmation";
+                    final String link = "listkontobestellungen.do?method=overview";
+                    final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
+                    rq.setAttribute("message", mes);
+                    rq.setAttribute("IlvReportForm", ilvf);
+
+                } catch (final JRException e1) {
+                    final ErrorMessage em = new ErrorMessage("error.createilvreport",
+                            "listkontobestellungen.do?method=overview");
+                    rq.setAttribute("errormessage", em);
+                } catch (final SMTPAddressFailedException e) {
+                    final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(),
+                            "listkontobestellungen.do?method=overview");
+                    rq.setAttribute("errormessage", em);
+                } catch (final AuthenticationFailedException e) {
+                    final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(),
+                            "listkontobestellungen.do?method=overview");
+                    rq.setAttribute("errormessage", em);
+                    //SMTPSendFailedException
+                } catch (final MessagingException e) {
+                    final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
+                            "listkontobestellungen.do?method=overview");
+                    rq.setAttribute("errormessage", em);
+                } catch (final Exception e) {
+                    final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
+                            "listkontobestellungen.do?method=overview");
+                    rq.setAttribute("errormessage", em);
+                }
+
+            } else {
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                rq.setAttribute("errormessage", em);
+            }
+        } else {
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("login");
+            rq.setAttribute("ActiveMenus", mf);
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            rq.setAttribute("errormessage", em);
+        }
+
+        return mp.findForward(forward);
+    }
+
+    private void runReport(final IlvReportForm ilvf, final UserInfo ui, final OutputStream out) throws JRException {
 
         InputStream reportStream;
         Map<String, Object> values;
 
         switch (ilvf.getIlvformnr()) {
-            case 0:  values = reportMainz(ilvf, ui);
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                     break;
-            case 1:  values = reportCharite(ilvf, ui);
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_1.jasper"));
-                     break;
-            default: values = reportMainz(ilvf, ui); // default case for illegal values
-                     reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                     break;
+        case 0:
+            values = reportMainz(ilvf, ui);
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                    .getResourceAsStream("/reports/ILV-Form_0.jasper"));
+            break;
+        case 1:
+            values = reportCharite(ilvf, ui);
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                    .getResourceAsStream("/reports/ILV-Form_1.jasper"));
+            break;
+        default:
+            values = reportMainz(ilvf, ui); // default case for illegal values
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                    .getResourceAsStream("/reports/ILV-Form_0.jasper"));
+            break;
         }
-        
+
         final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
         final HashMap<String, String> hm = new HashMap<String, String>();
         hm.put("Fake", "Daten damit Report nicht leer wird..");
         al.add(hm);
         final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-        
-        JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);     
+
+        JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);
     }
 
-    private Map<String, Object> reportMainz(IlvReportForm ilvf, UserInfo ui) {
+    private Map<String, Object> reportMainz(final IlvReportForm ilvf, final UserInfo ui) {
 
-        Map<String, Object> result = new ConcurrentHashMap<String, Object>();
-        
+        final Map<String, Object> result = new ConcurrentHashMap<String, Object>();
+
         final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
         final Calendar cal = new GregorianCalendar();
@@ -444,16 +447,16 @@ public final class ILVReport extends DispatchAction {
         result.put("authorofessay", ilvf.getAuthorofessay());
         result.put("titleofessay", ilvf.getTitleofessay());
         result.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
-        result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName()
-                + ": " + ReadSystemConfigurations.getServerWelcomepage());
+        result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName() + ": "
+                + ReadSystemConfigurations.getServerWelcomepage());
 
         return result;
     }
 
-    private Map<String, Object> reportCharite(IlvReportForm ilvf, UserInfo ui) {
+    private Map<String, Object> reportCharite(final IlvReportForm ilvf, final UserInfo ui) {
 
-        Map<String, Object> result = new ConcurrentHashMap<String, Object>();
-        
+        final Map<String, Object> result = new ConcurrentHashMap<String, Object>();
+
         final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
         final Calendar cal = new GregorianCalendar();
@@ -515,24 +518,24 @@ public final class ILVReport extends DispatchAction {
         result.put("authorofessay", ilvf.getAuthorofessay());
         result.put("titleofessay", ilvf.getTitleofessay());
         result.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
-        result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName()
-                + ": " + ReadSystemConfigurations.getServerWelcomepage());
+        result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName() + ": "
+                + ReadSystemConfigurations.getServerWelcomepage());
 
         return result;
     }
-    
+
     /**
      * Get the ILV form number from the wildcard mapping. Defaults to 0, if
      * mapping is invalid.
      */
-    private int getIlvNumber(String path) {
-        
+    private int getIlvNumber(final String path) {
+
         int number = 0;
 
-        if (path != null && path.contains("-")) {            
+        if (path != null && path.contains("-")) {
             try {
                 number = Integer.valueOf(path.substring(path.lastIndexOf("-") + 1, path.length()));
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 LOG.error(e.toString());
             }
         }
