@@ -311,7 +311,7 @@
           <img border="0" src="img/edit.png" alt="<bean:message key="uebersicht.modify" />" title="<bean:message key="uebersicht.modify" />"/></a>
         </logic:notEqual>
         <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-       &nbsp;&nbsp;<a href="prepare-ilv-order-pdf-<bean:write name="userinfo" property="konto.ilvformnr" />.do?method=journalorderdetail&bid=<bean:write name="b" property="id" />"><img border="0" src="img/faxpiktogramm.png" title="<bean:message key="uebersicht.ilv-order" />" /></a>
+       &nbsp;&nbsp;<a href="prepare-ilv-order-pdf-<bean:write name="userinfo" property="konto.ilvformnr" />.do?method=journalorderdetail&bid=<bean:write name="b" property="id" />"><img border="0" src="img/faxpiktogramm.png" title="<bean:message key="ilv-report.titleprepare" />" /></a>
      </logic:notEqual>
      </nobr>      
         <br />
