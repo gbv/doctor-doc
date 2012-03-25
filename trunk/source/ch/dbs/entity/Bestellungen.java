@@ -49,8 +49,8 @@ public class Bestellungen extends AbstractIdEntity {
 
     private AbstractBenutzer benutzer;
     private Konto konto;
-    private Lieferanten lieferant; // neue Verknüpfung zu Tabelle Lieferanten
-    private String bestellquelle; // dient lediglich noch der Führung des doppelten Eintrages in der DB
+    private Lieferanten lieferant;
+    private String bestellquelle; // still needed for table 'bestellungen' in the database. Maybe replaced in the future...
     private String priority;
     private String fileformat;
     private String deloptions;
@@ -63,8 +63,8 @@ public class Bestellungen extends AbstractIdEntity {
     private String issn;
     private String subitonr;
     private String gbvnr;
-    private String trackingnr = ""; // unique Nr. between ordering systems. Needed before saving...
-    private String interne_bestellnr = ""; // falls eine Bibliothek ein eigenes Nummersystem führt
+    private String trackingnr = ""; // unique No. between ordering systems
+    private String interne_bestellnr = ""; // for internal numbering systems of a library
     private String sigel;
     private String bibliothek;
     private String systembemerkung;
@@ -106,39 +106,103 @@ public class Bestellungen extends AbstractIdEntity {
         this.setKonto(k);
         this.setBenutzer(user);
         this.setLieferant(of.getLieferant());
-        if (of.getMediatype() != null) { this.setMediatype(of.getMediatype()); } else { this.setMediatype(""); }
-        if (of.getPrio() != null) { this.setPriority(of.getPrio()); } else { this.setPriority("normal"); }
-        if (of.getDeloptions() != null) { this.setDeloptions(of.getDeloptions()); } else { this.setDeloptions(""); }
-        if (of.getFileformat() != null) { this.setFileformat(of.getFileformat()); } else { this.setFileformat(""); }
+        if (of.getMediatype() != null) {
+            this.setMediatype(of.getMediatype());
+        } else {
+            this.setMediatype("");
+        }
+        if (of.getPrio() != null) {
+            this.setPriority(of.getPrio());
+        } else {
+            this.setPriority("normal");
+        }
+        if (of.getDeloptions() != null) {
+            this.setDeloptions(of.getDeloptions());
+        } else {
+            this.setDeloptions("");
+        }
+        if (of.getFileformat() != null) {
+            this.setFileformat(of.getFileformat());
+        } else {
+            this.setFileformat("");
+        }
         if (of.getZeitschriftentitel() != null) {
             this.setZeitschrift(of.getZeitschriftentitel());
         } else {
             this.setZeitschrift("");
         }
-        if (of.getAuthor() != null) { this.setAutor(of.getAuthor()); } else { this.setAutor(""); }
+        if (of.getAuthor() != null) {
+            this.setAutor(of.getAuthor());
+        } else {
+            this.setAutor("");
+        }
         if (of.getArtikeltitel() != null) {
             this.setArtikeltitel(of.getArtikeltitel());
         } else {
             this.setArtikeltitel("");
         }
-        if (of.getJahr() != null) { this.setJahr(of.getJahr()); } else { this.setJahr(""); }
-        if (of.getJahrgang() != null) { this.setJahrgang(of.getJahrgang()); } else { this.setJahrgang(""); }
-        if (of.getHeft() != null) { this.setHeft(of.getHeft()); } else { this.setHeft(""); }
-        if (of.getSeiten() != null) { this.setSeiten(of.getSeiten()); } else { this.setSeiten(""); }
+        if (of.getJahr() != null) {
+            this.setJahr(of.getJahr());
+        } else {
+            this.setJahr("");
+        }
+        if (of.getJahrgang() != null) {
+            this.setJahrgang(of.getJahrgang());
+        } else {
+            this.setJahrgang("");
+        }
+        if (of.getHeft() != null) {
+            this.setHeft(of.getHeft());
+        } else {
+            this.setHeft("");
+        }
+        if (of.getSeiten() != null) {
+            this.setSeiten(of.getSeiten());
+        } else {
+            this.setSeiten("");
+        }
         this.setIssn(of.getIssn()); // darf offenbar null sein
-        if (of.getIsbn() != null) { this.setIsbn(of.getIsbn()); } else { this.setIsbn(""); }
-        if (of.getKapitel() != null) { this.setKapitel(of.getKapitel()); } else { this.setKapitel(""); }
-        if (of.getBuchtitel() != null) { this.setBuchtitel(of.getBuchtitel()); } else { this.setBuchtitel(""); }
-        if (of.getVerlag() != null) { this.setVerlag(of.getVerlag()); } else { this.setVerlag(""); }
-        if (of.getDoi() != null) { this.setDoi(of.getDoi()); } else { this.setDoi(""); }
-        if (of.getPmid() != null) { this.setPmid(of.getPmid()); } else { this.setPmid(""); }
+        if (of.getIsbn() != null) {
+            this.setIsbn(of.getIsbn());
+        } else {
+            this.setIsbn("");
+        }
+        if (of.getKapitel() != null) {
+            this.setKapitel(of.getKapitel());
+        } else {
+            this.setKapitel("");
+        }
+        if (of.getBuchtitel() != null) {
+            this.setBuchtitel(of.getBuchtitel());
+        } else {
+            this.setBuchtitel("");
+        }
+        if (of.getVerlag() != null) {
+            this.setVerlag(of.getVerlag());
+        } else {
+            this.setVerlag("");
+        }
+        if (of.getDoi() != null) {
+            this.setDoi(of.getDoi());
+        } else {
+            this.setDoi("");
+        }
+        if (of.getPmid() != null) {
+            this.setPmid(of.getPmid());
+        } else {
+            this.setPmid("");
+        }
         if (of.getSubitonr() != null) {
             this.setSubitonr(of.getSubitonr());
         } else {
             this.setSubitonr(""); // darf zwar null sein, war aber praktischerweise nie
         }
         this.setGbvnr(of.getGbvnr());
-        if (of.getTrackingnr() != null) { this.setTrackingnr(of.getTrackingnr()); } else { this.setTrackingnr(""); }
+        if (of.getTrackingnr() != null) {
+            this.setTrackingnr(of.getTrackingnr());
+        } else {
+            this.setTrackingnr("");
+        }
         if (of.getInterne_bestellnr() != null) {
             this.setInterne_bestellnr(of.getInterne_bestellnr());
         } else {
@@ -156,11 +220,14 @@ public class Bestellungen extends AbstractIdEntity {
         } else {
             this.setSystembemerkung("");
         }
-        if (of.getNotizen() != null) { this.setNotizen(of.getNotizen()); } else { this.setNotizen(""); }
+        if (of.getNotizen() != null) {
+            this.setNotizen(of.getNotizen());
+        } else {
+            this.setNotizen("");
+        }
         this.setKaufpreis(of.getKaufpreis());
         this.setWaehrung(of.getWaehrung());
     }
-
 
     public Bestellungen(final Connection cn, final Long id) {
 
@@ -169,14 +236,17 @@ public class Bestellungen extends AbstractIdEntity {
             PreparedStatement pstmt = null;
             ResultSet rs = null;
             try {
-                pstmt = cn.prepareStatement("SELECT * FROM bestellungen AS b INNER JOIN konto AS k USING(KID) INNER JOIN "
-                        + "benutzer AS u USING(UID) WHERE b.bid=?");
+                pstmt = cn
+                        .prepareStatement("SELECT * FROM bestellungen AS b INNER JOIN konto AS k USING(KID) INNER JOIN "
+                                + "benutzer AS u USING(UID) WHERE b.bid=?");
                 pstmt.setLong(1, id);
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
                     getBestellung(rs, cn);
-                    if (checkAnonymize(this)) { anonymize(this); }
+                    if (checkAnonymize(this)) {
+                        anonymize(this);
+                    }
                 }
 
             } catch (final Exception e) {
@@ -242,8 +312,6 @@ public class Bestellungen extends AbstractIdEntity {
         }
     }
 
-
-
     /**
      *
      * @param vorkomma
@@ -254,15 +322,18 @@ public class Bestellungen extends AbstractIdEntity {
 
         BigDecimal bd = null;
 
-        if (vorkomma != null && nachkomma != null
-                && (!vorkomma.equals("") || !nachkomma.equals("")) // mind. ein Feld muss ausgefüllt sein
+        if (vorkomma != null && nachkomma != null && (!vorkomma.equals("") || !nachkomma.equals("")) // mind. ein Feld muss ausgefüllt sein
                 && vorkomma.matches("[0-9]*") && nachkomma.matches("[0-9]*")) {
 
             bd = new BigDecimal("0.00");
 
-            if (!"".equals(vorkomma)) { bd = new BigDecimal(vorkomma + ".00"); }
+            if (!"".equals(vorkomma)) {
+                bd = new BigDecimal(vorkomma + ".00");
+            }
             // exp = 1 => Leerstring
-            if (!"".equals(nachkomma)) { bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length())); }
+            if (!"".equals(nachkomma)) {
+                bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length()));
+            }
 
         }
 
@@ -494,7 +565,9 @@ public class Bestellungen extends AbstractIdEntity {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Bestellungen b = new Bestellungen(rs, cn);
-                if (checkAnonymize(b)) { b = anonymize(b); }
+                if (checkAnonymize(b)) {
+                    b = anonymize(b);
+                }
                 bl.add(b);
             }
 
@@ -519,8 +592,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param the user {@link ch.dbs.entity.Benutzer}
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public List<Bestellungen> getAllUserOrders(final AbstractBenutzer u, final String sort, final String sortorder, final String dateFrom,
-            final String dateTo, final Connection cn) {
+    public List<Bestellungen> getAllUserOrders(final AbstractBenutzer u, final String sort, final String sortorder,
+            final String dateFrom, final String dateTo, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -543,13 +616,17 @@ public class Bestellungen extends AbstractIdEntity {
                     b.setOrderdate(rs.getString("orderdate"));
                     b.setStatustext(rs.getString("state"));
                     b = getBestellung(b, rs, cn);
-                    if (checkAnonymize(b)) { b = anonymize(b); }
+                    if (checkAnonymize(b)) {
+                        b = anonymize(b);
+                    }
                     bl.add(b);
                 } else { //Bestellung bereits abgefüllt, nur noch korrekter Status setzen
                     b = bl.get(bl.size() - 1);
                     b.setStatustext(rs.getString("state"));
                     b.setStatusdate(rs.getString("statedate"));
-                    if (checkAnonymize(b)) { b = anonymize(b); }
+                    if (checkAnonymize(b)) {
+                        b = anonymize(b);
+                    }
                     bl.set(bl.size() - 1, b);
                 }
 
@@ -589,28 +666,32 @@ public class Bestellungen extends AbstractIdEntity {
      * @param boolean subitocheck (true => nur Subitobestellungen)
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public List<Bestellungen> getAllUserOrdersPerStatus(final AbstractBenutzer u, final String status, final String sort,
-            final String sortorder, final String dateFrom, final String dateTo, final boolean subitocheck, final Connection cn) {
+    public List<Bestellungen> getAllUserOrdersPerStatus(final AbstractBenutzer u, final String status,
+            final String sort, final String sortorder, final String dateFrom, final String dateTo,
+            final boolean subitocheck, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             String mysql = "";
             if (!subitocheck) {
-                mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                        + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? AND orderdate >= ? "
-                        + "AND orderdate <= ? ORDER BY ", sort, sortorder);
+                mysql = sortOrder(
+                        "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
+                                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? AND orderdate >= ? "
+                                + "AND orderdate <= ? ORDER BY ", sort, sortorder);
                 if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? "
-                            + "AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ",
-                            sort, sortorder);
+                            + "AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort,
+                            sortorder);
                 }
             }
             if (subitocheck) {
-                mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                        + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? "
-                        + "AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+                mysql = sortOrder(
+                        "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
+                                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? "
+                                + "AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort,
+                        sortorder);
                 if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "s( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? "
@@ -638,13 +719,17 @@ public class Bestellungen extends AbstractIdEntity {
                     b.setOrderdate(rs.getString("orderdate"));
                     b.setStatustext(rs.getString("state"));
                     b = getBestellung(b, rs, cn);
-                    if (checkAnonymize(b)) { b = anonymize(b); }
+                    if (checkAnonymize(b)) {
+                        b = anonymize(b);
+                    }
                     bl.add(b);
                 } else { //Bestellung bereits abgefüllt, nur noch korrekter Status setzen
                     b = bl.get(bl.size() - 1);
                     b.setStatustext(rs.getString("state"));
                     b.setStatusdate(rs.getString("statedate"));
-                    if (checkAnonymize(b)) { b = anonymize(b); }
+                    if (checkAnonymize(b)) {
+                        b = anonymize(b);
+                    }
                     bl.set(bl.size() - 1, b);
                 }
 
@@ -681,8 +766,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param sortorder Aufsteigend/Absteigend
      * @return
      */
-    public List<Bestellungen> getOrdersPerKonto(final Konto k, final String sort, final String sortorder, final String dateFrom, final String dateTo,
-            final Connection cn) {
+    public List<Bestellungen> getOrdersPerKonto(final Konto k, final String sort, final String sortorder,
+            final String dateFrom, final String dateTo, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -698,7 +783,9 @@ public class Bestellungen extends AbstractIdEntity {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Bestellungen b = new Bestellungen(rs, cn);
-                if (checkAnonymize(b)) { b = anonymize(b); }
+                if (checkAnonymize(b)) {
+                    b = anonymize(b);
+                }
                 bl.add(b);
             }
 
@@ -735,17 +822,19 @@ public class Bestellungen extends AbstractIdEntity {
      * @param boolean subitocheck (true => nur Subitobestellungen)
      * @return
      */
-    public List<Bestellungen> getOrdersPerKontoPerStatus(final long KID, final String status, final String sort, final String sortorder,
-            final String dateFrom, final String dateTo, final boolean subitocheck, final Connection cn) {
+    public List<Bestellungen> getOrdersPerKontoPerStatus(final long KID, final String status, final String sort,
+            final String sortorder, final String dateFrom, final String dateTo, final boolean subitocheck,
+            final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             String mysql = "";
             if (!subitocheck) {
-                mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                        + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND orderdate >= ? "
-                        + "AND orderdate <= ? ORDER BY ", sort, sortorder);
+                mysql = sortOrder(
+                        "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
+                                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND orderdate >= ? "
+                                + "AND orderdate <= ? ORDER BY ", sort, sortorder);
                 if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT "
@@ -759,8 +848,8 @@ public class Bestellungen extends AbstractIdEntity {
                 if ("offen".equals(status)) {
                     mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
                             + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT "
-                            + "state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY "
-                            , sort, sortorder);
+                            + "state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ",
+                            sort, sortorder);
                 }
             }
 
@@ -781,7 +870,9 @@ public class Bestellungen extends AbstractIdEntity {
                 b.setOrderdate(rs.getString("orderdate"));
                 b.setStatustext(rs.getString("state"));
                 b = getBestellung(b, rs, cn);
-                if (checkAnonymize(b)) { b = anonymize(b); }
+                if (checkAnonymize(b)) {
+                    b = anonymize(b);
+                }
                 bl.add(b);
 
             }
@@ -888,8 +979,8 @@ public class Bestellungen extends AbstractIdEntity {
             cal.setTimeZone(TimeZone.getTimeZone(k.getTimezone()));
             final String datum = String.format("%1$tY-01-01 00:00:00", cal); // Kalenderjahr berechnen
             // SQL ausführen
-            pstmt = cn.prepareStatement(
-                    "SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
+            pstmt = cn
+                    .prepareStatement("SELECT count(bid) FROM `bestellungen` WHERE `KID` = ? AND `UID` = ? AND `orderdate` >= ?");
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, uid);
             pstmt.setString(3, datum);
@@ -933,15 +1024,16 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String dateTo Ende Datumsbereich
      * @return
      */
-    public List<OrderStatistikForm> countOrdersPerKonto(final Konto k, final String sort,
-            final String sortorder, final String dateFrom, final String dateTo, final Connection cn) {
+    public List<OrderStatistikForm> countOrdersPerKonto(final Konto k, final String sort, final String sortorder,
+            final String dateFrom, final String dateTo, final Connection cn) {
         final ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement(sortOrder(
                     "SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder));
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ORDER BY ",
+                    sort, sortorder));
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -989,9 +1081,9 @@ public class Bestellungen extends AbstractIdEntity {
      * @param boolean subitocheck (true => nur Subitobestellungen)
      * @return
      */
-    public List<OrderStatistikForm> countOrdersPerKontoPerStatus(final long KID,
-            final String status, final String sort, final String sortorder, final String dateFrom,
-            final String dateTo, final boolean subitocheck, final Connection cn) {
+    public List<OrderStatistikForm> countOrdersPerKontoPerStatus(final long KID, final String status,
+            final String sort, final String sortorder, final String dateFrom, final String dateTo,
+            final boolean subitocheck, final Connection cn) {
         final ArrayList<OrderStatistikForm> auflistung = new ArrayList<OrderStatistikForm>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1002,19 +1094,22 @@ public class Bestellungen extends AbstractIdEntity {
                         + "ON ( b.UID = u.UID ) WHERE b.kid=? AND state=? AND orderdate >= ? AND orderdate <= ? "
                         + "ORDER BY ", sort, sortorder);
                 if ("offen".equals(status)) {
-                    mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? "
-                            + "ORDER BY ", sort, sortorder);
+                    mysql = sortOrder(
+                            "SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
+                                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? "
+                                    + "ORDER BY ", sort, sortorder);
                 }
             }
             if (subitocheck) {
-                mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                        + "ON ( b.UID = u.UID ) WHERE b.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
-                        + "ORDER BY ", sort, sortorder);
+                mysql = sortOrder(
+                        "SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
+                                + "ON ( b.UID = u.UID ) WHERE b.kid=? AND state=? AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
+                                + "ORDER BY ", sort, sortorder);
                 if ("offen".equals(status)) {
-                    mysql = sortOrder("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? "
-                            + "AND orderdate <= ? ORDER BY ", sort, sortorder);
+                    mysql = sortOrder(
+                            "SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
+                                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? "
+                                    + "AND orderdate <= ? ORDER BY ", sort, sortorder);
                 }
             }
 
@@ -1238,15 +1333,21 @@ public class Bestellungen extends AbstractIdEntity {
         this.setId(rs.getLong("BID"));
         final Lieferanten supplier = new Lieferanten();
         //    Falls vorname nicht im rs ist kein Benutzer abfüllen
-        try {  rs.findColumn("vorname");
-        final AbstractBenutzer b = new AbstractBenutzer();
-        // rs may be ambigous for Ort and PLZ: get User from UID
-        this.setBenutzer(b.getUser(rs.getLong("UID"), cn));
-        } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 1: " + se.toString()); }
+        try {
+            rs.findColumn("vorname");
+            final AbstractBenutzer b = new AbstractBenutzer();
+            // rs may be ambigous for Ort and PLZ: get User from UID
+            this.setBenutzer(b.getUser(rs.getLong("UID"), cn));
+        } catch (final SQLException se) {
+            LOG.ludicrous("getBestellung(ResultSet rs) Pos. 1: " + se.toString());
+        }
         // Falls biblioname nicht im rs is kein Konto abfüllen
-        try {  rs.findColumn("biblioname");
-        this.setKonto(new Konto(rs));
-        } catch (final SQLException se) { LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString()); }
+        try {
+            rs.findColumn("biblioname");
+            this.setKonto(new Konto(rs));
+        } catch (final SQLException se) {
+            LOG.ludicrous("getBestellung(ResultSet rs) Pos. 2: " + se.toString());
+        }
         this.setLieferant(supplier.getLieferantFromLid(rs.getLong("lid"), cn));
         if (this.getLieferant().getLid() == null) {
             this.getLieferant().setLid(Long.valueOf(1));
@@ -1327,7 +1428,9 @@ public class Bestellungen extends AbstractIdEntity {
         b.setSystembemerkung(rs.getString("systembemerkung"));
         b.setNotizen(rs.getString("notizen"));
         // Null-Werte nicht als 0.0 abfüllen...!
-        if (rs.getString("kaufpreis") != null) { b.setKaufpreis(rs.getBigDecimal("kaufpreis")); }
+        if (rs.getString("kaufpreis") != null) {
+            b.setKaufpreis(rs.getBigDecimal("kaufpreis"));
+        }
         b.setWaehrung(rs.getString("waehrung"));
         b.setDoi(rs.getString("doi"));
         b.setPmid(rs.getString("pmid"));
@@ -1360,7 +1463,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countOrdersPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countOrdersPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
 
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
@@ -1417,7 +1521,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countLieferantPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countLieferantPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -1440,7 +1545,9 @@ public class Bestellungen extends AbstractIdEntity {
                 count = rs.getInt("anzahl");
                 total = total + count;
                 label = rs.getString("bestellquelle");
-                if (label == null || label.equals("") || label.equals("0")) { label = "k.A."; }
+                if (label == null || label.equals("") || label.equals("0")) {
+                    label = "k.A.";
+                }
                 osf.setLabel(label);
                 osf.setAnzahl(count);
                 osf.setPreiswaehrung(costsPerField(kid, dateFrom, dateTo, "bestellquelle", label, cn));
@@ -1451,8 +1558,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal(total);
 
         } catch (final Exception e) {
-            LOG.error("countLieferantPerKonto(Long kid, String dateFrom, String dateTo, "
-                    + "Connection cn): " + e.toString());
+            LOG.error("countLieferantPerKonto(Long kid, String dateFrom, String dateTo, " + "Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -1480,8 +1587,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countGratisKostenpflichtigPerKonto(final Long kid, final String dateFrom, final String dateTo,
-            final Connection cn) {
+    public OrderStatistikForm countGratisKostenpflichtigPerKonto(final Long kid, final String dateFrom,
+            final String dateTo, final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
 
@@ -1574,8 +1681,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm sumGratisKostenpflichtigPerKonto(final Long kid, final String dateFrom, final String dateTo,
-            final Connection cn) {
+    public OrderStatistikForm sumGratisKostenpflichtigPerKonto(final Long kid, final String dateFrom,
+            final String dateTo, final Connection cn) {
 
         final OrderStatistikForm cost = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
@@ -1635,7 +1742,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countLieferartPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countLieferartPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -1666,8 +1774,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal(total);
 
         } catch (final Exception e) {
-            LOG.error("countLieferartPerKonto(Long kid, "
-                    + "String dateFrom, String dateTo, Connection cn): " + e.toString());
+            LOG.error("countLieferartPerKonto(Long kid, " + "String dateFrom, String dateTo, Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -1695,7 +1803,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countMediatypePerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countMediatypePerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -1726,8 +1835,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal(total);
 
         } catch (final Exception e) {
-            LOG.error("countMediatypePerKonto(Long kid, "
-                    + "String dateFrom, String dateTo, Connection cn): " + e.toString());
+            LOG.error("countMediatypePerKonto(Long kid, " + "String dateFrom, String dateTo, Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -1755,7 +1864,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countFileformatPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countFileformatPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int countl = 0;
@@ -1787,8 +1897,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal(total);
 
         } catch (final Exception e) {
-            LOG.error("countFileformatPerKonto(Long kid, "
-                    + "String dateFrom, String dateTo, Connection cn): " + e.toString());
+            LOG.error("countFileformatPerKonto(Long kid, " + "String dateFrom, String dateTo, Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -1816,7 +1926,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countPriorityPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countPriorityPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -1860,8 +1971,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal(total);
 
         } catch (final Exception e) {
-            LOG.error("countPriorityPerKonto(Long kid, "
-                    + "String dateFrom, String dateTo, Connection cn): " + e.toString());
+            LOG.error("countPriorityPerKonto(Long kid, " + "String dateFrom, String dateTo, Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -1889,7 +2000,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countGenderPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countGenderPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -1902,10 +2014,11 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             // SQL ausführen
-            pstmt = cn.prepareStatement("SELECT anrede, UID, COUNT(*) AS anzahl FROM ( "
-                    + "SELECT anrede, UID, COUNT(*) AS z FROM ( SELECT anrede, u.UID FROM `bestellungen` AS b "
-                    + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) "
-                    + "AS temp GROUP by UID ) AS x GROUP BY anrede ORDER BY anzahl DESC");
+            pstmt = cn
+                    .prepareStatement("SELECT anrede, UID, COUNT(*) AS anzahl FROM ( "
+                            + "SELECT anrede, UID, COUNT(*) AS z FROM ( SELECT anrede, u.UID FROM `bestellungen` AS b "
+                            + "INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) "
+                            + "AS temp GROUP by UID ) AS x GROUP BY anrede ORDER BY anzahl DESC");
             pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -1914,8 +2027,12 @@ public class Bestellungen extends AbstractIdEntity {
             while (rs.next()) {
                 final OrderStatistikForm osf = new OrderStatistikForm();
                 String label = "";
-                if (rs.getString("anrede").equals("Herr")) { label = "stats.male"; }
-                if (rs.getString("anrede").equals("Frau")) { label = "stats.female"; }
+                if (rs.getString("anrede").equals("Herr")) {
+                    label = "stats.male";
+                }
+                if (rs.getString("anrede").equals("Frau")) {
+                    label = "stats.female";
+                }
                 count = rs.getInt("anzahl");
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "anrede", rs.getString("anrede"), cn);
                 total = total + count;
@@ -1924,8 +2041,8 @@ public class Bestellungen extends AbstractIdEntity {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
-                    osf.setPreiswaehrung(costsPerFieldInnerJoin(
-                            kid, dateFrom, dateTo, "anrede", rs.getString("anrede"), cn));
+                    osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "anrede",
+                            rs.getString("anrede"), cn));
                     list.add(osf);
                 } else {
                     unknown = unknown + count;
@@ -1939,8 +2056,7 @@ public class Bestellungen extends AbstractIdEntity {
                 osf.setLabel("stats.notSpecified");
                 osf.setAnzahl(unknown);
                 osf.setAnzahl_two(unknownOrders);
-                osf.setPreiswaehrung(costsPerFieldInnerJoin(
-                        kid, dateFrom, dateTo, "anrede", "", cn));
+                osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "anrede", "", cn));
                 list.add(osf);
             }
 
@@ -1977,7 +2093,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countInstPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countInstPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -1990,10 +2107,11 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             // SQL ausführen
-            pstmt = cn.prepareStatement("SELECT institut, UID, COUNT(*) AS anzahl "
-                    + "FROM ( SELECT institut, UID, COUNT(*) AS z FROM ( SELECT institut, u.UID FROM `bestellungen` "
-                    + "AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp "
-                    + "GROUP by UID ) AS x GROUP BY institut ORDER BY anzahl DESC");
+            pstmt = cn
+                    .prepareStatement("SELECT institut, UID, COUNT(*) AS anzahl "
+                            + "FROM ( SELECT institut, UID, COUNT(*) AS z FROM ( SELECT institut, u.UID FROM `bestellungen` "
+                            + "AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp "
+                            + "GROUP by UID ) AS x GROUP BY institut ORDER BY anzahl DESC");
             pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -2067,7 +2185,8 @@ public class Bestellungen extends AbstractIdEntity {
      *            kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countAbteilungPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countAbteilungPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -2080,11 +2199,12 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             // SQL ausführen
-            pstmt = cn.prepareStatement("SELECT abteilung, UID, COUNT(*) AS anzahl "
-                    + "FROM ( SELECT abteilung, UID, COUNT(*) AS z FROM "
-                    + "( SELECT abteilung, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
-                    + "GROUP BY abteilung ORDER BY anzahl DESC");
+            pstmt = cn
+                    .prepareStatement("SELECT abteilung, UID, COUNT(*) AS anzahl "
+                            + "FROM ( SELECT abteilung, UID, COUNT(*) AS z FROM "
+                            + "( SELECT abteilung, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
+                            + "GROUP BY abteilung ORDER BY anzahl DESC");
             pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -2125,8 +2245,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal_two(totalOrders);
 
         } catch (final Exception e) {
-            LOG.error("countAbteilungPerKonto(Long kid, "
-                    + "String dateFrom, String dateTo, Connection cn): " + e.toString());
+            LOG.error("countAbteilungPerKonto(Long kid, " + "String dateFrom, String dateTo, Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -2155,7 +2275,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countCategoriesPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countCategoriesPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -2168,11 +2289,12 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             // SQL ausführen
-            pstmt = cn.prepareStatement("SELECT category, UID, COUNT(*) AS anzahl "
-                    + "FROM ( SELECT category, UID, COUNT(*) AS z FROM "
-                    + "( SELECT category, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
-                    + "GROUP BY category ORDER BY anzahl DESC");
+            pstmt = cn
+                    .prepareStatement("SELECT category, UID, COUNT(*) AS anzahl "
+                            + "FROM ( SELECT category, UID, COUNT(*) AS z FROM "
+                            + "( SELECT category, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
+                            + "GROUP BY category ORDER BY anzahl DESC");
             pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -2190,7 +2312,8 @@ public class Bestellungen extends AbstractIdEntity {
                     osf.setLabel(label);
                     osf.setAnzahl(count);
                     osf.setAnzahl_two(orders);
-                    osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "category", category.getId().toString(), cn));
+                    osf.setPreiswaehrung(costsPerFieldInnerJoin(kid, dateFrom, dateTo, "category", category.getId()
+                            .toString(), cn));
                     list.add(osf);
                 } else {
                     unknown = unknown + count;
@@ -2213,8 +2336,8 @@ public class Bestellungen extends AbstractIdEntity {
             os.setTotal_two(totalOrders);
 
         } catch (final Exception e) {
-            LOG.error("countCategoriesPerKonto(Long kid, "
-                    + "String dateFrom, String dateTo, Connection cn): " + e.toString());
+            LOG.error("countCategoriesPerKonto(Long kid, " + "String dateFrom, String dateTo, Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -2242,7 +2365,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countPLZPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countPLZPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -2330,7 +2454,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countLandPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countLandPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -2343,11 +2468,12 @@ public class Bestellungen extends AbstractIdEntity {
         ResultSet rs = null;
         try {
             // SQL ausführen
-            pstmt = cn.prepareStatement("SELECT land, UID, COUNT(*) AS anzahl "
-                    + "FROM ( SELECT land, UID, COUNT(*) AS z "
-                    + "FROM ( SELECT u.land, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                    + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
-                    + "GROUP BY land ORDER BY anzahl DESC");
+            pstmt = cn
+                    .prepareStatement("SELECT land, UID, COUNT(*) AS anzahl "
+                            + "FROM ( SELECT land, UID, COUNT(*) AS z "
+                            + "FROM ( SELECT u.land, u.UID FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
+                            + "ON ( b.UID = u.UID ) WHERE b.kid=? AND orderdate >= ? AND orderdate <= ? ) AS temp GROUP by UID ) AS x "
+                            + "GROUP BY land ORDER BY anzahl DESC");
             pstmt.setLong(1, kid);
             pstmt.setString(2, dateFrom);
             pstmt.setString(3, dateTo);
@@ -2414,7 +2540,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countISSNPerKonto(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countISSNPerKonto(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int count = 0;
@@ -2495,16 +2622,16 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String feldbezeichnung String wert Connection cn
      * @return PreisWaehrungForm
      */
-    private PreisWaehrungForm costsPerField(final Long kid, final String dateFrom, final String dateTo, final String feldbezeichnung,
-            final String wert, final Connection cn) {
+    private PreisWaehrungForm costsPerField(final Long kid, final String dateFrom, final String dateTo,
+            final String feldbezeichnung, final String wert, final Connection cn) {
         final PreisWaehrungForm pw = new PreisWaehrungForm();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             // SQL ausführen
-            pstmt = cn.prepareStatement("SELECT sum( kaufpreis ) AS summe, waehrung, "
-                    + feldbezeichnung + " FROM bestellungen WHERE KID=? AND "
-                    + feldbezeichnung + " = ? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung");
+            pstmt = cn.prepareStatement("SELECT sum( kaufpreis ) AS summe, waehrung, " + feldbezeichnung
+                    + " FROM bestellungen WHERE KID=? AND " + feldbezeichnung
+                    + " = ? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung");
             pstmt.setLong(1, kid);
             pstmt.setString(2, wert);
             pstmt.setString(3, dateFrom);
@@ -2580,16 +2707,16 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String feldbezeichnung String wert Connection cn
      * @return PreisWaehrungForm
      */
-    private PreisWaehrungForm costsPerFieldInnerJoin(final Long kid, final String dateFrom, final String dateTo, final String feldbezeichnung,
-            final String wert, final Connection cn) {
+    private PreisWaehrungForm costsPerFieldInnerJoin(final Long kid, final String dateFrom, final String dateTo,
+            final String feldbezeichnung, final String wert, final Connection cn) {
         final PreisWaehrungForm pw = new PreisWaehrungForm();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             // SQL ausführen
             pstmt = cn.prepareStatement("SELECT waehrung, sum( kaufpreis ) AS summe FROM `bestellungen` AS b "
-                    + "INNER JOIN (`benutzer` AS u ) ON (b.UID=u.UID) WHERE u."
-                    + feldbezeichnung + " = ? AND KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung");
+                    + "INNER JOIN (`benutzer` AS u ) ON (b.UID=u.UID) WHERE u." + feldbezeichnung
+                    + " = ? AND KID=? AND orderdate >= ? AND orderdate <= ? GROUP BY waehrung");
             pstmt.setString(1, wert);
             pstmt.setLong(2, kid);
             pstmt.setString(3, dateFrom);
@@ -2665,7 +2792,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countRowsUID(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countRowsUID(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
@@ -2710,7 +2838,6 @@ public class Bestellungen extends AbstractIdEntity {
         return os;
     }
 
-
     /**
      * Zählt anhand der kid, eines Zeitraumes und einer ISSN die Anzahl Kunden, welche Artikel von einer bestimmten
      * Zeitschrift bestellt haben
@@ -2720,7 +2847,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String issn Connection cn
      * @return int anzahl
      */
-    public int countRowsUIDPerISSN(final Long kid, final String dateFrom, final String dateTo, final String iss, final Connection cn) {
+    public int countRowsUIDPerISSN(final Long kid, final String dateFrom, final String dateTo, final String iss,
+            final Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2779,8 +2907,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo String benutzerfeld String inhalt Connection cn
      * @return int anzahl
      */
-    public int countRowsPerFeld(final Long kid, final String dateFrom, final String dateTo, final String benutzerfeld, final String inhalt,
-            final Connection cn) {
+    public int countRowsPerFeld(final Long kid, final String dateFrom, final String dateTo, final String benutzerfeld,
+            final String inhalt, final Connection cn) {
         int anzahl = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -2842,7 +2970,8 @@ public class Bestellungen extends AbstractIdEntity {
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
-    public OrderStatistikForm countOrderYears(final Long kid, final String dateFrom, final String dateTo, final Connection cn) {
+    public OrderStatistikForm countOrderYears(final Long kid, final String dateFrom, final String dateTo,
+            final Connection cn) {
         final OrderStatistikForm os = new OrderStatistikForm();
         final ArrayList<OrderStatistikForm> list = new ArrayList<OrderStatistikForm>();
         int anzahl = 0;
@@ -2923,7 +3052,7 @@ public class Bestellungen extends AbstractIdEntity {
             while (rs.next()) {
                 final OrderStatistikForm osf = new OrderStatistikForm();
                 osf.setAnzahl(rs.getInt("count(bid)"));
-                total = total +  osf.getAnzahl();
+                total = total + osf.getAnzahl();
                 osf.setTotal(total);
                 auflistung.add(osf);
             }
@@ -3258,8 +3387,7 @@ public class Bestellungen extends AbstractIdEntity {
         ps.setLong(1, b.getKonto().getId());
         ps.setLong(2, b.getBenutzer().getId());
         if (b.getLieferant() == null || b.getLieferant().getLid() == null
-                || "".equals(b.getLieferant().getLid().toString())
-                || "0".equals(b.getLieferant().getLid().toString())) {
+                || "".equals(b.getLieferant().getLid().toString()) || "0".equals(b.getLieferant().getLid().toString())) {
             ps.setString(3, "1");
         } else {
             ps.setLong(3, b.getLieferant().getLid());
@@ -3269,51 +3397,129 @@ public class Bestellungen extends AbstractIdEntity {
         } else {
             ps.setString(4, b.getPriority());
         }
-        if (b.getDeloptions() == null) { ps.setString(5, ""); } else { ps.setString(5, b.getDeloptions()); }
-        if (b.getFileformat() == null) { ps.setString(6, ""); } else { ps.setString(6, b.getFileformat()); }
-        if (b.getHeft() == null) { ps.setString(7, ""); } else { ps.setString(7, b.getHeft()); }
-        if (b.getSeiten() == null) { ps.setString(8, ""); } else { ps.setString(8, b.getSeiten()); }
+        if (b.getDeloptions() == null) {
+            ps.setString(5, "");
+        } else {
+            ps.setString(5, b.getDeloptions());
+        }
+        if (b.getFileformat() == null) {
+            ps.setString(6, "");
+        } else {
+            ps.setString(6, b.getFileformat());
+        }
+        if (b.getHeft() == null) {
+            ps.setString(7, "");
+        } else {
+            ps.setString(7, b.getHeft());
+        }
+        if (b.getSeiten() == null) {
+            ps.setString(8, "");
+        } else {
+            ps.setString(8, b.getSeiten());
+        }
         ps.setString(9, b.getIssn());
         ps.setString(10, b.getSigel());
         ps.setString(11, b.getBibliothek());
-        if (b.getAutor() == null) { ps.setString(12, ""); } else { ps.setString(12, b.getAutor()); }
-        if (b.getArtikeltitel() == null) { ps.setString(13, ""); } else { ps.setString(13, b.getArtikeltitel()); }
-        if (b.getJahrgang() == null) { ps.setString(14, ""); } else { ps.setString(14, b.getJahrgang()); }
-        if (b.getZeitschrift() == null) { ps.setString(15, ""); } else { ps.setString(15, b.getZeitschrift()); }
-        if (b.getJahr() == null) { ps.setString(16, ""); } else { ps.setString(16, b.getJahr()); }
-        if (b.getSubitonr() == null) { ps.setString(17, ""); } else { ps.setString(17, b.getSubitonr()); }
+        if (b.getAutor() == null) {
+            ps.setString(12, "");
+        } else {
+            ps.setString(12, b.getAutor());
+        }
+        if (b.getArtikeltitel() == null) {
+            ps.setString(13, "");
+        } else {
+            ps.setString(13, b.getArtikeltitel());
+        }
+        if (b.getJahrgang() == null) {
+            ps.setString(14, "");
+        } else {
+            ps.setString(14, b.getJahrgang());
+        }
+        if (b.getZeitschrift() == null) {
+            ps.setString(15, "");
+        } else {
+            ps.setString(15, b.getZeitschrift());
+        }
+        if (b.getJahr() == null) {
+            ps.setString(16, "");
+        } else {
+            ps.setString(16, b.getJahr());
+        }
+        if (b.getSubitonr() == null) {
+            ps.setString(17, "");
+        } else {
+            ps.setString(17, b.getSubitonr());
+        }
         if (b.getGbvnr() != null && b.getGbvnr().equals("")) {
             ps.setString(18, null); // falls keine Angaben => null setzen (Anzeige)
         } else {
             ps.setString(18, b.getGbvnr());
         }
-        if (b.getTrackingnr() == null) { ps.setString(19, ""); } else { ps.setString(19, b.getTrackingnr()); }
+        if (b.getTrackingnr() == null) {
+            ps.setString(19, "");
+        } else {
+            ps.setString(19, b.getTrackingnr());
+        }
         if (b.getInterne_bestellnr() == null) {
             ps.setString(20, "");
         } else {
             ps.setString(20, b.getInterne_bestellnr());
         }
-        if (b.getSystembemerkung() == null) { ps.setString(21, ""); } else { ps.setString(21, b.getSystembemerkung()); }
-        if (b.getNotizen() == null) { ps.setString(22, ""); } else { ps.setString(22, b.getNotizen()); }
+        if (b.getSystembemerkung() == null) {
+            ps.setString(21, "");
+        } else {
+            ps.setString(21, b.getSystembemerkung());
+        }
+        if (b.getNotizen() == null) {
+            ps.setString(22, "");
+        } else {
+            ps.setString(22, b.getNotizen());
+        }
         if (b.getKaufpreis() != null) {
             ps.setBigDecimal(23, b.getKaufpreis());
         } else {
             ps.setString(23, null); // keine Preisangaben als Null setzen
         }
-        if (b.getWaehrung() != null) { ps.setString(24, b.getWaehrung()); } else {
+        if (b.getWaehrung() != null) {
+            ps.setString(24, b.getWaehrung());
+        } else {
             if (b.getKaufpreis() == null) {
                 ps.setString(24, null);
             } else {
-                ps.setString(24, "EUR");  // um Kombination Kaufpreis!= null && Waherung==null zu verhindern
+                ps.setString(24, "EUR"); // um Kombination Kaufpreis!= null && Waherung==null zu verhindern
             }
         }
-        if (b.getDoi() == null) { ps.setString(25, ""); } else { ps.setString(25, b.getDoi()); }
-        if (b.getDoi() == null) { ps.setString(26, ""); } else { ps.setString(26, b.getPmid()); }
-        if (b.getDoi() == null) { ps.setString(27, ""); } else { ps.setString(27, b.getIsbn()); }
+        if (b.getDoi() == null) {
+            ps.setString(25, "");
+        } else {
+            ps.setString(25, b.getDoi());
+        }
+        if (b.getDoi() == null) {
+            ps.setString(26, "");
+        } else {
+            ps.setString(26, b.getPmid());
+        }
+        if (b.getDoi() == null) {
+            ps.setString(27, "");
+        } else {
+            ps.setString(27, b.getIsbn());
+        }
         ps.setString(28, b.getMediatype());
-        if (b.getDoi() == null) { ps.setString(29, ""); } else { ps.setString(29, b.getVerlag()); }
-        if (b.getDoi() == null) { ps.setString(30, ""); } else { ps.setString(30, b.getKapitel()); }
-        if (b.getDoi() == null) { ps.setString(31, ""); } else { ps.setString(31, b.getBuchtitel()); }
+        if (b.getDoi() == null) {
+            ps.setString(29, "");
+        } else {
+            ps.setString(29, b.getVerlag());
+        }
+        if (b.getDoi() == null) {
+            ps.setString(30, "");
+        } else {
+            ps.setString(30, b.getKapitel());
+        }
+        if (b.getDoi() == null) {
+            ps.setString(31, "");
+        } else {
+            ps.setString(31, b.getBuchtitel());
+        }
         ps.setString(32, b.getOrderdate());
         ps.setString(33, b.getStatusdate());
         ps.setString(34, b.getStatustext());
@@ -3326,7 +3532,5 @@ public class Bestellungen extends AbstractIdEntity {
 
         return ps;
     }
-
-
 
 }

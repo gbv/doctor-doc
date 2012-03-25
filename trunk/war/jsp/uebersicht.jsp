@@ -346,7 +346,8 @@
               </logic:empty>
               <logic:notEmpty name="b" property="lieferant.emailILL">
               <!-- ILL email defined -->
-              	<span class="title" title="<bean:write name="b" property="bestellquelle" />|<a href='mailto:<bean:write name="b" property="lieferant.emailILL" />'><bean:write name="b" property="lieferant.emailILL" /></a>">
+              	<span class="title" title="<a title='<bean:message key="supplier.edit" />' href='supplier.do?method=edit&sid=<bean:write name="b" property="lieferant.lid" />'> <img src='img/edit.png' alt='<bean:message key="supplier.edit" />' /></a>
+              		&nbsp;<bean:message key="impressum.contact" />|<a href='mailto:<bean:write name="b" property="lieferant.emailILL" />'><bean:write name="b" property="lieferant.emailILL" /></a>">
               	<bean:write name="b" property="bestellquelle" />&nbsp;</span>              
               </logic:notEmpty>
             </logic:notEqual>
@@ -451,9 +452,15 @@
       <td><bean:write name="b" property="artikeltitel" /><bean:write name="b" property="kapitel" />&nbsp;</td>
       <td>
       	<span class="title" title="<bean:write name="b" property="jahr" /><logic:notEmpty name="b" property="jahrgang">;<bean:write name="b" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="b" property="heft">(<bean:write name="b" property="heft" />)</logic:notEmpty><logic:notEmpty name="b" property="seiten">:<bean:write name="b" property="seiten" /></logic:notEmpty>|
-      		<bean:write name="b" property="autor" />|
-      		<bean:write name="b" property="verlag" />|  
-      		<bean:write name="b" property="issn" /><bean:write name="b" property="isbn" />|    		
+      		<logic:notEmpty name="b" property="autor"><bean:write name="b" property="autor" /> : </logic:notEmpty>
+      		<logic:notEmpty name="b" property="artikeltitel"><bean:write name="b" property="artikeltitel" />. - </logic:notEmpty>
+      		<logic:notEmpty name="b" property="kapitel"><bean:write name="b" property="kapitel" />. - <bean:message key="uebersicht.in" />: </logic:notEmpty>
+      		<logic:notEmpty name="b" property="zeitschrift"><bean:write name="b" property="zeitschrift" />|</logic:notEmpty>
+      		<logic:notEmpty name="b" property="buchtitel"><bean:write name="b" property="buchtitel" />|</logic:notEmpty>
+      		<logic:notEmpty name="b" property="verlag"><bean:write name="b" property="verlag" />|</logic:notEmpty>
+      		&nbsp;|
+      		<logic:notEmpty name="b" property="issn">ISSN: <bean:write name="b" property="issn" />|</logic:notEmpty>
+      		<logic:notEmpty name="b" property="isbn">ISBN: <bean:write name="b" property="isbn" />|</logic:notEmpty>
 		    <logic:notEmpty name="b" property="pmid">PMID: <a href='http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="b" property="pmid" />' target='_blank'><bean:write name="b" property="pmid" /></a>|</logic:notEmpty>
 		    <logic:notEmpty name="b" property="doi">DOI: <a href='http://dx.doi.org/<bean:write name="b" property="doi" />' target='_blank'><bean:write name="b" property="doi" /></a>|</logic:notEmpty>
       		">

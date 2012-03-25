@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +60,7 @@ import util.Auth;
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
+import ch.dbs.actions.bestellung.BestellformAction;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
@@ -285,7 +287,7 @@ public final class ILVReport extends DispatchAction {
                     MimeBodyPart messageBodyPart = new MimeBodyPart();
 
                     //fill message
-                    messageBodyPart.setText(ilvf.getMailtext());
+                    messageBodyPart.setText(composeMailBody(ui, ilvf));
                     final Multipart multipart = new MimeMultipart();
                     multipart.addBodyPart(messageBodyPart);
 
@@ -543,4 +545,104 @@ public final class ILVReport extends DispatchAction {
         return number;
     }
 
+    private String composeMailBody(final UserInfo ui, final IlvReportForm ilvf) {
+
+        // current date and time
+        final Date d = new Date();
+        final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        final String date = sdf.format(d, ui.getKonto().getTimezone());
+
+        final StringBuffer result = new StringBuffer(320);
+        result.append("Please reply to: ");
+        result.append(ui.getKonto().getDbsmail());
+        result.append("\n-----\n\n");
+
+        // append customized text
+        result.append(ilvf.getMailtext());
+
+        // signature
+        result.append("\n\n");
+        result.append(ui.getKonto().getBibliotheksname());
+        result.append('\n');
+        result.append(ui.getKonto().getAdresse());
+        if (ui.getKonto().getAdressenzusatz() != null && !"".equals(ui.getKonto().getAdressenzusatz())) {
+            result.append('\n');
+            result.append(ui.getKonto().getAdressenzusatz());
+        }
+        result.append('\n');
+        result.append(ui.getKonto().getLand());
+        result.append('-');
+        result.append(ui.getKonto().getPLZ());
+        result.append(' ');
+        result.append(ui.getKonto().getOrt());
+        result.append("\n\nPhone:\t"); // phone is a required field
+        result.append(ui.getKonto().getTelefon());
+        if (ui.getKonto().getFax_extern() != null && !"".equals(ui.getKonto().getFax_extern())) {
+            result.append("\nFax:\t");
+            result.append(ui.getKonto().getFax_extern());
+        }
+
+        result.append("\n\n-----\n");
+
+        // order details
+        if (ilvf.getAuthorofessay() != null && !"".equals(ilvf.getAuthorofessay())) {
+            result.append("AUTHOR: ");
+            result.append(ilvf.getAuthorofessay());
+            result.append('\n');
+        }
+        if (ilvf.getTitleofessay() != null && !"".equals(ilvf.getTitleofessay())) {
+            result.append("TITLE OF ARTICLE: ");
+            result.append(ilvf.getTitleofessay());
+            result.append('\n');
+        }
+        if (ilvf.getJournaltitel() != null && !"".equals(ilvf.getJournaltitel())) {
+            result.append("JOURNAL: ");
+            result.append(ilvf.getJournaltitel());
+            result.append('\n');
+        }
+        if (ilvf.getIssn() != null && !"".equals(ilvf.getIssn())) {
+            result.append("ISSN: ");
+            result.append(ilvf.getIssn());
+            result.append('\n');
+        }
+        if (ilvf.getYear() != null && !"".equals(ilvf.getYear())) {
+            result.append("YEAR: ");
+            result.append(ilvf.getYear());
+            result.append('\n');
+        }
+        if (ilvf.getVolumevintage() != null && !"".equals(ilvf.getVolumevintage())) {
+            result.append("VOLUME: ");
+            result.append(ilvf.getVolumevintage());
+            result.append('\n');
+        }
+        if (ilvf.getBooklet() != null && !"".equals(ilvf.getBooklet())) {
+            result.append("ISSUE: ");
+            result.append(ilvf.getBooklet());
+            result.append('\n');
+        }
+        if (ilvf.getPages() != null && !"".equals(ilvf.getPages())) {
+            result.append("PAGES: ");
+            result.append(ilvf.getPages());
+            result.append('\n');
+        }
+        if (ilvf.getPmid() != null && !"".equals(ilvf.getPmid())) {
+            result.append("PMID: ");
+            result.append(ilvf.getPmid());
+            result.append('\n');
+            result.append("PMID-URI: ");
+            result.append("http://www.ncbi.nlm.nih.gov/pubmed/");
+            final BestellformAction ba = new BestellformAction();
+            result.append(ba.extractPmid(ilvf.getPmid()));
+        }
+
+        result.append("\n\n-----\nOrder date: ");
+        result.append(date);
+        result.append("\nBrought to you by ");
+        result.append(ReadSystemConfigurations.getApplicationName());
+        result.append(": ");
+        result.append(ReadSystemConfigurations.getServerWelcomepage());
+        result.append('\n');
+
+        return result.toString();
+    }
 }
