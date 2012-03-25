@@ -74,9 +74,9 @@ import ch.dbs.form.UserInfo;
 import com.sun.mail.smtp.SMTPAddressFailedException;
 
 /**
- * Erstellt PDF-Reports
+ * Creates PDF-Reports
  *
- * @author Pascal Steiner
+ * @author Pascal Steiner, Markus Fischer
  *
  */
 public final class ILVReport extends DispatchAction {
@@ -84,15 +84,15 @@ public final class ILVReport extends DispatchAction {
     private static final SimpleLogger LOG = new SimpleLogger(ILVReport.class);
 
     /**
-     * ILV-Report Formular Daten vorbereiten
+     * Prepare ILL report data.
      */
     public ActionForward prepareFormIlv(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) fm;
         final Auth auth = new Auth();
-        // Make sure method is only accessible when user is logged in
         String forward = "failure";
+
         if (auth.isLogin(rq)) {
             forward = "success";
 
@@ -100,7 +100,7 @@ public final class ILVReport extends DispatchAction {
 
             try {
 
-                // this is a small hack, because the ILV report is being
+                // this is a small hack, because the ILL report is being
                 // composed on the JSP, where we can't exchange the country
                 // codes (CH / DE / US) against the full name of the country
                 final Countries country = new Countries(pageForm.getKonto().getLand(), cn.getConnection());
@@ -134,7 +134,7 @@ public final class ILVReport extends DispatchAction {
     }
 
     /**
-     * Erstelt ein PDF- Report (ILV-Bestellung)
+     * Creates a PDF report for an ILL order (ILV-Bestellung).
      */
     public ActionForward PDF(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -142,7 +142,6 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
@@ -150,13 +149,13 @@ public final class ILVReport extends DispatchAction {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 OutputStream out = null;
 
-                // set ILV form number from wildcard mapping
+                // set ILL form number from wildcard mapping
                 ilvf.setIlvformnr(getIlvNumber(mp.getPath()));
 
                 // prepare output stream
                 rp.setContentType("application/pdf");
                 rp.setHeader("Content-Disposition", "attachment;filename=ilv.pdf");
-                // run report, depending on ILV form number
+                // run report, depending on ILL form number
                 try {
                     out = rp.getOutputStream();
                     runReport(ilvf, ui, out);
@@ -189,7 +188,7 @@ public final class ILVReport extends DispatchAction {
     }
 
     /**
-     * Prepare the Mail with attached ilv-pdf (ILV-Bestellung) for the preparemail.jsp
+     * Prepare the email with attached PDF (ILV-Bestellung) for preparemail.jsp.
      */
     public ActionForward Email(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -197,7 +196,6 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        // Ist der Benutzer als Bibliothekar angemeldet?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
@@ -221,9 +219,9 @@ public final class ILVReport extends DispatchAction {
                 l.close();
 
                 rq.setAttribute("IlvReportForm", ilvf);
-                // set ILV form number back into request
+                // set ILL form number back into request
                 rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-                // set ILV form number back into request
+                // set ILL form number back into request
                 rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
                 forward = "preparemail";
 
@@ -243,7 +241,7 @@ public final class ILVReport extends DispatchAction {
     }
 
     /**
-     * Send the mail with attached ilv-pdf (ILV-Bestellung)
+     * Send the email with attached PDF as an ILL order (ILV-Bestellung).
      */
     public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -251,7 +249,6 @@ public final class ILVReport extends DispatchAction {
         String forward = "failure";
         final Auth auth = new Auth();
 
-        // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
@@ -263,7 +260,7 @@ public final class ILVReport extends DispatchAction {
                     DataSource aAttachment = null;
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                    // create PDF report using the appropriate ILV form number
+                    // create PDF report using the appropriate ILL form number
                     runReport(ilvf, ui, baos);
 
                     aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
@@ -303,7 +300,6 @@ public final class ILVReport extends DispatchAction {
 
                     // Send the message
                     mh.sendMessage(session, message, to);
-                    //                    Transport.send(message);
 
                     forward = "success";
                     final String content = "ilvmail.confirmation";
@@ -391,7 +387,7 @@ public final class ILVReport extends DispatchAction {
         final Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
 
-        // Labels vorbereiten
+        // fill in labels
         result.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
         result.put("labelfrom", ilvf.getLabelfrom());
         result.put("labelto", ilvf.getLabelto());
@@ -415,7 +411,7 @@ public final class ILVReport extends DispatchAction {
         result.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
         result.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
 
-        // Values abfüllen
+        // fill in values
         if (ui.getKonto().getIsil() != null) {
             result.put("isil", ui.getKonto().getIsil());
         } else {
@@ -464,7 +460,7 @@ public final class ILVReport extends DispatchAction {
         final Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
 
-        // Labels vorbereiten
+        // fill in labels
         result.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
         result.put("labelfrom", ilvf.getLabelfrom());
         result.put("labelto", ilvf.getLabelto());
@@ -487,7 +483,7 @@ public final class ILVReport extends DispatchAction {
         result.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
         result.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
 
-        // Values abfüllen
+        // fill in values
         if (ui.getKonto().getIsil() != null) {
             result.put("isil", ui.getKonto().getIsil());
         } else {
@@ -527,7 +523,7 @@ public final class ILVReport extends DispatchAction {
     }
 
     /**
-     * Get the ILV form number from the wildcard mapping. Defaults to 0, if
+     * Get the ILL form number from the wildcard mapping. Defaults to 0, if
      * mapping is invalid.
      */
     private int getIlvNumber(final String path) {

@@ -23,7 +23,7 @@ public final class IlvReportForm extends ActionForm {
 
     private static final long serialVersionUID = 1L;
 
-    private int ilvformnr; // ILV form report number
+    private int ilvformnr; // ILL form report number
 
     private String lieferant = "";
     private String signatur = ""; // <bean:write name="IlvReportForm" property="signatur" />
@@ -42,7 +42,7 @@ public final class IlvReportForm extends ActionForm {
     private String journaltitel = ""; // <bean:write name="IlvReportForm" property="journaltitel" />
     private String notesfromrequestinglibrary = ""; // <bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />
     private String post = ""; // <bean:write name="IlvReportForm" property="post" />
-    private Long lid = new Long(0);
+    private Long lid = Long.valueOf("0");
 
     // E-Mail fields
     private String to = ""; // <bean:write name="IlvReportForm" property="subject" /> 
