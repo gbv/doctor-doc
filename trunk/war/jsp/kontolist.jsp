@@ -87,7 +87,7 @@
         src="img/change.png" alt="expire date Server setzen" type="image" /></form>
       </td>
       <td id="border"><bean:write name="k" property="bibliotheksmail" /></td>
-      <td id="border" id="center"><logic:notEqual name="k" property="kontotyp"
+      <td id="border"><logic:notEqual name="k" property="kontotyp"
         value="0"></logic:notEqual>
         <form name="BillingForm" method="post"
           action="preparebillingtext.do"><input type="hidden"
@@ -97,7 +97,7 @@
           title="Rechnung versenden" type="image" /></form>
       
       </td>
-      <td id="border" id="center">
+      <td id="border">
       <form name="BillingForm" method="post" action="listbillings.do">
       <input type="hidden" name="method" value="listBillings" /> <input
         type="hidden" name="kid"
