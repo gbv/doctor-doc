@@ -82,62 +82,62 @@ OpenURL - Linkresolver
 
       <p><bean:message arg0="<%=appName%>" key="openurl.databases" /></p>
       
-<table border="1" cellspacing="0px">
+<table class="border">
   <tr>
     <th id="th-left"><bean:message key="openurl.database" /></th>
     <th id="th-left"><bean:message key="openurl.kommentar" /></th>
   </tr>
   <tr>
-    <td><a href="http://bibnet.org/vufind" target="_blank">bibnet.org</a>&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border"><a href="http://bibnet.org/vufind" target="_blank">bibnet.org</a>&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>Carelit&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border">Carelit&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>CINAHL / EBSCO HOST&nbsp;</td>
-    <td><bean:message key="openurl.cinahl_query" /></td>
+    <td id="border">CINAHL / EBSCO HOST&nbsp;</td>
+    <td id="border"><bean:message key="openurl.cinahl_query" /></td>
   </tr>
   <tr>
-    <td>CSA&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border">CSA&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>Endnote&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border">Endnote&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>ISI Web of Science&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border">ISI Web of Science&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>Ovid SP</td>
-    <td><bean:message key="openurl.ovid_anleitung" /></td>
+    <td id="border">Ovid SP</td>
+    <td id="border"><bean:message key="openurl.ovid_anleitung" /></td>
   </tr>
   <tr>
-    <td>Pubmed</td>
-    <td><bean:message key="openurl.pubmed_anleitung" /></td>
+    <td id="border">Pubmed</td>
+    <td id="border"><bean:message key="openurl.pubmed_anleitung" /></td>
   </tr>
   <tr>
-    <td>Refworks&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border">Refworks&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>ScienceDirect&nbsp;</td>
-    <td>&nbsp;</td>
+    <td id="border">ScienceDirect&nbsp;</td>
+    <td id="border">&nbsp;</td>
   </tr>
   <tr>
-    <td>Scopus&nbsp;</td>
-    <td><bean:message key="openurl.scopus_anleitung" /></td>
+    <td id="border">Scopus&nbsp;</td>
+    <td id="border"><bean:message key="openurl.scopus_anleitung" /></td>
   </tr>
   <tr>
-    <td>Springer&nbsp;</td>
-    <td><bean:message key="openurl.springer_query" /></td>
+    <td id="border">Springer&nbsp;</td>
+    <td id="border"><bean:message key="openurl.springer_query" /></td>
   </tr>
   <tr>
-    <td>UpToDate&nbsp;</td>
-    <td><bean:message key="openurl.uptodate_anleitung" /></td>
+    <td id="border">UpToDate&nbsp;</td>
+    <td id="border"><bean:message key="openurl.uptodate_anleitung" /></td>
   </tr>
 </table>
       
@@ -163,26 +163,26 @@ OpenURL - Linkresolver
     
     <p><bean:message key="bestellformconfigureselect.noconfig" /></p>
     <p><bean:message key="bestellformconfigureselect.possibleconfig" /></p>
-<table border="1" cellspacing="0px">
+<table class="border">
   <tr>
     <th id="th-left"><bean:message key="bestellformconfigureselect.zugriff" /></th>
     <th id="th-left"><bean:message key="bestellformconfigureselect.szenario" /></th>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.ip" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.ip_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.ip" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.ip_explain" /></td>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.eingeloggt" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.eingeloggt_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.eingeloggt" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.eingeloggt_explain" /></td>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.kkid" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.kkid_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.kkid" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.kkid_explain" /></td>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
   </tr>
 </table>
 

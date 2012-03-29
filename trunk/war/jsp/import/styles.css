@@ -15,7 +15,16 @@ html,body {
   width: 100%;
 }
 
+a:link {
+  text-decoration:none;
+}
+a:visited {
+  color:blue;
+  text-decoration:none;
+}
+
 #header_table {
+  width: 100%;
   text-align: left;
   color: white;
   padding-top: 4;
@@ -26,13 +35,9 @@ html,body {
 }
 
 table {
+  border-width: 1px;
   border-spacing: 0px;
-  border-color: black;
-  padding-top: 4;
-  padding-right: 2;
-  padding-left: 2;
-  padding-bottom: 2;
-  margin: 2;
+  border-color: #404040;
   valign: top;
 }
 
@@ -44,15 +49,74 @@ th {
   background: #E0E0E0;
   border-color: black;
   text-align: center;
+  padding: 1px;
+}
+
+td {
+  border-color: #404040;
+  border-width: 1px;
+  padding: 1px;
+}
+
+td.availability {
+  width:10px;"
+  nowrap="nowrap";
+  white-space: nowrap;
+  padding: 1px;
+}
+
+table.border {
+  border-spacing: 0px;
+  border-collapse: separate;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-indent: 0;
+  border-style: solid;
+  border-color: #404040;
 }
 
 #th-left {
   text-align: left;
+  border-width: 1px;
+  border-spacing: 0px;
+  border-color: #404040;
+  border-style: outset;
+  padding: 1px;
 }
 
-td {
-  border-color: black;
-  border-width: none;
+#th-center {
+  text-align: center;
+  border-width: 1px;
+  border-spacing: 0px;
+  border-color: #404040;
+  border-style: outset;
+  padding: 1px;
+}
+
+#border {
+  border-width: 1px;
+  border-spacing: 0px;
+  border-color: #404040;
+  border-style: outset;
+  padding: 1px;
+}
+
+#tablestatsleft {
+  text-align: left;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+  border: 1px solid gray;
+  background-color: #E0E0E0;
+  margin: 0px;
+}
+
+#tablestats {
+  text-align: center;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+  border: 1px solid gray;
+  background-color: #E0E0E0;
+  margin: 0px;
 }
 
 td.logo {
@@ -177,24 +241,6 @@ border:1px solid #fff;
   padding-left: 12.5em;
   background: #0000B2;
   z-index: 3;
-}
-
-#tablestatsleft {
-  text-align: left;
-  padding-right: 0.5em;
-  padding-left: 0.5em;
-  border: 1px solid gray;
-  background-color: #E0E0E0;
-  margin: 0px;
-}
-
-#tablestats {
-  text-align: center;
-  padding-right: 0.5em;
-  padding-left: 0.5em;
-  border: 1px solid gray;
-  background-color: #E0E0E0;
-  margin: 0px;
 }
 
 #menu a:link,#menu a:visited {

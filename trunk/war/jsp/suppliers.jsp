@@ -46,7 +46,7 @@
 <p><input type="submit" value="<bean:message key="bestellform.save" />" /></p>
 
 <logic:notEmpty name="privsuppliers">
-<table border="1">
+<table class="border">
 	<tr>
 		<th id="th-left">
 			&nbsp;
@@ -66,20 +66,20 @@
 	</tr>
 	<logic:iterate id="priv" name="privsuppliers">
 		<tr>
-			<td>
+			<td id="border">
 				<a href="supplier.do?method=edit&sid=<bean:write name="priv" property="lid" />">
           		<img border="0" src="img/edit.png" alt="<bean:message key="suppliers.edit" />" title="<bean:message key="suppliers.edit" />"/></a>
 			</td>
-			<td>
+			<td id="border">
 				<bean:write name="priv" property="sigel" />
 			</td>
-			<td>
+			<td id="border">
 				<bean:write name="priv" property="name" />
 			</td>
-			<td>
+			<td id="border">
 				<bean:write name="priv" property="emailILL" />
 			</td>
-			<td>
+			<td id="border">
 				<a href="supplier.do?method=delete&sid=<bean:write name="priv" property="lid" />"><img border="0" src="img/drop.png" alt="<bean:message key="suppliers.delete" />" title="<bean:message key="suppliers.delete" />"/></a>
 			</td>
 		</tr>
@@ -96,7 +96,7 @@
 <p><input type="submit" value="<bean:message key="bestellform.save" />" /></p>
 
 <logic:notEmpty name="pubsuppliers">
-<table border="1">
+<table class="border">
 	<tr>
 		<th id="th-left">
 			&nbsp;
@@ -116,22 +116,22 @@
 	</tr>
 	<logic:iterate id="pub" name="pubsuppliers">
 		<tr>
-			<td>
+			<td id="border">
 				<logic:notEqual name="pub" property="land_allgemein" value="true">
 					<a href="supplier.do?method=edit&sid=<bean:write name="pub" property="lid" />">
 	          		<img border="0" src="img/edit.png" alt="<bean:message key="suppliers.edit" />" title="<bean:message key="suppliers.edit" />"/></a>
           		</logic:notEqual>
 			</td>
-			<td>
+			<td id="border">
 				<bean:write name="pub" property="sigel" />
 			</td>
-			<td>
+			<td id="border">
 				<bean:write name="pub" property="name" />
 			</td>
-			<td>
+			<td id="border">
 				<bean:write name="pub" property="emailILL" />
 			</td>
-			<td>
+			<td id="border">
 				<logic:notEmpty name="pub" property="countryCode">
 					<bean:write name="pub" property="countryCode" />
 				</logic:notEmpty>

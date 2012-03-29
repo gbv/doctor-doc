@@ -53,90 +53,90 @@
 <h4><bean:message key="stockimport.subheader1" /></h4>
 
 <p><bean:message key="bestellform.required" /> (*)</p>
-<table border="1">
+<table class="border">
   <tr>
     <th id="th-left">Stock ID&nbsp;</th>
-    <td><bean:message key="stockimport.machinegenerated" />&nbsp;<bean:message key="stockimport.dontchange" />&nbsp;<bean:message key="stockimport.unique" /></td>
+    <td id="border"><bean:message key="stockimport.machinegenerated" />&nbsp;<bean:message key="stockimport.dontchange" />&nbsp;<bean:message key="stockimport.unique" /></td>
   </tr>
   <tr>
     <th id="th-left">Holding ID&nbsp;</th>
-    <td><bean:message key="stockimport.machinegenerated" />&nbsp;<bean:message key="stockimport.dontchange" /></td>
+    <td id="border"><bean:message key="stockimport.machinegenerated" />&nbsp;<bean:message key="stockimport.dontchange" /></td>
   </tr>
   <tr>
     <th id="th-left">Location ID&nbsp;</th>
-    <td><bean:message key="stockimport.machinegenerated" />&nbsp;<bean:message key="stockimport.dontchange" />&nbsp;<bean:message key="stockimport.copy" /></td>
+    <td id="border"><bean:message key="stockimport.machinegenerated" />&nbsp;<bean:message key="stockimport.dontchange" />&nbsp;<bean:message key="stockimport.copy" /></td>
   </tr>
   <tr>
     <th id="th-left">Location Name&nbsp;</th>
-    <td><b><bean:message key="stockimport.location" />*</b></td>
+    <td id="border"><b><bean:message key="stockimport.location" />*</b></td>
   </tr>
   <tr>
     <th id="th-left">Shelfmark&nbsp;</th>
-    <td><bean:message key="stockimport.shelfmark" /></td>
+    <td id="border"><bean:message key="stockimport.shelfmark" /></td>
   </tr>
   <tr>
     <th id="th-left">Title&nbsp;</th>
-    <td><b><bean:message key="stockimport.title" />*</b></td>
+    <td id="border"><b><bean:message key="stockimport.title" />*</b></td>
   </tr>
   <tr>
     <th id="th-left">Coden&nbsp;</th>
-    <td><bean:message key="stockimport.coden" /></td>
+    <td id="border"><bean:message key="stockimport.coden" /></td>
   </tr>
   <tr>
     <th id="th-left">Publisher&nbsp;</th>
-    <td><bean:message key="stockimport.publisher" /></td>
+    <td id="border"><bean:message key="stockimport.publisher" /></td>
   </tr>
   <tr>
     <th id="th-left">Place&nbsp;</th>
-    <td><bean:message key="stockimport.place" /></td>
+    <td id="border"><bean:message key="stockimport.place" /></td>
   </tr>
   <tr>
     <th id="th-left">ISSN&nbsp;</th>
-    <td><bean:message key="stockimport.issn" />&nbsp;<bean:message key="stockimport.machinereadable" />&nbsp;<bean:message key="stockimport.issn_example" /></td>
+    <td id="border"><bean:message key="stockimport.issn" />&nbsp;<bean:message key="stockimport.machinereadable" />&nbsp;<bean:message key="stockimport.issn_example" /></td>
   </tr>
   <tr>
     <th id="th-left">ZDB-ID&nbsp;</th>
-    <td><bean:message key="stockimport.zdbid" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+    <td id="border"><bean:message key="stockimport.zdbid" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
   </tr>
   <tr>
     <th id="th-left">Startyear&nbsp;</th>
-    <td><b><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" />*</b></td>
+    <td id="border"><b><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" />*</b></td>
   </tr>
   <tr>
     <th id="th-left">Starvolume&nbsp;</th>
-    <td><bean:message key="stockimport.volume" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+    <td id="border"><bean:message key="stockimport.volume" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
   </tr>
   <tr>
     <th id="th-left">Startissue&nbsp;</th>
-    <td><bean:message key="stockimport.issue" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+    <td id="border"><bean:message key="stockimport.issue" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
   </tr>
   <tr>
     <th id="th-left">Endyear&nbsp;</th>
-    <td><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+    <td id="border"><bean:message key="stockimport.year" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
   </tr>
   <tr>
     <th id="th-left">Endvolume&nbsp;</th>
-    <td><bean:message key="stockimport.volume" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+    <td id="border"><bean:message key="stockimport.volume" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
   </tr>
   <tr>
     <th id="th-left">Endissue&nbsp;</th>
-    <td><bean:message key="stockimport.issue" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
+    <td id="border"><bean:message key="stockimport.issue" />&nbsp;<bean:message key="stockimport.machinereadable" /></td>
   </tr>
   <tr>
     <th id="th-left">Suppl&nbsp;</th>
-    <td><bean:message key="stockimport.supplements" /></td>
+    <td id="border"><bean:message key="stockimport.supplements" /></td>
   </tr>
   <tr>
     <th id="th-left">remarks&nbsp;</th>
-    <td><bean:message key="stockimport.remarks" /></td>
+    <td id="border"><bean:message key="stockimport.remarks" /></td>
   </tr>
   <tr>
     <th id="th-left">eissue&nbsp;</th>
-    <td><bean:message key="stockimport.eissue" /></td>
+    <td id="border"><bean:message key="stockimport.eissue" /></td>
   </tr>
   <tr>
     <th id="th-left">internal&nbsp;</th>
-    <td><b><bean:message key="stockimport.internal" />*</b></td>
+    <td id="border"><b><bean:message key="stockimport.internal" />*</b></td>
   </tr>
   
 </table>

@@ -50,7 +50,7 @@ function wahrung(a)
  
  <bean:define id="appName" type="java.lang.String"><bean:message bundle="systemConfig" key="application.name"/></bean:define>
 
-<table width="100%" id="header_table" cellpadding="0" cellspacing="0">
+<table id="header_table">
   <tr style="background-image:url(img/verlauf.png); background-repeat:repeat-x; ">
     <td class="logo"><a href="<bean:message bundle="systemConfig" key="server.welcomepage"/>"><img class="logo" src='img/sp.gif' alt='<bean:message bundle="systemConfig" key="application.name"/>'  /></a></td>
     <td><h1><bean:message bundle="systemConfig" key="application.name"/></h1><p></p>

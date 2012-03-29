@@ -70,14 +70,14 @@
 
 <p><bean:message key="modifyusercategories.intro" /><br /></p>
 
-  <table border="1">
+  <table class="border">
   <logic:iterate id="cat" name="categories">
     <tr>
-      <td><a href="usercategories.do?method=changeCategory&id=<bean:write name="cat" property="id" />"><bean:message key="stockplacesmodify.change" /></a></td>
-        <td>       
+      <td id="border"><a href="usercategories.do?method=changeCategory&id=<bean:write name="cat" property="id" />"><bean:message key="stockplacesmodify.change" /></a></td>
+        <td id="border">       
          <bean:write name="cat" property="inhalt" />
     </td>
-    <td><a href="usercategories.do?method=changeCategory&id=<bean:write name="cat" property="id" />&del=true"><bean:message key="stockplacesmodify.delete" /></a></td>
+    <td id="border"><a href="usercategories.do?method=changeCategory&id=<bean:write name="cat" property="id" />&del=true"><bean:message key="stockplacesmodify.delete" /></a></td>
     </tr>
    </logic:iterate>   
   </table>

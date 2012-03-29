@@ -56,14 +56,14 @@
   <p></p>
 </logic:present>
 
-  <table border="1">
+  <table class="border">
   <logic:iterate id="st" name="holdingform" property="standorte">
     <tr>
-      <td><a href="modplace.do?method=changeStockplace&stid=<bean:write name="st" property="id" />"><bean:message key="stockplacesmodify.change" /></a></td>
-        <td>       
+      <td id="border"><a href="modplace.do?method=changeStockplace&stid=<bean:write name="st" property="id" />"><bean:message key="stockplacesmodify.change" /></a></td>
+        <td id="border">       
          <bean:write name="st" property="inhalt" />
     </td>
-    <td><a href="modplace.do?method=changeStockplace&stid=<bean:write name="st" property="id" />&del=true"><bean:message key="stockplacesmodify.delete" /></a></td>
+    <td id="border"><a href="modplace.do?method=changeStockplace&stid=<bean:write name="st" property="id" />&del=true"><bean:message key="stockplacesmodify.delete" /></a></td>
     </tr>
    </logic:iterate>   
   </table>

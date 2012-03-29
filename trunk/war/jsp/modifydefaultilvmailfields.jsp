@@ -39,16 +39,16 @@
   <input type="hidden" name="method" value="saveMailFields" />
   <input type="submit" value="<bean:message key="ilvmail.default" />" />
   <p />
-  <table border="1">
+  <table class="border">
   <tr>
-    <td><bean:message key="ilvmail.subject" /> 
+    <td id="border"><bean:message key="ilvmail.subject" /> 
     </td>    
-    <td>
+    <td id="border">
     <input name="subject" type="text" size="100" value="<bean:write name="IlvReportForm" property="subject" />" autofocus />
     </td>
   </tr>
   <tr>
-    <td colspan="2">
+    <td id="border" colspan="2">
       <textarea name="mailtext" cols="25" rows="15"><bean:write name="IlvReportForm" property="mailtext" /></textarea>
     </td>
   </tr>

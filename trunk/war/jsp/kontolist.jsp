@@ -21,22 +21,22 @@
 <br />
 <h3>Administration</h3>
 
-<table border="1">
+<table class="border">
   <tr>
-    <th>Bibliotheksname</th>
-    <th>Kontotyp</th>
-    <th>Kontostatus</th>
-    <th>Faxoption bezahlt bis</th>
-    <th>Faxserver bezahlt bis</th>
-    <th>Bibliothekskontakt</th>
-    <th>Rechnung<br />
+    <th id="th-left">Bibliotheksname</th>
+    <th id="th-left">Kontotyp</th>
+    <th id="th-left">Kontostatus</th>
+    <th id="th-left">Faxoption bezahlt bis</th>
+    <th id="th-left">Faxserver bezahlt bis</th>
+    <th id="th-left">Bibliothekskontakt</th>
+    <th id="th-left">Rechnung<br />
     versenden</th>
-    <th>Rechnungen</th>
+    <th id="th-left">Rechnungen</th>
   </tr>
   <logic:iterate id="k" name="kontoform" property="kontos">
     <tr>
-      <td><bean:write name="k" property="bibliotheksname" /></td>
-      <td>
+      <td id="border"><bean:write name="k" property="bibliotheksname" /></td>
+      <td id="border">
       <form name="TypForm" method="post" action="changekontotyp.do">
       <select name="kontotyp">
         <option value="0"
@@ -56,7 +56,7 @@
         value="<bean:write name="k" property="id" />" /> <input
         src="img/change.png" alt="Typ &auml;ndern" type="image" /></form>
       </td>
-      <td>
+      <td id="border">
       <form name="StatusForm" method="post" action="changekontostate.do"><select
         name="kontostatus">
         <option value="true"
@@ -68,7 +68,7 @@
         value="<bean:write name="k" property="id" />" /> <input
         src="img/change.png" alt="Status &auml;ndern" type="image" /></form>
       </td>
-      <td>
+      <td id="border">
       <form name="StatusForm" method="post" action="setexpdate.do">
       <input type="text" name="expdate"
         value="<bean:write name="k" property="expdate" />" /> <input
@@ -77,7 +77,7 @@
         value="<bean:write name="k" property="id" />" /> <input
         src="img/change.png" alt="expire date setzen" type="image" /></form>
       </td>
-      <td>
+      <td id="border">
       <form name="StatusForm" method="post" action="setexpdateserver.do">
       <input type="text" name="popfaxend"
         value="<bean:write name="k" property="popfaxend" />" /> <input
@@ -86,8 +86,8 @@
         value="<bean:write name="k" property="id" />" /> <input
         src="img/change.png" alt="expire date Server setzen" type="image" /></form>
       </td>
-      <td><bean:write name="k" property="bibliotheksmail" /></td>
-      <td id="center"><logic:notEqual name="k" property="kontotyp"
+      <td id="border"><bean:write name="k" property="bibliotheksmail" /></td>
+      <td id="border" id="center"><logic:notEqual name="k" property="kontotyp"
         value="0"></logic:notEqual>
         <form name="BillingForm" method="post"
           action="preparebillingtext.do"><input type="hidden"
@@ -97,7 +97,7 @@
           title="Rechnung versenden" type="image" /></form>
       
       </td>
-      <td id="center">
+      <td id="border" id="center">
       <form name="BillingForm" method="post" action="listbillings.do">
       <input type="hidden" name="method" value="listBillings" /> <input
         type="hidden" name="kid"

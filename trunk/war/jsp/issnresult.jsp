@@ -55,11 +55,11 @@
 <logic:present name="regensburg" property="zeitschriften">
   <p><i>powered by EZB Regensburg</i></p>
   
-  <table border="1">
+  <table class="border">
   <logic:iterate id="rb" name="regensburg" property="zeitschriften">
     <logic:present name="rb" property="issn">
       <tr>
-        <td><a href="issnsearch_.do?method=prepareIssnSearch&issn=<bean:write name="rb" property="issn" />&artikeltitel=<bean:write name="rb" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="rb" property="zeitschriftentitel_encoded" /><logic:notEmpty name="rb" property="author">&author=<bean:write name="rb" property="author" /></logic:notEmpty><logic:notEmpty name="rb" property="jahr">&jahr=<bean:write name="rb" property="jahr" /></logic:notEmpty><logic:notEmpty name="rb" property="jahrgang">&jahrgang=<bean:write name="rb" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="rb" property="heft">&heft=<bean:write name="rb" property="heft" /></logic:notEmpty><logic:notEmpty name="rb" property="seiten">&seiten=<bean:write name="rb" property="seiten" /></logic:notEmpty>&autocomplete=<bean:write name="orderform" property="autocomplete" />&runs_autocomplete=<bean:write name="orderform" property="runs_autocomplete" />"><bean:write name="rb" property="zeitschriftentitel" /></a></td> <td> ISSN: <bean:write name="rb" property="issn" /></td> <td>(<a href="<bean:write name="rb" property="link" />" target="_blank">Info</a>) </td>
+        <td id="border"><a href="issnsearch_.do?method=prepareIssnSearch&issn=<bean:write name="rb" property="issn" />&artikeltitel=<bean:write name="rb" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="rb" property="zeitschriftentitel_encoded" /><logic:notEmpty name="rb" property="author">&author=<bean:write name="rb" property="author" /></logic:notEmpty><logic:notEmpty name="rb" property="jahr">&jahr=<bean:write name="rb" property="jahr" /></logic:notEmpty><logic:notEmpty name="rb" property="jahrgang">&jahrgang=<bean:write name="rb" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="rb" property="heft">&heft=<bean:write name="rb" property="heft" /></logic:notEmpty><logic:notEmpty name="rb" property="seiten">&seiten=<bean:write name="rb" property="seiten" /></logic:notEmpty>&autocomplete=<bean:write name="orderform" property="autocomplete" />&runs_autocomplete=<bean:write name="orderform" property="runs_autocomplete" />"><bean:write name="rb" property="zeitschriftentitel" /></a></td> <td id="border"> ISSN: <bean:write name="rb" property="issn" /></td> <td id="border">(<a href="<bean:write name="rb" property="link" />" target="_blank">Info</a>) </td>
          </tr>
           </logic:present>
      </logic:iterate>
@@ -78,11 +78,11 @@
 <logic:present name="journalseek" property="zeitschriften">
   <p><i>powered by Journalseek</i></p>
   
-  <table border="1">  
+  <table class="border">  
   <logic:iterate id="js" name="journalseek" property="zeitschriften">
     <logic:present name="js" property="issn">
   <tr>
-    <td><a href="issnsearch_.do?method=prepareIssnSearch&issn=<bean:write name="js" property="issn" />&artikeltitel=<bean:write name="js" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="js" property="zeitschriftentitel_encoded" /><logic:notEmpty name="js" property="author">&author=<bean:write name="js" property="author" /></logic:notEmpty><logic:notEmpty name="js" property="jahr">&jahr=<bean:write name="js" property="jahr" /></logic:notEmpty><logic:notEmpty name="js" property="jahrgang">&jahrgang=<bean:write name="js" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="js" property="heft">&heft=<bean:write name="js" property="heft" /></logic:notEmpty><logic:notEmpty name="js" property="seiten">&seiten=<bean:write name="js" property="seiten" /></logic:notEmpty>&autocomplete=<bean:write name="orderform" property="autocomplete" />&runs_autocomplete=<bean:write name="orderform" property="runs_autocomplete" />"><bean:write name="js" property="zeitschriftentitel" /></a></td> <td> ISSN: <bean:write name="js" property="issn" /></td> <td>(<a href="<bean:write name="js" property="link" />" target="_blank">Info</a>) </td>
+    <td id="border"><a href="issnsearch_.do?method=prepareIssnSearch&issn=<bean:write name="js" property="issn" />&artikeltitel=<bean:write name="js" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="js" property="zeitschriftentitel_encoded" /><logic:notEmpty name="js" property="author">&author=<bean:write name="js" property="author" /></logic:notEmpty><logic:notEmpty name="js" property="jahr">&jahr=<bean:write name="js" property="jahr" /></logic:notEmpty><logic:notEmpty name="js" property="jahrgang">&jahrgang=<bean:write name="js" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="js" property="heft">&heft=<bean:write name="js" property="heft" /></logic:notEmpty><logic:notEmpty name="js" property="seiten">&seiten=<bean:write name="js" property="seiten" /></logic:notEmpty>&autocomplete=<bean:write name="orderform" property="autocomplete" />&runs_autocomplete=<bean:write name="orderform" property="runs_autocomplete" />"><bean:write name="js" property="zeitschriftentitel" /></a></td> <td id="border"> ISSN: <bean:write name="js" property="issn" /></td> <td id="border">(<a href="<bean:write name="js" property="link" />" target="_blank">Info</a>) </td>
   </tr>
           </logic:present>    
      </logic:iterate>

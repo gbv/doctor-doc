@@ -25,26 +25,26 @@
     
 <logic:present name="IlvReportForm" property="labelto">   
   <form action="send-ilv-mailorder.do?method=sendIlvMail">
-  <table border="1">
+  <table class="border">
   <tr>
-    <td valign="top">
+    <td id="border">
     	<bean:message key="ilvmail.to" />  
     </td>
 
-    <td>
+    <td id="border">
     	<input name="to" type="email" required size="100" value="<bean:write name="IlvReportForm" property="to" />" />    		
     </td>
     
   </tr>
   <tr>
-    <td><bean:message key="ilvmail.subject" /> 
+    <td id="border"><bean:message key="ilvmail.subject" />&nbsp; 
     </td>    
-    <td>
+    <td id="border">
     <input name="subject" type="text" size="100" value="<bean:write name="IlvReportForm" property="subject" />" autofocus />
     </td>
   </tr>
   <tr>
-    <td colspan="2">
+    <td id="border" colspan="2">
       <textarea name="mailtext" cols="25" rows="15"><bean:write name="IlvReportForm" property="mailtext" /></textarea>
     </td>
   </tr>

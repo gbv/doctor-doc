@@ -239,7 +239,7 @@
 
 <p></p>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.konto" />*</th>
       <th id="tablestats"><bean:message key="stats.total" /></th>
@@ -256,7 +256,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.lieferant" />*</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -310,7 +310,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.kostenart" />*</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -329,7 +329,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.currency" />*</th>
       <th id="tablestats"><bean:message key="stats.kosten" /></th>
@@ -356,7 +356,7 @@
   <br></br>
 
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.medientyp" />*</th>
       <th id="tablestats"><bean:message key="stats.total" /></th>
@@ -391,7 +391,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.lieferart" />*</th>
       <th id="tablestats"><bean:message key="stats.total" /></th>
@@ -422,7 +422,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.fileformat" />*</th>
       <th id="tablestats"><bean:message key="stats.total" /></th>
@@ -453,7 +453,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <logic:present name="statistics" property="prioritystat">
       <tr>
         <th id="tablestatsleft"><bean:message key="stats.prio" />*</th>
@@ -483,7 +483,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.user" />*</th>
       <th id="tablestats"><bean:message key="stats.total" /></th>
@@ -501,7 +501,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.gender" />**</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -554,7 +554,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.institution" />**</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -613,7 +613,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.abteilung" />**</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -672,7 +672,7 @@
   
     <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="modifykontousers.category" />**</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -731,7 +731,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.plz" />**</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -769,7 +769,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestatsleft"><bean:message key="stats.land" />**</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -804,7 +804,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestats"><bean:message key="stats.issn" /></th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>
@@ -871,7 +871,7 @@
 
   <br></br>
 
-  <table border="1">
+  <table class="border">
     <tr>
       <th id="tablestats"><bean:message key="stats.jahr" />*</th>
       <th id="tablestats"><bean:message key="stats.orders" /></th>

@@ -22,25 +22,25 @@
   property="konto.bibliotheksname" /></h3>
 
 
-<table border="1">
+<table class="border">
   <tr>
-    <th>Rechnungsgrund</th>
-    <th>Betrag</th>
-    <th>W&auml;hrung</th>
-    <th>Rechnungsnummer</th>
-    <th>Rechnungsdatum</th>
-    <th>Zahlungseingang</th>
+    <th id="th-left">Rechnungsgrund</th>
+    <th id="th-left">Betrag</th>
+    <th id="th-left">W&auml;hrung</th>
+    <th id="th-left">Rechnungsnummer</th>
+    <th id="th-left">Rechnungsdatum</th>
+    <th id="th-left">Zahlungseingang</th>
   </tr>
   <logic:iterate id="b" name="billingform" property="billings">
     <tr>
-      <td id="center"><bean:write name="b"
+      <td id="border"><bean:write name="b"
         property="rechnungsgrund.inhalt" /></td>
-      <td id="center"><bean:write name="b" property="betrag" /></td>
-      <td id="center"><bean:write name="b" property="waehrung" /></td>
+      <td id="border"><bean:write name="b" property="betrag" /></td>
+      <td id="border"><bean:write name="b" property="waehrung" /></td>
 
-      <td id="center"><bean:write name="b" property="rechnungsnummer" /></td>
-      <td id="center"><bean:write name="b" property="rechnungsdatum" /></td>
-      <td id="center">
+      <td id="border"><bean:write name="b" property="rechnungsnummer" /></td>
+      <td id="border"><bean:write name="b" property="rechnungsdatum" /></td>
+      <td id="border">
       <form name="PayDateForm" method="post" action="setpaydate.do">
       <input type="text" name="zahlungseingang"
         value="<bean:write name="b" property="zahlungseingang" />" /> <input

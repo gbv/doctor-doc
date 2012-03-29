@@ -38,26 +38,26 @@
 
 <p><bean:message key="bestellformconfigureselect.noconfig" /></p>
 <p><bean:message key="bestellformconfigureselect.possibleconfig" /></p>
-<table border="1" cellspacing="0px">
+<table class="border">
   <tr>
     <th id="th-left"><bean:message key="bestellformconfigureselect.zugriff" /></th>
     <th id="th-left"><bean:message key="bestellformconfigureselect.szenario" /></th>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.ip" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.ip_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.ip" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.ip_explain" /></td>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.eingeloggt" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.eingeloggt_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.eingeloggt" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.eingeloggt_explain" /></td>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.kkid" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.kkid_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.kkid" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.kkid_explain" /></td>
   </tr>
   <tr>
-    <td><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
-    <td><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
+    <td id="border"><bean:message key="bestellformconfigureselect.bkid" />&nbsp;</td>
+    <td id="border"><bean:message key="bestellformconfigureselect.bkid_explain" /></td>
   </tr>
 </table>
 

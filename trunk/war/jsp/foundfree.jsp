@@ -76,7 +76,7 @@
     <p><a href="<bean:write name="t2" property="link"/>" target="_blank"><bean:write name="t2" property="url_text"/></a>
     <logic:present name="userinfo" property="benutzer">
     <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-      <br><bean:write name="t2" property="link"/></br>
+      <br /><bean:write name="t2" property="link"/>
     </logic:notEqual>
     </logic:present>
     </p>
@@ -90,7 +90,7 @@
     <p><a href="<bean:write name="t1" property="link"/>" target="_blank"><bean:write name="t1" property="url_text"/></a>
     <logic:present name="userinfo" property="benutzer">
     <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-      <br><bean:write name="t1" property="link"/></br>
+      <br /><bean:write name="t1" property="link"/>
     </logic:notEqual>
     </logic:present>
     </p>
