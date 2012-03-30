@@ -58,31 +58,36 @@ public class PrepareList extends DispatchAction {
                 final Lieferanten sup = new Lieferanten();
                 final Text cn = new Text();
 
-                final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
-                final List<SupplierForm> pubSuppliers = sup.getPublics(ui.getKonto().getLand(), cn.getConnection());
+                try {
 
-                // get existing account settings from UserInfo
-                sf.setShowprivsuppliers(ui.getKonto().isShowprivsuppliers());
-                sf.setShowpubsuppliers(ui.getKonto().isShowpubsuppliers());
+                    final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
+                    final List<SupplierForm> pubSuppliers = sup.getPublics(ui.getKonto().getLand(), cn.getConnection());
 
-                // give back a success message
-                if (sf.isChangedsettings()) {
-                    final Message msg = new Message("message.settings");
-                    rq.setAttribute("message", msg);
+                    // get existing account settings from UserInfo
+                    sf.setShowprivsuppliers(ui.getKonto().isShowprivsuppliers());
+                    sf.setShowpubsuppliers(ui.getKonto().isShowpubsuppliers());
+
+                    // give back a success message
+                    if (sf.isChangedsettings()) {
+                        final Message msg = new Message("message.settings");
+                        rq.setAttribute("message", msg);
+                    }
+
+                    rq.setAttribute("pubsuppliers", pubSuppliers);
+                    rq.setAttribute("privsuppliers", privSuppliers);
+                    rq.setAttribute("conf", sf);
+
+                    // navigation: set 'account/konto' tab as active
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute("ActiveMenus", mf);
+
+                    forward = "success";
+
+                } finally {
+                    cn.close();
                 }
 
-                rq.setAttribute("pubsuppliers", pubSuppliers);
-                rq.setAttribute("privsuppliers", privSuppliers);
-                rq.setAttribute("conf", sf);
-
-                // navigation: set 'account/konto' tab as active
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("konto");
-                rq.setAttribute("ActiveMenus", mf);
-
-                forward = "success";
-
-                cn.close();
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");

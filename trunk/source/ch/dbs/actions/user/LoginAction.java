@@ -43,7 +43,6 @@ import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.login.Gtc;
 
-
 /**
  * LoginAction checkt die eingegebenen Logininformationen auf ihre Gültigkeit
  * und erstellt bei Erfolg (User existiert in der DB) das Bean userinfo
@@ -56,8 +55,8 @@ public final class LoginAction extends Action {
     private static final SimpleLogger LOG = new SimpleLogger(LoginAction.class);
     private static final String SUCCESS = "success";
 
-    public ActionForward execute(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
         final LoginForm lf = (LoginForm) fm;
         final OrderForm pageForm = new OrderForm(lf); // falls Artikelangaben aus Linkresolver vorhanden
 
@@ -68,96 +67,106 @@ public final class LoginAction extends Action {
         // User mittels Logininfos aus der DB heraussuchen
         final Encrypt e = new Encrypt();
         AbstractBenutzer u = new AbstractBenutzer();
-        final List<UserInfo> uil = u.login(lf.getEmail(), e.makeSHA(lf.getPassword()), cn.getConnection());
 
-        // Wurde nur ein User mit den Logininfos gefunden, Bean userinfo erstellen
-        if (uil.size() == 1) {
+        try {
 
-            u = uil.get(0).getBenutzer();
-            // Last-Login Datum beim Benutzer hinterlegen
-            u.updateLastuse(u, uil.get(0).getKontos().get(0), cn.getConnection());
+            final List<UserInfo> uil = u.login(lf.getEmail(), e.makeSHA(lf.getPassword()), cn.getConnection());
 
-            //           Prüfung, ob GTC (General Terms and Conditions) in der aktuellen Version akzeptiert wurden
-            final Gtc gtc = new Gtc();
-            final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
-            if (ReadSystemConfigurations.isGTC()
-                    && (u.getGtc() == null || !u.getGtc().equals(t.getInhalt()))) {
-                forward = "gtc"; // falls ein User die GTC noch nicht akzeptiert hat
-            } else {
-                forward = SUCCESS;
-            }
+            // Wurde nur ein User mit den Logininfos gefunden, Bean userinfo erstellen
+            if (uil.size() == 1) {
 
-            // Veraenderter Benutzer wieder in UserInfo und Session speichern.
-            // Ab hier keine Veränderungen mehr am UserInfo!
-            if ((u.getClass().isInstance(new Bibliothekar()) || u.getClass().isInstance(new Benutzer()))
-                    // Damit die Auswahl bei nur einem konto nicht dargestellt wird (Gilt nicht für Admins)
-                    && uil.get(0).getKontos().size() == 1) {
-                uil.get(0).setKontoanz(1);
-            }
-            uil.get(0).setBenutzer(u);
-            rq.getSession().setAttribute("userinfo", uil.get(0)); // userinfo in Session schreiben
+                u = uil.get(0).getBenutzer();
+                // Last-Login Datum beim Benutzer hinterlegen
+                u.updateLastuse(u, uil.get(0).getKontos().get(0), cn.getConnection());
 
-            if (auth.isAdmin(rq)) { forward = SUCCESS; } // Admin braucht keine GTC-Prüfung
-
-            // Check ob sich der Benutzer an mehr als an 1 Konto anmelden kann und Werte in UserInfo schreiben
-            if (!"gtc".equals(forward)) {
-                if (uil.get(0).getKontos().size() == 1) {
-                    uil.get(0).setKonto(uil.get(0).getKontos().get(0));
+                //           Prüfung, ob GTC (General Terms and Conditions) in der aktuellen Version akzeptiert wurden
+                final Gtc gtc = new Gtc();
+                final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
+                if (ReadSystemConfigurations.isGTC() && (u.getGtc() == null || !u.getGtc().equals(t.getInhalt()))) {
+                    forward = "gtc"; // falls ein User die GTC noch nicht akzeptiert hat
+                } else {
                     forward = SUCCESS;
-                } else { // Sind mehr als ein Konto im UserInfo, muss das Konto vom Benutzer ausgewählt werden
-                    forward = "konto";
+                }
+
+                // Veraenderter Benutzer wieder in UserInfo und Session speichern.
+                // Ab hier keine Veränderungen mehr am UserInfo!
+                if ((u.getClass().isInstance(new Bibliothekar()) || u.getClass().isInstance(new Benutzer()))
+                // Damit die Auswahl bei nur einem konto nicht dargestellt wird (Gilt nicht für Admins)
+                        && uil.get(0).getKontos().size() == 1) {
+                    uil.get(0).setKontoanz(1);
+                }
+                uil.get(0).setBenutzer(u);
+                rq.getSession().setAttribute("userinfo", uil.get(0)); // userinfo in Session schreiben
+
+                if (auth.isAdmin(rq)) {
+                    forward = SUCCESS;
+                } // Admin braucht keine GTC-Prüfung
+
+                // Check ob sich der Benutzer an mehr als an 1 Konto anmelden kann und Werte in UserInfo schreiben
+                if (!"gtc".equals(forward)) {
+                    if (uil.get(0).getKontos().size() == 1) {
+                        uil.get(0).setKonto(uil.get(0).getKontos().get(0));
+                        forward = SUCCESS;
+                    } else { // Sind mehr als ein Konto im UserInfo, muss das Konto vom Benutzer ausgewählt werden
+                        forward = "konto";
+                    }
+                }
+
+            }
+
+            // Benutzerauswahl falls mehrere berechtigte Benutzer mit denselben Loginangaben gefunden wurden
+            if (uil.size() > 1) {
+                forward = "chooseuser";
+                lf.setUserinfolist(uil);
+                rq.getSession().setAttribute("authuserlist", lf);
+            }
+
+            // Keine gültgen Logininformationen
+            if (uil.isEmpty()) {
+                LOG.info("Wrong Login-Credentials!: " + lf.getEmail());
+                final ErrorMessage em = new ErrorMessage();
+                if (!lf.isResolver()) {
+                    em.setError("error.username_pw");
+                    em.setLink("login.do");
+                } else {
+                    em.setError("error.username_pw_linkresolver");
+                    em.setLink("login.do");
+                }
+                rq.setAttribute("errormessage", em);
+            }
+
+            // Angaben aus Linkresolver
+            if (lf.isResolver()) {
+                // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
+                rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
+                // Die Bestellberechtigung wird in der Methode prepare geprüft!
+                if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) {
+                    forward = "order";
+                }
+                // Bibliothekar oder Admin auf Checkavailability
+                if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                    forward = "checkavailability";
+                }
+            }
+            // Übernahme von Userangaben aus Link aus Bestellform-Email
+            if (lf.getKundenemail() != null && !lf.getKundenemail().equals("")) {
+                final UserForm uf = new UserForm(lf);
+                rq.setAttribute("userform", uf);
+                // Bibliothekar oder Admin auf Checkavailability
+                if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                    forward = "adduser";
                 }
             }
 
-        }
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("suchenbestellen");
+            rq.setAttribute("ActiveMenus", mf);
 
-        // Benutzerauswahl falls mehrere berechtigte Benutzer mit denselben Loginangaben gefunden wurden
-        if (uil.size() > 1) {
-            forward = "chooseuser";
-            lf.setUserinfolist(uil);
-            rq.getSession().setAttribute("authuserlist", lf);
+        } finally {
+            cn.close();
         }
-
-        // Keine gültgen Logininformationen
-        if (uil.isEmpty()) {
-            LOG.info("Wrong Login-Credentials!: "  + lf.getEmail());
-            final ErrorMessage em = new ErrorMessage();
-            if (!lf.isResolver()) {
-                em.setError("error.username_pw");
-                em.setLink("login.do");
-            } else {
-                em.setError("error.username_pw_linkresolver");
-                em.setLink("login.do");
-            }
-            rq.setAttribute("errormessage", em);
-        }
-
-        // Angaben aus Linkresolver
-        if (lf.isResolver()) {
-            // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
-            rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
-            // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) { forward = "order"; }
-            // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
-        }
-        // Übernahme von Userangaben aus Link aus Bestellform-Email
-        if (lf.getKundenemail() != null && !lf.getKundenemail().equals("")) {
-            final UserForm uf = new UserForm(lf);
-            rq.setAttribute("userform", uf);
-            // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "adduser"; }
-        }
-
-        final ActiveMenusForm mf = new ActiveMenusForm();
-        mf.setActivemenu("suchenbestellen");
-        rq.setAttribute("ActiveMenus", mf);
-
-        cn.close();
 
         return mp.findForward(forward);
     }
-
-
 
 }

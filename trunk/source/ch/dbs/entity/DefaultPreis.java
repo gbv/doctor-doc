@@ -30,7 +30,6 @@ import org.grlea.log.SimpleLogger;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 
-
 /**
  * Abstract base class for entities having a {@link Long} unique
  * identifier, this provides the base functionality for them.
@@ -53,21 +52,26 @@ public class DefaultPreis extends AbstractIdEntity {
     private Lieferanten l;
     private Text waehrungstext;
 
-
-    public DefaultPreis() { }
+    public DefaultPreis() {
+    }
 
     public DefaultPreis(final OrderForm of, final UserInfo ui) {
         final Lieferanten supplier = new Lieferanten();
-        this.l = supplier.getLieferantFromLid(Long.valueOf(of.getLid()), this.getConnection());
-        this.setLid(l.getLid());
-        this.setBezeichnung(l.getName());
-        this.waehrungstext = new Text(this.getConnection(), of.getWaehrung());
-        this.setTid_waehrung(waehrungstext.getId());
-        this.setWaehrung(waehrungstext.getInhalt());
-        this.setDeloptions(of.getDeloptions());
-        this.setKid(ui.getKonto().getId());
-        if (of.getKaufpreis() != null) { this.setPreis(of.getKaufpreis()); }
-        this.close();
+        try {
+            this.l = supplier.getLieferantFromLid(Long.valueOf(of.getLid()), this.getConnection());
+            this.setLid(l.getLid());
+            this.setBezeichnung(l.getName());
+            this.waehrungstext = new Text(this.getConnection(), of.getWaehrung());
+            this.setTid_waehrung(waehrungstext.getId());
+            this.setWaehrung(waehrungstext.getInhalt());
+            this.setDeloptions(of.getDeloptions());
+            this.setKid(ui.getKonto().getId());
+            if (of.getKaufpreis() != null) {
+                this.setPreis(of.getKaufpreis());
+            }
+        } finally {
+            this.close();
+        }
     }
 
     /**
@@ -303,31 +307,25 @@ public class DefaultPreis extends AbstractIdEntity {
         return dp;
     }
 
-
     public String getBezeichnung() {
         return bezeichnung;
     }
-
 
     public void setBezeichnung(final String bezeichnung) {
         this.bezeichnung = bezeichnung;
     }
 
-
     public String getDeloptions() {
         return deloptions;
     }
-
 
     public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
 
-
     public Long getKid() {
         return kid;
     }
-
 
     public void setKid(final Long kid) {
         this.kid = kid;
@@ -345,16 +343,13 @@ public class DefaultPreis extends AbstractIdEntity {
         return tid_waehrung;
     }
 
-
     public void setTid_waehrung(final Long tid_waehrung) {
         this.tid_waehrung = tid_waehrung;
     }
 
-
     public String getWaehrung() {
         return waehrung;
     }
-
 
     public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
@@ -372,16 +367,13 @@ public class DefaultPreis extends AbstractIdEntity {
         return nachkomma;
     }
 
-
     public void setNachkomma(final String nachkomma) {
         this.nachkomma = nachkomma;
     }
 
-
     public String getVorkomma() {
         return vorkomma;
     }
-
 
     public void setVorkomma(final String vorkomma) {
         this.vorkomma = vorkomma;
@@ -402,6 +394,5 @@ public class DefaultPreis extends AbstractIdEntity {
     public void setWaehrungstext(final Text waehrungstext) {
         this.waehrungstext = waehrungstext;
     }
-
 
 }

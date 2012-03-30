@@ -80,64 +80,69 @@ public class Auth {
         // 2. IP-basiert (überschreibt Broker-Kennung)
         // 3. Broker-Kennung (z.B. Careum Explorer)
 
-        Text cn = new Text();
+        Text result = new Text();
+        final Text cn = new Text();
         final Auth auth = new Auth();
 
         // IP-basiert
         String ip = rq.getRemoteAddr();
 
-        if (ip != null && ip.contains(":")) { // Verdacht auf IPv6
-            try {
-                final InetAddress a6 = InetAddress.getByName(ip);
-                if (a6 instanceof Inet6Address) {
-                    // in Linux kann intern schon mal IPv6 zum Zuge kommen...
-                    if (!a6.isLoopbackAddress()) { // Nachricht schicken, falls IPv6 und nicht lokale Loopback
-                        final MHelper mh = new MHelper();
-                        mh.sendErrorMail("IPv6 empfangen!", a6.getHostAddress());
+        try {
+
+            if (ip != null && ip.contains(":")) { // Verdacht auf IPv6
+                try {
+                    final InetAddress a6 = InetAddress.getByName(ip);
+                    if (a6 instanceof Inet6Address) {
+                        // in Linux kann intern schon mal IPv6 zum Zuge kommen...
+                        if (!a6.isLoopbackAddress()) { // Nachricht schicken, falls IPv6 und nicht lokale Loopback
+                            final MHelper mh = new MHelper();
+                            mh.sendErrorMail("IPv6 empfangen!", a6.getHostAddress());
+                        }
+                        if (((Inet6Address) a6).isIPv4CompatibleAddress()) {
+                            final Inet4Address a4 = (Inet4Address) InetAddress.getByName(a6.getHostName());
+                            LOG.warn("umgewandelte IP6 to IP4: " + a4.getHostAddress());
+                            ip = a4.getHostAddress(); // Umwandlung in IP4 // TODO: IPv6 grundsätzlich ermöglichen
+                        }
                     }
-                    if (((Inet6Address) a6).isIPv4CompatibleAddress()) {
-                        final Inet4Address a4 = (Inet4Address) InetAddress.getByName(a6.getHostName());
-                        LOG.warn("umgewandelte IP6 to IP4: " + a4.getHostAddress());
-                        ip = a4.getHostAddress(); // Umwandlung in IP4 // TODO: IPv6 grundsätzlich ermöglichen
-                    }
+                } catch (final UnknownHostException ex) {
+                    LOG.error("grantAccess ip: " + ip + "\040" + ex.toString());
                 }
-            } catch (final UnknownHostException ex) {
-                LOG.error("grantAccess ip: " + ip + "\040" + ex.toString());
             }
-        }
 
-        final IPChecker ipck = new IPChecker();
-        final Text tip = ipck.contains(ip, cn.getConnection());
+            final IPChecker ipck = new IPChecker();
+            final Text tip = ipck.contains(ip, cn.getConnection());
 
-        // Broker-Kennung
-        final Texttyp bktyp = new Texttyp(Long.valueOf(11), cn.getConnection()); // Texttyp Brokerkennung
-        final Text tbk = new Text(cn.getConnection(), bktyp, rq.getParameter("bkid")); // Text mit Brokerkennung
+            // Broker-Kennung
+            final Texttyp bktyp = new Texttyp(Long.valueOf(11), cn.getConnection()); // Texttyp Brokerkennung
+            final Text tbk = new Text(cn.getConnection(), bktyp, rq.getParameter("bkid")); // Text mit Brokerkennung
 
-        // Kontokennung
-        final Texttyp kktyp = new Texttyp(Long.valueOf(12), cn.getConnection()); // Texttyp Kontokennung
-        final Text tkk = new Text(cn.getConnection(), kktyp, rq.getParameter("kkid")); // Text mit Kontokennung
+            // Kontokennung
+            final Texttyp kktyp = new Texttyp(Long.valueOf(12), cn.getConnection()); // Texttyp Kontokennung
+            final Text tkk = new Text(cn.getConnection(), kktyp, rq.getParameter("kkid")); // Text mit Kontokennung
 
-        cn.close();
-
-        // erste Priorität: ist eine Kontokennung vorhanden?
-        if ((tkk != null && tkk.getInhalt() != null) // anhand einer kkid im Request
-                && !auth.isLogin(rq)) {
-            cn = tkk;
-        } else {
-            // zweite Priorität: kann der Zugriff einer bekannten IP zugeordnet werden?
-            if ((tip != null && tip.getInhalt() != null) // IP-basiert
+            // erste Priorität: ist eine Kontokennung vorhanden?
+            if ((tkk != null && tkk.getInhalt() != null) // anhand einer kkid im Request
                     && !auth.isLogin(rq)) {
-                cn = tip;
+                result = tkk;
             } else {
-                // dritte Priorität: kommt der Zugriff von einem Broker
-                if ((tbk != null && tbk.getInhalt() != null) // anhand einer Kontokennung
+                // zweite Priorität: kann der Zugriff einer bekannten IP zugeordnet werden?
+                if ((tip != null && tip.getInhalt() != null) // IP-basiert
                         && !auth.isLogin(rq)) {
-                    cn = tbk;
+                    result = tip;
+                } else {
+                    // dritte Priorität: kommt der Zugriff von einem Broker
+                    if ((tbk != null && tbk.getInhalt() != null) // anhand einer Kontokennung
+                            && !auth.isLogin(rq)) {
+                        result = tbk;
+                    }
                 }
             }
+
+        } finally {
+            cn.close();
         }
 
-        return cn;
+        return result;
     }
 
     /**
@@ -174,7 +179,9 @@ public class Auth {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
                 final Benutzer b = new Benutzer();
-                if (ui.getBenutzer().getClass().isInstance(b)) { check = true; }
+                if (ui.getBenutzer().getClass().isInstance(b)) {
+                    check = true;
+                }
             }
         }
         return check;
@@ -192,11 +199,14 @@ public class Auth {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
                 final Bibliothekar b = new Bibliothekar();
-                if (ui.getBenutzer().getClass().isInstance(b)) { check = true; }
+                if (ui.getBenutzer().getClass().isInstance(b)) {
+                    check = true;
+                }
             }
         }
         return check;
     }
+
     /**
      * Kontrolliert, ob der angemeldete User ein Administrator ist
      * @param rq
@@ -209,7 +219,9 @@ public class Auth {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
                 final Administrator a = new Administrator();
-                if (ui.getBenutzer().getClass().isInstance(a)) { check = true; }
+                if (ui.getBenutzer().getClass().isInstance(a)) {
+                    check = true;
+                }
             }
         }
         return check;
@@ -278,11 +290,11 @@ public class Auth {
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
 
-            if ((!auth.isBenutzer(rq) && order.getId() != null
-                    && ui.getKonto().getId().equals(order.getKonto().getId()))
+            if ((!auth.isBenutzer(rq) && order.getId() != null && ui.getKonto().getId()
+                    .equals(order.getKonto().getId()))
                     || // Bibliothekare und Admins sehen Bestellungen des Kontos
-                    (auth.isBenutzer(rq) && order.getId() != null && ui.getBenutzer().getId().equals(
-                            order.getBenutzer().getId()))) { // User sehen nur die eigenen Bestellungen
+                    (auth.isBenutzer(rq) && order.getId() != null && ui.getBenutzer().getId()
+                            .equals(order.getBenutzer().getId()))) { // User sehen nur die eigenen Bestellungen
                 check = true;
             }
         }
@@ -309,10 +321,7 @@ public class Auth {
             }
 
             // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
-            if (b != null
-                    && ui.getKonto() != null
-                    && b.isUserbestellung()
-                    && ui.getKonto().isUserbestellung()) {
+            if (b != null && ui.getKonto() != null && b.isUserbestellung() && ui.getKonto().isUserbestellung()) {
                 check = true;
             }
         }
@@ -338,12 +347,8 @@ public class Auth {
                 check = true;
             }
             // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
-            if (b != null
-                    && ui.getKonto() != null
-                    && b.isGbvbestellung()
-                    && ui.getKonto().isGbvbestellung()
-                    && ui.getKonto().getGbvrequesterid() != null
-                    && ui.getKonto().getIsil() != null) {
+            if (b != null && ui.getKonto() != null && b.isGbvbestellung() && ui.getKonto().isGbvbestellung()
+                    && ui.getKonto().getGbvrequesterid() != null && ui.getKonto().getIsil() != null) {
                 // für User gibt es nur autom. GBV-Bestellung, deshalb muss requester-id und ISIL vorhanden sein
                 check = true;
             }
@@ -400,7 +405,9 @@ public class Auth {
                 check = true;
             } else {
                 b = b.getUser(Long.valueOf(uid), cn); // hier holen wir Bestellkunde
-                if (b.isKontostatus()) { check = true; }
+                if (b.isKontostatus()) {
+                    check = true;
+                }
             }
         }
 
@@ -420,12 +427,18 @@ public class Auth {
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
 
-            if (ui.getKonto().getOrderlimits() == 0) { check = true; } // falls keine Orderlimitis aktiviert sind...
+            if (ui.getKonto().getOrderlimits() == 0) {
+                check = true;
+            } // falls keine Orderlimitis aktiviert sind...
             maxordersj = ui.getKonto().getMaxordersj();
-            if (maxordersj == 0) { check = true; } // unlimitiert...
+            if (maxordersj == 0) {
+                check = true;
+            } // unlimitiert...
 
             // Orderlimits aktiv / maxordersj nicht unlimitiert & Limite noch nicht überschritten
-            if (!check && b.allOrdersThisYearForKonto(ui.getKonto(), cn) < maxordersj) { check = true; }
+            if (!check && b.allOrdersThisYearForKonto(ui.getKonto(), cn) < maxordersj) {
+                check = true;
+            }
 
         }
 
@@ -445,12 +458,18 @@ public class Auth {
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
 
-            if (ui.getKonto().getOrderlimits() == 0) { check = true; } // falls keine Orderlimitis aktiviert sind...
+            if (ui.getKonto().getOrderlimits() == 0) {
+                check = true;
+            } // falls keine Orderlimitis aktiviert sind...
             maxordersutotal = ui.getKonto().getMaxordersutotal();
-            if (maxordersutotal == 0) { check = true; } // unlimitiert...
+            if (maxordersutotal == 0) {
+                check = true;
+            } // unlimitiert...
 
             // Orderlimits aktiv / maxordersutotal nicht unbegrenzt & Limite noch nicht überschritten
-            if (!check && b.countOrdersPerUser(uid, ui.getKonto(), cn) < maxordersutotal) { check = true; }
+            if (!check && b.countOrdersPerUser(uid, ui.getKonto(), cn) < maxordersutotal) {
+                check = true;
+            }
 
         }
 
@@ -458,5 +477,3 @@ public class Auth {
     }
 
 }
-
-

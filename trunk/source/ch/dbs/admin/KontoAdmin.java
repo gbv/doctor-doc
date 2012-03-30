@@ -18,14 +18,11 @@
 package ch.dbs.admin;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
-
-import org.grlea.log.SimpleLogger;
 
 import util.MHelper;
 import util.ReadSystemConfigurations;
@@ -41,9 +38,8 @@ import ch.dbs.form.BillingForm;
  * @author Pascal Steiner
  *
  */
-public final class KontoAdmin  {
+public final class KontoAdmin {
 
-    private static final SimpleLogger LOG = new SimpleLogger(KontoAdmin.class);
     private static final int TWO_WEEKS = 14;
     private static final int TEN_DAYS = 14;
 
@@ -59,7 +55,7 @@ public final class KontoAdmin  {
 
         // Datumsformatierung vorbereiten
         final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd"); // Datumsformatierung für Vergleich
-        final SimpleDateFormat expdateformater = new SimpleDateFormat("dd.MM.yyyy");  // Datumsformatierung für Mailtext
+        final SimpleDateFormat expdateformater = new SimpleDateFormat("dd.MM.yyyy"); // Datumsformatierung für Mailtext
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
 
         // Delta 2 Monate zu aktuellem Monat ausrechnen
@@ -89,49 +85,48 @@ public final class KontoAdmin  {
         final String exp = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
 
         // Datenbankverbindung aufbauen
-        final Connection cn = new Billing().getConnection();
+        final Text cn = new Text();
 
-        //    Alle Kontos holen
-        final List<Konto> expKontos = new Konto().getAllKontos(cn);
+        try {
 
-        // Kontos abarbeiten, ob eine Rechnung erstelt und versendet werden muss
-        for (final Konto k : expKontos) {
-            if (k.getKontotyp() > 0 && k.getExpdate() != null) {
+            //    Alle Kontos holen
+            final List<Konto> expKontos = new Konto().getAllKontos(cn.getConnection());
 
-                //           neue Rechnung erstellen, wenn das Abo in 2 Monaten ablauuft
-                if (k.getExpdate().toString().equals(expDateMysql)) {
-                    this.newKontoAboBill(k, cn, lastPayDate2Month);
+            // Kontos abarbeiten, ob eine Rechnung erstelt und versendet werden muss
+            for (final Konto k : expKontos) {
+                if (k.getKontotyp() > 0 && k.getExpdate() != null) {
+
+                    //           neue Rechnung erstellen, wenn das Abo in 2 Monaten ablauuft
+                    if (k.getExpdate().toString().equals(expDateMysql)) {
+                        this.newKontoAboBill(k, cn.getConnection(), lastPayDate2Month);
+                    }
+
+                    // Zahlungserinnerung versenden wenn Abo in 1 Monat ablauuft
+                    if (k.getExpdate().toString().equals(expMysql1Month)) {
+                        this.sendBillingReminder(k, cn.getConnection(), lastPayDate1Month);
+                    }
+
+                    // Zahlungserinnerung versenden, wenn Abo in 10 Tagen ablauft
+                    if (k.getExpdate().toString().equals(warnDateMysql)) {
+                        this.sendBillingWarning(k, cn.getConnection(), warnLastPayDate);
+                    }
+
+                    // Bibliothekskonto deaktivieren, wenn Abo ohne Zahlungseingang abläuft
+                    if (k.getExpdate().toString().equals(exp)) {
+
+                        // Meldung an Kunden und Team Doctor-Doc senden
+                        this.sendExpireMessage(k, cn.getConnection());
+
+                        //             Faxserver deaktivieren
+                        k.setFaxno(null);
+                        k.update(cn.getConnection());
+                    }
                 }
 
-                // Zahlungserinnerung versenden wenn Abo in 1 Monat ablauuft
-                if (k.getExpdate().toString().equals(expMysql1Month)) {
-                    this.sendBillingReminder(k, cn, lastPayDate1Month);
-                }
-
-                // Zahlungserinnerung versenden, wenn Abo in 10 Tagen ablauft
-                if (k.getExpdate().toString().equals(warnDateMysql)) {
-                    this.sendBillingWarning(k, cn, warnLastPayDate);
-                }
-
-                // Bibliothekskonto deaktivieren, wenn Abo ohne Zahlungseingang abläuft
-                if (k.getExpdate().toString().equals(exp)) {
-
-                    // Meldung an Kunden und Team Doctor-Doc senden
-                    this.sendExpireMessage(k, cn);
-
-                    //             Faxserver deaktivieren
-                    k.setFaxno(null);
-                    k.update(cn);
-                }
             }
 
-        }
-
-        // DB Verbindung wieder schliessen
-        try {
+        } finally {
             cn.close();
-        } catch (final SQLException e) {
-            LOG.error("autoBillExpdate()" + e.toString());
         }
     }
 
@@ -147,13 +142,13 @@ public final class KontoAdmin  {
         //TODO: Nullpointer exception bei Kontotyp 1! noch beheben!
         //    if (k.getKontotyp() == 1)  { b = new Billing(k, new Text(cn, "1 Jahr "
         // + ReadSystemConfigurations.getApplicationName() + " Enhanced") , Double.valueOf("120"), "CHF"); }
-        if (k.getKontotyp() == 2) { b = new Billing(k, new Text(cn, "1 Jahr "
-                + ReadSystemConfigurations.getApplicationName()
-                + " Enhanced plus Fax to Mail") , Double.valueOf("210"), "CHF");
+        if (k.getKontotyp() == 2) {
+            b = new Billing(k, new Text(cn, "1 Jahr " + ReadSystemConfigurations.getApplicationName()
+                    + " Enhanced plus Fax to Mail"), Double.valueOf("210"), "CHF");
         }
-        if (k.getKontotyp() == 3) { b = new Billing(k, new Text(cn, "3 Monate "
-                + ReadSystemConfigurations.getApplicationName()
-                + " Enhanced plus Fax to Mail") , Double.valueOf("90"), "CHF");
+        if (k.getKontotyp() == 3) {
+            b = new Billing(k, new Text(cn, "3 Monate " + ReadSystemConfigurations.getApplicationName()
+                    + " Enhanced plus Fax to Mail"), Double.valueOf("90"), "CHF");
         }
 
         if (b != null) {
@@ -162,12 +157,10 @@ public final class KontoAdmin  {
             // Mailtext vorbereiten
             BillingForm bf = new BillingForm();
             bf.setManuelltext("Ihr Faxserver auf doctor-doc.com läuft am " + sdf.format(k.getExpdate()) + " ab.");
-            bf.setBillingtext("\n\nUm weiterhin optimal von "
-                    + ReadSystemConfigurations.getApplicationName()
-                    + " profitieren zu können, muss der Betrag von "
-                    + b.getBetrag() + " " + b.getWaehrung()  + " bis spätestens am "
-                    + lastpaydate + " auf dem Konto des "
-                    + "Vereins " + ReadSystemConfigurations.getApplicationName() + " eintreffen.");
+            bf.setBillingtext("\n\nUm weiterhin optimal von " + ReadSystemConfigurations.getApplicationName()
+                    + " profitieren zu können, muss der Betrag von " + b.getBetrag() + " " + b.getWaehrung()
+                    + " bis spätestens am " + lastpaydate + " auf dem Konto des " + "Vereins "
+                    + ReadSystemConfigurations.getApplicationName() + " eintreffen.");
             bf = this.prepareBillingText(k, cn, lastpaydate, bf);
 
             // Mail senden
@@ -175,20 +168,19 @@ public final class KontoAdmin  {
             final String[] to = new String[1];
             to[0] = k.getBibliotheksmail();
             if (b.getId() != null) {
-                mh.sendMail(to, "RECHNUNG: Erneuerung Ihres Faxservers bei "
-                        + ReadSystemConfigurations.getApplicationName() + ". Ablaufdatum: "
-                        + sdf.format(k.getExpdate()), bf.getBillingtext());
+                mh.sendMail(to,
+                        "RECHNUNG: Erneuerung Ihres Faxservers bei " + ReadSystemConfigurations.getApplicationName()
+                                + ". Ablaufdatum: " + sdf.format(k.getExpdate()), bf.getBillingtext());
             } else { // Hinweis senden falls keine Rechnung erstellt werden konnte
-                mh.sendErrorMail("WARNUNG: Folgende Rechnung konnte nicht erstellt werden, Kunde "
-                        + k.getBibliotheksname()
-                        + " ist nicht benachrichtigt worden! Es wurde keine Rechnung gespeichert!",
+                mh.sendErrorMail(
+                        "WARNUNG: Folgende Rechnung konnte nicht erstellt werden, Kunde " + k.getBibliotheksname()
+                                + " ist nicht benachrichtigt worden! Es wurde keine Rechnung gespeichert!",
                         "Die Rechnung konnte nicht gespeichert werden. Vorbereiteter Mailtext:\n\n"
-                        + bf.getBillingtext());
+                                + bf.getBillingtext());
             }
 
         }
     }
-
 
     /**
      * Rechnungstext vorbereiten / korrigieren
@@ -210,16 +202,16 @@ public final class KontoAdmin  {
         Billing b = new Billing();
         b = b.getLastBilling(k, cn);
         if (b == null) {
-            if (k.getKontotyp() == 0 || k.getKontotyp() == 1) { b = new Billing(k,
-                    new Text(cn, "Dienstleistung") , Double.valueOf("0"), "CHF");
+            if (k.getKontotyp() == 0 || k.getKontotyp() == 1) {
+                b = new Billing(k, new Text(cn, "Dienstleistung"), Double.valueOf("0"), "CHF");
             }
-            if (k.getKontotyp() == 2) { b = new Billing(k,
-                    new Text(cn, "1 Jahr " + ReadSystemConfigurations.getApplicationName()
-                            + " Enhanced plus Fax to Mail") , Double.valueOf("210"), "CHF");
+            if (k.getKontotyp() == 2) {
+                b = new Billing(k, new Text(cn, "1 Jahr " + ReadSystemConfigurations.getApplicationName()
+                        + " Enhanced plus Fax to Mail"), Double.valueOf("210"), "CHF");
             }
-            if (k.getKontotyp() == 3) { b = new Billing(k,
-                    new Text(cn, "3 Monate " + ReadSystemConfigurations.getApplicationName()
-                            + " Enhanced plus Fax to Mail") , Double.valueOf("90"), "CHF");
+            if (k.getKontotyp() == 3) {
+                b = new Billing(k, new Text(cn, "3 Monate " + ReadSystemConfigurations.getApplicationName()
+                        + " Enhanced plus Fax to Mail"), Double.valueOf("90"), "CHF");
             }
         }
 
@@ -266,7 +258,6 @@ public final class KontoAdmin  {
                 }
             }
         }
-
 
         t.append("\n\nRechnungsinformationen:\nBetrag: ");
         t.append(b.getBetrag());
@@ -320,10 +311,9 @@ public final class KontoAdmin  {
 
         if (b != null) {
             bf.setManuelltext("Ihr Konto auf doctor-doc.com läuft am " + sdf.format(k.getExpdate()) + " ab.");
-            bf.setBillingtext("\n\nUm weiterhin vom Faxserver auf "
-                    + ReadSystemConfigurations.getApplicationName() + " profitieren zu können, muss der Betrag von "
-                    + b.getBetrag() + " " + b.getWaehrung()  + " bis spätestens am "
-                    + lastpaydate + " auf dem Konto des Vereins "
+            bf.setBillingtext("\n\nUm weiterhin vom Faxserver auf " + ReadSystemConfigurations.getApplicationName()
+                    + " profitieren zu können, muss der Betrag von " + b.getBetrag() + " " + b.getWaehrung()
+                    + " bis spätestens am " + lastpaydate + " auf dem Konto des Vereins "
                     + ReadSystemConfigurations.getApplicationName() + " eintreffen."
                     + "\n\nSollte sich ihre Zahlung mit dieser Mail gekreuzt haben, betrachten Sie dieses Mail "
                     + "bitte als gegenstandslos."); // Hinweis Zahlungskreuzung, laspaydate
@@ -331,14 +321,14 @@ public final class KontoAdmin  {
 
             // Rechnung versenden
 
-
-            mh.sendMail(to, "Hinweis: Ihr Faxserver auf doctor-doc.com laeuft am "
-                    + sdf.format(k.getExpdate()) + " ab", bf.getBillingtext());
+            mh.sendMail(to,
+                    "Hinweis: Ihr Faxserver auf doctor-doc.com laeuft am " + sdf.format(k.getExpdate()) + " ab",
+                    bf.getBillingtext());
         } else { // Hinweis versenden wenn keine offene Zahlung gefunden wurde
-            mh.sendErrorMail("ZAHLUNGSERINNERUNG 30 Tage vor Ablauf: von Kunde "
-                    + k.getBibliotheksname() + " musste nicht versendet werden.",
+            mh.sendErrorMail("ZAHLUNGSERINNERUNG 30 Tage vor Ablauf: von Kunde " + k.getBibliotheksname()
+                    + " musste nicht versendet werden.",
                     "Keine offene Rechnung gefunden, alles bezahlt!\n\nBitte Kontoablaufdatum noch richtig setzen, "
-                    + "das ist vermutlich beim Zahlungseingang vergessen gegangen... ");
+                            + "das ist vermutlich beim Zahlungseingang vergessen gegangen... ");
         }
     }
 
@@ -374,13 +364,13 @@ public final class KontoAdmin  {
             bf = this.prepareBillingText(k, cn, lastpaydate, bf);
 
             //       Rechnung versenden
-            mh.sendMail(to, "Hinweis: Ihr Faxserver auf doctor-doc.com laeuft ab am "
-                    + sdf.format(k.getExpdate()), bf.getBillingtext());
-        } else {  // Hinweis versenden wenn keine offene Zahlung gefunden wurde
+            mh.sendMail(to, "Hinweis: Ihr Faxserver auf doctor-doc.com laeuft ab am " + sdf.format(k.getExpdate()),
+                    bf.getBillingtext());
+        } else { // Hinweis versenden wenn keine offene Zahlung gefunden wurde
             mh.sendErrorMail("LETZTE ZAHLUNGSERINNERUNG: von Kunde " + k.getBibliotheksname()
                     + " musste nicht versendet werden.!",
                     "Keine offene Rechnung gefunden, alles bezahlt!\n\nBitte Kontoablaufdatum noch richtig setzen, "
-                    + "das ist vermutlich beim Zahlungseingang vergessen gegangen... ");
+                            + "das ist vermutlich beim Zahlungseingang vergessen gegangen... ");
         }
     }
 
@@ -411,9 +401,8 @@ public final class KontoAdmin  {
                     + "Leider mussten wir aufgrund eines internen Fehlers in "
                     + ReadSystemConfigurations.getApplicationName() + " ihren Faxserver deaktivieren. "
                     + "Wir bemühen uns, diesen Fehler schnellstmöglich zu beheben um den Faxserver wieder frei "
-                    + "geben zu können.\n\n"
-                    + "Freundliche Grüsse:\n\n"
-                    + "Ihr Team " + ReadSystemConfigurations.getApplicationName());
+                    + "geben zu können.\n\n" + "Freundliche Grüsse:\n\n" + "Ihr Team "
+                    + ReadSystemConfigurations.getApplicationName());
         }
 
         // Hinweis an Kunden versenden
@@ -423,30 +412,22 @@ public final class KontoAdmin  {
         mh.sendMail(to, "Hinweis: Ihr Faxserver auf doctor-doc.com wurde deaktiviert.", bf.getBillingtext());
 
         // Hinweis an Team Doctor-Doc versenden
-        mh.sendErrorMail("Hinweis: Der Faxserver vom Konto " + k.getBibliotheksname()
-                + " auf doctor-doc.com wurde deaktiviert.",
+        mh.sendErrorMail(
+                "Hinweis: Der Faxserver vom Konto " + k.getBibliotheksname() + " auf doctor-doc.com wurde deaktiviert.",
                 "Vermutete Ursache: konto Ablaufdatum falsch gesetzt. Folgender Mailtext wurde verschickt:\n\n"
-                + bf.getBillingtext());
+                        + bf.getBillingtext());
 
     }
-
 
     public String getBillingInfos() {
 
         final StringBuffer t = new StringBuffer(430);
-        t.append("\n\n*******************************************************\n"
-                + "Zahlungsinformationen:" + "\n");
+        t.append("\n\n*******************************************************\n" + "Zahlungsinformationen:" + "\n");
         t.append(ReadSystemConfigurations.getApplicationName());
-        t.append("\nKonto Nr.:      16 9.350.8040.02\n"
-                + "IBAN:           CH62 0630 0016 9350 8040 2\n"
-                + "Bank:           Valiant Bank, Postfach, 3001 Bern\n"
-                + "Bankenclearing: 6300\n"
-                + "Postcheckkonto: 30-38112-0\n"
-                + "Swift-Code:     VABECH22\n\n"
-                + "Name und Adresse:\n"
-                + "Pascal Steiner\n"
-                + "Gysulastrasse 83\n"
-                + "5022 Rombach (CH)\n"
+        t.append("\nKonto Nr.:      16 9.350.8040.02\n" + "IBAN:           CH62 0630 0016 9350 8040 2\n"
+                + "Bank:           Valiant Bank, Postfach, 3001 Bern\n" + "Bankenclearing: 6300\n"
+                + "Postcheckkonto: 30-38112-0\n" + "Swift-Code:     VABECH22\n\n" + "Name und Adresse:\n"
+                + "Pascal Steiner\n" + "Gysulastrasse 83\n" + "5022 Rombach (CH)\n"
                 + "*******************************************************");
 
         return t.toString();

@@ -67,9 +67,8 @@ public class Position extends AbstractIdEntity implements OrderHandler {
     // Erroremailadresse in properties File umstellen
     //  private String ERRORMAILADRESS = "info@doctor-doc.com";
 
-
-
-    public Position() { }
+    public Position() {
+    }
 
     public Position(final AbstractBenutzer user, final Konto k) {
         this.setBenutzer(user);
@@ -111,7 +110,6 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         }
 
     }
-
 
     /**
      * Speichert die Bestellung in der DB ab (hinterlegt die id im Bestellobjekt)
@@ -230,8 +228,11 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 this.setBenutzer(b.getUser(rs, cn));
             } catch (final SQLException se) {
                 LOG.error("getPositionen/ResultSet rs: " + se.toString());
-                this.setBenutzer(b.getUser(rs.getLong("UID"), this.getConnection()));
-                this.close();
+                try {
+                    this.setBenutzer(b.getUser(rs.getLong("UID"), this.getConnection()));
+                } finally {
+                    this.close();
+                }
             }
             // Konto abfüllen
             try {
@@ -239,8 +240,11 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 this.setKonto(new Konto(rs));
             } catch (final SQLException se) {
                 LOG.error("getPositionen/ResultSet rs: " + se.toString());
-                this.setKonto(new Konto(rs.getLong("KID"), this.getConnection()));
-                this.close();
+                try {
+                    this.setKonto(new Konto(rs.getLong("KID"), this.getConnection()));
+                } finally {
+                    this.close();
+                }
             } catch (final Exception e) {
                 LOG.error("getPositionen(rs)" + e.toString());
             }
@@ -301,7 +305,6 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         }
 
     }
-
 
     public AbstractBenutzer getBenutzer() {
         return benutzer;
@@ -450,25 +453,77 @@ public class Position extends AbstractIdEntity implements OrderHandler {
 
         ps.setLong(1, this.getBenutzer().getId());
         ps.setLong(2, this.getKonto().getId());
-        if (this.getPriority() == null) { ps.setString(3, "normal"); } else { ps.setString(3, this.getPriority()); }
-        if (this.getDeloptions() == null) { ps.setString(4, ""); } else { ps.setString(4, this.getDeloptions()); }
-        if (this.getFileformat() == null) { ps.setString(5, ""); } else { ps.setString(5, this.getFileformat()); }
+        if (this.getPriority() == null) {
+            ps.setString(3, "normal");
+        } else {
+            ps.setString(3, this.getPriority());
+        }
+        if (this.getDeloptions() == null) {
+            ps.setString(4, "");
+        } else {
+            ps.setString(4, this.getDeloptions());
+        }
+        if (this.getFileformat() == null) {
+            ps.setString(5, "");
+        } else {
+            ps.setString(5, this.getFileformat());
+        }
         ps.setDate(6, this.getOrderdate());
-        if (this.getMediatype() == null) { ps.setString(7, ""); } else { ps.setString(7, this.getMediatype()); }
-        if (this.getAutor() == null) { ps.setString(8, ""); } else { ps.setString(8, this.getAutor()); }
+        if (this.getMediatype() == null) {
+            ps.setString(7, "");
+        } else {
+            ps.setString(7, this.getMediatype());
+        }
+        if (this.getAutor() == null) {
+            ps.setString(8, "");
+        } else {
+            ps.setString(8, this.getAutor());
+        }
         if (this.getZeitschrift_verlag() == null) {
             ps.setString(9, "");
         } else {
             ps.setString(9, this.getZeitschrift_verlag());
         }
-        if (this.getHeft() == null) { ps.setString(10, ""); } else { ps.setString(10, this.getHeft()); }
-        if (this.getJahrgang() == null) { ps.setString(11, ""); } else { ps.setString(11, this.getJahrgang()); }
-        if (this.getJahr() == null) { ps.setString(12, ""); } else { ps.setString(12, this.getJahr()); }
-        if (this.getTitel() == null) { ps.setString(13, ""); } else { ps.setString(13, this.getTitel()); }
-        if (this.getKapitel() == null) { ps.setString(14, ""); } else { ps.setString(14, this.getKapitel()); }
-        if (this.getSeiten() == null) { ps.setString(15, ""); } else { ps.setString(15, this.getSeiten()); }
-        if (this.getWaehrung() == null) { ps.setString(16, ""); } else { ps.setString(16, this.getWaehrung()); }
-        if (this.getPreis() == null) { ps.setString(17, ""); } else { ps.setString(17, this.getPreis()); }
+        if (this.getHeft() == null) {
+            ps.setString(10, "");
+        } else {
+            ps.setString(10, this.getHeft());
+        }
+        if (this.getJahrgang() == null) {
+            ps.setString(11, "");
+        } else {
+            ps.setString(11, this.getJahrgang());
+        }
+        if (this.getJahr() == null) {
+            ps.setString(12, "");
+        } else {
+            ps.setString(12, this.getJahr());
+        }
+        if (this.getTitel() == null) {
+            ps.setString(13, "");
+        } else {
+            ps.setString(13, this.getTitel());
+        }
+        if (this.getKapitel() == null) {
+            ps.setString(14, "");
+        } else {
+            ps.setString(14, this.getKapitel());
+        }
+        if (this.getSeiten() == null) {
+            ps.setString(15, "");
+        } else {
+            ps.setString(15, this.getSeiten());
+        }
+        if (this.getWaehrung() == null) {
+            ps.setString(16, "");
+        } else {
+            ps.setString(16, this.getWaehrung());
+        }
+        if (this.getPreis() == null) {
+            ps.setString(17, "");
+        } else {
+            ps.setString(17, this.getPreis());
+        }
 
         return ps;
     }

@@ -78,9 +78,8 @@ public final class UserAction extends DispatchAction {
     private static final String ACTIVEMENUS = "ActiveMenus";
     private static final String ERRORMESSAGE = "errormessage";
 
-
-    public ActionForward stati(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward stati(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Auth auth = new Auth();
@@ -109,8 +108,8 @@ public final class UserAction extends DispatchAction {
      *  Übersicht Zeigt Bestellungen an. Kann durch Benutzer festgelegt werden, nach welchem
      *  Feld er ab- und aufsteigend sortieren will
      */
-    public ActionForward overview(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward overview(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
@@ -123,75 +122,80 @@ public final class UserAction extends DispatchAction {
         final Auth auth = new Auth();
         final Text cn = new Text();
 
-        if (auth.isLogin(rq)) {
-            forward = SUCCESS;
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        try {
 
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(UEBERSICHT);
-            rq.setAttribute(ACTIVEMENUS, mf);
+            if (auth.isLogin(rq)) {
+                forward = SUCCESS;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            // hier wird geprüft, ob Suchkriterien eingegeben wurden, oder die Sortierung einer Suche vorliegt
-            if (!checkIfInputIsNotEmpty(of) && !of.isS()) {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu(UEBERSICHT);
+                rq.setAttribute(ACTIVEMENUS, mf);
 
-                // Auflistung möglicher Bestellstati um Statuswechsel dem User / Bibliothekar / Admin anzubieten
-                // wird auch für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
-                of.setStatitexts(cn.getAllTextPlusKontoTexts(
-                        new Texttyp("Status", cn.getConnection()), ui.getKonto().getId(), cn.getConnection()));
+                // hier wird geprüft, ob Suchkriterien eingegeben wurden, oder die Sortierung einer Suche vorliegt
+                if (!checkIfInputIsNotEmpty(of) && !of.isS()) {
 
-                // angegebener Zeitraum prüfen, resp. Defaultbereich von 1 Monat zusammenstellen
-                of = check.checkDateRegion(of, 1, ui.getKonto().getTimezone());
-                // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-                of = check.checkSortOrderValues(of);
-                //Check, damit nur gültige Sortierkriterien daherkommen
-                of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
-                // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-                of = check.checkOrdersSortCriterias(of);
+                    // Auflistung möglicher Bestellstati um Statuswechsel dem User / Bibliothekar / Admin anzubieten
+                    // wird auch für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui
+                            .getKonto().getId(), cn.getConnection()));
 
-                // Benutzer dürfen nur ihre eigenen Bestellungen sehen
-                if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
-                    if (of.getFilter() == null) {
-                        of.setBestellungen(b.getAllUserOrders(ui.getBenutzer(), of.getSort(), of.getSortorder(),
-                                of.getFromdate(), of.getTodate(), cn.getConnection()));
-                    } else {
-                        of.setBestellungen(b.getAllUserOrdersPerStatus(ui.getBenutzer(), of.getFilter(), of.getSort(),
-                                of.getSortorder(), of.getFromdate(), of.getTodate(), false, cn.getConnection()));
+                    // angegebener Zeitraum prüfen, resp. Defaultbereich von 1 Monat zusammenstellen
+                    of = check.checkDateRegion(of, 1, ui.getKonto().getTimezone());
+                    // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
+                    of = check.checkSortOrderValues(of);
+                    //Check, damit nur gültige Sortierkriterien daherkommen
+                    of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
+                    // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
+                    of = check.checkOrdersSortCriterias(of);
+
+                    // Benutzer dürfen nur ihre eigenen Bestellungen sehen
+                    if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+                        if (of.getFilter() == null) {
+                            of.setBestellungen(b.getAllUserOrders(ui.getBenutzer(), of.getSort(), of.getSortorder(),
+                                    of.getFromdate(), of.getTodate(), cn.getConnection()));
+                        } else {
+                            of.setBestellungen(b.getAllUserOrdersPerStatus(ui.getBenutzer(), of.getFilter(),
+                                    of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
+                                    cn.getConnection()));
+                        }
+                    } else { // Bibliothekare dürfen nur Bestellungen ihrers Kontos sehen
+                        if (of.getFilter() == null) {
+                            of.setBestellungen(b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
+                                    of.getFromdate(), of.getTodate(), cn.getConnection()));
+                            osf.setAuflistung(b.countOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
+                                    of.getFromdate(), of.getTodate(), cn.getConnection()));
+                        } else {
+                            of.setBestellungen(b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
+                                    of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
+                                    cn.getConnection()));
+                            osf.setAuflistung(b.countOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
+                                    of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
+                                    cn.getConnection()));
+                        }
                     }
-                } else { // Bibliothekare dürfen nur Bestellungen ihrers Kontos sehen
-                    if (of.getFilter() == null) {
-                        of.setBestellungen(b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
-                                of.getFromdate(), of.getTodate(), cn.getConnection()));
-                        osf.setAuflistung(b.countOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
-                                of.getFromdate(), of.getTodate(), cn.getConnection()));
-                    } else {
-                        of.setBestellungen(b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
-                                of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
-                                cn.getConnection()));
-                        osf.setAuflistung(b.countOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
-                                of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
-                                cn.getConnection()));
-                    }
+
+                    // Suchfelder bestimmen
+                    final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                    rq.setAttribute("sortedSearchFields", result);
+
+                    rq.setAttribute("overviewform", of);
+                    rq.setAttribute("orderstatistikform", osf);
+
+                } else { // Umleitung auf Suche
+                    forward = "search";
                 }
 
-                // Suchfelder bestimmen
-                final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
-                rq.setAttribute("sortedSearchFields", result);
-
-                rq.setAttribute("overviewform", of);
-                rq.setAttribute("orderstatistikform", osf);
-
-                cn.close();
-
-            } else { // Umleitung auf Suche
-                forward = "search";
+            } else {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+        } finally {
+            cn.close();
         }
 
         return mp.findForward(forward);
@@ -200,8 +204,8 @@ public final class UserAction extends DispatchAction {
     /**
      * Wechselt den Status einer Bestellung, unter Berücksichtigung allfällig bestehender Sortierung und Filterung
      */
-    public ActionForward changestat(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward changestat(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final OverviewForm of = (OverviewForm) form;
         final OrderState orderstate = new OrderState();
@@ -217,8 +221,8 @@ public final class UserAction extends DispatchAction {
                 final Text status = new Text(t.getConnection(), of.getTid());
                 final Bestellungen b = new Bestellungen(t.getConnection(), of.getBid());
                 if (b != null && status != null) {
-                    orderstate.changeOrderState(b, ui.getKonto().getTimezone(), status, null,
-                            ui.getBenutzer().getEmail(), t.getConnection());
+                    orderstate.changeOrderState(b, ui.getKonto().getTimezone(), status, null, ui.getBenutzer()
+                            .getEmail(), t.getConnection());
                     forward = SUCCESS;
                     rq.setAttribute("overviewform", of);
                 }
@@ -248,8 +252,8 @@ public final class UserAction extends DispatchAction {
     /**
      * Wechselt den Status einer Bestellung, unter Berücksichtigung allfällig bestehender Sortierung und Filterung
      */
-    public ActionForward changenotes(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward changenotes(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final OverviewForm of = (OverviewForm) form;
         // Make sure method is only accessible when user is logged in
@@ -294,9 +298,7 @@ public final class UserAction extends DispatchAction {
     /**
      * Konto wechseln
      */
-    public ActionForward changekonto(final ActionMapping mp,
-            final ActionForm form,
-            final HttpServletRequest rq,
+    public ActionForward changekonto(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         //    Make sure method is only accessible when user is logged in
@@ -307,8 +309,11 @@ public final class UserAction extends DispatchAction {
         if (auth.isLogin(rq)) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             final Konto k = new Konto();
-            ui.setKonto(new Konto(kf.getKid(), k.getConnection()));
-            k.close();
+            try {
+                ui.setKonto(new Konto(kf.getKid(), k.getConnection()));
+            } finally {
+                k.close();
+            }
             rq.getSession().setAttribute("userinfo", ui);
 
             if (auth.isUserlogin(rq) && auth.isUserAccount(rq)) {
@@ -335,13 +340,19 @@ public final class UserAction extends DispatchAction {
             // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
             rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
             // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) { forward = "order"; }
+            if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) {
+                forward = "order";
+            }
             // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
+            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                forward = "checkavailability";
+            }
         }
         if (kf.getKundenemail() != null && !kf.getKundenemail().equals("")) {
             // Übergabe von Userangaben von Link aus Bestellform-Email
-            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "adduser"; }
+            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                forward = "adduser";
+            }
             final UserForm uf = new UserForm(kf);
             rq.setAttribute("userform", uf);
         }
@@ -352,9 +363,7 @@ public final class UserAction extends DispatchAction {
     /**
      * Benutzer setzen wenn Logininfos Login bei verschiedenen konten zulassen
      */
-    public ActionForward setuser(final ActionMapping mp,
-            final ActionForm form,
-            final HttpServletRequest rq,
+    public ActionForward setuser(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         final LoginForm authuserlist = (LoginForm) rq.getSession().getAttribute("authuserlist");
@@ -370,69 +379,76 @@ public final class UserAction extends DispatchAction {
 
         //  Ueberprüfung ob Auswahl aus LoginForm tatsächlich authorisierte Benutzer sind
         final Gtc gtc = new Gtc();
-        for (final UserInfo authlist : authuserlist.getUserinfolist()) {
-            if (lf.getUserid().equals(authlist.getBenutzer().getId())) {
 
-                //Benutzer und Kontos in ui setzen
-                ui.setBenutzer(authlist.getBenutzer());
-                ui.setKontos(authlist.getKontos());
-                rq.getSession().setAttribute("userinfo", ui);
+        try {
 
-                //Bei nur einem Konto dieses gleich setzen
-                if (ui.getKontos().size() == 1) {
-                    ui.setKonto(ui.getKontos().get(0));
-                    // Last-Login Datum beim Benutzer hinterlegen
-                    final AbstractBenutzer u = ui.getBenutzer();
-                    u.updateLastuse(u, ui.getKonto(), cn.getConnection());
+            for (final UserInfo authlist : authuserlist.getUserinfolist()) {
+                if (lf.getUserid().equals(authlist.getBenutzer().getId())) {
 
+                    //Benutzer und Kontos in ui setzen
+                    ui.setBenutzer(authlist.getBenutzer());
+                    ui.setKontos(authlist.getKontos());
+                    rq.getSession().setAttribute("userinfo", ui);
 
-                    if (gtc.isAccepted(ui.getBenutzer(), cn.getConnection())) {
-                        forward = SUCCESS;
-                        mf.setActivemenu("suchenbestellen");
-                    } else {
-                        forward = "gtc";
+                    //Bei nur einem Konto dieses gleich setzen
+                    if (ui.getKontos().size() == 1) {
+                        ui.setKonto(ui.getKontos().get(0));
+                        // Last-Login Datum beim Benutzer hinterlegen
+                        final AbstractBenutzer u = ui.getBenutzer();
+                        u.updateLastuse(u, ui.getKonto(), cn.getConnection());
+
+                        if (gtc.isAccepted(ui.getBenutzer(), cn.getConnection())) {
+                            forward = SUCCESS;
+                            mf.setActivemenu("suchenbestellen");
+                        } else {
+                            forward = "gtc";
+                        }
+                    }
+                    //Falls Benutzer unter mehreren Kontos arbeiten darf weiterleitung zur Kontoauswahl
+                    if (ui.getKontos().size() > 1) {
+                        // Last-Login Datum beim Benutzer hinterlegen
+                        final AbstractBenutzer u = ui.getBenutzer();
+                        u.updateLastuse(u, ui.getKontos().get(0), cn.getConnection());
+                        forward = "kontochoose";
                     }
                 }
-                //Falls Benutzer unter mehreren Kontos arbeiten darf weiterleitung zur Kontoauswahl
-                if (ui.getKontos().size() > 1) {
-                    // Last-Login Datum beim Benutzer hinterlegen
-                    final AbstractBenutzer u = ui.getBenutzer();
-                    u.updateLastuse(u, ui.getKontos().get(0), cn.getConnection());
-                    forward = "kontochoose";
+            }
+
+            // Fehlermeldung bereitstellen falls mittels URL-hacking versucht wurde zu manipulieren
+            if (forward.equals(FAILURE)) {
+                rq.getSession().setAttribute("userinfo", null);
+                final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
+                LOG.info("setuser: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+            }
+
+            // Angaben vom Linkresolver
+            if (lf.isResolver()) {
+                // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
+                rq.setAttribute("orderform", lf); // Übergabe in jedem Fall
+                // Die Bestellberechtigung wird in der Methode prepare geprüft!
+                if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) {
+                    forward = "order";
+                }
+                // Bibliothekar oder Admin auf Checkavailability
+                if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                    forward = "checkavailability";
                 }
             }
+
+            rq.setAttribute(ACTIVEMENUS, mf);
+
+        } finally {
+            cn.close();
         }
 
-        cn.close();
-
-        // Fehlermeldung bereitstellen falls mittels URL-hacking versucht wurde zu manipulieren
-        if (forward.equals(FAILURE)) {
-            rq.getSession().setAttribute("userinfo", null);
-            final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-            LOG.info("setuser: prevented URL-hacking! " + ui.getBenutzer().getEmail());
-        }
-
-        // Angaben vom Linkresolver
-        if (lf.isResolver()) {
-            // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
-            rq.setAttribute("orderform", lf); // Übergabe in jedem Fall
-            // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) { forward = "order"; }
-            // Bibliothekar oder Admin auf Checkavailability
-            if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
-        }
-
-        rq.setAttribute(ACTIVEMENUS, mf);
         return mp.findForward(forward);
     }
 
     /**
      * Dient dazu beim Aufruf von prepareAddUser ab journalorder.jsp, alle Bestellangaben zu behalten...
      */
-    public ActionForward keepOrderDetails(final ActionMapping mp,
-            final ActionForm form,
-            final HttpServletRequest rq,
+    public ActionForward keepOrderDetails(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         String forward = FAILURE;
@@ -462,13 +478,10 @@ public final class UserAction extends DispatchAction {
         return mp.findForward(forward);
     }
 
-
     /**
      * Hinzufuegen eines neuen Benutzers vorbereiten
      */
-    public ActionForward prepareAddUser(final ActionMapping mp,
-            final ActionForm form,
-            final HttpServletRequest rq,
+    public ActionForward prepareAddUser(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         String forward = FAILURE;
@@ -478,61 +491,64 @@ public final class UserAction extends DispatchAction {
         final Konto konto = new Konto();
         final Auth auth = new Auth();
 
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        try {
 
-            if (ui.isKeepordervalues()) { // hier wird festegestellt, ob keepOrderDetails durchlaufen wurde
-                ui.setKeepordervalues(false);
-                ui.setKeepordervalues2(false);
-                // keepordervalues aus Session löschen, damit nicht etwas hängen bleibt...
-                rq.getSession().setAttribute("userinfo", ui);
-                ui.setKeepordervalues2(true);
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+
+                if (ui.isKeepordervalues()) { // hier wird festegestellt, ob keepOrderDetails durchlaufen wurde
+                    ui.setKeepordervalues(false);
+                    ui.setKeepordervalues2(false);
+                    // keepordervalues aus Session löschen, damit nicht etwas hängen bleibt...
+                    rq.getSession().setAttribute("userinfo", ui);
+                    ui.setKeepordervalues2(true);
+                } else {
+                    // ggf. orderform unterdrücken, welches noch in der Session hängt...
+                    rq.getSession().setAttribute("ofjo", null);
+                }
+
+                final List<Konto> allPossKontos = konto.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+                final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
+
+                for (final Konto k : allPossKontos) {
+                    final KontoForm kf = new KontoForm();
+                    kf.setKonto(k);
+                    lkf.add(kf);
+                }
+
+                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                        ui.getKonto().getId(), cn.getConnection());
+
+                ui.setKontos(allPossKontos);
+                ui.setCountries(allPossCountries);
+                rq.setAttribute("categories", categories);
+                forward = SUCCESS;
+                rq.setAttribute("ui", ui);
+
             } else {
-                // ggf. orderform unterdrücken, welches noch in der Session hängt...
-                rq.getSession().setAttribute("ofjo", null);
+                if (auth.isLogin(rq)) {
+                    em = new ErrorMessage("error.berechtigung");
+                } else {
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("login");
+                    rq.setAttribute(ACTIVEMENUS, mf);
+                    em = new ErrorMessage("error.timeout", "login.do");
+                }
             }
+            rq.setAttribute(ERRORMESSAGE, em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
 
-            final List<Konto> allPossKontos = konto.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
-            final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
-
-            for (final Konto k : allPossKontos) {
-                final KontoForm kf = new KontoForm();
-                kf.setKonto(k);
-                lkf.add(kf);
-            }
-
-            final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-            final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                    ui.getKonto().getId(), cn.getConnection());
-
-            ui.setKontos(allPossKontos);
-            ui.setCountries(allPossCountries);
-            rq.setAttribute("categories", categories);
-            forward = SUCCESS;
-            rq.setAttribute("ui", ui);
-
-        } else {
-            if (auth.isLogin(rq)) {
-                em = new ErrorMessage("error.berechtigung");
-            } else {
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
-                em = new ErrorMessage("error.timeout", "login.do");
-            }
+        } finally {
+            cn.close();
         }
-        rq.setAttribute(ERRORMESSAGE, em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
-        cn.close();
+
         return mp.findForward(forward);
     }
-
 
     /**
      * Benutzereinstellungen ändern
      */
-    public ActionForward changeuserdetails(final ActionMapping mp,
-            final ActionForm form,
-            final HttpServletRequest rq,
+    public ActionForward changeuserdetails(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         String forward = FAILURE;
@@ -542,77 +558,86 @@ public final class UserAction extends DispatchAction {
         final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 
-        if (auth.isLogin(rq)) {
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                final UserForm uf = (UserForm) form;
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                AbstractBenutzer u = new AbstractBenutzer();
-                u = u.getUser(uf.getBid(), cn.getConnection());
+        try {
 
-                // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
-                if (u != null && vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
+            if (auth.isLogin(rq)) {
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                    final UserForm uf = (UserForm) form;
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    AbstractBenutzer u = new AbstractBenutzer();
+                    u = u.getUser(uf.getBid(), cn.getConnection());
 
-                    uf.setUser(u);
+                    // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
+                    if (u != null
+                            && vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
 
-                    // selektiert alle Konten unter denen ein Kunde angehängt ist
-                    final List<Konto> kontolist = ui.getKonto().getKontosForBenutzer(u, cn.getConnection());
-                    final List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(), cn.getConnection());
-                    for (final Konto k : kontolist) {
-                        int y = 0;
-                        for (final Konto uik : allPossKontos) {
-                            if (uik.getId().longValue() == k.getId().longValue()) {
-                                uik.setSelected(true);
-                                allPossKontos.set(y, uik);
+                        uf.setUser(u);
+
+                        // selektiert alle Konten unter denen ein Kunde angehängt ist
+                        final List<Konto> kontolist = ui.getKonto().getKontosForBenutzer(u, cn.getConnection());
+                        final List<Konto> allPossKontos = ui.getKonto().getLoginKontos(ui.getBenutzer(),
+                                cn.getConnection());
+                        for (final Konto k : kontolist) {
+                            int y = 0;
+                            for (final Konto uik : allPossKontos) {
+                                if (uik.getId().longValue() == k.getId().longValue()) {
+                                    uik.setSelected(true);
+                                    allPossKontos.set(y, uik);
+                                }
+                                y++;
                             }
-                            y++;
                         }
-                    }
-                    final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
-                    for (final Konto k : allPossKontos) {
-                        final KontoForm kf = new KontoForm();
-                        kf.setKonto(k);
-                        lkf.add(kf);
-                    }
+                        final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
+                        for (final Konto k : allPossKontos) {
+                            final KontoForm kf = new KontoForm();
+                            kf.setKonto(k);
+                            lkf.add(kf);
+                        }
 
-                    final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-                    final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                            ui.getKonto().getId(), cn.getConnection());
+                        final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+                        final List<Text> categories = cn.getAllKontoText(
+                                new Texttyp("Benutzer Kategorie", cn.getConnection()), ui.getKonto().getId(),
+                                cn.getConnection());
 
-                    ui.setKontos(allPossKontos);
-                    ui.setCountries(allPossCountries);
-                    forward = SUCCESS;
-                    rq.setAttribute("categories", categories);
-                    rq.setAttribute("ui", ui);
-                    rq.setAttribute("userform", uf);
+                        ui.setKontos(allPossKontos);
+                        ui.setCountries(allPossCountries);
+                        forward = SUCCESS;
+                        rq.setAttribute("categories", categories);
+                        rq.setAttribute("ui", ui);
+                        rq.setAttribute("userform", uf);
+
+                    } else {
+                        forward = FAILURE;
+                        em = new ErrorMessage("error.hack");
+                        em.setLink("searchfree.do?activemenu=suchenbestellen");
+                        LOG.info("changeuserdetails: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+                    }
 
                 } else {
-                    forward = FAILURE;
-                    em = new ErrorMessage("error.hack");
+                    em = new ErrorMessage("error.berechtigung");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                    LOG.info("changeuserdetails: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
             } else {
-                em = new ErrorMessage("error.berechtigung");
-                em.setLink("searchfree.do?activemenu=suchenbestellen");
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                em = new ErrorMessage("error.timeout", "login.do");
             }
+            rq.setAttribute(ERRORMESSAGE, em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            em = new ErrorMessage("error.timeout", "login.do");
+        } finally {
+            cn.close();
         }
-        rq.setAttribute(ERRORMESSAGE, em); // unterdrückt falsche Fehlermeldungen aus Bestellform...
-        cn.close();
+
         return mp.findForward(forward);
     }
 
     /**
      * Generates a new password and sends it to the email adress specified.
      */
-    public ActionForward pwreset(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward pwreset(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final LoginForm lf = (LoginForm) form;
         String forward = FAILURE;
@@ -620,61 +645,67 @@ public final class UserAction extends DispatchAction {
         final MessageResources messageResources = getResources(rq);
         final ErrorMessage em = new ErrorMessage();
         AbstractBenutzer u = new AbstractBenutzer();
-        u = u.getUserFromEmail(lf.getEmail(), cn.getConnection());
-        //Check ob der Benutzer berechtigt ist sein Passwort zurückzusetzen
-        if (u != null) {
-            if (u.isLoginopt() || u.getRechte() > 1) {
-                // Passwort erzeugen
-                final PasswordGenerator p = new PasswordGenerator(8);
-                final String pw = p.getRandomString();
-                // Passwort codieren und in DB speichern
-                final Encrypt e = new Encrypt();
-                u.setPassword(e.makeSHA(pw));
-                final Konto tz = new Konto(); // we need this for setting a default timezone
-                u.updateUser(u, tz, cn.getConnection());
-                // Benutzer per Mail das neue Passwort mitteilen
-                final String[] recipients = new String[1];
-                recipients[0] = u.getEmail();
-                final StringBuffer msg = new StringBuffer();
-                msg.append(messageResources.getMessage("resend.email.intro"));
-                msg.append("\n\n");
-                msg.append(pw);
-                msg.append("\n\n");
-                msg.append(messageResources.getMessage("resend.email.greetings"));
-                msg.append('\n');
-                msg.append(messageResources.getMessage("resend.email.team"));
-                msg.append('\040');
-                msg.append(ReadSystemConfigurations.getApplicationName());
-                final MHelper m = new MHelper();
-                m.sendMail(recipients, messageResources.getMessage("resend.email.subject")
-                        + "\040" + ReadSystemConfigurations.getApplicationName(),
-                        msg.toString());
-                forward = SUCCESS;
-                rq.setAttribute("message", new Message("message.pwreset", "login.do"));
 
+        try {
+
+            u = u.getUserFromEmail(lf.getEmail(), cn.getConnection());
+            //Check ob der Benutzer berechtigt ist sein Passwort zurückzusetzen
+            if (u != null) {
+                if (u.isLoginopt() || u.getRechte() > 1) {
+                    // Passwort erzeugen
+                    final PasswordGenerator p = new PasswordGenerator(8);
+                    final String pw = p.getRandomString();
+                    // Passwort codieren und in DB speichern
+                    final Encrypt e = new Encrypt();
+                    u.setPassword(e.makeSHA(pw));
+                    final Konto tz = new Konto(); // we need this for setting a default timezone
+                    u.updateUser(u, tz, cn.getConnection());
+                    // Benutzer per Mail das neue Passwort mitteilen
+                    final String[] recipients = new String[1];
+                    recipients[0] = u.getEmail();
+                    final StringBuffer msg = new StringBuffer();
+                    msg.append(messageResources.getMessage("resend.email.intro"));
+                    msg.append("\n\n");
+                    msg.append(pw);
+                    msg.append("\n\n");
+                    msg.append(messageResources.getMessage("resend.email.greetings"));
+                    msg.append('\n');
+                    msg.append(messageResources.getMessage("resend.email.team"));
+                    msg.append('\040');
+                    msg.append(ReadSystemConfigurations.getApplicationName());
+                    final MHelper m = new MHelper();
+                    m.sendMail(recipients, messageResources.getMessage("resend.email.subject") + "\040"
+                            + ReadSystemConfigurations.getApplicationName(), msg.toString());
+                    forward = SUCCESS;
+                    rq.setAttribute("message", new Message("message.pwreset", "login.do"));
+
+                } else {
+                    em.setError("error.pwreset");
+                    em.setLink("login.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
+                    log.warn(lf.getEmail() + " ist registriert und hat versucht sich "
+                            + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
+                }
             } else {
-                em.setError("error.pwreset");
+                em.setError("error.unknown_email");
                 em.setLink("login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
-                log.warn(lf.getEmail() + " ist registriert und hat versucht sich "
+                log.warn(lf.getEmail() + " (unbekannt) hat versucht sich "
                         + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
             }
-        } else {
-            em.setError("error.unknown_email");
-            em.setLink("login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-            log.warn(lf.getEmail() + " (unbekannt) hat versucht sich "
-                    + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
+
+        } finally {
+            cn.close();
         }
-        cn.close();
+
         return mp.findForward(forward);
     }
 
     /**
      * Uebersicht Benutzer des Kontos
      */
-    public ActionForward showkontousers(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward showkontousers(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
@@ -693,8 +724,11 @@ public final class UserAction extends DispatchAction {
             // Bibliothekare sehen alle Benutzer eines Kontos
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                 final Text t = new Text();
-                uf.setUsers(ui.getBenutzer().getKontoUser(ui.getKonto(), t.getConnection()));
-                t.close();
+                try {
+                    uf.setUsers(ui.getBenutzer().getKontoUser(ui.getKonto(), t.getConnection()));
+                } finally {
+                    t.close();
+                }
             }
             rq.setAttribute("userform", uf);
         } else {
@@ -710,8 +744,8 @@ public final class UserAction extends DispatchAction {
     /**
      * neuer User anlegen abschliessen, User bearbeiten
      */
-    public ActionForward modifykontousers(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward modifykontousers(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
@@ -720,344 +754,387 @@ public final class UserAction extends DispatchAction {
         final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 
-        if (auth.isLogin(rq)) {
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                final UserForm uf = (UserForm) fm;
+        try {
 
-                // ggf. Leerschläge entfernen
-                if (uf.getEmail() != null) { uf.setEmail(uf.getEmail().trim()); }
+            if (auth.isLogin(rq)) {
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                    final UserForm uf = (UserForm) fm;
 
-                final boolean name = check.isMinLength(uf.getName(), 2);
-                final boolean vorname = check.isMinLength(uf.getVorname(), 2);
-                final boolean email = check.isEmail(uf.getEmail());
-                final boolean kont = uf.getKontos() != null;
-                final boolean land = check.isMinLength(uf.getLand(), 2);
-
-                //Test, ob alle Sollangaben gemacht wurden
-                if (name && vorname && email && kont && land) {
-
-                    final String[] kontos = uf.getKontos();
-
-                    forward = SUCCESS;
-                    AbstractBenutzer u = new Benutzer();
-
-                    if (uf.getBid() != null) {
-                        u = u.getUser(uf.getBid(), cn.getConnection());
-                    }
-
-                    u.setAnrede(uf.getAnrede());
-                    if (uf.getVorname() != null) {
-                        u.setVorname(uf.getVorname().trim());
-                    } else {
-                        u.setVorname(uf.getVorname());
-                    }
-                    if (uf.getName() != null) {
-                        u.setName(uf.getName().trim());
-                    } else {
-                        u.setName(uf.getName());
-                    }
+                    // ggf. Leerschläge entfernen
                     if (uf.getEmail() != null) {
-                        u.setEmail(uf.getEmail().trim());
-                    } else {
-                        u.setEmail(uf.getEmail());
-                    }
-                    if (uf.getTelefonnrg() != null) {
-                        u.setTelefonnrg(uf.getTelefonnrg().trim());
-                    } else {
-                        u.setTelefonnrg(uf.getTelefonnrg());
-                    }
-                    if (uf.getTelefonnrp() != null) {
-                        u.setTelefonnrp(uf.getTelefonnrp().trim());
-                    } else {
-                        u.setTelefonnrp(uf.getTelefonnrp());
-                    }
-                    if (uf.getInstitut() != null) {
-                        u.setInstitut(uf.getInstitut().trim());
-                    } else {
-                        u.setInstitut(uf.getInstitut());
-                    }
-                    if (uf.getAbteilung() != null) {
-                        u.setAbteilung(uf.getAbteilung().trim());
-                    } else {
-                        u.setAbteilung(uf.getAbteilung());
+                        uf.setEmail(uf.getEmail().trim());
                     }
 
-                    u.setCategory(new Text(cn.getConnection(),
-                            Long.valueOf(uf.getCategory())));
+                    final boolean name = check.isMinLength(uf.getName(), 2);
+                    final boolean vorname = check.isMinLength(uf.getVorname(), 2);
+                    final boolean email = check.isEmail(uf.getEmail());
+                    final boolean kont = uf.getKontos() != null;
+                    final boolean land = check.isMinLength(uf.getLand(), 2);
 
-                    if (uf.getAdresse() != null) {
-                        u.setAdresse(uf.getAdresse().trim());
-                    } else {
-                        u.setAdresse(uf.getAdresse());
-                    }
-                    if (uf.getAdresszusatz() != null) {
-                        u.setAdresszusatz(uf.getAdresszusatz().trim());
-                    } else {
-                        u.setAdresszusatz(uf.getAdresszusatz());
-                    }
-                    if (uf.getPlz() != null) {
-                        u.setPlz(uf.getPlz().trim());
-                    } else {
-                        u.setPlz(uf.getPlz());
-                    }
-                    if (uf.getOrt() != null) {
-                        u.setOrt(uf.getOrt().trim());
-                    } else {
-                        u.setOrt(uf.getOrt());
-                    }
-                    u.setLand(uf.getLand());
-                    u.setLoginopt(uf.isLoginopt());
-                    u.setKontostatus(uf.isKontostatus());
-                    final Encrypt e = new Encrypt();
-                    u.setPassword(e.makeSHA(uf.getPassword()));
-                    u.setUserbestellung(uf.isUserbestellung()); // SUBITO
-                    u.setGbvbestellung(uf.isGbvbestellung()); // GBV
-                    u.setKontovalidation(uf.isKontovalidation());
-                    u.setBilling(uf.getBilling());
-                    u.setGtc(uf.getGtc());
-                    u.setGtcdate(uf.getGtcdate());
+                    //Test, ob alle Sollangaben gemacht wurden
+                    if (name && vorname && email && kont && land) {
 
-                    if (uf.getBid() == null) {
-                        final Date d = new Date();
-                        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        final String datum = fmt.format(d, ui.getKonto().getTimezone());
-                        u.setDatum(datum);
-                        uf.setBid(u.saveNewUser(u, ui.getKonto(), cn.getConnection()));
-                        // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
-                    } else if (vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), uf.getBid(), cn.getConnection())) {
-                        u.setId(uf.getBid());
-                        u.updateUser(u, ui.getKonto(), cn.getConnection());
-                    } else {
-                        ErrorMessage em = new ErrorMessage();
-                        forward = FAILURE;
-                        em = new ErrorMessage("error.hack");
-                        em.setLink("searchfree.do?activemenu=suchenbestellen");
-                        rq.setAttribute(ERRORMESSAGE, em);
-                        LOG.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
-                    }
+                        final String[] kontos = uf.getKontos();
 
-                    // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
-                    if (u.getId() == null
-                            || vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
+                        forward = SUCCESS;
+                        AbstractBenutzer u = new Benutzer();
 
-                        if (u.getId() != null) { vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection()); }
-                        for (final String konto : kontos) {
-                            final Konto k = new Konto(Long.parseLong(konto), cn.getConnection());
-                            vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
+                        if (uf.getBid() != null) {
+                            u = u.getUser(uf.getBid(), cn.getConnection());
                         }
 
+                        u.setAnrede(uf.getAnrede());
+                        if (uf.getVorname() != null) {
+                            u.setVorname(uf.getVorname().trim());
+                        } else {
+                            u.setVorname(uf.getVorname());
+                        }
+                        if (uf.getName() != null) {
+                            u.setName(uf.getName().trim());
+                        } else {
+                            u.setName(uf.getName());
+                        }
+                        if (uf.getEmail() != null) {
+                            u.setEmail(uf.getEmail().trim());
+                        } else {
+                            u.setEmail(uf.getEmail());
+                        }
+                        if (uf.getTelefonnrg() != null) {
+                            u.setTelefonnrg(uf.getTelefonnrg().trim());
+                        } else {
+                            u.setTelefonnrg(uf.getTelefonnrg());
+                        }
+                        if (uf.getTelefonnrp() != null) {
+                            u.setTelefonnrp(uf.getTelefonnrp().trim());
+                        } else {
+                            u.setTelefonnrp(uf.getTelefonnrp());
+                        }
+                        if (uf.getInstitut() != null) {
+                            u.setInstitut(uf.getInstitut().trim());
+                        } else {
+                            u.setInstitut(uf.getInstitut());
+                        }
+                        if (uf.getAbteilung() != null) {
+                            u.setAbteilung(uf.getAbteilung().trim());
+                        } else {
+                            u.setAbteilung(uf.getAbteilung());
+                        }
+
+                        u.setCategory(new Text(cn.getConnection(), Long.valueOf(uf.getCategory())));
+
+                        if (uf.getAdresse() != null) {
+                            u.setAdresse(uf.getAdresse().trim());
+                        } else {
+                            u.setAdresse(uf.getAdresse());
+                        }
+                        if (uf.getAdresszusatz() != null) {
+                            u.setAdresszusatz(uf.getAdresszusatz().trim());
+                        } else {
+                            u.setAdresszusatz(uf.getAdresszusatz());
+                        }
+                        if (uf.getPlz() != null) {
+                            u.setPlz(uf.getPlz().trim());
+                        } else {
+                            u.setPlz(uf.getPlz());
+                        }
+                        if (uf.getOrt() != null) {
+                            u.setOrt(uf.getOrt().trim());
+                        } else {
+                            u.setOrt(uf.getOrt());
+                        }
+                        u.setLand(uf.getLand());
+                        u.setLoginopt(uf.isLoginopt());
+                        u.setKontostatus(uf.isKontostatus());
+                        final Encrypt e = new Encrypt();
+                        u.setPassword(e.makeSHA(uf.getPassword()));
+                        u.setUserbestellung(uf.isUserbestellung()); // SUBITO
+                        u.setGbvbestellung(uf.isGbvbestellung()); // GBV
+                        u.setKontovalidation(uf.isKontovalidation());
+                        u.setBilling(uf.getBilling());
+                        u.setGtc(uf.getGtc());
+                        u.setGtcdate(uf.getGtcdate());
+
+                        if (uf.getBid() == null) {
+                            final Date d = new Date();
+                            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            final String datum = fmt.format(d, ui.getKonto().getTimezone());
+                            u.setDatum(datum);
+                            uf.setBid(u.saveNewUser(u, ui.getKonto(), cn.getConnection()));
+                            // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
+                        } else if (vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), uf.getBid(),
+                                cn.getConnection())) {
+                            u.setId(uf.getBid());
+                            u.updateUser(u, ui.getKonto(), cn.getConnection());
+                        } else {
+                            ErrorMessage em = new ErrorMessage();
+                            forward = FAILURE;
+                            em = new ErrorMessage("error.hack");
+                            em.setLink("searchfree.do?activemenu=suchenbestellen");
+                            rq.setAttribute(ERRORMESSAGE, em);
+                            LOG.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+                        }
+
+                        // Sicherstellen, dass nur Kunden vom eigenen Konto bearbeitet werden können...
+                        if (u.getId() == null
+                                || vKontoBenutzer.isUserFromKonto(ui.getKonto().getId(), u.getId(), cn.getConnection())) {
+
+                            if (u.getId() != null) {
+                                vKontoBenutzer.deleteAllKontoEntries(u, cn.getConnection());
+                            }
+                            for (final String konto : kontos) {
+                                final Konto k = new Konto(Long.parseLong(konto), cn.getConnection());
+                                vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
+                            }
+
+                            final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
+                            uf.setUser(b);
+
+                            // d.h. hier wurde ein User angelegt aus der journalorder.jsp
+                            // => mit Bestellangaben wieder direkt zurück
+                            if (uf.isKeepordervalues2() && (rq.getSession().getAttribute("ofjo") != null)) {
+                                uf.setKeepordervalues2(false);
+                                forward = "returntojournalorder";
+                                OrderForm pageForm = new OrderForm();
+                                pageForm = (OrderForm) rq.getSession().getAttribute("ofjo");
+                                pageForm.setForuser(uf.getBid().toString()); // Vorselektion neu angelegter User
+                                pageForm.setUid(uf.getBid().toString()); // Vorselektion neu angelegter User
+                                if (pageForm.getUid() == null) {
+                                    pageForm.setUid("0");
+                                } // sonst kracht es auf jsp
+                                rq.setAttribute("ofjo", pageForm);
+
+                                if (pageForm.getOrigin() != null) {
+                                    forward = "returntojournalsave";
+                                }
+                                rq.getSession().setAttribute("ofjo", null);
+                            }
+                            rq.setAttribute("userform", uf);
+                        }
+
+                    } else {
+                        final ErrorMessage em = new ErrorMessage();
+                        if (!vorname) {
+                            em.setError("error.vorname");
+                        }
+                        if (!name) {
+                            em.setError("error.name");
+                        }
+                        if (!email) {
+                            em.setError("error.mail");
+                        }
+                        if (!kont) {
+                            em.setError("error.kontos");
+                        }
+                        if (!land) {
+                            em.setError("error.land");
+                        }
+                        rq.setAttribute(ERRORMESSAGE, em);
                         final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
                         uf.setUser(b);
-
-                        // d.h. hier wurde ein User angelegt aus der journalorder.jsp
-                        // => mit Bestellangaben wieder direkt zurück
-                        if (uf.isKeepordervalues2() && (rq.getSession().getAttribute("ofjo") != null)) {
-                            uf.setKeepordervalues2(false);
-                            forward = "returntojournalorder";
-                            OrderForm pageForm = new OrderForm();
-                            pageForm = (OrderForm) rq.getSession().getAttribute("ofjo");
-                            pageForm.setForuser(uf.getBid().toString()); // Vorselektion neu angelegter User
-                            pageForm.setUid(uf.getBid().toString()); // Vorselektion neu angelegter User
-                            if (pageForm.getUid() == null) { pageForm.setUid("0"); } // sonst kracht es auf jsp
-                            rq.setAttribute("ofjo", pageForm);
-
-                            if (pageForm.getOrigin() != null) {
-                                forward = "returntojournalsave";
-                            }
-                            rq.getSession().setAttribute("ofjo", null);
-                        }
                         rq.setAttribute("userform", uf);
+                        forward = "missing";
                     }
-
                 } else {
-                    final ErrorMessage em = new ErrorMessage();
-                    if (!vorname) { em.setError("error.vorname"); }
-                    if (!name) { em.setError("error.name"); }
-                    if (!email) { em.setError("error.mail"); }
-                    if (!kont) { em.setError("error.kontos"); }
-                    if (!land) { em.setError("error.land"); }
+                    final ErrorMessage em = new ErrorMessage("error.berechtigung");
                     rq.setAttribute(ERRORMESSAGE, em);
-                    final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
-                    uf.setUser(b);
-                    rq.setAttribute("userform", uf);
-                    forward = "missing";
-                }
-            } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung");
-                rq.setAttribute(ERRORMESSAGE, em);
-            }
-
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-        }
-        cn.close();
-        final Message m = new Message("message.modifyuser");
-        m.setLink("listkontousers.do?method=showkontousers&activemenu=bibliokunden");
-        rq.setAttribute("message", m);
-        return mp.findForward(forward);
-    }
-
-
-    /**
-     * Prepare changing or creating of categories.
-     */
-    public ActionForward prepareCategories(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
-
-        String forward = FAILURE;
-        final Auth auth = new Auth();
-        // Make sure method is only accessible when user is logged in
-        if (auth.isLogin(rq)) {
-            forward = SUCCESS;
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            // only accessible by librarians or admins
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                final Text cn = new Text();
-                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                        ui.getKonto().getId(), cn.getConnection());
-                cn.close();
-                // only set into request, if we have at least one category
-                if (!categories.isEmpty()) {
-                    rq.setAttribute("categories", categories);
-                }
-            } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung");
-                em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
-            }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-        }
-        return mp.findForward(forward);
-    }
-
-    /**
-     * Changes a given category.
-     */
-    public ActionForward changeCategory(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
-
-        String forward = FAILURE;
-        final Text cn = new Text();
-        final Texttyp ty = new Texttyp("Benutzer Kategorie", cn.getConnection());
-        final Auth auth = new Auth();
-
-        // Access control
-        if (auth.isLogin(rq)) {
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                final String id = rq.getParameter("id");
-                final String sav = rq.getParameter("sav");
-                final String del = rq.getParameter("del");
-                final String mod = rq.getParameter("mod");
-                final String category = rq.getParameter("category");
-                boolean save = false;
-                boolean delete = false;
-                boolean modify = false;
-
-                if ("true".equals(sav)) { save = true; }
-                if ("true".equals(del)) { delete = true; }
-                if ("true".equals(mod)) { modify = true; }
-
-                if (save && category != null) {
-                    forward = SUCCESS;
-                    // don't save empty string
-                    if (!"".equals(category) && !" ".equals(category)) {
-                        // save new category
-                        final Text txt = new Text();
-                        txt.setInhalt(category);
-                        txt.setTexttyp(ty);
-                        txt.setKonto(ui.getKonto());
-                        txt.saveNewText(cn.getConnection(), txt);
-                    }
-
-                    final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
-
-                    // only set into request, if we have at least one category
-                    if (!categories.isEmpty()) {
-                        rq.setAttribute("categories", categories);
-                    }
-
-                } else {
-
-                    if (id != null && StringUtils.isNumeric(id)) {
-
-                        // Make sure the Text() and the category belong to the given account
-                        final Text txt = new Text(cn.getConnection(), Long.valueOf(id), ui.getKonto().getId(), ty.getId());
-
-                        if (txt.getId() != null) {
-                            forward = SUCCESS;
-
-                            // delete
-                            if (delete) {
-                                txt.deleteText(cn.getConnection(), txt);
-                                // reset all adressen
-                                ui.getBenutzer().resetCategories(txt.getId(), cn.getConnection());
-                            } else if (modify && category != null) {
-                                // update
-                                txt.setInhalt(category);
-                                txt.updateText(cn.getConnection(), txt);
-                            } else {
-                                // prepare for update
-                                rq.setAttribute("categoryText", txt);
-                            }
-
-                            final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
-
-                            // only set into request, if we have at least one category
-                            if (!categories.isEmpty()) {
-                                rq.setAttribute("categories", categories);
-                            }
-
-                        } else { // URL-hacking
-                            final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-                            rq.setAttribute(ERRORMESSAGE, em);
-                            LOG.info("changeCategory: prevented URL-hacking 2! " + ui.getBenutzer().getEmail());
-                        }
-
-                    } else { // URL-hacking
-                        final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-                        rq.setAttribute(ERRORMESSAGE, em);
-                        LOG.info("changeCategory: prevented URL-hacking 1! " + ui.getBenutzer().getEmail());
-                    }
-
                 }
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
                 rq.setAttribute(ACTIVEMENUS, mf);
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
             }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+
+            final Message m = new Message("message.modifyuser");
+            m.setLink("listkontousers.do?method=showkontousers&activemenu=bibliokunden");
+            rq.setAttribute("message", m);
+
+        } finally {
+            cn.close();
         }
 
-        cn.close();
         return mp.findForward(forward);
     }
 
+    /**
+     * Prepare changing or creating of categories.
+     */
+    public ActionForward prepareCategories(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+
+        String forward = FAILURE;
+        final Auth auth = new Auth();
+        final Text cn = new Text();
+
+        try {
+
+            // Make sure method is only accessible when user is logged in
+            if (auth.isLogin(rq)) {
+                forward = SUCCESS;
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                // only accessible by librarians or admins
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+
+                    final List<Text> categories = cn.getAllKontoText(
+                            new Texttyp("Benutzer Kategorie", cn.getConnection()), ui.getKonto().getId(),
+                            cn.getConnection());
+                    // only set into request, if we have at least one category
+                    if (!categories.isEmpty()) {
+                        rq.setAttribute("categories", categories);
+                    }
+                } else {
+                    final ErrorMessage em = new ErrorMessage("error.berechtigung");
+                    em.setLink("searchfree.do?activemenu=suchenbestellen");
+                    rq.setAttribute(ERRORMESSAGE, em);
+                }
+            } else {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
+            }
+
+        } finally {
+            cn.close();
+        }
+
+        return mp.findForward(forward);
+    }
+
+    /**
+     * Changes a given category.
+     */
+    public ActionForward changeCategory(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+
+        String forward = FAILURE;
+        final Text cn = new Text();
+        final Texttyp ty = new Texttyp("Benutzer Kategorie", cn.getConnection());
+        final Auth auth = new Auth();
+
+        try {
+
+            // Access control
+            if (auth.isLogin(rq)) {
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    final String id = rq.getParameter("id");
+                    final String sav = rq.getParameter("sav");
+                    final String del = rq.getParameter("del");
+                    final String mod = rq.getParameter("mod");
+                    final String category = rq.getParameter("category");
+                    boolean save = false;
+                    boolean delete = false;
+                    boolean modify = false;
+
+                    if ("true".equals(sav)) {
+                        save = true;
+                    }
+                    if ("true".equals(del)) {
+                        delete = true;
+                    }
+                    if ("true".equals(mod)) {
+                        modify = true;
+                    }
+
+                    if (save && category != null) {
+                        forward = SUCCESS;
+                        // don't save empty string
+                        if (!"".equals(category) && !" ".equals(category)) {
+                            // save new category
+                            final Text txt = new Text();
+                            txt.setInhalt(category);
+                            txt.setTexttyp(ty);
+                            txt.setKonto(ui.getKonto());
+                            txt.saveNewText(cn.getConnection(), txt);
+                        }
+
+                        final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
+
+                        // only set into request, if we have at least one category
+                        if (!categories.isEmpty()) {
+                            rq.setAttribute("categories", categories);
+                        }
+
+                    } else {
+
+                        if (id != null && StringUtils.isNumeric(id)) {
+
+                            // Make sure the Text() and the category belong to the given account
+                            final Text txt = new Text(cn.getConnection(), Long.valueOf(id), ui.getKonto().getId(),
+                                    ty.getId());
+
+                            if (txt.getId() != null) {
+                                forward = SUCCESS;
+
+                                // delete
+                                if (delete) {
+                                    txt.deleteText(cn.getConnection(), txt);
+                                    // reset all adressen
+                                    ui.getBenutzer().resetCategories(txt.getId(), cn.getConnection());
+                                } else if (modify && category != null) {
+                                    // update
+                                    txt.setInhalt(category);
+                                    txt.updateText(cn.getConnection(), txt);
+                                } else {
+                                    // prepare for update
+                                    rq.setAttribute("categoryText", txt);
+                                }
+
+                                final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(),
+                                        cn.getConnection());
+
+                                // only set into request, if we have at least one category
+                                if (!categories.isEmpty()) {
+                                    rq.setAttribute("categories", categories);
+                                }
+
+                            } else { // URL-hacking
+                                final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+                                rq.setAttribute(ERRORMESSAGE, em);
+                                LOG.info("changeCategory: prevented URL-hacking 2! " + ui.getBenutzer().getEmail());
+                            }
+
+                        } else { // URL-hacking
+                            final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
+                            rq.setAttribute(ERRORMESSAGE, em);
+                            LOG.info("changeCategory: prevented URL-hacking 1! " + ui.getBenutzer().getEmail());
+                        }
+
+                    }
+
+                } else {
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("login");
+                    rq.setAttribute(ACTIVEMENUS, mf);
+                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
+                }
+            } else {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
+            }
+
+        } finally {
+            cn.close();
+        }
+
+        return mp.findForward(forward);
+    }
 
     /**
      * User aus Konto löschen,oder gänzlich wenn er keinem Konto mehr angehört
      *
      */
-    public ActionForward deleteKontousers(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward deleteKontousers(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         // Make sure method is only accessible when user is logged in
         String forward = FAILURE;
@@ -1065,51 +1142,58 @@ public final class UserAction extends DispatchAction {
         final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
 
-        if (auth.isLogin(rq)) {
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                final Benutzer u = new Benutzer();
-                final UserForm uf = (UserForm) fm;
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                final Konto k = ui.getKonto();
-                if (vKontoBenutzer.isUserFromKonto(k.getId(), uf.getBid(), cn.getConnection())) {
-                    forward = SUCCESS;
+        try {
 
-                    if (uf.getBid() != null) {
-                        u.setId(uf.getBid());
-                        final VKontoBenutzer vkb = new VKontoBenutzer();
-                        vkb.deleteSingleKontoEntry(u, k, cn.getConnection());
+            if (auth.isLogin(rq)) {
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                    final Benutzer u = new Benutzer();
+                    final UserForm uf = (UserForm) fm;
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    final Konto k = ui.getKonto();
+                    if (vKontoBenutzer.isUserFromKonto(k.getId(), uf.getBid(), cn.getConnection())) {
+                        forward = SUCCESS;
+
+                        if (uf.getBid() != null) {
+                            u.setId(uf.getBid());
+                            final VKontoBenutzer vkb = new VKontoBenutzer();
+                            vkb.deleteSingleKontoEntry(u, k, cn.getConnection());
+                        }
+
+                        final List<Konto> rkv = ui.getKonto().getLoginKontos(u, cn.getConnection());
+                        final AbstractBenutzer b = new AbstractBenutzer();
+                        if (rkv.isEmpty()) {
+                            b.deleteUser(u, cn.getConnection());
+                        }
+
+                        rq.setAttribute("userform", uf);
+                    } else {
+                        ErrorMessage em = new ErrorMessage();
+                        em = new ErrorMessage("error.hack");
+                        em.setLink("searchfree.do?activemenu=suchenbestellen");
+                        rq.setAttribute(ERRORMESSAGE, em);
+                        LOG.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
 
-                    final List<Konto> rkv = ui.getKonto().getLoginKontos(u, cn.getConnection());
-                    final AbstractBenutzer b = new AbstractBenutzer();
-                    if (rkv.isEmpty()) { b.deleteUser(u, cn.getConnection()); }
-
-                    rq.setAttribute("userform", uf);
                 } else {
-                    ErrorMessage em = new ErrorMessage();
-                    em = new ErrorMessage("error.hack");
-                    em.setLink("searchfree.do?activemenu=suchenbestellen");
+                    final ErrorMessage em = new ErrorMessage("error.berechtigung");
                     rq.setAttribute(ERRORMESSAGE, em);
-                    LOG.info("modifykontousers: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
             } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung");
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
             }
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-        }
-        cn.close();
+            final Message m = new Message("message.deleteuser");
+            m.setLink("listkontousers.do?method=showkontousers&activemenu=bibliokunden");
+            rq.setAttribute("message", m);
 
-        final Message m = new Message("message.deleteuser");
-        m.setLink("listkontousers.do?method=showkontousers&activemenu=bibliokunden");
-        rq.setAttribute("message", m);
+        } finally {
+            cn.close();
+        }
 
         return mp.findForward(forward);
     }
@@ -1117,58 +1201,62 @@ public final class UserAction extends DispatchAction {
     /**
      * Bereitet die Suche nach Bestellungen vor
      */
-    public ActionForward prepareSearch(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward prepareSearch(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Auth auth = new Auth();
         final Text cn = new Text();
 
-        if (auth.isLogin(rq)) {
+        try {
 
-            OverviewForm of = (OverviewForm) fm;
-            final OrderStatistikForm osf = new OrderStatistikForm();
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                forward = SUCCESS;
+            if (auth.isLogin(rq)) {
 
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu(UEBERSICHT);
-                rq.setAttribute(ACTIVEMENUS, mf);
+                OverviewForm of = (OverviewForm) fm;
+                final OrderStatistikForm osf = new OrderStatistikForm();
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                    forward = SUCCESS;
 
-                final Check check = new Check();
-                // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
-                of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu(UEBERSICHT);
+                    rq.setAttribute(ACTIVEMENUS, mf);
 
-                // Suchfelder bestimmen
-                final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
-                rq.setAttribute("sortedSearchFields", result);
+                    final Check check = new Check();
+                    // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
+                    of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
 
-                final Texttyp tty = new Texttyp();
-                long id = 2; // Bestellstati
-                tty.setId(id);
-                of.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
-                id = 7; // Waehrungen
-                tty.setId(id);
-                of.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
-                cn.close();
+                    // Suchfelder bestimmen
+                    final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                    rq.setAttribute("sortedSearchFields", result);
 
-                rq.setAttribute("overviewform", of);
-                rq.setAttribute("orderstatistikform", osf);
+                    final Texttyp tty = new Texttyp();
+                    long id = 2; // Bestellstati
+                    tty.setId(id);
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+                    id = 7; // Waehrungen
+                    tty.setId(id);
+                    of.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+
+                    rq.setAttribute("overviewform", of);
+                    rq.setAttribute("orderstatistikform", osf);
+
+                } else {
+                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
+                }
 
             } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
             }
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+        } finally {
+            cn.close();
         }
-
 
         return mp.findForward(forward);
     }
@@ -1176,8 +1264,8 @@ public final class UserAction extends DispatchAction {
     /**
      * Suche nach Bestellungen
      */
-    public ActionForward search(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward search(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = FAILURE;
         final Auth auth = new Auth();
@@ -1191,117 +1279,122 @@ public final class UserAction extends DispatchAction {
             final Check check = new Check();
             final Text cn = new Text();
 
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                forward = "result";
+            try {
 
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu(UEBERSICHT);
-                rq.setAttribute(ACTIVEMENUS, mf);
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                    forward = "result";
 
-                // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
-                of.setStatitexts(cn.getAllTextPlusKontoTexts(
-                        new Texttyp("Status", cn.getConnection()), ui.getKonto().getId(), cn.getConnection()));
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu(UEBERSICHT);
+                    rq.setAttribute(ACTIVEMENUS, mf);
 
-                // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
-                of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
-                // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-                of = check.checkSortOrderValues(of);
-                //Check, damit nur gültige Sortierkriterien daherkommen
-                of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
-                // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-                of = check.checkOrdersSortCriterias(of);
+                    // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui
+                            .getKonto().getId(), cn.getConnection()));
 
-                //          Suchfelder bestimmen
-                final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
-                rq.setAttribute("sortedSearchFields", result);
+                    // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
+                    of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
+                    // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
+                    of = check.checkSortOrderValues(of);
+                    //Check, damit nur gültige Sortierkriterien daherkommen
+                    of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
+                    // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
+                    of = check.checkOrdersSortCriterias(of);
 
-                final Texttyp t = new Texttyp();
-                long id = 2; // Bestellstati
-                t.setId(id);
-                of.setStatitexts(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
-                id = 7; // Waehrungen
-                t.setId(id);
-                of.setWaehrungen(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
+                    //          Suchfelder bestimmen
+                    final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
+                    rq.setAttribute("sortedSearchFields", result);
 
-                final String dateFrom = of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + " 00:00:00";
-                final String dateTo = of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00";
+                    final Texttyp t = new Texttyp();
+                    long id = 2; // Bestellstati
+                    t.setId(id);
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
+                    id = 7; // Waehrungen
+                    t.setId(id);
+                    of.setWaehrungen(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
 
-                List<SearchesForm> searches = new ArrayList<SearchesForm>();
+                    final String dateFrom = of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + " 00:00:00";
+                    final String dateTo = of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00";
 
-                if (of.isS()) { // Suchkriterien aus Session holen
-                    searches = ui.getSearches();
-                }
+                    List<SearchesForm> searches = new ArrayList<SearchesForm>();
 
-                // hier wird ein Array aus den Suchbedingungen aus der JSP zusammengestellt,
-                // falls etwas eingegeben wurde...
-                // überschreibt Session, falls eine neue Suche eingegeben wurde
-                if (checkIfInputIsNotEmpty(of)) {
-                    if (of.getInput1() != null && !of.getInput1().equals("")) {
-                        searches
-                        .add(getSearchForm(of.getValue1(), of.getCondition1(), of.getInput1(), of.getBoolean1()));
+                    if (of.isS()) { // Suchkriterien aus Session holen
+                        searches = ui.getSearches();
                     }
-                    if (of.getInput2() != null && !of.getInput2().equals("")) {
-                        searches
-                        .add(getSearchForm(of.getValue2(), of.getCondition2(), of.getInput2(), of.getBoolean2()));
-                    }
-                }
 
-                if (!searches.isEmpty()) { // Suche, falls etwas im searchesForm liegt...
-
-                    //               Suchkriterien in userinfo und Session legen, damit Sortierung funktioniert
-                    ui.setSearches(searches);
-                    of.setS(true); // Variable Suche auf true setzen
-                    rq.getSession().setAttribute("userinfo", ui);
-
-                    PreparedStatement pstmt = null;
-                    try {
-                        pstmt = composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
-                                dateFrom, dateTo, cn.getConnection());
-                        of.setBestellungen(b.searchOrdersPerKonto(pstmt, cn.getConnection()));
-                    } catch (final Exception e) { // Fehler aus Methode abfangen
-                        // zusätzliche Ausgabe von Fehlermeldung, falls versucht wurde
-                        // Bestellungen nach Kunde > als erlaubter Zeitraum (Datenschutz)
-                        forward = FAILURE;
-                        final ErrorMessage em = new ErrorMessage("error.system", "searchorder.do?method=prepareSearch");
-                        rq.setAttribute(ERRORMESSAGE, em);
-                        LOG.error("search: " + e.toString());
-                    } finally {
-                        if (pstmt != null) {
-                            try {
-                                pstmt.close();
-                            } catch (final SQLException e) {
-                                LOG.error("search: " + e.toString());
-                            }
+                    // hier wird ein Array aus den Suchbedingungen aus der JSP zusammengestellt,
+                    // falls etwas eingegeben wurde...
+                    // überschreibt Session, falls eine neue Suche eingegeben wurde
+                    if (checkIfInputIsNotEmpty(of)) {
+                        if (of.getInput1() != null && !of.getInput1().equals("")) {
+                            searches.add(getSearchForm(of.getValue1(), of.getCondition1(), of.getInput1(),
+                                    of.getBoolean1()));
+                        }
+                        if (of.getInput2() != null && !of.getInput2().equals("")) {
+                            searches.add(getSearchForm(of.getValue2(), of.getCondition2(), of.getInput2(),
+                                    of.getBoolean2()));
                         }
                     }
-                    PreparedStatement pstmtb = null;
-                    try {
-                        pstmtb = composeCountSearchLogic(searches, ui.getKonto(),
-                                of.getSort(), of.getSortorder(), dateFrom, dateTo, cn.getConnection());
-                        osf.setAuflistung(b.countSearchOrdersPerKonto(pstmtb));
-                    } catch (final Exception e) {
-                        LOG.error("composeCountSearchLogic: " + e.toString());
-                    } finally {
-                        if (pstmtb != null) {
-                            try {
-                                pstmtb.close();
-                            } catch (final SQLException e) {
-                                LOG.error("composeCountSearchLogic: " + e.toString());
+
+                    if (!searches.isEmpty()) { // Suche, falls etwas im searchesForm liegt...
+
+                        //               Suchkriterien in userinfo und Session legen, damit Sortierung funktioniert
+                        ui.setSearches(searches);
+                        of.setS(true); // Variable Suche auf true setzen
+                        rq.getSession().setAttribute("userinfo", ui);
+
+                        PreparedStatement pstmt = null;
+                        try {
+                            pstmt = composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
+                                    dateFrom, dateTo, cn.getConnection());
+                            of.setBestellungen(b.searchOrdersPerKonto(pstmt, cn.getConnection()));
+                        } catch (final Exception e) { // Fehler aus Methode abfangen
+                            // zusätzliche Ausgabe von Fehlermeldung, falls versucht wurde
+                            // Bestellungen nach Kunde > als erlaubter Zeitraum (Datenschutz)
+                            forward = FAILURE;
+                            final ErrorMessage em = new ErrorMessage("error.system",
+                                    "searchorder.do?method=prepareSearch");
+                            rq.setAttribute(ERRORMESSAGE, em);
+                            LOG.error("search: " + e.toString());
+                        } finally {
+                            if (pstmt != null) {
+                                try {
+                                    pstmt.close();
+                                } catch (final SQLException e) {
+                                    LOG.error("search: " + e.toString());
+                                }
                             }
                         }
+                        PreparedStatement pstmtb = null;
+                        try {
+                            pstmtb = composeCountSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
+                                    dateFrom, dateTo, cn.getConnection());
+                            osf.setAuflistung(b.countSearchOrdersPerKonto(pstmtb));
+                        } catch (final Exception e) {
+                            LOG.error("composeCountSearchLogic: " + e.toString());
+                        } finally {
+                            if (pstmtb != null) {
+                                try {
+                                    pstmtb.close();
+                                } catch (final SQLException e) {
+                                    LOG.error("composeCountSearchLogic: " + e.toString());
+                                }
+                            }
+                        }
+                    } else {
+                        of.setS(false); // Suchvariable auf false setzen
                     }
+
+                    rq.setAttribute("overviewform", of);
+                    rq.setAttribute("orderstatistikform", osf);
+
                 } else {
-                    of.setS(false); // Suchvariable auf false setzen
+                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                    rq.setAttribute(ERRORMESSAGE, em);
                 }
 
+            } finally {
                 cn.close();
-
-                rq.setAttribute("overviewform", of);
-                rq.setAttribute("orderstatistikform", osf);
-
-            } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
             }
 
         } else {
@@ -1312,10 +1405,8 @@ public final class UserAction extends DispatchAction {
             rq.setAttribute(ERRORMESSAGE, em);
         }
 
-
         return mp.findForward(forward);
     }
-
 
     /**
      * Stellt den MYSQL für die Suche zusammen / Suchlogik
@@ -1359,8 +1450,8 @@ public final class UserAction extends DispatchAction {
         }
 
         // erste Klammer wichtig: sonst kann mit OR Bestellungen anderer Kontos ausgelesen werden...!!!
-        sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '"
-                + date_to + "' ORDER BY ", sort, sortorder));
+        sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '" + date_to + "' ORDER BY ",
+                sort, sortorder));
 
         PreparedStatement pstmt = cn.prepareStatement(sql.toString());
         pstmt.setLong(1, k.getId());
@@ -1387,7 +1478,9 @@ public final class UserAction extends DispatchAction {
             }
 
             String truncation = ""; // Normalerweise keine Trunkierung
-            if (sf.getCondition().contains("contains")) { truncation = "%"; } // Trunkierung für LIKE
+            if (sf.getCondition().contains("contains")) {
+                truncation = "%";
+            } // Trunkierung für LIKE
 
             if (composeSearchLogicTable(sf.getField(), sf.getCondition()).contains("MATCH (artikeltitel,autor,")) {
                 // Suche für IN BOOLEAN MODE zusammenstellen
@@ -1404,8 +1497,9 @@ public final class UserAction extends DispatchAction {
     /**
      * Stellt den MYSQL für die Suche zusammen / Suchlogik
      */
-    private PreparedStatement composeCountSearchLogic(final List<SearchesForm> searches, final Konto k, final String sort,
-            final String sortorder, final String date_from, final String date_to, final Connection cn) throws Exception {
+    private PreparedStatement composeCountSearchLogic(final List<SearchesForm> searches, final Konto k,
+            final String sort, final String sortorder, final String date_from, final String date_to, final Connection cn)
+            throws Exception {
         final Bestellungen b = new Bestellungen();
         final StringBuffer sql = new StringBuffer(300);
         sql.append("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
@@ -1439,8 +1533,8 @@ public final class UserAction extends DispatchAction {
 
         }
 
-        sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '"
-                + date_to + "' ORDER BY ", sort, sortorder));
+        sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '" + date_to + "' ORDER BY ",
+                sort, sortorder));
 
         final PreparedStatement pstmt = cn.prepareStatement(sql.toString());
         pstmt.setLong(1, k.getId());
@@ -1450,7 +1544,9 @@ public final class UserAction extends DispatchAction {
             final SearchesForm sf = searches.get(i);
 
             String truncation = ""; // Normalerweise keine Trunkierung
-            if (sf.getCondition().contains("contains")) { truncation = "%"; } // Trunkierung für LIKE
+            if (sf.getCondition().contains("contains")) {
+                truncation = "%";
+            } // Trunkierung für LIKE
 
             if (composeSearchLogicTable(sf.getField(), sf.getCondition()).contains("MATCH (artikeltitel,autor,")) {
                 // Suche für IN BOOLEAN MODE zusammenstellen
@@ -1474,36 +1570,96 @@ public final class UserAction extends DispatchAction {
         if (checkIfSearchFieldIsValid(field)) {
 
             // Suche in einzelnen Feldern
-            if ("searchorders.artikeltitel".equals(field)) { table = "artikeltitel"; }
-            if ("searchorders.author".equals(field)) { table = "autor"; }
-            if ("searchorders.bemerkungen".equals(field)) { table = "systembemerkung"; }
-            if ("searchorders.delformat".equals(field)) { table = "fileformat"; }
-            if ("searchorders.heft".equals(field)) { table = "heft"; }
-            if ("searchorders.notizen".equals(field)) { table = "notizen"; }
-            if ("searchorders.issn".equals(field)) { table = "issn"; }
-            if ("searchorders.jahr".equals(field)) { table = "jahr"; }
-            if ("searchorders.jahrgang".equals(field)) { table = "jahrgang"; }
-            if ("searchorders.gender".equals(field)) { table = "anrede"; }
-            if ("searchorders.email".equals(field)) { table = "mail"; }
-            if ("searchorders.institut".equals(field)) { table = "institut"; }
-            if ("searchorders.department".equals(field)) { table = "abteilung"; }
-            if ("searchorders.name".equals(field)) { table = "name"; }
-            if ("searchorders.vorname".equals(field)) { table = "vorname"; }
-            if ("searchorders.supplier".equals(field)) { table = "bestellquelle"; }
-            if ("searchorders.deliveryway".equals(field)) { table = "deloptions"; }
-            if ("searchorders.prio".equals(field)) { table = "orderpriority"; }
-            if ("searchorders.seiten".equals(field)) { table = "seiten"; }
-            if ("searchorders.subitonr".equals(field)) { table = "subitonr"; }
-            if ("searchorders.gbvnr".equals(field)) { table = "gbvnr"; }
-            if ("searchorders.internenr".equals(field)) { table = "internenr"; }
-            if ("searchorders.zeitschrift".equals(field)) { table = "zeitschrift"; }
-            if ("searchorders.doi".equals(field)) { table = "doi"; }
-            if ("searchorders.pmid".equals(field)) { table = "pmid"; }
-            if ("searchorders.isbn".equals(field)) { table = "isbn"; }
-            if ("searchorders.typ".equals(field)) { table = "mediatype"; }
-            if ("searchorders.verlag".equals(field)) { table = "verlag"; }
-            if ("searchorders.buchkapitel".equals(field)) { table = "buchkapitel"; }
-            if ("searchorders.buchtitel".equals(field)) { table = "buchtitel"; }
+            if ("searchorders.artikeltitel".equals(field)) {
+                table = "artikeltitel";
+            }
+            if ("searchorders.author".equals(field)) {
+                table = "autor";
+            }
+            if ("searchorders.bemerkungen".equals(field)) {
+                table = "systembemerkung";
+            }
+            if ("searchorders.delformat".equals(field)) {
+                table = "fileformat";
+            }
+            if ("searchorders.heft".equals(field)) {
+                table = "heft";
+            }
+            if ("searchorders.notizen".equals(field)) {
+                table = "notizen";
+            }
+            if ("searchorders.issn".equals(field)) {
+                table = "issn";
+            }
+            if ("searchorders.jahr".equals(field)) {
+                table = "jahr";
+            }
+            if ("searchorders.jahrgang".equals(field)) {
+                table = "jahrgang";
+            }
+            if ("searchorders.gender".equals(field)) {
+                table = "anrede";
+            }
+            if ("searchorders.email".equals(field)) {
+                table = "mail";
+            }
+            if ("searchorders.institut".equals(field)) {
+                table = "institut";
+            }
+            if ("searchorders.department".equals(field)) {
+                table = "abteilung";
+            }
+            if ("searchorders.name".equals(field)) {
+                table = "name";
+            }
+            if ("searchorders.vorname".equals(field)) {
+                table = "vorname";
+            }
+            if ("searchorders.supplier".equals(field)) {
+                table = "bestellquelle";
+            }
+            if ("searchorders.deliveryway".equals(field)) {
+                table = "deloptions";
+            }
+            if ("searchorders.prio".equals(field)) {
+                table = "orderpriority";
+            }
+            if ("searchorders.seiten".equals(field)) {
+                table = "seiten";
+            }
+            if ("searchorders.subitonr".equals(field)) {
+                table = "subitonr";
+            }
+            if ("searchorders.gbvnr".equals(field)) {
+                table = "gbvnr";
+            }
+            if ("searchorders.internenr".equals(field)) {
+                table = "internenr";
+            }
+            if ("searchorders.zeitschrift".equals(field)) {
+                table = "zeitschrift";
+            }
+            if ("searchorders.doi".equals(field)) {
+                table = "doi";
+            }
+            if ("searchorders.pmid".equals(field)) {
+                table = "pmid";
+            }
+            if ("searchorders.isbn".equals(field)) {
+                table = "isbn";
+            }
+            if ("searchorders.typ".equals(field)) {
+                table = "mediatype";
+            }
+            if ("searchorders.verlag".equals(field)) {
+                table = "verlag";
+            }
+            if ("searchorders.buchkapitel".equals(field)) {
+                table = "buchkapitel";
+            }
+            if ("searchorders.buchtitel".equals(field)) {
+                table = "buchtitel";
+            }
 
         } else { // Suche nach allen Feldern
             table = "MATCH (artikeltitel,autor,fileformat,heft,notizen,issn,heft,jahr,bestellquelle,"
@@ -1530,12 +1686,24 @@ public final class UserAction extends DispatchAction {
         if ("contains".equals(condition) || "contains not".equals(condition) || "is".equals(condition)
                 || "is not".equals(condition) || "higher".equals(condition) || "smaller".equals(condition)) {
 
-            if ("contains".equals(condition)) { expression = "LIKE"; }
-            if ("contains not".equals(condition)) { expression = "NOT LIKE"; }
-            if ("is".equals(condition)) { expression = "="; }
-            if ("is not".equals(condition)) { expression = "!="; }
-            if ("higher".equals(condition)) { expression = ">"; }
-            if ("smaller".equals(condition)) { expression = "<"; }
+            if ("contains".equals(condition)) {
+                expression = "LIKE";
+            }
+            if ("contains not".equals(condition)) {
+                expression = "NOT LIKE";
+            }
+            if ("is".equals(condition)) {
+                expression = "=";
+            }
+            if ("is not".equals(condition)) {
+                expression = "!=";
+            }
+            if ("higher".equals(condition)) {
+                expression = ">";
+            }
+            if ("smaller".equals(condition)) {
+                expression = "<";
+            }
 
         } else {
             expression = "LIKE";
@@ -1553,9 +1721,15 @@ public final class UserAction extends DispatchAction {
 
         if ("and".equals(bool) || "and not".equals(bool) || "or".equals(bool)) {
 
-            if ("and".equals(bool)) { expression = "AND"; }
-            if ("and not".equals(bool)) { expression = "AND NOT"; }
-            if ("or".equals(bool)) { expression = "OR"; }
+            if ("and".equals(bool)) {
+                expression = "AND";
+            }
+            if ("and not".equals(bool)) {
+                expression = "AND NOT";
+            }
+            if ("or".equals(bool)) {
+                expression = "OR";
+            }
         } else {
             expression = "AND";
         }
@@ -1591,8 +1765,12 @@ public final class UserAction extends DispatchAction {
     private SearchesForm searchMapping(final SearchesForm sf) {
 
         //       Mapping bei Prio => express = urgent
-        if (sf.getField().equals("Priorität") && sf.getInput().equalsIgnoreCase("express")) { sf.setInput("urgent"); }
-        if (sf.getField().equals("Lieferant") && sf.getInput().equalsIgnoreCase("k.A.")) { sf.setInput("0"); }
+        if (sf.getField().equals("Priorität") && sf.getInput().equalsIgnoreCase("express")) {
+            sf.setInput("urgent");
+        }
+        if (sf.getField().equals("Lieferant") && sf.getInput().equalsIgnoreCase("k.A.")) {
+            sf.setInput("0");
+        }
 
         return sf;
     }
@@ -1662,7 +1840,9 @@ public final class UserAction extends DispatchAction {
                 // Ausschluss von Leerzeichen und Wörten kürzer als drei Buchstaben (min. 4 Buchstaben)
                 if (word.length() > 3) {
                     buf.append("+" + word + "*"); // Jedem Wort ein Plus-Zeichen voranstellen, und Trunkierung anhängen
-                    if (i < words.size()) { buf.append('\040'); } // ggf. ein Leerschlag dazwischen setzen
+                    if (i < words.size()) {
+                        buf.append('\040');
+                    } // ggf. ein Leerschlag dazwischen setzen
                 }
             }
 

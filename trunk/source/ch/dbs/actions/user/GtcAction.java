@@ -44,66 +44,75 @@ public final class GtcAction extends DispatchAction {
      *
      * @author Markus Fischer
      */
-    public ActionForward accept(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward accept(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) form; // falls Artikelangaben aus Linkresolver vorhanden
 
         String forward = "failure";
         final Text cn = new Text();
         final Auth auth = new Auth();
-        // Sicherstellen, dass die Action nur von Benutzern nach Prüfung aufgerufen wird
-        if (auth.isLogin(rq)) {
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            final Gtc gtc = new Gtc();
-            final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
+        try {
 
-            final Date d = new Date(); // aktuelles Datum setzen
-            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            final String datum = fmt.format(d, ui.getKonto().getTimezone());
+            // Sicherstellen, dass die Action nur von Benutzern nach Prüfung aufgerufen wird
+            if (auth.isLogin(rq)) {
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            ui.getBenutzer().setGtc(t.getInhalt());
-            ui.getBenutzer().setGtcdate(datum);
-            final AbstractBenutzer b = new AbstractBenutzer();
-            b.updateUser(ui.getBenutzer(), ui.getKonto(), cn.getConnection());
-            rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
+                final Gtc gtc = new Gtc();
+                final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
 
-            if (ui.getKonto() != null) { // Prüfung ob mehrere Konti vorhanden
-                forward = "success";
+                final Date d = new Date(); // aktuelles Datum setzen
+                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                final String datum = fmt.format(d, ui.getKonto().getTimezone());
+
+                ui.getBenutzer().setGtc(t.getInhalt());
+                ui.getBenutzer().setGtcdate(datum);
+                final AbstractBenutzer b = new AbstractBenutzer();
+                b.updateUser(ui.getBenutzer(), ui.getKonto(), cn.getConnection());
+                rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
+
+                if (ui.getKonto() != null) { // Prüfung ob mehrere Konti vorhanden
+                    forward = "success";
+
+                } else {
+                    forward = "konto";
+                }
 
             } else {
-                forward = "konto";
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute("ActiveMenus", mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute("errormessage", em);
             }
 
+            if (pageForm.isResolver()) {
+                // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
+                rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
+                // Die Bestellberechtigung wird in der Methode prepare geprüft!
+                if ("success".equals(forward) && auth.isBenutzer(rq)) {
+                    forward = "order";
+                }
+                // Bibliothekar oder Admin auf Checkavailability
+                if ("success".equals(forward) && !auth.isBenutzer(rq)) {
+                    forward = "checkavailability";
+                }
+            }
 
-        } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu("suchenbestellen");
             rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+
+        } finally {
+            cn.close();
         }
 
-        if (pageForm.isResolver()) {
-            // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
-            rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
-            // Die Bestellberechtigung wird in der Methode prepare geprüft!
-            if ("success".equals(forward) && auth.isBenutzer(rq)) { forward = "order"; }
-            // Bibliothekar oder Admin auf Checkavailability
-            if ("success".equals(forward) && !auth.isBenutzer(rq)) { forward = "checkavailability"; }
-        }
-
-        final ActiveMenusForm mf = new ActiveMenusForm();
-        mf.setActivemenu("suchenbestellen");
-        rq.setAttribute("ActiveMenus", mf);
-
-        cn.close();
         return mp.findForward(forward);
     }
 
-    public ActionForward decline(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward decline(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -121,7 +130,5 @@ public final class GtcAction extends DispatchAction {
         }
         return mp.findForward(forward);
     }
-
-
 
 }

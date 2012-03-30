@@ -73,8 +73,8 @@ public final class OrderReports extends DispatchAction {
      * Erstelt ein PDF- Report wie die aktuelle Sicht der Bestellungen
      * inklusive Filterkriterien (Status) und Sortierfolge (Feld, Auf- oder Absteigend
      */
-    public ActionForward orderspdf(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward orderspdf(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
         final Auth auth = new Auth();
@@ -90,8 +90,8 @@ public final class OrderReports extends DispatchAction {
                 final Text cn = new Text();
 
                 // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
-                of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()),
-                        ui.getKonto().getId(), cn.getConnection()));
+                of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui.getKonto()
+                        .getId(), cn.getConnection()));
 
                 //Eingaben Testen und Notfalls korrigieren mit defaultwerten
                 final Check c = new Check();
@@ -115,14 +115,17 @@ public final class OrderReports extends DispatchAction {
                     if (!searches.isEmpty()) { // hier liegt Liste aus Suche vor...
                         final UserAction userAction = new UserAction();
                         PreparedStatement pstmt = null;
-                        pstmt = userAction.composeSearchLogic(searches, ui.getKonto(),
-                                of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
-                        orders = b.searchOrdersPerKonto(pstmt, cn.getConnection());
-                        if (pstmt != null) {
-                            try {
-                                pstmt.close();
-                            } catch (final SQLException e) {
-                                LOG.error("orderspdf: " + e.toString());
+                        try {
+                            pstmt = userAction.composeSearchLogic(searches, ui.getKonto(), of.getSort(),
+                                    of.getSortorder(), of.getFromdate(), of.getTodate(), cn.getConnection());
+                            orders = b.searchOrdersPerKonto(pstmt, cn.getConnection());
+                        } finally {
+                            if (pstmt != null) {
+                                try {
+                                    pstmt.close();
+                                } catch (final SQLException e) {
+                                    LOG.error("orderspdf: " + e.toString());
+                                }
                             }
                         }
                     } else {
@@ -162,7 +165,9 @@ public final class OrderReports extends DispatchAction {
                             bf.append(order.getIsbn());
                         }
                         bf.append(" | ");
-                        if (order.getJahr() != null && !order.getJahr().equals("")) { bf.append(order.getJahr()); }
+                        if (order.getJahr() != null && !order.getJahr().equals("")) {
+                            bf.append(order.getJahr());
+                        }
                         if (order.getJahrgang() != null && !order.getJahrgang().equals("")) {
                             bf.append(';');
                             bf.append(order.getJahrgang());
@@ -206,7 +211,9 @@ public final class OrderReports extends DispatchAction {
                                 numbers.append(order.getInterne_bestellnr());
                             }
                         }
-                        if (numbers.length() > 0) { order.setNotizen(numbers.toString() + "\n" + order.getNotizen()); }
+                        if (numbers.length() > 0) {
+                            order.setNotizen(numbers.toString() + "\n" + order.getNotizen());
+                        }
 
                         hm.put("notes", order.getNotizen());
                         al.add(hm);
@@ -224,8 +231,11 @@ public final class OrderReports extends DispatchAction {
 
                     //Reportauswahl, Verbindung zum Report aufbauen
                     // JasperReports need absolute paths!
-                    if (of.getReport() == null) { of.setReport("/reports/Orders.jasper"); }
-                    final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext().getResourceAsStream(of.getReport()));
+                    if (of.getReport() == null) {
+                        of.setReport("/reports/Orders.jasper");
+                    }
+                    final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                            .getResourceAsStream(of.getReport()));
 
                     //Ausgabestream vorbereiten
                     rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
@@ -251,17 +261,14 @@ public final class OrderReports extends DispatchAction {
                 }
 
             } else {
-                final ErrorMessage em = new ErrorMessage(
-                        "error.berechtigung",
-                        "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute("errormessage", em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
             rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage(
-                    "error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute("errormessage", em);
         }
 
@@ -271,8 +278,8 @@ public final class OrderReports extends DispatchAction {
     /**
      * Bestellungen nach Lieferant gruppiert
      */
-    public ActionForward orderSourcePdf(final ActionMapping mp, ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward orderSourcePdf(final ActionMapping mp, ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final OverviewForm of = (OverviewForm) fm;
         // JasperReports need absolute paths!
@@ -280,7 +287,6 @@ public final class OrderReports extends DispatchAction {
         of.setSort("bestellquelle");
         fm = of;
         orderspdf(mp, fm, rq, rp);
-
 
         return mp.findForward(null);
     }

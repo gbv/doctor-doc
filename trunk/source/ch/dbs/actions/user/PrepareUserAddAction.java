@@ -40,9 +40,8 @@ import ch.dbs.form.UserInfo;
 
 public final class PrepareUserAddAction extends Action {
 
-
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         UserForm uf = (UserForm) form;
         final Countries country = new Countries();
@@ -55,46 +54,48 @@ public final class PrepareUserAddAction extends Action {
         final Text cn = new Text();
         final Auth auth = new Auth();
 
+        try {
 
-        if (auth.isLogin(rq)) {
-            // logged in => go directly to modifykontousers.do
-            forward = "adduser";
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            if (auth.isLogin(rq)) {
+                // logged in => go directly to modifykontousers.do
+                forward = "adduser";
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-            final List<Konto> allPossKontos = konto.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
-            final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
+                final List<Konto> allPossKontos = konto.getAllAllowedKontosAndSelectActive(ui, cn.getConnection());
+                final ArrayList<KontoForm> lkf = new ArrayList<KontoForm>();
 
-            for (final Konto k : allPossKontos) {
-                final KontoForm kf = new KontoForm();
-                kf.setKonto(k);
-                lkf.add(kf);
+                for (final Konto k : allPossKontos) {
+                    final KontoForm kf = new KontoForm();
+                    kf.setKonto(k);
+                    lkf.add(kf);
+                }
+
+                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
+                        ui.getKonto().getId(), cn.getConnection());
+
+                final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
+                uf.setUser(b);
+
+                uf.setAddFromBestellformEmail(true); // triggers the correct header in modifykontousers.jsp
+
+                ui.setKontos(allPossKontos);
+                ui.setCountries(allPossCountries);
+                rq.setAttribute("categories", categories);
+                rq.setAttribute("ui", ui);
+
+            } else {
+                // not logged in => to LoginAction
+                forward = "login";
             }
 
-            final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-            final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                    ui.getKonto().getId(), cn.getConnection());
+            rq.setAttribute("userform", uf);
 
-            final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
-            uf.setUser(b);
-
-            uf .setAddFromBestellformEmail(true); // triggers the correct header in modifykontousers.jsp
-
-            ui.setKontos(allPossKontos);
-            ui.setCountries(allPossCountries);
-            rq.setAttribute("categories", categories);
-            rq.setAttribute("ui", ui);
-
-        } else {
-            // not logged in => to LoginAction
-            forward = "login";
+        } finally {
+            cn.close();
         }
 
-        rq.setAttribute("userform", uf);
-        cn.close();
         return mp.findForward(forward);
-
     }
-
-
 
 }

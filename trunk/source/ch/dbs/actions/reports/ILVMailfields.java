@@ -17,15 +17,14 @@
 
 package ch.dbs.actions.reports;
 
-
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+
 import util.Auth;
 import ch.dbs.entity.Text;
 import ch.dbs.entity.Texttyp;
@@ -43,62 +42,68 @@ import ch.dbs.form.UserInfo;
  */
 public final class ILVMailfields extends DispatchAction {
 
-    private static final SimpleLogger LOG = new SimpleLogger(ILVMailfields.class);
-
     /**
      * Save default Mailfields subject and mailtext for ILV ordermail with attached PDF
      */
-    public ActionForward saveMailFields(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward saveMailFields(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final Auth auth = new Auth();
+        final Text cn = new Text();
         // Make sure method is only accessible when user is logged in
         String forward = "failure";
-        if (auth.isLogin(rq)) {
-        	
-        	final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        	final IlvReportForm ilvf = (IlvReportForm) fm;
-        	final Text cn = new Text();
-        	Texttyp mailtexttyp = new Texttyp("ILV Mailtext", cn.getConnection());
-        	Texttyp subjecttyp = new Texttyp("ILV Mailsubject", cn.getConnection());
-        	
-        	// Exists already a Mailtext or a subject?
-        	Text subject = new Text(cn.getConnection(), subjecttyp, ui.getKonto().getId());
-        	Text text = new Text(cn.getConnection(), mailtexttyp, ui.getKonto().getId());
-        	
-        	subject.setKonto(ui.getKonto());
-        	if (subject.getInhalt() == null){ // save a new subject for the konto
-        		subject.setInhalt(ilvf.getSubject());
-        		subject.setTexttyp(subjecttyp);
-        		subject.saveNewText(cn.getConnection(), subject);
-        	} else { // update the existing subject for the konto
-        		subject.setInhalt(ilvf.getSubject());
-        		subject.updateText(cn.getConnection(), subject);
-        	}
-        	
-        	text.setKonto(ui.getKonto());
-        	if (text.getInhalt() == null){				 // save a new subject for the konto
-        		text.setInhalt(ilvf.getMailtext());
-        		text.setTexttyp(mailtexttyp);
-        		text.saveNewText(cn.getConnection(), text);
-        	} else { 									 // update the existing subject for the konto
-        		text.setInhalt(ilvf.getMailtext());
-        		text.updateText(cn.getConnection(), text);
-        	}
 
-        	cn.close();        	
-        	forward = "success";
-        	Message mes = new Message("ilvmail.defaultmailfiedsset", "listkontobestellungen.do?method=overview");
-        	rq.setAttribute("message", mes);
-            
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+        try {
+
+            if (auth.isLogin(rq)) {
+
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final IlvReportForm ilvf = (IlvReportForm) fm;
+                final Texttyp mailtexttyp = new Texttyp("ILV Mailtext", cn.getConnection());
+                final Texttyp subjecttyp = new Texttyp("ILV Mailsubject", cn.getConnection());
+
+                // Exists already a Mailtext or a subject?
+                final Text subject = new Text(cn.getConnection(), subjecttyp, ui.getKonto().getId());
+                final Text text = new Text(cn.getConnection(), mailtexttyp, ui.getKonto().getId());
+
+                subject.setKonto(ui.getKonto());
+                if (subject.getInhalt() == null) { // save a new subject for the konto
+                    subject.setInhalt(ilvf.getSubject());
+                    subject.setTexttyp(subjecttyp);
+                    subject.saveNewText(cn.getConnection(), subject);
+                } else { // update the existing subject for the konto
+                    subject.setInhalt(ilvf.getSubject());
+                    subject.updateText(cn.getConnection(), subject);
+                }
+
+                text.setKonto(ui.getKonto());
+                if (text.getInhalt() == null) { // save a new subject for the konto
+                    text.setInhalt(ilvf.getMailtext());
+                    text.setTexttyp(mailtexttyp);
+                    text.saveNewText(cn.getConnection(), text);
+                } else { // update the existing subject for the konto
+                    text.setInhalt(ilvf.getMailtext());
+                    text.updateText(cn.getConnection(), text);
+                }
+
+                forward = "success";
+                final Message mes = new Message("ilvmail.defaultmailfiedsset",
+                        "listkontobestellungen.do?method=overview");
+                rq.setAttribute("message", mes);
+
+            } else {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute("ActiveMenus", mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute("errormessage", em);
+            }
+
+        } finally {
+            cn.close();
         }
+
         return mp.findForward(forward);
     }
-    
+
 }

@@ -59,29 +59,33 @@ public class Supplier extends DispatchAction {
 
                 final Text cn = new Text();
 
-                // make sure sid is not null and is editable
-                if (editable(Long.valueOf(sid), ui, cn.getConnection())) {
+                try {
 
-                    Lieferanten sup = new Lieferanten();
+                    // make sure sid is not null and is editable
+                    if (editable(Long.valueOf(sid), ui, cn.getConnection())) {
 
-                    sup = sup.getLieferantFromLid(Long.valueOf(sid), cn.getConnection());
+                        Lieferanten sup = new Lieferanten();
 
-                    rq.setAttribute("supplier", sup);
+                        sup = sup.getLieferantFromLid(Long.valueOf(sid), cn.getConnection());
 
-                    // navigation: set 'account/konto' tab as active
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("konto");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                        rq.setAttribute("supplier", sup);
 
-                    forward = "edit";
+                        // navigation: set 'account/konto' tab as active
+                        final ActiveMenusForm mf = new ActiveMenusForm();
+                        mf.setActivemenu("konto");
+                        rq.setAttribute(ACTIVEMENUS, mf);
 
-                } else {
-                    final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                    m.setLink("listsuppliers.do");
-                    rq.setAttribute("errormessage", m);
+                        forward = "edit";
+
+                    } else {
+                        final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                        m.setLink("listsuppliers.do");
+                        rq.setAttribute("errormessage", m);
+                    }
+
+                } finally {
+                    cn.close();
                 }
-
-                cn.close();
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
@@ -110,8 +114,6 @@ public class Supplier extends DispatchAction {
             // restrict editing suppliers to librarians and admins only
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
-                final Text cn = new Text();
-
                 final Lieferanten sup = new Lieferanten();
 
                 rq.setAttribute("supplier", sup);
@@ -122,8 +124,6 @@ public class Supplier extends DispatchAction {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("konto");
                 rq.setAttribute(ACTIVEMENUS, mf);
-
-                cn.close();
 
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
@@ -157,48 +157,52 @@ public class Supplier extends DispatchAction {
 
                 final Text cn = new Text();
 
-                // update
-                if (sf.getLid() != null) {
+                try {
 
-                    // make sure lid is editable
-                    if (editable(sf.getLid(), ui, cn.getConnection())) {
+                    // update
+                    if (sf.getLid() != null) {
 
-                        Lieferanten sup = new Lieferanten();
-                        sup = sup.getLieferantFromLid(sf.getLid(), cn.getConnection());
+                        // make sure lid is editable
+                        if (editable(sf.getLid(), ui, cn.getConnection())) {
+
+                            Lieferanten sup = new Lieferanten();
+                            sup = sup.getLieferantFromLid(sf.getLid(), cn.getConnection());
+
+                            // set Lieferanten values from SupplierForm
+                            sup.setFormValues(sup, sf, ui);
+
+                            sup.update(sup, cn.getConnection());
+
+                            rq.setAttribute("supplier", sup);
+
+                            // navigation: set 'account/konto' tab as active
+                            final ActiveMenusForm mf = new ActiveMenusForm();
+                            mf.setActivemenu("konto");
+                            rq.setAttribute(ACTIVEMENUS, mf);
+
+                            forward = "success";
+
+                        } else {
+                            final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                            m.setLink("listsuppliers.do");
+                            rq.setAttribute("errormessage", m);
+                        }
+
+                    } else {
+                        // save new supplier
+                        final Lieferanten sup = new Lieferanten();
 
                         // set Lieferanten values from SupplierForm
                         sup.setFormValues(sup, sf, ui);
 
-                        sup.update(sup, cn.getConnection());
-
-                        rq.setAttribute("supplier", sup);
-
-                        // navigation: set 'account/konto' tab as active
-                        final ActiveMenusForm mf = new ActiveMenusForm();
-                        mf.setActivemenu("konto");
-                        rq.setAttribute(ACTIVEMENUS, mf);
+                        sup.save(sup, cn.getConnection());
 
                         forward = "success";
-
-                    } else {
-                        final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                        m.setLink("listsuppliers.do");
-                        rq.setAttribute("errormessage", m);
                     }
 
-                } else {
-                    // save new supplier
-                    final Lieferanten sup = new Lieferanten();
-
-                    // set Lieferanten values from SupplierForm
-                    sup.setFormValues(sup, sf, ui);
-
-                    sup.save(sup, cn.getConnection());
-
-                    forward = "success";
+                } finally {
+                    cn.close();
                 }
-
-                cn.close();
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
@@ -232,27 +236,31 @@ public class Supplier extends DispatchAction {
 
                 final Text cn = new Text();
 
-                // make sure sid is not null and is editable
-                if (deleteable(sid, ui, cn.getConnection())) {
+                try {
 
-                    // delete supplier
-                    final Lieferanten sup = new Lieferanten();
-                    sup.delete(sid, cn.getConnection());
+                    // make sure sid is not null and is editable
+                    if (deleteable(sid, ui, cn.getConnection())) {
 
-                    // navigation: set 'account/konto' tab as active
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("konto");
-                    rq.setAttribute("activemenu", mf);
+                        // delete supplier
+                        final Lieferanten sup = new Lieferanten();
+                        sup.delete(sid, cn.getConnection());
 
-                    forward = "success";
+                        // navigation: set 'account/konto' tab as active
+                        final ActiveMenusForm mf = new ActiveMenusForm();
+                        mf.setActivemenu("konto");
+                        rq.setAttribute("activemenu", mf);
 
-                } else {
-                    final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                    m.setLink("listsuppliers.do");
-                    rq.setAttribute("errormessage", m);
+                        forward = "success";
+
+                    } else {
+                        final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                        m.setLink("listsuppliers.do");
+                        rq.setAttribute("errormessage", m);
+                    }
+
+                } finally {
+                    cn.close();
                 }
-
-                cn.close();
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");

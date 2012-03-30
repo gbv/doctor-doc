@@ -40,8 +40,11 @@ public class DBConn extends AbstractReadSystemConfigurations {
     private static final SimpleLogger LOG = new SimpleLogger(DBConn.class);
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
-    private static final String SERVER = "jdbc:mysql://" + DATABASE_SERVERADDRESS + "/" + DATABASE_NAME
-    + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false";
+    private static final String SERVER = "jdbc:mysql://"
+            + DATABASE_SERVERADDRESS
+            + "/"
+            + DATABASE_NAME
+            + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false";
     private transient Connection cn;
 
     /**
@@ -68,16 +71,21 @@ public class DBConn extends AbstractReadSystemConfigurations {
      * @param table (Tabelle)
      * @param field (Feld, in dem die Datei gespeichert wird)
      */
-    public void saveFile(final File fl, final String id, final String table, final String field,
-            final Connection con) throws Exception {
+    public void saveFile(final File fl, final String id, final String table, final String field, final Connection con)
+            throws Exception {
 
-        final FileInputStream fis = new FileInputStream(fl);
-        final PreparedStatement pstmt = con.prepareStatement(
-                "update " + table + " set " + field + " = ? where did = " + id);
-        pstmt.setBinaryStream(1, fis, (int) fl.length());
-        pstmt.executeUpdate();
-        pstmt.close();
-        fis.close();
+        FileInputStream fis = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            fis = new FileInputStream(fl);
+            pstmt = con.prepareStatement("update " + table + " set " + field + " = ? where did = " + id);
+            pstmt.setBinaryStream(1, fis, (int) fl.length());
+            pstmt.executeUpdate();
+        } finally {
+            pstmt.close();
+            fis.close();
+        }
     }
 
     /**

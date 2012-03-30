@@ -737,253 +737,260 @@ public final class OrderAction extends DispatchAction {
         long daiaId = 0;
         long kid = 0;
 
-        // if coming from getOpenUrlRequest or prepareReorder
-        if (rq.getAttribute("ofjo") != null) {
-            pageForm = (OrderForm) rq.getAttribute("ofjo");
-            pageForm.setResolver(true);
-            rq.setAttribute("ofjo", pageForm);
-        }
+        try {
 
-        // if not logged in, try to get account from request
-        if (!auth.isLogin(rq)) {
-            cn = (Text) rq.getAttribute("ip");
-            if (cn != null) {
-                // Text mit Kontoangaben anhand Broker-Kennung holen
-                if (cn.getTexttyp().getId() == 11) {
-                    pageForm.setBkid(cn.getInhalt());
-                }
-                // Text mit Kontoangaben anhand Konto-Kennung holen
-                if (cn.getTexttyp().getId() == 12) {
-                    pageForm.setKkid(cn.getInhalt());
-                }
-            }
-        }
-
-        if (ui != null) {
-            // get bibid from ui
-            if (ui.getKonto().getEzbid() != null && !ui.getKonto().getEzbid().equals("")) {
-                bibid = ui.getKonto().getEzbid();
-            }
-            daiaId = getDaiaId(ui.getKonto().getId());
-            kid = ui.getKonto().getId();
-        } else {
-            // get bibid from IP based access
-            if (cn != null && cn.getInhalt() != null) {
-                if (pageForm.getBkid() == null && cn.getKonto().getEzbid() != null
-                        && !cn.getKonto().getEzbid().equals("")) {
-                    bibid = cn.getKonto().getEzbid();
-                }
-                daiaId = cn.getKonto().getId();
-                kid = cn.getKonto().getId();
-            }
-        }
-
-        // normalize PMID if available
-        pageForm.setPmid(bfAction.extractPmid(pageForm.getPmid()));
-
-        // PMID available and there are article references missing
-        if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && bfAction.areArticleValuesMissing(pageForm)) {
-            OrderForm of = new OrderForm();
-            of = bfAction.resolvePmid(pageForm.getPmid());
-            pageForm.completeOrderForm(pageForm, of);
-        } else {
-            // try to get missing PMID and complete missing article references
-            if (isPubmedSearchWithoutPmidPossible(pageForm)) {
-                pubmedthread.setLink(bfAction.composePubmedlinkToPmid(pageForm));
-                pubmedcontent = executor.submit(pubmedthread);
-            }
-        }
-
-        // get zdbid from ISSN. Only necessary if logged in...
-        boolean gbvThread = false;
-        if (auth.isLogin(rq) && pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
-            // gets zdbid from database (will be an e-journal)
-            pageForm.setZdbid(getZdbidFromIssn(pageForm.getIssn(), cn.getConnection()));
-            // System.out.println("ZDB-ID aus dbs: " + pageForm.getZdbid());
-            // Try to get from e-ZDB-ID a p-ZDB-ID from GBV using a seperate thread.
-            if (pageForm.getZdbid() != null && !pageForm.getZdbid().equals("")) {
-                final String gbvlink = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
-                        + pageForm.getZdbid()
-                        + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
-                gbvthread.setLink(gbvlink);
-                gbvcontent = executor.submit(gbvthread);
-                gbvThread = true;
-            }
-        }
-
-        // logged in or access IP based/kkid/bkid
-        if (auth.isLogin(rq) || (cn != null && cn.getInhalt() != null)) {
-            forward = "notfreeebz";
-
-            // set link in request if there is institution logo for this account
-            if (cn.getInhalt() != null && cn.getKonto().getInstlogolink() != null) {
-                rq.setAttribute("logolink", cn.getKonto().getInstlogolink());
+            // if coming from getOpenUrlRequest or prepareReorder
+            if (rq.getAttribute("ofjo") != null) {
+                pageForm = (OrderForm) rq.getAttribute("ofjo");
+                pageForm.setResolver(true);
+                rq.setAttribute("ofjo", pageForm);
             }
 
-            ContextObject co = new ContextObject();
-            final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-            co = openurlConv.makeContextObject(pageForm);
-
-            final OpenUrl openU = new OpenUrl();
-            final String openurl = openU.composeOpenUrl(co);
-
-            // needed for  creating OpenURL links on checkavailability.jsp (e.g. Carelit)
-            pageForm.setLink(openurl);
-
-            if (ReadSystemConfigurations.isSearchCarelit()) {
-                carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
-                        + openurl);
-                carelitcontent = executor.submit(carelitthread);
-            }
-
-            // use link to services from ZDB/EZB
-            // http://services.d-nb.de/fize-service/gvr/html-service.htm?
-            final StringBuffer linkEZB = new StringBuffer("http://services.d-nb.de/fize-service/gvr/full.xml?");
-            linkEZB.append(openurl);
-            if (bibid != null) {
-                // use bibid from account
-                linkEZB.append("&pid=bibid=");
-                linkEZB.append(bibid);
-            } else {
-                // use IP for request
-                linkEZB.append("client_ip=");
-                linkEZB.append(rq.getRemoteAddr());
-            }
-
-            // set EZB request into thread, get back after timeout and if empty use alternate API over
-            // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
-            // http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml&genre=article&issn=1538-3598&bibid=AAAAA
-            ezbthread.setLink(linkEZB.toString());
-            ezbcontent = executor.submit(ezbthread);
-
-            // compose link to EZB for UI
-            final StringBuffer linkUIezb = new StringBuffer("http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?");
-            linkUIezb.append(openurl);
-            if (bibid != null) {
-                // use bibid from account
-                linkUIezb.append("&bibid=");
-                linkUIezb.append(bibid);
-            } else {
-                // use IP for request
-                linkUIezb.append("client_ip=");
-                linkUIezb.append(rq.getRemoteAddr());
-            }
-
-            // Check for internal / external Holdings using DAIA Document Availability Information API
-            List<Bestand> allHoldings = new ArrayList<Bestand>();
-            List<Bestand> internalHoldings = new ArrayList<Bestand>();
-            List<Bestand> externalHoldings = new ArrayList<Bestand>();
-
-            if (ReadSystemConfigurations.isUseDaia()) { // Check an external register over DAIA
-                final DaiaRequest daiaRequest = new DaiaRequest();
-                allHoldings = daiaRequest.get(openurl);
-                internalHoldings = extractInternalHoldings(allHoldings, daiaId);
-                externalHoldings = extractExternalHoldings(allHoldings, daiaId, ui);
-            }
-            // Check internal database
-            final Stock stock = new Stock();
-            allHoldings = stock.checkGeneralStockAvailability(pageForm, true);
-            internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
-            externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
-
-            // get back EZB thread
-            final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
-            if (ezbanswer != null && !ezbanswer.contains("<Error code=")
-                    && !ezbanswer.contains("503 Service Temporarily Unavailable")) {
-                // read EZB response as XML
-                final EZBJOP ezb = new EZBJOP();
-                ezbform = ezb.read(ezbanswer);
-            } else {
-                // use alternate Vascoda API
-                // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
-
-                final EZBVascoda vascoda = new EZBVascoda();
-                // &pid=format%3Dxml => output as XML
-                final EZBForm efVascoda = vascoda.read(getWebcontent(linkUIezb.toString() + "&pid=format%3Dxml", 2000,
-                        2));
-                // returns only online holdings. Keep local print holdings...
-                ezbform.setOnline(efVascoda.getOnline());
-
-                // only show error in UI if library has ZDB holdings
-                if (ui != null && ui.getKonto().isZdb() || cn != null && cn.getKonto() != null && cn.getKonto().isZdb()) {
-                    final EZBDataPrint timeout = new EZBDataPrint();
-                    timeout.setAmpel("red");
-                    timeout.setComment("error.zdb_timeout");
-                    ezbform.getPrint().add(timeout);
-                }
-            }
-
-            // set Link for "Powered by EZB/ZDB" for manual checks by the user
-            ezbform.setLinkezb(linkUIezb.toString());
-
-            if (!internalHoldings.isEmpty()) { // we have own holdings
-                forward = "freeezb";
-                addInternalHoldings(ezbform, pageForm, internalHoldings, cn.getConnection());
-                rq.setAttribute("internalHoldings", internalHoldings);
-            }
-            if (!externalHoldings.isEmpty()) { // there external holdings
-                rq.setAttribute("holdings", externalHoldings);
-            }
-
-            // if logged in go to availabilityresult.jsp or if we have found some holdings
-            if (auth.isLogin(rq) || analyzeEZBResult(ezbform, pageForm, cn.getConnection())) {
-                forward = "freeezb";
-            }
-
-            // ge back GBV thread
-            if (gbvThread) {
-                final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 2, "GBV");
-                // holt aus ggf. mehreren möglichen Umleitungen die letztmögliche
-                if (gbvanswer != null) {
-                    final String pZdbid = OrderGbvAction.getPrintZdbidIgnoreMultipleHits(gbvanswer);
-                    if (pZdbid != null) {
-                        pageForm.setZdbid(pZdbid); // e-ZDB-ID wird nur überschrieben, falls p-ZDB-ID erhalten
+            // if not logged in, try to get account from request
+            if (!auth.isLogin(rq)) {
+                cn = (Text) rq.getAttribute("ip");
+                if (cn != null) {
+                    // Text mit Kontoangaben anhand Broker-Kennung holen
+                    if (cn.getTexttyp().getId() == 11) {
+                        pageForm.setBkid(cn.getInhalt());
+                    }
+                    // Text mit Kontoangaben anhand Konto-Kennung holen
+                    if (cn.getTexttyp().getId() == 12) {
+                        pageForm.setKkid(cn.getInhalt());
                     }
                 }
             }
 
-            // get back Pubmed thread
-            if (isPubmedSearchWithoutPmidPossible(pageForm)) {
-                final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 1, "Pubmed");
-                if (pubmedanswer != null) {
-                    pageForm.setPmid(bfAction.getPmid(pubmedanswer));
+            if (ui != null) {
+                // get bibid from ui
+                if (ui.getKonto().getEzbid() != null && !ui.getKonto().getEzbid().equals("")) {
+                    bibid = ui.getKonto().getEzbid();
                 }
-
-                if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
-                        bfAction.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
-                    final OrderForm of = bfAction.resolvePmid(pageForm.getPmid());
-                    pageForm.completeOrderForm(pageForm, of); // ergänzen
+                daiaId = getDaiaId(ui.getKonto().getId());
+                kid = ui.getKonto().getId();
+            } else {
+                // get bibid from IP based access
+                if (cn != null && cn.getInhalt() != null) {
+                    if (pageForm.getBkid() == null && cn.getKonto().getEzbid() != null
+                            && !cn.getKonto().getEzbid().equals("")) {
+                        bibid = cn.getKonto().getEzbid();
+                    }
+                    daiaId = cn.getKonto().getId();
+                    kid = cn.getKonto().getId();
                 }
             }
 
-            // get back Carelit thread
-            if (ReadSystemConfigurations.isSearchCarelit()) {
-                final String carelitanswer = getBackThreadedWebcontent(carelitcontent, 1, "Carelit");
-                if (carelitanswer != null
-                        && carelitanswer.contains("<span id=\"drdoc\" style=\"display:block\">1</span>")) {
-                    System.out.println("Es gibt Volltexte bei Carelit!");
-                    pageForm.setCarelit(true); // Anzeige für den Moment unterdrückt...
+            // normalize PMID if available
+            pageForm.setPmid(bfAction.extractPmid(pageForm.getPmid()));
+
+            // PMID available and there are article references missing
+            if (pageForm.getPmid() != null && !pageForm.getPmid().equals("")
+                    && bfAction.areArticleValuesMissing(pageForm)) {
+                OrderForm of = new OrderForm();
+                of = bfAction.resolvePmid(pageForm.getPmid());
+                pageForm.completeOrderForm(pageForm, of);
+            } else {
+                // try to get missing PMID and complete missing article references
+                if (isPubmedSearchWithoutPmidPossible(pageForm)) {
+                    pubmedthread.setLink(bfAction.composePubmedlinkToPmid(pageForm));
+                    pubmedcontent = executor.submit(pubmedthread);
+                }
+            }
+
+            // get zdbid from ISSN. Only necessary if logged in...
+            boolean gbvThread = false;
+            if (auth.isLogin(rq) && pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
+                // gets zdbid from database (will be an e-journal)
+                pageForm.setZdbid(getZdbidFromIssn(pageForm.getIssn(), cn.getConnection()));
+                // System.out.println("ZDB-ID aus dbs: " + pageForm.getZdbid());
+                // Try to get from e-ZDB-ID a p-ZDB-ID from GBV using a seperate thread.
+                if (pageForm.getZdbid() != null && !pageForm.getZdbid().equals("")) {
+                    final String gbvlink = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
+                            + pageForm.getZdbid()
+                            + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
+                    gbvthread.setLink(gbvlink);
+                    gbvcontent = executor.submit(gbvthread);
+                    gbvThread = true;
+                }
+            }
+
+            // logged in or access IP based/kkid/bkid
+            if (auth.isLogin(rq) || (cn != null && cn.getInhalt() != null)) {
+                forward = "notfreeebz";
+
+                // set link in request if there is institution logo for this account
+                if (cn.getInhalt() != null && cn.getKonto().getInstlogolink() != null) {
+                    rq.setAttribute("logolink", cn.getKonto().getInstlogolink());
+                }
+
+                ContextObject co = new ContextObject();
+                final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+                co = openurlConv.makeContextObject(pageForm);
+
+                final OpenUrl openU = new OpenUrl();
+                final String openurl = openU.composeOpenUrl(co);
+
+                // needed for  creating OpenURL links on checkavailability.jsp (e.g. Carelit)
+                pageForm.setLink(openurl);
+
+                if (ReadSystemConfigurations.isSearchCarelit()) {
+                    carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
+                            + openurl);
+                    carelitcontent = executor.submit(carelitthread);
+                }
+
+                // use link to services from ZDB/EZB
+                // http://services.d-nb.de/fize-service/gvr/html-service.htm?
+                final StringBuffer linkEZB = new StringBuffer("http://services.d-nb.de/fize-service/gvr/full.xml?");
+                linkEZB.append(openurl);
+                if (bibid != null) {
+                    // use bibid from account
+                    linkEZB.append("&pid=bibid=");
+                    linkEZB.append(bibid);
+                } else {
+                    // use IP for request
+                    linkEZB.append("client_ip=");
+                    linkEZB.append(rq.getRemoteAddr());
+                }
+
+                // set EZB request into thread, get back after timeout and if empty use alternate API over
+                // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
+                // http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml&genre=article&issn=1538-3598&bibid=AAAAA
+                ezbthread.setLink(linkEZB.toString());
+                ezbcontent = executor.submit(ezbthread);
+
+                // compose link to EZB for UI
+                final StringBuffer linkUIezb = new StringBuffer("http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?");
+                linkUIezb.append(openurl);
+                if (bibid != null) {
+                    // use bibid from account
+                    linkUIezb.append("&bibid=");
+                    linkUIezb.append(bibid);
+                } else {
+                    // use IP for request
+                    linkUIezb.append("client_ip=");
+                    linkUIezb.append(rq.getRemoteAddr());
+                }
+
+                // Check for internal / external Holdings using DAIA Document Availability Information API
+                List<Bestand> allHoldings = new ArrayList<Bestand>();
+                List<Bestand> internalHoldings = new ArrayList<Bestand>();
+                List<Bestand> externalHoldings = new ArrayList<Bestand>();
+
+                if (ReadSystemConfigurations.isUseDaia()) { // Check an external register over DAIA
+                    final DaiaRequest daiaRequest = new DaiaRequest();
+                    allHoldings = daiaRequest.get(openurl);
+                    internalHoldings = extractInternalHoldings(allHoldings, daiaId);
+                    externalHoldings = extractExternalHoldings(allHoldings, daiaId, ui);
+                }
+                // Check internal database
+                final Stock stock = new Stock();
+                allHoldings = stock.checkGeneralStockAvailability(pageForm, true);
+                internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
+                externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
+
+                // get back EZB thread
+                final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
+                if (ezbanswer != null && !ezbanswer.contains("<Error code=")
+                        && !ezbanswer.contains("503 Service Temporarily Unavailable")) {
+                    // read EZB response as XML
+                    final EZBJOP ezb = new EZBJOP();
+                    ezbform = ezb.read(ezbanswer);
+                } else {
+                    // use alternate Vascoda API
+                    // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
+
+                    final EZBVascoda vascoda = new EZBVascoda();
+                    // &pid=format%3Dxml => output as XML
+                    final EZBForm efVascoda = vascoda.read(getWebcontent(linkUIezb.toString() + "&pid=format%3Dxml",
+                            2000, 2));
+                    // returns only online holdings. Keep local print holdings...
+                    ezbform.setOnline(efVascoda.getOnline());
+
+                    // only show error in UI if library has ZDB holdings
+                    if (ui != null && ui.getKonto().isZdb() || cn != null && cn.getKonto() != null
+                            && cn.getKonto().isZdb()) {
+                        final EZBDataPrint timeout = new EZBDataPrint();
+                        timeout.setAmpel("red");
+                        timeout.setComment("error.zdb_timeout");
+                        ezbform.getPrint().add(timeout);
+                    }
+                }
+
+                // set Link for "Powered by EZB/ZDB" for manual checks by the user
+                ezbform.setLinkezb(linkUIezb.toString());
+
+                if (!internalHoldings.isEmpty()) { // we have own holdings
+                    forward = "freeezb";
+                    addInternalHoldings(ezbform, pageForm, internalHoldings, cn.getConnection());
+                    rq.setAttribute("internalHoldings", internalHoldings);
+                }
+                if (!externalHoldings.isEmpty()) { // there external holdings
+                    rq.setAttribute("holdings", externalHoldings);
+                }
+
+                // if logged in go to availabilityresult.jsp or if we have found some holdings
+                if (auth.isLogin(rq) || analyzeEZBResult(ezbform, pageForm, cn.getConnection())) {
                     forward = "freeezb";
                 }
+
+                // ge back GBV thread
+                if (gbvThread) {
+                    final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 2, "GBV");
+                    // holt aus ggf. mehreren möglichen Umleitungen die letztmögliche
+                    if (gbvanswer != null) {
+                        final String pZdbid = OrderGbvAction.getPrintZdbidIgnoreMultipleHits(gbvanswer);
+                        if (pZdbid != null) {
+                            pageForm.setZdbid(pZdbid); // e-ZDB-ID wird nur überschrieben, falls p-ZDB-ID erhalten
+                        }
+                    }
+                }
+
+                // get back Pubmed thread
+                if (isPubmedSearchWithoutPmidPossible(pageForm)) {
+                    final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 1, "Pubmed");
+                    if (pubmedanswer != null) {
+                        pageForm.setPmid(bfAction.getPmid(pubmedanswer));
+                    }
+
+                    if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
+                            bfAction.areArticleValuesMissing(pageForm)) { // und Artikelangaben fehlen
+                        final OrderForm of = bfAction.resolvePmid(pageForm.getPmid());
+                        pageForm.completeOrderForm(pageForm, of); // ergänzen
+                    }
+                }
+
+                // get back Carelit thread
+                if (ReadSystemConfigurations.isSearchCarelit()) {
+                    final String carelitanswer = getBackThreadedWebcontent(carelitcontent, 1, "Carelit");
+                    if (carelitanswer != null
+                            && carelitanswer.contains("<span id=\"drdoc\" style=\"display:block\">1</span>")) {
+                        System.out.println("Es gibt Volltexte bei Carelit!");
+                        pageForm.setCarelit(true); // Anzeige für den Moment unterdrückt...
+                        forward = "freeezb";
+                    }
+                }
+
+            } else {
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute(ERRORMESSAGE, em);
             }
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
-        }
+            pageForm.setAutocomplete(false); // reset
+            rq.setAttribute("ezb", ezbform);
 
-        pageForm.setAutocomplete(false); // reset
-        rq.setAttribute("ezb", ezbform);
+            // for get-method in PrepareLogin encode pageForm
+            pageForm = pageForm.encodeOrderForm(pageForm);
 
-        // for get-method in PrepareLogin encode pageForm
-        pageForm = pageForm.encodeOrderForm(pageForm);
+            rq.setAttribute("orderform", pageForm);
 
-        rq.setAttribute("orderform", pageForm);
-        if (cn != null) {
-            cn.close();
+        } finally {
+            if (cn != null) {
+                cn.close();
+            }
         }
 
         return mp.findForward(forward);
@@ -1464,43 +1471,49 @@ public final class OrderAction extends DispatchAction {
         final Text cn = new Text();
         final Auth auth = new Auth();
 
-        if (auth.isLogin(rq)) {
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            final Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
-            // URL-hacking unterdrücken!
-            if (auth.isLegitimateOrder(rq, order)) {
-                forward = SUCCESS;
+        try {
 
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("suchenbestellen");
-                rq.setAttribute(ACTIVEMENUS, mf);
+            if (auth.isLogin(rq)) {
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
+                // URL-hacking unterdrücken!
+                if (auth.isLegitimateOrder(rq, order)) {
+                    forward = SUCCESS;
 
-                final OrderForm of = new OrderForm(order);
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("suchenbestellen");
+                    rq.setAttribute(ACTIVEMENUS, mf);
 
-                rq.setAttribute("ofjo", of);
+                    final OrderForm of = new OrderForm(order);
 
-                // mediatype != Artikel: go directly to the page for saving/modifying the order
-                // and not to checkavailability
-                if (!of.getMediatype().equals("Artikel")) {
-                    forward = "save";
+                    rq.setAttribute("ofjo", of);
+
+                    // mediatype != Artikel: go directly to the page for saving/modifying the order
+                    // and not to checkavailability
+                    if (!of.getMediatype().equals("Artikel")) {
+                        forward = "save";
+                    }
+
+                } else {
+                    forward = FAILURE;
+                    em.setError("error.hack");
+                    em.setLink("searchfree.do?activemenu=suchenbestellen");
+                    rq.setAttribute(ERRORMESSAGE, em);
+                    LOG.info("prepareReorder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
             } else {
-                forward = FAILURE;
-                em.setError("error.hack");
-                em.setLink("searchfree.do?activemenu=suchenbestellen");
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute(ACTIVEMENUS, mf);
+                em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
-                LOG.info("prepareReorder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             }
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+        } finally {
+            cn.close();
         }
-        cn.close();
+
         return mp.findForward(forward);
     }
 
@@ -2127,41 +2140,47 @@ public final class OrderAction extends DispatchAction {
         String forward = FAILURE;
         final Text cn = new Text();
 
-        final Auth auth = new Auth();
-        if (auth.isLogin(rq)) { // Test auf gültige Session
-            final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
+        try {
 
-            if (b.getId() != null && // BID muss vorhanden sein
-                    // nur Bibliothekare und Admins dürfen Bestellungen löschen
-                    (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
+            final Auth auth = new Auth();
+            if (auth.isLogin(rq)) { // Test auf gültige Session
+                final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
 
-                forward = "promptDelete";
-                pageForm.setDelete(true);
-                pageForm.setBestellung(b);
-                rq.setAttribute("orderform", pageForm);
+                if (b.getId() != null && // BID muss vorhanden sein
+                        // nur Bibliothekare und Admins dürfen Bestellungen löschen
+                        (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
 
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("uebersicht");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                    forward = "promptDelete";
+                    pageForm.setDelete(true);
+                    pageForm.setBestellung(b);
+                    rq.setAttribute("orderform", pageForm);
 
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("uebersicht");
+                    rq.setAttribute(ACTIVEMENUS, mf);
+
+                } else {
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("uebersicht");
+                    rq.setAttribute(ACTIVEMENUS, mf);
+                    final ErrorMessage em = new ErrorMessage("error.hack",
+                            "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                    rq.setAttribute(ERRORMESSAGE, em);
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    LOG.info("prepareDeleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+                }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("uebersicht");
+                mf.setActivemenu("login");
                 rq.setAttribute(ACTIVEMENUS, mf);
-                final ErrorMessage em = new ErrorMessage("error.hack",
-                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                LOG.info("prepareDeleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+
+        } finally {
+            cn.close();
         }
-        cn.close();
+
         return mp.findForward(forward);
     }
 
@@ -2175,48 +2194,54 @@ public final class OrderAction extends DispatchAction {
         String forward = FAILURE;
         final Text cn = new Text();
 
-        final Auth auth = new Auth();
-        if (auth.isLogin(rq)) { // Test auf gültige Session
-            final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
+        try {
 
-            if (b.getId() != null && // BID muss vorhanden sein
-                    // nur Bibliothekare und Admins dürfen Bestellungen löschen
-                    (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
+            final Auth auth = new Auth();
+            if (auth.isLogin(rq)) { // Test auf gültige Session
+                final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
 
-                if (b.deleteOrder(b, cn.getConnection())) {
-                    forward = SUCCESS;
+                if (b.getId() != null && // BID muss vorhanden sein
+                        // nur Bibliothekare und Admins dürfen Bestellungen löschen
+                        (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
+
+                    if (b.deleteOrder(b, cn.getConnection())) {
+                        forward = SUCCESS;
+                        final ActiveMenusForm mf = new ActiveMenusForm();
+                        mf.setActivemenu("uebersicht");
+                        rq.setAttribute(ACTIVEMENUS, mf);
+                        final Message m = new Message("message.deleteorder");
+                        m.setLink("listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                        rq.setAttribute("message", m);
+                    } else { // löschen fehlgeschlagen
+                        final ErrorMessage em = new ErrorMessage();
+                        em.setError("error.system");
+                        em.setLink("searchfree.do?activemenu=suchenbestellen");
+                        rq.setAttribute(ERRORMESSAGE, em);
+                        LOG.error("deleteOrder: couldn't delete order");
+                    }
+
+                } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
                     rq.setAttribute(ACTIVEMENUS, mf);
-                    final Message m = new Message("message.deleteorder");
-                    m.setLink("listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                    rq.setAttribute("message", m);
-                } else { // löschen fehlgeschlagen
-                    final ErrorMessage em = new ErrorMessage();
-                    em.setError("error.system");
-                    em.setLink("searchfree.do?activemenu=suchenbestellen");
+                    final ErrorMessage em = new ErrorMessage("error.hack",
+                            "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                     rq.setAttribute(ERRORMESSAGE, em);
-                    LOG.error("deleteOrder: couldn't delete order");
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    LOG.info("deleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
-
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("uebersicht");
+                mf.setActivemenu("login");
                 rq.setAttribute(ACTIVEMENUS, mf);
-                final ErrorMessage em = new ErrorMessage("error.hack",
-                        "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(ERRORMESSAGE, em);
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                LOG.info("deleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+
+        } finally {
+            cn.close();
         }
-        cn.close();
+
         return mp.findForward(forward);
     }
 
@@ -2433,16 +2458,17 @@ public final class OrderAction extends DispatchAction {
      */
     private long getDaiaId(final long kid) {
         long daiaId = 0;
+        final Text cn = new Text();
 
         try {
-            final Text cn = new Text();
             final Text t = new Text(cn.getConnection(), new Texttyp("DAIA-ID", cn.getConnection()), kid);
-            cn.close();
             if (t != null && t.getInhalt() != null) {
                 daiaId = Long.valueOf(t.getInhalt());
             }
         } catch (final Exception e) {
             LOG.error("getDaiaId - kid: " + kid + "\040" + e.toString());
+        } finally {
+            cn.close();
         }
 
         return daiaId;

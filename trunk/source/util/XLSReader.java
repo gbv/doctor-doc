@@ -154,29 +154,36 @@ public class XLSReader implements HSSFListener {
      * @return List<List<String>>
      */
     public List<List<String>> read(final BufferedInputStream ins) throws IOException {
-        // create a new org.apache.poi.poifs.filesystem.Filesystem
-        final POIFSFileSystem poifs = new POIFSFileSystem(ins);
-        // get the Workbook (excel part) stream in a InputStream
-        final InputStream din = poifs.createDocumentInputStream("Workbook");
-        // construct out HSSFRequest object
-        final HSSFRequest req = new HSSFRequest();
-        // lazy listen for ALL records with the listener shown above
-        req.addListenerForAllRecords(this);
-        // create our event factory
-        final HSSFEventFactory factory = new HSSFEventFactory();
-        // process our events based on the document input stream
-        factory.processEvents(req, din);
 
-        // add last row into result
-        if (!rowcontent.isEmpty()) {
-            result.add(rowcontent);
-        }
+        InputStream din = null;
 
-        // and our document input stream (don't want to leak these!)
         try {
-            din.close();
-        } catch (final Exception e) {
-            LOG.error(e.toString());
+
+            // create a new org.apache.poi.poifs.filesystem.Filesystem
+            final POIFSFileSystem poifs = new POIFSFileSystem(ins);
+            // get the Workbook (excel part) stream in a InputStream
+            din = poifs.createDocumentInputStream("Workbook");
+            // construct out HSSFRequest object
+            final HSSFRequest req = new HSSFRequest();
+            // lazy listen for ALL records with the listener shown above
+            req.addListenerForAllRecords(this);
+            // create our event factory
+            final HSSFEventFactory factory = new HSSFEventFactory();
+            // process our events based on the document input stream
+            factory.processEvents(req, din);
+
+            // add last row into result
+            if (!rowcontent.isEmpty()) {
+                result.add(rowcontent);
+            }
+
+        } finally {
+            // and our document input stream (don't want to leak these!)
+            try {
+                din.close();
+            } catch (final Exception e) {
+                LOG.error(e.toString());
+            }
         }
 
         return getResult();

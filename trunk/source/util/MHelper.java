@@ -19,6 +19,7 @@ package util;
 
 import java.util.Date;
 import java.util.Properties;
+
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -31,8 +32,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
 import org.grlea.log.SimpleLogger;
-
-
 
 /**
  * Diese Klasse vereinfacht verschiedene Abläufe zwischen Programm und Mailserver.
@@ -69,8 +68,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
         sendMail(recipients, subject, message, from, PRIORITY);
     }
 
-    public void sendMailReplyTo(final String[] recipients, final String subject,
-            final String message, final String replyto) {
+    public void sendMailReplyTo(final String[] recipients, final String subject, final String message,
+            final String replyto) {
         sendMailReplyTo(recipients, subject, message, replyto, PRIORITY);
     }
 
@@ -109,17 +108,23 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.addHeader(XPRIO, prio);
             m.setSentDate(new Date()); // Sendedatum setzen
             String subject = "";
-            if (msg.getSubject() != null) { subject = msg.getSubject(); }
+            if (msg.getSubject() != null) {
+                subject = msg.getSubject();
+            }
             m.setSubject(MimeUtility.encodeText(subject, UTF8, null)); // Betreff setzen
             m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
 
             // Mail versenden
-            final Transport bus = session.getTransport("smtp");
-            bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
-            bus.sendMessage(m, addressTo); // An diese Adressen senden
-            bus.close();
+            Transport bus = null;
+            try {
+                bus = session.getTransport("smtp");
+                bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
+                bus.sendMessage(m, addressTo); // An diese Adressen senden
+            } finally {
+                bus.close();
+            }
 
         } catch (final Exception e) {
             LOG.error("sendMail(String[] to, Message msg, String prio): " + e.toString());
@@ -164,14 +169,16 @@ public class MHelper extends AbstractReadSystemConfigurations {
             //          create a message
             final MimeMessage m = new MimeMessage(session);
             m.setFrom(addressFrom[0]); // From setzen
-            m.setReplyTo(new InternetAddress[] {new InternetAddress(replyto)}); // ReplyTo setzen
+            m.setReplyTo(new InternetAddress[] { new InternetAddress(replyto) }); // ReplyTo setzen
             m.setRecipients(Message.RecipientType.TO, addressTo); /* Damit Adressen TO sichtbar sind */
             m.addHeader(CHARSET, UTF8); // Header setzen
             //            m.setHeader("Content-Type","text/plain; charset=\"utf-8\"");
             m.addHeader(XPRIO, prio);
             m.setSentDate(new Date()); // Sendedatum setzen
             String subject = "";
-            if (msg.getSubject() != null) { subject = msg.getSubject(); }
+            if (msg.getSubject() != null) {
+                subject = msg.getSubject();
+            }
             m.setSubject(MimeUtility.encodeText(subject, UTF8, null)); // Betreff setzen
             m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
@@ -179,18 +186,14 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
             // Mail versenden
             sendMessage(session, m, addressTo);
-//            final Transport bus = session.getTransport("smtp");
-//            bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
-//            bus.sendMessage(m, addressTo); // An diese Adressen senden
-//            bus.close();
 
         } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String[] to, Message msg, String replyto, String prio): " + e.toString());
             // Critical Error-Message
             String msgText = null; // versucht zu übermitteln in welchen Situationen Versendfehler auftreten
             try {
-                msgText = "sendMailReplyTo(String[] to, Message msg, String replyto, String prio)"
-                    + "\n" + msg.getContent().toString();
+                msgText = "sendMailReplyTo(String[] to, Message msg, String replyto, String prio)" + "\n"
+                        + msg.getContent().toString();
             } catch (final Exception ex) {
                 LOG.error("coudn't send additional errormessage by email: " + ex.toString());
             }
@@ -209,8 +212,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * </P></P>
      * @author Pascal Steiner
      */
-    public void sendMail(final String[] recipients, final String subject, final String message,
-            final String from, final String prio) {
+    public void sendMail(final String[] recipients, final String subject, final String message, final String from,
+            final String prio) {
 
         try {
             // Set the host smtp address
@@ -236,7 +239,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             msg.setSentDate(new Date());
             msg.setContent(message, "text/plain");
 
-            sendMail(recipients , msg, prio);
+            sendMail(recipients, msg, prio);
         } catch (final Exception e) {
             LOG.error("String recipients[], String subject, String message, String from, String prio: " + e.toString());
             // Critical Error-Message
@@ -286,7 +289,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             msg.setSentDate(new Date());
             msg.setContent(message, "text/plain");
 
-            sendMailReplyTo(recipients , msg, replyto, prio);
+            sendMailReplyTo(recipients, msg, replyto, prio);
         } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String recipients[], String subject, String message, "
                     + "String replyto, String prio: " + e.toString());
@@ -333,6 +336,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             LOG.error("sendError(String e): " + ee.toString());
         }
     }
+
     /**
      * Verschickt eine Fehlermeldung an eine E-Mail-Adresse
      * <p></p>
@@ -375,7 +379,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
             final Store store = session.getStore("pop3");
             store.connect(host, bn, pw);
 
-
             folder = store.getFolder(folder_);
             folder.open(Folder.READ_ONLY);
         } catch (final Exception e) {
@@ -384,7 +387,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
         }
         return folder;
     }
-
 
     private void process() {
         final Folder inbox = getPop3Folder(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD, "INBOX");
@@ -401,8 +403,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
                 final String[] to = new String[1];
                 to[0] = SYSTEM_EMAIL;
                 sendMail(to, m);
-                System.out.println("\012Die Mail mit dem Betreff " + m.getSubject()
-                        + " wurde erfolgreich an " + to[0] + " versendet\012\012");
+                System.out.println("\012Die Mail mit dem Betreff " + m.getSubject() + " wurde erfolgreich an " + to[0]
+                        + " versendet\012\012");
             }
             inbox.close(true);
         } catch (final Exception e) {
@@ -412,32 +414,31 @@ public class MHelper extends AbstractReadSystemConfigurations {
 
     }
 
-//    /*
-//     * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
-//     */
-//    public Session getSession() {
-//        //       SMPT Authentifizierung einschalten
-//        final Properties props = new Properties();
-//        props.put(SMTP_AUTH, TRUE);
-//
-//        // create some properties and get the default Session
-//        final Session session = Session.getInstance(props, null);
-//        session.setDebug(false);
-//
-//        return session;
-//    }
+    //    /*
+    //     * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
+    //     */
+    //    public Session getSession() {
+    //        //       SMPT Authentifizierung einschalten
+    //        final Properties props = new Properties();
+    //        props.put(SMTP_AUTH, TRUE);
+    //
+    //        // create some properties and get the default Session
+    //        final Session session = Session.getInstance(props, null);
+    //        session.setDebug(false);
+    //
+    //        return session;
+    //    }
 
     public static void main(final String[] args) {
         final MHelper mail = new MHelper();
         mail.process();
     }
-    
-    
+
     /** Gets the system properties     */
-    public Properties getProperties(){
-    	// Get system properties
-    	Properties props = System.getProperties();
-    	// Setup mail server
+    public Properties getProperties() {
+        // Get system properties
+        final Properties props = System.getProperties();
+        // Setup mail server
         props.setProperty("mail.smtp.host", SYSTEM_EMAIL_HOST);
         props.setProperty("mail.user", "SYSTEM_EMAIL_ACCOUNTNAME");
         props.setProperty("mail.password", "SYSTEM_EMAIL_PASSWORD");
@@ -447,29 +448,34 @@ public class MHelper extends AbstractReadSystemConfigurations {
          * SMTP Server verweigert das Senden mit einem falschen Absender 
          * und man bekommt eine entsprechende Exception (Ausnahme: SMTP-Relay).
          */
-        
+
         props.setProperty(SMTP_AUTH, TRUE);
-    	return props;
+        return props;
     }
-    
+
     /** Gets the MimeMessage */
-    public MimeMessage getMimeMessage(Session session) throws AddressException, MessagingException{
+    public MimeMessage getMimeMessage(final Session session) throws AddressException, MessagingException {
         // Define message
-        MimeMessage message = new MimeMessage(session);        
+        final MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SYSTEM_EMAIL));
         message.addHeader(CHARSET, UTF8); // set Header
         message.addHeader(XPRIO, PRIORITY);
         message.setSentDate(new Date()); // set date      
         return message;
     }
-    
+
     /** send the message to @addressTo*/
-    public void sendMessage(Session session, Message m, InternetAddress[] addressTo) throws MessagingException {
-    	// Mail versenden
-        final Transport bus = session.getTransport("smtp");
-        bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
-        bus.sendMessage(m, addressTo); // An diese Adressen senden
-        bus.close();
+    public void sendMessage(final Session session, final Message m, final InternetAddress[] addressTo)
+            throws MessagingException {
+        // Mail versenden
+        Transport bus = null;
+        try {
+            bus = session.getTransport("smtp");
+            bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
+            bus.sendMessage(m, addressTo); // An diese Adressen senden
+        } finally {
+            bus.close();
+        }
     }
 
 }

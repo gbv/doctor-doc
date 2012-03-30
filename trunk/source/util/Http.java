@@ -41,7 +41,6 @@ public class Http {
     private static final int RETRYS = 3; // Anzahl versuche zum Website auslesen
     private static final String LOC = "location";
 
-
     /**
      *
      * @param link
@@ -117,11 +116,11 @@ public class Http {
                 }
 
             } catch (final IOException e) {
-                LOG.ludicrous("getWebContent(String link, int timeout_ms, int retrys), failure attempt: "
-                        + trys + "\040" + e.toString());
+                LOG.ludicrous("getWebContent(String link, int timeout_ms, int retrys), failure attempt: " + trys
+                        + "\040" + e.toString());
                 if (trys + 1 == retrys) { // beim letzten Versuch ein Email schicken
-                    LOG.error("getWebContent(String link, int timeout_ms, int retrys), last attempt failed: "
-                            + link + "\040" + e.toString());
+                    LOG.error("getWebContent(String link, int timeout_ms, int retrys), last attempt failed: " + link
+                            + "\040" + e.toString());
                 }
                 trys++;
             } finally {
@@ -130,6 +129,7 @@ public class Http {
         }
         return contents;
     }
+
     /**
      *
      * @param PostMethod method
@@ -187,8 +187,8 @@ public class Http {
                 }
 
             } catch (final IOException e) {
-                LOG.ludicrous("getWebContent(PostMethod method, int timeout_ms, int retrys), failure attempt: "
-                        + trys + "\040" + e.toString());
+                LOG.ludicrous("getWebContent(PostMethod method, int timeout_ms, int retrys), failure attempt: " + trys
+                        + "\040" + e.toString());
                 if (trys + 1 == retrys) { // letzter Versuch
                     LOG.error("getWebContent(PostMethod method, int timeout_ms, int retrys), last attempt failed: "
                             + e.toString() + "\012" + f);
@@ -210,30 +210,35 @@ public class Http {
     public String getWebcontent(final String link, final String postdata) {
 
         final StringBuffer response = new StringBuffer();
+        OutputStreamWriter wr = null;
+        BufferedReader rd = null;
         try {
             DisableSSLCertificateCheckUtil.disableChecks();
             // Send data
             final URL url = new URL(link);
             final URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
-            final OutputStreamWriter wr = new OutputStreamWriter(conn
-                    .getOutputStream());
+            wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(postdata);
             wr.flush();
 
             // Get the response
-            final BufferedReader rd = new BufferedReader(new InputStreamReader(conn
-                    .getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String content = "";
             while ((content = rd.readLine()) != null) {
                 response.append(content);
                 response.append('\n');
             }
-            wr.close();
-            rd.close();
         } catch (final Exception e) {
-            LOG.error("getWebcontent(String link, String postdata): "
-                    + e.toString() + "\012" + link + "\012" + postdata);
+            LOG.error("getWebcontent(String link, String postdata): " + e.toString() + "\012" + link + "\012"
+                    + postdata);
+        } finally {
+            try {
+                wr.close();
+                rd.close();
+            } catch (final IOException e) {
+                LOG.error(e.toString());
+            }
         }
 
         return response.toString();

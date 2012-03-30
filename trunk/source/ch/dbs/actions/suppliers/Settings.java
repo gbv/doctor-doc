@@ -57,36 +57,40 @@ public class Settings extends DispatchAction {
                 final Lieferanten sup = new Lieferanten();
                 final Text cn = new Text();
 
-                final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
+                try {
 
-                // we do not have any private suppliers...
-                if (privSuppliers.isEmpty()) {
-                    // ...there is only one logical display option
-                    sf.setShowprivsuppliers(false);
-                    sf.setShowpubsuppliers(true);
+                    final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
+
+                    // we do not have any private suppliers...
+                    if (privSuppliers.isEmpty()) {
+                        // ...there is only one logical display option
+                        sf.setShowprivsuppliers(false);
+                        sf.setShowpubsuppliers(true);
+                    }
+
+                    // update account with new settings
+                    sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
+
+                    // set back updated UserInfo / account into session
+                    ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
+                    ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
+                    rq.getSession().setAttribute("userinfo", ui);
+
+                    // trigger update message
+                    sf.setChangedsettings(true);
+
+                    rq.setAttribute("form", sf);
+
+                    // navigation: set 'account/konto' tab as active
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute("ActiveMenus", mf);
+
+                    forward = "success";
+
+                } finally {
+                    cn.close();
                 }
-
-                // update account with new settings
-                sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
-
-                // set back updated UserInfo / account into session
-                ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
-                ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
-                rq.getSession().setAttribute("userinfo", ui);
-
-                // trigger update message
-                sf.setChangedsettings(true);
-
-                rq.setAttribute("form", sf);
-
-                // navigation: set 'account/konto' tab as active
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("konto");
-                rq.setAttribute("ActiveMenus", mf);
-
-                forward = "success";
-
-                cn.close();
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");

@@ -38,7 +38,6 @@ import ch.dbs.form.OverviewForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.statistik.Statistik;
 
-
 /**
  * Class for retrieving statistics of the orders during a
  * given period.
@@ -51,94 +50,102 @@ public final class OrderStatistik extends DispatchAction {
     /**
      * Gets all statistics for an account of a specified period.
      */
-    public ActionForward kontoOrders(final ActionMapping mp, final ActionForm fm,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward kontoOrders(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         OverviewForm of = (OverviewForm) fm; // contains the desired time period
         String forward = "failure";
         final Auth auth = new Auth();
-        if (auth.isLogin(rq)) { // is user logged in?
-            // Only accessible for librarians and admins
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                forward = "success";
-                final Statistik st = new Statistik();
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Bestellungen b = new Bestellungen();
 
-                final Check check = new Check();
+        try {
 
-                // Set the default time period in select. Starting from the beginning of the actual year.
-                if (of.getYfrom() == null || of.getYto() == null
-                        || of.getMfrom() == null || of.getMto() == null
-                        || of.getDfrom() == null || of.getDto() == null) {
+            if (auth.isLogin(rq)) { // is user logged in?
+                // Only accessible for librarians and admins
+                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+                    forward = "success";
+                    final Statistik st = new Statistik();
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
-                    final Calendar calTo = Calendar.getInstance();
-                    calTo.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
+                    final Check check = new Check();
 
-                    of.setYfrom(new SimpleDateFormat("yyyy").format(calTo.getTime()));
-                    of.setMfrom("01");
-                    of.setDfrom("01");
-                    of.setFromdate(of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + "00:00:00");
+                    // Set the default time period in select. Starting from the beginning of the actual year.
+                    if (of.getYfrom() == null || of.getYto() == null || of.getMfrom() == null || of.getMto() == null
+                            || of.getDfrom() == null || of.getDto() == null) {
 
-                    of.setYto(new SimpleDateFormat("yyyy").format(calTo.getTime()));
-                    of.setMto(new SimpleDateFormat("MM").format(calTo.getTime()));
-                    of.setDto(new SimpleDateFormat("dd").format(calTo.getTime()));
-                    of.setTodate(of.getYto() + "-" + of.getMto() + "-" + of.getDto() + "23:59:59");
+                        final Calendar calTo = Calendar.getInstance();
+                        calTo.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
+
+                        of.setYfrom(new SimpleDateFormat("yyyy").format(calTo.getTime()));
+                        of.setMfrom("01");
+                        of.setDfrom("01");
+                        of.setFromdate(of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + "00:00:00");
+
+                        of.setYto(new SimpleDateFormat("yyyy").format(calTo.getTime()));
+                        of.setMto(new SimpleDateFormat("MM").format(calTo.getTime()));
+                        of.setDto(new SimpleDateFormat("dd").format(calTo.getTime()));
+                        of.setTodate(of.getYto() + "-" + of.getMto() + "-" + of.getDto() + "23:59:59");
+                    }
+
+                    of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
+
+                    rq.setAttribute("overviewform", of);
+
+                    // ***************** Statistics ******************
+
+                    final Long kid = ui.getKonto().getId();
+
+                    st.setKontoordersstat(b.countOrdersPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setLieferantstat(b.countLieferantPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setGratis_kosten(b.countGratisKostenpflichtigPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setSum_gratis_kosten(b.sumGratisKostenpflichtigPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setLieferartstat(b.countLieferartPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setMediatype(b.countMediatypePerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setFileformatstat(b.countFileformatPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setPrioritystat(b.countPriorityPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setZeitschriftstat(b.countISSNPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setTotuserwithordersstat(b.countRowsUID(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setJahrstat(b.countOrderYears(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setGenderstat(b.countGenderPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setInstitutionstat(b.countInstPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setAbteilungstat(b.countAbteilungPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setCategorystat(b.countCategoriesPerKonto(kid, of.getFromdate(), of.getTodate(),
+                            b.getConnection()));
+                    st.setOrtstat(b.countPLZPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+                    st.setLandstat(b.countLandPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
+
+                    rq.setAttribute("statistics", st);
+
+                    // Navigation: tab statistics
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("stats");
+                    rq.setAttribute("ActiveMenus", mf);
+
+                } else {
+                    final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                    m.setLink("searchfree.do");
+                    rq.setAttribute("errormessage", m);
                 }
 
-                of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
-
-                rq.setAttribute("overviewform", of);
-
-                // ***************** Statistics ******************
-
-                final Long kid = ui.getKonto().getId();
-
-                final Bestellungen b = new Bestellungen();
-
-                st.setKontoordersstat(b.countOrdersPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setLieferantstat(b.countLieferantPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setGratis_kosten(b.countGratisKostenpflichtigPerKonto(
-                        kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setSum_gratis_kosten(b.sumGratisKostenpflichtigPerKonto(
-                        kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setLieferartstat(b.countLieferartPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setMediatype(b.countMediatypePerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setFileformatstat(b.countFileformatPerKonto(
-                        kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setPrioritystat(b.countPriorityPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setZeitschriftstat(b.countISSNPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setTotuserwithordersstat(b.countRowsUID(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setJahrstat(b.countOrderYears(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setGenderstat(b.countGenderPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setInstitutionstat(b.countInstPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setAbteilungstat(b.countAbteilungPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setCategorystat(b.countCategoriesPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setOrtstat(b.countPLZPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-                st.setLandstat(b.countLandPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-
-                rq.setAttribute("statistics", st);
-
-                b.close();
-
-                // Navigation: tab statistics
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("stats");
-                rq.setAttribute("ActiveMenus", mf);
-
-
             } else {
-                final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                m.setLink("searchfree.do");
-                rq.setAttribute("errormessage", m);
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("login");
+                rq.setAttribute("ActiveMenus", mf);
+                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                rq.setAttribute("errormessage", em);
             }
 
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+        } finally {
+            b.close();
         }
+
         return mp.findForward(forward);
     }
 

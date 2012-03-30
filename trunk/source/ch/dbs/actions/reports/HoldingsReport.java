@@ -98,10 +98,14 @@ public final class HoldingsReport extends DispatchAction {
                         rp.flushBuffer();
 
                         // Use writer to render text
-                        final PrintWriter pw = rp.getWriter();
-                        pw.write(getCSVContent(ui.getKonto(), delimiter));
-                        pw.flush();
-                        pw.close();
+                        PrintWriter pw = null;
+                        try {
+                            pw = rp.getWriter();
+                            pw.write(getCSVContent(ui.getKonto(), delimiter));
+                            pw.flush();
+                        } finally {
+                            pw.close();
+                        }
                     } else { // Excel-Export
                         filename.append("xls");
                         contenttype = "application/vnd.ms-excel";
@@ -109,13 +113,16 @@ public final class HoldingsReport extends DispatchAction {
                         rp.setContentType(contenttype); // Set ContentType in the response for the Browser
                         rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
 
-                        final ServletOutputStream outputStream = rp.getOutputStream();
-
-                        // get WorkBook and write to output stream
-                        getXLSContent(ui.getKonto()).write(outputStream);
-                        // Flush the stream
-                        outputStream.flush();
-                        outputStream.close();
+                        ServletOutputStream outputStream = null;
+                        try {
+                            outputStream = rp.getOutputStream();
+                            // get WorkBook and write to output stream
+                            getXLSContent(ui.getKonto()).write(outputStream);
+                            // Flush the stream
+                            outputStream.flush();
+                        } finally {
+                            outputStream.close();
+                        }
 
                     }
 
@@ -148,14 +155,17 @@ public final class HoldingsReport extends DispatchAction {
         // get a StringBuffer with a header describing the content of the fields
         final StringBuffer buf = initCSV(delimiter);
 
-        // internal holdings are visible
-        final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
+        try {
+            // internal holdings are visible
+            final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
-        for (final Bestand b : stock) {
-            buf.append(getCSVLine(b, delimiter));
+            for (final Bestand b : stock) {
+                buf.append(getCSVLine(b, delimiter));
+            }
+
+        } finally {
+            cn.close();
         }
-
-        cn.close();
 
         return buf.toString();
     }
@@ -165,21 +175,24 @@ public final class HoldingsReport extends DispatchAction {
         final Workbook wb = new HSSFWorkbook();
         final Sheet s = wb.createSheet();
 
-        // add header for XLS
-        initXLS(wb, s);
+        try {
+            // add header for XLS
+            initXLS(wb, s);
 
-        // internal holdings are visible
-        final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
+            // internal holdings are visible
+            final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
-        short rownumber = 0;
+            short rownumber = 0;
 
-        for (final Bestand b : stock) {
-            rownumber++;
-            // add holdings
-            getXLSLine(wb, s, b, rownumber);
+            for (final Bestand b : stock) {
+                rownumber++;
+                // add holdings
+                getXLSLine(wb, s, b, rownumber);
+            }
+
+        } finally {
+            cn.close();
         }
-
-        cn.close();
 
         return (HSSFWorkbook) wb;
     }

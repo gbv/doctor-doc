@@ -40,8 +40,6 @@ import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
 
-
-
 /**
  * Class to show stock details. One does not need to be logged in,
  * in order to view the information card of a holding.
@@ -51,8 +49,8 @@ public class Stockdetails extends Action {
     /**
      * Presents all the details for a given holding/stock.
      */
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         String forward = "failure";
 
@@ -93,35 +91,39 @@ public class Stockdetails extends Action {
         // if we have an DID in the Konto, and the request is for a stock ID, we will
         // redirect to the defined order form (external / internal)
         if (k.getDid() != null && stid != null) {
-            final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
-            k.close();
 
-            // additional check if the request comes out of the IP range of the account
+            try {
+                final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
 
-            // get Konto from IP
-            final Auth auth = new Auth();
-            final Text t = auth.grantAccess(rq);
+                // additional check if the request comes out of the IP range of the account
 
-            // use IP based order form if applicable
-            if (useIP_BasedForm(k, t) && dp.isIp_overrides()) {
-                rq.setAttribute("ofjo", of);
-                forward = "redirectIP";
-                // redirect to order form defined in dp
-            } else {
-                // set linkout dependent on protocol
-                dp.setLinkout(dp, of);
-                rq.setAttribute("daiaparam", dp);
-                // redirect to linkout...
-                if (dp.isRedirect()) {
-                    // ...using POST method
-                    if (dp.isPost()) {
-                        rq.setAttribute("ofjo", of);
-                        forward = "redirectpost";
-                        // ...using GET method
-                    } else {
-                        forward = "redirect";
+                // get Konto from IP
+                final Auth auth = new Auth();
+                final Text t = auth.grantAccess(rq);
+
+                // use IP based order form if applicable
+                if (useIP_BasedForm(k, t) && dp.isIp_overrides()) {
+                    rq.setAttribute("ofjo", of);
+                    forward = "redirectIP";
+                    // redirect to order form defined in dp
+                } else {
+                    // set linkout dependent on protocol
+                    dp.setLinkout(dp, of);
+                    rq.setAttribute("daiaparam", dp);
+                    // redirect to linkout...
+                    if (dp.isRedirect()) {
+                        // ...using POST method
+                        if (dp.isPost()) {
+                            rq.setAttribute("ofjo", of);
+                            forward = "redirectpost";
+                            // ...using GET method
+                        } else {
+                            forward = "redirect";
+                        }
                     }
                 }
+            } finally {
+                k.close();
             }
         }
 
@@ -148,32 +150,39 @@ public class Stockdetails extends Action {
         final Text cn = new Text();
 
         // we need at least one parameter
-        if (kid == null && hoid == null && stid == null) { return holdings; }
-
-        // return holdings upon the most specific identifier, ignoring
-        // less specific identifiers. The order is: stid, hoid, kid
-        if (stid != null && !"".equals(stid)) {
-            // with a stockid, internal holdings have to be visible
-            bestand = new Bestand(Long.valueOf(stid), true, cn.getConnection());
-            // to avoid NullPointerException if internal of holding = true
-            if (bestand.getId() != null) { holdings.add(bestand); }
-        } else if (hoid != null && !"".equals(hoid)) {
-            // internal holdings are not visible
-            holdings = bestand.getAllBestandForHoid(Long.valueOf(hoid), false, cn.getConnection());
-        } else if (kid != null && !"".equals(kid)) {
-            // we only have a kid
-            holdings = bestand.getAllKontoBestand(Long.valueOf(kid), false, cn.getConnection());
+        if (kid == null && hoid == null && stid == null) {
+            return holdings;
         }
 
-        cn.close();
+        try {
+            // return holdings upon the most specific identifier, ignoring
+            // less specific identifiers. The order is: stid, hoid, kid
+            if (stid != null && !"".equals(stid)) {
+                // with a stockid, internal holdings have to be visible
+                bestand = new Bestand(Long.valueOf(stid), true, cn.getConnection());
+                // to avoid NullPointerException if internal of holding = true
+                if (bestand.getId() != null) {
+                    holdings.add(bestand);
+                }
+            } else if (hoid != null && !"".equals(hoid)) {
+                // internal holdings are not visible
+                holdings = bestand.getAllBestandForHoid(Long.valueOf(hoid), false, cn.getConnection());
+            } else if (kid != null && !"".equals(kid)) {
+                // we only have a kid
+                holdings = bestand.getAllKontoBestand(Long.valueOf(kid), false, cn.getConnection());
+            }
+
+        } finally {
+            cn.close();
+        }
+
         return holdings;
     }
 
     private boolean useIP_BasedForm(final Konto k, final Text t) {
         boolean result = false;
 
-        if (t.getKonto() != null
-                && k.getId().equals(t.getKonto().getId())) {
+        if (t.getKonto() != null && k.getId().equals(t.getKonto().getId())) {
             result = true;
         }
 

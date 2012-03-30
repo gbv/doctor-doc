@@ -202,28 +202,33 @@ public final class ILVReport extends DispatchAction {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final IlvReportForm ilvf = (IlvReportForm) fm;
                 final Lieferanten l = new Lieferanten();
-                ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
 
-                // default Subject & Mailtext
-                final Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()), ui
-                        .getKonto().getId());
-                final Text text = new Text(l.getConnection(), new Texttyp("ILV Mailtext", l.getConnection()), ui
-                        .getKonto().getId());
-                if (subject.getInhalt() != null) {
-                    ilvf.setSubject(subject.getInhalt());
+                try {
+
+                    ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
+
+                    // default Subject & Mailtext
+                    final Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()),
+                            ui.getKonto().getId());
+                    final Text text = new Text(l.getConnection(), new Texttyp("ILV Mailtext", l.getConnection()), ui
+                            .getKonto().getId());
+                    if (subject.getInhalt() != null) {
+                        ilvf.setSubject(subject.getInhalt());
+                    }
+                    if (text.getInhalt() != null) {
+                        ilvf.setMailtext(text.getInhalt());
+                    }
+
+                    rq.setAttribute("IlvReportForm", ilvf);
+                    // set ILL form number back into request
+                    rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
+                    // set ILL form number back into request
+                    rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
+                    forward = "preparemail";
+
+                } finally {
+                    l.close();
                 }
-                if (text.getInhalt() != null) {
-                    ilvf.setMailtext(text.getInhalt());
-                }
-
-                l.close();
-
-                rq.setAttribute("IlvReportForm", ilvf);
-                // set ILL form number back into request
-                rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-                // set ILL form number back into request
-                rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-                forward = "preparemail";
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");

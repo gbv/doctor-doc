@@ -31,8 +31,8 @@ public class Daia extends Action {
      * Interface to query holdings in D-D using OpenURL requests. The response
      * will be in DAIA/XML.
      */
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final OrderForm ofjo = (OrderForm) form;
 
@@ -48,7 +48,9 @@ public class Daia extends Action {
         // Parameters for indirect use in a metacatalogue (e.g. Vufind)
         final String daiaIP = rq.getParameter("ip"); // requesting IP transmitted in the URL
         boolean showInternal = false; // optional parameter, that will cause to show holdings that are marked as "internal"
-        if (rq.getParameter("in") != null && rq.getParameter("in").equals("1")) { showInternal = true; }
+        if (rq.getParameter("in") != null && rq.getParameter("in").equals("1")) {
+            showInternal = true;
+        }
 
         final Stock stock = new Stock();
         List<Bestand> bestaende = new ArrayList<Bestand>();
@@ -63,17 +65,20 @@ public class Daia extends Action {
                 bestaende = stock.checkGeneralStockAvailability(ofjo, false);
             } else { // IP based ckeck for a given account (Konto)
                 final Text cn = new Text();
-                // get Text with account (Konto)
-                final IPChecker ipck = new IPChecker();
-                final Text tip = ipck.contains(daiaIP, cn.getConnection());
+                try {
+                    // get Text with account (Konto)
+                    final IPChecker ipck = new IPChecker();
+                    final Text tip = ipck.contains(daiaIP, cn.getConnection());
 
-                // Only run the availability checks if we have an account (Konto)
-                if (tip.getKonto() != null && tip.getKonto().getId() != null) {
-                    bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());
-                } else {
-                    msgBestand = "Your location is unknown";
+                    // Only run the availability checks if we have an account (Konto)
+                    if (tip.getKonto() != null && tip.getKonto().getId() != null) {
+                        bestaende = stock.checkStockAvailabilityForIP(ofjo, tip, showInternal, cn.getConnection());
+                    } else {
+                        msgBestand = "Your location is unknown";
+                    }
+                } finally {
+                    cn.close();
                 }
-                cn.close();
             }
 
             // mostly requests coming from Vufind
@@ -84,7 +89,7 @@ public class Daia extends Action {
         final DaiaXMLResponse xml = new DaiaXMLResponse();
 
         if (!bestaende.isEmpty()) { // output for found holdings
-            output =  xml.listHoldings(bestaende, ofjo.getRfr_id());
+            output = xml.listHoldings(bestaende, ofjo.getRfr_id());
         } else { // output for no holdings
             output = xml.noHoldings(msgBestand, ofjo.getRfr_id());
         }
@@ -95,12 +100,16 @@ public class Daia extends Action {
             // set a max-age header (in seconds) to make it possible to cache the content
             rp.setHeader("Cache-Control", "max-age=86400");
             rp.flushBuffer();
-            final PrintWriter pw = rp.getWriter();
-            // use writer to render text
+            PrintWriter pw = null;
+            try {
+                pw = rp.getWriter();
+                // use writer to render text
 
-            pw.write(output);
-            pw.flush();
-            pw.close();
+                pw.write(output);
+                pw.flush();
+            } finally {
+                pw.close();
+            }
 
             return null;
 
@@ -118,8 +127,8 @@ public class Daia extends Action {
     private boolean isSearchable(final OrderForm ofjo) {
         boolean check = false;
 
-        if (ofjo.getIssn() != null && !"".equals(ofjo.getIssn())
-                || ofjo.getZeitschriftentitel() != null && !"".equals(ofjo.getZeitschriftentitel())) {
+        if (ofjo.getIssn() != null && !"".equals(ofjo.getIssn()) || ofjo.getZeitschriftentitel() != null
+                && !"".equals(ofjo.getZeitschriftentitel())) {
 
             check = true;
         }

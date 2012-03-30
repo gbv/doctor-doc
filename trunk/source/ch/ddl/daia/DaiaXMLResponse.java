@@ -39,10 +39,9 @@ public class DaiaXMLResponse {
     public String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
 
         String xml = "";
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
-
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
             final StreamResult streamResult = new StreamResult(out);
             final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
@@ -179,7 +178,6 @@ public class DaiaXMLResponse {
             hd.endDocument();
 
             xml = new String(out.toByteArray(), UTF8);
-            out.close();
 
         } catch (final IOException e) {
             LOG.error(e.toString());
@@ -187,6 +185,12 @@ public class DaiaXMLResponse {
             LOG.error(e.toString());
         } catch (final Exception e) {
             LOG.error(e.toString());
+        } finally {
+            try {
+                out.close();
+            } catch (final IOException e) {
+                LOG.error(e.toString());
+            }
         }
 
         return xml;
@@ -195,10 +199,9 @@ public class DaiaXMLResponse {
     public String noHoldings(final String msg, final String rfr_id) {
 
         String xml = "";
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
-
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
             final StreamResult streamResult = new StreamResult(out);
             final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
@@ -265,7 +268,6 @@ public class DaiaXMLResponse {
             hd.endDocument();
 
             xml = new String(out.toByteArray(), UTF8);
-            out.close();
 
         } catch (final IOException e) {
             LOG.error(e.toString());
@@ -273,6 +275,12 @@ public class DaiaXMLResponse {
             LOG.error(e.toString());
         } catch (final Exception e) {
             LOG.error(e.toString());
+        } finally {
+            try {
+                out.close();
+            } catch (final IOException e) {
+                LOG.error(e.toString());
+            }
         }
 
         return xml;
