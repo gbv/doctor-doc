@@ -56,10 +56,6 @@
 <tr><td id="border" colspan="2"><p /><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /></td></tr>
 </table>
 
-<logic:equal name="allowRegister" value="true">
-	<p><b><bean:message key="anmeldungtyp.register" /></b></p>
-</logic:equal>
-
 <tiles:insert page="import/footer.jsp" flush="true" />
 
 </div>
