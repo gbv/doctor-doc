@@ -109,7 +109,7 @@ public class DefaultPreis extends AbstractIdEntity {
             pstmt.executeUpdate();
 
         } catch (final Exception e) {
-            LOG.error("save(): " + e.toString() + "\012" + pstmt.toString());
+            LOG.error("save(): " + e.toString());
         } finally {
             try {
                 pstmt.close();
@@ -143,7 +143,7 @@ public class DefaultPreis extends AbstractIdEntity {
             pstmt.executeUpdate();
 
         } catch (final Exception e) {
-            LOG.error("update(): " + e.toString() + "\012" + pstmt.toString());
+            LOG.error("update(): " + e.toString());
         } finally {
             try {
                 pstmt.close();
