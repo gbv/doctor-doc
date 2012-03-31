@@ -1382,6 +1382,7 @@ public final class BestellformAction extends DispatchAction {
 
             } else {
                 // use CrossRef public resolver
+                LOG.warn("Resolving DOI failed, using OCoinS-Generator and DOI: " + doi);
                 of = resolveCrossRef(doi);
             }
 

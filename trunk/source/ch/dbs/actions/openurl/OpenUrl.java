@@ -1342,8 +1342,9 @@ public class OpenUrl {
                 if (xml.contains("<year")) {
                     of.setJahr(getXmlTag("<year", "</year>", xml));
                 }
+            } else {
+                LOG.warn("Resolving DOI failed, using CrossRef!");
             }
-
         }
 
         return of;
