@@ -1352,7 +1352,7 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * holt anhand einer Doi alle Artikelangaben
+     * gets the metadata from a DOI.
      */
     public OrderForm resolveDoi(final String doi) {
 
@@ -1380,11 +1380,33 @@ public final class BestellformAction extends DispatchAction {
                 final ContextObject co = openurl.readOpenUrlFromString(content);
                 of = openurlConv.makeOrderform(co);
 
+            } else {
+                // use CrossRef public resolver
+                of = resolveCrossRef(doi);
             }
 
         } catch (final Exception e) {
             LOG.error("resolveDoi: " + doi + "\040" + e.toString());
         }
+
+        return of;
+    }
+
+    /**
+     * uses the CrossRef public resolver to resolve a DOI in the rare cases of a book.
+     */
+    private OrderForm resolveCrossRef(final String doi) {
+
+        OrderForm of = null;
+        final OpenUrl openurl = new OpenUrl();
+        String content = "";
+
+        final Http http = new Http();
+        final String link = "http://www.crossref.org/guestquery?queryType=doi&restype=xsl_xml&doi=" + doi;
+
+        content = http.getWebcontent(link, TIMEOUT, 1);
+
+        of = openurl.readXMLCrossRef(content);
 
         return of;
     }

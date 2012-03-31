@@ -28,6 +28,7 @@ import org.grlea.log.SimpleLogger;
 import util.CodeUrl;
 import util.Decoder;
 import util.SpecialCharacters;
+import ch.dbs.form.OrderForm;
 
 public class OpenUrl {
 
@@ -462,7 +463,6 @@ public class OpenUrl {
                     continue;
                 }
 
-
                 // URI-Scheme
                 // http://www.info-uri.info/registry/
                 if ("rft_id".equals(key)) {
@@ -470,7 +470,9 @@ public class OpenUrl {
                     continue;
                 }
                 if ("pmid".equals(key)) {
-                    if (value.length() > 0) { uriSchemas.add("info:pmid/" + value); }
+                    if (value.length() > 0) {
+                        uriSchemas.add("info:pmid/" + value);
+                    }
                     continue;
                 }
                 if ("id".equals(key) && value.startsWith("doi:")) { // BIOONE und Inforama
@@ -480,15 +482,21 @@ public class OpenUrl {
                     continue;
                 }
                 if ("doi".equals(key)) {
-                    if (value.length() > 9) { uriSchemas.add("info:doi/" + value); }
+                    if (value.length() > 9) {
+                        uriSchemas.add("info:doi/" + value);
+                    }
                     continue;
                 }
                 if ("sici".equals(key)) {
-                    if (value.length() > 10) { uriSchemas.add("info:sici/" + value); }
+                    if (value.length() > 10) {
+                        uriSchemas.add("info:sici/" + value);
+                    }
                     continue;
                 }
                 if ("lccn".equals(key)) {
-                    if (value.length() > 0) { uriSchemas.add("info:lccn/" + value); }
+                    if (value.length() > 0) {
+                        uriSchemas.add("info:lccn/" + value);
+                    }
                     continue;
                 }
 
@@ -498,12 +506,12 @@ public class OpenUrl {
 
         }
 
-        if (!uriSchemas.isEmpty()) { co.setRft_id(uriSchemas); }
+        if (!uriSchemas.isEmpty()) {
+            co.setRft_id(uriSchemas);
+        }
 
         return co;
     }
-
-
 
     /**
      * Gets the contents of OpenURL from a web-site (e.g. OCoins / Worlcat etc.).
@@ -524,17 +532,17 @@ public class OpenUrl {
             // clashes with rtf.sici (contains <...>)!
             // Upper case
             if (openURL.contains("ver=Z39.88-2004")
-                    // In web-site...
+            // In web-site...
                     && openURL.substring(openURL.indexOf("ver=Z39.88-2004")).contains(">")) {
-                openURL = openURL.substring(openURL.indexOf("ver=Z39.88-2004"), openURL.indexOf('>', openURL
-                        .indexOf("ver=Z39.88-2004"))); // ...search for String with OpenUrl and extract
+                openURL = openURL.substring(openURL.indexOf("ver=Z39.88-2004"),
+                        openURL.indexOf('>', openURL.indexOf("ver=Z39.88-2004"))); // ...search for String with OpenUrl and extract
             }
             // Lower case
             if (openURL.contains("ver=z39.88-2004")
-                    // In web-site...
+            // In web-site...
                     && openURL.substring(openURL.indexOf("ver=z39.88-2004")).contains(">")) {
-                openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"), openURL.indexOf('>', openURL
-                        .indexOf("ver=z39.88-2004"))); // ...search for String with OpenUrl and extract
+                openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"),
+                        openURL.indexOf('>', openURL.indexOf("ver=z39.88-2004"))); // ...search for String with OpenUrl and extract
             }
 
             // OpenURL Version 1.0
@@ -699,7 +707,9 @@ public class OpenUrl {
                     openURL = openURL.substring(openURL.indexOf("rft_id=") + 6);
                 }
 
-                if (!id.isEmpty()) { co.setRft_id(id); }
+                if (!id.isEmpty()) {
+                    co.setRft_id(id);
+                }
 
             } else {
 
@@ -870,42 +880,58 @@ public class OpenUrl {
                 // http://www.info-uri.info/registry/
                 if (openURL.contains("pmid:")) {
                     final String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid:", openURL);
-                    if (reg.length() > 10) { id.add(reg); }
+                    if (reg.length() > 10) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("doi:")) {
                     final String reg = "info:doi/" + getOpenUrlIdentifiersVersion0_1("doi:", openURL);
-                    if (reg.length() > 9) { id.add(reg); }
+                    if (reg.length() > 9) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("sici:")) {
                     final String reg = "info:sici/" + getOpenUrlIdentifiersVersion0_1("sici:", openURL);
-                    if (reg.length() > 10) { id.add(reg); }
+                    if (reg.length() > 10) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("lccn:")) {
                     final String reg = "info:lccn/" + getOpenUrlIdentifiersVersion0_1("lccn:", openURL);
-                    if (reg.length() > 10) { id.add(reg); }
+                    if (reg.length() > 10) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("pmid=")) {
                     final String reg = "info:pmid/" + getOpenUrlIdentifiersVersion0_1("pmid=", openURL);
-                    if (reg.length() > 10) { id.add(reg); }
+                    if (reg.length() > 10) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("doi=")) {
                     final String reg = "info:doi/" + getOpenUrlIdentifiersVersion0_1("doi=", openURL);
-                    if (reg.length() > 9) { id.add(reg); }
+                    if (reg.length() > 9) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("sici=")) {
                     final String reg = "info:sici/" + getOpenUrlIdentifiersVersion0_1("sici=", openURL);
-                    if (reg.length() > 10) { id.add(reg); }
+                    if (reg.length() > 10) {
+                        id.add(reg);
+                    }
                 }
                 if (openURL.contains("lccn=")) {
                     final String reg = "info:lccn/" + getOpenUrlIdentifiersVersion0_1("lccn=", openURL);
-                    if (reg.length() > 10) { id.add(reg); }
+                    if (reg.length() > 10) {
+                        id.add(reg);
+                    }
                 }
 
-                if (!id.isEmpty()) { co.setRft_id(id); }
-
+                if (!id.isEmpty()) {
+                    co.setRft_id(id);
+                }
 
             }
-
 
         } catch (final Exception e) {
             LOG.error("readOpenUrl: " + "\012" + content);
@@ -1132,7 +1158,9 @@ public class OpenUrl {
 
         String output = openURL.toString();
 
-        if (output == null) { output = ""; }
+        if (output == null) {
+            output = "";
+        }
 
         // Strip a starting '&'
         if (output.charAt(0) == '&') {
@@ -1141,7 +1169,6 @@ public class OpenUrl {
 
         return output;
     }
-
 
     /**
      * Gets the contents from a Pubmed record in XML and creates aContextObject.
@@ -1228,14 +1255,108 @@ public class OpenUrl {
     }
 
     /**
+     * Reads the XML part of the HTML response from the CrossRef public resolver.
+     */
+    public OrderForm readXMLCrossRef(final String content) {
+
+        final OrderForm of = new OrderForm();
+
+        if (content != null && content.contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+                && content.contains("<crossref_result") && content.contains("</crossref_result>")) {
+
+            final String xml = content.substring(content.indexOf("<crossref_result"),
+                    content.indexOf("</crossref_result>") + 18);
+
+            if (xml.contains("<doi type=\"book_title\">")) {
+                of.setMediatype("Buch");
+                if (xml.contains("<doi type")) {
+                    of.setDoi(getXmlTag("<doi type", "</doi>", xml));
+                }
+                if (xml.contains("<isbn")) {
+                    of.setIsbn(getXmlTag("<isbn", "</isbn>", xml));
+                }
+                if (xml.contains("<volume_title>")) {
+                    of.setBuchtitel(getXmlTag("<volume_title>", "</volume_title>", xml));
+                }
+                if (xml.contains("<author>")) {
+                    of.setAuthor(getXmlTag("<author>", "</author>", xml));
+                }
+                if (xml.contains("<year")) {
+                    of.setJahr(getXmlTag("<year", "</year>", xml));
+                }
+            } else if (xml.contains("<doi type=\"book_content\">")) {
+                of.setMediatype("Teilkopie Buch");
+                if (xml.contains("<doi type")) {
+                    of.setDoi(getXmlTag("<doi type", "</doi>", xml));
+                }
+                if (xml.contains("<isbn")) {
+                    of.setIsbn(getXmlTag("<isbn", "</isbn>", xml));
+                }
+                if (xml.contains("<issn")) {
+                    of.setIssn(getXmlTag("<issn", "</issn>", xml));
+                }
+                if (xml.contains("<series_title>")) {
+                    of.setKapitel(getXmlTag("<series_title>", "</series_title>", xml));
+                }
+                if (xml.contains("<volume_title>")) {
+                    of.setBuchtitel(getXmlTag("<volume_title>", "</volume_title>", xml));
+                }
+                if (xml.contains("<author>")) {
+                    of.setAuthor(getXmlTag("<author>", "</author>", xml));
+                }
+                if (xml.contains("<volume>")) {
+                    of.setJahrgang(getXmlTag("<volume>", "</volume>", xml));
+                }
+                if (xml.contains("<component_number>")) {
+                    of.setHeft(getXmlTag("<component_number>", "</component_number>", xml));
+                }
+                if (xml.contains("<first_page>")) {
+                    of.setSeiten(getXmlTag("<first_page>", "</first_page>", xml));
+                }
+                if (xml.contains("<year")) {
+                    of.setJahr(getXmlTag("<year", "</year>", xml));
+                }
+            } else if (xml.contains("<doi type=\"journal_article\">")) {
+                of.setMediatype("Artikel");
+                if (xml.contains("<doi type")) {
+                    of.setDoi(getXmlTag("<doi type", "</doi>", xml));
+                }
+                if (xml.contains("<issn")) {
+                    of.setIssn(getXmlTag("<issn", "</issn>", xml));
+                }
+                if (xml.contains("<journal_title>")) {
+                    of.setZeitschriftentitel(getXmlTag("<journal_title>", "</journal_title>", xml));
+                }
+                if (xml.contains("<author>")) {
+                    of.setAuthor(getXmlTag("<author>", "</author>", xml));
+                }
+                if (xml.contains("<volume>")) {
+                    of.setJahrgang(getXmlTag("<volume>", "</volume>", xml));
+                }
+                if (xml.contains("<issue>")) {
+                    of.setHeft(getXmlTag("<issue>", "</issue>", xml));
+                }
+                if (xml.contains("<first_page>")) {
+                    of.setSeiten(getXmlTag("<first_page>", "</first_page>", xml));
+                }
+                if (xml.contains("<year")) {
+                    of.setJahr(getXmlTag("<year", "</year>", xml));
+                }
+            }
+
+        }
+
+        return of;
+    }
+
+    /**
      * Gets from a request all OpenURL parameters.
      */
     public ConcurrentHashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
 
         final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
 
-        final
-        Map<String, String[]> paramMap = rq.getParameterMap();
+        final Map<String, String[]> paramMap = rq.getParameterMap();
 
         for (final Map.Entry<String, String[]> pair : paramMap.entrySet()) {
 
@@ -1250,7 +1371,9 @@ public class OpenUrl {
                 final StringBuffer buf = new StringBuffer();
                 final int max = values.length;
                 for (int z = 0; z < max; z++) {
-                    if (z == 0) { buf.append(values[z]); } else {
+                    if (z == 0) {
+                        buf.append(values[z]);
+                    } else {
                         buf.append("\040;\040");
                         buf.append(values[z]);
                     }
@@ -1273,23 +1396,23 @@ public class OpenUrl {
 
         // Delimiter is the next &rft (referent), &rfe (referring rntity), &rfr (referrer)
         if (content.substring(content.indexOf(rft)).contains("&rf")) {
-            output = content.substring(content.indexOf(rft)
-                    + rft.length(), content.indexOf("&rf", content.indexOf(rft)));
+            output = content.substring(content.indexOf(rft) + rft.length(),
+                    content.indexOf("&rf", content.indexOf(rft)));
         } else {
             // Delimiter is the " at the end of an URL in HTML
             if (content.substring(content.indexOf(rft)).contains("\"")) {
-                output = content.substring(content.indexOf(rft)
-                        + rft.length(), content.indexOf('"', content.indexOf(rft)));
+                output = content.substring(content.indexOf(rft) + rft.length(),
+                        content.indexOf('"', content.indexOf(rft)));
             } else {
                 // Delimiter is space or new line
                 if (content.substring(content.indexOf(rft)).contains("\040")
                         || content.substring(content.indexOf(rft)).contains("\012")) {
                     if (content.substring(content.indexOf(rft)).contains("\040")) {
-                        output = content.substring(content.indexOf(rft)
-                                + rft.length(), content.indexOf('\040', content.indexOf(rft)));
+                        output = content.substring(content.indexOf(rft) + rft.length(),
+                                content.indexOf('\040', content.indexOf(rft)));
                     } else {
-                        output = content.substring(content.indexOf(rft)
-                                + rft.length(), content.indexOf('\012', content.indexOf(rft)));
+                        output = content.substring(content.indexOf(rft) + rft.length(),
+                                content.indexOf('\012', content.indexOf(rft)));
                     }
                 } else {
                     // no delimiter. String to the end
@@ -1313,23 +1436,23 @@ public class OpenUrl {
 
         // Delimiter is the next &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
-            output = content.substring(content.indexOf(rft)
-                    + rft.length(), content.indexOf("&", content.indexOf(rft) + 1));
+            output = content.substring(content.indexOf(rft) + rft.length(),
+                    content.indexOf("&", content.indexOf(rft) + 1));
         } else {
             // Delimiter is the " at the end of anURL in HTML
             if (content.substring(content.indexOf(rft)).contains("\"")) {
-                output = content.substring(content.indexOf(rft)
-                        + rft.length(), content.indexOf("\"", content.indexOf(rft)));
+                output = content.substring(content.indexOf(rft) + rft.length(),
+                        content.indexOf("\"", content.indexOf(rft)));
             } else {
                 // Delimiter is space or new line
                 if (content.substring(content.indexOf(rft)).contains("\040")
                         || content.substring(content.indexOf(rft)).contains("\012")) {
                     if (content.substring(content.indexOf(rft)).contains("\040")) {
-                        output = content.substring(content.indexOf(rft)
-                                + rft.length(), content.indexOf("\040", content.indexOf(rft)));
+                        output = content.substring(content.indexOf(rft) + rft.length(),
+                                content.indexOf("\040", content.indexOf(rft)));
                     } else {
-                        output = content.substring(content.indexOf(rft)
-                                + rft.length(), content.indexOf("\012", content.indexOf(rft)));
+                        output = content.substring(content.indexOf(rft) + rft.length(),
+                                content.indexOf("\012", content.indexOf(rft)));
                     }
                 } else {
                     // no delimiter. String to the end
@@ -1360,7 +1483,9 @@ public class OpenUrl {
 
         try {
 
-            if (decode(input)) { input = Decoder.utf8Convert(input); }
+            if (decode(input)) {
+                input = Decoder.utf8Convert(input);
+            }
 
         } catch (final Exception e) {
             LOG.error("private boolean decode (String input): " + e.toString());
@@ -1379,7 +1504,9 @@ public class OpenUrl {
 
         try {
 
-            if (input.length() > Decoder.utf8Convert(input).length()) { check = true; }
+            if (input.length() > Decoder.utf8Convert(input).length()) {
+                check = true;
+            }
 
         } catch (final Exception e) {
             LOG.error("private boolean decode (String input): " + e.toString());
@@ -1387,6 +1514,5 @@ public class OpenUrl {
 
         return check;
     }
-
 
 }
