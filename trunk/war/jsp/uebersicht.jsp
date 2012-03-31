@@ -304,16 +304,16 @@
    <logic:iterate id="b" name="overviewform" property="bestellungen">
      <tr>      
       <td id="border">
+      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
         <nobr>
         &nbsp;
         <logic:notEqual name="b" property="benutzer.name" value="anonymized"><a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="b" property="id" />">
           <img border="0" src="img/edit.png" alt="<bean:message key="uebersicht.modify" />" title="<bean:message key="uebersicht.modify" />"/></a>
         </logic:notEqual>
-        <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
        &nbsp;&nbsp;<a href="prepare-ilv-order-pdf-<bean:write name="userinfo" property="konto.ilvformnr" />.do?method=journalorderdetail&bid=<bean:write name="b" property="id" />"><img border="0" src="img/faxpiktogramm.png" title="<bean:message key="ilv-report.titleprepare" />" /></a>
-     </logic:notEqual>
      </nobr>      
         <br />
+     </logic:notEqual>
         <nobr>
         &nbsp;
         <a href="reorder.do?method=prepareReorder&bid=<bean:write name="b" property="id" />"><img border="0" src="img/reorder.png" alt="<bean:message key="uebersicht.reorder" />" title="<bean:message key="uebersicht.reorder" />"/></a>
@@ -345,9 +345,14 @@
               </logic:empty>
               <logic:notEmpty name="b" property="lieferant.emailILL">
               <!-- ILL email defined -->
-              	<span class="title" title="<a title='<bean:message key="supplier.edit" />' href='supplier.do?method=edit&sid=<bean:write name="b" property="lieferant.lid" />'> <img src='img/edit.png' alt='<bean:message key="supplier.edit" />' /></a>
-              		&nbsp;<bean:message key="impressum.contact" />|<a href='mailto:<bean:write name="b" property="lieferant.emailILL" />'><bean:write name="b" property="lieferant.emailILL" /></a>">
-              	<bean:write name="b" property="bestellquelle" />&nbsp;</span>              
+	              <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
+	              	<span class="title" title="<a title='<bean:message key="supplier.edit" />' href='supplier.do?method=edit&sid=<bean:write name="b" property="lieferant.lid" />'> <img src='img/edit.png' alt='<bean:message key="supplier.edit" />' /></a>
+	              		&nbsp;<bean:message key="impressum.contact" />|<a href='mailto:<bean:write name="b" property="lieferant.emailILL" />'><bean:write name="b" property="lieferant.emailILL" /></a>">
+	              	<bean:write name="b" property="bestellquelle" />&nbsp;</span>
+	              </logic:notEqual>
+	              <logic:equal name="userinfo" property="benutzer.rechte" value="1">
+	              	<bean:write name="b" property="bestellquelle" />&nbsp;
+	              </logic:equal>
               </logic:notEmpty>
             </logic:notEqual>
             <logic:equal name="b" property="bestellquelle" value="k.A.">
@@ -362,29 +367,36 @@
         </logic:notEmpty>
       </td>
       <td id="border">
-      <html:form action="changestat">
-      <nobr>
-        <select name="tid">
-       <bean:define id="var" name="b" property="statustext" type="java.lang.String"/>
-            <logic:present name="overviewform" property="statitexts">
-              <logic:iterate id="s" name="overviewform" property="statitexts">
-             <option value="<bean:write name="s" property="id" />" <logic:equal name="s" property="inhalt" value="<%=var%>">selected</logic:equal> ><logic:equal name="s" property="inhalt" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="s" property="inhalt" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="s" property="inhalt" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="s" property="inhalt" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="s" property="inhalt" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal><logic:equal name="s" property="inhalt" value="zu bestellen"><bean:message key="menu.toOrder" /></logic:equal></option>    
-             </logic:iterate>
-      </logic:present>
-    </select>  
-    <input type="image" src="img/change.png" alt="<bean:message key="uebersicht.change_state" />" title="<bean:message key="uebersicht.change_state" />"></nobr>
-    <input type="hidden" name="bid" value="<bean:write name="b" property="id" />" />
-    <input type="hidden" name="method" value="changestat" />
-    <input type="hidden" name="yfrom" value="<bean:write name="overviewform" property="yfrom" />" />
-    <input type="hidden" name="mfrom" value="<bean:write name="overviewform" property="mfrom" />" />
-    <input type="hidden" name="dfrom" value="<bean:write name="overviewform" property="dfrom" />" />
-    <input type="hidden" name="yto" value="<bean:write name="overviewform" property="yto" />" />
-    <input type="hidden" name="mto" value="<bean:write name="overviewform" property="mto" />" />
-    <input type="hidden" name="dto" value="<bean:write name="overviewform" property="dto" />" />
-    <logic:present name="overviewform" property="sort"><input type="hidden" name="sort" value="<bean:write name="overviewform" property="sort" />" /></logic:present>
-    <logic:present name="overviewform" property="sortorder"><input type="hidden" name="sortorder" value="<bean:write name="overviewform" property="sortorder" />" /></logic:present>
-    <logic:present name="overviewform" property="filter"><input type="hidden" name="filter" value="<bean:write name="overviewform" property="filter" />" /></logic:present>
-    </html:form>
+      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
+      <!-- editable state section -->
+	      <html:form action="changestat">
+	      <nobr>
+	        <select name="tid">
+	       <bean:define id="var" name="b" property="statustext" type="java.lang.String"/>
+	            <logic:present name="overviewform" property="statitexts">
+	              <logic:iterate id="s" name="overviewform" property="statitexts">
+	             <option value="<bean:write name="s" property="id" />" <logic:equal name="s" property="inhalt" value="<%=var%>">selected</logic:equal> ><logic:equal name="s" property="inhalt" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="s" property="inhalt" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="s" property="inhalt" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="s" property="inhalt" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="s" property="inhalt" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal><logic:equal name="s" property="inhalt" value="zu bestellen"><bean:message key="menu.toOrder" /></logic:equal></option>    
+	             </logic:iterate>
+	      </logic:present>
+	    </select>
+	    <input type="image" src="img/change.png" alt="<bean:message key="uebersicht.change_state" />" title="<bean:message key="uebersicht.change_state" />"></nobr>
+	    <input type="hidden" name="bid" value="<bean:write name="b" property="id" />" />
+	    <input type="hidden" name="method" value="changestat" />
+	    <input type="hidden" name="yfrom" value="<bean:write name="overviewform" property="yfrom" />" />
+	    <input type="hidden" name="mfrom" value="<bean:write name="overviewform" property="mfrom" />" />
+	    <input type="hidden" name="dfrom" value="<bean:write name="overviewform" property="dfrom" />" />
+	    <input type="hidden" name="yto" value="<bean:write name="overviewform" property="yto" />" />
+	    <input type="hidden" name="mto" value="<bean:write name="overviewform" property="mto" />" />
+	    <input type="hidden" name="dto" value="<bean:write name="overviewform" property="dto" />" />
+	    <logic:present name="overviewform" property="sort"><input type="hidden" name="sort" value="<bean:write name="overviewform" property="sort" />" /></logic:present>
+	    <logic:present name="overviewform" property="sortorder"><input type="hidden" name="sortorder" value="<bean:write name="overviewform" property="sortorder" />" /></logic:present>
+	    <logic:present name="overviewform" property="filter"><input type="hidden" name="filter" value="<bean:write name="overviewform" property="filter" />" /></logic:present>
+	    </html:form>
+    </logic:notEqual>
+    <logic:equal name="userinfo" property="benutzer.rechte" value="1">
+    	<!-- non editable state section -->
+    	<nobr><logic:equal name="b" property="statustext" value="bestellt"><bean:message key="menu.ordered" /></logic:equal><logic:equal name="b" property="statustext" value="erledigt"><bean:message key="menu.closed" /></logic:equal><logic:equal name="b" property="statustext" value="geliefert"><bean:message key="menu.shipped" /></logic:equal><logic:equal name="b" property="statustext" value="nicht lieferbar"><bean:message key="menu.unfilled" /></logic:equal><logic:equal name="b" property="statustext" value="reklamiert"><bean:message key="menu.claimed" /></logic:equal><logic:equal name="b" property="statustext" value="zu bestellen"><bean:message key="menu.toOrder" /></logic:equal></nobr>
+    </logic:equal>
     </td>
     <td id="border"><bean:write name="b" property="statusdate" />&nbsp;</td>
       <td id="border"><bean:write name="b" property="deloptions" />&nbsp;</td>
