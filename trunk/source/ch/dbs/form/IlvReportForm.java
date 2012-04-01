@@ -43,6 +43,7 @@ public final class IlvReportForm extends ActionForm {
     private String notesfromrequestinglibrary = ""; // <bean:write name="IlvReportForm" property="notesfromrequestinglibrary" />
     private String post = ""; // <bean:write name="IlvReportForm" property="post" />
     private Long lid = Long.valueOf("0");
+    private Long bid = Long.valueOf("0");
 
     // E-Mail fields
     private String to = ""; // <bean:write name="IlvReportForm" property="subject" /> 
@@ -222,6 +223,14 @@ public final class IlvReportForm extends ActionForm {
 
     public void setLid(final Long lid) {
         this.lid = lid;
+    }
+
+    public Long getBid() {
+        return bid;
+    }
+
+    public void setBid(final Long bid) {
+        this.bid = bid;
     }
 
     public String getReporttitle() {

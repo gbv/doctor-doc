@@ -154,7 +154,7 @@ public final class ILVReport extends DispatchAction {
 
                 // prepare output stream
                 rp.setContentType("application/pdf");
-                rp.setHeader("Content-Disposition", "attachment;filename=ilv.pdf");
+                rp.setHeader("Content-Disposition", "attachment;filename=" + composeFilename(ilvf, ui));
                 // run report, depending on ILL form number
                 try {
                     out = rp.getOutputStream();
@@ -274,7 +274,6 @@ public final class ILVReport extends DispatchAction {
                     final InternetAddress to[] = new InternetAddress[2];
                     to[0] = new InternetAddress(ilvf.getTo());
                     to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
-                    final String fileAttachment = "ilv.pdf";
                     final MHelper mh = new MHelper();
                     final Session session = Session.getDefaultInstance(mh.getProperties());
 
@@ -296,7 +295,7 @@ public final class ILVReport extends DispatchAction {
                     // Part two is attachment
                     messageBodyPart = new MimeBodyPart();
                     messageBodyPart.setDataHandler(new DataHandler(aAttachment));
-                    messageBodyPart.setFileName(fileAttachment);
+                    messageBodyPart.setFileName(composeFilename(ilvf, ui));
                     multipart.addBodyPart(messageBodyPart);
 
                     // Put parts in message
@@ -544,6 +543,47 @@ public final class ILVReport extends DispatchAction {
         }
 
         return number;
+    }
+
+    private String composeFilename(final IlvReportForm ilvf, final UserInfo ui) {
+        final StringBuffer result = new StringBuffer(27);
+
+        // create filename
+        result.append("ilv-");
+
+        // if we have an ISIL use it...
+        if (ui.getKonto().getIsil() != null && !"".equals(ui.getKonto().getIsil())) {
+            result.append(removeUnwantedCharacters(ui.getKonto().getIsil()));
+        } else {
+            // ...if there is no ISIL, use D-D account ID.
+            result.append('K');
+            result.append(ui.getKonto().getId());
+        }
+
+        result.append("-B");
+        result.append(ilvf.getBid());
+        result.append(".pdf");
+
+        return result.toString();
+    }
+
+    /**
+     * Removes all non alphanumeric characters in an ISIL by '-'.
+     */
+    private String removeUnwantedCharacters(final String isil) {
+
+        final StringBuilder result = new StringBuilder(isil.length());
+
+        for (int i = 0; i < isil.length(); i++) {
+
+            if (org.apache.commons.lang.StringUtils.isAlphanumeric(isil.substring(i, i + 1))) {
+                result.append(isil.charAt(i));
+            } else {
+                result.append('-');
+            }
+        }
+
+        return result.toString();
     }
 
     private String composeMailBody(final UserInfo ui, final IlvReportForm ilvf) {
