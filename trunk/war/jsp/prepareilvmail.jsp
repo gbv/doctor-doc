@@ -54,8 +54,8 @@
 
   <input type="hidden" name="method" value="sendIlvMail" />
   
-  <input type="hidden" name="bid" value="<bean:message key="ilv-report.bid" />" />
   <input type="hidden" name="title" value="<bean:message key="ilv-report.title" />" />
+  <input type="hidden" name="bid" value="<bean:write name="IlvReportForm" property="bid" />" />
   <input type="hidden" name="lieferant" value="<bean:write name="IlvReportForm" property="lieferant" />" />  
   <input type="hidden" name="signatur" value="<bean:write name="IlvReportForm" property="signatur" />" />
   <input type="hidden" name="journaltitel" value="<bean:write name="IlvReportForm" property="journaltitel" />" />  
