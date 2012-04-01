@@ -117,9 +117,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.saveChanges();
 
             // Mail versenden
-            Transport bus = null;
+            final Transport bus = session.getTransport("smtp");
             try {
-                bus = session.getTransport("smtp");
                 bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
                 bus.sendMessage(m, addressTo); // An diese Adressen senden
             } finally {
@@ -468,9 +467,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
     public void sendMessage(final Session session, final Message m, final InternetAddress[] addressTo)
             throws MessagingException {
         // Mail versenden
-        Transport bus = null;
+        final Transport bus = session.getTransport("smtp");
         try {
-            bus = session.getTransport("smtp");
             bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
             bus.sendMessage(m, addressTo); // An diese Adressen senden
         } finally {
