@@ -549,7 +549,7 @@ public final class ILVReport extends DispatchAction {
         final StringBuffer result = new StringBuffer(27);
 
         // create filename
-        result.append("ilv-");
+        result.append("ILL-");
 
         // if we have an ISIL use it...
         if (ui.getKonto().getIsil() != null && !"".equals(ui.getKonto().getIsil())) {
