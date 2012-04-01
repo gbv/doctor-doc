@@ -35,8 +35,8 @@ a:visited {
 }
 
 table {
+  border-collapse: collapse;
   border-width: 1px;
-  border-spacing: 0px;
   border-color: #404040;
   valign: top;
 }
@@ -66,8 +66,8 @@ td.availability {
 }
 
 table.border {
-  border-spacing: 0px;
-  border-collapse: separate;
+  border-collapse: collapse;
+  border-width: 1px;
   margin-top: 0;
   margin-bottom: 0;
   text-indent: 0;
@@ -77,27 +77,27 @@ table.border {
 
 #th-left {
   text-align: left;
+  border-collapse: collapse;
   border-width: 1px;
-  border-spacing: 0px;
   border-color: #404040;
-  border-style: outset;
+  border-style: solid;
   padding: 1px;
 }
 
 #th-center {
   text-align: center;
+  border-collapse: collapse;
   border-width: 1px;
-  border-spacing: 0px;
   border-color: #404040;
-  border-style: outset;
+  border-style: solid;
   padding: 1px;
 }
 
 #border {
+  border-collapse: collapse;
   border-width: 1px;
-  border-spacing: 0px;
   border-color: #404040;
-  border-style: outset;
+  border-style: solid;
   padding: 1px;
 }
 
