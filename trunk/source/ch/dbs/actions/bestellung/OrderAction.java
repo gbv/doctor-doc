@@ -966,7 +966,7 @@ public final class OrderAction extends DispatchAction {
                     if (carelitanswer != null
                             && carelitanswer.contains("<span id=\"drdoc\" style=\"display:block\">1</span>")) {
                         // there is a fulltext available in Carelit
-                        pageForm.setCarelit(true); // Anzeige für den Moment unterdrückt...
+                        pageForm.setCarelit(true);
                         forward = "freeezb";
                     }
                 }
