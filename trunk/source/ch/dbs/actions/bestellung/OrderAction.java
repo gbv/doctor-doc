@@ -965,7 +965,7 @@ public final class OrderAction extends DispatchAction {
                     final String carelitanswer = getBackThreadedWebcontent(carelitcontent, 1, "Carelit");
                     if (carelitanswer != null
                             && carelitanswer.contains("<span id=\"drdoc\" style=\"display:block\">1</span>")) {
-                        System.out.println("Es gibt Volltexte bei Carelit!");
+                        // there is a fulltext available in Carelit
                         pageForm.setCarelit(true); // Anzeige für den Moment unterdrückt...
                         forward = "freeezb";
                     }

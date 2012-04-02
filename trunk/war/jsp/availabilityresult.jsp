@@ -385,15 +385,9 @@ h += 96;
 		</th>
 	</tr>
 	<tr>
-		  <td id="border">
-			<table>
-			  <tr>
-			    <td id="border">
-			      <a href="http://217.91.37.16/LISK_VOLLTEXT/index.asp?sid=DRDOC:doctor-doc&<bean:write name="orderform" property="link" />" target="_blank">Download</a>
-			    </td>
-			  </tr>
-			</table>
-		  </td>
+		<td id="border">
+			<a href="http://217.91.37.16/LISK_VOLLTEXT/index.asp?sid=DRDOC:doctor-doc&<bean:write name="orderform" property="link" />" target="_blank">Download</a>
+		</td>
 	</tr>
 </table>
 </logic:equal>
