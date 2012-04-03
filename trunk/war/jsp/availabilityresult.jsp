@@ -55,7 +55,7 @@ h += 96;
 
 <h3><bean:message key="availresult.intern" /></h3>
 
-<table class="border">
+<table style="border-style: solid;" cellspacing="1" cellpadding="4">
 	<tr>
 		<th id="th-left" colspan="7">
 			<logic:present name="userinfo" property="benutzer">
@@ -83,12 +83,16 @@ h += 96;
 <logic:notEmpty name="ezb" property="online">
 	<logic:iterate id="ref" name="ezb" property="online">
 		<tr>
-			<td class="availability">
-				<logic:equal name="ref" property="ampel" value="green"><img src='img/green.gif' alt="<bean:message key="availresult.img_alt_green" />" title="<bean:message key="availresult.img_alt_green" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_yellow" />" title="<bean:message key="availresult.img_alt_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_red" />" title="<bean:message key="availresult.img_alt_red" />" height="20" width="42" border="0" /></logic:equal>
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<logic:equal name="ref" property="ampel" value="green"><img src='img/green.gif' alt="<bean:message key="availresult.img_alt_green" />" title="<bean:message key="availresult.img_alt_green" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_yellow" />" title="<bean:message key="availresult.img_alt_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_red" />" title="<bean:message key="availresult.img_alt_red" />" height="20" width="42" border="0" /></logic:equal>
+				</span>
 			</td>
-			<td class="availability">
-				<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
-				<bean:message key="<%=result%>" />
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
+					<bean:message key="<%=result%>" />
+				</span>
 			</td>
 			<td colspan="5">
 				<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
@@ -100,29 +104,41 @@ h += 96;
 <logic:notEmpty name="ezb" property="print">
 	<logic:iterate id="ref" name="ezb" property="print">
 		<tr>
-			<td class="availability">
-				<logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal>
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<logic:equal name="ref" property="ampel" value="yellow"><img src='img/yellow.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal><logic:equal name="ref" property="ampel" value="red"><img src='img/red.gif' alt="<bean:message key="availresult.img_alt_p_yellow" />" title="<bean:message key="availresult.img_alt_p_yellow" />" height="20" width="42" border="0" /></logic:equal>
+				</span>
 			</td>
-			<td class="availability">
-				<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
-				<bean:message key="<%=result%>" />
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
+					<bean:message key="<%=result%>" />
+				</span>
 			</td>
-			<td class="availability">
-				<logic:notEmpty name="ref" property="info">
-					<bean:define id="label" name="ref" property="info.label" type="java.lang.String"/>
-					<a href="<bean:write name="ref" property="info.url"/>" target="popup" onclick="wopen('<bean:write name="ref" property="info.url"/>', 'popup', 1040, 880); return false;"><bean:message key="<%=label%>" /></a>
-				</logic:notEmpty>
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<logic:notEmpty name="ref" property="info">
+						<bean:define id="label" name="ref" property="info.label" type="java.lang.String"/>
+						<a href="<bean:write name="ref" property="info.url"/>" target="popup" onclick="wopen('<bean:write name="ref" property="info.url"/>', 'popup', 1040, 880); return false;"><bean:message key="<%=label%>" /></a>
+					</logic:notEmpty>
+				</span>
 			</td>
-			<td class="availability">
-				<logic:notEmpty name="ref" property="coverage">
-					(<bean:write name="ref" property="coverage"/>)
-				</logic:notEmpty>
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<logic:notEmpty name="ref" property="coverage">
+						(<bean:write name="ref" property="coverage"/>)
+					</logic:notEmpty>
+				</span>
 			</td>
-			<td class="availability">
-				<bean:write name="ref" property="location"/>
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<bean:write name="ref" property="location"/>
+				</span>
 			</td>
-			<td class="availability">
-				<bean:write name="ref" property="callnr"/>
+			<td style="width:10px;" nowrap="nowrap">
+				<span style="white-space: nowrap">
+					<bean:write name="ref" property="callnr"/>
+				</span>
 			</td>
 			<td>
 			</td>
