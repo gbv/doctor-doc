@@ -840,8 +840,8 @@ public final class OrderAction extends DispatchAction {
                 }
 
                 // use link to services from ZDB/EZB
-                // http://services.d-nb.de/fize-service/gvr/html-service.htm?
-                final StringBuffer linkEZB = new StringBuffer("http://services.d-nb.de/fize-service/gvr/full.xml?");
+                // http://services.dnb.de/fize-service/gvr/html-service.htm?
+                final StringBuffer linkEZB = new StringBuffer("http://services.dnb.de/fize-service/gvr/full.xml?");
                 linkEZB.append(openurl);
                 if (bibid != null) {
                     // use bibid from account

@@ -52,7 +52,7 @@ public class EZBJOP {
 
     /**
      * This class uses the official EZB/ZDB API from
-     * http://services.d-nb.de/fize-service/gvr/full.xml.
+     * http://services.dnb.de/fize-service/gvr/full.xml.
      */
     public EZBForm read(final String content) {
 

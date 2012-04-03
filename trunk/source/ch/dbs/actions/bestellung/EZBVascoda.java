@@ -51,7 +51,7 @@ public class EZBVascoda {
     /**
      * This class uses the EZB API from
      * http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml. This
-     * API differs from the EZB/ZDB API (http://services.d-nb.de). It brings
+     * API differs from the EZB/ZDB API (http://services.dnb.de). It brings
      * back no print information and other information for electronic holdings.
      * It seems to be more stable.
      */
