@@ -504,7 +504,8 @@
    </logic:iterate>
 </logic:present>
 
-</table> 
+</table>
+<p></p>
 </div>
  </body>
 </html>

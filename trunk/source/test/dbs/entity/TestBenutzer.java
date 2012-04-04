@@ -17,7 +17,6 @@
 
 package test.dbs.entity;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -38,12 +37,12 @@ import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 
-public class TestBenutzer extends TestCase{
+public class TestBenutzer extends TestCase {
 
     private static final String anrede = "Testanrede";
     private static final String vorname = "Testvorname";
-    private static final String name= "Testname";
-    private static final String email= "Test@mail.ch";
+    private static final String name = "Testname";
+    private static final String email = "Test@mail.ch";
     private static final String telefonnrg = "1234567";
     private static final String telefonnrp = "1234568";
     private static final String institut = "Testinstitut";
@@ -68,9 +67,6 @@ public class TestBenutzer extends TestCase{
     private static final String gtcdate = "01.01.2009";
     private static final Date lastuse = new Date();
     private static final String datum = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(lastuse);
-
-
-
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -105,6 +101,7 @@ public class TestBenutzer extends TestCase{
         u.saveNewUser(u, tz, u.getSingleConnection());
         u.close();
     }
+
     @Test
     public void testLoadBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
@@ -113,32 +110,32 @@ public class TestBenutzer extends TestCase{
         b = b.getUserFromEmail(email, cn);
         cn.close();
         assertEquals(b.getAnrede(), anrede);
-        assertEquals(b.getVorname(),vorname);
-        assertEquals(b.getName(),name);
-        assertEquals(b.getEmail(),email);
-        assertEquals(b.getTelefonnrg(),telefonnrg);
-        assertEquals(b.getTelefonnrp(),telefonnrp);
-        assertEquals(b.getInstitut(),institut);
-        assertEquals(b.getAbteilung(),abteilung);
-        assertEquals(b.getCategory(),category);
-        assertEquals(b.getAdresse(),adresse);
-        assertEquals(b.getAdresszusatz(),adresszusatz);
-        assertEquals(b.getPlz(),plz);
-        assertEquals(b.getOrt(),ort);
-        assertEquals(b.getLand(),land);
-        assertEquals(b.getPassword(),password);
+        assertEquals(b.getVorname(), vorname);
+        assertEquals(b.getName(), name);
+        assertEquals(b.getEmail(), email);
+        assertEquals(b.getTelefonnrg(), telefonnrg);
+        assertEquals(b.getTelefonnrp(), telefonnrp);
+        assertEquals(b.getInstitut(), institut);
+        assertEquals(b.getAbteilung(), abteilung);
+        assertEquals(b.getCategory(), category);
+        assertEquals(b.getAdresse(), adresse);
+        assertEquals(b.getAdresszusatz(), adresszusatz);
+        assertEquals(b.getPlz(), plz);
+        assertEquals(b.getOrt(), ort);
+        assertEquals(b.getLand(), land);
+        assertEquals(b.getPassword(), password);
         assertEquals(b.getDatum(), datum);
-        assertEquals(b.getGtc(),gtc);
+        assertEquals(b.getGtc(), gtc);
         assertFalse(b.isLoginopt());
         assertFalse(b.isUserbestellung());
         assertFalse(b.isGbvbestellung());
         assertFalse(b.isKontostatus());
         assertFalse(b.isKontovalidation());
-        assertEquals(b.getRechte(),rechte);
-        assertEquals(b.getBilling(),billing);
+        assertEquals(b.getRechte(), rechte);
+        assertEquals(b.getBilling(), billing);
         assertFalse(b.getGtcdate().equals(gtcdate));
-        System.out.println("b: "+ b.getLastuse()+" lastuse: "+ lastuse);
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(b.getLastuse()),datum);
+        System.out.println("b: " + b.getLastuse() + " lastuse: " + lastuse);
+        assertEquals(new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(b.getLastuse()), datum);
 
     }
 
@@ -149,13 +146,13 @@ public class TestBenutzer extends TestCase{
         final Konto tz = new Konto(); // we need this for setting a default timezone
         final Connection cn = b.getSingleConnection();
         b = b.getUserFromEmail(email, cn);
-        b.setName(name+"1");
+        b.setName(name + "1");
         b.setVorname(vorname + "1");
         b.updateUser(b, tz, cn);
         b = b.getUserFromEmail(email, cn);
         cn.close();
-        assertEquals(b.getVorname(),vorname+"1");
-        assertEquals(b.getName(),name+"1");
+        assertEquals(b.getVorname(), vorname + "1");
+        assertEquals(b.getName(), name + "1");
     }
 
     @Test
@@ -185,8 +182,8 @@ public class TestBenutzer extends TestCase{
         u.saveNewUser(u, tz, u.getSingleConnection());
         u.saveNewUser(u, tz, u.getSingleConnection());
 
-        final List <AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getSingleConnection());
-        assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!",2, abl.size());
+        final List<AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getSingleConnection());
+        assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!", 2, abl.size());
 
         u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
         u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
@@ -230,9 +227,9 @@ public class TestBenutzer extends TestCase{
         //        if (rechte == 2) {
         //            u = new Bibliothekar();
         //        }
-        if (rechte == 1) {
-            u = new Benutzer();
-        }
+        //        if (rechte == 1) {
+        u = new Benutzer();
+        //        }
         if (u != null) {
             u.setInstitut(institut);
             u.setAbteilung(abteilung);
@@ -263,7 +260,6 @@ public class TestBenutzer extends TestCase{
             u.setDatum(datum);
             u.setLastuse(lastuse);
         }
-
 
         return u;
 
