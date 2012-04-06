@@ -59,7 +59,7 @@
   </tr>
   <tr>
     <td>OpenOffice:</td>
-    <td><a href="export-holdings.do?filetype=txt" target="_blank">CSV</a></td>
+    <td><a href="export-holdings.do?filetype=csv" target="_blank">CSV</a></td>
     <td>&nbsp;(<bean:message key="stockexport.no.excel" />)</td>
   </tr>
   <tr>
