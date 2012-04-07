@@ -1271,41 +1271,6 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * Bereitet den Redirect mit SessionID für die British Library vor. Notwendig für Suche in Subsets (z.B. nur
-     * Journals)
-     */
-    public ActionForward redirect(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
-            final HttpServletResponse rp) {
-
-        String forward = FAILURE;
-
-        try {
-            forward = SUCCESS;
-            final OrderForm pageForm = (OrderForm) fm;
-            String link = "";
-
-            final String sessionid = getSessionIdBl();
-
-            if (!"".equals(sessionid)) { // erlaubt Suche in Subset Journals
-                link = "http://catalogue.bl.uk/F/" + sessionid + "?func=find-b&request=" + pageForm.getIssn()
-                        + "&find_code=ISSN&adjacent=Y&image.x=41&image.y=13";
-            } else { // Suche durch alles, auch einzelne Artikel etc.
-                link = "http://catalogue.bl.uk/F/?func=find-b&request=" + pageForm.getIssn()
-                        + "&find_code=ISSN&adjacent=Y&image.x=37&image.y=9";
-            }
-
-            pageForm.setLink(link);
-
-            rq.setAttribute("orderform", pageForm);
-
-        } catch (final Exception e) {
-            LOG.error("redirect: " + e.toString());
-        }
-
-        return mp.findForward(forward);
-    }
-
-    /**
      * Extrahiert aus einem String die DOI
      */
     public String extractDoi(String doi) {
@@ -1719,54 +1684,6 @@ public final class BestellformAction extends DispatchAction {
         }
 
         return extractedEmail;
-    }
-
-    /**
-     * holt anhand eine SessionID der British Library
-     */
-    private String getSessionIdBl() {
-
-        // reduziert die Treffer z.B. bei Long-term Dietary Cadmium Intake and Postmenopausal Endometrial Cancer
-        // Incidence
-        // von 47 bei Suche ohne Sessionid auf die relevanten 2
-
-        String sessionid = "";
-        final Http http = new Http();
-        String link = "http://catalogue.bl.uk/F/?func=file&file_name=find-b";
-
-        try {
-
-            String content = http.getWebcontent(link, TIMEOUT, RETRYS);
-
-            if (content.contains("title=\"Catalogue subset search\"")) {
-
-                link = content.substring(
-                        content.lastIndexOf("http://", content.indexOf("title=\"Catalogue subset search\"")),
-                        content.lastIndexOf('"', content.indexOf("title=\"Catalogue subset search\"")));
-                content = http.getWebcontent(link, TIMEOUT, RETRYS);
-
-                if (content.contains("Serials and periodicals")) {
-
-                    link = content.substring(
-                            content.lastIndexOf("http://", content.indexOf("Serials and periodicals")),
-                            content.lastIndexOf('"', content.indexOf("Serials and periodicals")));
-                    content = http.getWebcontent(link, TIMEOUT, RETRYS);
-
-                    if (content.contains("action=\"http://catalogue.bl.uk:80/F/")) {
-
-                        sessionid = content.substring(content.indexOf("action=\"http://catalogue.bl.uk:80/F/") + 36,
-                                content.indexOf("\"", content.indexOf("action=\"") + 8));
-
-                    }
-                }
-
-            }
-
-        } catch (final Exception e) {
-            LOG.error("getSessionIdBl: " + e.toString());
-        }
-
-        return sessionid;
     }
 
     /**

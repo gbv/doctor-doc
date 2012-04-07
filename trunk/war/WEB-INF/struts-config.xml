@@ -384,19 +384,6 @@
 		</action>
 
 		<!--
-			*************************************************Session-ID British Library*************************************************
-		-->
-
-		<action path="/sessionbritishlibrary" name="OrderForm"
-			validate="false" parameter="method" scope="request"
-			type="ch.dbs.actions.bestellung.BestellformAction">
-			<forward name="success" path="/jsp/redirectbl.jsp" />
-			<forward name="failure" path="/error.do" />
-		</action>
-
-
-
-		<!--
 			*************************************************Bestellformular für Kunden*************************************************
 		-->
 
