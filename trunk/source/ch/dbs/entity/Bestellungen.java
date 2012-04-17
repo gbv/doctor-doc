@@ -87,6 +87,8 @@ public class Bestellungen extends AbstractIdEntity {
     private String verlag = ""; // Buchverlag
     private String kapitel = "";
     private String buchtitel = "";
+    
+    private String signatur = "";
 
     public Bestellungen() {
 
@@ -354,8 +356,8 @@ public class Bestellungen extends AbstractIdEntity {
                     + "`biblionr` , `bibliothek` , `autor` , `artikeltitel` , `jahrgang` , `zeitschrift` , `jahr` , "
                     + "`subitonr` , `gbvnr` , `trackingnr` , `internenr` , `systembemerkung` , `notizen` , "
                     + "`kaufpreis` , `waehrung` , `doi` , `pmid` , `isbn` , `mediatype` , `verlag` , `buchkapitel` , "
-                    + "`buchtitel` , `orderdate` , `statedate` , `state`, `bestellquelle`) VALUES (?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), this);
+                    + "`buchtitel` , `orderdate` , `statedate` , `state`, `bestellquelle`, `signatur`) VALUES (?, ?, ?, ?, ?, ?, "
+                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), this);
             pstmt.executeUpdate();
 
             // ID der gerade gespeicherten Bestellung ermitteln und in der bestellung hinterlegen
@@ -393,7 +395,7 @@ public class Bestellungen extends AbstractIdEntity {
                     + "biblionr=?, bibliothek=? , autor=?, artikeltitel=?, jahrgang=?, zeitschrift=?, jahr=?, "
                     + "subitonr=?, gbvnr=?, trackingnr=?, internenr=?, systembemerkung=?, notizen=?, kaufpreis=?, "
                     + "waehrung=?, doi=?, pmid=?, isbn=?, mediatype=?, verlag=?, buchkapitel=?, buchtitel=?, "
-                    + "orderdate=?, statedate=?, state=?, bestellquelle=? WHERE `BID` = " + this.getId()), this);
+                    + "orderdate=?, statedate=?, state=?, bestellquelle=?, signatur=? WHERE `BID` = " + this.getId()), this);
 
             pstmt.executeUpdate();
 
@@ -475,6 +477,8 @@ public class Bestellungen extends AbstractIdEntity {
             bf.append(this.getStatustext());
             bf.append("\nbestellquelle:\040");
             bf.append(this.getBestellquelle());
+            bf.append("\nSignatur:\040");
+            bf.append(this.getSignatur());
             LOG.error(bf.toString());
         } finally {
             if (pstmt != null) {
@@ -1385,6 +1389,8 @@ public class Bestellungen extends AbstractIdEntity {
         this.setVerlag(rs.getString("verlag"));
         this.setKapitel(rs.getString("buchkapitel"));
         this.setBuchtitel(rs.getString("buchtitel"));
+        this.setSignatur(rs.getString("signatur"));
+        
     }
 
     /*
@@ -1446,7 +1452,7 @@ public class Bestellungen extends AbstractIdEntity {
         b.setStatustext(rs.getString("state"));
         b.setStatusdate(removeMilliseconds(rs.getString("statedate")));
         b.setOrderdate(removeMilliseconds(rs.getString("orderdate")));
-
+        b.setSignatur(rs.getString("signatur"));
         return b;
     }
 
@@ -3354,9 +3360,17 @@ public class Bestellungen extends AbstractIdEntity {
 
     public void setPreisdefault(final boolean preisdefault) {
         this.preisdefault = preisdefault;
-    }
+    }    
 
-    private PreparedStatement setOrderValues(final PreparedStatement ps, final Bestellungen b) throws Exception {
+    public String getSignatur() {
+		return signatur;
+	}
+
+	public void setSignatur(String signatur) {
+		this.signatur = signatur;
+	}
+
+	private PreparedStatement setOrderValues(final PreparedStatement ps, final Bestellungen b) throws Exception {
         ps.setLong(1, b.getKonto().getId());
         ps.setLong(2, b.getBenutzer().getId());
         if (b.getLieferant() == null || b.getLieferant().getLid() == null
@@ -3502,7 +3516,7 @@ public class Bestellungen extends AbstractIdEntity {
         } else {
             ps.setString(35, b.getBestellquelle());
         }
-
+        ps.setString(36, b.getSignatur());
         return ps;
     }
 

@@ -91,6 +91,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String preisvorkomma;
     private String preisnachkomma;
     private String waehrung;
+    private String signatur = "";
     private boolean preisdefault;
     private BigDecimal kaufpreis;
     private String orderlink;
@@ -219,6 +220,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.setWaehrung(b.getWaehrung());
         // nur Abfüllen wenn Preis und Währung vorhanden!
         if (b.getWaehrung() != null) { this.setKaufpreis(b.getKaufpreis()); }
+        this.setSignatur(b.getSignatur());
         this.setAnmerkungen(b.getSystembemerkung());
 
         final OrderForm of = bigDecimalToString(this);
@@ -572,7 +574,15 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.waehrungen = waehrungen;
     }
 
-    public String getFileformat() {
+    public String getSignatur() {
+		return signatur;
+	}
+
+	public void setSignatur(String signatur) {
+		this.signatur = signatur;
+	}
+
+	public String getFileformat() {
         return fileformat;
     }
 

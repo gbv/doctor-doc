@@ -1955,6 +1955,7 @@ public final class OrderAction extends DispatchAction {
                     } else {
                         b.setWaehrung(null);
                     }
+                    b.setSignatur(pageForm.getSignatur());
 
                     if (pageForm.getBid() == null) { // hier wird eine neue Bestellung abgespeichert
 

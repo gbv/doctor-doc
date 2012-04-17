@@ -69,7 +69,7 @@
     	</table>
     </td>
     <td id="border" valign="top"><bean:message key="stockimport.sig" />: <br />
-      <input name="signatur" type="text" size="30" value="" />
+      <input name="signatur" type="text" size="30" value="<bean:write name="orderform" property="bestellung.signatur" />" />
     </td>
   </tr>
   <tr>
