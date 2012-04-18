@@ -1,4 +1,6 @@
-ALTER TABLE `bestellungen` ADD `signatur` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL 
+-- Revision 340 --
+
+ALTER TABLE `bestellungen` ADD `signatur` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL 
 
 INSERT INTO `doctor-doc_com_dbs`.`texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailsubject');
 INSERT INTO `doctor-doc_com_dbs`.`texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailtext');
