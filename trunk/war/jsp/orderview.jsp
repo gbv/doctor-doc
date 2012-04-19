@@ -94,6 +94,9 @@
     <logic:notEmpty name="orderform" property="bestellung.priority">
       <th id="th-left"><bean:message key="bestellform.prio" /></th>
     </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.signatur">
+      <th id="th-left"><bean:message key="stockimport.sig" /></th>
+    </logic:notEmpty>
   </tr>
    <logic:present name="orderform" property="bestellung">
    
@@ -178,6 +181,9 @@
         </logic:equal>
       &nbsp;
       </td>
+    </logic:notEmpty>
+    <logic:notEmpty name="orderform" property="bestellung.signatur">
+      <td id="border"><bean:write name="orderform" property="bestellung.signatur" /></td>
     </logic:notEmpty>    
      </tr>
      </table>
