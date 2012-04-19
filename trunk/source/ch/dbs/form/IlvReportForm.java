@@ -32,6 +32,7 @@ public final class IlvReportForm extends ActionForm {
     private String librarycard = ""; // <bean:write name="IlvReportForm" property="librarycard" />
     private String issn = ""; // <bean:write name="IlvReportForm" property="issn" />
     private String pmid = ""; // Pubmed-ID <bean:write name="IlvReportForm" property="pmid" />
+    private String doi = "";
     private String year = ""; // <bean:write name="IlvReportForm" property="year" />
     private String volumevintage = ""; // <bean:write name="IlvReportForm" property="volumevintage" />
     private String booklet = ""; // <bean:write name="IlvReportForm" property="booklet" />
@@ -135,6 +136,14 @@ public final class IlvReportForm extends ActionForm {
 
     public void setPmid(final String pmid) {
         this.pmid = pmid;
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public void setDoi(final String doi) {
+        this.doi = doi;
     }
 
     public String getVolumevintage() {

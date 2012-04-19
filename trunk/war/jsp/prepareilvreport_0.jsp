@@ -157,6 +157,7 @@
   
   <input type="hidden" name="lid" value="<bean:write name="orderform" property="bestellung.lieferant.lid" />" />
   <input type="hidden" name="bid" value="<bean:write name="orderform" property="bestellung.id" />" />
+  <input type="hidden" name="doi" value="<bean:write name="orderform" property="bestellung.doi" />" />
   <input type="hidden" name="reporttitle" value="<bean:message key="ilv-report.title" />" />
   <input type="hidden" name="labelfrom" value="<bean:message key="ilv-report.labelfrom" />" />
   <input type="hidden" name="labelto" value="<bean:message key="ilv-report.labelto" />" />

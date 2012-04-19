@@ -666,17 +666,32 @@ public final class ILVReport extends DispatchAction {
             result.append(ilvf.getPages());
             result.append('\n');
         }
+        final BestellformAction ba = new BestellformAction();
         if (ilvf.getPmid() != null && !"".equals(ilvf.getPmid())) {
             result.append("PMID: ");
             result.append(ilvf.getPmid());
             result.append('\n');
             result.append("PMID-URI: ");
             result.append("http://www.ncbi.nlm.nih.gov/pubmed/");
-            final BestellformAction ba = new BestellformAction();
             result.append(ba.extractPmid(ilvf.getPmid()));
+            result.append('\n');
+        }
+        if (ilvf.getDoi() != null && !"".equals(ilvf.getDoi())) {
+            result.append("DOI: ");
+            result.append(ilvf.getDoi());
+            result.append('\n');
+            if (!ba.extractDoi(ilvf.getDoi()).contains("http://")) {
+                result.append("DOI-URI: http://dx.doi.org/");
+                result.append(ba.extractDoi(ilvf.getDoi()));
+                result.append('\n');
+            } else {
+                result.append("DOI-URI: ");
+                result.append(ba.extractDoi(ilvf.getDoi()));
+                result.append('\n');
+            }
         }
 
-        result.append("\n\n-----\nOrder date: ");
+        result.append("\n-----\nOrder date: ");
         result.append(date);
         result.append("\nBrought to you by ");
         result.append(ReadSystemConfigurations.getApplicationName());

@@ -32,7 +32,7 @@
     </td>
 
     <td id="border">
-    	<input name="to" type="email" required size="100" value="<bean:write name="IlvReportForm" property="to" />" />    		
+    	<input name="to" type="email" required size="100" value="<bean:write name="IlvReportForm" property="to" />" />
     </td>
     
   </tr>
@@ -63,6 +63,7 @@
   <input type="hidden" name="librarycard" value="<bean:write name="IlvReportForm" property="librarycard" />" />  
   <input type="hidden" name="issn" value="<bean:write name="IlvReportForm" property="issn" />" />
   <input type="hidden" name="pmid" value="<bean:write name="IlvReportForm" property="pmid" />" />
+  <input type="hidden" name="doi" value="<bean:write name="IlvReportForm" property="doi" />" />
   <input type="hidden" name="year" value="<bean:write name="IlvReportForm" property="year" />" />
   <input type="hidden" name="volumevintage" value="<bean:write name="IlvReportForm" property="volumevintage" />" />
   <input type="hidden" name="booklet" value="<bean:write name="IlvReportForm" property="booklet" />" />
