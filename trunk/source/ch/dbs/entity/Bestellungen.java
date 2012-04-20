@@ -87,7 +87,7 @@ public class Bestellungen extends AbstractIdEntity {
     private String verlag = ""; // Buchverlag
     private String kapitel = "";
     private String buchtitel = "";
-    
+
     private String signatur = "";
 
     public Bestellungen() {
@@ -229,6 +229,7 @@ public class Bestellungen extends AbstractIdEntity {
         }
         this.setKaufpreis(of.getKaufpreis());
         this.setWaehrung(of.getWaehrung());
+        this.setSignatur(of.getSignatur());
     }
 
     public Bestellungen(final Connection cn, final Long id) {
@@ -351,13 +352,15 @@ public class Bestellungen extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = setOrderValues(cn.prepareStatement("INSERT INTO `bestellungen` (`KID` , "
-                    + "`UID` , `LID` , `orderpriority` , `deloptions` , `fileformat` , `heft` , `seiten` , `issn` , "
-                    + "`biblionr` , `bibliothek` , `autor` , `artikeltitel` , `jahrgang` , `zeitschrift` , `jahr` , "
-                    + "`subitonr` , `gbvnr` , `trackingnr` , `internenr` , `systembemerkung` , `notizen` , "
-                    + "`kaufpreis` , `waehrung` , `doi` , `pmid` , `isbn` , `mediatype` , `verlag` , `buchkapitel` , "
-                    + "`buchtitel` , `orderdate` , `statedate` , `state`, `bestellquelle`, `signatur`) VALUES (?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), this);
+            pstmt = setOrderValues(
+                    cn.prepareStatement("INSERT INTO `bestellungen` (`KID` , "
+                            + "`UID` , `LID` , `orderpriority` , `deloptions` , `fileformat` , `heft` , `seiten` , `issn` , "
+                            + "`biblionr` , `bibliothek` , `autor` , `artikeltitel` , `jahrgang` , `zeitschrift` , `jahr` , "
+                            + "`subitonr` , `gbvnr` , `trackingnr` , `internenr` , `systembemerkung` , `notizen` , "
+                            + "`kaufpreis` , `waehrung` , `doi` , `pmid` , `isbn` , `mediatype` , `verlag` , `buchkapitel` , "
+                            + "`buchtitel` , `orderdate` , `statedate` , `state`, `bestellquelle`, `signatur`) VALUES (?, ?, ?, ?, ?, ?, "
+                            + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
+                    this);
             pstmt.executeUpdate();
 
             // ID der gerade gespeicherten Bestellung ermitteln und in der bestellung hinterlegen
@@ -395,7 +398,8 @@ public class Bestellungen extends AbstractIdEntity {
                     + "biblionr=?, bibliothek=? , autor=?, artikeltitel=?, jahrgang=?, zeitschrift=?, jahr=?, "
                     + "subitonr=?, gbvnr=?, trackingnr=?, internenr=?, systembemerkung=?, notizen=?, kaufpreis=?, "
                     + "waehrung=?, doi=?, pmid=?, isbn=?, mediatype=?, verlag=?, buchkapitel=?, buchtitel=?, "
-                    + "orderdate=?, statedate=?, state=?, bestellquelle=?, signatur=? WHERE `BID` = " + this.getId()), this);
+                    + "orderdate=?, statedate=?, state=?, bestellquelle=?, signatur=? WHERE `BID` = " + this.getId()),
+                    this);
 
             pstmt.executeUpdate();
 
@@ -1390,7 +1394,7 @@ public class Bestellungen extends AbstractIdEntity {
         this.setKapitel(rs.getString("buchkapitel"));
         this.setBuchtitel(rs.getString("buchtitel"));
         this.setSignatur(rs.getString("signatur"));
-        
+
     }
 
     /*
@@ -3360,17 +3364,17 @@ public class Bestellungen extends AbstractIdEntity {
 
     public void setPreisdefault(final boolean preisdefault) {
         this.preisdefault = preisdefault;
-    }    
+    }
 
     public String getSignatur() {
-		return signatur;
-	}
+        return signatur;
+    }
 
-	public void setSignatur(String signatur) {
-		this.signatur = signatur;
-	}
+    public void setSignatur(final String signatur) {
+        this.signatur = signatur;
+    }
 
-	private PreparedStatement setOrderValues(final PreparedStatement ps, final Bestellungen b) throws Exception {
+    private PreparedStatement setOrderValues(final PreparedStatement ps, final Bestellungen b) throws Exception {
         ps.setLong(1, b.getKonto().getId());
         ps.setLong(2, b.getBenutzer().getId());
         if (b.getLieferant() == null || b.getLieferant().getLid() == null
