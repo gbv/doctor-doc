@@ -1272,6 +1272,7 @@ public final class BestellformAction extends DispatchAction {
 
     /**
      * Extrahiert aus einem String die DOI
+     * TODO: Auslager in seperate Klasse Doi
      */
     public String extractDoi(String doi) {
 
@@ -1299,6 +1300,7 @@ public final class BestellformAction extends DispatchAction {
 
     /**
      * Extrahiert aus einem String die PMID (Pubmed-ID
+     * TODO: Auslager in seperate Klasse Pubmed
      */
     public String extractPmid(String pmid) {
 
@@ -1318,6 +1320,7 @@ public final class BestellformAction extends DispatchAction {
 
     /**
      * gets the metadata from a DOI.
+     * TODO: Auslager in seperate Klasse Doi
      */
     public OrderForm resolveDoi(final String doi) {
 
@@ -1379,6 +1382,7 @@ public final class BestellformAction extends DispatchAction {
 
     /**
      * Gets from a PMID all article details.
+     * TODO: Auslager in seperate Klasse Pubmed
      */
     public OrderForm resolvePmid(final String pmid) {
 
@@ -1406,6 +1410,7 @@ public final class BestellformAction extends DispatchAction {
      *
      * @param OrderForm of
      * @return String pmid
+     * TODO: Auslager in seperate Klasse Pubmed
      */
     public String getPmid(final OrderForm of) {
 
@@ -1432,6 +1437,7 @@ public final class BestellformAction extends DispatchAction {
      *
      * @param String content
      * @return String pmid
+     * TODO: Auslager in seperate Klasse Pubmed
      */
     public String getPmid(final String content) {
 
@@ -1452,6 +1458,7 @@ public final class BestellformAction extends DispatchAction {
 
     /**
      * Creates the search link to get the PMID from the article details.
+     * TODO: Auslager in seperate Klasse Pubmed
      */
     public String composePubmedlinkToPmid(final OrderForm pageForm) {
 
