@@ -219,14 +219,15 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.setStatus(b.getStatustext());
         this.setWaehrung(b.getWaehrung());
         // nur Abfüllen wenn Preis und Währung vorhanden!
-        if (b.getWaehrung() != null) { this.setKaufpreis(b.getKaufpreis()); }
+        if (b.getWaehrung() != null) {
+            this.setKaufpreis(b.getKaufpreis());
+        }
         this.setSignatur(b.getSignatur());
         this.setAnmerkungen(b.getSystembemerkung());
 
         final OrderForm of = bigDecimalToString(this);
         this.setPreisvorkomma(of.getPreisvorkomma());
         this.setPreisnachkomma(of.getPreisnachkomma());
-
 
     }
 
@@ -297,15 +298,33 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
         try {
 
-            if (tocomplete.getArtikeltitel().equals("")) { tocomplete.setArtikeltitel(tocompare.getArtikeltitel()); }
-            if (tocomplete.getAuthor().equals("")) { tocomplete.setAuthor(tocompare.getAutor()); }
-            if (tocomplete.getDoi().equals("")) { tocomplete.setDoi(tocompare.getDoi()); }
-            if (tocomplete.getHeft().equals("")) { tocomplete.setHeft(tocompare.getHeft()); }
-            if (tocomplete.getIssn().equals("")) { tocomplete.setIssn(tocompare.getIssn()); }
-            if (tocomplete.getJahr().equals("")) { tocomplete.setJahr(tocompare.getJahr()); }
-            if (tocomplete.getJahrgang().equals("")) { tocomplete.setJahrgang(tocompare.getJahrgang()); }
-            if (tocomplete.getPmid().equals("")) { tocomplete.setPmid(tocompare.getPmid()); }
-            if (tocomplete.getSeiten().equals("")) { tocomplete.setSeiten(tocompare.getSeiten()); }
+            if (tocomplete.getArtikeltitel().equals("")) {
+                tocomplete.setArtikeltitel(tocompare.getArtikeltitel());
+            }
+            if (tocomplete.getAuthor().equals("")) {
+                tocomplete.setAuthor(tocompare.getAutor());
+            }
+            if (tocomplete.getDoi().equals("")) {
+                tocomplete.setDoi(tocompare.getDoi());
+            }
+            if (tocomplete.getHeft().equals("")) {
+                tocomplete.setHeft(tocompare.getHeft());
+            }
+            if (tocomplete.getIssn().equals("")) {
+                tocomplete.setIssn(tocompare.getIssn());
+            }
+            if (tocomplete.getJahr().equals("")) {
+                tocomplete.setJahr(tocompare.getJahr());
+            }
+            if (tocomplete.getJahrgang().equals("")) {
+                tocomplete.setJahrgang(tocompare.getJahrgang());
+            }
+            if (tocomplete.getPmid().equals("")) {
+                tocomplete.setPmid(tocompare.getPmid());
+            }
+            if (tocomplete.getSeiten().equals("")) {
+                tocomplete.setSeiten(tocompare.getSeiten());
+            }
             if (tocomplete.getZeitschriftentitel().equals("")) {
                 tocomplete.setZeitschriftentitel(tocompare.getZeitschriftentitel());
             }
@@ -355,14 +374,31 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return of;
     }
 
-    //    /**
-    //     *
-    //     *
-    //     * @param of
-    //     */
-    //    public OrderForm(OrderForm of) {
-    //
-    //    }
+    /**
+     * Checks if there are missing relevant article details (ISSN, journal title, author, year, volume, issue, pages).
+     */
+    public boolean areArticleValuesMissing() {
+
+        boolean check = false;
+
+        try {
+
+            if (this.getMediatype().equals("Artikel") // um zu verhindern, dass bei eine Übergabe aus OpenURL auch Bücher
+                    // über Pubmed etc. geprüft werden
+                    && (this.getIssn().equals("") || this.getZeitschriftentitel().equals("")
+                            || this.getAuthor().equals("") || this.getJahr().equals("")
+                            || this.getArtikeltitel().equals("") || this.getJahrgang().equals("")
+                            || this.getHeft().equals("") || this.getSeiten().equals(""))) {
+                check = true;
+            }
+
+        } catch (final Exception e) {
+            LOG.error("areArticleValuesMissing: " + e.toString());
+
+        }
+
+        return check;
+    }
 
     public String getSubmit() {
         return submit;
@@ -523,21 +559,27 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     public void setSubitonr(final String subitonr) {
         this.subitonr = subitonr;
     }
+
     public String getSessionid() {
         return sessionid;
     }
+
     public void setSessionid(final String sessionid) {
         this.sessionid = sessionid;
     }
+
     public String getForuser() {
         return foruser;
     }
+
     public void setForuser(final String foruser) {
         this.foruser = foruser;
     }
+
     public Bestellungen getBestellung() {
         return bestellung;
     }
+
     public void setBestellung(final Bestellungen bestellung) {
         this.bestellung = bestellung;
     }
@@ -575,14 +617,14 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     }
 
     public String getSignatur() {
-		return signatur;
-	}
+        return signatur;
+    }
 
-	public void setSignatur(String signatur) {
-		this.signatur = signatur;
-	}
+    public void setSignatur(final String signatur) {
+        this.signatur = signatur;
+    }
 
-	public String getFileformat() {
+    public String getFileformat() {
         return fileformat;
     }
 
@@ -602,11 +644,9 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return heft;
     }
 
-
     public void setHeft(final String heft) {
         this.heft = heft;
     }
-
 
     public String getIssn() {
         return issn;
@@ -656,21 +696,17 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.jahr = jahr;
     }
 
-
     public String getPrio() {
         return prio;
     }
-
 
     public void setPrio(final String prio) {
         this.prio = prio;
     }
 
-
     public String getAutor() {
         return author;
     }
-
 
     public void setAuthor(final String author) {
         this.author = author;
@@ -692,26 +728,21 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return seiten;
     }
 
-
     public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
-
 
     public String getJahrgang() {
         return jahrgang;
     }
 
-
     public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
 
-
     public Long getBid() {
         return bid;
     }
-
 
     public void setBid(final Long bid) {
         this.bid = bid;
@@ -752,6 +783,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     public List<AbstractBenutzer> getKontouser() {
         return kontouser;
     }
+
     public void setKontouser(final List<AbstractBenutzer> kontouser) {
         this.kontouser = kontouser;
     }
@@ -1411,7 +1443,9 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
             String nachkomma = bd.toString();
             nachkomma = nachkomma.substring(nachkomma.indexOf('.') + 1);
-            if (nachkomma.length() == 1) { nachkomma = nachkomma + "0"; }
+            if (nachkomma.length() == 1) {
+                nachkomma = nachkomma + "0";
+            }
 
             pageForm.setPreisvorkomma(Integer.toString(vorkomma));
             pageForm.setPreisnachkomma(nachkomma);
@@ -1420,7 +1454,5 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
         return pageForm;
     }
-
-
 
 }

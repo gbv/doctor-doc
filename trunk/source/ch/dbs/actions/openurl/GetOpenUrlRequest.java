@@ -28,7 +28,8 @@ import org.apache.struts.action.ActionMapping;
 import org.grlea.log.SimpleLogger;
 
 import util.Auth;
-import ch.dbs.actions.bestellung.BestellformAction;
+import ch.dbs.actions.bestellung.DOI;
+import ch.dbs.actions.bestellung.Pubmed;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -47,16 +48,17 @@ public final class GetOpenUrlRequest extends Action {
     /**
      * empfängt OpenURL-Requests und stellt ein OrderForm her
      */
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final Auth auth = new Auth();
         String forward = "failure";
         OrderForm of = (OrderForm) form;
-        final BestellformAction bfAction = new BestellformAction();
         of.setResolver(true); // markiert, dass Angaben bereits aufgelöst wurden
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
         final OpenUrl openurl = new OpenUrl();
+        final DOI doi = new DOI();
+        final Pubmed pubmed = new Pubmed();
 
         final String query = rq.getQueryString();
 
@@ -82,12 +84,12 @@ public final class GetOpenUrlRequest extends Action {
                     String pmid = "";
                     if (query.contains("sid=Entrez:PubMed&id=pmid:")) {
                         pmid = query.substring(query.indexOf("sid=Entrez:PubMed&id=pmid:"));
-                        of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
+                        of = pubmed.resolvePmid(pubmed.extractPmid(pmid));
                         of.setRfr_id("Entrez:PubMed");
                     }
                     if (query.contains("sid=google&id=pmid:")) {
                         pmid = query.substring(query.indexOf("sid=google&id=pmid:"));
-                        of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
+                        of = pubmed.resolvePmid(pubmed.extractPmid(pmid));
                         of.setRfr_id("Google Scholar");
                     }
 
@@ -97,16 +99,19 @@ public final class GetOpenUrlRequest extends Action {
                         of = openurlConv.makeOrderform(co);
                         // nur bei Übergabe über OpenURL Rfr_id abfüllen. Nicht bei WorldCat!
                         // Deshalb hier nachträglich...
-                        if (co.getRfr_id() != null && !co.getRfr_id().equals("")) { of.setRfr_id(co.getRfr_id()); }
+                        if (co.getRfr_id() != null && !co.getRfr_id().equals("")) {
+                            of.setRfr_id(co.getRfr_id());
+                        }
 
                         // Falls Doi vorhanden aber wichtige Angaben fehlen...
                         if (of.getDoi() != null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")
-                                && bfAction.areArticleValuesMissing(of)) {
+                                && of.areArticleValuesMissing()) {
 
                             OrderForm ofDoi = new OrderForm();
-                            ofDoi = bfAction.resolveDoi(bfAction.extractDoi(of
-                                    .getDoi()));
-                            if ("".equals(of.getIssn()) && !"".equals(ofDoi.getIssn())) { of.setIssn(ofDoi.getIssn()); }
+                            ofDoi = doi.resolveDoi(doi.extractDoi(of.getDoi()));
+                            if ("".equals(of.getIssn()) && !"".equals(ofDoi.getIssn())) {
+                                of.setIssn(ofDoi.getIssn());
+                            }
                             if ("".equals(of.getZeitschriftentitel()) && !"".equals(ofDoi.getZeitschriftentitel())) {
                                 of.setZeitschriftentitel(ofDoi.getZeitschriftentitel());
                             }
@@ -132,8 +137,8 @@ public final class GetOpenUrlRequest extends Action {
                 }
 
                 if (of.getDeloptions() == null || // Defaultwert deloptions
-                        (!"post".equals(of.getDeloptions()) && !"fax to pdf".equals(of.getDeloptions())
-                                && !"urgent".equals(of.getDeloptions()))) {
+                        (!"post".equals(of.getDeloptions()) && !"fax to pdf".equals(of.getDeloptions()) && !"urgent"
+                                .equals(of.getDeloptions()))) {
                     of.setDeloptions("fax to pdf");
                 }
 
@@ -179,17 +184,17 @@ public final class GetOpenUrlRequest extends Action {
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                     // Übergabe direkt von Pubmed...
-                    if (query != null && (query.contains("sid=Entrez:PubMed&id=pmid:")
-                            || query.contains("sid=google&id=pmid:"))) { // ...oder von Google Scholar
+                    if (query != null
+                            && (query.contains("sid=Entrez:PubMed&id=pmid:") || query.contains("sid=google&id=pmid:"))) { // ...oder von Google Scholar
                         String pmid = "";
                         if (query.contains("sid=Entrez:PubMed&id=pmid:")) {
                             pmid = query.substring(query.indexOf("sid=Entrez:PubMed&id=pmid:"));
-                            of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
+                            of = pubmed.resolvePmid(pubmed.extractPmid(pmid));
                             of.setRfr_id("Entrez:PubMed");
                         }
                         if (query.contains("sid=google&id=pmid:")) {
                             pmid = query.substring(query.indexOf("sid=google&id=pmid:"));
-                            of = bfAction.resolvePmid(bfAction.extractPmid(pmid));
+                            of = pubmed.resolvePmid(pubmed.extractPmid(pmid));
                             of.setRfr_id("Google Scholar");
                         }
 
@@ -199,21 +204,20 @@ public final class GetOpenUrlRequest extends Action {
                             of = openurlConv.makeOrderform(co);
                             // nur bei Übergabe über OpenURL Rfr_id abfüllen.
                             // Nicht bei WorldCat! Deshalb hier nachträglich...
-                            if (co.getRfr_id() != null && !co.getRfr_id().equals("")) { of.setRfr_id(co.getRfr_id()); }
+                            if (co.getRfr_id() != null && !co.getRfr_id().equals("")) {
+                                of.setRfr_id(co.getRfr_id());
+                            }
 
                             // Falls Doi vorhanden aber wichtige Angaben fehlen...
-                            if (of.getDoi() != null && !of.getDoi().equals("")
-                                    && of.getMediatype().equals("Artikel")
-                                    && bfAction.areArticleValuesMissing(of)) {
+                            if (of.getDoi() != null && !of.getDoi().equals("") && of.getMediatype().equals("Artikel")
+                                    && of.areArticleValuesMissing()) {
 
                                 OrderForm ofDoi = new OrderForm();
-                                ofDoi = bfAction.resolveDoi(bfAction.extractDoi(of
-                                        .getDoi()));
+                                ofDoi = doi.resolveDoi(doi.extractDoi(of.getDoi()));
                                 if (of.getIssn().equals("") && !ofDoi.getIssn().equals("")) {
                                     of.setIssn(ofDoi.getIssn());
                                 }
-                                if (of.getZeitschriftentitel().equals("")
-                                        && !ofDoi.getZeitschriftentitel().equals("")) {
+                                if (of.getZeitschriftentitel().equals("") && !ofDoi.getZeitschriftentitel().equals("")) {
                                     of.setZeitschriftentitel(ofDoi.getZeitschriftentitel());
                                 }
                                 if (of.getJahr().equals("") && !ofDoi.getJahr().equals("")) {
@@ -238,8 +242,8 @@ public final class GetOpenUrlRequest extends Action {
                     }
 
                     if (of.getDeloptions() == null || // Defaultwert deloptions
-                            (!of.getDeloptions().equals("post") && !of.getDeloptions().equals("fax to pdf")
-                                    && !of.getDeloptions().equals("urgent"))) {
+                            (!of.getDeloptions().equals("post") && !of.getDeloptions().equals("fax to pdf") && !of
+                                    .getDeloptions().equals("urgent"))) {
                         of.setDeloptions("fax to pdf");
                     }
 
@@ -251,7 +255,6 @@ public final class GetOpenUrlRequest extends Action {
                     mf.setActivemenu("suchenbestellen");
                     rq.setAttribute("ActiveMenus", mf);
 
-
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
                     rq.setAttribute("errormessage", em);
@@ -261,7 +264,6 @@ public final class GetOpenUrlRequest extends Action {
                 }
             }
 
-
         } catch (final Exception e) {
             LOG.error("execute: " + query + "\040" + e.toString());
         }
@@ -270,6 +272,5 @@ public final class GetOpenUrlRequest extends Action {
 
         return mp.findForward(forward);
     }
-
 
 }

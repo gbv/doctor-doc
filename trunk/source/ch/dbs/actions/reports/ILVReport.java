@@ -60,7 +60,8 @@ import util.Auth;
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
-import ch.dbs.actions.bestellung.BestellformAction;
+import ch.dbs.actions.bestellung.DOI;
+import ch.dbs.actions.bestellung.Pubmed;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
@@ -590,6 +591,8 @@ public final class ILVReport extends DispatchAction {
 
         // current date and time
         final Date d = new Date();
+        final DOI doi = new DOI();
+        final Pubmed pubmed = new Pubmed();
         final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         final String date = sdf.format(d, ui.getKonto().getTimezone());
 
@@ -666,27 +669,26 @@ public final class ILVReport extends DispatchAction {
             result.append(ilvf.getPages());
             result.append('\n');
         }
-        final BestellformAction ba = new BestellformAction();
         if (ilvf.getPmid() != null && !"".equals(ilvf.getPmid())) {
             result.append("PMID: ");
             result.append(ilvf.getPmid());
             result.append('\n');
             result.append("PMID-URI: ");
             result.append("http://www.ncbi.nlm.nih.gov/pubmed/");
-            result.append(ba.extractPmid(ilvf.getPmid()));
+            result.append(pubmed.extractPmid(ilvf.getPmid()));
             result.append('\n');
         }
         if (ilvf.getDoi() != null && !"".equals(ilvf.getDoi())) {
             result.append("DOI: ");
             result.append(ilvf.getDoi());
             result.append('\n');
-            if (!ba.extractDoi(ilvf.getDoi()).contains("http://")) {
+            if (!doi.extractDoi(ilvf.getDoi()).contains("http://")) {
                 result.append("DOI-URI: http://dx.doi.org/");
-                result.append(ba.extractDoi(ilvf.getDoi()));
+                result.append(doi.extractDoi(ilvf.getDoi()));
                 result.append('\n');
             } else {
                 result.append("DOI-URI: ");
-                result.append(ba.extractDoi(ilvf.getDoi()));
+                result.append(doi.extractDoi(ilvf.getDoi()));
                 result.append('\n');
             }
         }

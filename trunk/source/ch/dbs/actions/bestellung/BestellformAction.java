@@ -37,13 +37,10 @@ import util.Auth;
 import util.Base64String;
 import util.Check;
 import util.CodeUrl;
-import util.Http;
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
-import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
-import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.BestellParam;
 import ch.dbs.entity.Bestellungen;
@@ -73,8 +70,6 @@ public final class BestellformAction extends DispatchAction {
     private static final long KKID = 12;
     private static final long IP = 9;
     private static final long LOGGED_IN = 13;
-    private static final int TIMEOUT = 2000;
-    private static final int RETRYS = 2;
     private static final String FAILURE = "failure";
     private static final String SUCCESS = "success";
     private static final String ACTIVEMENUS = "ActiveMenus";
@@ -93,6 +88,8 @@ public final class BestellformAction extends DispatchAction {
         OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
         final Countries country = new Countries();
+        final DOI doi = new DOI();
+        final Pubmed pubmed = new Pubmed();
 
         try {
 
@@ -124,11 +121,12 @@ public final class BestellformAction extends DispatchAction {
                 }
 
                 // resolve PMID or DOI
-                if (of.isResolve() && of.getPmid() != null && !of.getPmid().equals("") && areArticleValuesMissing(of)) {
-                    of = resolvePmid(extractPmid(of.getPmid()));
+                if (of.isResolve() && of.getPmid() != null && !of.getPmid().equals("") && of.areArticleValuesMissing()) {
+                    of = pubmed.resolvePmid(pubmed.extractPmid(of.getPmid()));
                 } else {
-                    if (of.isResolve() && of.getDoi() != null && !of.getDoi().equals("") && areArticleValuesMissing(of)) {
-                        of = resolveDoi(extractDoi(of.getDoi()));
+                    if (of.isResolve() && of.getDoi() != null && !of.getDoi().equals("")
+                            && of.areArticleValuesMissing()) {
+                        of = doi.resolveDoi(doi.extractDoi(of.getDoi()));
                         if (of.getDoi() == null || of.getDoi().equals("")) {
                             of = (OrderForm) fm;
                         } // sometimes we can't resolve a DOI...
@@ -265,12 +263,12 @@ public final class BestellformAction extends DispatchAction {
 
                     // resolve PMID or DOI
                     if (!of.isResolver() && of.getPmid() != null && !of.getPmid().equals("")
-                            && areArticleValuesMissing(of)) {
-                        of = resolvePmid(extractPmid(of.getPmid()));
+                            && of.areArticleValuesMissing()) {
+                        of = pubmed.resolvePmid(pubmed.extractPmid(of.getPmid()));
                     } else {
                         if (!of.isResolver() && of.getDoi() != null && !of.getDoi().equals("")
-                                && areArticleValuesMissing(of)) {
-                            of = resolveDoi(extractDoi(of.getDoi()));
+                                && of.areArticleValuesMissing()) {
+                            of = doi.resolveDoi(doi.extractDoi(of.getDoi()));
                             if (of.getDoi() == null || of.getDoi().equals("")) {
                                 of = (OrderForm) fm;
                             } // sometimes we can't resolve a DOI...
@@ -397,6 +395,8 @@ public final class BestellformAction extends DispatchAction {
         BestellParam bp = new BestellParam();
         final Countries country = new Countries();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+        final DOI doi = new DOI();
+        final Pubmed pubmed = new Pubmed();
 
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         Konto k = new Konto();
@@ -731,13 +731,13 @@ public final class BestellformAction extends DispatchAction {
 
                             if (of.getDoi() != null && !of.getDoi().equals("")) {
                                 m.append("DOI: " + of.getDoi() + '\n');
-                                if (!extractDoi(of.getDoi()).contains("http://")) {
+                                if (!doi.extractDoi(of.getDoi()).contains("http://")) {
                                     m.append("DOI-URI: http://dx.doi.org/");
-                                    m.append(extractDoi(of.getDoi()));
+                                    m.append(doi.extractDoi(of.getDoi()));
                                     m.append('\n');
                                 } else {
                                     m.append("DOI-URI: ");
-                                    m.append(extractDoi(of.getDoi()));
+                                    m.append(doi.extractDoi(of.getDoi()));
                                     m.append('\n');
                                 }
                             }
@@ -745,7 +745,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append("PMID: ");
                                 m.append(of.getPmid());
                                 m.append("\nPMID-URI: http://www.ncbi.nlm.nih.gov/pubmed/");
-                                m.append(extractPmid(of.getPmid()));
+                                m.append(pubmed.extractPmid(of.getPmid()));
                                 m.append('\n');
                             }
                             m.append('\n');
@@ -803,13 +803,13 @@ public final class BestellformAction extends DispatchAction {
 
                             if (of.getDoi() != null && !of.getDoi().equals("")) {
                                 m.append("DOI: " + of.getDoi() + '\n');
-                                if (!extractDoi(of.getDoi()).contains("http://")) {
+                                if (!doi.extractDoi(of.getDoi()).contains("http://")) {
                                     m.append("DOI-URI: http://dx.doi.org/");
-                                    m.append(extractDoi(of.getDoi()));
+                                    m.append(doi.extractDoi(of.getDoi()));
                                     m.append('\n');
                                 } else {
                                     m.append("DOI-URI: ");
-                                    m.append(extractDoi(of.getDoi()));
+                                    m.append(doi.extractDoi(of.getDoi()));
                                     m.append('\n');
                                 }
                             }
@@ -1268,253 +1268,6 @@ public final class BestellformAction extends DispatchAction {
         }
 
         return mp.findForward(forward);
-    }
-
-    /**
-     * Extrahiert aus einem String die DOI
-     * TODO: Auslager in seperate Klasse Doi
-     */
-    public String extractDoi(String doi) {
-
-        if (doi != null && !doi.equals("")) {
-            try {
-
-                doi = doi.trim().toLowerCase();
-                if (doi.contains("doi:")) {
-                    doi = doi.substring(doi.indexOf("doi:") + 4);
-                } // ggf. Text "DOI:" entfernen
-                if (doi.contains("dx.doi.org/")) {
-                    doi = doi.substring(doi.indexOf("dx.doi.org/") + 11);
-                } // verschiedene Formen der Angaben entfernen ( dx.doi.org/... , http://dx.doi.org/...)
-                if (doi.contains("doi/")) {
-                    doi = doi.substring(doi.indexOf("doi/") + 4);
-                } // ggf. Text "DOI/" entfernen
-
-            } catch (final Exception e) {
-                LOG.error("extractDoi: " + doi + "\040" + e.toString());
-            }
-        }
-
-        return doi;
-    }
-
-    /**
-     * Extrahiert aus einem String die PMID (Pubmed-ID
-     * TODO: Auslager in seperate Klasse Pubmed
-     */
-    public String extractPmid(String pmid) {
-
-        if (pmid != null && !pmid.equals("")) {
-            try {
-                final Matcher w = Pattern.compile("[0-9]+").matcher(pmid);
-                if (w.find()) {
-                    pmid = pmid.substring(w.start(), w.end());
-                }
-            } catch (final Exception e) {
-                LOG.error("extractPmid: " + pmid + "\040" + e.toString());
-            }
-        }
-
-        return pmid;
-    }
-
-    /**
-     * gets the metadata from a DOI.
-     * TODO: Auslager in seperate Klasse Doi
-     */
-    public OrderForm resolveDoi(final String doi) {
-
-        // http://generator.ocoins.info/ [Eingabe: 10.1002/hec.1381 ]
-
-        OrderForm of = new OrderForm();
-        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-        final OpenUrl openurl = new OpenUrl();
-        final Http http = new Http();
-        final String link = "http://generator.ocoins.info/?doi=" + doi;
-        // String link = "http://generator.ocoins.info/crossref?handle=" + doi;
-        String content = "";
-
-        try {
-
-            content = http.getWebcontent(link, TIMEOUT, RETRYS);
-
-            content = content.replaceAll("&amp;amp;", "&amp;"); // falsche Doppelkodierung korrigieren...
-
-            // Sicherstellen, dass die Anfrage aufgelöst wurde und vom OCoinS-Generator selber stammt (Ausschluss von
-            // direkter Weiterleitung)
-            if (!content.contains("DOI Resolution Error")
-                    && content.contains("rfr_id=info%3Asid%2Focoins.info%3Agenerator")) {
-
-                final ContextObject co = openurl.readOpenUrlFromString(content);
-                of = openurlConv.makeOrderform(co);
-
-            } else {
-                // use CrossRef public resolver
-                LOG.warn("Resolving DOI failed, using OCoinS-Generator and DOI: " + doi);
-                of = resolveCrossRef(doi);
-            }
-
-        } catch (final Exception e) {
-            LOG.error("resolveDoi: " + doi + "\040" + e.toString());
-        }
-
-        return of;
-    }
-
-    /**
-     * uses the CrossRef public resolver to resolve a DOI in the rare cases of a book.
-     */
-    private OrderForm resolveCrossRef(final String doi) {
-
-        OrderForm of = null;
-        final OpenUrl openurl = new OpenUrl();
-        String content = "";
-
-        final Http http = new Http();
-        final String link = "http://www.crossref.org/guestquery?queryType=doi&restype=xsl_xml&doi=" + doi;
-
-        content = http.getWebcontent(link, TIMEOUT, 1);
-
-        of = openurl.readXMLCrossRef(content);
-
-        return of;
-    }
-
-    /**
-     * Gets from a PMID all article details.
-     * TODO: Auslager in seperate Klasse Pubmed
-     */
-    public OrderForm resolvePmid(final String pmid) {
-
-        OrderForm of = new OrderForm();
-        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-        final OpenUrl openurl = new OpenUrl();
-        final Http http = new Http();
-        final String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id="
-                + pmid;
-        String content = "";
-
-        try {
-            content = http.getWebcontent(link, TIMEOUT, RETRYS);
-            final ContextObject co = openurl.readXmlPubmed(content);
-            of = openurlConv.makeOrderform(co);
-        } catch (final Exception e) {
-            LOG.error("resolvePmid: " + pmid + "\040" + e.toString());
-        }
-
-        return of;
-    }
-
-    /**
-     * Gets the PMID from the article details.
-     *
-     * @param OrderForm of
-     * @return String pmid
-     * TODO: Auslager in seperate Klasse Pubmed
-     */
-    public String getPmid(final OrderForm of) {
-
-        String pmid = "";
-        final Http http = new Http();
-
-        try {
-
-            final String content = http.getWebcontent(composePubmedlinkToPmid(of), TIMEOUT, RETRYS);
-
-            if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
-                pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));
-            }
-
-        } catch (final Exception e) {
-            LOG.error("getPmid(of): " + e.toString());
-        }
-
-        return pmid;
-    }
-
-    /**
-     * Extracts the PMID from the web content.
-     *
-     * @param String content
-     * @return String pmid
-     * TODO: Auslager in seperate Klasse Pubmed
-     */
-    public String getPmid(final String content) {
-
-        String pmid = "";
-
-        try {
-
-            if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
-                pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));
-            }
-
-        } catch (final Exception e) {
-            LOG.error("getPmid(String): " + e.toString() + "\012" + content);
-        }
-
-        return pmid;
-    }
-
-    /**
-     * Creates the search link to get the PMID from the article details.
-     * TODO: Auslager in seperate Klasse Pubmed
-     */
-    public String composePubmedlinkToPmid(final OrderForm pageForm) {
-
-        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-
-        final StringBuffer link = new StringBuffer(128);
-        link.append("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=");
-        link.append(pageForm.getIssn());
-        link.append("[TA]");
-        if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang())) {
-            link.append("+AND+");
-            link.append(pageForm.getJahrgang());
-            link.append("[VI]");
-        }
-        if (pageForm.getHeft() != null && !"".equals(pageForm.getHeft())) {
-            link.append("+AND+");
-            link.append(pageForm.getHeft());
-            link.append("[IP]");
-        }
-        if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten())) {
-            link.append("+AND+");
-            link.append(openurlConv.extractSpage(pageForm.getSeiten()));
-            link.append("[PG]");
-        }
-        if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr())) {
-            link.append("+AND+");
-            link.append(pageForm.getJahr());
-            link.append("[DP]");
-        }
-
-        return link.toString();
-    }
-
-    /**
-     * Checks if there are missing relevant article details (ISSN, journal title, author, year, volume, issue, pages).
-     */
-    public boolean areArticleValuesMissing(final OrderForm of) {
-
-        boolean check = false;
-
-        try {
-
-            if (of.getMediatype().equals("Artikel") // um zu verhindern, dass bei eine Übergabe aus OpenURL auch Bücher
-                    // über Pubmed etc. geprüft werden
-                    && (of.getIssn().equals("") || of.getZeitschriftentitel().equals("") || of.getAuthor().equals("")
-                            || of.getJahr().equals("") || of.getArtikeltitel().equals("")
-                            || of.getJahrgang().equals("") || of.getHeft().equals("") || of.getSeiten().equals(""))) {
-                check = true;
-            }
-
-        } catch (final Exception e) {
-            LOG.error("areArticleValuesMissing: " + e.toString());
-
-        }
-
-        return check;
     }
 
     /**
