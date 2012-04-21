@@ -338,7 +338,7 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
     </tr>
 </logic:equal>
   <tr>
-      <td><bean:message key="stockimport.sig" />:</td>
+      <td><bean:message key="stockimport.sig" /></td>
       <td><input name="signatur" value="<bean:write name="orderform" property="signatur" />" type="text" size="62" maxlength="250" /></td>
   </tr>
   <tr>
