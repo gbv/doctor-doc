@@ -165,10 +165,10 @@ function wahrung(a)
     
    <tr><td><br /></td></tr>
     <tr title="<bean:message key="save.subitonr_info" />">
-      <td><bean:message key="save.subitonr" />:<img border="0" src="img/info.png" alt="<bean:message key="save.subitonr_info" />" /></td><td><input name="subitonr" value="<bean:write name="orderform" property="subitonr" />" type="text" size="25" maxlength="25" /></td></tr>
+      <td><bean:message key="save.subitonr" /><img border="0" src="img/info.png" alt="<bean:message key="save.subitonr_info" />" /></td><td><input name="subitonr" value="<bean:write name="orderform" property="subitonr" />" type="text" size="25" maxlength="25" /></td></tr>
     <logic:present name="userinfo" property="konto.gbvbenutzername">
     <tr title="<bean:message key="save.gbvnr_info" />">
-      <td><bean:message key="save.gbvnr" />:<img border="0" src="img/info.png" alt="<bean:message key="save.gbvnr_info" />" /></td><td><input name="gbvnr" value="<bean:write name="orderform" property="gbvnr" />" type="text" size="25" maxlength="25" /></td></tr>
+      <td><bean:message key="save.gbvnr" /><img border="0" src="img/info.png" alt="<bean:message key="save.gbvnr_info" />" /></td><td><input name="gbvnr" value="<bean:write name="orderform" property="gbvnr" />" type="text" size="25" maxlength="25" /></td></tr>
     </logic:present>
   <tr><td><br /></td></tr>
  
