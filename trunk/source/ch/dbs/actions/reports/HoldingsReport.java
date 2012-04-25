@@ -190,28 +190,12 @@ public final class HoldingsReport extends DispatchAction {
                 getXLSLine(wb, s, b, rownumber);
             }
 
-            // adjust all columns in size 
-            s.autoSizeColumn((short) 0);
-            s.autoSizeColumn((short) 1);
-            s.autoSizeColumn((short) 2);
-            s.autoSizeColumn((short) 3);
-            s.autoSizeColumn((short) 4);
-            s.autoSizeColumn((short) 5);
-            s.autoSizeColumn((short) 6);
-            s.autoSizeColumn((short) 7);
-            s.autoSizeColumn((short) 8);
-            s.autoSizeColumn((short) 9);
-            s.autoSizeColumn((short) 10);
-            s.autoSizeColumn((short) 11);
-            s.autoSizeColumn((short) 12);
-            s.autoSizeColumn((short) 13);
-            s.autoSizeColumn((short) 14);
-            s.autoSizeColumn((short) 15);
-            s.autoSizeColumn((short) 16);
-            s.autoSizeColumn((short) 17);
-            s.autoSizeColumn((short) 18);
-            s.autoSizeColumn((short) 19);
-            s.autoSizeColumn((short) 19);
+            // adjust all columns in size
+            short columnNr = 0;
+            while (columnNr < 21) {
+                s.autoSizeColumn(columnNr);
+                columnNr++;
+            }
 
         } finally {
             cn.close();
