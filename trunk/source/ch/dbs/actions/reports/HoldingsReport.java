@@ -182,12 +182,12 @@ public final class HoldingsReport extends DispatchAction {
             // internal holdings are visible
             final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
-            short rownumber = 0;
+            short rowNr = 0;
 
             for (final Bestand b : stock) {
-                rownumber++;
+                rowNr++;
                 // add holdings
-                getXLSLine(wb, s, b, rownumber);
+                getXLSLine(wb, s, b, rowNr);
             }
 
             // adjust all columns in size
