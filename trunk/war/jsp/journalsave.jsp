@@ -329,6 +329,10 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
       <td><bean:message key="bestellform.seiten" /></td><td><input name="seiten" type="text" value="<bean:write name="orderform" property="seiten" />" size="15" maxlength="15" /></td>
     </tr>
 </logic:notEqual>
+<tr>
+      <td><bean:message key="stockimport.sig" /></td>
+      <td><input name="signatur" value="<bean:write name="orderform" property="signatur" />" type="text" size="62" maxlength="250" /></td>
+  </tr>
 <logic:equal name="orderform" property="mediatype" value="Artikel">
     <tr>    
        <td title="<bean:message key="info.pubmed" />">PMID<img border="0" src="img/info.png" alt="<bean:message key="info.pubmed" />" /></td><td><input name="pmid" type="text" value="<bean:write name="orderform" property="pmid" />" size="62" maxlength="100" /> </td>
@@ -337,10 +341,7 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
        <td title="<bean:message key="info.doi" />">DOI<img border="0" src="img/info.png" alt="<bean:message key="info.doi" />" /></td><td><input name="doi" type="text" value="<bean:write name="orderform" property="doi" />" size="62" maxlength="200" /> </td>
     </tr>
 </logic:equal>
-  <tr>
-      <td><bean:message key="stockimport.sig" /></td>
-      <td><input name="signatur" value="<bean:write name="orderform" property="signatur" />" type="text" size="62" maxlength="250" /></td>
-  </tr>
+  
   <tr>
       <td title="<bean:message key="info.internenr" />"><bean:message key="save.internenr" /><img border="0" src="img/info.png" alt="<bean:message key="info.internenr" />" />&nbsp;</td>
       <td><input name="interne_bestellnr" value="<bean:write name="orderform" property="interne_bestellnr" />" type="text" size="62" maxlength="100" /></td>
