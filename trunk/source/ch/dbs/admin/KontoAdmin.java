@@ -427,7 +427,7 @@ public final class KontoAdmin {
         t.append("\nKonto Nr.:      16 9.350.8040.02\n" + "IBAN:           CH62 0630 0016 9350 8040 2\n"
                 + "Bank:           Valiant Bank, Postfach, 3001 Bern\n" + "Bankenclearing: 6300\n"
                 + "Postcheckkonto: 30-38112-0\n" + "Swift-Code:     VABECH22\n\n" + "Name und Adresse:\n"
-                + "Pascal Steiner\n" + "Gysulastrasse 83\n" + "5022 Rombach (CH)\n"
+                + "Pascal Steiner\n" + "Pfanne 4\n" + "5032 Aaru Rohr (CH)\n"
                 + "*******************************************************");
 
         return t.toString();
