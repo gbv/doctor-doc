@@ -57,12 +57,12 @@ public class BulkOperations extends DispatchAction {
 
                 try {
 
-                    // get number of records involved
-                    operation.setNumerOfRecords(operation.countDeleteOrders(ui, cn.getConnection()));
-
                     if (operation.isConfirmed()) {
                         // execute operation
-                        operation.deleteOrders(ui, cn.getConnection());
+                        final int deleted = operation.deleteOrders(ui, cn.getConnection());
+
+                        // set result from DELETE back into form
+                        operation.setNumerOfRecords(deleted);
 
                         final Message msg = new Message();
                         msg.setMessage("maintenance.numberOfRecordsDeleted");
@@ -74,6 +74,10 @@ public class BulkOperations extends DispatchAction {
                     } else {
                         // force confirmation of operation
                         forward = "confirm";
+
+                        // get number of records involved
+                        operation.setNumerOfRecords(operation.countDeleteOrders(ui, cn.getConnection()));
+
                         operation.setMethod("deleteorders");
                         rq.setAttribute("operation", operation);
                     }
@@ -121,12 +125,12 @@ public class BulkOperations extends DispatchAction {
 
                 try {
 
-                    // get number of records involved
-                    operation.setNumerOfRecords(operation.countDeleteUserNoOrders(ui, cn.getConnection()));
-
                     if (operation.isConfirmed()) {
                         // execute operation
-                        operation.deleteuserNoOrders(ui, cn.getConnection());
+                        final int deleted = operation.deleteUserNoOrders(ui, cn.getConnection());
+
+                        // set result from DELETE back into form
+                        operation.setNumerOfRecords(deleted);
 
                         final Message msg = new Message();
                         msg.setMessage("maintenance.numberOfRecordsDeleted");
@@ -138,6 +142,10 @@ public class BulkOperations extends DispatchAction {
                     } else {
                         // force confirmation of operation
                         forward = "confirm";
+
+                        // get number of records involved
+                        operation.setNumerOfRecords(operation.countDeleteUserNoOrders(ui, cn.getConnection()));
+
                         operation.setMethod("deleteusernoroders");
                         rq.setAttribute("operation", operation);
                     }

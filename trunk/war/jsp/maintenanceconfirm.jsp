@@ -31,7 +31,7 @@
 
 <h3><bean:message key="maintenance.confirm" /></h3>
 
-<p><br /></p>
+<div id="italic"><p><bean:message key="maintenance.warning" /><br /></p></div>
 
 <form action="bulkoperation.do?method=<bean:write name="operation" property="method" />" method="post">
 
@@ -42,6 +42,10 @@
 <p><input type="submit" value="<bean:message key="stockplacesmodify.delete" />" /></p>
 
 </form>
+
+<p><br /></p>
+
+<a href="maintenance.do"><bean:message key="error.back" /></a>
 
 <p><br /></p>
 
