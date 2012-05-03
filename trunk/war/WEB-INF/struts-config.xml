@@ -28,6 +28,7 @@
 		<form-bean name="PreisWaehrungForm" type="ch.dbs.form.PreisWaehrungForm" />
 		<form-bean name="SearchesForm" type="ch.dbs.form.SearchesForm" />
 		<form-bean name="SupplierForm" type="ch.dbs.form.SupplierForm" />
+		<form-bean name="MaintenanceForm" type="ch.dbs.form.MaintenanceForm" />
 	</form-beans>
 
 	<global-exceptions />
@@ -739,8 +740,25 @@
 			parameter="method" type="ch.dbs.cronjobs.OptimizeDB">
 		</action>
 		<!--
-			**********************************************************************************************************
+			*************************************************Maintenance*************************************************
 		-->
+		
+		<action path="/maintenance" input="/jsp/maintenance.jsp" name="MaintenanceForm"
+			parameter="method" scope="request" type="ch.dbs.actions.maintenance.ListOptions">
+			<forward name="success" path="/preparemaintenance.do" />
+			<forward name="failure" path="/error.do" />
+		</action>
+
+		<action forward="/jsp/maintenance.jsp" path="/preparemaintenance" />
+
+		<action path="/bulkoperation" input="/jsp/maintenance.jsp" name="MaintenanceForm"
+			parameter="method" scope="request" type="ch.dbs.actions.maintenance.BulkOperations">
+			<forward name="success" path="/jsp/message.jsp" />
+			<forward name="confirm" path="/confirmmaintenance.do" />
+			<forward name="failure" path="/error.do" />
+		</action>
+		
+		<action forward="/jsp/maintenanceconfirm.jsp" path="/confirmmaintenance" />
 
 		<!--
 			*************************************************Reports*************************************************
@@ -801,10 +819,6 @@
 		</action>
 
 		<!--
-			**********************************************************************************************************
-		-->
-
-		<!--
 			*************************************************Bestandesverwaltung*************************************************
 		-->
 
@@ -856,12 +870,12 @@
 		<action name="ActiveMenus" forward="/jsp/stockexport.jsp" path="/stockexport" />
 		<action name="ActiveMenus" forward="/jsp/stockdetails.jsp"
 			path="/stockdetails" />
+
+	</action-mappings>
+	
 		<!--
 			**********************************************************************************************************
 		-->
-
-
-	</action-mappings>
 
 	<!-- ================================ Message Resources Definitions -->
 	<message-resources parameter="resources.MessageResources" />

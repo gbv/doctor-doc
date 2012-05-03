@@ -51,7 +51,7 @@ public class Settings extends DispatchAction {
 
         // catching session timeouts
         if (auth.isLogin(rq)) {
-            // restrict editing suppliers to librarians and admins only
+            // access restricted to librarians and admins only
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
                 final Lieferanten sup = new Lieferanten();
