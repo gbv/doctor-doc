@@ -40,10 +40,41 @@
 <p>
 	<select name="months">
        <option value="0" >0 [<bean:message key="maintenance.all" />]</option>
+       <option value="1" >1 <bean:message key="maintenance.months" /></option>
+       <option value="2" >2 <bean:message key="maintenance.months" /></option>
        <option value="3" >3 <bean:message key="maintenance.months" /></option>
+       <option value="4" >4 <bean:message key="maintenance.months" /></option>
+       <option value="5" >5 <bean:message key="maintenance.months" /></option>
        <option value="6" >6 <bean:message key="maintenance.months" /></option>
+       <option value="7" >7 <bean:message key="maintenance.months" /></option>
+       <option value="8" >8 <bean:message key="maintenance.months" /></option>
+       <option value="9" >9 <bean:message key="maintenance.months" /></option>
+       <option value="10" >10 <bean:message key="maintenance.months" /></option>
+       <option value="11" >11 <bean:message key="maintenance.months" /></option>
        <option value="12" selected="selected">1 <bean:message key="bestellform.jahr" /></option>
+       <option value="13" >13 <bean:message key="maintenance.months" /></option>
+       <option value="14" >14 <bean:message key="maintenance.months" /></option>
+       <option value="15" >15 <bean:message key="maintenance.months" /></option>
+       <option value="16" >16 <bean:message key="maintenance.months" /></option>
+       <option value="17" >17 <bean:message key="maintenance.months" /></option>
+       <option value="18" >18 <bean:message key="maintenance.months" /></option>
+       <option value="19" >19 <bean:message key="maintenance.months" /></option>
+       <option value="20" >20 <bean:message key="maintenance.months" /></option>
+       <option value="21" >21 <bean:message key="maintenance.months" /></option>
+       <option value="22" >22 <bean:message key="maintenance.months" /></option>
+       <option value="23" >23 <bean:message key="maintenance.months" /></option>
        <option value="24" >2 <bean:message key="maintenance.years" /></option>
+       <option value="25" >25 <bean:message key="maintenance.months" /></option>
+       <option value="26" >26 <bean:message key="maintenance.months" /></option>
+       <option value="27" >27 <bean:message key="maintenance.months" /></option>
+       <option value="28" >28 <bean:message key="maintenance.months" /></option>
+       <option value="29" >29 <bean:message key="maintenance.months" /></option>
+       <option value="30" >30 <bean:message key="maintenance.months" /></option>
+       <option value="31" >31 <bean:message key="maintenance.months" /></option>
+       <option value="32" >32 <bean:message key="maintenance.months" /></option>
+       <option value="33" >33 <bean:message key="maintenance.months" /></option>
+       <option value="34" >34 <bean:message key="maintenance.months" /></option>
+       <option value="35" >35 <bean:message key="maintenance.months" /></option>
        <option value="36" >3 <bean:message key="maintenance.years" /></option>
        <option value="48" >4 <bean:message key="maintenance.years" /></option>
        <option value="60" >5 <bean:message key="maintenance.years" /></option>
@@ -68,10 +99,41 @@
 <p>
 	<select name="months">
        <option value="0" >0 [<bean:message key="maintenance.all" />]</option>
+       <option value="1" >1 <bean:message key="maintenance.months" /></option>
+       <option value="2" >2 <bean:message key="maintenance.months" /></option>
        <option value="3" >3 <bean:message key="maintenance.months" /></option>
+       <option value="4" >4 <bean:message key="maintenance.months" /></option>
+       <option value="5" >5 <bean:message key="maintenance.months" /></option>
        <option value="6" >6 <bean:message key="maintenance.months" /></option>
+       <option value="7" >7 <bean:message key="maintenance.months" /></option>
+       <option value="8" >8 <bean:message key="maintenance.months" /></option>
+       <option value="9" >9 <bean:message key="maintenance.months" /></option>
+       <option value="10" >10 <bean:message key="maintenance.months" /></option>
+       <option value="11" >11 <bean:message key="maintenance.months" /></option>
        <option value="12" selected="selected">1 <bean:message key="bestellform.jahr" /></option>
+       <option value="13" >13 <bean:message key="maintenance.months" /></option>
+       <option value="14" >14 <bean:message key="maintenance.months" /></option>
+       <option value="15" >15 <bean:message key="maintenance.months" /></option>
+       <option value="16" >16 <bean:message key="maintenance.months" /></option>
+       <option value="17" >17 <bean:message key="maintenance.months" /></option>
+       <option value="18" >18 <bean:message key="maintenance.months" /></option>
+       <option value="19" >19 <bean:message key="maintenance.months" /></option>
+       <option value="20" >20 <bean:message key="maintenance.months" /></option>
+       <option value="21" >21 <bean:message key="maintenance.months" /></option>
+       <option value="22" >22 <bean:message key="maintenance.months" /></option>
+       <option value="23" >23 <bean:message key="maintenance.months" /></option>
        <option value="24" >2 <bean:message key="maintenance.years" /></option>
+       <option value="25" >25 <bean:message key="maintenance.months" /></option>
+       <option value="26" >26 <bean:message key="maintenance.months" /></option>
+       <option value="27" >27 <bean:message key="maintenance.months" /></option>
+       <option value="28" >28 <bean:message key="maintenance.months" /></option>
+       <option value="29" >29 <bean:message key="maintenance.months" /></option>
+       <option value="30" >30 <bean:message key="maintenance.months" /></option>
+       <option value="31" >31 <bean:message key="maintenance.months" /></option>
+       <option value="32" >32 <bean:message key="maintenance.months" /></option>
+       <option value="33" >33 <bean:message key="maintenance.months" /></option>
+       <option value="34" >34 <bean:message key="maintenance.months" /></option>
+       <option value="35" >35 <bean:message key="maintenance.months" /></option>
        <option value="36" >3 <bean:message key="maintenance.years" /></option>
        <option value="48" >4 <bean:message key="maintenance.years" /></option>
        <option value="60" >5 <bean:message key="maintenance.years" /></option>
