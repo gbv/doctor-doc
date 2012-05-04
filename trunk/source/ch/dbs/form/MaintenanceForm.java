@@ -59,7 +59,7 @@ public final class MaintenanceForm extends ActionForm {
             }
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("countDeleteOrders(final UserInfo ui, final Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -96,7 +96,7 @@ public final class MaintenanceForm extends ActionForm {
             deleteStatiNoOrders(cn);
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("deleteOrders(final UserInfo ui, final Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
@@ -130,7 +130,7 @@ public final class MaintenanceForm extends ActionForm {
             }
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("countDeleteUserNoOrders(final UserInfo ui, final Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -172,7 +172,7 @@ public final class MaintenanceForm extends ActionForm {
             deleteVKontoBenutzerWhereNoUser(cn);
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("deleteUserNoOrders(final UserInfo ui, final Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
@@ -201,7 +201,7 @@ public final class MaintenanceForm extends ActionForm {
             deleteStatiNoOrders(cn);
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("deleteOrdersNouser(final UserInfo ui, final Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
@@ -228,7 +228,7 @@ public final class MaintenanceForm extends ActionForm {
             result = pstmt.executeUpdate();
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("deleteStatiNoOrders(final Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
@@ -255,7 +255,7 @@ public final class MaintenanceForm extends ActionForm {
             result = pstmt.executeUpdate();
 
         } catch (final Exception e) {
-            LOG.error("Konto (Long kid, Connection cn): " + e.toString());
+            LOG.error("deleteVKontoBenutzerWhereNoUser(final Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
