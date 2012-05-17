@@ -12,7 +12,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.grlea.log.SimpleLogger;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -48,7 +47,7 @@ public class DaiaXMLResponse {
 
             final TransformerHandler hd = tf.newTransformerHandler();
             final Transformer serializer = hd.getTransformer();
-            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
+            serializer.setOutputProperty(OutputKeys.ENCODING, UTF8);
             serializer.setOutputProperty(OutputKeys.METHOD, "xml");
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
@@ -88,7 +87,7 @@ public class DaiaXMLResponse {
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
-                text = StringEscapeUtils.escapeXml(rfr_id);
+                text = rfr_id;
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
             }
@@ -104,7 +103,7 @@ public class DaiaXMLResponse {
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
-                text = StringEscapeUtils.escapeXml(b.getHolding().getTitel());
+                text = b.getHolding().getTitel();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
 
@@ -118,14 +117,14 @@ public class DaiaXMLResponse {
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
-                text = StringEscapeUtils.escapeXml(b.getBemerkungen());
+                text = b.getBemerkungen();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
 
                 // Label tag (call number / Shelfmark)
                 atts.clear();
                 hd.startElement("", "", "label", atts);
-                text = StringEscapeUtils.escapeXml(b.getShelfmark());
+                text = b.getShelfmark();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "label");
 
@@ -136,14 +135,14 @@ public class DaiaXMLResponse {
                 hd.startElement("", "", "department", atts);
                 text = b.getHolding().getKonto().getBibliotheksname() + "\040" + b.getHolding().getKonto().getOrt()
                         + "\040" + b.getHolding().getKonto().getLand();
-                text = StringEscapeUtils.escapeXml(text);
+                //                text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "department");
 
                 // Storage tag
                 atts.clear();
                 hd.startElement("", "", "storage", atts);
-                text = StringEscapeUtils.escapeXml(b.getStandort().getInhalt());
+                text = b.getStandort().getInhalt();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "storage");
 
@@ -164,7 +163,7 @@ public class DaiaXMLResponse {
                 atts.clear();
                 hd.startElement("", "", "limitation", atts);
                 text = "Country: " + b.getHolding().getKonto().getLand();
-                text = StringEscapeUtils.escapeXml(text);
+                //                text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "limitation");
 
@@ -251,7 +250,7 @@ public class DaiaXMLResponse {
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
                 hd.startElement("", "", "message", atts);
-                text = StringEscapeUtils.escapeXml(rfr_id);
+                text = rfr_id;
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
             }
@@ -260,7 +259,7 @@ public class DaiaXMLResponse {
             atts.clear();
             atts.addAttribute("", "", "lang", CDATA, "de");
             hd.startElement("", "", "message", atts);
-            text = StringEscapeUtils.escapeXml(msg);
+            text = msg;
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "message");
 
