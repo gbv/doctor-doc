@@ -27,9 +27,9 @@ a:visited {
   width: 100%;
   text-align: left;
   color: white;
-  padding-top: 4;
-  padding-right: 2;
-  padding-left: 2;
+  padding-top: 4px;
+  padding-right: 2px;
+  padding-left: 2px;
   padding-bottom: 0;
   background: #0000B2;
 }
@@ -38,7 +38,6 @@ table {
   border-collapse: collapse;
   border-width: 1px;
   border-color: #404040;
-  valign: top;
 }
 
 table.submenu {
@@ -117,7 +116,6 @@ td.logo {
 }
 
 td.kontoinfos {
-  width: *;
   text-align: center;
 }
 
@@ -196,11 +194,6 @@ border:1px solid #fff;
   z-index: 2;
 }
 
-#hinweis {
-  color: white;
-  font-style: bold;
-}
-
 #italic {
   color: white;
   font-style: italic;
@@ -265,7 +258,7 @@ border:1px solid #fff;
 #submenu a:link,#submenu a:visited {
   display: block;
   background: #e1d0d0;
-  color: grey;
+  color: gray;
   text-decoration: none;
   margin: 0;
   padding: 0.2em;

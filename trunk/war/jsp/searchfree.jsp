@@ -54,10 +54,12 @@
 <logic:present name="userinfo" property="konto">
   <h3><bean:message key="findfree.header" /></h3>
   <html:form action="journalorder1.do" method="post" focus="artikeltitel">
+  
+  <br>
    
   <table>
     <tr>
-      <td><p></p><bean:message key="bestellform.artikeltitel" />&nbsp;</td><td><input name="artikeltitel" type="search" required size="98" /></td>
+      <td><bean:message key="bestellform.artikeltitel" />&nbsp;</td><td><input name="artikeltitel" type="search" required size="98" /></td>
     </tr>
     <tr>
       <td></td><td><bean:message key="findfree.pmid" /></td>
