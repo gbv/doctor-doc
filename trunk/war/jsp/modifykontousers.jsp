@@ -17,7 +17,7 @@
 <tiles:insert page="import/header.jsp" flush="true" />
  
 <div class="content">
- <br />
+ <br>
  
 <logic:notPresent name="userform" property="delete"><h3><bean:message key="modifykontousers.add" /></h3></logic:notPresent>
   <logic:present name="userform" property="delete">
@@ -205,12 +205,12 @@
     
       <tr>
       <logic:equal name="userform" property="delete" value="true">
-        <td><br /><bean:message key="modifykontousers.delete_confirm" /> <input type="submit" value="<bean:message key="modifykonto.yes" />" /></td>
+        <td><br><bean:message key="modifykontousers.delete_confirm" /> <input type="submit" value="<bean:message key="modifykonto.yes" />" /></td>
           <input name="method" type="hidden" value="deleteKontousers" />
       </logic:equal>
       <logic:notEqual name="userform" property="delete" value="true">
-        <td><br /><input type="submit" value="sichern"></input></td>
-        <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+        <td><br><input type="submit" value="sichern"></td>
+        <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           <input name="method" type="hidden" value="modifykontousers" />
         </logic:notEqual>
         </tr>
@@ -221,14 +221,14 @@
     
       <tr>
         <logic:notEqual name="userinfo" property="keepordervalues2" value="true">
-        	<td><br /><input type="submit" value="<bean:message key="modifykontousers.save" />"/></td>
-        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+        	<td><br><input type="submit" value="<bean:message key="modifykontousers.save" />"/></td>
+        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           	<input name="method" type="hidden" value="modifykontousers" />
         </logic:notEqual>
           
         <logic:equal name="userinfo" property="keepordervalues2" value="true">
-        	<td><br /><input type="submit" value="<bean:message key="modifykontousers.save_continue" />"></input></td>
-        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br /><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+        	<td><br><input type="submit" value="<bean:message key="modifykontousers.save_continue" />"></td>
+        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           	<input name="method" type="hidden" value="modifykontousers" />
         </logic:equal>
           

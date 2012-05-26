@@ -49,7 +49,7 @@
 
 <div class="content">
 
- <br /> <br /> 
+ <br> <br> 
 
 <logic:present name="userinfo" property="konto">
   <h3><bean:message key="findfree.header" /></h3>
@@ -57,20 +57,20 @@
    
   <table>
     <tr>
-      <td><p /><bean:message key="bestellform.artikeltitel" />&nbsp;</td><td><input name="artikeltitel" type="search" required size="98" /></td>
+      <td><p></p><bean:message key="bestellform.artikeltitel" />&nbsp;</td><td><input name="artikeltitel" type="search" required size="98" /></td>
     </tr>
     <tr>
       <td></td><td><bean:message key="findfree.pmid" /></td>
     </tr>
     <tr>
-      <td><input type="submit" value="<bean:message key="findfree.submit" />"></input></td>
+      <td><input type="submit" value="<bean:message key="findfree.submit" />"></td>
     </tr>
   </table>
   <input name="method" type="hidden" value="findForFree" />  
   </html:form>
-  <br />
-  <br />
-  <br />
+  <br>
+  <br>
+  <br>
   <div id="italic"><bean:message key="findfree.comment" /></div>
   
 </logic:present>
@@ -78,7 +78,7 @@
 
 <logic:notPresent name="userinfo" property="konto">
   <p><bean:message key="error.timeout" /></p>
-  <p /><a href="login.do"><bean:message key="error.back" /></a>
+  <p></p><a href="login.do"><bean:message key="error.back" /></a>
 </logic:notPresent>
 
 </div>

@@ -27,7 +27,7 @@
   </tr>
 </table>
 
-<br />
+<br>
 
 <form action="suppliersettings.do" method="post">
 
@@ -150,7 +150,7 @@
 
 </form>
 
-<p><br /></p>
+<p><br></p>
 
 </div>
  </body>

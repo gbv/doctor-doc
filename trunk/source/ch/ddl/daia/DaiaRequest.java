@@ -24,7 +24,7 @@ import ch.dbs.entity.Bestand;
  * Converts a DAIA-XML-Response into a List<Bestand>
  * DAIA = Document Availability Information API
  * see http://ws.gbv.de/daia/daia.xsd.htm
- * <p/>
+ * <p></p>
  *
  * @author Markus Fischer
  */

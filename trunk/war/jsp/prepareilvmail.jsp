@@ -50,7 +50,7 @@
   </tr>
   
   </table>
-  <p />
+  <p></p>
 
   <input type="hidden" name="method" value="sendIlvMail" />
   

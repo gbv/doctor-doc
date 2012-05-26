@@ -253,8 +253,8 @@
 <p>
     <logic:equal name="orderform" property="delete" value="true">
       <html:form action="deleteorder.do?method=deleteOrder" method="post">
-        <bean:message key="orderview.confirm_delete" /> <input type="submit" value="<bean:message key="modifykonto.yes" />"></input>
-        <input type="hidden" name="bid" value="<bean:write name="orderform" property="bestellung.id" />"></input>
+        <bean:message key="orderview.confirm_delete" /> <input type="submit" value="<bean:message key="modifykonto.yes" />">
+        <input type="hidden" name="bid" value="<bean:write name="orderform" property="bestellung.id" />">
       </html:form>
     </logic:equal>
 </p>

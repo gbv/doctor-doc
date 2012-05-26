@@ -33,7 +33,7 @@ import ch.dbs.form.OrderForm;
 
 /**
  * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu schreiben
- * <p/>
+ * <p></p>
  * @author Markus Fischer
  */
 

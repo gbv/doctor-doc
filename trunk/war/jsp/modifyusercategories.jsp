@@ -25,7 +25,7 @@
  
 <div class="content">
 
- <br />
+ <br>
 <h3><bean:message key="modifykontousers.categories" /></h3>
 
 <html:form action="usercategories.do?method=changeCategory" method="post">
@@ -64,11 +64,11 @@
 
 </html:form>
 
-<p><br /></p>
+<p><br></p>
 
 <logic:present name="categories">
 
-<p><bean:message key="modifyusercategories.intro" /><br /></p>
+<p><bean:message key="modifyusercategories.intro" /><br></p>
 
   <table class="border">
   <logic:iterate id="cat" name="categories">

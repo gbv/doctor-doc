@@ -16,7 +16,7 @@
 
 <tiles:insert page="import/header.jsp" flush="true" />
 
-<div class="content"><br />
+<div class="content"><br>
 
 <h3>Rechnung versenden:</h3>
 Folgende Rechnung f&uuml;r das Konto <bean:write name="billingform"
@@ -41,7 +41,7 @@ Folgende Rechnung f&uuml;r das Konto <bean:write name="billingform"
   type="hidden" name="method" value="sendBill" /> <input name="action"
   value="Rechnung so versenden" type="submit" /></form>
 
-<p />
+<p></p>
 <hr />
 
 <h3>Rechnung anpassen:</h3>
@@ -49,7 +49,7 @@ Folgende Rechnung f&uuml;r das Konto <bean:write name="billingform"
 <input type="hidden" name="method" value="prepareBillingText" />
 <table>
   <tr>
-    <td>Rechnungstext<br></br>
+    <td>Rechnungstext<br>
     erg&auml;nzen:</td>
     <td><textarea name="manuelltext" cols="30" rows="5"><bean:write
       name="billingform" property="manuelltext" /></textarea></td>

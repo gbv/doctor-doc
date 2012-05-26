@@ -40,12 +40,12 @@ h += 96;
 
 <div class="content">
 
-<br />
+<br>
               
   <div id="italic">
     <logic:notEmpty name="orderform" property="author"><bean:write name="orderform" property="author" /> : </logic:notEmpty>
     <logic:notEmpty name="orderform" property="artikeltitel"><bean:write name="orderform" property="artikeltitel" />. - </logic:notEmpty>
-    <logic:notEmpty name="orderform" property="zeitschriftentitel"><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEmpty><br />
+    <logic:notEmpty name="orderform" property="zeitschriftentitel"><bean:write name="orderform" property="zeitschriftentitel" /></logic:notEmpty><br>
     <logic:notEmpty name="orderform" property="jahr"><bean:write name="orderform" property="jahr" /></logic:notEmpty><logic:notEmpty name="orderform" property="jahrgang">;<bean:write name="orderform" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="orderform" property="heft">(<bean:write name="orderform" property="heft" />)</logic:notEmpty><logic:notEmpty name="orderform" property="seiten">:<bean:write name="orderform" property="seiten" /></logic:notEmpty>
     <logic:notEmpty name="orderform" property="issn">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEmpty>
     <logic:notEmpty name="orderform" property="pmid">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEmpty>
@@ -148,14 +148,14 @@ h += 96;
 </table>
 
 <logic:present name="userinfo" property="benutzer">
-<p />
+<p></p>
   <logic:notPresent name="orderform" property="bid">
     <div id="italic"><bean:message key="save.artikel" /> <bean:message key="save.gefunden" /> <a href="prepareJournalSave.do?method=prepareJournalSave&issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" /><logic:present name="orderform" property="foruser">&foruser=<bean:write name="orderform" property="foruser" /></logic:present>&status=erledigt<logic:present name="orderform" property="lieferant.lid">&lid=<bean:write name="orderform" property="lieferant.lid" /></logic:present><logic:present name="orderform" property="deloptions">&deloptions=<bean:write name="orderform" property="deloptions" /></logic:present><logic:notPresent name="orderform" property="deloptions">&deloptions=email</logic:notPresent>&preisvorkomma=0&preisnachkomma=00&artikeltitel=<bean:write name="orderform" property="artikeltitel_encoded" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&author=<bean:write name="orderform" property="author_encoded" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></div>
   </logic:notPresent>
   <logic:present name="orderform" property="bid">
     <div id="italic"><bean:message key="save.artikel" /> <bean:message key="save.gefunden" /> <a href="preparemodifyorder.do?method=prepareModifyOrder&bid=<bean:write name="orderform" property="bid" />"><font color="white"><bean:message key="save.speichern" /></font></a> <bean:message key="save.statistik" /></div>
   </logic:present>
-<p />
+<p></p>
 </logic:present>
  
 
@@ -251,7 +251,7 @@ h += 96;
   </logic:notEmpty>
   
   <logic:empty name="orderform" property="issn">
- <div id="italic"><bean:message key="availresult.manuell" /></div><br />
+ <div id="italic"><bean:message key="availresult.manuell" /></div><br>
    <table class="border">
     <tr>
       <th id="th-left"><bean:message key="availresult.deutschland" /></th>
@@ -409,7 +409,7 @@ h += 96;
 </logic:equal>
 </logic:present>
 <p></p>
-<br></br>
+<br>
  
 
   <form action="journalorder2.do" method="post">
@@ -514,22 +514,22 @@ h += 96;
   <table>
     <tr>
     <logic:notPresent name="userinfo" property="benutzer">
-      <td><input type="submit" name="submit" value="<bean:message key="availresult.submitweiter" />"></input></td>
+      <td><input type="submit" name="submit" value="<bean:message key="availresult.submitweiter" />"></td>
     </logic:notPresent>
     <logic:present name="userinfo" property="benutzer">
       <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-          <td><logic:equal name="orderform" property="mediatype" value="Artikel"><input type="submit" name="submit" value="<bean:message key="availresult.submitsubito" />"></input></logic:equal><logic:notEqual name="orderform" property="mediatype" value="Artikel"><input type="submit" name="submit" value="Bestellangaben speichern"></input></logic:notEqual></td>
-          <td>&nbsp;<br />&nbsp;</td>
-          <td><logic:present name="userinfo" property="konto.gbvbenutzername"><input type="submit" name="submit" value="<bean:message key="availresult.submitgbv" />"></input></logic:present></td>
+          <td><logic:equal name="orderform" property="mediatype" value="Artikel"><input type="submit" name="submit" value="<bean:message key="availresult.submitsubito" />"></logic:equal><logic:notEqual name="orderform" property="mediatype" value="Artikel"><input type="submit" name="submit" value="Bestellangaben speichern"></logic:notEqual></td>
+          <td>&nbsp;<br>&nbsp;</td>
+          <td><logic:present name="userinfo" property="konto.gbvbenutzername"><input type="submit" name="submit" value="<bean:message key="availresult.submitgbv" />"></logic:present></td>
         </logic:notEqual>
         <logic:equal name="userinfo" property="benutzer.rechte" value="1">
-          <td><input type="submit" name="submit" value="<bean:message key="availresult.submitbibliothek" />"></input></td>
-          <td>&nbsp;<br />&nbsp;</td>
-          <td><logic:equal name="userinfo" property="benutzer.userbestellung" value="true"><input type="submit" name="submit" value="<bean:message key="availresult.submitsubito" />"></input></logic:equal></td>
-          <td>&nbsp;<br />&nbsp;</td>
+          <td><input type="submit" name="submit" value="<bean:message key="availresult.submitbibliothek" />"></td>
+          <td>&nbsp;<br>&nbsp;</td>
+          <td><logic:equal name="userinfo" property="benutzer.userbestellung" value="true"><input type="submit" name="submit" value="<bean:message key="availresult.submitsubito" />"></logic:equal></td>
+          <td>&nbsp;<br>&nbsp;</td>
           <logic:present name="userinfo" property="konto.gbvrequesterid">
       <logic:present name="userinfo" property="konto.isil">
-          <td><logic:present name="userinfo" property="konto.gbvbenutzername"><logic:equal name="userinfo" property="benutzer.gbvbestellung" value="true"><input type="submit" name="submit" value="<bean:message key="availresult.submitgbv" />"></input></logic:equal></logic:present></td>
+          <td><logic:present name="userinfo" property="konto.gbvbenutzername"><logic:equal name="userinfo" property="benutzer.gbvbestellung" value="true"><input type="submit" name="submit" value="<bean:message key="availresult.submitgbv" />"></logic:equal></logic:present></td>
           </logic:present>
       </logic:present>
         </logic:equal>

@@ -19,7 +19,7 @@
 <tiles:insert page="import/header.jsp" flush="true" />
 
 <div class="content">
-<br />
+<br>
 
               
 <h3><bean:message key="register.header" /></h3>
@@ -58,13 +58,13 @@
       <td><b><bean:message arg0="<%=appName%>" key="register.dd_pw" />*</b>&nbsp;</td><td><html:password property="password" size="50" maxlength="50" /> <bean:message key="register.dd_pw_min" /></td>
     </tr>
     <tr>
-      <td><br /></td>
+      <td><br></td>
     </tr>
     <tr>
       <td><b>*<bean:message key="modifykonto.required" /></b></td><td></td>
     </tr>    
     <tr>
-      <td><br /><input type="submit" value="<bean:message key="register.submit" />" /></td>
+      <td><br><input type="submit" value="<bean:message key="register.submit" />" /></td>
     </tr>
   </table>
   

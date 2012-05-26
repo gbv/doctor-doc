@@ -36,7 +36,7 @@ import ch.dbs.form.UserInfo;
 /**
  * Abstract base class for entities having a {@link Long} unique identifier,
  * this provides the base functionality for them.
- * <p/>
+ * <p></p>
  * 
  * @author Pascal Steiner
  */

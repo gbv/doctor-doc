@@ -47,7 +47,7 @@
 </table>
 
 <div class="content">
-<br /><br />
+<br><br>
               
 <h3><bean:message key="choosehits.header" /></h3>
 
@@ -71,7 +71,7 @@
  <p>
     <logic:present name="orderform" property="issn">
     <div id="italic">
-    <bean:write name="orderform" property="zeitschriftentitel" /><br />
+    <bean:write name="orderform" property="zeitschriftentitel" /><br>
     <bean:write name="orderform" property="jahrgang" />. Jg., <bean:write name="orderform" property="jahr" />
     </div>
     </logic:present>
@@ -110,16 +110,16 @@
   <logic:notEqual name="userinfo" property="konto.bibliotheksname" value="Demo-Bibliothek">
   <table>
   <tr>
-  <td><input type="submit" name="submit" value="weiter im Bestellablauf"></input></td>
-  <td><br /></td>
-  <td><input type="submit" name="submit" value="GBV-Suche"></input></td>
+  <td><input type="submit" name="submit" value="weiter im Bestellablauf"></td>
+  <td><br></td>
+  <td><input type="submit" name="submit" value="GBV-Suche"></td>
   </tr>    
   </table>
   
 <div id="italic">
   <p>
   	<bean:message key="order.doppelklicks" />
-  </p><br />
+  </p><br>
 </div>
   
   <b><bean:write name="orderform" property="treffer_total" /> <bean:message key="choosehits.treffer" /></b><p></p>
@@ -135,11 +135,11 @@
           <td></td>
         </tr>
         <tr>
-          <td><br /></td>
+          <td><br></td>
         </tr>
        <logic:iterate id="m" name="matches">
          <tr>
-           <td><input type="radio" name="ppn" value="<bean:write name="m" property="ppn_003AT" />"></input></td>
+           <td><input type="radio" name="ppn" value="<bean:write name="m" property="ppn_003AT" />"></td>
            <td><bean:write name="m" property="record_number" />.&nbsp;</td>
            <td><logic:present name="m" property="materialbenennung_allg_016H"><bean:write name="m" property="materialbenennung_allg_016H" /> <bean:write name="m" property="materialbenennung_spezifisch_034D" /></logic:present> <bean:write name="m" property="typ_002AT" /> | <a href="http://gso.gbv.de/DB=2.1/SET=1/TTL=1/MAT=/NORMAT=T/CLK?IKT=12&TRM=<bean:write name="m" property="ppn_003AT" />" target="_blank">GBV</a></td>
          </tr>
@@ -184,7 +184,7 @@
          </tr>
          </logic:present>
          <tr>
-           <td><br /></td>
+           <td><br></td>
          </tr>
          </logic:iterate>
      </logic:present>
@@ -194,16 +194,16 @@
         <td></td>
       </tr>
       <tr>
-         <td><br /></td>
+         <td><br></td>
        </tr>
      </table>
      
      <logic:notEqual name="userinfo" property="konto.bibliotheksname" value="Demo-Bibliothek">
   <table>
   <tr>
-  <td><input type="submit" name="submit" value="weiter im Bestellablauf"></input></td>
-  <td><br /></td>
-  <td><input type="submit" name="submit" value="GBV-Suche"></input></td>
+  <td><input type="submit" name="submit" value="weiter im Bestellablauf"></td>
+  <td><br></td>
+  <td><input type="submit" name="submit" value="GBV-Suche"></td>
   </tr>
   </table>
   

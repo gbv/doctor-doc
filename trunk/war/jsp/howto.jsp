@@ -56,7 +56,7 @@
   </tr>
 </table>
 
-<br />
+<br>
 <h3><logic:equal name="ActiveMenus" property="activesubmenu"
   value="OpenURL">
 OpenURL - Linkresolver

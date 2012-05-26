@@ -27,7 +27,7 @@
   </tr>
 </table>
 
-<br />
+<br>
 
 <h3><bean:message key="supplier.edit" /></h3>
 
@@ -58,7 +58,7 @@
 	</logic:notEqual>
 	<tr>
 		<td colspan="2">
-			<input type="hidden" name="lid" value="<bean:write name="supplier" property="lid" />" /><br />
+			<input type="hidden" name="lid" value="<bean:write name="supplier" property="lid" />" /><br>
 		</td>
 	</tr>
 	<tr>
@@ -71,7 +71,7 @@
 <p><a href="listsuppliers.do"><bean:message key="error.back" /></a></p>
 
 
-<p><br /></p>
+<p><br></p>
 
 </div>
  </body>

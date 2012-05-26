@@ -26,7 +26,7 @@ import org.grlea.log.SimpleLogger;
 
 /**
  * Grundlegende Klasse um Bestandeslücken abzubilden und in die Datenbank zu schreiben
- * <p/>
+ * <p></p>
  * @author Markus Fischer
  */
 

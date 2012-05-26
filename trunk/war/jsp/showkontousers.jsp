@@ -21,7 +21,7 @@
 <div class="content">
 
 <logic:present name="userinfo" property="konto">
- <br /> 
+ <br> 
  <h3><bean:message key="showkontousers.header" /></h3>
 
 <a href="addkontousers.do?method=prepareAddUser"><img border="0" src="img/newuser.png" alt="<bean:message key="showkontousers.info_new" />" title="<bean:message key="showkontousers.info_new" />"/></a>

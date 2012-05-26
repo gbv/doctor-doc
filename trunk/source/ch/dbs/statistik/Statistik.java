@@ -22,7 +22,7 @@ import ch.dbs.form.OrderStatistikForm;
 /**
  * Abstract base class for entities having a {@link Long} unique
  * identifier, this provides the base functionality for them.
- * <p/>
+ * <p></p>
  * @author Markus Fischer
  */
 public class Statistik  {

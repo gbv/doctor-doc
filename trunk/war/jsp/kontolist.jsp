@@ -18,7 +18,7 @@
 
 <div class="content">
 
-<br />
+<br>
 <h3>Administration</h3>
 
 <table class="border">
@@ -29,7 +29,7 @@
     <th id="th-left">Faxoption bezahlt bis</th>
     <th id="th-left">Faxserver bezahlt bis</th>
     <th id="th-left">Bibliothekskontakt</th>
-    <th id="th-left">Rechnung<br />
+    <th id="th-left">Rechnung<br>
     versenden</th>
     <th id="th-left">Rechnungen</th>
   </tr>

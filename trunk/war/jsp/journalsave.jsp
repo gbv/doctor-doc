@@ -97,7 +97,7 @@ function wahrung(a)
 
 <div class="content">
 
-<br /><br />
+<br><br>
 
 <logic:present name="userinfo" property="konto">
 
@@ -114,7 +114,7 @@ function wahrung(a)
   
 
   <table>
-      <tr><td><br /></td></tr>
+      <tr><td><br></td></tr>
 
  <!--
  Hier folgt die Auswahl des Medientyps. Separates Action-Form. Eingegebene Daten werden nicht Übernommen.
@@ -163,14 +163,14 @@ function wahrung(a)
     	</td>
     </tr>
     
-   <tr><td><br /></td></tr>
+   <tr><td><br></td></tr>
     <tr title="<bean:message key="save.subitonr_info" />">
       <td><bean:message key="save.subitonr" /><img border="0" src="img/info.png" alt="<bean:message key="save.subitonr_info" />" /></td><td><input name="subitonr" value="<bean:write name="orderform" property="subitonr" />" type="text" size="25" maxlength="25" /></td></tr>
     <logic:present name="userinfo" property="konto.gbvbenutzername">
     <tr title="<bean:message key="save.gbvnr_info" />">
       <td><bean:message key="save.gbvnr" /><img border="0" src="img/info.png" alt="<bean:message key="save.gbvnr_info" />" /></td><td><input name="gbvnr" value="<bean:write name="orderform" property="gbvnr" />" type="text" size="25" maxlength="25" /></td></tr>
     </logic:present>
-  <tr><td><br /></td></tr>
+  <tr><td><br></td></tr>
  
    <!--
 Hier folgt die Auswahl der quelle mit JavaScript Preisselect
@@ -355,10 +355,10 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
       <td><input name="notizen" type="text" value="<bean:write name="orderform" property="notizen" />" size="62" maxlength="500" /></td>
     </tr>     
 
-     <tr><td><br /></td></tr>
+     <tr><td><br></td></tr>
      
      <tr>
-  		<td><input type="submit" name="submit" value="<bean:message key="save.speichern" />"></input></td>
+  		<td><input type="submit" name="submit" value="<bean:message key="save.speichern" />"></td>
   	</tr>
   	
   	  <input name="method" type="hidden" value="saveOrder" />
@@ -366,7 +366,7 @@ Hier folgt die Auswahl der quelle mit JavaScript Preisselect
       
      </table>
   
-  <p />
+  <p></p>
   <p></p>
   
   <logic:present name="message" property="error">

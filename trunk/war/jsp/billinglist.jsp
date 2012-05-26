@@ -16,7 +16,7 @@
 
 <tiles:insert page="import/header.jsp" flush="true" />
 
-<div class="content"><br />
+<div class="content"><br>
 
 <h3>Rechnungen des Kontos <bean:write name="billingform"
   property="konto.bibliotheksname" /></h3>

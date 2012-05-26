@@ -34,7 +34,7 @@ import ch.dbs.form.BillingForm;
 
 /**
  * Abstract base class for entities having a {@link Long} unique identifier,
- * this provides the base functionality for them. <p/>
+ * this provides the base functionality for them. <p></p>
  *
  * @author Pascal Steiner
  */

@@ -21,7 +21,7 @@ package ch.dbs.entity;
 /**
  * Abstract base class for entities having a {@link Long} unique
  * identifier, this provides the base functionality for them.
- * <p/>
+ * <p></p>
  * @author Pascal Steiner
  */
 public class Administrator extends AbstractBenutzer {

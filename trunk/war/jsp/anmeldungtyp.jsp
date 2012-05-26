@@ -25,7 +25,7 @@
 
 <div class="content">
 
-<br />          
+<br>          
 <h3><bean:message key="anmeldungtyp.titel" /></h3>
 
 <p><b><bean:message arg0="<%=appName%>" key="anmeldungtyp.intro" /></b></p>
@@ -53,7 +53,7 @@
 <tr><td id="border"><bean:message key="anmeldungtyp.openurl" /></td><td id="border" align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td id="border"><bean:message key="anmeldungtyp.linkresolver" /></td><td id="border" align="center"><img src="img/checkboxchecked.png" /></td></tr>
 <tr><td id="border"><a href="daia.do" target="_blank"><bean:message arg0="<%=appName%>" key="anmeldungtyp.api" /></a></td><td id="border" align="center"><img src="img/checkboxchecked.png" /></td></tr>
-<tr><td id="border" colspan="2"><p /><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /></td></tr>
+<tr><td id="border" colspan="2"><p></p><bean:message arg0="<%=appName%>" key="anmeldungtyp.nocosts" /></td></tr>
 </table>
 
 <tiles:insert page="import/footer.jsp" flush="true" />

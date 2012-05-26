@@ -230,7 +230,7 @@
     	</td>
     </tr>
     </logic:notEmpty>
-    <tr><td><br /></td></tr>
+    <tr><td><br></td></tr>
     
      </logic:iterate>
      	

@@ -32,7 +32,7 @@ import ch.dbs.form.OrderForm;
 
 /**
  * Class to transmit DAIA requests to an (external) order form.
- * <p/>
+ * <p></p>
  * @author Markus Fischer
  */
 public class DaiaParam extends AbstractIdEntity {

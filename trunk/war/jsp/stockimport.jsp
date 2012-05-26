@@ -42,7 +42,7 @@
 </logic:notEqual>
 </logic:present>
 
-<br />
+<br>
 
 <h3><bean:message key="stockimport.header" /></h3>
 
@@ -151,7 +151,7 @@
   <html:submit><bean:message key="stockimport.import" /></html:submit>
 
 
-<p><input type="checkbox" name="condition" value="true"></input>
+<p><input type="checkbox" name="condition" value="true">
   <bean:message arg0="<%=appName%>" key="stockimport.condition1" />&nbsp;
   <bean:message key="stockimport.condition2" />&nbsp; 
   <bean:message key="stockimport.condition3" />  
@@ -159,7 +159,7 @@
 
 </html:form>
 
-<p><br /></p>
+<p><br></p>
 
 </div>
 </body>

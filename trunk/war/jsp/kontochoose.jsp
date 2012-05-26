@@ -34,13 +34,13 @@
 
  
 <div class="content">
-<br /> 
-<br />
+<br> 
+<br>
 <h3><bean:message key="login.choose" />:</h3>
-<br />
-<br />
-<br />
-<br />
+<br>
+<br>
+<br>
+<br>
 <p><tiles:insert page="import/kontochange_login.jsp" flush="true" /></p>
 </div>
  </body>

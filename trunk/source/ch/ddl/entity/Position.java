@@ -32,7 +32,7 @@ import ch.dbs.interf.OrderHandler;
 
 /**
  * Handelt die Datenbankverbindungen/Daten der einzelnen Rechnungspositionen
- * <p/>
+ * <p></p>
  * @author Pascal Steiner
  */
 public class Position extends AbstractIdEntity implements OrderHandler {

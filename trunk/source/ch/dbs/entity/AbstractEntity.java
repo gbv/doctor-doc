@@ -25,9 +25,9 @@ import util.DBConn;
 /**
  * Basis abstract class für die meisten tabellen innerhalb dbs. Beinhaltet
  * <EM>lastModification</EM> eigenschaften
- * <p/>
+ * <p></p>
  * Der defaultwert für <EM>lastModification</EM> ist die Erstellungszeit der Klasse
- * <p/>
+ * <p></p>
  * @author Pascal Steiner
  * @version $Id$
  */

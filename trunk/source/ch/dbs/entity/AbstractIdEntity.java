@@ -19,7 +19,7 @@ package ch.dbs.entity;
 
 /**
  * Basisklasse für Tabellen mit einem Primärschlüssel {@link Long}
- * <p/>
+ * <p></p>
  * @author Pascal Steiner
  */
 public class AbstractIdEntity extends AbstractEntity {

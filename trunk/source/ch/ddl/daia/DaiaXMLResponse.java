@@ -23,7 +23,7 @@ import ch.dbs.entity.Bestand;
 /**
  * Gives a DAIA response in XML to a OpenURL request. DAIA = Document
  * Availability Information API http://ws.gbv.de/daia/daia.xsd.htm
- * <p/>
+ * <p></p>
  * 
  * @author Markus Fischer
  */

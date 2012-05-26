@@ -47,7 +47,7 @@
 </table>
 <div class="content">
 
-<br /><br />
+<br><br>
 
 <logic:equal name="orderform" property="submit" value="GBV">
 <!-- GBV Bestellformular -->
@@ -61,7 +61,7 @@
    
   <table>
   <logic:notPresent name="message" property="error">
-      <tr><td><br /></td></tr>
+      <tr><td><br></td></tr>
   </logic:notPresent>
 
  <!--
@@ -92,8 +92,8 @@
     <tr>   
       <td><bean:message key="bestellform.bestellart" /></td><td>
       <!-- GBV akzeptiert für den Moment nur Bestellungen per Post, obwohl technisch möglich...
-      <logic:present name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" <logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal>>Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</input><logic:notEqual name="orderform" property="mediatype" value="Buch"><input type="radio" name="deloptions" value="fax to pdf" <logic:notEqual name="orderform" property="deloptions" value="post"> checked="checked"</logic:notEqual>>Fax to Email [als PDF | Faxnummer: <bean:write name="userinfo" property="konto.faxno" /> ]</input></logic:notEqual></logic:present>
-      <logic:notPresent name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" checked="checked">Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</input><logic:notEqual name="orderform" property="mediatype" value="Buch"><logic:present name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" value="fax">Fax &nbsp;[ <bean:write name="userinfo" property="konto.fax_extern" /> ]</input></logic:present><logic:notPresent name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" disabled="true" value="fax">Fax</input> <font color="white"><i>(Hinterlegen Sie unter 'Konto' ihre lokale Faxnummer!) </i></font></logic:notPresent></logic:notEqual></logic:notPresent>
+      <logic:present name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" <logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal>>Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<logic:notEqual name="orderform" property="mediatype" value="Buch"><input type="radio" name="deloptions" value="fax to pdf" <logic:notEqual name="orderform" property="deloptions" value="post"> checked="checked"</logic:notEqual>>Fax to Email [als PDF | Faxnummer: <bean:write name="userinfo" property="konto.faxno" /> ]</logic:notEqual></logic:present>
+      <logic:notPresent name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" checked="checked">Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<logic:notEqual name="orderform" property="mediatype" value="Buch"><logic:present name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" value="fax">Fax &nbsp;[ <bean:write name="userinfo" property="konto.fax_extern" /> ]</logic:present><logic:notPresent name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" disabled="true" value="fax">Fax <font color="white"><i>(Hinterlegen Sie unter 'Konto' ihre lokale Faxnummer!) </i></font></logic:notPresent></logic:notEqual></logic:notPresent>
       -->
       <input type="radio" name="deloptions" value="post" checked="checked" /><bean:message key="save.post" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </td>
@@ -140,7 +140,7 @@
         <td title="<bean:message key="info.issn" />"><b><bean:message key="bestellform.issn" /></b> <img border="0" src="img/info.png" alt="<bean:message key="info.issn" />" /></td>
         <td><input name="issn"
           value="<logic:present name="orderform" property="issn"><bean:write name="orderform" property="issn" /></logic:present>"
-          type="text" size="9" maxlength="9"></input>
+          type="text" size="9" maxlength="9">
         </td>
       </tr>
     </logic:equal>
@@ -249,20 +249,20 @@
       <td><bean:message key="bestellform.interne_notizen" /> <img src="img/info.png" alt="<bean:message arg0="<%=appName%>" key="save.interne_notizen_comment" />" />&nbsp;</td><td><input name="notizen" type="text" value="<bean:write name="orderform" property="notizen" />" size="62" maxlength="500" /> (<bean:message key="order.intern" />)</td>
     </tr>
 
-     <tr><td><br /></td></tr>
+     <tr><td><br></td></tr>
 
 
       <tr>
       <td><bean:message key="order.method" />&nbsp;</td><td>
       <input type="radio" name="manuell" <logic:notPresent name="userinfo" property="konto.gbvrequesterid">disabled="true" </logic:notPresent><logic:present name="userinfo" property="konto.gbvrequesterid"><logic:notPresent name="userinfo" property="konto.isil">disabled="true" </logic:notPresent></logic:present>value="false" <logic:present name="orderform" property="manuell"><logic:equal name="orderform" property="manuell" value="false">checked="checked"</logic:equal></logic:present><logic:notPresent name="orderform" property="manuell">checked="checked"</logic:notPresent> /><bean:message key="order.gbv_autom" /> [<b>* <bean:message key="bestellform.required" /></b>] <font color="white"><i><logic:notPresent name="userinfo" property="konto.gbvrequesterid"> <bean:message key="error.requesterid" /></logic:notPresent><logic:present name="userinfo" property="konto.gbvrequesterid"><logic:notPresent name="userinfo" property="konto.isil"> <bean:message key="error.isil" /></logic:notPresent></logic:present></i></font>
-      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br />
+      <logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br>
       <input type="radio" name="manuell" value="true" <logic:present name="orderform" property="manuell"><logic:equal name="orderform" property="manuell" value="true">checked="checked"</logic:equal></logic:present> /><bean:message key="order.gbv_manuell" />
       </logic:notEqual>
       </td>
     </tr>
       
  
-      <tr><td><br /></td></tr>
+      <tr><td><br></td></tr>
 
     <logic:notEqual name="userinfo" property="konto.bibliotheksname" value="Demo-Bibliothek">
   
@@ -271,12 +271,12 @@
   <table>
 <!--
   <tr>
-  <td><input type="submit" name="submit" value="GBV-Suche"></input></td>
+  <td><input type="submit" name="submit" value="GBV-Suche"></td>
   </tr>
 -->
   <tr>
-  <td><input type="submit" name="submit" value="<bean:message key="order.order" />"></input></td>
-  <td><br />&nbsp;&nbsp;</td>
+  <td><input type="submit" name="submit" value="<bean:message key="order.order" />"></td>
+  <td><br>&nbsp;&nbsp;</td>
   <td><div id="italic"><bean:message key="order.doppelklicks" /></div></td>
   </tr>
   </table>

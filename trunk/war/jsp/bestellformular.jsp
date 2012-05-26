@@ -11,7 +11,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="bestellform.bestellformular" /></title>
-<link rel="stylesheet" type="text/css" href="jsp/import/styles.css"></link>
+<link rel="stylesheet" type="text/css" href="jsp/import/styles.css">
 </head>
 <body>
 
@@ -47,7 +47,7 @@
 
 <div class="content">
 
-<br />
+<br>
 
 <logic:equal name="bestellparam" property="back" value="true">
   <a href="<bean:write name="bestellparam" property="link_back" />"><bean:message key="bestellform.back" /></a>
@@ -82,18 +82,18 @@
         <td title="<bean:message key="info.pubmed" />">PMID <img border="0" src="img/info.png" alt="<bean:message key="info.pubmed" />" /></td>
         <td><input name="pmid" type="text"
           value="<bean:write name="orderform" property="pmid" />" size="60"
-          maxlength="100"></input><input type="submit" value="<bean:message key="bestellform.resolve" />"></input>
+          maxlength="100"><input type="submit" value="<bean:message key="bestellform.resolve" />">
         (<bean:message key="bestellform.optional" />)</td>
       </tr>
       <tr>
         <td title="<bean:message key="info.doi" />">DOI <img border="0" src="img/info.png" alt="<bean:message key="info.doi" />" /></td>
         <td><input name="doi" type="text"
           value="<bean:write name="orderform" property="doi" />" size="60"
-          maxlength="200"></input><input type="submit" value="<bean:message key="bestellform.resolve" />"></input>
+          maxlength="200"><input type="submit" value="<bean:message key="bestellform.resolve" />">
         (<bean:message key="bestellform.optional" />)</td>
       </tr>
       <tr>
-        <td><br></br>
+        <td><br>
         </td>
       </tr>
     </logic:equal>
@@ -159,7 +159,7 @@
     
     <logic:equal name="bestellparam" property="prio" value="false">
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
     <tr>
@@ -175,7 +175,7 @@
 
     <logic:present name="messagemissing" property= "message">
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
     <tr>
@@ -188,7 +188,7 @@
     </logic:present>
     
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
     
@@ -198,7 +198,7 @@
       <td><bean:write name="bestellparam" property="comment1" /></td>
     </tr>    
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
     </logic:present>
@@ -430,7 +430,7 @@
     <logic:equal name="bestellparam" property="option" value="true">
     <!-- Allf&auml;llige Radiobuttons -->
     <tr>
-      <td><br></br>
+      <td><br>
       </td>
     </tr>
       <tr>
@@ -460,7 +460,7 @@
     </logic:equal>
      
     <tr>
-      <td><br></br>
+      <td><br>
       </td>
     </tr>
     
@@ -495,7 +495,7 @@
         <td title="<bean:message key="info.issn" />"><bean:message key="bestellform.issn" /> <img border="0" src="img/info.png" alt="<bean:message key="info.issn" />" /></td>
         <td><input name="issn"
           value="<logic:present name="orderform" property="issn"><bean:write name="orderform" property="issn" /></logic:present>"
-          type="text" size="9" maxlength="9"></input>
+          type="text" size="9" maxlength="9">
         (<bean:message key="bestellform.optional" />)</td>
       </tr>
     </logic:equal>
@@ -599,7 +599,7 @@
     
     <logic:present name="bestellparam" property="comment2">
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
     <tr>
@@ -610,7 +610,7 @@
     
     <logic:equal name="bestellparam" property="gebuehren" value="true">
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
       <tr>
@@ -625,7 +625,7 @@
     <logic:equal name="bestellparam" property="gebuehren" value="false">
     <!-- Abstand nur falls gebuhren nicht eingeblendet -->
       <tr>
-        <td><br />
+        <td><br>
         </td>
       </tr>
     </logic:equal>
@@ -641,13 +641,13 @@
     
 
     <tr>
-      <td><br></br>
+      <td><br>
       </td>
     </tr>
 
     <tr>
       <td></td>
-      <td><input type="submit" value="<bean:message key="bestellform.submit" />"></input></td>
+      <td><input type="submit" value="<bean:message key="bestellform.submit" />"></td>
     </tr>
 
 <logic:present name="orderform" property="kkid">

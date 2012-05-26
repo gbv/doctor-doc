@@ -27,11 +27,11 @@
   </tr>
 </table>
 
-<br />
+<br>
 
 <h3><bean:message key="maintenance.title" /></h3>
 
-<p><br /></p>
+<p><br></p>
 
 <form action="bulkoperation.do?method=deleteorders" method="post">
 
@@ -90,7 +90,7 @@
 
 </form>
 
-<p><br /></p>
+<p><br></p>
 
 <form action="bulkoperation.do?method=deleteusernoroders" method="post">
 
@@ -149,7 +149,7 @@
 
 </form>
 
-<p><br /></p>
+<p><br></p>
 
 </div>
  </body>

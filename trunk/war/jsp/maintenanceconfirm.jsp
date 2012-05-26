@@ -27,11 +27,11 @@
   </tr>
 </table>
 
-<br />
+<br>
 
 <h3><bean:message key="maintenance.confirm" /></h3>
 
-<div id="italic"><p><bean:message key="maintenance.warning" /><br /></p></div>
+<div id="italic"><p><bean:message key="maintenance.warning" /><br></p></div>
 
 <form action="bulkoperation.do?method=<bean:write name="operation" property="method" />" method="post">
 
@@ -43,11 +43,11 @@
 
 </form>
 
-<p><br /></p>
+<p><br></p>
 
 <a href="maintenance.do"><bean:message key="error.back" /></a>
 
-<p><br /></p>
+<p><br></p>
 
 </div>
  </body>

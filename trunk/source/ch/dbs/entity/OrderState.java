@@ -35,7 +35,7 @@ import util.ThreadSafeSimpleDateFormat;
 /**
  * Abstract base class for entities having a {@link Long} unique
  * identifier, this provides the base functionality for them.
- * <p/>
+ * <p></p>
  * @author Pascal Steiner
  */
 public class OrderState extends AbstractIdEntity {

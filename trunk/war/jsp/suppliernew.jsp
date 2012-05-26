@@ -27,7 +27,7 @@
   </tr>
 </table>
 
-<br />
+<br>
 
 <h3><bean:message key="suppliers.new" /></h3>
 
@@ -55,7 +55,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td><br /></td>
+		<td><br></td>
 	</tr>
 	<tr>
 		<td><input type="submit" value="<bean:message key="bestellform.save" />" /></td>
@@ -67,7 +67,7 @@
 <p><a href="listsuppliers.do"><bean:message key="error.back" /></a></p>
 
 
-<p><br /></p>
+<p><br></p>
 
 </div>
  </body>

@@ -46,8 +46,8 @@
   </tr>
 </table>
 
-<div class="content"><br />
-<br />
+<div class="content"><br>
+<br>
 
 <logic:present name="userinfo" property="konto">
 
@@ -93,13 +93,13 @@
           <logic:notEmpty name="orderform" property="issn">
             <tr>
               <td></td>
-              <td><input type="submit" value="<bean:message key="issnsearch.submit_neu_suchen" />"></input></td>
+              <td><input type="submit" value="<bean:message key="issnsearch.submit_neu_suchen" />"></td>
             </tr>
           </logic:notEmpty>
           <logic:empty name="orderform" property="issn">
             <tr>
               <td></td>
-              <td><input type="submit" value="<bean:message key="issnsearch.submit_fehlende_issn" />"></input></td>
+              <td><input type="submit" value="<bean:message key="issnsearch.submit_fehlende_issn" />"></td>
             </tr>
           </logic:empty>
         </logic:equal>
@@ -146,7 +146,7 @@
 </html:form>
 
     <tr>
-      <td><br />
+      <td><br>
       </td>
     </tr>
 
@@ -234,11 +234,11 @@
 
       <tr>
         <td></td>
-        <td><input type="submit" value="<bean:message key="issnsearch.submit_check_availability" />"></input></td>
+        <td><input type="submit" value="<bean:message key="issnsearch.submit_check_availability" />"></td>
       </tr>
 
       <tr>
-        <td><br />
+        <td><br>
         </td>
       </tr>
 
@@ -263,12 +263,12 @@
     <logic:present name="journalseek" property="zeitschriften">
       <p><i><bean:message key="issnsearch.no_hits" /></i></p>
       <logic:iterate id="js" name="journalseek" property="zeitschriften">
-        <p /><logic:present name="js"
+        <p></p><logic:present name="js"
           property="zeitschriftentitel_encoded">
           <i><b><a
             href="http://www.google.ch/search?hl=de&btnG=Google-Suche&meta&q=issn+%22<bean:write name="js" property="zeitschriftentitel_encoded" />%22"
             target="_blank"><bean:message key="issnsearch.google_zeitschrift" /></a></b></i>
-          <br />
+          <br>
         </logic:present>
       </logic:iterate>
 
@@ -277,7 +277,7 @@
           <i><b><a
             href="http://www.google.ch/search?hl=de&btnG=Google-Suche&meta&q=issn+%22<bean:write name="js" property="artikeltitel_encoded" />%22"
             target="_blank"><bean:message key="issnsearch.google_artikeltitel" /></a></b></i>
-          <br />
+          <br>
           <p><bean:message key="bestellform.artikeltitel" />: <bean:write name="js" property="artikeltitel" />
           <input name="artikeltitel" type="hidden"
             value="<bean:write name="js" property="artikeltitel" />" /></p>

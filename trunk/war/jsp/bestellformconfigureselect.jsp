@@ -33,7 +33,7 @@
   </tr>
 </table>
 
-<br />
+<br>
 <h3><bean:message key="bestellformconfigureselect.titel" /> - <bean:message key="bestellformconfigureselect.possible" /></h3>
 
 
@@ -73,13 +73,13 @@
 </logic:present>
 
 <logic:present name="eingeloggt">
-<a href="bfconfigure.do?method=modify&id=<bean:write name="eingeloggt" />"><bean:message key="bestellformconfigureselect.cf_eingeloggt" /></a><br />
+<a href="bfconfigure.do?method=modify&id=<bean:write name="eingeloggt" />"><bean:message key="bestellformconfigureselect.cf_eingeloggt" /></a><br>
 </logic:present>
 
 <logic:present name="kkid">
 <p>
   <logic:iterate id="k" name="kkid">
-    <a href="bfconfigure.do?method=modify&id=-2&kennung=<bean:write name="k" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_kkid" />: <bean:write name="k" property="inhalt" /></a><br />
+    <a href="bfconfigure.do?method=modify&id=-2&kennung=<bean:write name="k" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_kkid" />: <bean:write name="k" property="inhalt" /></a><br>
   </logic:iterate>
 </p>
 </logic:present>
@@ -87,7 +87,7 @@
 <logic:present name="bkid">
 <p>
   <logic:iterate id="b" name="bkid">
-    <a href="bfconfigure.do?method=modify&id=-3&kennung=<bean:write name="b" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_bkid" />: <bean:write name="b" property="inhalt" /></a><br />
+    <a href="bfconfigure.do?method=modify&id=-3&kennung=<bean:write name="b" property="inhalt" />"><bean:message key="bestellformconfigureselect.cf_bkid" />: <bean:write name="b" property="inhalt" /></a><br>
   </logic:iterate>
 </p>
 </logic:present>

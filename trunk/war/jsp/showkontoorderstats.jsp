@@ -22,7 +22,7 @@
 
 <logic:present name="userinfo" property="konto">
 
-<br />
+<br>
 
   <h3><bean:message key="stats.header" /></h3>
   
@@ -222,19 +222,19 @@
               name="yt" /></option>
           </logic:iterate>
         </select> <input type="hidden" name="method" value="kontoOrders" /> <input
-          type="submit" value="<bean:message key="stats.submit" />"></input></td>
+          type="submit" value="<bean:message key="stats.submit" />"></td>
       </tr>
     </html:form>
   </table>
 
-  <h4><bean:write name="userinfo" property="biblioname" /><br></br>
+  <h4><bean:write name="userinfo" property="biblioname" /><br>
   <bean:write name="overviewform" property="dfrom" />-<bean:write
     name="overviewform" property="mfrom" />-<bean:write
     name="overviewform" property="yfrom" /> bis <bean:write
     name="overviewform" property="dto" />-<bean:write name="overviewform"
-    property="mto" />-<bean:write name="overviewform" property="yto" /><br></br>
+    property="mto" />-<bean:write name="overviewform" property="yto" /><br>
   </h4>
-* <bean:message key="stats.comment1" /><br />
+* <bean:message key="stats.comment1" /><br>
 ** <bean:message key="stats.comment2" />
 
 <p></p>
@@ -254,7 +254,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -308,7 +308,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -327,7 +327,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -353,7 +353,7 @@
   </table>
 
 
-  <br></br>
+  <br>
 
 
   <table class="border">
@@ -389,7 +389,7 @@
   </table>
 
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -420,7 +420,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -451,7 +451,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <logic:present name="statistics" property="prioritystat">
@@ -481,7 +481,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -499,7 +499,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -552,7 +552,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -611,7 +611,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -670,7 +670,7 @@
     </logic:present>
   </table>
   
-    <br></br>
+    <br>
 
   <table class="border">
     <tr>
@@ -729,7 +729,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -767,7 +767,7 @@
     </tr>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -802,7 +802,7 @@
     </logic:present>
   </table>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -867,9 +867,9 @@
     </tr>
   </table>
   
-  <bean:message key="stats.comment3" /><br />
+  <bean:message key="stats.comment3" /><br>
 
-  <br></br>
+  <br>
 
   <table class="border">
     <tr>
@@ -892,7 +892,7 @@
     </tr>
   </table>
 
-  <br></br>
+  <br>
 
 
 

@@ -17,7 +17,7 @@
 <tiles:insert page="import/header.jsp" flush="true" />
  
 <div class="content">
- <br />
+ <br>
 
 <logic:notPresent name="errormessage" property="error">
 <logic:present name="orderform" property="manuell">
@@ -102,7 +102,7 @@
 </tr>
   </logic:notEmpty>
 <tr>
-  <td><br /></td>
+  <td><br></td>
 </tr>
     <logic:notEmpty name="orderform" property="anmerkungen">
 <tr>

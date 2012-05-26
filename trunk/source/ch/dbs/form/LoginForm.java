@@ -27,7 +27,7 @@ import ch.dbs.entity.Konto;
  * Encapsulates the form data needed on the login page, which is all needed output data to display the
  * form and all input properties once the user entered its login data which will then be verified with
  * the backend.
- * <p/>
+ * <p></p>
  * @author Pascal Steiner
  */
 public class LoginForm extends ValidatorForm {

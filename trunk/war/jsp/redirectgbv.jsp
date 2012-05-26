@@ -57,7 +57,7 @@
  
  <div class="content">
 
- <br /> <br /> 
+ <br> <br> 
 
 <logic:present name="userinfo" property="konto">
   <h3><bean:message key="redirectgbv.header" /></h3>
@@ -212,7 +212,7 @@
     </tr>
     </logic:notEmpty>
 
-     <tr><td><br /></td></tr>
+     <tr><td><br></td></tr>
      </table>
  </div>
  </body>

@@ -49,7 +49,7 @@
 
 <logic:present name="userinfo" property="konto">
 
- <br /> <br />
+ <br> <br>
 
   <h3><bean:message key="searchgbv.header" /></h3>
   <html:form action="orderGbv.do" method="post" focus="gbvsearch">
@@ -58,7 +58,7 @@
    
   <table>
     <tr>
-      <td><br /></td>
+      <td><br></td>
     </tr>
     <tr>
       <td>
@@ -147,16 +147,16 @@
       <td><input name="gbvsearch" type="search" size="98" /></td>
     </tr>
     <tr>
-      <td><br /></td>
+      <td><br></td>
     </tr>
     <tr>
-      <td><input type="submit" value="suchen"></input></td>
+      <td><input type="submit" value="suchen"></td>
     </tr>
   </table>
   
-    <br />
-    <br />
-    <br />
+    <br>
+    <br>
+    <br>
     
   <table>
     <logic:notEmpty name="orderform" property="author">
@@ -287,7 +287,7 @@
     </tr>
     </logic:notEmpty>
 
-     <tr><td><br /></td></tr>
+     <tr><td><br></td></tr>
      </table>
 
   <logic:present name="orderform" property="bid">

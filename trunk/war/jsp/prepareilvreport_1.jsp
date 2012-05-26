@@ -42,7 +42,7 @@
   <table class="border">
   <tr>
     <td id="border" valign="top">
-    	<bean:message key="ilv-report.labelfrom" /><bean:write name="userinfo" property="konto.isil" /><br />
+    	<bean:message key="ilv-report.labelfrom" /><bean:write name="userinfo" property="konto.isil" /><br>
       	<bean:write name="userinfo" property="konto.bibliotheksname" />
     </td>
 <%     
@@ -68,15 +68,15 @@
     		</tr>
     	</table>
     </td>
-    <td id="border" valign="top"><bean:message key="stockimport.sig" />: <br />
+    <td id="border" valign="top"><bean:message key="stockimport.sig" />: <br>
       <input name="signatur" type="text" size="30" value="<bean:write name="orderform" property="bestellung.signatur" />" />
     </td>
   </tr>
   <tr>
-    <td id="border" colspan="2"><bean:message key="ilv-report.labeljournaltitel" /><br />
+    <td id="border" colspan="2"><bean:message key="ilv-report.labeljournaltitel" /><br>
       <textarea name="journaltitel" cols="57" rows="3"><bean:write name="orderform" property="bestellung.zeitschrift" /></textarea>
     </td>    
-    <td id="border" rowspan="2" valign="top"><bean:message key="ilv-report.labelcustomer" /> <br />
+    <td id="border" rowspan="2" valign="top"><bean:message key="ilv-report.labelcustomer" /> <br>
       <textarea name="name" cols="25" rows="6">
 <bean:write name="orderform" property="benutzer.vorname" /> <bean:write name="orderform" property="benutzer.name" /><logic:present name="orderform" property="benutzer.category.inhalt">
 <bean:write name="orderform" property="benutzer.category.inhalt" />
@@ -88,10 +88,10 @@
     </td>
   </tr>
   <tr>
-    <td id="border"><bean:message key="ilv-report.labelissn" /><br /> 
+    <td id="border"><bean:message key="ilv-report.labelissn" /><br> 
       <input name="issn" type="text" size="30" value="<bean:write name="orderform" property="bestellung.issn" />" />
     </td>
-    <td id="border"><bean:message key="ilv-report.labelpmid" /><br />
+    <td id="border"><bean:message key="ilv-report.labelpmid" /><br>
       <input name="pmid" type="text" size="30" value="<bean:write name="orderform" property="bestellung.pmid" />" />
     </td>
   </tr>
@@ -100,43 +100,43 @@
     <table>
       <tr>
         <td>
-          <bean:message key="ilv-report.labelyear" /> <br />
+          <bean:message key="ilv-report.labelyear" /> <br>
           <input name="year" type="text" size="15" value="<bean:write name="orderform" property="bestellung.jahr" />" />
         </td>
         <td>
-          <bean:message key="ilv-report.labelvolumevintage" /><br />
+          <bean:message key="ilv-report.labelvolumevintage" /><br>
           <input name="volumevintage" type="text" size="15" value="<bean:write name="orderform" property="bestellung.jahrgang" />" /> 
         </td>
-        <td><bean:message key="ilv-report.labelbooklet" /><br /> 
+        <td><bean:message key="ilv-report.labelbooklet" /><br> 
         <input name="booklet" type="text" size="15" value="<bean:write name="orderform" property="bestellung.heft" />" />
         </td>
       </tr>
     </table>    
     </td>
-    <td id="border" rowspan="2" valign="top"><bean:message key="ilv-report.labelclinicinstitutedepartment" /><br />
+    <td id="border" rowspan="2" valign="top"><bean:message key="ilv-report.labelclinicinstitutedepartment" /><br>
       <input name="clinicinstitutedepartment" type="text" size="30" value="<bean:write name="orderform" property="benutzer.institut" /><%=separator%><bean:write name="orderform" property="benutzer.abteilung" />" />
-      <br />      
-      <bean:message key="ilv-report.labelphone" /><br /> 
+      <br>      
+      <bean:message key="ilv-report.labelphone" /><br> 
       <input name="phone" type="text" size="30" value="<bean:write name="orderform" property="benutzer.telefonnrg" />" />      
     </td>
   </tr>
   <tr>
-    <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labelpages" /><br />
+    <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labelpages" /><br>
       <input name="pages" type="text" size="75" value="<bean:write name="orderform" property="bestellung.seiten" />" />
     </td>
   </tr>
   <tr>
-    <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labelauthorofessay" /><br />
+    <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labelauthorofessay" /><br>
       <input name="authorofessay" type="text" size="75" value="<bean:write name="orderform" property="bestellung.autor" />" />
     </td>
     <td id="border" rowspan="2" valign="top">
-      <bean:message key="bestellform.telefon" />:<br />
-      <bean:write name="userinfo" property="konto.telefon" /><br />
-      <bean:message key="save.fax" />:<br />
-      <bean:write name="userinfo" property="konto.fax_extern" /><br />
+      <bean:message key="bestellform.telefon" />:<br>
+      <bean:write name="userinfo" property="konto.telefon" /><br>
+      <bean:message key="save.fax" />:<br>
+      <bean:write name="userinfo" property="konto.fax_extern" /><br>
       
-      <br />
-      <bean:message key="ilv-report.sendto" /><br />
+      <br>
+      <bean:message key="ilv-report.sendto" /><br>
       <textarea name="post" cols="25" rows="6"><bean:write name="userinfo" property="konto.bibliotheksname" />
 <bean:write name="userinfo" property="konto.adresse" />
 <logic:notEmpty name="userinfo" property="konto.adressenzusatz"><bean:write name="userinfo" property="konto.adressenzusatz" /></logic:notEmpty>
@@ -145,19 +145,19 @@
     </td>
   </tr>
   <tr>
-    <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labeltitleofessay" /><br />
+    <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labeltitleofessay" /><br>
       <textarea name="titleofessay" cols="57" rows="8"><bean:write name="orderform" property="bestellung.artikeltitel" /></textarea>
     </td>
   </tr>
   <tr>
     <td id="border" colspan="2" valign="top"><bean:message key="ilv-report.labelendorsementsofdeliveringlibrary" />
       
-    </td><td id="border"><bean:message key="ilv-report.labelnotesfromrequestinglibrary" /><br />      
+    </td><td id="border"><bean:message key="ilv-report.labelnotesfromrequestinglibrary" /><br>      
       <textarea name="notesfromrequestinglibrary" cols="25" rows="3" autofocus><bean:write name="orderform" property="bestellung.systembemerkung" /></textarea>
     </td>
   </tr>
   </table>
-  <p />
+  <p></p>
   
   <input type="hidden" name="lid" value="<bean:write name="orderform" property="bestellung.lieferant.lid" />" />
   <input type="hidden" name="bid" value="<bean:write name="orderform" property="bestellung.id" />" />

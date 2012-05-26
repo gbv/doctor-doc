@@ -63,10 +63,10 @@
 
  
 <div class="content">
-<br /> 
-<br />
+<br> 
+<br>
 <h3><bean:message key="login.chooseuser" /></h3>
-<br />
+<br>
 <p><tiles:insert page="import/userchange_login.jsp" flush="true" /></p>
 </div>
  </body>

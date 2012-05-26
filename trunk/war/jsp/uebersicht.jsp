@@ -99,8 +99,8 @@
  
 <div class="content">
 
-<br />
-<br />
+<br>
+<br>
 
 <html:form action="/searchorder">
 
@@ -312,7 +312,7 @@
         </logic:notEqual>
        &nbsp;&nbsp;<a href="prepare-ilv-order-pdf-<bean:write name="userinfo" property="konto.ilvformnr" />.do?method=journalorderdetail&bid=<bean:write name="b" property="id" />"><img border="0" src="img/faxpiktogramm.png" title="<bean:message key="ilv-report.titleprepare" />" /></a>
      </nobr>      
-        <br />
+        <br>
      </logic:notEqual>
         <nobr>
         &nbsp;

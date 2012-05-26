@@ -16,13 +16,13 @@
  <body>
  
 <tiles:insert page="import/header.jsp" flush="true" />
-<div class="content"><br />
+<div class="content"><br>
           
 <form action="issnsearch_.do" method="post">
    
   <table>
     <tr>
-      <td><input type="submit" value="<bean:message key="foundfree.submit" />"></input></td>
+      <td><input type="submit" value="<bean:message key="foundfree.submit" />"></td>
     </tr>
   </table>
   <input name="method" type="hidden" value="prepareIssnSearch" />
@@ -76,7 +76,7 @@
     <p><a href="<bean:write name="t2" property="link"/>" target="_blank"><bean:write name="t2" property="url_text"/></a>
     <logic:present name="userinfo" property="benutzer">
     <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-      <br /><bean:write name="t2" property="link"/>
+      <br><bean:write name="t2" property="link"/>
     </logic:notEqual>
     </logic:present>
     </p>
@@ -90,7 +90,7 @@
     <p><a href="<bean:write name="t1" property="link"/>" target="_blank"><bean:write name="t1" property="url_text"/></a>
     <logic:present name="userinfo" property="benutzer">
     <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-      <br /><bean:write name="t1" property="link"/>
+      <br><bean:write name="t1" property="link"/>
     </logic:notEqual>
     </logic:present>
     </p>

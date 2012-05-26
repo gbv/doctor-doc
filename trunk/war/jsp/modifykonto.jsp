@@ -33,7 +33,7 @@
   </tr>
 </table>
 
-<br />
+<br>
 <h3><bean:message key="modifykonto.header" /></h3>
 
 <html:form action="modifykonto_.do" method="post" focus="biblioname">
@@ -79,7 +79,7 @@
         <tr><td><bean:message key="modifykonto.faxnumend" /></td><td><bean:write name="kontoform" property="popfaxend" /></td></tr>
        </logic:present>
     
-    <tr><td><br /></td></tr>
+    <tr><td><br></td></tr>
     
     <tr>
       <td><div id="italic"><bean:message key="modifykonto.adressdetails" /></div></td>
@@ -204,7 +204,7 @@
       <td></td><td><b>*<bean:message key="modifykonto.required" /></b></td>
     </tr>
     
-        <tr><td><br></br></td></tr>     
+        <tr><td><br></td></tr>     
      
       <tr>
       <td><div id="italic"><bean:message key="modifykonto.authorization" /></div></td>
@@ -257,7 +257,7 @@
       
   </table>
   <logic:notEqual name="userinfo" property="konto.bibliotheksname" value="Demo-Bibliothek">    
-      <br /> <input type="submit" value="<bean:message key="modifykonto.save" />"></input>
+      <br> <input type="submit" value="<bean:message key="modifykonto.save" />">
           <input name="method" type="hidden" value="modifyKonto" />
    </logic:notEqual>
    

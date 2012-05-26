@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Klasse um ein ContextObject im Zusammenhang mit OpenURL zu erstellen.
  * Bildet die Grundlage um per OpenURL kommunizieren zu können.
- * <p/>
+ * <p></p>
  * @author Markus Fischer
  */
 public class ContextObject {

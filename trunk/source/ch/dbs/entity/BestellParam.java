@@ -31,7 +31,7 @@ import ch.dbs.form.Message;
 
 /**
  * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu schreiben
- * <p/>
+ * <p></p>
  * @author Markus Fischer
  */
 

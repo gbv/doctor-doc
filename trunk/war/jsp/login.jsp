@@ -20,7 +20,7 @@
 
  
 <div class="content">
- <br />
+ <br>
  <h3><bean:message key="login.message" />:</h3>
  
   
@@ -38,7 +38,7 @@
     </tr>
     <tr>
       <td><label for="password"><bean:message key="login.password" /></label></td><td><input id="password" name="password" type="password" required size="50" maxlength="50" />
-     <font color=red><html:errors property="password" /></font><p /> 
+     <font color=red><html:errors property="password" /></font><p></p> 
      <input type="hidden" name="method" value="overview" /></td>
     </tr>
   <tr>
@@ -108,18 +108,18 @@
      <td><html:submit property="action" value="login" /></td>
   </tr>
  
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
-    <tr><td colspan="2"><br /></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
+    <tr><td colspan="2"><br></td></tr>
   
  </html:form>
 
@@ -138,8 +138,8 @@
   </table>
   
   
-  <p><br></br></p>
-  <p><br></br></p>
+  <p><br></p>
+  <p><br></p>
   <tiles:insert page="import/footer.jsp" flush="true" />
   
 </div>

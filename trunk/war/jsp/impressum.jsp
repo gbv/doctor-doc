@@ -19,7 +19,7 @@
 <tiles:insert page="import/header.jsp" flush="true" />
  
 <div class="content">
- <br />
+ <br>
  <h3><bean:message key="impressum.titel" /></h3>
  
 <table width="800">
@@ -29,21 +29,21 @@
   <tr>
     <td><bean:message arg0="<%=appName%>" key="anmeldungtyp.kosten" /></td>  
   </tr>
-  <tr><td><br></br></td></tr>
+  <tr><td><br></td></tr>
   <tr>
     <td><b>Hosting</b></td>
   </tr>
   <tr>
     <td><bean:message arg0="<%=appName%>" key="impressum.service" /> <bean:message key="impressum.programmierung" /></td>  
   </tr>
-  <tr><td><br></br></td></tr>
+  <tr><td><br></td></tr>
   <tr>
   <td><b><bean:message key="impressum.contact" /></b></td>
   </tr>
   <tr>
     <td><bean:message arg0="<%=appName%>" key="impressum.entwicklung" /></td>  
   </tr>
-  <tr><td><br></br></td></tr>
+  <tr><td><br></td></tr>
   <tr>
     <td>
        <a href="https://lists.sourceforge.net/lists/listinfo/doctor-doc-general" target="_blank">https://lists.sourceforge.net/lists/listinfo/doctor-doc-general</a>
@@ -54,7 +54,7 @@
        <a href="https://lists.sourceforge.net/lists/listinfo/doctor-doc-tech" target="_blank">https://lists.sourceforge.net/lists/listinfo/doctor-doc-tech</a>
     </td>
   </tr>
-  <tr><td><br /></td></tr>
+  <tr><td><br></td></tr>
   <tr>
     <td><b><bean:message key="impressum.presse" /></b></td>
   </tr>
@@ -85,7 +85,7 @@
         </ul>
       </td>
     </tr>
-    <tr><td><br></br></td></tr>
+    <tr><td><br></td></tr>
     <tr>
     	<td>
     		<script type="text/javascript" src="http://www.ohloh.net/p/483914/widgets/project_thin_badge.js"></script>

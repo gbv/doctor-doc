@@ -47,7 +47,7 @@
 
 <div class="content">
 
-<br /><br />
+<br><br>
 
 
 <p><bean:message key="issnresult.text" /></p>

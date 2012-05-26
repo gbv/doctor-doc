@@ -19,26 +19,26 @@
 <tiles:insert page="import/header.jsp" flush="true" />
 
 <div class="content">
-<br />
+<br>
 <h3><bean:message key="ordersuccess.titel" />:</h3>
 
 <bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>              
-<p /><bean:message key="<%=translationKey%>" />
+<p></p><bean:message key="<%=translationKey%>" />
 <logic:present name="message" property="systemMessage">
-  <p /><pre><bean:write name="message" property="systemMessage" /></pre>
+  <p></p><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
-<p />
+<p></p>
 <logic:present name="message" property="link">
   <a href="<bean:write name="message" property="link" />"><bean:message key="message.next" /></a>
 </logic:present>
-<p />  
+<p></p>  
 <h4><bean:message key="ilvmail.changemailfields" /></h4> 
     
 <logic:present name="IlvReportForm" property="labelto">   
   <form action="save-ilv-maildefaultfields.do">
   <input type="hidden" name="method" value="saveMailFields" />
   <input type="submit" value="<bean:message key="ilvmail.default" />" />
-  <p />
+  <p></p>
   <table class="border">
   <tr>
     <td id="border"><bean:message key="ilvmail.subject" /> 

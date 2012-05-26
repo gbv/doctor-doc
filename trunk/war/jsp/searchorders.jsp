@@ -17,7 +17,7 @@
 <tiles:insert page="import/header.jsp" flush="true" />
 
 <div class="content">
- <br />
+ <br>
 
 <h3><bean:message key="searchorders.header" /></h3>
   
@@ -26,7 +26,7 @@
 <html:form action="searchorder.do?method=search" method="post">
   <table>
   
-  <tr><td><br /></td></tr>
+  <tr><td><br></td></tr>
   
   <tr>
     <td align=center>
@@ -141,7 +141,7 @@
 </table>
 <table>
   
-  <tr><td><br /></td></tr>
+  <tr><td><br></td></tr>
   
   <tr>
     <td>
@@ -196,10 +196,10 @@
     </td>
   </tr> 
   
-  <tr><td><br /></td></tr>
+  <tr><td><br></td></tr>
     
   <tr>
-  <td><input type="submit" value="<bean:message key="searchorders.submit" />"></input></td>
+  <td><input type="submit" value="<bean:message key="searchorders.submit" />"></td>
   </tr>
   
   </table>

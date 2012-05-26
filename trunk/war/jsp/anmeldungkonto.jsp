@@ -24,7 +24,7 @@
  
 <div class="content">
 
-<br />
+<br>
 <h3><bean:message key="register.header" /></h3>
 
   <html:form action="anmeldungkonto_.do" method="post" focus="biblioname">
@@ -150,7 +150,7 @@
       <td><input type="radio" name="kontotyp" value="0" checked="checked" /><bean:message arg0="<%=appName%>" key="register.free" /></td>
     </tr>
     <tr>
-      	<td><br /></td>
+      	<td><br></td>
       	<td></td>
     </tr>
     <tr>        

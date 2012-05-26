@@ -41,10 +41,10 @@
 </table>
 </logic:notEqual>
 </logic:present>
- <br />
+ <br>
 <h3><bean:message key="stockplacesmodify.header" /></h3>
 
-<p><bean:message key="stockplacesmodify.intro" /><br /></p>
+<p><bean:message key="stockplacesmodify.intro" /><br></p>
 
 <logic:equal name="holdingform" property="mod" value="false">
 
@@ -82,13 +82,13 @@
    <input name="stid" type="hidden" value="<bean:write name="st" property="id" />" /> 
    </logic:iterate>
    <tr>
-      <td><br /></td>
+      <td><br></td>
     </tr>
    <tr>
-      <td><br /></td>
+      <td><br></td>
     </tr>
     <tr>
-        <td><input type="submit" value="<bean:message key="stockplacesmodify.change" />"></input></td>
+        <td><input type="submit" value="<bean:message key="stockplacesmodify.change" />"></td>
     </tr>
 </table>
 <input name="mod" type="hidden" value="true" />

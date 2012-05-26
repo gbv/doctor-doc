@@ -18,18 +18,18 @@
 
 <div class="content">
 
-<br />
+<br>
 
 <h3><bean:message key="message.header" />:</h3>
 
 <bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>              
-<p /><bean:message key="<%=translationKey%>" />
+<p></p><bean:message key="<%=translationKey%>" />
 
 <logic:present name="message" property="systemMessage">
-  <p /><pre><bean:write name="message" property="systemMessage" /></pre>
+  <p></p><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
 
-<br></br>
+<br>
 <logic:present name="message" property="link">
   <a href="<bean:write name="message" property="link" />"><bean:message key="message.next" /></a>
 </logic:present>

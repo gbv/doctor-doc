@@ -41,7 +41,7 @@ import ch.dbs.form.PreisWaehrungForm;
 /**
  * Abstract base class for entities having a {@link Long} unique
  * identifier, this provides the base functionality for them.
- * <p/>
+ * <p></p>
  */
 public class Bestellungen extends AbstractIdEntity {
 
@@ -596,7 +596,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Sucht anhand eines {@link ch.dbs.entity.Benutzer} seine Bestellungen heraus
-     * <p/>
+     * <p></p>
      * @param the user {@link ch.dbs.entity.Benutzer}
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
@@ -664,7 +664,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Sucht anhand eines {@link ch.dbs.entity.Benutzer} seine Bestellungen mit einem bestimmten Status heraus
-     * <p/>
+     * <p></p>
      * @param the user {@link ch.dbs.entity.Benutzer}
      * @param String status
      * @param String sort
@@ -909,7 +909,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Sucht anhand seiner Werte eine seine Bestellungen heraus
-     * <p/>
+     * <p></p>
      * @param the user {@link ch.dbs.entity.Bestellungen}
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
@@ -973,7 +973,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der uid und kid alle Bestellungen heraus.
      * Der Rückgabewert ist die Anzahl Bestellungen pro User im laufenden Kalenderjahr
-     * <p/>
+     * <p></p>
      * @param Long uid, kid
      * @return int anzahl
      */
@@ -1161,7 +1161,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Sucht anhand der kid alle Bestellungen für das laufende Kalenderjahr heraus.
-     * <p/>
+     * <p></p>
      * @param Long kid
      * @return int anzahl
      */
@@ -1233,7 +1233,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Prüft, ob eine Bestellung anonymisiert werden muss
-     * <p/>
+     * <p></p>
      * @param Bestellungen b
      * @return true/false
      */
@@ -1257,7 +1257,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Anonymisiert Bestellungen für die Ausgabe
-     * <p/>
+     * <p></p>
      * @param Bestellungen b
      * @return Bestellungen b
      */
@@ -1279,7 +1279,7 @@ public class Bestellungen extends AbstractIdEntity {
 
     /**
      * Konvertiert einen Datums-String aus MYSQL in ein Calendar-Objekt
-     * <p/>
+     * <p></p>
      * @param String datum
      * @return cal cal
      */
@@ -1304,7 +1304,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Entfernt aus einem Datums-String mit Milliseconds aus MYSQL die Milliseconds.
      * Seit MySQL-Connector 5.0 kommen jeweils Milliseconds mit.
-     * <p/>
+     * <p></p>
      * @param String datum
      * @return String datum
      */
@@ -1463,7 +1463,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Konto heraus.
      * Der Rückgabewert ist ein OrderStatistikForm.
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1520,7 +1520,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen und Kosten pro Lieferant heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1585,7 +1585,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl kostenpflichtigen und gratis Bestellungen heraus.
      * Der Rückgabewert ist ein OrderStatistikForm.
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1678,7 +1678,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Berechnet die Kosten in den einzelnen Waehrungen anhand der kid und eines Zeitraumes.
      * Der Rückgabewert ist ein OrderStatistikForm.
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1738,7 +1738,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Lieferart heraus.
      * Der Rückgabewert ist ein OrderStatistikForm.
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1798,7 +1798,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Medientyp heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1858,7 +1858,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Fileformat heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1919,7 +1919,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Priorität heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -1992,7 +1992,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Gender heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -2084,7 +2084,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Institution heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -2171,7 +2171,7 @@ public class Bestellungen extends AbstractIdEntity {
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro
      * Abteilung heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      *
      * @param Long
      *            kid String dateFrom String dateTo Connection cn
@@ -2352,7 +2352,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro PLZ heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -2440,7 +2440,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Land heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -2525,7 +2525,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Anzahl Bestellungen pro Zeitschrift heraus.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */
@@ -2606,7 +2606,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Holt die Kosten in den verschiedenen Währungen der Bestellungen pro gewünschtem Feld.
      * Der Rückgabewert eine PreisWaehrungForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo String feldbezeichnung String wert Connection cn
      * @return PreisWaehrungForm
      */
@@ -2690,7 +2690,7 @@ public class Bestellungen extends AbstractIdEntity {
      * Holt die Kosten in den verschiedenen Währungen der Bestellungen pro gewünschtem Feld
      * in Verknüpfung mit der benutzer-Tabelle.
      * Der Rückgabewert eine PreisWaehrungForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo String feldbezeichnung String wert Connection cn
      * @return PreisWaehrungForm
      */
@@ -2774,7 +2774,7 @@ public class Bestellungen extends AbstractIdEntity {
      * Zählt anhand der kid, eines Zeitraumes die Anzahl Kunden, welche Artikel
      * bestellt haben.
      * Der Rückgabewert ist die Anzahl Reihen
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo
      * @return OrderStatistikForm os
      */
@@ -2828,7 +2828,7 @@ public class Bestellungen extends AbstractIdEntity {
      * Zählt anhand der kid, eines Zeitraumes und einer ISSN die Anzahl Kunden, welche Artikel von einer bestimmten
      * Zeitschrift bestellt haben.
      * Der Rückgabewert ist die Anzahl Reihen
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo String issn Connection cn
      * @return int anzahl
      */
@@ -2887,7 +2887,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Zählt anhand der kid, eines Zeitraumes und eines anzugebenden Feldes der Tabelle Benutzer die Bestellungen.
      * Der Rückgabewert ist die Anzahl Reihen
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo String benutzerfeld String inhalt Connection cn
      * @return int anzahl
      */
@@ -2949,7 +2949,7 @@ public class Bestellungen extends AbstractIdEntity {
     /**
      * Sucht anhand der kid und eines Zeitraumes die Jahresbereiche der bestellten Zeitschriften.
      * Der Rückgabewert ist ein OrderStatistikForm
-     * <p/>
+     * <p></p>
      * @param Long kid String dateFrom String dateTo Connection cn
      * @return OrderStatistikForm os
      */

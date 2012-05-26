@@ -16,7 +16,7 @@
  <body>
 
 <tiles:insert page="import/header.jsp" flush="true" />
-<div class="content"><br />
+<div class="content"><br>
 
 <logic:present name="userinfo" property="konto">
   <h3>Bitte Captcha aufl&ouml;sen!</h3>
@@ -25,13 +25,13 @@
    
   <table>
     <tr>
-      <td><p />Captcha-Bild: </td><td><img src='<bean:write name="message" property="link" />' alt='Captcha' border='0'/><p /></td>
+      <td><p></p>Captcha-Bild: </td><td><img src='<bean:write name="message" property="link" />' alt='Captcha' border='0'/><p></p></td>
     </tr>
     <tr>
-      <td><p />Text eingeben: </td><td><input name="captcha_text" type="text" size="98" /><p /></td>
+      <td><p></p>Text eingeben: </td><td><input name="captcha_text" type="text" size="98" /><p></p></td>
     </tr>
     <tr>
-      <td><input type="submit" value="weiter"></input></td>
+      <td><input type="submit" value="weiter"></td>
     </tr>
   </table>
   <input name="method" type="hidden" value="findForFree" />
@@ -39,9 +39,9 @@
   <input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />" />
   <input name="captcha_id" type="hidden" value="<bean:write name="message" property="message" />" />
   </html:form>
-  <br />
-  <br />
-  <br />
+  <br>
+  <br>
+  <br>
   <div id="italic" align="center">Um Weiterzufahren geben Sie bitte den Text im Captcha-Bild ein.</div>
   
 </logic:present>
@@ -49,7 +49,7 @@
 
 <logic:notPresent name="userinfo" property="konto">
   <p>Session Timeout! Bitte erneut einloggen:</p>
-  <p /><a href="login.do">zur&uuml;ck</a>
+  <p></p><a href="login.do">zur&uuml;ck</a>
 </logic:notPresent>
 
 </div>

@@ -10,7 +10,7 @@
             <logic:iterate id="kl" name="ui" property="kontos">
               <bean:write name="kl" property="bibliotheksname" /> 
             </logic:iterate>
-         <br />
+         <br>
        </logic:iterate>
     <p>
     <input type="hidden" name="method" value="setuser" />

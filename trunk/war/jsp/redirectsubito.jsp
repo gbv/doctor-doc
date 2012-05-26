@@ -57,7 +57,7 @@
  
  <div class="content">
 
- <br /> <br /> 
+ <br> <br> 
 
 <logic:present name="userinfo" property="konto">
   <h3><bean:message key="redirect.subito_header" /></h3>
@@ -83,7 +83,7 @@
  
 </logic:present>
 
-<p />
+<p></p>
 
 <table>
     <logic:notEmpty name="orderform" property="author">
@@ -214,7 +214,7 @@
     </tr>
     </logic:notEmpty>
 
-     <tr><td><br /></td></tr>
+     <tr><td><br></td></tr>
      </table>
      
      </div>

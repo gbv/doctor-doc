@@ -44,7 +44,7 @@
 </table>
 </logic:notEqual>
 </logic:present>
- <br />
+ <br>
  
 
 <h3><bean:message key="stockexport.heading" /></h3>
@@ -96,15 +96,15 @@
 <li><p><bean:message key="stockexport.list2.nine" /></p></li>
 <li><p><bean:message key="stockexport.list2.ten" /></p></li>
 <li><p><bean:message key="stockexport.list2.eleven" />
-<br /><bean:message key="stockexport.list2.twelve" />
-<br /><bean:message key="stockexport.list2.thirteen" />
-<br /><bean:message key="stockexport.list2.fourteen" />
+<br><bean:message key="stockexport.list2.twelve" />
+<br><bean:message key="stockexport.list2.thirteen" />
+<br><bean:message key="stockexport.list2.fourteen" />
 </p></li>
 </ul>
 <p>
   <bean:message key="stockexport.list2.fifteen" />
 </p>
-<p><br /></p>
+<p><br></p>
 
 
 </div>
