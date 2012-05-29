@@ -62,7 +62,6 @@ import ch.dbs.form.KontoForm;
 import ch.dbs.form.LoginForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
-import ch.dbs.form.OrderStatistikForm;
 import ch.dbs.form.OverviewForm;
 import ch.dbs.form.SearchesForm;
 import ch.dbs.form.UserForm;
@@ -115,7 +114,7 @@ public final class UserAction extends DispatchAction {
         String forward = FAILURE;
 
         OverviewForm of = (OverviewForm) fm;
-        final OrderStatistikForm osf = new OrderStatistikForm();
+        int count = 0;
         final Bestellungen b = new Bestellungen();
 
         final Check check = new Check();
@@ -163,15 +162,12 @@ public final class UserAction extends DispatchAction {
                         if (of.getFilter() == null) {
                             of.setBestellungen(b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
                                     of.getFromdate(), of.getTodate(), cn.getConnection()));
-                            osf.setAuflistung(b.countOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
-                                    of.getFromdate(), of.getTodate(), cn.getConnection()));
+                            count = of.getBestellungen().size();
                         } else {
                             of.setBestellungen(b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
                                     of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
                                     cn.getConnection()));
-                            osf.setAuflistung(b.countOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
-                                    of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
-                                    cn.getConnection()));
+                            count = of.getBestellungen().size();
                         }
                     }
 
@@ -180,7 +176,7 @@ public final class UserAction extends DispatchAction {
                     rq.setAttribute("sortedSearchFields", result);
 
                     rq.setAttribute("overviewform", of);
-                    rq.setAttribute("orderstatistikform", osf);
+                    rq.setAttribute("count", count);
 
                 } else { // Umleitung auf Suche
                     forward = "search";
@@ -1213,7 +1209,6 @@ public final class UserAction extends DispatchAction {
             if (auth.isLogin(rq)) {
 
                 OverviewForm of = (OverviewForm) fm;
-                final OrderStatistikForm osf = new OrderStatistikForm();
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                     forward = SUCCESS;
@@ -1239,7 +1234,6 @@ public final class UserAction extends DispatchAction {
                     of.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
 
                     rq.setAttribute("overviewform", of);
-                    rq.setAttribute("orderstatistikform", osf);
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
@@ -1274,10 +1268,10 @@ public final class UserAction extends DispatchAction {
         if (auth.isLogin(rq)) {
 
             OverviewForm of = (OverviewForm) fm;
-            final OrderStatistikForm osf = new OrderStatistikForm();
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             final Check check = new Check();
             final Text cn = new Text();
+            int count = 0;
 
             try {
 
@@ -1348,6 +1342,7 @@ public final class UserAction extends DispatchAction {
                             pstmt = composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
                                     dateFrom, dateTo, cn.getConnection());
                             of.setBestellungen(b.searchOrdersPerKonto(pstmt, cn.getConnection()));
+                            count = of.getBestellungen().size();
                         } catch (final Exception e) { // Fehler aus Methode abfangen
                             // zusätzliche Ausgabe von Fehlermeldung, falls versucht wurde
                             // Bestellungen nach Kunde > als erlaubter Zeitraum (Datenschutz)
@@ -1365,28 +1360,12 @@ public final class UserAction extends DispatchAction {
                                 }
                             }
                         }
-                        PreparedStatement pstmtb = null;
-                        try {
-                            pstmtb = composeCountSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(),
-                                    dateFrom, dateTo, cn.getConnection());
-                            osf.setAuflistung(b.countSearchOrdersPerKonto(pstmtb));
-                        } catch (final Exception e) {
-                            LOG.error("composeCountSearchLogic: " + e.toString());
-                        } finally {
-                            if (pstmtb != null) {
-                                try {
-                                    pstmtb.close();
-                                } catch (final SQLException e) {
-                                    LOG.error("composeCountSearchLogic: " + e.toString());
-                                }
-                            }
-                        }
                     } else {
                         of.setS(false); // Suchvariable auf false setzen
                     }
 
                     rq.setAttribute("overviewform", of);
-                    rq.setAttribute("orderstatistikform", osf);
+                    rq.setAttribute("count", count);
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
@@ -1476,72 +1455,6 @@ public final class UserAction extends DispatchAction {
                             "Data privacy: exceeded allowed search range for name, firts name, email, remarks");
                 }
             }
-
-            String truncation = ""; // Normalerweise keine Trunkierung
-            if (sf.getCondition().contains("contains")) {
-                truncation = "%";
-            } // Trunkierung für LIKE
-
-            if (composeSearchLogicTable(sf.getField(), sf.getCondition()).contains("MATCH (artikeltitel,autor,")) {
-                // Suche für IN BOOLEAN MODE zusammenstellen
-                pstmt.setString(2 + i, composeSearchInBooleanMode(sf.getInput()));
-            } else {
-                pstmt.setString(2 + i, truncation + sf.getInput() + truncation);
-            }
-        }
-
-        return pstmt;
-
-    }
-
-    /**
-     * Stellt den MYSQL für die Suche zusammen / Suchlogik
-     */
-    private PreparedStatement composeCountSearchLogic(final List<SearchesForm> searches, final Konto k,
-            final String sort, final String sortorder, final String date_from, final String date_to, final Connection cn)
-            throws Exception {
-        final Bestellungen b = new Bestellungen();
-        final StringBuffer sql = new StringBuffer(300);
-        sql.append("SELECT count(bid) FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) "
-                + "ON ( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND (");
-
-        final int max = searches.size();
-        for (int i = 0; i < max; i++) {
-
-            SearchesForm sf = searches.get(i);
-
-            sf = searchMapping(sf); // ggf. Suchwerte in Datenbankwerte übersetzen...
-
-            // Suche zusammenstellen
-            if (composeSearchLogicTable(sf.getField(), sf.getCondition()).contains("MATCH (artikeltitel,autor,")) {
-                // Achtung ist immer als "contains" trunkiert...
-                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()));
-                sql.append("AGAINST (? IN BOOLEAN MODE) ");
-            } else {
-                sql.append('`');
-                sql.append(composeSearchLogicTable(sf.getField(), sf.getCondition()));
-                sql.append("`\040");
-                sql.append(composeSearchLogicCondition(sf.getCondition()));
-                sql.append("\040?\040");
-            }
-
-            // Boolsche-Verknüpfung anhängen solange noch weiter Abfragen kommen...
-            if (i + 1 < max) {
-                sql.append(composeSearchLogicBoolean(sf.getBool()));
-                sql.append('\040');
-            }
-
-        }
-
-        sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '" + date_to + "' ORDER BY ",
-                sort, sortorder));
-
-        final PreparedStatement pstmt = cn.prepareStatement(sql.toString());
-        pstmt.setLong(1, k.getId());
-
-        for (int i = 0; i < max; i++) {
-
-            final SearchesForm sf = searches.get(i);
 
             String truncation = ""; // Normalerweise keine Trunkierung
             if (sf.getCondition().contains("contains")) {

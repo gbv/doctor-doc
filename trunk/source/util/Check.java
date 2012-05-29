@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,13 +48,13 @@ public class Check {
     public boolean isEmail(final String email) {
         boolean check = false;
         try {
-            final InternetAddress  ia = new InternetAddress();
+            final InternetAddress ia = new InternetAddress();
             ia.setAddress(email);
             try {
                 ia.validate(); // wirft bei grundsätzlich ungültigen Adressen eine AdressException
                 // info@doctor-doc ohne .com wird noch als gültig angesehen...
                 final Pattern p = Pattern
-                .compile("[A-Za-z0-9._-]+@[A-Za-z0-9][A-Za-z0-9.-]{0,61}[A-Za-z0-9]\\.[A-Za-z.]{2,6}");
+                        .compile("[A-Za-z0-9._-]+@[A-Za-z0-9][A-Za-z0-9.-]{0,61}[A-Za-z0-9]\\.[A-Za-z.]{2,6}");
                 final Matcher m = p.matcher(email);
                 if (m.find()) {
                     check = true;
@@ -62,7 +63,7 @@ public class Check {
                 LOG.info("isEmail: " + email + " " + e1.toString());
             }
         } catch (final Exception e) {
-            LOG.error("isEmail: "  + email + " " + e.toString());
+            LOG.error("isEmail: " + email + " " + e.toString());
         }
 
         return check;
@@ -129,10 +130,10 @@ public class Check {
             try {
                 final Calendar calTo = Calendar.getInstance();
                 final Calendar calFrom = Calendar.getInstance();
-                calTo.set(Integer.parseInt(of.getYto()), Integer.parseInt(of.getMto()) - 1, Integer.parseInt(of
-                        .getDto()), 0, 0, 0);
-                calFrom.set(Integer.parseInt(of.getYfrom()), Integer.parseInt(of.getMfrom()) - 1, Integer.parseInt(of
-                        .getDfrom()), 0, 0, 0);
+                calTo.set(Integer.parseInt(of.getYto()), Integer.parseInt(of.getMto()) - 1,
+                        Integer.parseInt(of.getDto()), 0, 0, 0);
+                calFrom.set(Integer.parseInt(of.getYfrom()), Integer.parseInt(of.getMfrom()) - 1,
+                        Integer.parseInt(of.getDfrom()), 0, 0, 0);
                 final long time = calTo.getTime().getTime() - calFrom.getTime().getTime();
 
                 if (time < 0) { // Überprüfung ob eine negativer Zeitbereicg vorliegt...
@@ -161,8 +162,7 @@ public class Check {
         }
 
         // Defaultwerte bei bedarf Setzen
-        if (of.getYfrom() == null || of.getYto() == null
-                || of.getMfrom() == null || of.getMto() == null
+        if (of.getYfrom() == null || of.getYto() == null || of.getMfrom() == null || of.getMto() == null
                 || of.getDfrom() == null || of.getDto() == null) {
 
             final Calendar calTo = Calendar.getInstance();
@@ -200,8 +200,7 @@ public class Check {
             of.setSort("orderdate");
         }
         // nach dem Login Default-Sortierung nach asc ausser bei date nach desc
-        if ((of.getSortorder() == null) ||  ((!of.getSortorder().equals("asc"))
-                && (!of.getSortorder().equals("desc")))) {
+        if ((of.getSortorder() == null) || ((!of.getSortorder().equals("asc")) && (!of.getSortorder().equals("desc")))) {
             if (of.getSort().equals("orderdate")) {
                 of.setSortorder("desc");
             } else {
@@ -231,7 +230,9 @@ public class Check {
                     }
                 }
             }
-            if (!validCriteria) { of.setFilter(null); } // ungültige Filterkriterien löschen
+            if (!validCriteria) {
+                of.setFilter(null);
+            } // ungültige Filterkriterien löschen
         }
 
         return of;
@@ -244,12 +245,14 @@ public class Check {
      */
     public OverviewForm checkOrdersSortCriterias(final OverviewForm of) {
         if (of.getSort().equals("mail") || of.getSort().equals("artikeltitel") || of.getSort().equals("zeitschrift")
-                || of.getSort().equals("inhalt") || of.getSort().equals("orderdate") || of.getSort().equals("statedate")
-                || of.getSort().equals("state") || of.getSort().equals("deloptions") || of.getSort().equals("name")
-                || of.getSort().equals("konto") || of.getSort().equals("bestellquelle")
-                || of.getSort().equals("mediatype")) {
+                || of.getSort().equals("inhalt") || of.getSort().equals("orderdate")
+                || of.getSort().equals("statedate") || of.getSort().equals("state")
+                || of.getSort().equals("deloptions") || of.getSort().equals("name") || of.getSort().equals("konto")
+                || of.getSort().equals("bestellquelle") || of.getSort().equals("mediatype")) {
 
-            if (of.getSort().equals("konto")) { of.setSort("b.KID"); }
+            if (of.getSort().equals("konto")) {
+                of.setSort("b.KID");
+            }
 
         } else {
             of.setSort("orderdate");
@@ -288,14 +291,20 @@ public class Check {
 
             // check for specified filetypes
             for (final String filetype : filetypes) {
-                if (extension.equalsIgnoreCase(filetype)) { check = true; }
+                if (extension.equalsIgnoreCase(filetype)) {
+                    check = true;
+                }
             }
 
             // link mustn't be longer than 254 charactres
-            if (link.length() > 254) { check = false; }
+            if (link.length() > 254) {
+                check = false;
+            }
 
             // needs to be an URL after all!
-            if (check) { check = isUrl(link); }
+            if (check) {
+                check = isUrl(link);
+            }
 
         } catch (final Exception e) {
             check = false; // if we got here, the check failed
@@ -314,11 +323,11 @@ public class Check {
 
         boolean check = false;
 
-        if (fileName != null && extension != null
-                && fileName.length() > extension.length()) { // filename must be longer than the filetype extension
+        // filename must be longer than the filetype extension plus leading dot
+        if (fileName != null && extension != null && fileName.length() > extension.length() + 1) {
             // make case insensitive
             fileName = fileName.toLowerCase();
-            extension = extension.toLowerCase();
+            extension = "." + extension.toLowerCase();
             try {
                 if (fileName.contains(extension) // must contain extension
                         // extension must be placed at the end
@@ -335,9 +344,8 @@ public class Check {
         return check;
     }
 
-
     /**
-     * Extrahiert aus einem String alle Wörter und Zahlen (Regexp: \w   A word character: [a-zA-Z_0-9])
+     * Extrahiert aus einem String alle Wörter und Zahlen.
      * @param s
      * @return List words
      */
@@ -347,13 +355,15 @@ public class Check {
 
         if (s != null) {
 
-            // Regexp: \w   A word character: [a-zA-Z_0-9]
-            final Pattern p = Pattern.compile("([\\p{L}||\\P{Alpha}&&[^\\p{Punct}]&&[^\\p{Space}]])*");
-            final Matcher m = p.matcher(s);
+            // remove all non word characters with spaces
+            final String onlyWordCharacters = s.replaceAll("[^A-Za-z0-9 ]", " ");
 
-            while (m.find()) {
-                words.add(s.substring(m.start(), m.end()));
+            final StringTokenizer tokenizer = new StringTokenizer(onlyWordCharacters);
+
+            while (tokenizer.hasMoreTokens()) {
+                words.add(tokenizer.nextToken());
             }
+
         }
 
         return words;
@@ -372,13 +382,17 @@ public class Check {
     public boolean containsOnlyNumbers(final String str) {
 
         //It can't contain only numbers if it's null or empty...
-        if (str == null || str.length() == 0) { return false; }
+        if (str == null || str.length() == 0) {
+            return false;
+        }
 
         final int max = str.length();
         for (int i = 0; i < max; i++) {
 
             //If we find a non-digit character we return false.
-            if (!Character.isDigit(str.charAt(i))) { return false; }
+            if (!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
         }
 
         return true;
@@ -425,8 +439,12 @@ public class Check {
                 final int sum = pos8 * 8 + pos7 * 7 + pos6 * 6 + pos5 * 5 + pos4 * 4 + pos3 * 3 + pos2 * 2;
                 final int checksum = 11 - (sum - (sum / 11) * 11);
                 if (checksum == 10 || checksum == 11) {
-                    if (checksum == 10) { kontrollziffer = "X"; }
-                    if (checksum == 11) { kontrollziffer = "0"; }
+                    if (checksum == 10) {
+                        kontrollziffer = "X";
+                    }
+                    if (checksum == 11) {
+                        kontrollziffer = "0";
+                    }
                 } else {
                     kontrollziffer = String.valueOf(checksum);
                 }
@@ -444,10 +462,8 @@ public class Check {
             LOG.error("isValidIssn: " + issn + "\040" + e.toString());
         }
 
-
         return check;
     }
-
 
     /**
      * Checks if a String is a valid year.
@@ -462,8 +478,8 @@ public class Check {
         // check if length = 4 and string contains only digits
         if (isExactLength(year, 4) && org.apache.commons.lang.StringUtils.isNumeric(year)) {
             // Search pattern works from 14th century till 22th century. This sould be usable for some time...
-            final Pattern p = Pattern.compile(
-            "13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
+            final Pattern p = Pattern
+                    .compile("13[0-9]{2}|14[0-9]{2}|15[0-9]{2}|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|19[0-9]{2}|20[0-9]{2}|21[0-9]{2}");
             final Matcher m = p.matcher(year);
             try {
                 if (m.find()) {
@@ -476,6 +492,5 @@ public class Check {
 
         return check;
     }
-
 
 }
