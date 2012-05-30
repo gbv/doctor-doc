@@ -19,21 +19,20 @@ package test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import test.dbs.actions.user.TestKontoAction;
-import test.dbs.actions.user.TestLoginAction;
 import test.dbs.entity.TestBenutzer;
 import test.dbs.entity.TestKonto;
 
 public class AllTests {
 
     public static Test suite() {
-        final TestSuite suite = new TestSuite("Test for test.dbs.entity");
+        final TestSuite suite = new TestSuite("Tests for Doctor-Doc");
         //$JUnit-BEGIN$
         suite.addTestSuite(TestBenutzer.class);
         suite.addTestSuite(TestKonto.class);
-        suite.addTestSuite(TestKontoAction.class);
-        suite.addTestSuite(TestLoginAction.class);
-        //    suite.addTestSuite(TestPosition.class);
+        //        suite.addTestSuite(TestKontoAction.class);
+        //        suite.addTestSuite(TestLoginAction.class);
+        //        suite.addTestSuite(TestPosition.class);
+        suite.addTestSuite(CheckTest.class);
         //$JUnit-END$
         return suite;
     }

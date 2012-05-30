@@ -17,7 +17,6 @@
 
 package test.ddl.entity;
 
-
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -34,7 +33,7 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Konto;
 import ch.ddl.entity.Position;
 
-public class TestPosition extends TestCase{
+public class TestPosition extends TestCase {
 
     private static Konto k = new Konto();
 
@@ -45,7 +44,6 @@ public class TestPosition extends TestCase{
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-
 
     }
 
@@ -59,7 +57,8 @@ public class TestPosition extends TestCase{
 
     }
 
-    @Test //@BeforeClass funzt nicht
+    @Test
+    //@BeforeClass funzt nicht
     public void testSetUp() {
         final Konto tz = new Konto(); // we need this for setting a default timezone
         final Date d = new Date();
@@ -99,7 +98,8 @@ public class TestPosition extends TestCase{
         //    assertNotNull(p.getId());
     }
 
-    @Test //@AfterClass funzt nicht
+    @Test
+    //@AfterClass funzt nicht
     public void testTearDownUp() {
         final AbstractBenutzer b = new AbstractBenutzer();
         b.deleteUser(PrepareTestObjects.getTestBibliothekarFromDb(k.getSingleConnection()), k.getSingleConnection());

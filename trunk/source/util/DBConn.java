@@ -154,7 +154,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
      *
      * @return Connection
      */
-    public Connection getPooledConnection() {
+    private Connection getPooledConnection() {
 
         if (cn == null) {
             try {
@@ -201,8 +201,8 @@ public class DBConn extends AbstractReadSystemConfigurations {
         return cn;
     }
 
-    public void setCn(final Connection cn) {
-        this.cn = cn;
-    }
+    //    public void setCn(final Connection cn) {
+    //        this.cn = cn;
+    //    }
 
 }

@@ -17,7 +17,6 @@
 
 package test.dbs.entity;
 
-
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
@@ -30,7 +29,7 @@ import org.junit.Test;
 
 import ch.dbs.entity.Konto;
 
-public class TestKonto extends TestCase{
+public class TestKonto extends TestCase {
 
     private transient Konto k = new Konto();
     private final transient Long id = Long.valueOf(1);
@@ -58,36 +57,26 @@ public class TestKonto extends TestCase{
     @Test
     public void testLoadKonto() throws SQLException {
 
-        // initialvariabeln
-        boolean cn = false;
-
-        if (k.getSingleConnection() != null) {
-            cn = true;
-        }
-
         //    Konto laden
         k = new Konto(id, k.getSingleConnection()); //Lädt das Konto
         k.close();
-
-        assertTrue("Beim laden des Kontos konnte keine Verbindung zur Datenbank hergestellt werden", cn);
         assertEquals("Es konnte kein Konto mit der ID " + id.toString() + " geladen werden", k.getId(), id);
     }
 
+    @Test
+    public void testNewKonto() throws SQLException {
 
-    //  @Test
-    //  public void testNewKonto() throws SQLException {
-    //
-    ////    Konto laden
-    //    k = new Konto(id, k.getConnection()); //Lädt das Konto
-    //
-    ////    k.setSubitobenutzername("blaaa");
-    //    k.setBibliotheksname("BiblioTest");
-    //    k.update(k.getConnection());
-    //    Konto changedkonto = new Konto(id, k.getConnection());
-    //    k.update(k.getConnection());
-    //    k.close();
-    //
-    ////    assertEquals("Leider konnte der Subito-Benutzername nicht auf blaaa geändert werden", "blaaa", changedkonto.getSubitobenutzername());
-    //    assertEquals("Leider konnte der Subito-Benutzername nicht auf blaaa geändert werden", "blaaa", changedkonto.getBibliotheksname());
-    //  }
+        //    Konto laden
+        k = new Konto(id, k.getSingleConnection()); //Lädt das Konto
+        final String plzOriginal = k.getPLZ();
+
+        k.setPLZ("4603");
+        k.update(k.getSingleConnection());
+        final Konto changedkonto = new Konto(id, k.getSingleConnection());
+        k.setPLZ(plzOriginal);
+        k.update(k.getSingleConnection());
+        k.close();
+
+        assertEquals("Error while chaning the zip code", "4603", changedkonto.getPLZ());
+    }
 }

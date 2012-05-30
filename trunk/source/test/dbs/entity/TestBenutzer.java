@@ -52,7 +52,7 @@ public class TestBenutzer extends TestCase {
     private static final String adresszusatz = "Testadresszusatz";
     private static final String plz = "Testplz";
     private static final String ort = "Testort";
-    private static final String land = "Testland";
+    private static final String land = "CH";
     private static final String password = "Testpasswort";
     private static final boolean loginopt = false;
     private static final boolean userbestellung = false; // darf bei SUBITO bestellen
@@ -64,9 +64,11 @@ public class TestBenutzer extends TestCase {
     //    private Long status = Long.valueOf(1);
     private static final Long billing = Long.valueOf(1);
     private static final String gtc = "Testgtc";
-    private static final String gtcdate = "01.01.2009";
+    private static final String gtcdate = "2012-05-19 20:19:45";
     private static final Date lastuse = new Date();
-    private static final String datum = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(lastuse);
+    private static final String datum = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastuse);
+
+    private static final Konto tz = new Konto(); // we need this for setting a default timezone
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -92,7 +94,6 @@ public class TestBenutzer extends TestCase {
     public void testSaveBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
         final AbstractBenutzer u = this.setUserValues();
-        final Konto tz = new Konto(); // we need this for setting a default timezone
         final Date d = new Date();
         final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final String datum = fmt.format(d, tz.getTimezone());
@@ -117,7 +118,7 @@ public class TestBenutzer extends TestCase {
         assertEquals(b.getTelefonnrp(), telefonnrp);
         assertEquals(b.getInstitut(), institut);
         assertEquals(b.getAbteilung(), abteilung);
-        assertEquals(b.getCategory(), category);
+        assertEquals(b.getCategory().getId(), category.getId());
         assertEquals(b.getAdresse(), adresse);
         assertEquals(b.getAdresszusatz(), adresszusatz);
         assertEquals(b.getPlz(), plz);
@@ -133,9 +134,9 @@ public class TestBenutzer extends TestCase {
         assertFalse(b.isKontovalidation());
         assertEquals(b.getRechte(), rechte);
         assertEquals(b.getBilling(), billing);
-        assertFalse(b.getGtcdate().equals(gtcdate));
+        assertFalse(b.getGtcdate().equals(gtcdate)); // make sure this gets not overridden
         System.out.println("b: " + b.getLastuse() + " lastuse: " + lastuse);
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(b.getLastuse()), datum);
+        assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(b.getLastuse()), datum);
 
     }
 
@@ -143,7 +144,6 @@ public class TestBenutzer extends TestCase {
     public void testChangeBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
         AbstractBenutzer b = new AbstractBenutzer();
-        final Konto tz = new Konto(); // we need this for setting a default timezone
         final Connection cn = b.getSingleConnection();
         b = b.getUserFromEmail(email, cn);
         b.setName(name + "1");
@@ -173,7 +173,6 @@ public class TestBenutzer extends TestCase {
 
         //    Benutzervalues vorbereiten
         final AbstractBenutzer u = this.setUserValues();
-        final Konto tz = new Konto(); // we need this for setting a default timezone
         final Date d = new Date();
         final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final String datum = fmt.format(d, tz.getTimezone());
@@ -193,25 +192,25 @@ public class TestBenutzer extends TestCase {
         assertNull("Noch Testbenutzer im System! Manuell löschen und Test wiederholen ob immer noch fehlschlägt", b);
     }
 
-    //  @Test
-    //  public void testSave2BibliothekareWithSameEmail() throws SQLException {
-    //
-    ////    Benutzervalues vorbereiten
-    //    AbstractBenutzer u = this.setUserValues();
-    //    assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getConnection());
-    //    u.saveNewUser(u, u.getConnection());
-    //    u.saveNewUser(u, u.getConnection());
-    //
-    //    List <AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getConnection());
-    //    assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!",2, abl.size());
-    //
-    //    AbstractBenutzer.deleteUser(AbstractBenutzer.getUserFromEmail(email, u.getConnection()), u.getConnection());
-    //    AbstractBenutzer.deleteUser(AbstractBenutzer.getUserFromEmail(email, u.getConnection()), u.getConnection());
-    //
-    //    AbstractBenutzer b = AbstractBenutzer.getUserFromEmail(email, u.getConnection());
-    //    u.close();
-    //    assertNull("Noch Testbenutzer im System! Manuell löschen und Test wiederholen ob immer noch fehlschlägt", b);
-    //  }
+    @Test
+    public void testSave2BibliothekareWithSameEmail() throws SQLException {
+
+        //    Benutzervalues vorbereiten
+        final AbstractBenutzer u = this.setUserValues();
+        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getSingleConnection());
+        u.saveNewUser(u, tz, u.getSingleConnection());
+        u.saveNewUser(u, tz, u.getSingleConnection());
+
+        final List<AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getSingleConnection());
+        assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!", 2, abl.size());
+
+        u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
+        u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
+
+        final AbstractBenutzer b = u.getUserFromEmail(email, u.getSingleConnection());
+        u.close();
+        assertNull("Noch Testbenutzer im System! Manuell löschen und Test wiederholen ob immer noch fehlschlägt", b);
+    }
 
     /*
      * Füllt die in den Membervariabeln dieser Klasse gesetzten Werte in den AbstractBenutzer

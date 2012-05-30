@@ -819,7 +819,7 @@ public final class KontoAction extends DispatchAction {
                                 k.setDefault_deloptions(kf.getDefault_deloptions());
 
                                 k.update(cn.getConnection());
-                                k.setCn(cn.getConnection());
+                                //                                k.setCn(cn.getConnection());
 
                                 // veränderte Kontos in Session legen, damit neue Angaben angezeigt werden. Z.B. kontochange
                                 ui.setKonto(k);
