@@ -299,7 +299,7 @@
       <tr>
         <td><bean:message key="bestellform.adress" />&nbsp;</td>
         <td><textarea cols="54" rows="2" name="kundenadresse"
-          style="word-wrap:soft;"><bean:write
+          style="word-wrap:break-word;"><bean:write
           name="orderform" property="kundenadresse" /></textarea></td>
       </tr>
     </logic:equal>
@@ -314,7 +314,7 @@
           <bean:message key="bestellform.adress" /><logic:equal name="bestellparam" property="adr_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><textarea cols="54" rows="2" name="kundenadresse"
-          style="word-wrap:soft;"><bean:write
+          style="word-wrap:break-word;"><bean:write
           name="orderform" property="kundenadresse" /></textarea>
         </td>
       </tr>      
@@ -593,7 +593,7 @@
     <tr>
       <td><bean:message key="bestellform.anmerkungen" />&nbsp;</td>
       <td><textarea cols="54" rows="2" name="notizen"
-        style="word-wrap:soft;"><bean:write
+        style="word-wrap:break-word;"><bean:write
         name="orderform" property="notizen" /></textarea></td>
     </tr>
     

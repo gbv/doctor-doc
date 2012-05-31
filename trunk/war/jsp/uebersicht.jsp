@@ -483,7 +483,7 @@
        <html:form method="post" action="changenotes">
         <nobr>
           <input type="image" src="img/change.png" alt="<bean:message key="uebersicht.change_notes" />" title="<bean:message key="uebersicht.change_notes" />">
-          <textarea cols="15" rows="4" name="notizen" style="word-wrap:soft;"><bean:write name="b" property="notizen" /></textarea>
+          <textarea cols="15" rows="4" name="notizen" style="word-wrap:break-word;"><bean:write name="b" property="notizen" /></textarea>
         </nobr>
     <input type="hidden" name="bid" value="<bean:write name="b" property="id" />" /> 
     <input type="hidden" name="method" value="changenotes" />
