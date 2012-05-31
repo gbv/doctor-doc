@@ -35,7 +35,7 @@ public class DaiaXMLResponse {
     private static final String URL = ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do?";
     private static final String URN = "urn:x-domain:" + URL;
 
-    public String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
+    protected String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
 
         String xml = "";
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -195,7 +195,7 @@ public class DaiaXMLResponse {
         return xml;
     }
 
-    public String noHoldings(final String msg, final String rfr_id) {
+    protected String noHoldings(final String msg, final String rfr_id) {
 
         String xml = "";
         final ByteArrayOutputStream out = new ByteArrayOutputStream();

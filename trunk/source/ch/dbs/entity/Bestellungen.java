@@ -316,34 +316,6 @@ public class Bestellungen extends AbstractIdEntity {
     }
 
     /**
-     *
-     * @param vorkomma
-     * @param nachkomma
-     * @return
-     */
-    public BigDecimal stringToBigDecimal(final String vorkomma, final String nachkomma) {
-
-        BigDecimal bd = null;
-
-        if (vorkomma != null && nachkomma != null && (!vorkomma.equals("") || !nachkomma.equals("")) // mind. ein Feld muss ausgefüllt sein
-                && vorkomma.matches("[0-9]*") && nachkomma.matches("[0-9]*")) {
-
-            bd = new BigDecimal("0.00");
-
-            if (!"".equals(vorkomma)) {
-                bd = new BigDecimal(vorkomma + ".00");
-            }
-            // exp = 1 => Leerstring
-            if (!"".equals(nachkomma)) {
-                bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length()));
-            }
-
-        }
-
-        return bd;
-    }
-
-    /**
      * Speichert die Bestellung in der DB ab (hinterlegt die id im Bestellobjekt)
      * @param cn
      */
@@ -1166,7 +1138,7 @@ public class Bestellungen extends AbstractIdEntity {
      * @param String datum
      * @return String datum
      */
-    public String removeMilliseconds(final String datum) { // 2007-11-01 08:56:07.0
+    protected String removeMilliseconds(final String datum) { // 2007-11-01 08:56:07.0
 
         try {
             if (datum.contains(".")) {

@@ -90,9 +90,7 @@ public class IllHandler {
             method.addParameter("transaction-qualifier", "");
         }
         if (ill.getTransaction_sub_transaction_qualifier() != null) {
-            method
-            .addParameter("transaction-sub-transaction-qualifier", ill
-                    .getTransaction_sub_transaction_qualifier());
+            method.addParameter("transaction-sub-transaction-qualifier", ill.getTransaction_sub_transaction_qualifier());
         } else {
             method.addParameter("transaction-sub-transaction-qualifier", "");
         }
@@ -137,14 +135,14 @@ public class IllHandler {
             method.addParameter("delivery-address", "");
         }
         if (ill.getDel_postal_name_of_person_or_institution() != null) {
-            method.addParameter("del-postal-name-of-person-or-institution", ill
-                    .getDel_postal_name_of_person_or_institution());
+            method.addParameter("del-postal-name-of-person-or-institution",
+                    ill.getDel_postal_name_of_person_or_institution());
         } else {
             method.addParameter("del-postal-name-of-person-or-institution", "");
         }
         if (ill.getDel_postal_extended_postal_delivery_address() != null) {
-            method.addParameter("del-postal-extended-postal-delivery-address", ill
-                    .getDel_postal_extended_postal_delivery_address());
+            method.addParameter("del-postal-extended-postal-delivery-address",
+                    ill.getDel_postal_extended_postal_delivery_address());
         } else {
             method.addParameter("del-postal-extended-postal-delivery-address", "");
         }
@@ -340,21 +338,31 @@ public class IllHandler {
             //        System.out.println("Expiry: " + date_to);
 
             String deloptions = "POST"; // default
-            if (of.getDeloptions().equals("fax to pdf") && ui.getKonto().getFaxno() != null) { deloptions = "FAX"; }
-            if (of.getDeloptions().equals("fax") && ui.getKonto().getFax_extern() != null) { deloptions = "FAX"; }
+            if (of.getDeloptions().equals("fax to pdf") && ui.getKonto().getFaxno() != null) {
+                deloptions = "FAX";
+            }
+            if (of.getDeloptions().equals("fax") && ui.getKonto().getFax_extern() != null) {
+                deloptions = "FAX";
+            }
 
             String fax = ""; // default
             if (ui.getKonto().getFaxno() != null) {
                 fax = correctFaxnumber(ui.getKonto().getFaxno());
             } else {
-                if (ui.getKonto().getFax_extern() != null) { fax = correctFaxnumber(ui.getKonto().getFax_extern()); }
+                if (ui.getKonto().getFax_extern() != null) {
+                    fax = correctFaxnumber(ui.getKonto().getFax_extern());
+                }
             }
 
             String serviceType = "COPY";
-            if (of.getMediatype().equals("Buch")) { serviceType = "LOAN"; }
+            if (of.getMediatype().equals("Buch")) {
+                serviceType = "LOAN";
+            }
 
             String isiltext = "";
-            if (k.getIsil() != null) { isiltext = " | Sigel: " + k.getIsil(); } // kann null sein
+            if (k.getIsil() != null) {
+                isiltext = " | Sigel: " + k.getIsil();
+            } // kann null sein
 
             // GBV-spezifische Angaben
             gbv.setClient_identifier(k.getGbvbenutzername()); // kann auch leer sein. momentan deaktiviert
@@ -393,8 +401,7 @@ public class IllHandler {
             gbv.setDelivery_service(deloptions);
             gbv.setIll_service_type(serviceType); // COPY oder Loan
             gbv.setItem_id(""); // Feld ist immer leer
-            gbv.setDel_notes(of.getAnmerkungen()
-                    + " | Mehrkosten bis max.: " + of.getMaximum_cost() + " EUR"
+            gbv.setDel_notes(of.getAnmerkungen() + " | Mehrkosten bis max.: " + of.getMaximum_cost() + " EUR"
                     + " | Priority: " + of.getPrio());
             // noch nicht aktiv im GBV. Momentan wird del-notes dazu verwendet
             gbv.setMaximum_cost(of.getMaximum_cost());
@@ -432,19 +439,21 @@ public class IllHandler {
     public String readGbvIllAnswer(final String content) {
         String gbvanswer = "Fehlende GBV-Antwort!"; // darf nicht null sein, da sonst jsp Anzeige nicht funzt!
 
-        if (content == null) { return gbvanswer; }
+        if (content == null) {
+            return gbvanswer;
+        }
 
         try {
 
             if (content.contains("<status>OK</status>") && content.contains("<return_value>")) {
                 // Bestellung hat geklappt
-                gbvanswer = content.substring(content.indexOf("<return_value>") + 14, content.indexOf(
-                        "</return_value>", content.indexOf("<return_value>")));
+                gbvanswer = content.substring(content.indexOf("<return_value>") + 14,
+                        content.indexOf("</return_value>", content.indexOf("<return_value>")));
             } else {
                 if (content.contains("<status>ERROR</status>") && content.contains("<return_comment>")) {
                     // // Bestellung ist fehlgeschlagen
-                    gbvanswer = content.substring(content.indexOf("<return_comment>") + 16, content.indexOf(
-                            "</return_comment>", content.indexOf("<return_comment>")));
+                    gbvanswer = content.substring(content.indexOf("<return_comment>") + 16,
+                            content.indexOf("</return_comment>", content.indexOf("<return_comment>")));
                 }
             }
 
@@ -457,7 +466,6 @@ public class IllHandler {
         return gbvanswer;
     }
 
-
     /**
      * Liest einen IllRequest. (Status-Antwort eines gebenden Systems auf eine Bestellung. z.B. shipped...)
      * @param String content
@@ -465,7 +473,7 @@ public class IllHandler {
      * @return String gbvanswer
      *
      */
-    public IllForm readIllRequest(final HttpServletRequest rq) {
+    protected IllForm readIllRequest(final HttpServletRequest rq) {
         final IllForm ill = new IllForm();
 
         try {
@@ -492,8 +500,7 @@ public class IllHandler {
             ill.setClient_name(rq.getParameter("client-name"));
             ill.setDelivery_address(rq.getParameter("delivery-address")); // Das Feld delivery-address ist immer leer.
             // Lieferadresse und vorläufig Sigelangabe
-            ill.setDel_postal_name_of_person_or_institution(rq
-                    .getParameter("del-postal-name-of-person-or-institution"));
+            ill.setDel_postal_name_of_person_or_institution(rq.getParameter("del-postal-name-of-person-or-institution"));
             // Ergänzung zur Lieferadresse
             ill.setDel_postal_extended_postal_delivery_address(rq
                     .getParameter("del-postal-extended-postal-delivery-address"));
@@ -531,7 +538,6 @@ public class IllHandler {
             ill.setItem_iSBN(rq.getParameter("item-isbn"));
             ill.setResponder_note(rq.getParameter("responder-note"));
 
-
         } catch (final Exception e) {
             LOG.error("IllHandler - readIllRequest(rq): " + e.toString());
         }
@@ -546,7 +552,7 @@ public class IllHandler {
      * @return String returnvalue
      *
      */
-    public String updateOrderState(final IllForm ill, final Connection cn) {
+    protected String updateOrderState(final IllForm ill, final Connection cn) {
 
         String returnvalue = "ERROR";
         final OrderState orderstate = new OrderState();
@@ -559,17 +565,16 @@ public class IllHandler {
             if (ill.getMessage_type().equals("SHIPPED")) {
                 returnvalue = "OK"; // wird immer mit OK quittiert, unabhängig, ob unten eine Bestellung gefunden wird
                 // hier wird versucht die Bestellung anhand der Trackinnr und der Gbvnr zu holens
-                final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(), ill
-                        .getTransaction_sub_transaction_qualifier());
+                final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(),
+                        ill.getTransaction_sub_transaction_qualifier());
                 if (b.getId() != null) {
 
                     String date = ill.getService_date_time();
                     // ill enthält gültiges Datum (yyyyMMddHHmmss)
                     if (date.length() == 14 && date.substring(0, 2).equals("20")) {
                         // 20090120074238
-                        date = date.substring(0, 4) + "-" + date.substring(4, 6)
-                        + "-" + date.substring(6, 8) + "\040" + date.substring(8, 10)
-                        + ":" + date.substring(10, 12) + ":" + date.substring(12, 14);
+                        date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8) + "\040"
+                                + date.substring(8, 10) + ":" + date.substring(10, 12) + ":" + date.substring(12, 14);
                         //               System.out.println("Status-Datum: " + date);
                     } else { // ill enthält kein gültiges Datum
                         final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -586,23 +591,22 @@ public class IllHandler {
                         statustext = ill.getResponder_note();
                     }
                     orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,
-                    "geliefert"), statustext, "automatisch", cn);
+                            "geliefert"), statustext, "automatisch", cn);
                 }
             }
             if (ill.getMessage_type().equals("ANSWER")) {
                 returnvalue = "OK";
                 // hier wird versucht die Bestellung anhand der Trackinnr und der Gbvnr zu holens
-                final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(), ill
-                        .getTransaction_sub_transaction_qualifier());
+                final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(),
+                        ill.getTransaction_sub_transaction_qualifier());
                 if (b.getId() != null) {
 
                     String date = ill.getService_date_time();
                     // ill enthält gültiges Datum (yyyyMMddHHmmss)
                     if (date.length() == 14 && date.substring(0, 2).equals("20")) {
                         // 20090120074238
-                        date = date.substring(0, 4) + "-" + date.substring(4, 6)
-                        + "-" + date.substring(6, 8) + "\040" + date.substring(8, 10)
-                        + ":" + date.substring(10, 12) + ":" + date.substring(12, 14);
+                        date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8) + "\040"
+                                + date.substring(8, 10) + ":" + date.substring(10, 12) + ":" + date.substring(12, 14);
                         //               System.out.println("Status-Datum: " + date);
                     } else { // ill enthält kein gültiges Datum
                         final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -619,7 +623,7 @@ public class IllHandler {
                         statustext = ill.getResponder_note();
                     }
                     orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,
-                    "nicht lieferbar"), statustext, "automatisch", cn);
+                            "nicht lieferbar"), statustext, "automatisch", cn);
                 }
 
             }
@@ -680,6 +684,5 @@ public class IllHandler {
 
         return fax;
     }
-
 
 }

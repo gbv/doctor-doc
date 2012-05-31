@@ -1888,7 +1888,7 @@ public final class OrderGbvAction extends DispatchAction {
      * Wandelt eine e-ZDB-ID in eine p-ZDB-ID um. Optimiert für die Abfrage von ausserhalb OrderGbvAction.
      *
      */
-    public static String getPrintZdbidIgnoreMultipleHits(final String content) {
+    protected static String getPrintZdbidIgnoreMultipleHits(final String content) {
         String pZdbid = null;
 
         try {

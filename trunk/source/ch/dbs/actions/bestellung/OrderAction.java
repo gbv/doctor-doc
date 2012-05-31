@@ -17,6 +17,7 @@
 
 package ch.dbs.actions.bestellung;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1862,8 +1863,7 @@ public final class OrderAction extends DispatchAction {
                         pageForm.setStatus("bestellt");
                     }
 
-                    pageForm.setKaufpreis(b.stringToBigDecimal(pageForm.getPreisvorkomma(),
-                            pageForm.getPreisnachkomma()));
+                    pageForm.setKaufpreis(stringToBigDecimal(pageForm.getPreisvorkomma(), pageForm.getPreisnachkomma()));
 
                     try {
 
@@ -2490,6 +2490,34 @@ public final class OrderAction extends DispatchAction {
         // nicht abschliessend...
 
         return check;
+    }
+
+    /**
+    *
+    * @param vorkomma
+    * @param nachkomma
+    * @return
+    */
+    private BigDecimal stringToBigDecimal(final String vorkomma, final String nachkomma) {
+
+        BigDecimal bd = null;
+
+        if (vorkomma != null && nachkomma != null && (!vorkomma.equals("") || !nachkomma.equals("")) // mind. ein Feld muss ausgefüllt sein
+                && vorkomma.matches("[0-9]*") && nachkomma.matches("[0-9]*")) {
+
+            bd = new BigDecimal("0.00");
+
+            if (!"".equals(vorkomma)) {
+                bd = new BigDecimal(vorkomma + ".00");
+            }
+            // exp = 1 => Leerstring
+            if (!"".equals(nachkomma)) {
+                bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length()));
+            }
+
+        }
+
+        return bd;
     }
 
     private String prepareWorldCat1(final String input) {

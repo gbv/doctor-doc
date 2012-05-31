@@ -1353,7 +1353,7 @@ public class OpenUrl {
     /**
      * Gets from a request all OpenURL parameters.
      */
-    public ConcurrentHashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
+    private ConcurrentHashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
 
         final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
 

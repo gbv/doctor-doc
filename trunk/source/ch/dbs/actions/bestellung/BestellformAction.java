@@ -1274,7 +1274,7 @@ public final class BestellformAction extends DispatchAction {
      * prüft, ob of-Werte bei Mussfeldern bei einem allfällig vorliegenden BestellParam fehlen, und gibt ggf. eine
      * Message mit der entsprechenden Fehlermeldung zurück
      */
-    public Message getMessageForMissingBestellParams(final OrderForm of, final BestellParam bp) {
+    private Message getMessageForMissingBestellParams(final OrderForm of, final BestellParam bp) {
 
         final Message m = new Message();
         final Check ck = new Check();
@@ -1350,7 +1350,7 @@ public final class BestellformAction extends DispatchAction {
     /**
      * Sucht anhand der im Bestellformular eingegebenen Email den zugehörigen Benutzer des betreffenden Kontos zu holen
      */
-    public AbstractBenutzer getUserFromBestellformEmail(final Konto k, final String email, final Connection cn) {
+    private AbstractBenutzer getUserFromBestellformEmail(final Konto k, final String email, final Connection cn) {
 
         AbstractBenutzer u = new AbstractBenutzer();
 

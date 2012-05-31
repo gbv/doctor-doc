@@ -136,7 +136,7 @@ public final class KontoAdmin {
      * @param cn
      * @param lastpaydate
      */
-    public void newKontoAboBill(final Konto k, final Connection cn, final String lastpaydate) {
+    private void newKontoAboBill(final Konto k, final Connection cn, final String lastpaydate) {
         // Rechnung erstellen
         Billing b = null;
         //TODO: Nullpointer exception bei Kontotyp 1! noch beheben!
@@ -295,7 +295,7 @@ public final class KontoAdmin {
      * @param cn
      * @param lastpaydate
      */
-    public void sendBillingReminder(final Konto k, final Connection cn, final String lastpaydate) {
+    private void sendBillingReminder(final Konto k, final Connection cn, final String lastpaydate) {
 
         // Offene Rechnung heraussuchen
         Billing b = new Billing();
@@ -339,7 +339,7 @@ public final class KontoAdmin {
      * @param expdate
      * @param lastpaydate
      */
-    public void sendBillingWarning(final Konto k, final Connection cn, final String lastpaydate) {
+    private void sendBillingWarning(final Konto k, final Connection cn, final String lastpaydate) {
 
         //       Offene Rechnung heraussuchen
         Billing b = new Billing();
@@ -380,7 +380,7 @@ public final class KontoAdmin {
      *
      * @param Konto
      */
-    public void sendExpireMessage(final Konto k, final Connection cn) {
+    private void sendExpireMessage(final Konto k, final Connection cn) {
 
         //       Offene Rechnung heraussuchen
         Billing b = new Billing();
@@ -419,7 +419,7 @@ public final class KontoAdmin {
 
     }
 
-    public String getBillingInfos() {
+    private String getBillingInfos() {
 
         final StringBuffer t = new StringBuffer(430);
         t.append("\n\n*******************************************************\n" + "Zahlungsinformationen:" + "\n");

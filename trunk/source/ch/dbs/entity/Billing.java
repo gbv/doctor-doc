@@ -140,7 +140,7 @@ public class Billing extends AbstractIdEntity {
     }
 
     /**
-     * Erstellt aus einem BillingForm eine Billing Objekt
+     * Erstellt aus einem BillingForm ein Billing Objekt
      *
      * @param rs
      * @return Billing
@@ -176,7 +176,7 @@ public class Billing extends AbstractIdEntity {
      * @param Konto k
      * @return String Rechnungsnummer
      */
-    public String generateBillingNumber(final Konto k) {
+    private String generateBillingNumber(final Konto k) {
         final StringBuffer billNr = new StringBuffer();
         //aktuelles Jahr zum String erstellen
         final Date d = new Date(Calendar.getInstance().getTimeInMillis());
@@ -199,10 +199,10 @@ public class Billing extends AbstractIdEntity {
         try {
             // Neue Rechnungen abspeichern
             if (this.getId() == null) {
-                pstmt = setBillingValues(cn.prepareStatement(
-                        "INSERT INTO `billing` (`UID` , `KID` , `rechnungsgrund` , `betrag` , `waehrung` , "
-                        + "`rechnungsnummer` , `rechnungsdatum`, `zahlungseingang`) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+                pstmt = setBillingValues(cn
+                        .prepareStatement("INSERT INTO `billing` (`UID` , `KID` , `rechnungsgrund` , `betrag` , `waehrung` , "
+                                + "`rechnungsnummer` , `rechnungsdatum`, `zahlungseingang`) "
+                                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
                 pstmt.execute();
 
                 // ID im objekt abspeichern
@@ -310,17 +310,10 @@ public class Billing extends AbstractIdEntity {
         ResultSet rs = null;
         // TODO: NOW() berücksichtigt nur Serverzeit und funktioniert nicht im Zusammenhang mit anderen Zeitzonen.
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM `konto` \n"
-                    + "INNER JOIN billing USING ( kid ) \n"
-                    + "INNER JOIN text on (TID=rechnungsgrund)\n"
-                    + "WHERE billing.zahlungseingang IS NULL \n"
-                    + "and konto.kontostatus = 1\n"
-                    + "and expdate>=now()\n"
-                    + "and inhalt != 'Dienstleistung' \n"
-                    + "and konto.KID=? \n"
-                    + "ORDER BY konto.`biblioname` ASC, \n"
-                    + "billing.id DESC \n"
-                    + "limit 1");
+            pstmt = cn.prepareStatement("SELECT * FROM `konto` \n" + "INNER JOIN billing USING ( kid ) \n"
+                    + "INNER JOIN text on (TID=rechnungsgrund)\n" + "WHERE billing.zahlungseingang IS NULL \n"
+                    + "and konto.kontostatus = 1\n" + "and expdate>=now()\n" + "and inhalt != 'Dienstleistung' \n"
+                    + "and konto.KID=? \n" + "ORDER BY konto.`biblioname` ASC, \n" + "billing.id DESC \n" + "limit 1");
             pstmt.setLong(1, k.getId());
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -359,8 +352,7 @@ public class Billing extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.getConnection().prepareStatement(
-            "SELECT count(kid) as anzahl FROM `billing` WHERE kid=?");
+            pstmt = cn.getConnection().prepareStatement("SELECT count(kid) as anzahl FROM `billing` WHERE kid=?");
             pstmt.setLong(1, k.getId());
             rs = pstmt.executeQuery();
 
@@ -397,7 +389,11 @@ public class Billing extends AbstractIdEntity {
      */
     private PreparedStatement setBillingValues(final PreparedStatement pstmt) {
         try {
-            if (this.getUser() != null) { pstmt.setLong(1, this.getUser().getId()); } else { pstmt.setString(1, null); }
+            if (this.getUser() != null) {
+                pstmt.setLong(1, this.getUser().getId());
+            } else {
+                pstmt.setString(1, null);
+            }
             if (this.getKonto() != null) {
                 pstmt.setLong(2, this.getKonto().getId());
             } else {
@@ -497,6 +493,5 @@ public class Billing extends AbstractIdEntity {
     public void setStorniert(final boolean storniert) {
         this.storniert = storniert;
     }
-
 
 }

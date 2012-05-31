@@ -1812,7 +1812,7 @@ public final class UserAction extends DispatchAction {
      * @param Strinf date_from
      * @return true/false
      */
-    public boolean checkAnonymize(final String date_from, final String timezone) {
+    private boolean checkAnonymize(final String date_from, final String timezone) {
         boolean check = false;
 
         if (date_from != null && ReadSystemConfigurations.isAnonymizationActivated()) {
@@ -1833,7 +1833,7 @@ public final class UserAction extends DispatchAction {
     /**
      * stellt ein SearchForm zusammen
      */
-    public SearchesForm getSearchForm(final String field, final String condition, final String input, final String bool) {
+    private SearchesForm getSearchForm(final String field, final String condition, final String input, final String bool) {
 
         final SearchesForm sf = new SearchesForm();
         sf.setField(field);

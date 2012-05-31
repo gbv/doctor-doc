@@ -35,8 +35,6 @@ public class ConvertOpenUrl {
      * @author Markus Fischer
      */
 
-
-
     /**
      * Interpretiert aus einem ContextObject ein OrderForm für Doctor-Doc.
      * Relativ komplex und hier mit Vereinfachungen und Anpassungen umgesetzt...
@@ -48,7 +46,9 @@ public class ConvertOpenUrl {
         boolean valFmt = false;
 
         // if we have a SICI, resolve and use it
-        if (!co.getRft_sici().equals("")) { of = resolveSiciNumber(co.getRft_sici()); }
+        if (!co.getRft_sici().equals("")) {
+            of = resolveSiciNumber(co.getRft_sici());
+        }
 
         // zuerst allfällige Seitenbereiche eruieren => Unterscheidung von Buch / Teilkopie Buch
 
@@ -84,8 +84,8 @@ public class ConvertOpenUrl {
                 valFmt = true;
             }
             if (co.getRft_val_fmt().contains("book")) {
-                if ((co.getRft_genre() != null && !co.getRft_genre().equals("")
-                        && co.getRft_genre().equalsIgnoreCase("bookitem"))
+                if ((co.getRft_genre() != null && !co.getRft_genre().equals("") && co.getRft_genre().equalsIgnoreCase(
+                        "bookitem"))
                         || !of.getSeiten().equals("")) { // enthält einen Seitenbereich
                     of.setMediatype("Teilkopie Buch");
                 } else {
@@ -96,21 +96,33 @@ public class ConvertOpenUrl {
 
         if (co.getRft_genre() != null && !co.getRft_genre().equals("")) { // falls rft_val_fmt fehlt...
             if (co.getRft_genre().toLowerCase().contains("journal")
-                    || co.getRft_genre().toLowerCase().contains("article")) { of.setMediatype("Artikel"); }
+                    || co.getRft_genre().toLowerCase().contains("article")) {
+                of.setMediatype("Artikel");
+            }
             if (co.getRft_genre().toLowerCase().contains("book") // wird ggf. von bookitem / chapter überschrieben
-                    || co.getRft_genre().toLowerCase().contains("dissertation")) { of.setMediatype("Buch"); }
+                    || co.getRft_genre().toLowerCase().contains("dissertation")) {
+                of.setMediatype("Buch");
+            }
             if (co.getRft_genre().toLowerCase().contains("bookitem") // hier inoffizieller Identifier
-                    || co.getRft_genre().toLowerCase().contains("chapter")) { of.setMediatype("Teilkopie Buch"); }
+                    || co.getRft_genre().toLowerCase().contains("chapter")) {
+                of.setMediatype("Teilkopie Buch");
+            }
             // zusätzlich über of Genre mitschicken (es sei denn, es sei überlang...)
-            if (co.getRft_genre().length() < 30) { of.setGenre(co.getRft_genre()); }
+            if (co.getRft_genre().length() < 30) {
+                of.setGenre(co.getRft_genre());
+            }
         }
 
         if (co.getRft_atitle() != null && !co.getRft_atitle().equals("")) {
             if (of.getMediatype().equals("Artikel")) {
                 of.setArtikeltitel(removeEndDot(co.getRft_atitle())); // Artikeltitel
             } else {
-                if (of.getMediatype().equals("Teilkopie Buch")) { of.setKapitel(removeEndDot(co.getRft_atitle())); }
-                if (of.getMediatype().equals("Buch")) { of.setBuchtitel(removeEndDot(co.getRft_atitle())); }
+                if (of.getMediatype().equals("Teilkopie Buch")) {
+                    of.setKapitel(removeEndDot(co.getRft_atitle()));
+                }
+                if (of.getMediatype().equals("Buch")) {
+                    of.setBuchtitel(removeEndDot(co.getRft_atitle()));
+                }
             }
         }
 
@@ -139,13 +151,15 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_publisher() != null && !co.getRft_publisher().equals("")
-                // ...nur ausführen, falls Verlag noch nicht gesetzt
+        // ...nur ausführen, falls Verlag noch nicht gesetzt
                 && (of.getVerlag() == null || of.getVerlag().equals(""))) {
             of.setVerlag(co.getRft_publisher());
         }
 
-        if (co.getRft_stitle() != null && !co.getRft_stitle().equals("") && // stitle = Titelabkürzung...
-                // ...nur ausführen, falls Titel noch nicht gesetzt
+        if (co.getRft_stitle() != null
+                && !co.getRft_stitle().equals("")
+                && // stitle = Titelabkürzung...
+                   // ...nur ausführen, falls Titel noch nicht gesetzt
                 (of.getZeitschriftentitel() == null || of.getZeitschriftentitel().equals(""))
                 && (of.getBuchtitel() == null || of.getBuchtitel().equals(""))) {
             if (of.getMediatype().equals("Artikel")) {
@@ -166,16 +180,20 @@ public class ConvertOpenUrl {
 
         // if issn or eissn are empty and issn1 or eissn1 are available => set them
         if ((co.getRft_issn() == null || co.getRft_issn().equals(""))
-                && (co.getRft_issn1() != null && !co.getRft_issn1().equals(""))) { co.setRft_issn(co.getRft_issn1()); }
-        if ((co.getRft_eissn() == null || co.getRft_eissn().equals("")) && (co.getRft_eissn1() != null
-                && !co.getRft_eissn1().equals(""))) { co.setRft_eissn(co.getRft_eissn1()); }
+                && (co.getRft_issn1() != null && !co.getRft_issn1().equals(""))) {
+            co.setRft_issn(co.getRft_issn1());
+        }
+        if ((co.getRft_eissn() == null || co.getRft_eissn().equals(""))
+                && (co.getRft_eissn1() != null && !co.getRft_eissn1().equals(""))) {
+            co.setRft_eissn(co.getRft_eissn1());
+        }
 
         if (co.getRft_issn() != null && !co.getRft_issn().equals("")) {
             of.setIssn(normalizeIssn(extractFromSeveralIssns(co.getRft_issn())));
         }
 
         if (co.getRft_eissn() != null && !co.getRft_eissn().equals("")
-                // ...nur ausführen, falls P-ISSN nicht schon gesetzt
+        // ...nur ausführen, falls P-ISSN nicht schon gesetzt
                 && (of.getIssn() == null || of.getIssn().equals(""))) {
             of.setIssn(normalizeIssn(extractFromSeveralIssns(co.getRft_eissn())));
         }
@@ -210,13 +228,13 @@ public class ConvertOpenUrl {
         }
 
         if (co.getRft_au() != null && !co.getRft_au().equals("")
-                // nur ausführen, falls Author nicht schon gesetzt
+        // nur ausführen, falls Author nicht schon gesetzt
                 && (of.getAuthor() == null || of.getAuthor().equals(""))) {
             of.setAuthor(co.getRft_au());
         }
 
         if (co.getRft_creator() != null && !co.getRft_creator().equals("")
-                // inoffizieller Identif. ...nur ausführen, falls Author nicht schon gesetzt
+        // inoffizieller Identif. ...nur ausführen, falls Author nicht schon gesetzt
                 && (of.getAuthor() == null || of.getAuthor().equals(""))) {
             of.setAuthor(co.getRft_creator());
         }
@@ -261,13 +279,19 @@ public class ConvertOpenUrl {
         }
 
         // Kontrollmechanismen
-        if (!valFmt && of.getMediatype().equals("Buch") && isBookItem(of)) { of.setMediatype("Teilkopie Buch"); }
-        if (!valFmt && of.getMediatype().equals("Artikel") && isBook(of)) { of.setMediatype("Buch"); }
+        if (!valFmt && of.getMediatype().equals("Buch") && isBookItem(of)) {
+            of.setMediatype("Teilkopie Buch");
+        }
+        if (!valFmt && of.getMediatype().equals("Artikel") && isBook(of)) {
+            of.setMediatype("Buch");
+        }
 
         if (!valFmt && of.getMediatype().equals("Artikel") && isBookItem(of)) {
             of.setMediatype("Teilkopie Buch");
             // Nach Umstellen auf Teilkopie sicherstellen dass Kapitel abgefüllt wird
-            if (of.getKapitel() == null || of.getKapitel().equals("")) { of.setKapitel(co.getRft_atitle()); }
+            if (of.getKapitel() == null || of.getKapitel().equals("")) {
+                of.setKapitel(co.getRft_atitle());
+            }
             // Artikeltitel leeren
             of.setArtikeltitel("");
         }
@@ -275,28 +299,42 @@ public class ConvertOpenUrl {
         if (of.getMediatype().equals("Artikel") && isSpringerBook(of) && !of.getDoi().contains("_")) {
             of.setMediatype("Buch");
             // Nach Umstellen auf Buch sicherstellen dass Buchtitel abgefüllt wird
-            if (of.getBuchtitel() == null || of.getBuchtitel().equals("")) { of.setBuchtitel(co.getRft_atitle()); }
+            if (of.getBuchtitel() == null || of.getBuchtitel().equals("")) {
+                of.setBuchtitel(co.getRft_atitle());
+            }
             // Artikeltitel leeren
             of.setArtikeltitel("");
-            if (of.getIsbn() == null || of.getIsbn().equals("")) { of.setIsbn(getIsbnSpringerBook(of.getDoi())); }
+            if (of.getIsbn() == null || of.getIsbn().equals("")) {
+                of.setIsbn(getIsbnSpringerBook(of.getDoi()));
+            }
         }
         if (of.getMediatype().equals("Artikel") && isSpringerBook(of) && of.getDoi().contains("_")) {
             of.setMediatype("Teilkopie Buch");
             // Nach Umstellen auf Teilkopie sicherstellen dass Kapitel abgefüllt wird
-            if (of.getKapitel() == null || of.getKapitel().equals("")) { of.setKapitel(co.getRft_atitle()); }
+            if (of.getKapitel() == null || of.getKapitel().equals("")) {
+                of.setKapitel(co.getRft_atitle());
+            }
             // Nach Umstellen auf Teilkopie sicherstellen dass Buchtitel abgefüllt wird
-            if (of.getBuchtitel() == null || of.getBuchtitel().equals("")) { of.setBuchtitel(co.getRft_title()); }
+            if (of.getBuchtitel() == null || of.getBuchtitel().equals("")) {
+                of.setBuchtitel(co.getRft_title());
+            }
             // Artikeltitel leeren
             of.setArtikeltitel("");
-            if (of.getIsbn() == null || of.getIsbn().equals("")) { of.setIsbn(getIsbnSpringerBook(of.getDoi())); }
+            if (of.getIsbn() == null || of.getIsbn().equals("")) {
+                of.setIsbn(getIsbnSpringerBook(of.getDoi()));
+            }
         }
 
-        if (of.getMediatype().equals("Artikel") && of.getIssn().length() == 0) { of.setFlag_noissn(true); }
+        if (of.getMediatype().equals("Artikel") && of.getIssn().length() == 0) {
+            of.setFlag_noissn(true);
+        }
 
         // ggf. Sprache des Artikels setzen
         if (co.getRft_language() != null && !co.getRft_language().equals("")
-                // nur Sprachangabe wenn NICHT englisch
-                && !co.getRft_language().equalsIgnoreCase("English")) { of.setLanguage(co.getRft_language()); }
+        // nur Sprachangabe wenn NICHT englisch
+                && !co.getRft_language().equalsIgnoreCase("English")) {
+            of.setLanguage(co.getRft_language());
+        }
 
         return of;
     }
@@ -320,9 +358,15 @@ public class ConvertOpenUrl {
         // Aus Kompatibilität mit OpenURl 01.1 momentan ausserhalb dieser Methode zu implementieren
         // co.setRfr_id(UrlCode.encode("DRDOC:doctor-doc"));
 
-        if (of.getMediatype().equals("Artikel")) { co.setRft_genre(codeUrl.encodeLatin1("article")); }
-        if (of.getMediatype().equals("Buch")) { co.setRft_genre(codeUrl.encodeLatin1("book")); }
-        if (of.getMediatype().equals("Teilkopie Buch")) { co.setRft_genre(codeUrl.encodeLatin1("bookitem")); }
+        if (of.getMediatype().equals("Artikel")) {
+            co.setRft_genre(codeUrl.encodeLatin1("article"));
+        }
+        if (of.getMediatype().equals("Buch")) {
+            co.setRft_genre(codeUrl.encodeLatin1("book"));
+        }
+        if (of.getMediatype().equals("Teilkopie Buch")) {
+            co.setRft_genre(codeUrl.encodeLatin1("bookitem"));
+        }
 
         co.setRft_atitle(codeUrl.encodeLatin1(of.getArtikeltitel()));
         co.setRft_btitle(codeUrl.encodeLatin1(of.getBuchtitel()));
@@ -449,11 +493,18 @@ public class ConvertOpenUrl {
 
         try {
 
-            if (input.contains("info:doi/")) { of.setDoi(input.substring(input.indexOf("info:doi/"))); }
-            if (input.contains("info:pmid/")) { of.setPmid(input.substring(input.indexOf("info:pmid/"))); }
-            if (input.contains("info:sici/")) { of.setSici(input.substring(input.indexOf("info:sici/"))); }
-            if (input.contains("info:lccn/")) { of.setLccn(input.substring(input.indexOf("info:lccn/"))); }
-
+            if (input.contains("info:doi/")) {
+                of.setDoi(input.substring(input.indexOf("info:doi/")));
+            }
+            if (input.contains("info:pmid/")) {
+                of.setPmid(input.substring(input.indexOf("info:pmid/")));
+            }
+            if (input.contains("info:sici/")) {
+                of.setSici(input.substring(input.indexOf("info:sici/")));
+            }
+            if (input.contains("info:lccn/")) {
+                of.setLccn(input.substring(input.indexOf("info:lccn/")));
+            }
 
         } catch (final Exception e) {
             LOG.error("resolveUriScheme: " + e.toString());
@@ -479,10 +530,16 @@ public class ConvertOpenUrl {
             if (sici.contains("(")) {
                 final int start = sici.indexOf('(');
                 String tmp = "";
-                if (start > 0) { of.setIssn(normalizeIssn(sici.substring(0, start))); } // ISSN-Nummer steht am Anfang
-                if (sici.substring(start).contains(")")) { tmp = sici.substring(start, sici.indexOf(')')); }
+                if (start > 0) {
+                    of.setIssn(normalizeIssn(sici.substring(0, start)));
+                } // ISSN-Nummer steht am Anfang
+                if (sici.substring(start).contains(")")) {
+                    tmp = sici.substring(start, sici.indexOf(')'));
+                }
                 // Jahreszahl sind die ersten vier Stellen in der Klammer
-                if (tmp.length() > 4) { of.setJahr(tmp.substring(1, 5)); }
+                if (tmp.length() > 4) {
+                    of.setJahr(tmp.substring(1, 5));
+                }
             }
             if (sici.contains(")") && sici.contains("<") && (sici.indexOf(')') < sici.indexOf('<'))) {
                 final String segment = sici.substring(sici.indexOf(')') + 1, sici.indexOf('<')); // enthält Jg:Heft
@@ -544,20 +601,19 @@ public class ConvertOpenUrl {
 
             if (of.getIsbn() != null && !of.getIsbn().equals("")
                     && ((of.getKapitel() != null && !of.getKapitel().equals(""))
-                            // ISBN vorhanden und Kapitel oder Artikeltitel oder spezifische Angaben vorhanden
-                            || (of.getSeiten() != null && !of.getSeiten().equals("")))) {
+                    // ISBN vorhanden und Kapitel oder Artikeltitel oder spezifische Angaben vorhanden
+                    || (of.getSeiten() != null && !of.getSeiten().equals("")))) {
                 check = true;
             }
 
-            if (of.getBuchtitel() != null && !of.getBuchtitel().equals("")
+            if (of.getBuchtitel() != null
+                    && !of.getBuchtitel().equals("")
                     && ((of.getKapitel() != null && !of.getKapitel().equals(""))
                             || (of.getArtikeltitel() != null && !of.getArtikeltitel().equals(""))
-                            // Buchtitel vorhanden und Kapitel oder Artikeltitel oder spezifische Angaben vorhanden
-                            || (of.getSeiten() != null && !of.getSeiten().equals("")))) {
+                    // Buchtitel vorhanden und Kapitel oder Artikeltitel oder spezifische Angaben vorhanden
+                    || (of.getSeiten() != null && !of.getSeiten().equals("")))) {
                 check = true;
             }
-
-
 
         } catch (final Exception e) {
             LOG.error("isBookItem: " + e.toString());
@@ -609,8 +665,6 @@ public class ConvertOpenUrl {
                 isbn = doi.substring(doi.indexOf("10.1007/") + 8);
             }
 
-
-
         } catch (final Exception e) {
             LOG.error("getIsbnSpringerBook: " + doi + "\040" + e.toString());
         }
@@ -623,13 +677,11 @@ public class ConvertOpenUrl {
      * e.g. Refworks is sending multiple ISSN in the param:
      * issn=1234-1234; 2345-2345
      */
-    public String extractFromSeveralIssns(String input) {
-
+    private String extractFromSeveralIssns(String input) {
 
         try {
             // must have at least the lenght of two ISSNs plus a separation character
-            if (input != null && input.length() > 19
-                    && (input.contains(";") || input.contains(","))) { // Separation character is comma or semicolon
+            if (input != null && input.length() > 19 && (input.contains(";") || input.contains(","))) { // Separation character is comma or semicolon
                 if (input.contains(";")) {
                     if (input.indexOf(';') > 8) { // must have a ISSN number before the separtion character
                         input = input.substring(0, input.indexOf(';')).trim(); // take the first ISSN
@@ -651,7 +703,6 @@ public class ConvertOpenUrl {
      * Bringt eine ISSN ohne Bindestrich in die "normale Form"
      */
     public String normalizeIssn(String input) {
-
 
         try {
             if (input != null && input.length() == 8 && !input.contains("-")) {
@@ -676,10 +727,11 @@ public class ConvertOpenUrl {
 
                 final int l = input.length();
                 // falls letztes Zeichen "." => eliminieren
-                if (input.lastIndexOf('.') == l - 1) { input = input.substring(0, input.lastIndexOf('.')); }
+                if (input.lastIndexOf('.') == l - 1) {
+                    input = input.substring(0, input.lastIndexOf('.'));
+                }
 
             }
-
 
         } catch (final Exception e) {
             LOG.error("removeEndDot: " + input + "\040" + e.toString());
@@ -704,7 +756,6 @@ public class ConvertOpenUrl {
             }
         }
 
-
         return spage;
     }
 
@@ -726,7 +777,6 @@ public class ConvertOpenUrl {
         } catch (final Exception e) {
             LOG.error("toNormalLetters: " + input + "\040" + e.toString());
         }
-
 
         return input;
     }
@@ -757,6 +807,5 @@ public class ConvertOpenUrl {
 
         return check;
     }
-
 
 }

@@ -46,10 +46,11 @@ public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
         this.pageForm = of;
         this.concurrCopyTitle = concurrCopyZTit;
     }
+
     public List<JournalDetails> call() {
         final OrderAction oa = new OrderAction();
-        final List<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded,
-                artikeltitel_encoded, pageForm, concurrCopyTitle);
+        final List<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded, artikeltitel_encoded,
+                pageForm, concurrCopyTitle);
         return jd;
     }
 
@@ -81,8 +82,7 @@ public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
         return concurrCopyTitle;
     }
 
-    public void setConcurrentCopyZeitschriftentitel(
-            final String concurrentCopyZeitschriftentitel) {
+    public void setConcurrentCopyZeitschriftentitel(final String concurrentCopyZeitschriftentitel) {
         this.concurrCopyTitle = concurrentCopyZeitschriftentitel;
     }
 
