@@ -324,10 +324,10 @@ public class Check {
         boolean check = false;
 
         // filename must be longer than the filetype extension plus leading dot
-        if (fileName != null && extension != null && fileName.length() > extension.length() + 1) {
+        if (fileName != null && extension != null && fileName.length() > extension.length()) {
             // make case insensitive
             fileName = fileName.toLowerCase();
-            extension = "." + extension.toLowerCase();
+            extension = extension.toLowerCase();
             try {
                 if (fileName.contains(extension) // must contain extension
                         // extension must be placed at the end

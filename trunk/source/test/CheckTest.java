@@ -109,14 +109,14 @@ public class CheckTest {
 
     @Test
     public void testIsFiletypeExtension() throws Exception {
-        assertTrue(check.isFiletypeExtension("test.xls", "xls"));
-        assertTrue(check.isFiletypeExtension("test.XLs", "xlS"));
-        assertTrue(check.isFiletypeExtension("test.pdf.xls", "xls"));
-        assertFalse(check.isFiletypeExtension("testxls", "xls"));
-        assertFalse(check.isFiletypeExtension("", "xls"));
+        assertTrue(check.isFiletypeExtension("test.xls", ".xls"));
+        assertTrue(check.isFiletypeExtension("test.XLs", ".xlS"));
+        assertTrue(check.isFiletypeExtension("test.pdf.xls", ".xls"));
+        assertFalse(check.isFiletypeExtension("testxls", ".xls"));
+        assertFalse(check.isFiletypeExtension("", ".xls"));
         assertFalse(check.isFiletypeExtension("", ""));
         assertFalse(check.isFiletypeExtension(null, null));
-        assertFalse(check.isFiletypeExtension(null, "xls"));
+        assertFalse(check.isFiletypeExtension(null, ".xls"));
     }
 
     @Test
