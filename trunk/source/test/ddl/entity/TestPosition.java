@@ -17,9 +17,11 @@
 
 package test.ddl.entity;
 
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -33,18 +35,27 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Konto;
 import ch.ddl.entity.Position;
 
-public class TestPosition extends TestCase {
+public class TestPosition {
 
     private static Konto k = new Konto();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-
+        final Konto tz = new Konto(); // we need this for setting a default timezone
+        final Date d = new Date();
+        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String datum = fmt.format(d, tz.getTimezone());
+        final AbstractBenutzer b = PrepareTestObjects.getBibliothekar();
+        b.setDatum(datum);
+        b.saveNewUser(b, tz, k.getSingleConnection());
+        k.close();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-
+        final AbstractBenutzer b = new AbstractBenutzer();
+        b.deleteUser(PrepareTestObjects.getTestBibliothekarFromDb(k.getSingleConnection()), k.getSingleConnection());
+        k.close();
     }
 
     @Before
@@ -55,19 +66,6 @@ public class TestPosition extends TestCase {
     @After
     public void tearDown() throws Exception {
 
-    }
-
-    @Test
-    //@BeforeClass funzt nicht
-    public void testSetUp() {
-        final Konto tz = new Konto(); // we need this for setting a default timezone
-        final Date d = new Date();
-        final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        final String datum = fmt.format(d, tz.getTimezone());
-        final AbstractBenutzer b = PrepareTestObjects.getBibliothekar();
-        b.setDatum(datum);
-        b.saveNewUser(b, tz, k.getSingleConnection());
-        k.close();
     }
 
     @Test
@@ -93,17 +91,9 @@ public class TestPosition extends TestCase {
 
     @Test
     public void testFillPositionenFromFormBean() {
-        //    PositionForm pf  = PrepareTestObjects.getPositionForm();
-        //    Position p = new Position(pf);
-        //    assertNotNull(p.getId());
-    }
-
-    @Test
-    //@AfterClass funzt nicht
-    public void testTearDownUp() {
-        final AbstractBenutzer b = new AbstractBenutzer();
-        b.deleteUser(PrepareTestObjects.getTestBibliothekarFromDb(k.getSingleConnection()), k.getSingleConnection());
-        k.close();
+        //        final PositionForm pf = PrepareTestObjects.getPositionForm();
+        //        final Position p = new Position(pf);
+        //        assertNotNull(p.getId());
     }
 
 }

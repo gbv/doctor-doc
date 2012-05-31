@@ -17,24 +17,16 @@
 
 package test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 import test.dbs.entity.TestBenutzer;
 import test.dbs.entity.TestKonto;
 
-public class AllTests {
+//disabled, outdated and not working test classes: TestKontoAction.class, TestLoginAction.class, TestPosition.class
 
-    public static Test suite() {
-        final TestSuite suite = new TestSuite("Tests for Doctor-Doc");
-        //$JUnit-BEGIN$
-        suite.addTestSuite(TestBenutzer.class);
-        suite.addTestSuite(TestKonto.class);
-        //        suite.addTestSuite(TestKontoAction.class);
-        //        suite.addTestSuite(TestLoginAction.class);
-        //        suite.addTestSuite(TestPosition.class);
-        suite.addTestSuite(CheckTest.class);
-        //$JUnit-END$
-        return suite;
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ TestBenutzer.class, TestKonto.class, CheckTest.class })
+public class AllTests {
 
 }

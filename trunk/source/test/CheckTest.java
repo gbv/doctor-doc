@@ -15,7 +15,8 @@
 
 package test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -25,7 +26,7 @@ import org.junit.Test;
 
 import util.Check;
 
-public class CheckTest extends TestCase {
+public class CheckTest {
 
     final Check check = new Check();
 

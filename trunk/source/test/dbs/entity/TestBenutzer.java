@@ -17,13 +17,16 @@
 
 package test.dbs.entity;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,7 +40,7 @@ import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 
-public class TestBenutzer extends TestCase {
+public class TestBenutzer {
 
     private static final String anrede = "Testanrede";
     private static final String vorname = "Testvorname";

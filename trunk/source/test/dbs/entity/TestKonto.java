@@ -17,9 +17,9 @@
 
 package test.dbs.entity;
 
-import java.sql.SQLException;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.sql.SQLException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import ch.dbs.entity.Konto;
 
-public class TestKonto extends TestCase {
+public class TestKonto {
 
     private transient Konto k = new Konto();
     private final transient Long id = Long.valueOf(1);
