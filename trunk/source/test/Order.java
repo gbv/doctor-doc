@@ -32,7 +32,6 @@ import ch.dbs.entity.Lieferanten;
  */
 public class Order {
 
-
     /**
      * Testet das Erstellen eines Bestellungsobjektes und speichert dieses in der Datenbank
      * @author Pascal Steiner
@@ -43,7 +42,7 @@ public class Order {
         final Bestellungen b = new Bestellungen();
         final AbstractBenutzer ab = new AbstractBenutzer();
         final Lieferanten supplier = new Lieferanten();
-        b.setKonto(new Konto(Long.valueOf(1),b.getSingleConnection()));
+        b.setKonto(new Konto(Long.valueOf(1), b.getSingleConnection()));
         b.setBenutzer(ab.getUser(Long.valueOf(1), b.getSingleConnection()));
         b.setLieferant(supplier.getLieferantFromName("Subito", b.getSingleConnection()));
         b.setPriority("normal");
@@ -74,12 +73,8 @@ public class Order {
         b.save(b.getSingleConnection());
         b.close();
 
-        System.out.println("Die Testbestellung wurde erfolgreich gespeichert. ID der soeben gespeicherten Bestellung lautet: "+ b.getId());
-
         return b;
 
     }
-
-
 
 }

@@ -17,7 +17,6 @@
 
 package test.dbs.actions.user;
 
-
 import java.io.File;
 
 import org.junit.After;
@@ -31,13 +30,12 @@ import test.PrepareTestObjects;
 import ch.dbs.entity.Konto;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserForm;
+import enums.Result;
 
-
-
-public class TestKontoAction extends MockStrutsTestCase{
+public class TestKontoAction extends MockStrutsTestCase {
 
     private transient Konto k = new Konto();
-    private transient final Long id = PrepareTestObjects.KONTOID;
+    private final transient Long id = PrepareTestObjects.KONTOID;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -83,7 +81,7 @@ public class TestKontoAction extends MockStrutsTestCase{
 
         //Kontrolle ob es geklappt hat
         verifyNoActionErrors();
-        verifyForward("success");
+        verifyForward(Result.FAILURE.getValue());
     }
 
     @Test
@@ -131,7 +129,6 @@ public class TestKontoAction extends MockStrutsTestCase{
         verifyNoActionErrors();
         verifyForward("weiter");
 
-
         // remove testobjects from db
         PrepareTestObjects.clearTestObjects();
     }
@@ -166,7 +163,7 @@ public class TestKontoAction extends MockStrutsTestCase{
     //
     //    //Kontrolle ob es geklappt hat
     //    verifyNoActionErrors();
-    //    verifyForward("success");
+    //    verifyForward(Result.FAILURE.getValue());
     //  }
 
 }

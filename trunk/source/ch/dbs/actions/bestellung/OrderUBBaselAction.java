@@ -42,7 +42,7 @@ public class OrderUBBaselAction extends DispatchAction {
             final HttpServletResponse rp) {
 
         final Auth auth = new Auth();
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
 
         if (auth.isLogin(rq)) {
 

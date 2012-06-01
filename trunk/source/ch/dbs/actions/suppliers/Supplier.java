@@ -45,7 +45,7 @@ public class Supplier extends DispatchAction {
     public ActionForward edit(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
@@ -79,7 +79,7 @@ public class Supplier extends DispatchAction {
                     } else {
                         final ErrorMessage m = new ErrorMessage("error.berechtigung");
                         m.setLink("listsuppliers.do");
-                        rq.setAttribute("errormessage", m);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
                     }
 
                 } finally {
@@ -88,15 +88,15 @@ public class Supplier extends DispatchAction {
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
-                rq.setAttribute("errormessage", m);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -105,7 +105,7 @@ public class Supplier extends DispatchAction {
     public ActionForward create(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         // catching session timeouts
@@ -127,15 +127,15 @@ public class Supplier extends DispatchAction {
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
-                rq.setAttribute("errormessage", m);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -144,7 +144,7 @@ public class Supplier extends DispatchAction {
     public ActionForward save(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final SupplierForm sf = (SupplierForm) form;
@@ -179,12 +179,12 @@ public class Supplier extends DispatchAction {
                             mf.setActivemenu("konto");
                             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
-                            forward = "success";
+                            forward = Result.SUCCESS.getValue();
 
                         } else {
                             final ErrorMessage m = new ErrorMessage("error.berechtigung");
                             m.setLink("listsuppliers.do");
-                            rq.setAttribute("errormessage", m);
+                            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
                         }
 
                     } else {
@@ -196,7 +196,7 @@ public class Supplier extends DispatchAction {
 
                         sup.save(sup, cn.getConnection());
 
-                        forward = "success";
+                        forward = Result.SUCCESS.getValue();
                     }
 
                 } finally {
@@ -205,15 +205,15 @@ public class Supplier extends DispatchAction {
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
-                rq.setAttribute("errormessage", m);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -222,7 +222,7 @@ public class Supplier extends DispatchAction {
     public ActionForward delete(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
@@ -249,12 +249,12 @@ public class Supplier extends DispatchAction {
                         mf.setActivemenu("konto");
                         rq.setAttribute("activemenu", mf);
 
-                        forward = "success";
+                        forward = Result.SUCCESS.getValue();
 
                     } else {
                         final ErrorMessage m = new ErrorMessage("error.berechtigung");
                         m.setLink("listsuppliers.do");
-                        rq.setAttribute("errormessage", m);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
                     }
 
                 } finally {
@@ -263,15 +263,15 @@ public class Supplier extends DispatchAction {
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
-                rq.setAttribute("errormessage", m);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);

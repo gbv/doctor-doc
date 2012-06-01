@@ -26,7 +26,6 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -402,8 +401,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
                 final String[] to = new String[1];
                 to[0] = SYSTEM_EMAIL;
                 sendMail(to, m);
-                System.out.println("\012Die Mail mit dem Betreff " + m.getSubject() + " wurde erfolgreich an " + to[0]
-                        + " versendet\012\012");
             }
             inbox.close(true);
         } catch (final Exception e) {
@@ -441,10 +438,10 @@ public class MHelper extends AbstractReadSystemConfigurations {
         props.setProperty("mail.smtp.host", SYSTEM_EMAIL_HOST);
         props.setProperty("mail.user", "SYSTEM_EMAIL_ACCOUNTNAME");
         props.setProperty("mail.password", "SYSTEM_EMAIL_PASSWORD");
-        /* Antwortadresse setzen 
+        /* Antwortadresse setzen
         //props.setProperty("mail.smtp.from", "set@reaply.de");
          * Problem:
-         * SMTP Server verweigert das Senden mit einem falschen Absender 
+         * SMTP Server verweigert das Senden mit einem falschen Absender
          * und man bekommt eine entsprechende Exception (Ausnahme: SMTP-Relay).
          */
 
@@ -453,13 +450,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
 
     /** Gets the MimeMessage */
-    public MimeMessage getMimeMessage(final Session session) throws AddressException, MessagingException {
+    public MimeMessage getMimeMessage(final Session session) throws MessagingException {
         // Define message
         final MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SYSTEM_EMAIL));
         message.addHeader(CHARSET, UTF8); // set Header
         message.addHeader(XPRIO, PRIORITY);
-        message.setSentDate(new Date()); // set date      
+        message.setSentDate(new Date()); // set date
         return message;
     }
 

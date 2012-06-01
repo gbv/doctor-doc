@@ -56,7 +56,7 @@ import enums.Result;
 
 /**
  * Class to manage holdings information. Import / Export functions.
- * 
+ *
  * @author Markus Fischer
  */
 public class Stock extends DispatchAction {
@@ -456,7 +456,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets a list of all holdings from all libraries.
-     * 
+     *
      * @param OrderForm
      * @param boolean
      * @return list<Bestand>
@@ -493,7 +493,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets a list of all holdings for a given library from an IP.
-     * 
+     *
      * @param OrderForm
      * @param Text
      * @param boolean
@@ -535,7 +535,7 @@ public class Stock extends DispatchAction {
     /**
      * Runs basic checks and makes sure that the ArrayList<Bestand> is parsable
      * to Bestand().
-     * 
+     *
      * @param List
      *            <List<String>>
      * @return List<Message>
@@ -641,7 +641,6 @@ public class Stock extends DispatchAction {
                     LOG.error("Stock ckeck BasicParsability - Unpredicted switch case in default: " + column);
                 }
             }
-            System.out.println();
         }
 
         return messageList;
@@ -650,7 +649,7 @@ public class Stock extends DispatchAction {
     /**
      * Checks if the import file has the correct format, by counting the columns
      * per line.
-     * 
+     *
      * @param List
      *            <List<String>>
      * @return List<Message>
@@ -674,7 +673,7 @@ public class Stock extends DispatchAction {
     /**
      * Checks that each Bestand() has all necessary entries and belongs to the
      * account uploading the file.
-     * 
+     *
      * @param List
      *            <Bestand>
      * @param UserInfo
@@ -768,7 +767,7 @@ public class Stock extends DispatchAction {
     /**
      * Converts an CSV/TXT import file into an ArrayList<List<String>> with all
      * the text line elements.
-     * 
+     *
      * @param FormFile
      * @param char
      * @param String
@@ -807,7 +806,7 @@ public class Stock extends DispatchAction {
     /**
      * Converts an XLS/XLSX import file into an ArrayList<List<String>> with all
      * the text line elements.
-     * 
+     *
      * @param FormFile
      * @return List<List<String>>
      */
@@ -836,7 +835,7 @@ public class Stock extends DispatchAction {
     /**
      * Converts an ArrayList<List<String>> with import elements into an
      * ArrayList<Bestand>.
-     * 
+     *
      * @param List<List<String>>
      * @param UserInfo
      * @return List<Bestand>
@@ -857,7 +856,7 @@ public class Stock extends DispatchAction {
      * Converts a List<String> with elements of one import line into a
      * Bestand(). It relies on the assumption, that all integrity checks for
      * formatting etc. have been run before!
-     * 
+     *
      * @param List<String>
      * @param long
      * @return Bestand
@@ -969,7 +968,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets from an ISSN a List<String> of all 'related' ISSNs to map them.
-     * 
+     *
      * @param String
      * @param Connection
      * @return List<String>
@@ -989,7 +988,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a parsable Stock-ID.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1009,7 +1008,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a parsable Holding-ID.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1029,7 +1028,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a parsable Location-ID.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1049,7 +1048,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if there has been specified a title.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1071,7 +1070,7 @@ public class Stock extends DispatchAction {
     /**
      * If an ISSN has been specified, checks that the string specified is a
      * valid ISSN.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1098,7 +1097,7 @@ public class Stock extends DispatchAction {
     /**
      * Checks if there has been specified a startyear and the string is a valid
      * year.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1118,7 +1117,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a valid (end)year.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1139,7 +1138,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a valid Supplement (0 / 1 / 2).
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1159,7 +1158,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Checks if the string is a valid boolean value.
-     * 
+     *
      * @param int
      * @param String
      * @return Message
@@ -1179,7 +1178,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Uses a StringBuffer to compose a String in the form: Row x: text...
-     * 
+     *
      * @param int
      * @param String
      * @return String
@@ -1200,7 +1199,7 @@ public class Stock extends DispatchAction {
      * Handles the update, save and delete process for the import file into the
      * DB. It relies on the assumption, that all integrity checks for formatting
      * etc. have been run before!
-     * 
+     *
      * @param List<Bestand>
      * @param UserInfo
      * @param Connection
@@ -1270,7 +1269,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets the delimiter csv.
-     * 
+     *
      * @return char
      */
     public static char getDelimiterCsv() {
@@ -1279,7 +1278,7 @@ public class Stock extends DispatchAction {
 
     /**
      * Gets the delimiter txt.
-     * 
+     *
      * @return char
      */
     public static char getDelimiterTxt() {

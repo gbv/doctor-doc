@@ -228,7 +228,6 @@ public final class BestellformAction extends DispatchAction {
                                     of.setKundenkategorieID(cookietext);
                                 } catch (final Exception e) { //
                                     LOG.error("Error while reading cookie!: " + e.toString());
-                                    System.out.println("Error while reading cookie!: " + e.toString());
                                 }
                             }
                         }

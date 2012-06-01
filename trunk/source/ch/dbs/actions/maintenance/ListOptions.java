@@ -38,7 +38,7 @@ public class ListOptions extends DispatchAction {
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         // catching session timeouts
@@ -46,7 +46,7 @@ public class ListOptions extends DispatchAction {
             // access restricted to librarians and admins only
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
-                forward = "success";
+                forward = Result.SUCCESS.getValue();
 
                 // navigation: set 'account/konto' tab as active
                 final ActiveMenusForm mf = new ActiveMenusForm();
@@ -56,15 +56,15 @@ public class ListOptions extends DispatchAction {
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
-                rq.setAttribute("errormessage", m);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);

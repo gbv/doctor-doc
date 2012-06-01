@@ -37,6 +37,7 @@ import ch.dbs.entity.Texttyp;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 public final class PrepareUserAddAction extends Action {
 
@@ -50,7 +51,7 @@ public final class PrepareUserAddAction extends Action {
         if (ufLoginAction != null) {
             uf = ufLoginAction;
         }
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 

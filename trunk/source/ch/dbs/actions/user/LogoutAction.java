@@ -28,6 +28,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.grlea.log.SimpleLogger;
 
+import enums.Result;
+
 /**
  *
  * @author Pascal Steiner
@@ -39,8 +41,7 @@ public class LogoutAction extends Action {
     /**
      * Logout. Zerstört das Sessionbean
      */
-    public ActionForward execute(final ActionMapping mp,
-            final ActionForm form, final HttpServletRequest rq,
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
         try {
@@ -54,7 +55,6 @@ public class LogoutAction extends Action {
             LOG.error("execute: " + e.toString());
         }
 
-
-        return mp.findForward("success");
+        return mp.findForward(Result.SUCCESS.getValue());
     }
 }

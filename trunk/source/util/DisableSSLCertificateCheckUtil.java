@@ -44,11 +44,11 @@ public final class DisableSSLCertificateCheckUtil {
      */
     private static class NullX509TrustManager implements X509TrustManager {
         public void checkClientTrusted(final X509Certificate[] chain, final String authType)
-        throws CertificateException {
+                throws CertificateException {
         }
 
         public void checkServerTrusted(final X509Certificate[] chain, final String authType)
-        throws CertificateException {
+                throws CertificateException {
         }
 
         public X509Certificate[] getAcceptedIssuers() {
@@ -69,24 +69,22 @@ public final class DisableSSLCertificateCheckUtil {
     /**
      * Disable trust checks for SSL connections.
      */
-    public static void disableChecks() throws NoSuchAlgorithmException,
-    KeyManagementException {
+    public static void disableChecks() throws NoSuchAlgorithmException, KeyManagementException {
 
         try {
             new URL("https://0.0.0.0/").getContent();
-            // CHECKSTYLE:OFF - this an empty catch "by design"
+            // CHECKSTYLE:OFF
         } catch (final IOException e) {
             // This invocation will always fail, but it will register the
             // default SSL provider to the URL class.
         }
+        // CHECKSTYLE:ON
 
         final SSLContext context = SSLContext.getInstance("SSLv3");
-        final TrustManager[] trustManagerArray = {new NullX509TrustManager()};
+        final TrustManager[] trustManagerArray = { new NullX509TrustManager() };
         context.init(null, trustManagerArray, null);
 
-        HttpsURLConnection.setDefaultSSLSocketFactory(context
-                .getSocketFactory());
-        HttpsURLConnection
-        .setDefaultHostnameVerifier(new NullHostnameVerifier());
+        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(new NullHostnameVerifier());
     }
 }

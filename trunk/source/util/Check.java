@@ -356,9 +356,9 @@ public class Check {
         if (s != null) {
 
             // remove all non word characters with spaces
-            final String onlyWordCharacters = s.replaceAll("[^A-Za-z0-9 ]", " ");
+            final String onlyWords = s.replaceAll("[^A-Za-z0-9 ]", " ");
 
-            final StringTokenizer tokenizer = new StringTokenizer(onlyWordCharacters);
+            final StringTokenizer tokenizer = new StringTokenizer(onlyWords);
 
             while (tokenizer.hasMoreTokens()) {
                 words.add(tokenizer.nextToken());
@@ -451,11 +451,11 @@ public class Check {
                 if (pos1.equalsIgnoreCase(kontrollziffer)) {
                     check = true;
                 } else {
-                    System.out.println("invalid checksum: " + issn);
+                    LOG.error("invalid checksum: " + issn);
                 }
             } else {
                 if (issn.length() > 0) {
-                    System.out.println("invalid checksum: " + issn);
+                    LOG.error("invalid checksum: " + issn);
                 }
             }
         } catch (final Exception e) {

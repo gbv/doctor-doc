@@ -33,6 +33,7 @@ import ch.dbs.form.BillingForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.Message;
+import enums.Result;
 
 /**
  * Handelt Rechnungsinformationen für Konten sowie für Admins
@@ -48,7 +49,7 @@ public final class BillingAction extends DispatchAction {
      */
     public ActionForward listBillings(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final Billing b = new Billing();
 
@@ -70,19 +71,19 @@ public final class BillingAction extends DispatchAction {
 
                     rq.setAttribute("billingform", bf);
 
-                    forward = "success";
+                    forward = Result.SUCCESS.getValue();
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -98,7 +99,7 @@ public final class BillingAction extends DispatchAction {
     public ActionForward setPayDate(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final Billing cn = new Billing();
 
@@ -118,19 +119,19 @@ public final class BillingAction extends DispatchAction {
                     final Message em = new Message("message.setpaydate", b.getKonto().getBibliotheksname() + "\n\n"
                             + b.getRechnungsgrund().getInhalt(), "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = "success";
+                    forward = Result.SUCCESS.getValue();
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {

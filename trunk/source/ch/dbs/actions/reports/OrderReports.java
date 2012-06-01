@@ -58,6 +58,7 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OverviewForm;
 import ch.dbs.form.SearchesForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Erstellt PDF-Reports
@@ -76,7 +77,7 @@ public final class OrderReports extends DispatchAction {
     public ActionForward orderspdf(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
@@ -262,14 +263,14 @@ public final class OrderReports extends DispatchAction {
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);

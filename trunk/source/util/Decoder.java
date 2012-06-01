@@ -27,33 +27,33 @@ public class Decoder {
     /**
      * Decodes a URL encoded string. Also decodes html entities.
      * NB: java.net.URLDecoder can only handle (encoded) ASCII strings.
-     * @param s the <code>String</code> to decode
+     * @param input the <code>String</code> to decode
      * @return the newly decoded <code>String</code>
      */
-    public String urlDecode(final String s, final String charset) throws UnsupportedEncodingException {
-        final StringBuffer sb = new StringBuffer();
-        final int max = s.length();
+    public String urlDecode(final String input, final String charset) throws UnsupportedEncodingException {
+        final StringBuffer buffer = new StringBuffer();
+        final int max = input.length();
         for (int i = 0; i < max; i++) {
-            final char c = s.charAt(i);
+            final char c = input.charAt(i);
             switch (c) {
             case '+':
-                sb.append(' ');
+                buffer.append(' ');
                 break;
             case '%':
                 try {
-                    sb.append((char) Integer.parseInt(s.substring(i + 1, i + 3), 16));
+                    buffer.append((char) Integer.parseInt(input.substring(i + 1, i + 3), 16));
                     i += 2;
                 } catch (final Throwable t) {
-                    sb.append(c);
+                    buffer.append(c);
                 }
                 break;
             default:
-                sb.append(c);
+                buffer.append(c);
                 break;
             }
         }
         // Undo conversion to external encoding
-        String result = sb.toString();
+        String result = buffer.toString();
         if (charset != null) {
             result = new String(result.getBytes("ISO-8859-1"), charset);
         }
@@ -65,17 +65,17 @@ public class Decoder {
 
     /**
      * Decodes html entities. (Nur Zeichen der Art &#33;)
-     * @param s the <code>String</code> to decode
+     * @param input the <code>String</code> to decode
      * @return the newly decoded <code>String</code>
      */
-    public String htmlEntityDecode(final String s) {
+    public String htmlEntityDecode(final String input) {
 
         int i = 0, j = 0, pos = 0;
         final StringBuffer sb = new StringBuffer();
-        while ((i = s.indexOf("&#", pos)) != -1 && (j = s.indexOf(';', i)) != -1) {
+        while ((i = input.indexOf("&#", pos)) != -1 && (j = input.indexOf(';', i)) != -1) {
             int n = -1;
             for (i += 2; i < j; ++i) {
-                final char c = s.charAt(i);
+                final char c = input.charAt(i);
                 if ('0' <= c && c <= '9') {
                     n = (n == -1 ? 0 : n * 10) + c - '0';
                 } else {
@@ -87,14 +87,14 @@ public class Decoder {
                 sb.append((char) n);
                 i = j + 1;      // skip ';'
             } else {
-                for (int k = pos; k < i; ++k) { sb.append(s.charAt(k)); }
+                for (int k = pos; k < i; ++k) { sb.append(input.charAt(k)); }
             }
             pos = i;
         }
         if (sb.length() == 0) {
-            return s;
+            return input;
         } else {
-            sb.append(s.substring(pos, s.length()));
+            sb.append(input.substring(pos, input.length()));
         }
         return sb.toString();
 

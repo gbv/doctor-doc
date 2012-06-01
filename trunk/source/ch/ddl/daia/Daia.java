@@ -22,6 +22,7 @@ import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Text;
 import ch.dbs.form.OrderForm;
+import enums.Result;
 
 public class Daia extends Action {
 
@@ -119,7 +120,7 @@ public class Daia extends Action {
             LOG.error(e.toString());
         }
 
-        return mp.findForward("failure"); // when we get here, there is an error
+        return mp.findForward(Result.FAILURE.getValue()); // when we get here, there is an error
     }
 
     /**

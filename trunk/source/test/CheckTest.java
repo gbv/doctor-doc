@@ -28,7 +28,7 @@ import util.Check;
 
 public class CheckTest {
 
-    final Check check = new Check();
+    private final Check check = new Check();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

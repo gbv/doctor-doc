@@ -36,6 +36,7 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.login.Gtc;
+import enums.Result;
 
 public final class GtcAction extends DispatchAction {
 
@@ -49,7 +50,7 @@ public final class GtcAction extends DispatchAction {
 
         final OrderForm pageForm = (OrderForm) form; // falls Artikelangaben aus Linkresolver vorhanden
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -73,7 +74,7 @@ public final class GtcAction extends DispatchAction {
                 rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
 
                 if (ui.getKonto() != null) { // Prüfung ob mehrere Konti vorhanden
-                    forward = "success";
+                    forward = Result.SUCCESS.getValue();
 
                 } else {
                     forward = "konto";
@@ -82,27 +83,27 @@ public final class GtcAction extends DispatchAction {
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
             if (pageForm.isResolver()) {
                 // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
                 rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
                 // Die Bestellberechtigung wird in der Methode prepare geprüft!
-                if ("success".equals(forward) && auth.isBenutzer(rq)) {
+                if (Result.SUCCESS.getValue().equals(forward) && auth.isBenutzer(rq)) {
                     forward = "order";
                 }
                 // Bibliothekar oder Admin auf Checkavailability
-                if ("success".equals(forward) && !auth.isBenutzer(rq)) {
+                if (Result.SUCCESS.getValue().equals(forward) && !auth.isBenutzer(rq)) {
                     forward = "checkavailability";
                 }
             }
 
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         } finally {
             cn.close();
@@ -114,7 +115,7 @@ public final class GtcAction extends DispatchAction {
     public ActionForward decline(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         // Make sure method is only accessible when user is logged in
 
@@ -124,9 +125,9 @@ public final class GtcAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         return mp.findForward(forward);
     }

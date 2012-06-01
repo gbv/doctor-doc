@@ -33,6 +33,7 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.IlvReportForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Default ILV Mailfields operation
@@ -51,7 +52,7 @@ public final class ILVMailfields extends DispatchAction {
         final Auth auth = new Auth();
         final Text cn = new Text();
         // Make sure method is only accessible when user is logged in
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
 
         try {
 
@@ -86,7 +87,7 @@ public final class ILVMailfields extends DispatchAction {
                     text.updateText(cn.getConnection(), text);
                 }
 
-                forward = "success";
+                forward = Result.SUCCESS.getValue();
                 final Message mes = new Message("ilvmail.defaultmailfiedsset",
                         "listkontobestellungen.do?method=overview");
                 rq.setAttribute("message", mes);
@@ -94,9 +95,9 @@ public final class ILVMailfields extends DispatchAction {
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {

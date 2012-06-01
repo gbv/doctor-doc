@@ -17,7 +17,6 @@
 
 package ch.dbs.actions.illformat;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +28,7 @@ import org.grlea.log.SimpleLogger;
 
 import ch.dbs.entity.Text;
 import ch.dbs.form.IllForm;
+import enums.Result;
 
 /**
  * Methode um Illformat-Requests zu empfangen
@@ -42,16 +42,16 @@ public final class GetIllFormatRequest extends Action {
     /**
      * empfängt Ill-Requests und stellt ein IllForm her
      */
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final Text cn = new Text();
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final IllHandler illHandler = new IllHandler();
 
         try {
 
-            forward = "success";
+            forward = Result.SUCCESS.getValue();
 
             final IllForm illform = illHandler.readIllRequest(rq);
             final String returnvalue = illHandler.updateOrderState(illform, cn.getConnection());
@@ -73,6 +73,5 @@ public final class GetIllFormatRequest extends Action {
 
         return mp.findForward(forward);
     }
-
 
 }

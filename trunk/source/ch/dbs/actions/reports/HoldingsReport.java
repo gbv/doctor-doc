@@ -44,10 +44,11 @@ import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Creates an export of the holdings of a given library
- * 
+ *
  * @author Markus Fischer
  */
 public final class HoldingsReport extends DispatchAction {
@@ -60,7 +61,7 @@ public final class HoldingsReport extends DispatchAction {
     public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         // Get export filetype for export as either CSV with semicolon delimiter, TXT as tab delimited file or as XLS
@@ -84,7 +85,7 @@ public final class HoldingsReport extends DispatchAction {
                     // CSV- or TXT-Export
                     if (filetype != null && (filetype.equals("csv") || filetype.equals("txt"))) {
                         char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // ';' as default delimiter
-                        if (filetype.equals("csv")) {
+                        if ("csv".equals(filetype)) {
                             filename.append("csv");
                         } else {
                             filename.append("txt");
@@ -137,14 +138,14 @@ public final class HoldingsReport extends DispatchAction {
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);

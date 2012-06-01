@@ -138,7 +138,6 @@ public class TestBenutzer {
         assertEquals(b.getRechte(), rechte);
         assertEquals(b.getBilling(), billing);
         assertFalse(b.getGtcdate().equals(gtcdate)); // make sure this gets not overridden
-        System.out.println("b: " + b.getLastuse() + " lastuse: " + lastuse);
         assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(b.getLastuse()), datum);
 
     }

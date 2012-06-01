@@ -39,6 +39,7 @@ import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
+import enums.Result;
 
 /**
  * Class to show stock details. One does not need to be logged in,
@@ -52,7 +53,7 @@ public class Stockdetails extends Action {
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
 
         // read article values, if request comes from within D-D
         final OrderForm of = (OrderForm) form;
@@ -77,13 +78,13 @@ public class Stockdetails extends Action {
         if (holdings.isEmpty()) {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.stockinfo", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             return mp.findForward(forward);
         }
 
-        forward = "success";
+        forward = Result.SUCCESS.getValue();
 
         // get Konto from holding
         final Konto k = holdings.get(0).getHolding().getKonto();
@@ -102,7 +103,7 @@ public class Stockdetails extends Action {
                 final Text t = auth.grantAccess(rq);
 
                 // use IP based order form if applicable
-                if (useIP_BasedForm(k, t) && dp.isIp_overrides()) {
+                if (useIPBasedForm(k, t) && dp.isIp_overrides()) {
                     rq.setAttribute("ofjo", of);
                     forward = "redirectIP";
                     // redirect to order form defined in dp
@@ -179,7 +180,7 @@ public class Stockdetails extends Action {
         return holdings;
     }
 
-    private boolean useIP_BasedForm(final Konto k, final Text t) {
+    private boolean useIPBasedForm(final Konto k, final Text t) {
         boolean result = false;
 
         if (t.getKonto() != null && k.getId().equals(t.getKonto().getId())) {

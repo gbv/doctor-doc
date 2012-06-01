@@ -48,7 +48,6 @@ public class PrepareTestObjects {
     /** E-Mail welche zum Login benötigt wird */
     public static final String BNEMAIL = "testitestmail@eldali.ch";
 
-
     public static final Long KONTOID = Long.valueOf(1);
 
     public static final String BIBLIONAME1 = "Biblioname1";
@@ -101,14 +100,15 @@ public class PrepareTestObjects {
 
     }
 
-    public static List <Konto> getTestkonto() {
+    public static List<Konto> getTestkonto() {
 
-        final List <Konto> kl = new ArrayList<Konto>();
+        final List<Konto> kl = new ArrayList<Konto>();
         final Konto cn = new Konto();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.getSingleConnection().prepareStatement("SELECT * FROM konto WHERE `biblioname` = ? or `biblioname` = ?");
+            pstmt = cn.getSingleConnection().prepareStatement(
+                    "SELECT * FROM konto WHERE `biblioname` = ? or `biblioname` = ?");
             pstmt.setString(1, BIBLIONAME1);
             pstmt.setString(2, BIBLIONAME2);
 
@@ -119,8 +119,7 @@ public class PrepareTestObjects {
             }
 
         } catch (final Exception e) {
-            System.out.println("getKontoValues() trat folgender Fehler auf: \012"
-                    + e);
+            System.out.println("getKontoValues() trat folgender Fehler auf: \012" + e);
         } finally {
             if (rs != null) {
                 try {
@@ -154,7 +153,8 @@ public class PrepareTestObjects {
         }
 
         final VKontoBenutzer vkb = new VKontoBenutzer();
-        final List<AbstractBenutzer> alb = new AbstractBenutzer().getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
+        final List<AbstractBenutzer> alb = new AbstractBenutzer()
+                .getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
         for (final AbstractBenutzer b : alb) {
             vkb.deleteAllKontoEntries(b, cn.getSingleConnection());
             b.deleteUser(b, cn.getSingleConnection());
@@ -219,10 +219,8 @@ public class PrepareTestObjects {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT * FROM `benutzer` AS b " +
-                            "WHERE b.mail = ? AND b.pw = ? " +
-                    "AND b.rechte = 1 ");
+            pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b " + "WHERE b.mail = ? AND b.pw = ? "
+                    + "AND b.rechte = 1 ");
             pstmt.setString(1, BNEMAIL);
             pstmt.setString(2, e.makeSHA(LOGINPW));
             rs = pstmt.executeQuery();
@@ -265,10 +263,8 @@ public class PrepareTestObjects {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT * FROM `benutzer` AS b " +
-                            "WHERE b.mail = ? AND b.pw = ? " +
-                    "AND b.rechte = 2 ");
+            pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b " + "WHERE b.mail = ? AND b.pw = ? "
+                    + "AND b.rechte = 2 ");
             pstmt.setString(1, BNEMAIL);
             pstmt.setString(2, e.makeSHA(LOGINPW));
             rs = pstmt.executeQuery();
@@ -300,18 +296,17 @@ public class PrepareTestObjects {
     }
 
     /**
-     * Holt ein Konto aus der Datenbank
-     * @param cn
-     * @return
+     * Holt ein Konto aus der Datenbank.
+     * @param Connection cn
+     * @param String kontoname
+     * @return Konto k
      */
     public static Konto getTestKontoFromDb(final String kontoname, final Connection cn) {
         Konto k = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT * FROM `konto` AS k " +
-                    "WHERE k.biblioname = ?");
+            pstmt = cn.prepareStatement("SELECT * FROM `konto` AS k WHERE k.biblioname = ?");
             pstmt.setString(1, kontoname);
             rs = pstmt.executeQuery();
 
@@ -372,7 +367,7 @@ public class PrepareTestObjects {
         p.setJahr("jahr");
         p.setJahrgang("jahrgang");
         p.setKapitel("kapitel");
-        p.setKonto(getTestKontoFromDb("Bibliothek soH/BZ-GS",p.getSingleConnection()));
+        p.setKonto(getTestKontoFromDb("Bibliothek soH/BZ-GS", p.getSingleConnection()));
         p.setMediatype("mediatype");
         p.setOrderdate(new java.sql.Date(1));
         p.setPreis("preis");
@@ -385,6 +380,5 @@ public class PrepareTestObjects {
         p.close();
         return p;
     }
-
 
 }

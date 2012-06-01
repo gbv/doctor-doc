@@ -47,7 +47,7 @@ public final class IlvReportForm extends ActionForm {
     private Long bid = Long.valueOf("0");
 
     // E-Mail fields
-    private String to = ""; // <bean:write name="IlvReportForm" property="subject" /> 
+    private String to = ""; // <bean:write name="IlvReportForm" property="subject" />
     private String subject = ""; // <bean:write name="IlvReportForm" property="subject" />
     private String mailtext = ""; // <bean:write name="IlvReportForm" property="mailtext" />
 

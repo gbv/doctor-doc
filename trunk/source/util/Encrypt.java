@@ -26,22 +26,24 @@ public class Encrypt {
     private static final SimpleLogger LOG = new SimpleLogger(Encrypt.class);
 
     /**
-     * Erstellt aus einem String den SHA-1 Hash
-     * @param s
+     * Erstellt aus einem String den SHA-1 Hash.
+     * @param input
      * @return
      */
-    public String makeSHA(final String s) {
+    public String makeSHA(final String input) {
 
         final StringBuffer encoded = new StringBuffer();
 
         try {
 
-            final MessageDigest md = MessageDigest.getInstance("SHA-1");
-            final byte[] digest = md.digest(s.getBytes());
+            final MessageDigest digester = MessageDigest.getInstance("SHA-1");
+            final byte[] digest = digester.digest(input.getBytes());
 
-            for (byte d : digest) { encoded.append(Integer.toHexString(d & 0xFF)); }
+            for (final byte d : digest) {
+                encoded.append(Integer.toHexString(d & 0xFF));
+            }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("makeSHA: " + e.toString());
         }
 

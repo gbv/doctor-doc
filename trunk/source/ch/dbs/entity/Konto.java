@@ -37,7 +37,7 @@ import ch.dbs.form.UserInfo;
  * Abstract base class for entities having a {@link Long} unique identifier,
  * this provides the base functionality for them.
  * <p></p>
- * 
+ *
  * @author Pascal Steiner
  */
 public class Konto extends AbstractIdEntity implements Serializable {
@@ -286,7 +286,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Erstellt ein Kontoobjekt anhand einer Verbindung und der ID
-     * 
+     *
      * @param Long
      * kid
      * @param Connection
@@ -328,7 +328,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Listet alle Kontos auf, sortiert nach Bibliotheksnamen
-     * 
+     *
      * @return Kontolist
      */
     public List<Konto> getAllKontos(final Connection cn) {
@@ -369,7 +369,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * Speichert diese Konto und hinterlegt die ID
      * <p>
      * </p>
-     * 
+     *
      * @param cn
      */
     public Long save(final Connection cn) {
@@ -426,7 +426,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * Modifiziert dieses Konto
      * <p>
      * </p>
-     * 
+     *
      * @param cn
      */
     public void update(final Connection cn) {
@@ -461,7 +461,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Löscht dieses Kontoobjekt, ohne weitere Prüfungen. Vorsicht vor
      * Benutzern, Kontoverknüpfungen, Texten,usw...
-     * 
+     *
      * @return Rückmeldung o das Konto gelöscht werden konnte
      */
     public boolean deleteSelf(final Connection cn) {
@@ -517,7 +517,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * Sucht Kontos welche in expiredays ablaufen werden
      * <p>
      * </p>
-     * 
+     *
      * @param the
      * expiredays
      * @return a {@link Konto}
@@ -563,7 +563,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * Sucht alle Faxserver-Konten heraus
      * <p>
      * </p>
-     * 
+     *
      * @return a {@link Konto}
      */
     public List<Konto> getFaxserverKontos() {
@@ -604,7 +604,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Listet alle Kontos auf, bei welchen der Benutzer hinterlegt ist
-     * 
+     *
      * @param AbstractBenutzer
      * @return List<Konto> kl
      */
@@ -645,7 +645,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Listet alle Kontos auf, bei welchem ein Benutzer sich anmelden kann
-     * 
+     *
      * @param AbstractBenutzer
      * @return
      */
@@ -890,7 +890,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll. (in Tagen)
-     * 
+     *
      * @return Returns the accounting_rhythmday.
      */
     public int getAccounting_rhythmday() {
@@ -900,7 +900,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll. (in Tagen)
-     * 
+     *
      * @param accounting_rhythmday
      * The accounting_rhythmday to set.
      */
@@ -911,7 +911,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach ....
      * trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
-     * 
+     *
      * @return Returns the accounting_rhythmtimeout.
      */
     public int getAccounting_rhythmtimeout() {
@@ -921,7 +921,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach ....
      * trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
-     * 
+     *
      * @param accounting_rhythmtimeout
      * The accounting_rhythmtimeout to set.
      */
@@ -940,7 +940,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll in Fr.-
-     * 
+     *
      * @return Returns the accounting_rhythmvalue.
      */
     public int getAccounting_rhythmvalue() {
@@ -950,7 +950,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll in Fr.-
-     * 
+     *
      * @param accounting_rhythmvalue
      * The accounting_rhythmvalue to set.
      */
@@ -994,7 +994,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese
      * Einstellung kann durch den Wert welcher beim User hinterlegt ist
      * berschrieben werden.
-     * 
+     *
      * @return Returns the billing.
      */
     public Text getBilling() {
@@ -1004,7 +1004,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll.
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
-     * 
+     *
      * @param billing
      * The billing to set.
      */
@@ -1015,7 +1015,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     /**
      * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll.
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
-     * 
+     *
      * @return Returns the billingtype.
      */
     public Text getBillingtype() {
@@ -1028,7 +1028,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * This is the email that receives ILL deliveries
-     * 
+     *
      * @return Returns the dbsmail.
      */
     public String getDbsmail() {
@@ -1037,7 +1037,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * This is the email that receives ILL deliveries
-     * 
+     *
      * @param dbsmail
      * The dbsmail to set.
      */
@@ -1111,7 +1111,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
-     * 
+     *
      * @return Returns the maxordersj.
      */
     public int getMaxordersj() {
@@ -1120,7 +1120,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
-     * 
+     *
      * @param maxordersj
      * The maxordersj to set.
      */
@@ -1130,7 +1130,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-     * 
+     *
      * @return Returns the maxordersu.
      */
     public int getMaxordersu() {
@@ -1139,7 +1139,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-     * 
+     *
      * @param maxordersu
      * The maxordersu to set.
      */
@@ -1149,7 +1149,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
-     * 
+     *
      * @return Returns the maxordersutotal.
      */
     public int getMaxordersutotal() {
@@ -1158,7 +1158,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
-     * 
+     *
      * @param maxordersutotal
      * The maxordersutotal to set.
      */
@@ -1248,7 +1248,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
-     * 
+     *
      * @return Returns the threshold_value.
      */
     public int getThreshold_value() {
@@ -1257,7 +1257,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
 
     /**
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
-     * 
+     *
      * @param threshold_value
      * The threshold_value to set.
      */

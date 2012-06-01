@@ -28,16 +28,16 @@ import org.apache.struts.action.ActionMapping;
 import util.Auth;
 import ch.dbs.form.LoginForm;
 import ch.dbs.form.OrderForm;
+import enums.Result;
 
 public final class PrepareLoginAction extends Action {
 
-
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final LoginForm lf = (LoginForm) form;
         final OrderForm pageForm = new OrderForm(lf);
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
@@ -48,7 +48,7 @@ public final class PrepareLoginAction extends Action {
 
         } else {
             // nicht eingeloggt => zu LoginAction
-            forward = "success";
+            forward = Result.SUCCESS.getValue();
             rq.setAttribute("loginform", lf);
             pageForm.setResolver(true); // verhindet, dass beim Sprachwechsel Bestellangaben verloren gehen
             rq.setAttribute("orderform", pageForm);
@@ -57,7 +57,5 @@ public final class PrepareLoginAction extends Action {
         return mp.findForward(forward);
 
     }
-
-
 
 }

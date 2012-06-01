@@ -29,6 +29,7 @@ import util.Auth;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.Message;
+import enums.Result;
 
 public final class AdminServerTest extends Action {
 
@@ -40,24 +41,22 @@ public final class AdminServerTest extends Action {
      *
      * @author Markus Fischer
      */
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("login");
-        rq.setAttribute("ActiveMenus", mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         if (auth.isAdmin(rq)) {
-            forward = "success";
+            forward = Result.SUCCESS.getValue();
             final Message m = new Message();
             m.setMessage("message.admintest");
             m.setLink("test.do");
             final StringBuffer message = new StringBuffer();
             // Testcode hier platzieren:
-
-
 
             // Ende Testcode
 
@@ -67,7 +66,7 @@ public final class AdminServerTest extends Action {
         } else {
             final ErrorMessage m = new ErrorMessage("error.berechtigung");
             m.setLink("login.do");
-            rq.setAttribute("errormessage", m);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
         }
 
         return mp.findForward(forward);

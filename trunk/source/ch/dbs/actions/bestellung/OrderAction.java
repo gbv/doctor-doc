@@ -2073,7 +2073,6 @@ public final class OrderAction extends DispatchAction {
                     if (auth.isBibliothekar(rq)
                     // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
                             && !b.getKonto().getId().equals(ui.getKonto().getId())) {
-                        System.out.println("URL-hacking... ;-)");
                         forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage("error.hack",
                                 "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
@@ -2085,7 +2084,6 @@ public final class OrderAction extends DispatchAction {
                     // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
                             && !b.getBenutzer().getId().equals(ui.getBenutzer().getId())) {
                         // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
-                        System.out.println("URL-hacking... ;-)");
                         forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage("error.hack",
                                 "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");

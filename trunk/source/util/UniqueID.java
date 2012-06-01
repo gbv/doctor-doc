@@ -29,17 +29,11 @@ public final class UniqueID {
     // This can be solved by using the following technique to make sure that the number
     // returned is unique (in a single JVM).
 
-    // GBV nimmt nur max. 16 Stellen entgegen! Diese Methode liefert momentan 13 Stellen...
+    // GBV nimmt nur max. 16 Stellen entgegen!
 
     private static long current = System.currentTimeMillis();
-    public static synchronized long get() {
 
-        if (String.valueOf(current).length() > 15) {
-            final MHelper mh = new MHelper();
-            mh.sendErrorMail("GBV-Trackingnummer hat maximale Anzahl Stellen erreicht oder überschritten!!!",
-                    "Util - UniqueID: Es wurden 16 oder mehr Stellen erreicht!:\012"
-                    + String.valueOf(current).length());
-        }
+    public static synchronized long get() {
 
         return current++;
     }

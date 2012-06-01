@@ -210,22 +210,22 @@ public class Http {
     public String getWebcontent(final String link, final String postdata) {
 
         final StringBuffer response = new StringBuffer();
-        OutputStreamWriter wr = null;
-        BufferedReader rd = null;
+        OutputStreamWriter writer = null;
+        BufferedReader reader = null;
         try {
             DisableSSLCertificateCheckUtil.disableChecks();
             // Send data
             final URL url = new URL(link);
             final URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
-            wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(postdata);
-            wr.flush();
+            writer = new OutputStreamWriter(conn.getOutputStream());
+            writer.write(postdata);
+            writer.flush();
 
             // Get the response
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String content = "";
-            while ((content = rd.readLine()) != null) {
+            while ((content = reader.readLine()) != null) {
                 response.append(content);
                 response.append('\n');
             }
@@ -234,8 +234,8 @@ public class Http {
                     + postdata);
         } finally {
             try {
-                wr.close();
-                rd.close();
+                writer.close();
+                reader.close();
             } catch (final IOException e) {
                 LOG.error(e.toString());
             }

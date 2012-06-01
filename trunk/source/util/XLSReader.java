@@ -42,7 +42,7 @@ import org.grlea.log.SimpleLogger;
 public class XLSReader implements HSSFListener {
     private SSTRecord sstrec;
     private List<List<String>> result = new ArrayList<List<String>>();
-    private ArrayList<String> rowcontent = new ArrayList<String>();
+    private List<String> rowcontent = new ArrayList<String>();
     private int lastrow = -1; // rows start by 0
     private int lastcol = -1; // columns start by 0
 
@@ -50,7 +50,7 @@ public class XLSReader implements HSSFListener {
 
     /**
      * This method listens for incoming records and handles them as required.
-     * 
+     *
      * @param record
      */
     public void processRecord(final Record record) {
@@ -148,7 +148,7 @@ public class XLSReader implements HSSFListener {
 
     /**
      * Read an excel file and return found cell elements.
-     * 
+     *
      * @param aBufferedInputStream
      * @throws IOException
      * @return List<List<String>>

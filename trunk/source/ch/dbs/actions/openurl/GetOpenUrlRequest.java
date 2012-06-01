@@ -35,6 +35,7 @@ import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Methode um OpenUrl-Requests zu empfangen
@@ -52,7 +53,7 @@ public final class GetOpenUrlRequest extends Action {
             final HttpServletResponse rp) {
 
         final Auth auth = new Auth();
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         OrderForm of = (OrderForm) form;
         of.setResolver(true); // markiert, dass Angaben bereits aufgelöst wurden
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
@@ -74,7 +75,7 @@ public final class GetOpenUrlRequest extends Action {
             // Nicht eingeloggt. IP-basiert, Kontokennung oder Brokerkennung
             if (requester != null && requester.getInhalt() != null) {
 
-                forward = "success";
+                forward = Result.SUCCESS.getValue();
 
                 rq.setAttribute("ip", requester); // Text mit Konto in Request setzen
                 of.setBibliothek(requester.getKonto().getBibliotheksname());
@@ -163,7 +164,6 @@ public final class GetOpenUrlRequest extends Action {
                                     of.setKundenmail(cookietext);
                                 } catch (final Exception e) { //
                                     LOG.error("Fehler beim Cookie auslesen!: " + e.toString());
-                                    System.out.println("Fehler beim Cookie auslesen!: " + e.toString());
                                 }
                             }
 
@@ -173,14 +173,14 @@ public final class GetOpenUrlRequest extends Action {
 
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
             } else {
 
                 // Falls User eingeloggt
                 if (auth.isLogin(rq)) {
 
-                    forward = "success";
+                    forward = Result.SUCCESS.getValue();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                     // Übergabe direkt von Pubmed...
@@ -253,14 +253,14 @@ public final class GetOpenUrlRequest extends Action {
 
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute("ActiveMenus", mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("bestellform");
-                    rq.setAttribute("ActiveMenus", mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 }
             }
 

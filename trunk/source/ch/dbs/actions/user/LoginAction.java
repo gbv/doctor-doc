@@ -60,7 +60,7 @@ public final class LoginAction extends Action {
         final LoginForm lf = (LoginForm) fm;
         final OrderForm pageForm = new OrderForm(lf); // falls Artikelangaben aus Linkresolver vorhanden
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -132,7 +132,7 @@ public final class LoginAction extends Action {
                     em.setError("error.username_pw_linkresolver");
                     em.setLink("login.do");
                 }
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
             // Angaben aus Linkresolver
@@ -160,7 +160,7 @@ public final class LoginAction extends Action {
 
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         } finally {
             cn.close();

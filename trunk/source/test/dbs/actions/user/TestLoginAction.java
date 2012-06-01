@@ -38,6 +38,7 @@ import ch.dbs.entity.VKontoBenutzer;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.LoginForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 public class TestLoginAction extends MockStrutsTestCase {
 
@@ -108,8 +109,9 @@ public class TestLoginAction extends MockStrutsTestCase {
 
         //    Benutzer mit Konten verknuepfen
         vkb = new VKontoBenutzer();
-        if (bi.getId() != null && k1.getId() != null)
+        if (bi.getId() != null && k1.getId() != null) {
             vkb.save(bi, k1, k1.getSingleConnection());
+        }
         k1.close();
 
         //Loginform vorbereiten
@@ -215,8 +217,9 @@ public class TestLoginAction extends MockStrutsTestCase {
 
         //    Benutzer mit Konten verknuepfen
         vkb = new VKontoBenutzer();
-        if (be.getId() != null && k2.getId() != null)
+        if (be.getId() != null && k2.getId() != null) {
             vkb.save(be, k2, k1.getSingleConnection());
+        }
 
         //Login
         final LoginForm lf = new LoginForm();
@@ -336,7 +339,7 @@ public class TestLoginAction extends MockStrutsTestCase {
 
         // Test
         verifyNoActionErrors();
-        verifyForward("failure");
+        verifyForward(Result.FAILURE.getValue());
 
     }
 
@@ -406,8 +409,9 @@ public class TestLoginAction extends MockStrutsTestCase {
         // Zweites Konto beim Benutzer hinterlegen
         final Bibliothekar bi = PrepareTestObjects.getTestBibliothekarFromDb(k1.getSingleConnection());
         vkb = new VKontoBenutzer();
-        if (bi.getId() != null && k1.getId() != null)
+        if (bi.getId() != null && k1.getId() != null) {
             vkb.save(bi, k2, k1.getSingleConnection());
+        }
 
         //Loginform vorbereiten
         LoginForm lf = PrepareTestObjects.getloginForm();
@@ -500,7 +504,7 @@ public class TestLoginAction extends MockStrutsTestCase {
         actionPerform();
 
         verifyNoActionErrors();
-        verifyForward("failure");
+        verifyForward(Result.FAILURE.getValue());
 
     }
 

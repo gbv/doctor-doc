@@ -1265,12 +1265,14 @@ public final class OrderGbvAction extends DispatchAction {
                     final String zdbid = getSruSubfield("6", contentCopy);
                     final String titel2 = getSruSubfield("8", contentCopy); // kommt vermutlich nicht bis selten vor
                     final String ppn = getSruSubfield("9", contentCopy);
-                    String text = "";
+                    final StringBuffer text = new StringBuffer("");
                     if (!"".equals(vortext)) {
-                        text = vortext + "\040";
+                        text.append(vortext);
+                        text.append('\040');
                     }
-                    text = text + titel + titel2;
-                    record.setVerknuepfung_horizontal_039D_multipel(text);
+                    text.append(titel);
+                    text.append(titel2);
+                    record.setVerknuepfung_horizontal_039D_multipel(text.toString());
                     if (!"".equals(ppn)) {
                         record.setVerknuepfung_ppn_horizontal(ppn);
                     }
@@ -1292,12 +1294,14 @@ public final class OrderGbvAction extends DispatchAction {
                 final String vortext = getSruSubfield("c", contentCopy);
                 final String textUselbst = getSruSubfield("8", contentCopy); // unselbständige Werke
                 final String ppn = getSruSubfield("9", contentCopy);
-                String text = "";
+                final StringBuffer text = new StringBuffer("");
                 if (!"".equals(vortext)) {
-                    text = vortext + "\040";
+                    text.append(vortext);
+                    text.append('\040');
                 }
-                text = text + textSammelw + textUselbst;
-                record.setVerknuepfung_groessere_einheit_039B_multipel(text);
+                text.append(textSammelw);
+                text.append(textUselbst);
+                record.setVerknuepfung_groessere_einheit_039B_multipel(text.toString());
                 if (!"".equals(ppn)) {
                     record.setVerknuepfung_ppn_groesser(ppn);
                 }
@@ -1316,21 +1320,25 @@ public final class OrderGbvAction extends DispatchAction {
                 final String heft = getSruSubfield("e", contentCopy);
                 //        String sonderheft = getSruSubfield("f", content_copy);
                 final String seiten = getSruSubfield("h", contentCopy);
-                String text = jahr;
+                final StringBuffer text = new StringBuffer(jahr);
                 if (!"".equals(band)) {
                     if (!"".equals(jahr)) {
-                        text = text + ";" + band;
+                        text.append(';');
+                        text.append(band);
                     } else {
-                        text = text + band;
+                        text.append(band);
                     }
                 }
                 if (!"".equals(heft)) {
-                    text = text + "(" + heft + ")";
+                    text.append('(');
+                    text.append(heft);
+                    text.append(')');
                 }
                 if (!"".equals(seiten)) {
-                    text = text + ":" + seiten;
+                    text.append(':');
+                    text.append(seiten);
                 }
-                record.setUmfang_031A(text);
+                record.setUmfang_031A(text.toString());
                 if (record.getUmfang_031A().equals("")) {
                     record.setUmfang_031A(null);
                 } // Anzeigelogik

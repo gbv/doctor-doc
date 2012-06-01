@@ -74,6 +74,8 @@ import ch.dbs.form.UserInfo;
 
 import com.sun.mail.smtp.SMTPAddressFailedException;
 
+import enums.Result;
+
 /**
  * Creates PDF-Reports
  *
@@ -92,10 +94,10 @@ public final class ILVReport extends DispatchAction {
 
         final OrderForm pageForm = (OrderForm) fm;
         final Auth auth = new Auth();
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
 
         if (auth.isLogin(rq)) {
-            forward = "success";
+            forward = Result.SUCCESS.getValue();
 
             final Text cn = new Text();
 
@@ -110,15 +112,15 @@ public final class ILVReport extends DispatchAction {
                 rq.setAttribute("orderform", pageForm);
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("uebersicht");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
             } catch (final Exception e) {
-                forward = "failure";
+                forward = Result.FAILURE.getValue();
 
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("journalorderdetail: " + e.toString());
 
             } finally {
@@ -127,9 +129,9 @@ public final class ILVReport extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         return mp.findForward(forward);
     }
@@ -140,7 +142,7 @@ public final class ILVReport extends DispatchAction {
     public ActionForward PDF(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
@@ -175,14 +177,14 @@ public final class ILVReport extends DispatchAction {
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -194,7 +196,7 @@ public final class ILVReport extends DispatchAction {
     public ActionForward Email(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
@@ -233,14 +235,14 @@ public final class ILVReport extends DispatchAction {
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -252,7 +254,7 @@ public final class ILVReport extends DispatchAction {
     public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
@@ -272,7 +274,7 @@ public final class ILVReport extends DispatchAction {
                     aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
 
                     // send Mail
-                    final InternetAddress to[] = new InternetAddress[2];
+                    final InternetAddress[] to = new InternetAddress[2];
                     to[0] = new InternetAddress(ilvf.getTo());
                     to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
                     final MHelper mh = new MHelper();
@@ -285,7 +287,7 @@ public final class ILVReport extends DispatchAction {
                     // set reply to address
                     message.setReplyTo(new InternetAddress[] { new InternetAddress(ui.getKonto().getBibliotheksmail()) });
 
-                    // create the message part 
+                    // create the message part
                     MimeBodyPart messageBodyPart = new MimeBodyPart();
 
                     //fill message
@@ -306,7 +308,7 @@ public final class ILVReport extends DispatchAction {
                     // Send the message
                     mh.sendMessage(session, message, to);
 
-                    forward = "success";
+                    forward = Result.SUCCESS.getValue();
                     final String content = "ilvmail.confirmation";
                     final String link = "listkontobestellungen.do?method=overview";
                     final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
@@ -316,36 +318,36 @@ public final class ILVReport extends DispatchAction {
                 } catch (final JRException e1) {
                     final ErrorMessage em = new ErrorMessage("error.createilvreport",
                             "listkontobestellungen.do?method=overview");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } catch (final SMTPAddressFailedException e) {
                     final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(),
                             "listkontobestellungen.do?method=overview");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } catch (final AuthenticationFailedException e) {
                     final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(),
                             "listkontobestellungen.do?method=overview");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     //SMTPSendFailedException
                 } catch (final MessagingException e) {
                     final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
                             "listkontobestellungen.do?method=overview");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } catch (final Exception e) {
                     final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
                             "listkontobestellungen.do?method=overview");
-                    rq.setAttribute("errormessage", em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute("ActiveMenus", mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute("errormessage", em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -672,9 +674,7 @@ public final class ILVReport extends DispatchAction {
         if (ilvf.getPmid() != null && !"".equals(ilvf.getPmid())) {
             result.append("PMID: ");
             result.append(ilvf.getPmid());
-            result.append('\n');
-            result.append("PMID-URI: ");
-            result.append("http://www.ncbi.nlm.nih.gov/pubmed/");
+            result.append("\nPMID-URI: http://www.ncbi.nlm.nih.gov/pubmed/");
             result.append(pubmed.extractPmid(ilvf.getPmid()));
             result.append('\n');
         }

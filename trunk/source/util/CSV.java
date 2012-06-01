@@ -49,7 +49,7 @@ public class CSV {
      * from the original as a trimmed String, in order.
      */
     public List<String> parse(final String line) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         list.clear();      // recycle to initial state
         int i = 0;
 
@@ -59,13 +59,13 @@ public class CSV {
         }
 
         do {
-            sb.setLength(0);
+            buffer.setLength(0);
             if (i < line.length() && line.charAt(i) == '"') {
-                i = advQuoted(line, sb, ++i);  // skip quote
+                i = advQuoted(line, buffer, ++i);  // skip quote
             } else {
-                i = advPlain(line, sb, i);
+                i = advPlain(line, buffer, i);
             }
-            list.add(sb.toString().trim());
+            list.add(buffer.toString().trim());
             i++;
         } while (i < line.length());
 
@@ -73,35 +73,35 @@ public class CSV {
     }
 
     /** advQuoted: quoted field; return index of next separator */
-    private int advQuoted(final String s, final StringBuffer sb, final int i) {
+    private int advQuoted(final String input, final StringBuffer buffer, final int i) {
         int j;
-        final int len = s.length();
+        final int len = input.length();
         for (j = i; j < len; j++) {
-            if (s.charAt(j) == '"' && j + 1 < len) {
-                if (s.charAt(j + 1) == '"') {
+            if (input.charAt(j) == '"' && j + 1 < len) {
+                if (input.charAt(j + 1) == '"') {
                     j++; // skip escape char
-                } else if (s.charAt(j + 1) == fieldSep) { //next delimeter
+                } else if (input.charAt(j + 1) == fieldSep) { //next delimeter
                     j++; // skip end quotes
                     break;
                 }
-            } else if (s.charAt(j) == '"' && j + 1 == len) { // end quotes at end of line
+            } else if (input.charAt(j) == '"' && j + 1 == len) { // end quotes at end of line
                 break; //done
             }
-            sb.append(s.charAt(j));  // regular character.
+            buffer.append(input.charAt(j));  // regular character.
         }
         return j;
     }
 
     /** advPlain: unquoted field; return index of next separator */
-    private int advPlain(final String s, final StringBuffer sb, final int i) {
+    private int advPlain(final String input, final StringBuffer buffer, final int i) {
         int j;
 
-        j = s.indexOf(fieldSep, i); // look for separator
+        j = input.indexOf(fieldSep, i); // look for separator
         if (j == -1) {                 // none found
-            sb.append(s.substring(i));
-            return s.length();
+            buffer.append(input.substring(i));
+            return input.length();
         } else {
-            sb.append(s.substring(i, j));
+            buffer.append(input.substring(i, j));
             return j;
         }
     }

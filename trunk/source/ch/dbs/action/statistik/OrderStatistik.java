@@ -37,6 +37,7 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OverviewForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.statistik.Statistik;
+import enums.Result;
 
 /**
  * Class for retrieving statistics of the orders during a
@@ -54,7 +55,7 @@ public final class OrderStatistik extends DispatchAction {
             final HttpServletResponse rp) {
 
         OverviewForm of = (OverviewForm) fm; // contains the desired time period
-        String forward = "failure";
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final Bestellungen b = new Bestellungen();
 
@@ -63,7 +64,7 @@ public final class OrderStatistik extends DispatchAction {
             if (auth.isLogin(rq)) { // is user logged in?
                 // Only accessible for librarians and admins
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                    forward = "success";
+                    forward = Result.SUCCESS.getValue();
                     final Statistik st = new Statistik();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
@@ -126,20 +127,20 @@ public final class OrderStatistik extends DispatchAction {
                     // Navigation: tab statistics
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("stats");
-                    rq.setAttribute("ActiveMenus", mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                 } else {
                     final ErrorMessage m = new ErrorMessage("error.berechtigung");
                     m.setLink("searchfree.do");
-                    rq.setAttribute("errormessage", m);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
                 }
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute("ActiveMenus", mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute("errormessage", em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
