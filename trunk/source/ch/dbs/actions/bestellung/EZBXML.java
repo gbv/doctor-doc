@@ -46,6 +46,7 @@ import org.xml.sax.SAXParseException;
 import util.CodeUrl;
 import util.Http;
 import ch.dbs.form.JournalDetails;
+import enums.Connect;
 
 /**
  * This class reads answers from the normal EZB UI searched with the parameter
@@ -54,10 +55,6 @@ import ch.dbs.form.JournalDetails;
 public class EZBXML {
 
     private static final SimpleLogger LOG = new SimpleLogger(EZBXML.class);
-    private static final int TIMEOUT_1 = 1000;
-    private static final int TIMEOUT_2 = 2000;
-    private static final int RETRYS_1 = 1;
-    private static final int RETRYS_2 = 2;
 
     public List<JournalDetails> searchByTitle(final String jtitle, final String bibid) {
 
@@ -70,7 +67,7 @@ public class EZBXML {
         link.append("&jq_term1=");
         link.append(coder.encodeLatin1(jtitle));
 
-        String content = http.getWebcontent(link.toString(), TIMEOUT_2, RETRYS_2);
+        String content = http.getWebcontent(link.toString(), Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
 
         // if we have > 30 hits, try a more concise search using: &jq_type1=KS (title starts with) instead of &jq_type1=KT (words in title)
         if (content != null && content.contains("<search_count>")) {
@@ -83,7 +80,8 @@ public class EZBXML {
                 link2.append(bibid);
                 link2.append("&jq_term1=");
                 link2.append(coder.encodeLatin1(jtitle));
-                content = http.getWebcontent(link2.toString(), TIMEOUT_2, RETRYS_2);
+                content = http.getWebcontent(link2.toString(), Connect.TIMEOUT_2.getValue(),
+                        Connect.RETRYS_2.getValue());
             }
 
         }
@@ -104,7 +102,8 @@ public class EZBXML {
         link.append("&jq_term4=");
         link.append(issn);
 
-        final String content = http.getWebcontent(link.toString(), TIMEOUT_2, RETRYS_2);
+        final String content = http.getWebcontent(link.toString(), Connect.TIMEOUT_2.getValue(),
+                Connect.RETRYS_2.getValue());
 
         final List<String> jourids = getJourids(content);
 
@@ -132,7 +131,8 @@ public class EZBXML {
 
                 final JournalDetails jd = new JournalDetails();
 
-                final String content = http.getWebcontent(link.toString() + jourid, TIMEOUT_1, RETRYS_1);
+                final String content = http.getWebcontent(link.toString() + jourid, Connect.TIMEOUT_1.getValue(),
+                        Connect.RETRYS_1.getValue());
 
                 if (content != null) {
 

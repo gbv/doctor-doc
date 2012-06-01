@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2012  Markus Fischer
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -15,37 +15,27 @@
 //
 //  Contact: info@doctor-doc.com
 
-package util;
+package enums;
 
-import java.util.concurrent.Callable;
+public enum Result {
 
-/**
- * Holt einen Webcontent in einem neuen Thread
- *
- * @author Markus Fischer
- */
-public class ThreadedWebcontent implements Callable<String> {
+    FAILURE("FAILURE", "failure"), SUCCESS("SUCCESS", "success"), ACTIVEMENUS("ACTIVEMENUS", "ActiveMenus"), ERRORMESSAGE(
+            "ERRORMESSAGE", "errormessage");
 
-    private String link;
+    private final String name;
+    private final String value;
 
-    public ThreadedWebcontent() {
+    private Result(final String name, final String value) {
+        this.name = name;
+        this.value = value;
     }
 
-    public ThreadedWebcontent(final String threadLink) {
-        this.link = threadLink;
+    public String getName() {
+        return name;
     }
 
-    public String call() {
-        final Http http = new Http();
-        return http.getWebcontent(link);
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(final String link) {
-        this.link = link;
+    public String getValue() {
+        return value;
     }
 
 }

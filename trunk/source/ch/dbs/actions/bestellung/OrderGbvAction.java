@@ -54,6 +54,8 @@ import ch.dbs.form.IllForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.Connect;
+import enums.Result;
 
 /**
  * Klasse um Metainformation wie PPN zu bestimmen und Bestellungen
@@ -64,13 +66,7 @@ import ch.dbs.form.UserInfo;
 public final class OrderGbvAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(OrderGbvAction.class);
-    private static final int TIMEOUT = 3000;
-    private static final int RETRYS = 2;
     private static final String BASEURL = "http://cbs4.gbv.de:8080/cgi-bin/vuefl/vuefl_recv_data.pl";
-    private static final String FAILURE = "failure";
-    private static final String SUCCESS = "success";
-    private static final String ACTIVEMENUS = "ActiveMenus";
-    private static final String ERRORMESSAGE = "errormessage";
 
     /**
      * löst eine Bestellung beim GBV aus.
@@ -78,7 +74,7 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward order(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         OrderForm of = (OrderForm) fm;
         final OrderState orderstate = new OrderState();
         final OrderAction orderAction = new OrderAction();
@@ -389,7 +385,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                         em.setError("error.gbvorder");
                                                         em.setError_specific(returnValue);
                                                         em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                        rq.setAttribute(ERRORMESSAGE, em);
+                                                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                                                         // Für die manuelle Bestellung
                                                         of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
                                                                 + ui.getKonto().getGbvbenutzername()
@@ -493,7 +489,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                     em.setError("error.gbvorder");
                                                     em.setError_specific(returnValue);
                                                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                    rq.setAttribute(ERRORMESSAGE, em);
+                                                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                                                     // Für die manuelle Bestellung
                                                     of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
                                                             + ui.getKonto().getGbvbenutzername()
@@ -658,7 +654,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                     em.setError("error.gbvorder");
                                                     em.setError_specific(returnValue);
                                                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                    rq.setAttribute(ERRORMESSAGE, em);
+                                                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                                                     // Für die manuelle Bestellung
                                                     of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
                                                             + ui.getKonto().getGbvbenutzername()
@@ -681,7 +677,7 @@ public final class OrderGbvAction extends DispatchAction {
                                     final ErrorMessage em = new ErrorMessage();
                                     em.setError("error.system");
                                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                    rq.setAttribute(ERRORMESSAGE, em);
+                                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                                     LOG.error("order: " + e.toString());
                                 }
 
@@ -689,19 +685,19 @@ public final class OrderGbvAction extends DispatchAction {
                                 of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                                 rq.setAttribute("orderform", of);
                                 final ErrorMessage em = new ErrorMessage("error.maxorder", "searchfree.do");
-                                rq.setAttribute(ERRORMESSAGE, em);
+                                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                             }
                         } else {
                             of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                             rq.setAttribute("orderform", of);
                             final ErrorMessage em = new ErrorMessage("error.maxorderyear", "searchfree.do");
-                            rq.setAttribute(ERRORMESSAGE, em);
+                            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         }
                     } else {
                         of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                         rq.setAttribute("orderform", of);
                         final ErrorMessage em = new ErrorMessage("error.inactive", "searchfree.do");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     }
 
                 } else { // GBV-Suche
@@ -711,9 +707,9 @@ public final class OrderGbvAction extends DispatchAction {
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
             of.setSubmit("GBV");
@@ -729,7 +725,7 @@ public final class OrderGbvAction extends DispatchAction {
 
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         } finally {
             t.close();
@@ -744,7 +740,7 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward search(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
         final Auth auth = new Auth();
 
@@ -813,19 +809,19 @@ public final class OrderGbvAction extends DispatchAction {
                 }
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("search: " + e.toString());
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         of.setSubmit("GBV");
@@ -833,7 +829,7 @@ public final class OrderGbvAction extends DispatchAction {
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         return mp.findForward(forward);
 
@@ -845,7 +841,7 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward validate(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
         final Auth auth = new Auth();
 
@@ -875,7 +871,7 @@ public final class OrderGbvAction extends DispatchAction {
                         }
 
                     } else {
-                        forward = SUCCESS;
+                        forward = Result.SUCCESS.getValue();
                     }
 
                 } else { // zur GBV-Suche
@@ -886,11 +882,11 @@ public final class OrderGbvAction extends DispatchAction {
                 rq.setAttribute("orderform", of);
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("validate: " + e.toString());
 
             } finally {
@@ -899,14 +895,14 @@ public final class OrderGbvAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         return mp.findForward(forward);
 
@@ -919,14 +915,14 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward changeMediatypeGbv(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) form;
         final Auth auth = new Auth();
 
         // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
             final Texttyp t = new Texttyp();
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
@@ -960,11 +956,11 @@ public final class OrderGbvAction extends DispatchAction {
                 rq.setAttribute("orderform", of);
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("changeMediaType: " + e.toString());
             } finally {
                 t.close();
@@ -972,14 +968,14 @@ public final class OrderGbvAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         return mp.findForward(forward);
     }
@@ -1623,7 +1619,8 @@ public final class OrderGbvAction extends DispatchAction {
                 + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encodeLatin1(gbvsearchterm)
                 + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
-        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link, TIMEOUT, RETRYS)));
+        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link,
+                Connect.TIMEOUT_3.getValue(), Connect.RETRYS_2.getValue())));
 
     }
 
@@ -1645,7 +1642,8 @@ public final class OrderGbvAction extends DispatchAction {
                 + gbvfield.toLowerCase() + "%3D" + codeUrl.encodeLatin1(gbvsearchterm)
                 + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
-        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link, TIMEOUT, RETRYS)));
+        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link,
+                Connect.TIMEOUT_3.getValue(), Connect.RETRYS_2.getValue())));
 
     }
 

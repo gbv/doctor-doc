@@ -80,19 +80,12 @@ import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import ch.ddl.daia.DaiaRequest;
+import enums.Connect;
+import enums.Result;
 
 public final class OrderAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(OrderAction.class);
-    private static final int TIMEOUT_2 = 2000;
-    private static final int TIMEOUT_1 = 1000;
-    private static final int RETRYS_3 = 3;
-    private static final int RETRYS_2 = 2;
-    private static final int RETRYS_1 = 1;
-    private static final String FAILURE = "failure";
-    private static final String SUCCESS = "success";
-    private static final String ACTIVEMENUS = "ActiveMenus";
-    private static final String ERRORMESSAGE = "errormessage";
 
     /**
      * Check if an article is freely available in the Internet.
@@ -107,7 +100,7 @@ public final class OrderAction extends DispatchAction {
         String linkGoogle = "";
         String linkGS = "";
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
         final CodeUrl codeUrl = new CodeUrl();
@@ -169,7 +162,8 @@ public final class OrderAction extends DispatchAction {
 
                             linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
 
-                            content = getWebcontent(linkGoogle, TIMEOUT_1, RETRYS_3);
+                            content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(),
+                                    Connect.RETRYS_3.getValue());
 
                             //      content = "<form action=\"Captcha\" method=\"get\">" +
                             //      "<input type=\"hidden\" name=\"id\" value=\"17179006839024668804\">" +
@@ -290,7 +284,7 @@ public final class OrderAction extends DispatchAction {
                                         + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
                             }
 
-                            content = getWebcontent(linkGS, TIMEOUT_1, RETRYS_3);
+                            content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.RETRYS_3.getValue());
 
                             // make sure Google Scholar does not respond with Captcha
                             if (!check.containsGoogleCaptcha(content)) {
@@ -388,7 +382,7 @@ public final class OrderAction extends DispatchAction {
 
                         linkGoogle = "http://www.google.ch/sorry/Captcha?continue=http://www.google.ch/search?hl=de&id="
                                 + pageForm.getCaptcha_id() + "&captcha=" + pageForm.getCaptcha_text();
-                        content = getWebcontent(linkGoogle, TIMEOUT_1, RETRYS_1);
+                        content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(), Connect.RETRYS_1.getValue());
 
                         if (!check.containsGoogleCaptcha(content)) {
                             // Important message
@@ -463,10 +457,10 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             forward = "error";
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         // failure wird leider nicht als globale Fehlermeldung verwendet.
@@ -525,7 +519,7 @@ public final class OrderAction extends DispatchAction {
         final String artikeltitelEnc = codeUrl.encodeLatin1(pageForm.getArtikeltitel());
 
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         boolean treffer = false;
         if (auth.isLogin(rq)) {
 
@@ -533,7 +527,7 @@ public final class OrderAction extends DispatchAction {
             if (pageForm.getPmid() == null || pageForm.getPmid().equals("")) {
                 if (!(pageForm.getIssn().length() == 0 && pageForm.getZeitschriftentitel().length() == 0 && !pageForm
                         .isAutocomplete())) { // exclude no input without autocomplete...
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                     try {
 
                         // autocomplete has been already done...
@@ -657,11 +651,11 @@ public final class OrderAction extends DispatchAction {
                         }
 
                     } catch (final Exception e) {
-                        forward = FAILURE;
+                        forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage();
                         em.setError("error.system");
                         em.setLink("searchfree.do?activemenu=suchenbestellen");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.error("issnAssistent: " + e.toString());
 
                     }
@@ -680,9 +674,9 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         if ((!treffer) && (pageForm.getIssn().length() == 0)) {
@@ -733,7 +727,7 @@ public final class OrderAction extends DispatchAction {
         final ThreadedWebcontent carelitthread = new ThreadedWebcontent();
         Future<String> carelitcontent = null;
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         String bibid = null;
         long daiaId = 0;
         long kid = 0;
@@ -974,9 +968,9 @@ public final class OrderAction extends DispatchAction {
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
             pageForm.setAutocomplete(false); // reset
@@ -1091,7 +1085,7 @@ public final class OrderAction extends DispatchAction {
         link = link + zeitschriftentitel_encoded;
 
         //      System.out.println("Suchstring ISSN Journalseek erster Versuch: " + link + "\012");
-        String content = getWebcontent(link, TIMEOUT_2, RETRYS_3);
+        String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
 
         //zweiter Versuch ueber Journalseek
         String zeitschriftentitelEncodedTrunkiert = correctArtikeltitIssnAssist(concurrentCopyZeitschriftentitel);
@@ -1105,7 +1099,7 @@ public final class OrderAction extends DispatchAction {
                     + zeitschriftentitelEncodedTrunkiert;
 
             //          System.out.println("Suchstring ISSN Journalseek zweiter Versuch: " + link + "\012");
-            content = getWebcontent(link, TIMEOUT_2, RETRYS_3);
+            content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
         }
 
         //Trefferauswertung
@@ -1291,14 +1285,14 @@ public final class OrderAction extends DispatchAction {
 
         boolean worldcat = false;
 
-        String content = getWebcontent(link, TIMEOUT_2, RETRYS_2);
+        String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
 
         // reload to detail page of first record
         if (content.contains("&referer=brief_results")) {
             // get and create link to detail page
             link = getWorldCatLinkDetailPage(content);
 
-            content = getWebcontent(link, TIMEOUT_2, RETRYS_2);
+            content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
 
             // get article details from Z39.88
             if (content.contains("url_ver=Z39.88")) {
@@ -1406,9 +1400,9 @@ public final class OrderAction extends DispatchAction {
         final OrderState orderstate = new OrderState();
         final Auth auth = new Auth();
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         if (auth.isLogin(rq)) {
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
 
             final Text cn = new Text();
 
@@ -1426,24 +1420,24 @@ public final class OrderAction extends DispatchAction {
                     rq.setAttribute("orderform", pageForm);
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                 } else {
-                    forward = FAILURE;
+                    forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage();
                     em.setError("error.hack");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     LOG.info("journalorderdetail: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
 
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("journalorderdetail: " + e.toString());
 
             } finally {
@@ -1452,9 +1446,9 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         return mp.findForward(forward);
     }
@@ -1465,7 +1459,7 @@ public final class OrderAction extends DispatchAction {
     public ActionForward prepareReorder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final OrderForm pageForm = (OrderForm) form;
         ErrorMessage em = new ErrorMessage();
         final Text cn = new Text();
@@ -1478,11 +1472,11 @@ public final class OrderAction extends DispatchAction {
                 final Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
                 // URL-hacking unterdrücken!
                 if (auth.isLegitimateOrder(rq, order)) {
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                     final OrderForm of = new OrderForm(order);
 
@@ -1495,19 +1489,19 @@ public final class OrderAction extends DispatchAction {
                     }
 
                 } else {
-                    forward = FAILURE;
+                    forward = Result.FAILURE.getValue();
                     em.setError("error.hack");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     LOG.info("prepareReorder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -1522,7 +1516,7 @@ public final class OrderAction extends DispatchAction {
 
         final OrderForm pageForm = (OrderForm) form;
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
 
@@ -1536,30 +1530,30 @@ public final class OrderAction extends DispatchAction {
 
             }
 
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
             try {
                 rq.setAttribute("orderform", pageForm);
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
 
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepareIssnSearch: " + e.toString());
             }
 
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         return mp.findForward(forward);
     }
@@ -1589,11 +1583,11 @@ public final class OrderAction extends DispatchAction {
         }
 
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         if ((t != null && t.getInhalt() != null) || (pageForm.getKkid() != null || pageForm.getBkid() != null)
                 || auth.isLogin(rq)) {
 
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
 
             try {
 
@@ -1679,7 +1673,7 @@ public final class OrderAction extends DispatchAction {
                     forward = "save";
                 }
                 // Umleitung bei Subito-Bestellung auf redirectsubito, da autom. Bestellung nicht mehr machbar
-                if (forward.equals(SUCCESS) && !pageForm.getSubmit().equals("GBV")) {
+                if (forward.equals(Result.SUCCESS.getValue()) && !pageForm.getSubmit().equals("GBV")) {
                     forward = "redirectsubito";
                     pageForm.setLink("http://www.subito-doc.de/order/po.php?BI=CH_SO%2FDRDOC&VOL="
                             + pageForm.getJahrgang() + "/" + pageForm.getHeft() + "&APY=" + pageForm.getJahr() + "&PG="
@@ -1702,12 +1696,12 @@ public final class OrderAction extends DispatchAction {
                 rq.setAttribute("orderform", pageForm);
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
 
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepare: " + e.toString());
 
             } finally {
@@ -1717,14 +1711,14 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         return mp.findForward(forward);
     }
@@ -1744,9 +1738,9 @@ public final class OrderAction extends DispatchAction {
             rq.setAttribute("ofjo", null);
         }
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         if (auth.isLogin(rq)) {
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final Texttyp tty = new Texttyp();
@@ -1806,12 +1800,12 @@ public final class OrderAction extends DispatchAction {
                 rq.setAttribute("orderform", pageForm);
 
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
 
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepareJournalSave: " + e.toString());
             } finally {
                 cn.close();
@@ -1819,14 +1813,14 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         return mp.findForward(forward);
     }
@@ -1841,7 +1835,7 @@ public final class OrderAction extends DispatchAction {
         final Lieferanten supplier = new Lieferanten();
         final OrderState orderstate = new OrderState();
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
 
@@ -1850,7 +1844,7 @@ public final class OrderAction extends DispatchAction {
             // Post-Methode um vor dem Abspeichern einer Bestellung einen neuen Kunden anzulegen
                     && !pageForm.getSubmit().equals("Ajouter un nouveau client")) {
 
-                forward = SUCCESS;
+                forward = Result.SUCCESS.getValue();
 
                 final Text cn = new Text();
 
@@ -1986,12 +1980,12 @@ public final class OrderAction extends DispatchAction {
                     rq.setAttribute("orderform", pageForm);
 
                 } catch (final Exception e) {
-                    forward = FAILURE;
+                    forward = Result.FAILURE.getValue();
 
                     final ErrorMessage em = new ErrorMessage();
                     em.setError("error.save");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     LOG.error("saveOrder: " + e.toString());
 
                 } finally {
@@ -2007,9 +2001,9 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         return mp.findForward(forward);
     }
@@ -2022,10 +2016,10 @@ public final class OrderAction extends DispatchAction {
 
         OrderForm pageForm = (OrderForm) form;
         // Make sure method is only accessible when user is logged in
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
 
             final Text cn = new Text();
 
@@ -2069,10 +2063,10 @@ public final class OrderAction extends DispatchAction {
 
                     if (b.checkAnonymize(b)) {
 
-                        forward = FAILURE;
+                        forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage("error.anonymised",
                                 "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     }
 
@@ -2080,10 +2074,10 @@ public final class OrderAction extends DispatchAction {
                     // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
                             && !b.getKonto().getId().equals(ui.getKonto().getId())) {
                         System.out.println("URL-hacking... ;-)");
-                        forward = FAILURE;
+                        forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage("error.hack",
                                 "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
@@ -2092,29 +2086,29 @@ public final class OrderAction extends DispatchAction {
                             && !b.getBenutzer().getId().equals(ui.getBenutzer().getId())) {
                         // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
                         System.out.println("URL-hacking... ;-)");
-                        forward = FAILURE;
+                        forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage("error.hack",
                                 "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
 
                 } else {
-                    forward = FAILURE;
+                    forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage("error.hack",
                             "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
 
                 }
             } catch (final Exception e) {
-                forward = FAILURE;
+                forward = Result.FAILURE.getValue();
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepareModifyOrder: " + e.toString());
 
             } finally {
@@ -2123,9 +2117,9 @@ public final class OrderAction extends DispatchAction {
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         return mp.findForward(forward);
     }
@@ -2137,7 +2131,7 @@ public final class OrderAction extends DispatchAction {
             final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) form;
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
 
         try {
@@ -2157,24 +2151,24 @@ public final class OrderAction extends DispatchAction {
 
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.hack",
                             "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                     LOG.info("prepareDeleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -2191,7 +2185,7 @@ public final class OrderAction extends DispatchAction {
             final HttpServletResponse rp) {
 
         final OrderForm pageForm = (OrderForm) form;
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
 
         try {
@@ -2205,10 +2199,10 @@ public final class OrderAction extends DispatchAction {
                         (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
 
                     if (b.deleteOrder(b, cn.getConnection())) {
-                        forward = SUCCESS;
+                        forward = Result.SUCCESS.getValue();
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("uebersicht");
-                        rq.setAttribute(ACTIVEMENUS, mf);
+                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                         final Message m = new Message("message.deleteorder");
                         m.setLink("listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute("message", m);
@@ -2216,26 +2210,26 @@ public final class OrderAction extends DispatchAction {
                         final ErrorMessage em = new ErrorMessage();
                         em.setError("error.system");
                         em.setLink("searchfree.do?activemenu=suchenbestellen");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.error("deleteOrder: couldn't delete order");
                     }
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.hack",
                             "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                     LOG.info("deleteOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {

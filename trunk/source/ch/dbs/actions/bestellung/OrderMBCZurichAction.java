@@ -31,18 +31,15 @@ import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Prepares a POST method to order over SFX at UB Basel.
  */
 public class OrderMBCZurichAction extends DispatchAction {
 
-    private static final String ACTIVEMENUS = "ActiveMenus";
-    private static final String ERRORMESSAGE = "errormessage";
-
-
-    public ActionForward execute(final ActionMapping mp, final ActionForm form,
-            final HttpServletRequest rq, final HttpServletResponse rp) {
+    public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
 
         final Auth auth = new Auth();
         String forward = "failure";
@@ -101,15 +98,15 @@ public class OrderMBCZurichAction extends DispatchAction {
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);

@@ -56,6 +56,7 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * BestellformAction prüft ip-basierte Zugriffe und erlaubt Kundenbestellungen innerhalb einer Institution z.Hd. der
@@ -70,10 +71,6 @@ public final class BestellformAction extends DispatchAction {
     private static final long KKID = 12;
     private static final long IP = 9;
     private static final long LOGGED_IN = 13;
-    private static final String FAILURE = "failure";
-    private static final String SUCCESS = "success";
-    private static final String ACTIVEMENUS = "ActiveMenus";
-    private static final String ERRORMESSAGE = "errormessage";
 
     /**
      * Prüft IP und ordnet den Request der betreffenden Bibliothek zu, ergänzt Angaben anhand PMID und DOI
@@ -84,7 +81,7 @@ public final class BestellformAction extends DispatchAction {
         Text t = new Text();
         final Text cn = new Text();
         final Auth auth = new Auth();
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
         final Countries country = new Countries();
@@ -109,7 +106,7 @@ public final class BestellformAction extends DispatchAction {
             // Not logged in: IP-based, Kontokennung or Brokerkennung
             if (((t != null && t.getInhalt() != null) || (of.getKkid() != null || of.getBkid() != null))
                     && !auth.isLogin(rq)) {
-                forward = SUCCESS;
+                forward = Result.SUCCESS.getValue();
 
                 final String kkid = of.getKkid(); // separate variables to avoid that kkid gets overwritten in resolvePmid
                 final String bkid = of.getBkid();
@@ -151,12 +148,12 @@ public final class BestellformAction extends DispatchAction {
                             of.setBibliothek(t.getKonto().getBibliotheksname());
                             of.setKkid(kkid);
                         } else { // invalid kkid
-                            forward = FAILURE;
+                            forward = Result.FAILURE.getValue();
                             final ErrorMessage em = new ErrorMessage("error.kkid", "login.do");
-                            rq.setAttribute(ERRORMESSAGE, em);
+                            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("bestellform");
-                            rq.setAttribute(ACTIVEMENUS, mf);
+                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                         }
                     }
                     if (bkid != null) { // Brokerkennung
@@ -168,12 +165,12 @@ public final class BestellformAction extends DispatchAction {
                                 of.setBkid(bkid);
                             }
                         } else { // invalid bkid
-                            forward = FAILURE;
+                            forward = Result.FAILURE.getValue();
                             final ErrorMessage em = new ErrorMessage("error.bkid", "login.do");
-                            rq.setAttribute(ERRORMESSAGE, em);
+                            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("bestellform");
-                            rq.setAttribute(ACTIVEMENUS, mf);
+                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                         }
                     }
                 }
@@ -240,7 +237,7 @@ public final class BestellformAction extends DispatchAction {
 
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                 // URL-encode contents of OrderForm for get-methode in PrepareLogin
                 of = of.encodeOrderForm(of);
@@ -252,7 +249,7 @@ public final class BestellformAction extends DispatchAction {
                 // Case User is logged in
                 if (auth.isLogin(rq)) {
 
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
                     if (of.getMediatype() == null || // default orderform 'Artikel'
@@ -339,14 +336,14 @@ public final class BestellformAction extends DispatchAction {
 
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("bestellform");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 }
 
             }
@@ -354,12 +351,12 @@ public final class BestellformAction extends DispatchAction {
             // if this Bestellform is deactivated show an error message
             if (bp.isDeactivated()) {
                 final ErrorMessage em = new ErrorMessage("error.deactivated", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 //                cn.close(); // using finally for direct return => close
-                return mp.findForward(FAILURE);
+                return mp.findForward(Result.FAILURE.getValue());
             }
 
             // redirect to external order form
@@ -390,7 +387,7 @@ public final class BestellformAction extends DispatchAction {
         Text t = new Text();
         final Text cn = new Text();
         final Auth auth = new Auth();
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
         final Countries country = new Countries();
@@ -535,7 +532,7 @@ public final class BestellformAction extends DispatchAction {
                             orderstate.setNewOrderState(b, k, state, null, u.getEmail(), cn.getConnection());
                         }
 
-                        forward = SUCCESS;
+                        forward = Result.SUCCESS.getValue();
 
                         // set current date
                         final Date d = new Date();
@@ -939,9 +936,9 @@ public final class BestellformAction extends DispatchAction {
                     }
 
                 } catch (final Exception e) {
-                    forward = FAILURE;
+                    forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage("error.send", "login.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     // Severe error
                     final MHelper mh = new MHelper();
                     mh.sendErrorMail(e.toString(), "Order form - Error sending an order");
@@ -950,19 +947,19 @@ public final class BestellformAction extends DispatchAction {
                 if (auth.isLogin(rq)) {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("bestellform");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 }
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             }
 
         } finally {
@@ -978,7 +975,7 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward prepareConfigure(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Text ip = new Text();
@@ -989,11 +986,11 @@ public final class BestellformAction extends DispatchAction {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
                 try {
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("konto");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                     final boolean hasIP = cn.hasIP(cn.getConnection(), ui.getKonto());
 
@@ -1043,17 +1040,17 @@ public final class BestellformAction extends DispatchAction {
             } else { // keine Berechtigung
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("suchenbestellen");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.berechtigung",
                         "searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else { // nicht eingeloggt
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -1065,7 +1062,7 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward modify(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Auth auth = new Auth();
@@ -1079,11 +1076,11 @@ public final class BestellformAction extends DispatchAction {
                     if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
 
                         try {
-                            forward = SUCCESS;
+                            forward = Result.SUCCESS.getValue();
 
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("konto");
-                            rq.setAttribute(ACTIVEMENUS, mf);
+                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                             BestellParam custom = new BestellParam();
                             custom.setKid(ui.getKonto().getId());
@@ -1128,26 +1125,26 @@ public final class BestellformAction extends DispatchAction {
                     } else { // URL-hacking
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("suchenbestellen");
-                        rq.setAttribute(ACTIVEMENUS, mf);
+                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                         final ErrorMessage em = new ErrorMessage("error.hack",
                                 "searchfree.do?activemenu=suchenbestellen");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.info("modify: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
                 } else { // keine Berechtigung
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung",
                             "searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else { // nicht eingeloggt
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -1163,7 +1160,7 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward save(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Auth auth = new Auth();
@@ -1178,11 +1175,11 @@ public final class BestellformAction extends DispatchAction {
                     if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
 
                         try {
-                            forward = SUCCESS;
+                            forward = Result.SUCCESS.getValue();
 
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("konto");
-                            rq.setAttribute(ACTIVEMENUS, mf);
+                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                             bp = checkBPLogic(bp); // logische Prüfungen und setzt abhängige Werte
 
@@ -1227,7 +1224,7 @@ public final class BestellformAction extends DispatchAction {
                                 rq.setAttribute("bestellparam", bp);
 
                             } else { // Fehlermeldung vorhanden
-                                forward = SUCCESS; // auf bestellformconfigure
+                                forward = Result.SUCCESS.getValue(); // auf bestellformconfigure
                                 rq.setAttribute("message", bp.getMessage());
                                 rq.setAttribute("bestellform", bp);
                             }
@@ -1241,26 +1238,26 @@ public final class BestellformAction extends DispatchAction {
                     } else { // URL-hacking
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("suchenbestellen");
-                        rq.setAttribute(ACTIVEMENUS, mf);
+                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                         final ErrorMessage em = new ErrorMessage("error.hack",
                                 "searchfree.do?activemenu=suchenbestellen");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.info("save: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
                 } else { // keine Berechtigung
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung",
                             "searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else { // nicht eingeloggt
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {

@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2012  Markus Fischer
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -15,37 +15,29 @@
 //
 //  Contact: info@doctor-doc.com
 
-package util;
+package enums;
 
-import java.util.concurrent.Callable;
+public enum Connect {
 
-/**
- * Holt einen Webcontent in einem neuen Thread
- *
- * @author Markus Fischer
- */
-public class ThreadedWebcontent implements Callable<String> {
+    TIMEOUT_1("TIMEOUT_1", 1000), TIMEOUT_2("TIMEOUT_2", 2000), TIMEOUT_3("TIMEOUT_3", 3000), TIMEOUT_4("TIMEOUT_4",
+            4000), TIMEOUT_5("TIMEOUT_5", 5000), TIMEOUT_6("TIMEOUT_6", 6000), TIMEOUT_7("TIMEOUT_7", 7000), TIMEOUT_8(
+            "TIMEOUT_8", 8000), TIMEOUT_9("TIMEOUT_9", 9000), RETRYS_1("RETRYS_1", 1), RETRYS_2("RETRYS_2", 2), RETRYS_3(
+            "RETRYS_3", 3);
 
-    private String link;
+    private final String name;
+    private final int value;
 
-    public ThreadedWebcontent() {
+    private Connect(final String name, final int value) {
+        this.name = name;
+        this.value = value;
     }
 
-    public ThreadedWebcontent(final String threadLink) {
-        this.link = threadLink;
+    public String getName() {
+        return name;
     }
 
-    public String call() {
-        final Http http = new Http();
-        return http.getWebcontent(link);
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(final String link) {
-        this.link = link;
+    public int getValue() {
+        return value;
     }
 
 }

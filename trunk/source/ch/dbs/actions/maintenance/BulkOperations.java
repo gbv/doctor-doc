@@ -32,13 +32,12 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.MaintenanceForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * List the possible options for the maintenance of a given account.
  */
 public class BulkOperations extends DispatchAction {
-
-    private static final String ACTIVEMENUS = "ActiveMenus";
 
     public ActionForward deleteorders(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -89,7 +88,7 @@ public class BulkOperations extends DispatchAction {
                 // navigation: set 'account/konto' tab as active
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("konto");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
@@ -157,7 +156,7 @@ public class BulkOperations extends DispatchAction {
                 // navigation: set 'account/konto' tab as active
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("konto");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");

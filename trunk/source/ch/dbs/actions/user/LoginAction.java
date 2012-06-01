@@ -42,6 +42,7 @@ import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.login.Gtc;
+import enums.Result;
 
 /**
  * LoginAction checkt die eingegebenen Logininformationen auf ihre Gültigkeit
@@ -53,7 +54,6 @@ import ch.dbs.login.Gtc;
 public final class LoginAction extends Action {
 
     private static final SimpleLogger LOG = new SimpleLogger(LoginAction.class);
-    private static final String SUCCESS = "success";
 
     public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -85,7 +85,7 @@ public final class LoginAction extends Action {
                 if (ReadSystemConfigurations.isGTC() && (u.getGtc() == null || !u.getGtc().equals(t.getInhalt()))) {
                     forward = "gtc"; // falls ein User die GTC noch nicht akzeptiert hat
                 } else {
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                 }
 
                 // Veraenderter Benutzer wieder in UserInfo und Session speichern.
@@ -99,14 +99,14 @@ public final class LoginAction extends Action {
                 rq.getSession().setAttribute("userinfo", uil.get(0)); // userinfo in Session schreiben
 
                 if (auth.isAdmin(rq)) {
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                 } // Admin braucht keine GTC-Prüfung
 
                 // Check ob sich der Benutzer an mehr als an 1 Konto anmelden kann und Werte in UserInfo schreiben
                 if (!"gtc".equals(forward)) {
                     if (uil.get(0).getKontos().size() == 1) {
                         uil.get(0).setKonto(uil.get(0).getKontos().get(0));
-                        forward = SUCCESS;
+                        forward = Result.SUCCESS.getValue();
                     } else { // Sind mehr als ein Konto im UserInfo, muss das Konto vom Benutzer ausgewählt werden
                         forward = "konto";
                     }
@@ -140,11 +140,11 @@ public final class LoginAction extends Action {
                 // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
                 rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
                 // Die Bestellberechtigung wird in der Methode prepare geprüft!
-                if (forward.equals(SUCCESS) && auth.isBenutzer(rq)) {
+                if (forward.equals(Result.SUCCESS.getValue()) && auth.isBenutzer(rq)) {
                     forward = "order";
                 }
                 // Bibliothekar oder Admin auf Checkavailability
-                if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                if (forward.equals(Result.SUCCESS.getValue()) && !auth.isBenutzer(rq)) {
                     forward = "checkavailability";
                 }
             }
@@ -153,7 +153,7 @@ public final class LoginAction extends Action {
                 final UserForm uf = new UserForm(lf);
                 rq.setAttribute("userform", uf);
                 // Bibliothekar oder Admin auf Checkavailability
-                if (forward.equals(SUCCESS) && !auth.isBenutzer(rq)) {
+                if (forward.equals(Result.SUCCESS.getValue()) && !auth.isBenutzer(rq)) {
                     forward = "adduser";
                 }
             }

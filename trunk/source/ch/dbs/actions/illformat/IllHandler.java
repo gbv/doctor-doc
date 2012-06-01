@@ -38,12 +38,11 @@ import ch.dbs.entity.Text;
 import ch.dbs.form.IllForm;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.Connect;
 
 public class IllHandler {
 
     private static final SimpleLogger LOG = new SimpleLogger(IllHandler.class);
-    private static final int TIMEOUT = 8000;
-    private static final int RETRY = 1;
 
     /**
      * Stellt einen ILL-Request zusammen
@@ -305,7 +304,7 @@ public class IllHandler {
         //... bei Subito gibt es noch tonnenweise zusätzlicher Parameter
         // sollte aber kombinierbar sein. GBV wertet einfach nicht alle Parameter aus
 
-        content = http.getWebcontent(method, TIMEOUT, RETRY); // nur einmal abschicken!!!
+        content = http.getWebcontent(method, Connect.TIMEOUT_8.getValue(), Connect.RETRYS_1.getValue()); // nur einmal abschicken!!!
 
         return content;
 

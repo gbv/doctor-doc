@@ -27,12 +27,11 @@ import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.form.OrderForm;
+import enums.Connect;
 
 public class Pubmed {
 
     private static final SimpleLogger LOG = new SimpleLogger(Pubmed.class);
-    private static final int TIMEOUT = 2000;
-    private static final int RETRYS = 2;
 
     /**
      * Extracts the PMID out of a string.
@@ -67,7 +66,7 @@ public class Pubmed {
         String content = "";
 
         try {
-            content = http.getWebcontent(link, TIMEOUT, RETRYS);
+            content = http.getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
             final ContextObject co = openurl.readXmlPubmed(content);
             of = openurlConv.makeOrderform(co);
         } catch (final Exception e) {
@@ -90,7 +89,8 @@ public class Pubmed {
 
         try {
 
-            final String content = http.getWebcontent(composePubmedlinkToPmid(of), TIMEOUT, RETRYS);
+            final String content = http.getWebcontent(composePubmedlinkToPmid(of), Connect.TIMEOUT_2.getValue(),
+                    Connect.RETRYS_2.getValue());
 
             if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
                 pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));

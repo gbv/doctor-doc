@@ -58,6 +58,7 @@ import ch.dbs.form.LoginForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 public final class KontoAction extends DispatchAction {
 
@@ -65,11 +66,7 @@ public final class KontoAction extends DispatchAction {
     // This link is used to check if, the GBV credentials are valid
     private static final String GBV_LINK = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=";
     private static final String GBV_REDIRECT = "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2FCOPY%3FPPN%3D185280552%26LANGCODE%3DDU";
-    private static final String FAILURE = "failure";
-    private static final String SUCCESS = "success";
-    private static final String ACTIVEMENUS = "ActiveMenus";
     private static final String TIMEZONES = "timezones";
-    private static final String ERRORMESSAGE = "errormessage";
 
     /**
      * Hinzufügen eines neuen Benutzers vorbereiten
@@ -77,7 +74,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward prepareNewKonto(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
 
         try {
@@ -91,13 +88,13 @@ public final class KontoAction extends DispatchAction {
 
             final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
-            forward = SUCCESS;
+            forward = Result.SUCCESS.getValue();
             rq.setAttribute("kontoform", kf);
 
             //Navigation: Tab Neues Konto aktiv schalten
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("newkonto");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         } finally {
             cn.close();
@@ -114,9 +111,9 @@ public final class KontoAction extends DispatchAction {
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("newkonto");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
-        String forward = SUCCESS;
+        String forward = Result.SUCCESS.getValue();
         final KontoForm kf = (KontoForm) fm;
         final Konto k = new Konto(kf); //Konto erstellen und mit Values aus KontoForm abfuellen
         final Check check = new Check();
@@ -245,7 +242,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward addNewBibliothekar(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Check check = new Check();
         final Bibliothekar u = new Bibliothekar();
         final UserForm uf = (UserForm) fm;
@@ -254,7 +251,7 @@ public final class KontoAction extends DispatchAction {
 
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("newkonto");
-        rq.setAttribute(ACTIVEMENUS, mf);
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         try {
 
@@ -462,7 +459,7 @@ public final class KontoAction extends DispatchAction {
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.values");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     forward = "userfailed";
                     rq.setAttribute("kontoform", kf);
                     rq.setAttribute("userform", uf);
@@ -471,7 +468,7 @@ public final class KontoAction extends DispatchAction {
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung");
                 em.setLink("anmeldungkonto.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -487,7 +484,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward prepareModifyKonto(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
 
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final KontoForm kf = (KontoForm) fm;
@@ -507,7 +504,7 @@ public final class KontoAction extends DispatchAction {
 
                     final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
 
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                     if (auth.isAdmin(rq)) {
                         kf.setFaxusername(k.getFaxusername());
@@ -604,11 +601,11 @@ public final class KontoAction extends DispatchAction {
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
             final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
@@ -629,7 +626,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward modifyKonto(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
 
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final KontoForm kf = (KontoForm) fm;
@@ -718,7 +715,7 @@ public final class KontoAction extends DispatchAction {
 
                             if (checkgbv) {
 
-                                forward = SUCCESS;
+                                forward = Result.SUCCESS.getValue();
 
                                 final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
 
@@ -853,11 +850,11 @@ public final class KontoAction extends DispatchAction {
 
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
             rq.setAttribute("kontoform", kf);
@@ -875,7 +872,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward listKontos(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         if (auth.isLogin(rq)) {
@@ -889,9 +886,9 @@ public final class KontoAction extends DispatchAction {
                     rq.setAttribute("kontoform", kf);
                     if (kf.getKontos() == null) {
                         final ErrorMessage em = new ErrorMessage("error.missingaccounts", "searchfree.do");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     } else {
-                        forward = SUCCESS;
+                        forward = Result.SUCCESS.getValue();
                     }
                 } finally {
                     k.close();
@@ -899,11 +896,11 @@ public final class KontoAction extends DispatchAction {
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -916,7 +913,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward changeKontoTyp(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -934,23 +931,23 @@ public final class KontoAction extends DispatchAction {
                     final Message em = new Message("message.changekontotyp", k.getBibliotheksname(),
                             "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                 } catch (final Exception e) {
                     LOG.error("changeKonto" + e.toString());
                     final ErrorMessage em = new ErrorMessage("error.changetype", e.getMessage(),
                             "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } finally {
                     cn.close();
                 }
 
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -962,7 +959,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward changeKontoState(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -977,23 +974,23 @@ public final class KontoAction extends DispatchAction {
                     final Message em = new Message("message.changekontostatus", k.getBibliotheksname(),
                             "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                 } catch (final Exception e) {
                     LOG.error("changeKontoState: " + e.toString());
                     final ErrorMessage em = new ErrorMessage("error.changestate", e.getMessage(),
                             "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } finally {
                     cn.close();
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -1005,7 +1002,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward setExpDate(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -1020,23 +1017,23 @@ public final class KontoAction extends DispatchAction {
                     final Message em = new Message("message.changeexpdate", k.getBibliotheksname(),
                             "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                 } catch (final Exception e) {
                     LOG.error("setExpdate: " + e.toString());
                     final ErrorMessage em = new ErrorMessage("error.timeperiode", e.getMessage(),
                             "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } finally {
                     cn.close();
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -1048,7 +1045,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward setExpDateServer(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -1063,23 +1060,23 @@ public final class KontoAction extends DispatchAction {
                     final Message em = new Message("message.changeexpdatefax", k.getBibliotheksname(),
                             "kontoadmin.do?method=listKontos");
                     rq.setAttribute("message", em);
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                 } catch (final Exception e) {
                     LOG.error("setExpDate: " + e.toString());
                     final ErrorMessage em = new ErrorMessage("error.timeperiodefax", e.getMessage(),
                             "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } finally {
                     cn.close();
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ErrorMessage em = new ErrorMessage("error.timeout", "searchfree.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -1091,7 +1088,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward prepareBillingText(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
 
@@ -1110,19 +1107,19 @@ public final class KontoAction extends DispatchAction {
 
                     rq.setAttribute("billingform", bf);
 
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                 } catch (final Exception e) {
                     LOG.error("prepareBilling: " + e.toString());
                     final ErrorMessage em = new ErrorMessage("error.preparebilling", e.getMessage(),
                             "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } finally {
                     cn.close();
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         }
 
@@ -1135,7 +1132,7 @@ public final class KontoAction extends DispatchAction {
     public ActionForward sendBill(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
         // Benutzer eingeloggt?
@@ -1164,26 +1161,26 @@ public final class KontoAction extends DispatchAction {
                             + bf.getBillingtext(), "listbillings.do?method=listBillings&kid=" + k.getId());
                     rq.setAttribute("message", m);
 
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
 
                 } catch (final Exception e) {
                     LOG.error("sendBilling: " + e.toString());
                     final ErrorMessage em = new ErrorMessage("error.sendbilling", e.getMessage(),
                             "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 } finally {
                     cn.close();
                 }
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);

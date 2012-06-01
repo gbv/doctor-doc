@@ -24,12 +24,11 @@ import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.form.OrderForm;
+import enums.Connect;
 
 public class DOI {
 
     private static final SimpleLogger LOG = new SimpleLogger(DOI.class);
-    private static final int TIMEOUT = 2000;
-    private static final int RETRYS = 2;
 
     /**
      * Extracts the DOI out of a string.
@@ -75,7 +74,7 @@ public class DOI {
 
         try {
 
-            content = http.getWebcontent(link, TIMEOUT, RETRYS);
+            content = http.getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
 
             content = content.replaceAll("&amp;amp;", "&amp;"); // falsche Doppelkodierung korrigieren...
 
@@ -112,7 +111,7 @@ public class DOI {
         final Http http = new Http();
         final String link = "http://www.crossref.org/guestquery?queryType=doi&restype=xsl_xml&doi=" + doi;
 
-        content = http.getWebcontent(link, TIMEOUT, 1);
+        content = http.getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_1.getValue());
 
         of = openurl.readXMLCrossRef(content);
 

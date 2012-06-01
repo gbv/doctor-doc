@@ -28,13 +28,12 @@ import org.apache.struts.actions.DispatchAction;
 import util.Auth;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
+import enums.Result;
 
 /**
  * List the possible options for the maintenance of a given account.
  */
 public class ListOptions extends DispatchAction {
-
-    private static final String ACTIVEMENUS = "ActiveMenus";
 
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -52,7 +51,7 @@ public class ListOptions extends DispatchAction {
                 // navigation: set 'account/konto' tab as active
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("konto");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");

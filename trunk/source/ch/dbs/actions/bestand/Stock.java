@@ -52,6 +52,7 @@ import ch.dbs.form.HoldingForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Class to manage holdings information. Import / Export functions.
@@ -68,38 +69,33 @@ public class Stock extends DispatchAction {
     //Delimiter for Tab delimited txt-Export (Excel can't read UTF-8 in CSV...)
     private static final char DELIMITER_TXT = '\t';
 
-    private static final String FAILURE = "failure";
-    private static final String SUCCESS = "success";
-    private static final String ACTIVEMENUS = "ActiveMenus";
-    private static final String ERRORMESSAGE = "errormessage";
-
     /**
      * Access control for the holdings export page.
      */
     public ActionForward prepareExport(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
 
         // Access control
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                forward = SUCCESS;
+                forward = Result.SUCCESS.getValue();
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("login");
-            rq.setAttribute(ACTIVEMENUS, mf);
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(ERRORMESSAGE, em);
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
 
         return mp.findForward(forward);
@@ -111,7 +107,7 @@ public class Stock extends DispatchAction {
     public ActionForward prepareImport(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text t = new Text();
         final Texttyp ty = new Texttyp();
         ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
@@ -121,7 +117,7 @@ public class Stock extends DispatchAction {
             // Access control
             if (auth.isLogin(rq)) {
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                     final HoldingForm hf = (HoldingForm) fm;
 
@@ -132,16 +128,16 @@ public class Stock extends DispatchAction {
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("login");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -158,7 +154,7 @@ public class Stock extends DispatchAction {
             final HttpServletResponse rp) {
 
         // Prepare classes
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final Check ck = new Check();
         final Text cn = new Text();
@@ -235,7 +231,7 @@ public class Stock extends DispatchAction {
 
                                                 // TODO: check DAIA-ID
 
-                                                forward = SUCCESS;
+                                                forward = Result.SUCCESS.getValue();
 
                                                 final Message msg = new Message("import.success", successMessage,
                                                         "allstock.do?method=prepareExport&activemenu=stock");
@@ -246,7 +242,7 @@ public class Stock extends DispatchAction {
                                                 forward = "importError";
                                                 final ActiveMenusForm mf = new ActiveMenusForm();
                                                 mf.setActivemenu("stock");
-                                                rq.setAttribute(ACTIVEMENUS, mf);
+                                                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                                                 rq.setAttribute("messageList", messageList);
                                                 final Message em = new Message("error.import.heading",
                                                         "stock.do?method=prepareImport&activemenu=stock");
@@ -256,7 +252,7 @@ public class Stock extends DispatchAction {
                                             forward = "importError";
                                             final ActiveMenusForm mf = new ActiveMenusForm();
                                             mf.setActivemenu("stock");
-                                            rq.setAttribute(ACTIVEMENUS, mf);
+                                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                                             rq.setAttribute("messageList", messageList);
                                             final Message em = new Message("error.import.heading",
                                                     "stock.do?method=prepareImport&activemenu=stock");
@@ -266,7 +262,7 @@ public class Stock extends DispatchAction {
                                         forward = "importError";
                                         final ActiveMenusForm mf = new ActiveMenusForm();
                                         mf.setActivemenu("stock");
-                                        rq.setAttribute(ACTIVEMENUS, mf);
+                                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                                         rq.setAttribute("messageList", messageList);
                                         final Message em = new Message("error.import.heading",
                                                 "stock.do?method=prepareImport&activemenu=stock");
@@ -276,7 +272,7 @@ public class Stock extends DispatchAction {
                                     forward = "importError";
                                     final ActiveMenusForm mf = new ActiveMenusForm();
                                     mf.setActivemenu("stock");
-                                    rq.setAttribute(ACTIVEMENUS, mf);
+                                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                                     rq.setAttribute("messageList", messageList);
                                     final Message em = new Message("error.import.heading",
                                             "stock.do?method=prepareImport&activemenu=stock");
@@ -285,40 +281,40 @@ public class Stock extends DispatchAction {
                             } else { // Filesize limit
                                 final ActiveMenusForm mf = new ActiveMenusForm();
                                 mf.setActivemenu("stock");
-                                rq.setAttribute(ACTIVEMENUS, mf);
+                                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                                 final ErrorMessage em = new ErrorMessage("error.filesize",
                                         "stock.do?method=prepareImport&activemenu=stock");
-                                rq.setAttribute(ERRORMESSAGE, em);
+                                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                             }
                         } else { // Filetype error
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("stock");
-                            rq.setAttribute(ACTIVEMENUS, mf);
+                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                             final ErrorMessage em = new ErrorMessage("error.filetype",
                                     "stock.do?method=prepareImport&activemenu=stock");
-                            rq.setAttribute(ERRORMESSAGE, em);
+                            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         }
                     } else { // Did not accept conditions
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("stock");
-                        rq.setAttribute(ACTIVEMENUS, mf);
+                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                         final ErrorMessage em = new ErrorMessage("error.import.condition",
                                 "stock.do?method=prepareImport&activemenu=stock");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     }
                 } else { // User is not allowed to access this function
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("login");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else { // Timeout
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -334,7 +330,7 @@ public class Stock extends DispatchAction {
     public ActionForward listStockplaces(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text t = new Text();
         final Texttyp ty = new Texttyp();
         ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
@@ -344,7 +340,7 @@ public class Stock extends DispatchAction {
             // Access control
             if (auth.isLogin(rq)) {
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                    forward = SUCCESS;
+                    forward = Result.SUCCESS.getValue();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                     final HoldingForm hf = (HoldingForm) fm;
 
@@ -359,16 +355,16 @@ public class Stock extends DispatchAction {
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("login");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {
@@ -384,7 +380,7 @@ public class Stock extends DispatchAction {
     public ActionForward changeStockplace(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        String forward = FAILURE;
+        String forward = Result.FAILURE.getValue();
         final Text t = new Text();
         final Texttyp ty = new Texttyp();
         ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
@@ -400,7 +396,7 @@ public class Stock extends DispatchAction {
                     // Make sure the Text() and the location belongs to the given account
                     final Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), ty.getId());
                     if (txt.getId() != null) {
-                        forward = SUCCESS;
+                        forward = Result.SUCCESS.getValue();
 
                         if (!hf.isMod() && !hf.isDel()) { // Prepares for changing a location
                             hf.setMod(true); // flags a location to be changed for the JSP
@@ -432,23 +428,23 @@ public class Stock extends DispatchAction {
 
                     } else { // URL-hacking
                         final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-                        rq.setAttribute(ERRORMESSAGE, em);
+                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.info("changeStandort: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("login");
-                    rq.setAttribute(ACTIVEMENUS, mf);
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                    rq.setAttribute(ERRORMESSAGE, em);
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("login");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(ERRORMESSAGE, em);
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
 
         } finally {

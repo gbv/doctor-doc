@@ -33,12 +33,12 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.grlea.log.SimpleLogger;
 
+import enums.Connect;
+
 public class Http {
 
     private static final SimpleLogger LOG = new SimpleLogger(Http.class);
 
-    private static final int TIMEOUT = 2000; //Timeout in ms
-    private static final int RETRYS = 3; // Anzahl versuche zum Website auslesen
     private static final String LOC = "location";
 
     /**
@@ -47,7 +47,7 @@ public class Http {
      * @return Website als String mit fixem nicht einstellbarem timeout sowie mit 3 versuchen bei Fehler
      */
     public String getWebcontent(final String link) {
-        return getWebcontent(link, TIMEOUT, RETRYS);
+        return getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
     }
 
     /**
@@ -55,7 +55,7 @@ public class Http {
      * @return Website als String mit fixem nicht einstellbarem timeout sowie mit 3 versuchen bei Fehler
      */
     public String getWebcontent(final PostMethod method) {
-        return getWebcontent(method, TIMEOUT, RETRYS);
+        return getWebcontent(method, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
     }
 
     /**

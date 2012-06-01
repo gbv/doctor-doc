@@ -34,14 +34,13 @@ import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.SupplierForm;
 import ch.dbs.form.UserInfo;
+import enums.Result;
 
 /**
  * Prepares the list of suppliers for a given account to be edited and
  * configured.
  */
 public class Supplier extends DispatchAction {
-
-    private static final String ACTIVEMENUS = "ActiveMenus";
 
     public ActionForward edit(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -73,7 +72,7 @@ public class Supplier extends DispatchAction {
                         // navigation: set 'account/konto' tab as active
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("konto");
-                        rq.setAttribute(ACTIVEMENUS, mf);
+                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                         forward = "edit";
 
@@ -123,7 +122,7 @@ public class Supplier extends DispatchAction {
                 // navigation: set 'account/konto' tab as active
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("konto");
-                rq.setAttribute(ACTIVEMENUS, mf);
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
@@ -178,7 +177,7 @@ public class Supplier extends DispatchAction {
                             // navigation: set 'account/konto' tab as active
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("konto");
-                            rq.setAttribute(ACTIVEMENUS, mf);
+                            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                             forward = "success";
 
