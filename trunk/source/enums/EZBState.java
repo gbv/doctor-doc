@@ -17,15 +17,15 @@
 
 package enums;
 
-public enum JOP {
+public enum EZBState {
 
-    FREE("FREE", 0), FREE_PARTIALLY("FREE_PARTIALLY", 1), LICENSED("LICENSED", 2), LICENSED_PARTIALLY(
-            "LICENSED_PARTIALLY", 3), OUTSIDE_PERIOD("OUTSIDE_PERIOD", 5), NO_HITS("NO_HITS", 10);
+    FREE("FREE", 1), LICENSED("LICENSED", 2), LICENSED_PARTIALLY("LICENSED_PARTIALLY", 3), NOT_LICENSED("NOT_LICENSED",
+            4);
 
     private final String name;
     private final int value;
 
-    private JOP(final String name, final int value) {
+    private EZBState(final String name, final int value) {
         this.name = name;
         this.value = value;
     }

@@ -43,7 +43,8 @@ import org.xml.sax.SAXParseException;
 
 import ch.dbs.form.EZBDataOnline;
 import ch.dbs.form.EZBForm;
-import enums.JOP;
+import enums.EZBState;
+import enums.JOPState;
 
 public class EZBVascoda {
 
@@ -124,24 +125,24 @@ public class EZBVascoda {
 
                     // state
                     // 1 free accessible
-                    if (color == 1) {
+                    if (color == EZBState.FREE.getValue()) {
                         online.setAmpel("green");
                         online.setComment("availresult.free");
-                        online.setState(0); // translate state to EZB/ZDB-API
+                        online.setState(JOPState.FREE.getValue()); // translate state to EZB/ZDB-API
                         // 2 licensed ; 3 partially licensed
-                    } else if (color == 2 || color == 3) {
+                    } else if (color == EZBState.LICENSED.getValue() || color == EZBState.LICENSED_PARTIALLY.getValue()) {
                         online.setAmpel("yellow");
                         online.setComment("availresult.abonniert");
-                        online.setState(2); // translate state to EZB/ZDB-API
+                        online.setState(JOPState.LICENSED.getValue()); // translate state to EZB/ZDB-API
                         // not licensed
-                    } else if (color == 4) {
+                    } else if (color == EZBState.NOT_LICENSED.getValue()) {
                         online.setAmpel("red");
                         online.setComment("availresult.not_licensed");
-                        online.setState(4); // translate state to EZB/ZDB-API
+                        online.setState(JOPState.NOT_LICENSED.getValue()); // translate state to EZB/ZDB-API
                     } else {
                         online.setAmpel("red");
                         online.setComment("availresult.not_licensed");
-                        online.setState(4); // translate state to EZB/ZDB-API
+                        online.setState(JOPState.NOT_LICENSED.getValue()); // translate state to EZB/ZDB-API
                     }
 
                     // LinkToArticle not always present
@@ -181,7 +182,7 @@ public class EZBVascoda {
                     final EZBDataOnline online = new EZBDataOnline();
                     online.setAmpel("red");
                     online.setComment("availresult.nohits");
-                    online.setState(JOP.NO_HITS.getValue()); // translate state to EZB/ZDB-API
+                    online.setState(JOPState.NO_HITS.getValue()); // translate state to EZB/ZDB-API
 
                     ezbform.getOnline().add(online);
                 }
