@@ -91,7 +91,7 @@ public final class UserAction extends DispatchAction {
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -181,7 +181,7 @@ public final class UserAction extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -234,7 +234,7 @@ public final class UserAction extends DispatchAction {
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -280,7 +280,7 @@ public final class UserAction extends DispatchAction {
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -323,7 +323,7 @@ public final class UserAction extends DispatchAction {
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -365,7 +365,7 @@ public final class UserAction extends DispatchAction {
 
         String forward = Result.FAILURE.getValue();
         final ActiveMenusForm mf = new ActiveMenusForm();
-        mf.setActivemenu("login");
+        mf.setActivemenu(Result.LOGIN.getValue());
 
         final Auth auth = new Auth();
         final Text cn = new Text();
@@ -462,7 +462,7 @@ public final class UserAction extends DispatchAction {
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -524,7 +524,7 @@ public final class UserAction extends DispatchAction {
                     em = new ErrorMessage("error.berechtigung");
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("login");
+                    mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     em = new ErrorMessage("error.timeout", "login.do");
                 }
@@ -613,7 +613,7 @@ public final class UserAction extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 em = new ErrorMessage("error.timeout", "login.do");
             }
@@ -726,7 +726,7 @@ public final class UserAction extends DispatchAction {
             rq.setAttribute("userform", uf);
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -935,7 +935,7 @@ public final class UserAction extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -985,7 +985,7 @@ public final class UserAction extends DispatchAction {
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1102,14 +1102,14 @@ public final class UserAction extends DispatchAction {
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("login");
+                    mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1174,7 +1174,7 @@ public final class UserAction extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1239,7 +1239,7 @@ public final class UserAction extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1375,7 +1375,7 @@ public final class UserAction extends DispatchAction {
 
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);

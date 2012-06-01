@@ -137,7 +137,7 @@ public final class OrderStatistik extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);

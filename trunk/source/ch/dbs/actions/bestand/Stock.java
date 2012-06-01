@@ -85,14 +85,14 @@ public class Stock extends DispatchAction {
 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -127,14 +127,14 @@ public class Stock extends DispatchAction {
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("login");
+                    mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -304,14 +304,14 @@ public class Stock extends DispatchAction {
                     }
                 } else { // User is not allowed to access this function
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("login");
+                    mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else { // Timeout
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -354,14 +354,14 @@ public class Stock extends DispatchAction {
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("login");
+                    mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -434,14 +434,14 @@ public class Stock extends DispatchAction {
 
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("login");
+                    mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);

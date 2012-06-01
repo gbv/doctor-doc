@@ -43,6 +43,7 @@ import org.xml.sax.SAXParseException;
 
 import ch.dbs.form.EZBDataOnline;
 import ch.dbs.form.EZBForm;
+import enums.JOP;
 
 public class EZBVascoda {
 
@@ -180,7 +181,7 @@ public class EZBVascoda {
                     final EZBDataOnline online = new EZBDataOnline();
                     online.setAmpel("red");
                     online.setComment("availresult.nohits");
-                    online.setState(10); // translate state to EZB/ZDB-API
+                    online.setState(JOP.NO_HITS.getValue()); // translate state to EZB/ZDB-API
 
                     ezbform.getOnline().add(online);
                 }

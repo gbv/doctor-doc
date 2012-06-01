@@ -56,6 +56,7 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.BestellformNumber;
 import enums.Result;
 
 /**
@@ -1046,7 +1047,7 @@ public final class BestellformAction extends DispatchAction {
             }
         } else { // nicht eingeloggt
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1087,14 +1088,14 @@ public final class BestellformAction extends DispatchAction {
                             if (bp.getId() > 0) { // bestehendes BestellParam (eingeloggt oder IP-basiert)
                                 custom = new BestellParam(bp.getId(), cn.getConnection());
                             }
-                            if (bp.getId() == 0) {
+                            if (bp.getId() == BestellformNumber.LOGGED_IN.getValue()) {
                                 custom.setTyid(LOGGED_IN);
                                 custom.setKennung("Bestellformular eingeloggt");
                             }
-                            if (bp.getId() == -1) {
+                            if (bp.getId() == BestellformNumber.IP.getValue()) {
                                 custom.setTyid(IP); // IP
                             }
-                            if (bp.getId() == -2) { // Konto-Kennung
+                            if (bp.getId() == BestellformNumber.KKID.getValue()) { // Konto-Kennung
                                 custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
                                 if (custom.getId() == null) {
                                     custom.setTyid(KKID);
@@ -1103,7 +1104,7 @@ public final class BestellformAction extends DispatchAction {
                                     custom.setId(bp.getId());
                                 }
                             }
-                            if (bp.getId() == -3) { // Borker-Kennung
+                            if (bp.getId() == BestellformNumber.BKID.getValue()) { // Borker-Kennung
                                 custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
                                 if (custom.getId() == null) {
                                     custom.setTyid(BKID);
@@ -1140,7 +1141,7 @@ public final class BestellformAction extends DispatchAction {
                 }
             } else { // nicht eingeloggt
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1253,7 +1254,7 @@ public final class BestellformAction extends DispatchAction {
                 }
             } else { // nicht eingeloggt
                 final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("login");
+                mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -1464,14 +1465,14 @@ public final class BestellformAction extends DispatchAction {
                     }
                     return check;
                 }
-                if (bp.getId() == -2 && bp.getKennung() != null) { // Konto-Kennung
+                if (bp.getId() == BestellformNumber.KKID.getValue() && bp.getKennung() != null) { // Konto-Kennung
                     t = new Text(cn, bp.getKennung());
                     if (t.getKonto().getId() != null && t.getKonto().getId().equals(ui.getKonto().getId())) {
                         check = true;
                         return check;
                     }
                 }
-                if (bp.getId() == -3 && bp.getKennung() != null) { // Broker-Kennung
+                if (bp.getId() == BestellformNumber.BKID.getValue() && bp.getKennung() != null) { // Broker-Kennung
                     t = new Text(cn, bp.getKennung());
                     if (t.getKonto().getId() != null && t.getKonto().getId().equals(ui.getKonto().getId())) {
                         check = true;

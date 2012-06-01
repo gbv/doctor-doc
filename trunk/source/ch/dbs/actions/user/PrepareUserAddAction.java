@@ -87,7 +87,7 @@ public final class PrepareUserAddAction extends Action {
 
             } else {
                 // not logged in => to LoginAction
-                forward = "login";
+                forward = Result.LOGIN.getValue();
             }
 
             rq.setAttribute("userform", uf);

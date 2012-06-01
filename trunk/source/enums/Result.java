@@ -20,7 +20,7 @@ package enums;
 public enum Result {
 
     FAILURE("FAILURE", "failure"), SUCCESS("SUCCESS", "success"), ACTIVEMENUS("ACTIVEMENUS", "ActiveMenus"), ERRORMESSAGE(
-            "ERRORMESSAGE", "errormessage");
+            "ERRORMESSAGE", "errormessage"), LOGIN("LOGIN", "login");
 
     private final String name;
     private final String value;

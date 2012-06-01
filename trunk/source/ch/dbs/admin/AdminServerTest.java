@@ -47,7 +47,7 @@ public final class AdminServerTest extends Action {
         String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         final ActiveMenusForm mf = new ActiveMenusForm();
-        mf.setActivemenu("login");
+        mf.setActivemenu(Result.LOGIN.getValue());
         rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
         if (auth.isAdmin(rq)) {

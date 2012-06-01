@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2012  Markus Fischer
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -15,32 +15,27 @@
 //
 //  Contact: info@doctor-doc.com
 
-package ch.dbs.form;
+package enums;
 
-import org.apache.struts.validator.ValidatorForm;
+public enum JOP {
 
-import enums.Result;
+    FREE("FREE", 0), FREE_PARTIALLY("FREE_PARTIALLY", 1), LICENSED("LICENSED", 2), LICENSED_PARTIALLY(
+            "LICENSED_PARTIALLY", 3), OUTSIDE_PERIOD("OUTSIDE_PERIOD", 5), NO_HITS("NO_HITS", 10);
 
-public final class ActiveMenusForm extends ValidatorForm {
+    private final String name;
+    private final int value;
 
-    private static final long serialVersionUID = 1L;
-    private String activemenu = Result.LOGIN.getValue();
-    private String activesubmenu = "OpenURL";
-
-    public String getActivemenu() {
-        return activemenu;
+    private JOP(final String name, final int value) {
+        this.name = name;
+        this.value = value;
     }
 
-    public void setActivemenu(final String activemenu) {
-        this.activemenu = activemenu;
+    public String getName() {
+        return name;
     }
 
-    public String getActivesubmenu() {
-        return activesubmenu;
-    }
-
-    public void setActivesubmenu(final String activesubmenu) {
-        this.activesubmenu = activesubmenu;
+    public int getValue() {
+        return value;
     }
 
 }

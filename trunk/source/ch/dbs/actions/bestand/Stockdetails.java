@@ -77,7 +77,7 @@ public class Stockdetails extends Action {
         // make sure we found some holdings
         if (holdings.isEmpty()) {
             final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("login");
+            mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             final ErrorMessage em = new ErrorMessage("error.stockinfo", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);

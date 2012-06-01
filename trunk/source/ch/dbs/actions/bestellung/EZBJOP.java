@@ -45,6 +45,7 @@ import ch.dbs.form.EZBDataOnline;
 import ch.dbs.form.EZBDataPrint;
 import ch.dbs.form.EZBForm;
 import ch.dbs.form.EZBReference;
+import enums.JOP;
 
 public class EZBJOP {
 
@@ -104,23 +105,24 @@ public class EZBJOP {
                     // state
                     online.setState(Integer.valueOf(result.getAttribute("state")));
                     // 0 free accessible
-                    if (online.getState() == 0) {
+                    if (online.getState() == JOP.FREE.getValue()) {
                         online.setAmpel("green");
                         online.setComment("availresult.free");
                         // 1 partially free accesible
-                    } else if (online.getState() == 1) {
+                    } else if (online.getState() == JOP.FREE_PARTIALLY.getValue()) {
                         online.setAmpel("green");
                         online.setComment("availresult.partially_free");
                         // 2 licensed ; 3 partially licensed
-                    } else if (online.getState() == 2 || online.getState() == 3) {
+                    } else if (online.getState() == JOP.LICENSED.getValue()
+                            || online.getState() == JOP.LICENSED_PARTIALLY.getValue()) {
                         online.setAmpel("yellow");
                         online.setComment("availresult.abonniert");
                         // journal not online for periode
-                    } else if (online.getState() == 5) {
+                    } else if (online.getState() == JOP.OUTSIDE_PERIOD.getValue()) {
                         online.setAmpel("red");
                         online.setComment("availresult.timeperiode");
                         // not indexed
-                    } else if (online.getState() == 10) {
+                    } else if (online.getState() == JOP.NO_HITS.getValue()) {
                         online.setAmpel("red");
                         online.setComment("availresult.nohits");
                     } else {
@@ -149,7 +151,7 @@ public class EZBJOP {
                     final EZBDataOnline online = new EZBDataOnline();
                     online.setAmpel("red");
                     online.setComment("availresult.nohits");
-                    online.setState(10);
+                    online.setState(JOP.NO_HITS.getValue());
 
                     ezbform.getOnline().add(online);
                 }
