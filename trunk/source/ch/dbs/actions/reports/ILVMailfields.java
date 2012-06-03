@@ -27,13 +27,13 @@ import org.apache.struts.actions.DispatchAction;
 
 import util.Auth;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.IlvReportForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.UserInfo;
 import enums.Result;
+import enums.TextType;
 
 /**
  * Default ILV Mailfields operation
@@ -60,17 +60,15 @@ public final class ILVMailfields extends DispatchAction {
 
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final IlvReportForm ilvf = (IlvReportForm) fm;
-                final Texttyp mailtexttyp = new Texttyp("ILV Mailtext", cn.getConnection());
-                final Texttyp subjecttyp = new Texttyp("ILV Mailsubject", cn.getConnection());
 
                 // Exists already a Mailtext or a subject?
-                final Text subject = new Text(cn.getConnection(), subjecttyp, ui.getKonto().getId());
-                final Text text = new Text(cn.getConnection(), mailtexttyp, ui.getKonto().getId());
+                final Text subject = new Text(cn.getConnection(), TextType.MAIL_SUBJECT, ui.getKonto().getId());
+                final Text text = new Text(cn.getConnection(), TextType.MAIL_BODY, ui.getKonto().getId());
 
                 subject.setKonto(ui.getKonto());
                 if (subject.getInhalt() == null) { // save a new subject for the konto
                     subject.setInhalt(ilvf.getSubject());
-                    subject.setTexttyp(subjecttyp);
+                    subject.setTexttype(TextType.MAIL_SUBJECT);
                     subject.saveNewText(cn.getConnection(), subject);
                 } else { // update the existing subject for the konto
                     subject.setInhalt(ilvf.getSubject());
@@ -80,7 +78,7 @@ public final class ILVMailfields extends DispatchAction {
                 text.setKonto(ui.getKonto());
                 if (text.getInhalt() == null) { // save a new subject for the konto
                     text.setInhalt(ilvf.getMailtext());
-                    text.setTexttyp(mailtexttyp);
+                    text.setTexttype(TextType.MAIL_BODY);
                     text.saveNewText(cn.getConnection(), text);
                 } else { // update the existing subject for the konto
                     text.setInhalt(ilvf.getMailtext());

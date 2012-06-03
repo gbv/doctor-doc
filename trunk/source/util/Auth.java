@@ -33,9 +33,9 @@ import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Bibliothekar;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserInfo;
+import enums.TextType;
 
 /**
  * Authentifizierungsklasse
@@ -113,12 +113,10 @@ public class Auth {
             final Text tip = ipck.contains(ip, cn.getConnection());
 
             // Broker-Kennung
-            final Texttyp bktyp = new Texttyp(Long.valueOf(11), cn.getConnection()); // Texttyp Brokerkennung
-            final Text tbk = new Text(cn.getConnection(), bktyp, rq.getParameter("bkid")); // Text mit Brokerkennung
+            final Text tbk = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, rq.getParameter("bkid")); // Text mit Brokerkennung
 
             // Kontokennung
-            final Texttyp kktyp = new Texttyp(Long.valueOf(12), cn.getConnection()); // Texttyp Kontokennung
-            final Text tkk = new Text(cn.getConnection(), kktyp, rq.getParameter("kkid")); // Text mit Kontokennung
+            final Text tkk = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDES_IP, rq.getParameter("kkid")); // Text mit Kontokennung
 
             // erste Priorität: ist eine Kontokennung vorhanden?
             if ((tkk != null && tkk.getInhalt() != null) // anhand einer kkid im Request

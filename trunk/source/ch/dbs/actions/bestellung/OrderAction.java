@@ -67,7 +67,6 @@ import ch.dbs.entity.Konto;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.EZBDataOnline;
 import ch.dbs.form.EZBDataPrint;
@@ -82,6 +81,7 @@ import ch.dbs.form.UserInfo;
 import ch.ddl.daia.DaiaRequest;
 import enums.Connect;
 import enums.Result;
+import enums.TextType;
 
 public final class OrderAction extends DispatchAction {
 
@@ -746,11 +746,11 @@ public final class OrderAction extends DispatchAction {
                 cn = (Text) rq.getAttribute("ip");
                 if (cn != null) {
                     // Text mit Kontoangaben anhand Broker-Kennung holen
-                    if (cn.getTexttyp().getId() == 11) {
+                    if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue()) {
                         pageForm.setBkid(cn.getInhalt());
                     }
                     // Text mit Kontoangaben anhand Konto-Kennung holen
-                    if (cn.getTexttyp().getId() == 12) {
+                    if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDES_IP.getValue()) {
                         pageForm.setKkid(cn.getInhalt());
                     }
                 }
@@ -1743,7 +1743,6 @@ public final class OrderAction extends DispatchAction {
             forward = Result.SUCCESS.getValue();
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                final Texttyp tty = new Texttyp();
 
                 if (auth.isBenutzer(rq)) { // user may only see his own address
                     final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
@@ -1766,13 +1765,13 @@ public final class OrderAction extends DispatchAction {
                     pageForm.setFileformat("Papierkopie"); // logical consequence
                 }
 
-                long id = 2; // Bestellstati
-                tty.setId(id);
-                pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+                // Bestellstati
+                pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                        cn.getConnection()));
                 pageForm.setQuellen(supplier.getLieferanten(ui, cn.getConnection()));
-                id = 7; // Waehrungen
-                tty.setId(id);
-                pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+                // Waehrungen
+                pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(TextType.CURRENCY, ui.getKonto().getId(),
+                        cn.getConnection()));
                 final DefaultPreis dp = new DefaultPreis();
                 pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
 
@@ -1889,7 +1888,7 @@ public final class OrderAction extends DispatchAction {
                             b.setStatusdate(datum);
                             b.setStatustext(pageForm.getStatus());
 
-                            final Text t = new Text(cn.getConnection(), pageForm.getStatus());
+                            final Text t = new Text(cn.getConnection(), TextType.STATE_ORDER, pageForm.getStatus());
 
                             // Status setzen
                             orderstate.setNewOrderState(b, ui.getKonto(), t, null, ui.getBenutzer().getEmail(),
@@ -1962,12 +1961,12 @@ public final class OrderAction extends DispatchAction {
 
                         //Sicherheit, ob das so wirklich klappt mit Benachrichtigung
                         if (b.getId() == null) {
+                            // Values may get truncated, while saving in DB. We need to use a reduced method to get the order back
                             b = b.getOrderSimpleWay(b, cn.getConnection());
                             log.warn("b.getId() has been null! We had to use b.getOrderSimpleWay!");
                         }
 
-                        // klappt leider nicht zuverlässig (s. Workaround oben)
-                        final Text t = new Text(cn.getConnection(), pageForm.getStatus());
+                        final Text t = new Text(cn.getConnection(), TextType.STATE_ORDER, pageForm.getStatus());
 
                         // Status Bestellt setzen
                         orderstate.setNewOrderState(b, ui.getKonto(), t, null, ui.getBenutzer().getEmail(),
@@ -2041,16 +2040,15 @@ public final class OrderAction extends DispatchAction {
                         pageForm.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                     }
 
-                    final Texttyp tty = new Texttyp();
-                    long id = 2; // Bestellstati
-                    tty.setId(id);
-                    pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+                    // Bestellstati
+                    pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                            cn.getConnection()));
 
                     final Lieferanten supplier = new Lieferanten();
                     pageForm.setQuellen(supplier.getLieferanten(ui, cn.getConnection()));
-                    id = 7; // Waehrungen
-                    tty.setId(id);
-                    pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+                    // Waehrungen
+                    pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(TextType.CURRENCY, ui.getKonto().getId(),
+                            cn.getConnection()));
 
                     final DefaultPreis dp = new DefaultPreis();
                     pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
@@ -2453,7 +2451,7 @@ public final class OrderAction extends DispatchAction {
         final Text cn = new Text();
 
         try {
-            final Text t = new Text(cn.getConnection(), new Texttyp("DAIA-ID", cn.getConnection()), kid);
+            final Text t = new Text(cn.getConnection(), TextType.DAIA_ID, kid);
             if (t != null && t.getInhalt() != null) {
                 daiaId = Long.valueOf(t.getInhalt());
             }

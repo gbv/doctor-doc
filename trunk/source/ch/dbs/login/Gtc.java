@@ -27,8 +27,7 @@ import org.grlea.log.SimpleLogger;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
-
+import enums.TextType;
 
 /**
  * @author Markus Fischer
@@ -67,7 +66,6 @@ public class Gtc {
     public Text getCurrentGtc(final Connection cn) {
 
         Text gtc = null;
-        final Texttyp tty = new Texttyp(Long.valueOf(6), cn); // Texttyp "GTC" erstellen
 
         //Aktuellste GTC aus Datenbank holen
         PreparedStatement pstmt = null;
@@ -80,24 +78,24 @@ public class Gtc {
                 gtc = new Text();
                 gtc.setId(rs.getLong("TID"));
                 gtc.setKonto(new Konto(rs.getLong("KID"), cn));
-                gtc.setTexttyp(tty);
+                gtc.setTexttype(TextType.GTC);
                 gtc.setInhalt(rs.getString("inhalt"));
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("getCurrentGtc(Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LOG.error(e.toString());
                 }
             }

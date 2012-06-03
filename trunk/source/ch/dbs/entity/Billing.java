@@ -31,6 +31,7 @@ import org.grlea.log.SimpleLogger;
 
 import util.DBConn;
 import ch.dbs.form.BillingForm;
+import enums.TextType;
 
 /**
  * Abstract base class for entities having a {@link Long} unique identifier,
@@ -127,7 +128,7 @@ public class Billing extends AbstractIdEntity {
             this.setId(rs.getLong("ID"));
             this.setUser(b.getUser(rs.getLong("UID"), cn));
             this.setKonto(new Konto(rs.getLong("KID"), cn));
-            this.setRechnungsgrund(new Text(cn, rs.getLong("rechnungsgrund")));
+            this.setRechnungsgrund(new Text(cn, rs.getLong("rechnungsgrund"), TextType.BILLING_REASON));
             this.setBetrag(rs.getDouble("betrag"));
             this.setWaehrung(rs.getString("waehrung"));
             this.setRechnungsnummer(rs.getString("rechnungsnummer"));
@@ -154,7 +155,7 @@ public class Billing extends AbstractIdEntity {
             b.setId(bf.getBillid());
             b.setUser(ab.getUser(bf.getUserid(), b.getConnection()));
             b.setKonto(new Konto(bf.getKontoid(), b.getConnection()));
-            b.setRechnungsgrund(new Text(b.getConnection(), bf.getRechnungsgrundid()));
+            b.setRechnungsgrund(new Text(b.getConnection(), bf.getRechnungsgrundid(), TextType.BILLING_REASON));
             b.setBetrag(bf.getBetrag());
             b.setWaehrung(bf.getWaehrung());
             b.setRechnungsnummer(bf.getRechnungsnummer());

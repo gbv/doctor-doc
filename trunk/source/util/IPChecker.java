@@ -26,7 +26,7 @@ import java.util.List;
 import org.grlea.log.SimpleLogger;
 
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
+import enums.TextType;
 
 public class IPChecker {
 
@@ -40,7 +40,6 @@ public class IPChecker {
 
     public Text contains(final String ip, final Connection cn) {
         Text t = new Text();
-        final Texttyp iptyp = new Texttyp(Long.valueOf(9), cn); // Texttyp IP
 
         try { // Zur Absicherung, damit nur richtige IPs geprüft werden
             final InetAddress a4 = InetAddress.getByName(ip);
@@ -48,7 +47,7 @@ public class IPChecker {
             if (a4 instanceof Inet4Address) {
 
                 // falls IP eindeutig hinterlegt
-                t = new Text(cn, iptyp, ip); // Text mit IP
+                t = new Text(cn, TextType.IP, ip); // Text mit IP
 
                 if (isTextNull(t)) {
                     // Prüfung auf IP-Bereiche
@@ -127,11 +126,12 @@ public class IPChecker {
     private boolean isTextNull(final Text t) {
         boolean check = true;
 
-        if (t != null && t.getId() != null) { check = false; }
+        if (t != null && t.getId() != null) {
+            check = false;
+        }
 
         return check;
 
     }
-
 
 }

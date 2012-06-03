@@ -52,13 +52,13 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.actions.user.UserAction;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OverviewForm;
 import ch.dbs.form.SearchesForm;
 import ch.dbs.form.UserInfo;
 import enums.Result;
+import enums.TextType;
 
 /**
  * Erstellt PDF-Reports
@@ -91,8 +91,8 @@ public final class OrderReports extends DispatchAction {
                 final Text cn = new Text();
 
                 // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
-                of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui.getKonto()
-                        .getId(), cn.getConnection()));
+                of.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                        cn.getConnection()));
 
                 //Eingaben Testen und Notfalls korrigieren mit defaultwerten
                 final Check c = new Check();

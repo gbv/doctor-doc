@@ -35,6 +35,7 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
+import enums.TextType;
 
 /**
  * Abstract base class for entities having a {@link Long} unique identifier,
@@ -91,7 +92,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         } else {
             abteilung = uf.getAbteilung();
         }
-        category = new Text(cn, Long.valueOf(uf.getCategory()));
+        category = new Text(cn, Long.valueOf(uf.getCategory()), TextType.USER_CATEGORY);
         anrede = uf.getAnrede();
         if (uf.getVorname() != null) {
             vorname = uf.getVorname().trim();
@@ -231,8 +232,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-            "SELECT * FROM benutzer WHERE uid=?");
+            pstmt = cn.prepareStatement("SELECT * FROM benutzer WHERE uid=?");
             pstmt.setLong(1, uid);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -241,7 +241,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
 
         } catch (final Exception e) {
             LOG.error("getUser(Long uid, Connection cn): " + e.toString());
-        }  finally {
+        } finally {
             if (rs != null) {
                 try {
                     rs.close();
@@ -318,8 +318,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT b.* FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) "
+            pstmt = cn.prepareStatement("SELECT b.* FROM `benutzer` AS b INNER JOIN (`v_konto_benutzer` AS vkb ) "
                     + "ON (b.UID=vkb.UID) WHERE vkb.KID = ? AND b.mail=?");
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, mail);
@@ -331,7 +330,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
 
         } catch (final Exception e) {
             LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
-        }  finally {
+        } finally {
             if (rs != null) {
                 try {
                     rs.close();
@@ -364,8 +363,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-            "SELECT * FROM benutzer WHERE mail=?");
+            pstmt = cn.prepareStatement("SELECT * FROM benutzer WHERE mail=?");
             pstmt.setString(1, mail);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -374,7 +372,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
 
         } catch (final Exception e) {
             LOG.error("getUserFromEmail(String email, Connection cn): " + e.toString());
-        }  finally {
+        } finally {
             if (rs != null) {
                 try {
                     rs.close();
@@ -408,8 +406,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-            "SELECT * FROM benutzer WHERE mail=?");
+            pstmt = cn.prepareStatement("SELECT * FROM benutzer WHERE mail=?");
             pstmt.setString(1, mail);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -448,8 +445,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT * FROM `benutzer` AS b "
+            pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b "
                     + "INNER JOIN (`v_konto_benutzer` AS vkb ) ON (b.UID=vkb.UID) "
                     + "INNER JOIN (`konto` AS k ) ON (k.KID=vkb.KID)WHERE vkb.UID = ?");
             pstmt.setLong(1, u.getId());
@@ -491,13 +487,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT * FROM `benutzer` AS b "
-                    + "INNER JOIN v_konto_benutzer AS vkb USING ( UID ) "
-                    + "INNER JOIN konto AS k USING ( KID ) "
-                    + "WHERE b.UID = ? "
-                    + "AND b.kontostatus = 1 "
-                    + "AND k.kontostatus = 1 "
+            pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b "
+                    + "INNER JOIN v_konto_benutzer AS vkb USING ( UID ) " + "INNER JOIN konto AS k USING ( KID ) "
+                    + "WHERE b.UID = ? " + "AND b.kontostatus = 1 " + "AND k.kontostatus = 1 "
                     + "AND ((`loginopt` = 1 AND `userlogin` = 1 ) OR `rechte` > 1)");
             pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
@@ -539,13 +531,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement(
-                    "SELECT * FROM `benutzer` AS b "
-                    + "INNER JOIN v_konto_benutzer AS vkb USING(UID)"
-                    + "INNER JOIN konto AS k USING(KID) "
-                    + "WHERE b.mail = ? AND b.pw = ? "
-                    + "AND k.kontostatus = 1 "
-                    + "AND b.kontostatus = 1 "
+            pstmt = cn.prepareStatement("SELECT * FROM `benutzer` AS b "
+                    + "INNER JOIN v_konto_benutzer AS vkb USING(UID)" + "INNER JOIN konto AS k USING(KID) "
+                    + "WHERE b.mail = ? AND b.pw = ? " + "AND k.kontostatus = 1 " + "AND b.kontostatus = 1 "
                     + "GROUP BY b.UID");
 
             pstmt.setString(1, mail);
@@ -619,7 +607,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
             u.setId(rs.getLong("UID"));
             u.setInstitut(rs.getString("institut"));
             u.setAbteilung(rs.getString("abteilung"));
-            u.setCategory(new Text(cn, rs.getLong("category")));
+            u.setCategory(new Text(cn, rs.getLong("category"), TextType.USER_CATEGORY));
             u.setAnrede(rs.getString("anrede"));
             u.setVorname(rs.getString("vorname"));
             u.setName(rs.getString("name"));
@@ -676,7 +664,8 @@ public class AbstractBenutzer extends AbstractIdEntity {
                     + "`category` , `anrede` , `vorname` , `name` , `adr` , `adrzus` , `telp` , `telg` , `plz` , "
                     + "`ort` , `land` , `mail` , `pw` , `loginopt` , `userbestellung` , `gbvbestellung` , `billing` , "
                     + "`kontoval` , `kontostatus` , `rechte` , `gtc` , `gtcdate`, `lastuse` , `datum`) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), u, k, cn);
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), u, k,
+                    cn);
             pstmt.setString(26, u.getDatum());
             pstmt.executeUpdate();
 
@@ -722,8 +711,7 @@ public class AbstractBenutzer extends AbstractIdEntity {
                     + "`adrzus` = ?,`telp` = ?, `telg` = ?, `plz` = ?, `ort` = ?, `land` = ?, `mail` = ?, "
                     + "`pw` = ?,`loginopt` = ?, `userbestellung` = ?, `gbvbestellung` = ?, `billing` = ?, "
                     + "`kontoval` = ?, `kontostatus` = ?, `rechte` = ?, `gtc` = ?, `gtcdate` = ?, "
-                    + "`lastuse` = ? WHERE `UID` =?"),
-                    u, k, cn);
+                    + "`lastuse` = ? WHERE `UID` =?"), u, k, cn);
             pstmt.setLong(26, u.getId());
             pstmt.executeUpdate();
 
@@ -809,13 +797,12 @@ public class AbstractBenutzer extends AbstractIdEntity {
         return success;
     }
 
-
     /*
      * Setzt die Werte im Preparestatement der Methoden updateUser() sowie saveNewUser()
      * Funktionniert auch für Bibliothekare sowie Administratoren
      */
-    public PreparedStatement setUserValues(final PreparedStatement pstmt,
-            final AbstractBenutzer u, final Konto k, final Connection cn) throws Exception {
+    public PreparedStatement setUserValues(final PreparedStatement pstmt, final AbstractBenutzer u, final Konto k,
+            final Connection cn) throws Exception {
         String berechtigung = "";
         String userBestellung = "0";
         String gbvBestellung = "0";
@@ -823,11 +810,21 @@ public class AbstractBenutzer extends AbstractIdEntity {
         String kontoVal = "0";
         String kontoStatus = "0";
 
-        if (u.isKontovalidation()) { kontoStatus = "1"; }
-        if (u.isLoginopt()) { loginOpt = "1"; }
-        if (u.isUserbestellung()) { userBestellung = "1"; }
-        if (u.isGbvbestellung()) { gbvBestellung = "1"; }
-        if (u.isKontostatus()) { kontoStatus = "1"; }
+        if (u.isKontovalidation()) {
+            kontoStatus = "1";
+        }
+        if (u.isLoginopt()) {
+            loginOpt = "1";
+        }
+        if (u.isUserbestellung()) {
+            userBestellung = "1";
+        }
+        if (u.isGbvbestellung()) {
+            gbvBestellung = "1";
+        }
+        if (u.isKontostatus()) {
+            kontoStatus = "1";
+        }
 
         if (u.getClass().isInstance(new Benutzer())) {
             berechtigung = "1";
@@ -842,25 +839,89 @@ public class AbstractBenutzer extends AbstractIdEntity {
             berechtigung = "1";
         }
 
-        if (u.isUserbestellung()) { userBestellung = "1"; }
-        if (u.isGbvbestellung()) { gbvBestellung = "1"; }
-        if (u.isLoginopt()) { loginOpt = "1"; }
-        if (u.isKontovalidation()) { kontoVal = "1"; }
+        if (u.isUserbestellung()) {
+            userBestellung = "1";
+        }
+        if (u.isGbvbestellung()) {
+            gbvBestellung = "1";
+        }
+        if (u.isLoginopt()) {
+            loginOpt = "1";
+        }
+        if (u.isKontovalidation()) {
+            kontoVal = "1";
+        }
 
-        if (u.getInstitut() != null) { pstmt.setString(1, u.getInstitut()); } else { pstmt.setString(1, ""); }
-        if (u.getAbteilung() != null) { pstmt.setString(2, u.getAbteilung()); } else { pstmt.setString(2, ""); }
-        if (u.getCategory() != null && u.getCategory().getId() != null) { pstmt.setLong(3, u.getCategory().getId()); } else { pstmt.setLong(3, Long.valueOf("0")); }
-        if (u.getAnrede() != null) { pstmt.setString(4, u.getAnrede()); } else { pstmt.setString(4, ""); }
-        if (u.getVorname() != null) { pstmt.setString(5, u.getVorname()); } else { pstmt.setString(5, ""); }
-        if (u.getName() != null) { pstmt.setString(6, u.getName()); } else { pstmt.setString(6, ""); }
-        if (u.getAdresse() != null) { pstmt.setString(7, u.getAdresse()); } else { pstmt.setString(7, ""); }
-        if (u.getAdresszusatz() != null) { pstmt.setString(8, u.getAdresszusatz()); } else { pstmt.setString(8, ""); }
-        if (u.getTelefonnrp() != null) { pstmt.setString(9, u.getTelefonnrp()); } else { pstmt.setString(9, ""); }
-        if (u.getTelefonnrg() != null) { pstmt.setString(10, u.getTelefonnrg()); } else { pstmt.setString(10, ""); }
-        if (u.getPlz() != null) { pstmt.setString(11, u.getPlz()); } else { pstmt.setString(11, ""); }
-        if (u.getOrt() != null) { pstmt.setString(12, u.getOrt()); } else { pstmt.setString(12, ""); }
-        if (u.getLand() != null) { pstmt.setString(13, u.getLand()); } else { pstmt.setString(13, ""); }
-        if (u.getEmail() != null) { pstmt.setString(14, u.getEmail()); } else { pstmt.setString(14, ""); }
+        if (u.getInstitut() != null) {
+            pstmt.setString(1, u.getInstitut());
+        } else {
+            pstmt.setString(1, "");
+        }
+        if (u.getAbteilung() != null) {
+            pstmt.setString(2, u.getAbteilung());
+        } else {
+            pstmt.setString(2, "");
+        }
+        if (u.getCategory() != null && u.getCategory().getId() != null) {
+            pstmt.setLong(3, u.getCategory().getId());
+        } else {
+            pstmt.setLong(3, Long.valueOf("0"));
+        }
+        if (u.getAnrede() != null) {
+            pstmt.setString(4, u.getAnrede());
+        } else {
+            pstmt.setString(4, "");
+        }
+        if (u.getVorname() != null) {
+            pstmt.setString(5, u.getVorname());
+        } else {
+            pstmt.setString(5, "");
+        }
+        if (u.getName() != null) {
+            pstmt.setString(6, u.getName());
+        } else {
+            pstmt.setString(6, "");
+        }
+        if (u.getAdresse() != null) {
+            pstmt.setString(7, u.getAdresse());
+        } else {
+            pstmt.setString(7, "");
+        }
+        if (u.getAdresszusatz() != null) {
+            pstmt.setString(8, u.getAdresszusatz());
+        } else {
+            pstmt.setString(8, "");
+        }
+        if (u.getTelefonnrp() != null) {
+            pstmt.setString(9, u.getTelefonnrp());
+        } else {
+            pstmt.setString(9, "");
+        }
+        if (u.getTelefonnrg() != null) {
+            pstmt.setString(10, u.getTelefonnrg());
+        } else {
+            pstmt.setString(10, "");
+        }
+        if (u.getPlz() != null) {
+            pstmt.setString(11, u.getPlz());
+        } else {
+            pstmt.setString(11, "");
+        }
+        if (u.getOrt() != null) {
+            pstmt.setString(12, u.getOrt());
+        } else {
+            pstmt.setString(12, "");
+        }
+        if (u.getLand() != null) {
+            pstmt.setString(13, u.getLand());
+        } else {
+            pstmt.setString(13, "");
+        }
+        if (u.getEmail() != null) {
+            pstmt.setString(14, u.getEmail());
+        } else {
+            pstmt.setString(14, "");
+        }
         if (u.getPassword() != null) {
             // If the passsword is "": it shall not be changed / updated
             if (u.getPassword().equals("da39a3ee5e6b4bd3255bfef95601890afd879") && u.getId() != null) {
@@ -884,7 +945,11 @@ public class AbstractBenutzer extends AbstractIdEntity {
         pstmt.setString(20, kontoVal);
         pstmt.setString(21, kontoStatus);
         pstmt.setString(22, berechtigung);
-        if (u.getGtc() != null) { pstmt.setString(23, u.getGtc()); } else { pstmt.setString(23, ""); }
+        if (u.getGtc() != null) {
+            pstmt.setString(23, u.getGtc());
+        } else {
+            pstmt.setString(23, "");
+        }
         if (u.getGtcdate() == null || u.getGtcdate().equals("")) {
             pstmt.setString(24, "0000-00-00 00:00:00");
         } else {
@@ -1281,7 +1346,9 @@ public class AbstractBenutzer extends AbstractIdEntity {
     }
 
     public void setLibrarycard(String librarycard) {
-        if (librarycard.length() > 50) { librarycard = librarycard.substring(0, 49); }
+        if (librarycard.length() > 50) {
+            librarycard = librarycard.substring(0, 49);
+        }
         this.librarycard = librarycard;
     }
 

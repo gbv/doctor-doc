@@ -37,6 +37,7 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.OrderStatistikForm;
 import ch.dbs.form.PreisWaehrungForm;
+import enums.TextType;
 
 /**
  * Abstract base class for entities having a {@link Long} unique
@@ -2124,7 +2125,7 @@ public class Bestellungen extends AbstractIdEntity {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 final OrderStatistikForm osf = new OrderStatistikForm();
-                final Text category = new Text(cn, rs.getLong("category"));
+                final Text category = new Text(cn, rs.getLong("category"), TextType.USER_CATEGORY);
                 final String label = category.getInhalt();
                 count = rs.getInt("anzahl");
                 orders = countRowsPerFeld(kid, dateFrom, dateTo, "category", rs.getString("category"), cn);

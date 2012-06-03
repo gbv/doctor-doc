@@ -29,8 +29,8 @@ import util.ReadSystemConfigurations;
 import ch.dbs.entity.Billing;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.BillingForm;
+import enums.TextType;
 
 /**
  * Erledigt administrative Tätigkeiten zu Abonomenten
@@ -143,12 +143,12 @@ public final class KontoAdmin {
         //    if (k.getKontotyp() == 1)  { b = new Billing(k, new Text(cn, "1 Jahr "
         // + ReadSystemConfigurations.getApplicationName() + " Enhanced") , Double.valueOf("120"), "CHF"); }
         if (k.getKontotyp() == 2) {
-            b = new Billing(k, new Text(cn, "1 Jahr " + ReadSystemConfigurations.getApplicationName()
-                    + " Enhanced plus Fax to Mail"), Double.valueOf("210"), "CHF");
+            b = new Billing(k, new Text(cn, TextType.BILLING_REASON, "1 Jahr Doctor-Doc Enhanced plus Fax to Mail"),
+                    Double.valueOf("210"), "CHF");
         }
         if (k.getKontotyp() == 3) {
-            b = new Billing(k, new Text(cn, "3 Monate " + ReadSystemConfigurations.getApplicationName()
-                    + " Enhanced plus Fax to Mail"), Double.valueOf("90"), "CHF");
+            b = new Billing(k, new Text(cn, TextType.BILLING_REASON, "3 Monate Doctor-Doc Enhanced plus Fax to Mail"),
+                    Double.valueOf("90"), "CHF");
         }
 
         if (b != null) {
@@ -203,15 +203,16 @@ public final class KontoAdmin {
         b = b.getLastBilling(k, cn);
         if (b == null) {
             if (k.getKontotyp() == 0 || k.getKontotyp() == 1) {
-                b = new Billing(k, new Text(cn, "Dienstleistung"), Double.valueOf("0"), "CHF");
+                b = new Billing(k, new Text(cn, TextType.BILLING_REASON, "Dienstleistung"), Double.valueOf("0"), "CHF");
             }
             if (k.getKontotyp() == 2) {
-                b = new Billing(k, new Text(cn, "1 Jahr " + ReadSystemConfigurations.getApplicationName()
-                        + " Enhanced plus Fax to Mail"), Double.valueOf("210"), "CHF");
+                b = new Billing(k,
+                        new Text(cn, TextType.BILLING_REASON, "1 Jahr Doctor-Doc Enhanced plus Fax to Mail"),
+                        Double.valueOf("210"), "CHF");
             }
             if (k.getKontotyp() == 3) {
-                b = new Billing(k, new Text(cn, "3 Monate " + ReadSystemConfigurations.getApplicationName()
-                        + " Enhanced plus Fax to Mail"), Double.valueOf("90"), "CHF");
+                b = new Billing(k, new Text(cn, TextType.BILLING_REASON,
+                        "3 Monate Doctor-Doc Enhanced plus Fax to Mail"), Double.valueOf("90"), "CHF");
             }
         }
 
@@ -232,7 +233,7 @@ public final class KontoAdmin {
 
         // Rechnungsgrund aendern
         if (bf.getRechnungsgrundid() != null && bf.getRechnungsgrundid() != 0) {
-            b.setRechnungsgrund(new Text(cn, bf.getRechnungsgrundid()));
+            b.setRechnungsgrund(new Text(cn, bf.getRechnungsgrundid(), TextType.BILLING_REASON));
         }
 
         bf.setBill(b);
@@ -282,7 +283,7 @@ public final class KontoAdmin {
         t.append(ReadSystemConfigurations.getApplicationName());
 
         final Text txt = new Text();
-        bf.setRechnungsgrundliste(txt.getText(new Texttyp("Rechnungsgrund", cn), cn));
+        bf.setRechnungsgrundliste(txt.getText(TextType.BILLING_REASON, cn));
 
         bf.setBillingtext(t.toString());
 

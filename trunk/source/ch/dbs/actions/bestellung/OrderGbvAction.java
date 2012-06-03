@@ -56,6 +56,7 @@ import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import enums.Connect;
 import enums.Result;
+import enums.TextType;
 
 /**
  * Klasse um Metainformation wie PPN zu bestimmen und Bestellungen
@@ -375,9 +376,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                         if (b.getId() != null) {
                                                             // Status bestellt setzen wenn Bestellung gültige ID hat
                                                             orderstate.setNewOrderState(b, ui.getKonto(),
-                                                                    new Text(t.getConnection(), "bestellt"), null, ui
-                                                                            .getBenutzer().getEmail(), t
-                                                                            .getConnection());
+                                                                    new Text(t.getConnection(), TextType.STATE_ORDER,
+                                                                            "bestellt"), null, ui.getBenutzer()
+                                                                            .getEmail(), t.getConnection());
                                                         }
 
                                                     } else {
@@ -480,8 +481,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                     if (b.getId() != null) {
                                                         // Status bestellt setzen wenn Bestellung gültige ID hat
                                                         orderstate.setNewOrderState(b, ui.getKonto(),
-                                                                new Text(t.getConnection(), "bestellt"), null, ui
-                                                                        .getBenutzer().getEmail(), t.getConnection());
+                                                                new Text(t.getConnection(), TextType.STATE_ORDER,
+                                                                        "bestellt"), null, ui.getBenutzer().getEmail(),
+                                                                t.getConnection());
                                                     }
 
                                                 } else {
@@ -645,8 +647,9 @@ public final class OrderGbvAction extends DispatchAction {
                                                     if (b.getId() != null) {
                                                         // Status bestellt setzen wenn Bestellung gültige ID hat
                                                         orderstate.setNewOrderState(b, ui.getKonto(),
-                                                                new Text(t.getConnection(), "bestellt"), null, ui
-                                                                        .getBenutzer().getEmail(), t.getConnection());
+                                                                new Text(t.getConnection(), TextType.STATE_ORDER,
+                                                                        "bestellt"), null, ui.getBenutzer().getEmail(),
+                                                                t.getConnection());
                                                     }
 
                                                 } else {

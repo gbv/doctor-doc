@@ -44,7 +44,6 @@ import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Holding;
 import ch.dbs.entity.Issn;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.FileForm;
@@ -53,6 +52,7 @@ import ch.dbs.form.Message;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import enums.Result;
+import enums.TextType;
 
 /**
  * Class to manage holdings information. Import / Export functions.
@@ -109,8 +109,6 @@ public class Stock extends DispatchAction {
 
         String forward = Result.FAILURE.getValue();
         final Text t = new Text();
-        final Texttyp ty = new Texttyp();
-        ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
         final Auth auth = new Auth();
 
         try {
@@ -121,7 +119,7 @@ public class Stock extends DispatchAction {
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                     final HoldingForm hf = (HoldingForm) fm;
 
-                    hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
+                    hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
 
                     rq.setAttribute("holdingform", hf);
 
@@ -332,8 +330,6 @@ public class Stock extends DispatchAction {
 
         String forward = Result.FAILURE.getValue();
         final Text t = new Text();
-        final Texttyp ty = new Texttyp();
-        ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
         final Auth auth = new Auth();
 
         try {
@@ -344,7 +340,7 @@ public class Stock extends DispatchAction {
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                     final HoldingForm hf = (HoldingForm) fm;
 
-                    hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
+                    hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
 
                     if (hf.getStandorte().size() == 0) { //
                         hf.setMessage("error.stockplacesmodify.nolocations");
@@ -382,8 +378,6 @@ public class Stock extends DispatchAction {
 
         String forward = Result.FAILURE.getValue();
         final Text t = new Text();
-        final Texttyp ty = new Texttyp();
-        ty.setId(Long.valueOf(10)); // TextTyp ID for holding locations
         final Auth auth = new Auth();
 
         try {
@@ -394,7 +388,7 @@ public class Stock extends DispatchAction {
                     final HoldingForm hf = (HoldingForm) fm;
 
                     // Make sure the Text() and the location belongs to the given account
-                    final Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), ty.getId());
+                    final Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), TextType.LOCATION);
                     if (txt.getId() != null) {
                         forward = Result.SUCCESS.getValue();
 
@@ -407,7 +401,8 @@ public class Stock extends DispatchAction {
                             txt.setInhalt(hf.getStandortid());
                             txt.updateText(t.getConnection(), txt);
                             hf.setMod(false); // back to the location list
-                            hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
+                            hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(),
+                                    t.getConnection()));
                         } else if (hf.isDel()) { // delete the given Text() / location
                             // Check if there still exist holdings for this location
                             final Bestand bestand = new Bestand();
@@ -421,7 +416,8 @@ public class Stock extends DispatchAction {
                                 // there are still holdings for this location!
                                 hf.setMessage("error.stockplacesmodify.notdeletable");
                             }
-                            hf.setStandorte(t.getAllKontoText(ty, ui.getKonto().getId(), t.getConnection()));
+                            hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(),
+                                    t.getConnection()));
                         }
 
                         rq.setAttribute("holdingform", hf);
@@ -727,7 +723,7 @@ public class Stock extends DispatchAction {
             if (b.getStandort().getId() != null) {
                 // check if location-ID is from account
                 // get control location from specified ID
-                final Text control = new Text(cn, b.getStandort().getId(), ui.getKonto().getId());
+                final Text control = new Text(cn, b.getStandort().getId(), ui.getKonto().getId(), TextType.LOCATION);
 
                 if (control.getId() == null) { // Location-ID does not belong to account
                     final Message msg = new Message();
@@ -1234,14 +1230,13 @@ public class Stock extends DispatchAction {
             // create a location if we do not have a location ID
             if (b.getStandort().getId() == null) {
                 // try to get an existing entry for this account
-                Text loc = new Text(cn, new Texttyp("Standorte", cn), ui.getKonto().getId(), b.getStandort()
-                        .getInhalt());
+                Text loc = new Text(cn, TextType.LOCATION, ui.getKonto().getId(), b.getStandort().getInhalt());
                 if (loc.getId() == null) { // save a new location for this account
                     b.getStandort().setKonto(ui.getKonto());
-                    b.getStandort().setTexttyp(new Texttyp("Standorte", cn));
+                    b.getStandort().setTexttype(TextType.LOCATION);
                     loc.saveNewText(cn, b.getStandort());
                     // get back the saved location
-                    loc = new Text(cn, new Texttyp("Standorte", cn), ui.getKonto().getId(), b.getStandort().getInhalt());
+                    loc = new Text(cn, TextType.LOCATION, ui.getKonto().getId(), b.getStandort().getInhalt());
                 }
                 // set the location with ID
                 b.setStandort(loc);

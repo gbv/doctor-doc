@@ -29,6 +29,7 @@ import org.grlea.log.SimpleLogger;
 
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
+import enums.TextType;
 
 /**
  * Abstract base class for entities having a {@link Long} unique
@@ -61,7 +62,7 @@ public class DefaultPreis extends AbstractIdEntity {
             this.l = supplier.getLieferantFromLid(Long.valueOf(of.getLid()), this.getConnection());
             this.setLid(l.getLid());
             this.setBezeichnung(l.getName());
-            this.waehrungstext = new Text(this.getConnection(), of.getWaehrung());
+            this.waehrungstext = new Text(this.getConnection(), TextType.CURRENCY, of.getWaehrung());
             this.setTid_waehrung(waehrungstext.getId());
             this.setWaehrung(waehrungstext.getInhalt());
             this.setDeloptions(of.getDeloptions());

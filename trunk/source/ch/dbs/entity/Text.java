@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.grlea.log.SimpleLogger;
 
+import enums.TextType;
 
 /**
  * Abstract base class for entities having a {@link Long} unique
@@ -38,77 +39,37 @@ public class Text extends AbstractIdEntity {
     private static final SimpleLogger LOG = new SimpleLogger(Text.class);
 
     private Konto konto;
-    private Texttyp texttyp;
+    private TextType texttype;
     private String inhalt;
-
 
     public Text() {
 
     }
 
     /**
-     * Erstellt einen Text anhand seines Inhaltes
-     * @param cn
-     * @param tInhalt
-     */
-    public Text(final Connection cn, final String tInhalt) {
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `inhalt`=?");
-            pstmt.setString(1, tInhalt);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                this.setId(rs.getLong("TID"));
-                this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
-                this.setInhalt(rs.getString("inhalt"));
-            }
-
-        } catch (final Exception e) {
-            LOG.error("Text(Connection cn, String inhalt): " + e.toString());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-        }
-    }
-
-    /**
-     * Erstellt einen Text anhand eines Texttyps und dem Inhalt
+     * Gets a Text from a TextType and the content.
      *
      * @param cn Connection
-     * @param typ Texttyp
+     * @param type TextType
      * @param tInhalt String
      */
-    public Text(final Connection cn, final Texttyp typ, final String tInhalt) {
+    public Text(final Connection cn, final TextType type, final String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `inhalt`=?");
-            pstmt.setLong(1, typ.getId());
+            pstmt.setLong(1, type.getValue());
             pstmt.setString(2, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
                 this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+                this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
 
         } catch (final Exception e) {
-            LOG.error("Text(Connection cn, Texttyp typ, String inhalt): " + e.toString());
+            LOG.error("Text(final Connection cn, final TextType type, final String tInhalt): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -128,31 +89,32 @@ public class Text extends AbstractIdEntity {
     }
 
     /**
-     * Gets a Text from a Texttype, a KID and the content
+     * Gets a Text from a TextType, a KID and the content.
      *
      * @param cn Connection
-     * @param Texttyp typ
+     * @param TextType type
      * @param Long KID
      * @param tInhalt String
      */
-    public Text(final Connection cn, final Texttyp typ, final Long kid, final String tInhalt) {
+    public Text(final Connection cn, final TextType type, final Long kid, final String tInhalt) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `KID`=? AND `inhalt`=?");
-            pstmt.setLong(1, typ.getId());
+            pstmt.setLong(1, type.getValue());
             pstmt.setLong(2, kid);
             pstmt.setString(3, tInhalt);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
                 this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+                this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
 
         } catch (final Exception e) {
-            LOG.error("Text(Connection cn, Texttyp typ, Long kid, String inhalt): " + e.toString());
+            LOG.error("Text(final Connection cn, final TextType type, final Long kid, final String tInhalt): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -172,29 +134,29 @@ public class Text extends AbstractIdEntity {
     }
 
     /**
-     * Erstellt einen Text anhand eines Texttyps und einer KID
+     * Gets a Text from a TextType and a KID.
      *
      * @param cn Connection
-     * @param typ Texttyp
+     * @param type TextType
      * @param kid long
      */
-    public Text(final Connection cn, final Texttyp typ, final long kid) {
+    public Text(final Connection cn, final TextType type, final long kid) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `KID`=?");
-            pstmt.setLong(1, typ.getId());
+            pstmt.setLong(1, type.getValue());
             pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
                 this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+                this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
 
         } catch (final Exception e) {
-            LOG.error("Text(Connection cn, Texttyp typ, long kid): " + e.toString());
+            LOG.error("Text(final Connection cn, final TextType type, final long kid): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -214,70 +176,29 @@ public class Text extends AbstractIdEntity {
     }
 
     /**
-     * Erstellt einen Text anhand eines Texttyp-ID und dem Inhalt
+     * Gets a Lis of all Texts from a TextType. <p></p>
      *
-     * @param cn Connection
-     * @param tyid Long
-     * @param tInhalt String
-     */
-    public Text(final Connection cn, final Long tyid, final String tInhalt) {
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TYID`=? AND `inhalt`=?");
-            pstmt.setLong(1, tyid);
-            pstmt.setString(2, tInhalt);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                this.setId(rs.getLong("TID"));
-                this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
-                this.setInhalt(rs.getString("inhalt"));
-            }
-        } catch (final Exception e) {
-            LOG.error("Text(Connection cn, Long tyid, String inhalt): " + e.toString());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-        }
-    }
-
-    /**
-     * Liefert eine Liste aller Texte anhand eines Texttypes <p></p>
-     *
-     * @param typ Texttyp
+     * @param type TextType
      * @param cn
-     * @return List mit Textobjekten
+     * @return List<Text>
      */
-    public List<Text> getText(final Texttyp typ, final Connection cn) {
+    public List<Text> getText(final TextType type, final Connection cn) {
         final ArrayList<Text> tl = new ArrayList<Text>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? ORDER BY inhalt");
-            pstmt.setLong(1, typ.getId());
+            pstmt.setLong(1, type.getValue());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final Text text = new Text(cn, rs);
+                final Text text = new Text(cn, rs, type);
                 tl.add(text);
             }
 
         } catch (final Exception e) {
-            LOG.error("getText(Texttyp typ, Connection cn): " + e.toString());
+            LOG.error("List<Text> getText(final TextType type, final Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -303,13 +224,13 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param rs ResultSet
      */
-    public Text(final Connection cn, final ResultSet rs) {
+    public Text(final Connection cn, final ResultSet rs, final TextType type) {
 
         try {
             this.setId(rs.getLong("TID"));
             this.setInhalt(rs.getString("inhalt"));
             this.setKonto(new Konto(rs.getLong("KID"), cn));
-            this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+            this.setTexttype(type);
         } catch (final SQLException e) {
             LOG.error("Text(Connection cn, ResultSet rs): " + e.toString());
         }
@@ -321,7 +242,7 @@ public class Text extends AbstractIdEntity {
      * @param cn Connection
      * @param id Long
      */
-    public Text(final Connection cn, final Long id) {
+    public Text(final Connection cn, final Long id, final TextType type) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -331,7 +252,7 @@ public class Text extends AbstractIdEntity {
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
                 this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+                this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
         } catch (final Exception e) {
@@ -355,71 +276,30 @@ public class Text extends AbstractIdEntity {
     }
 
     /**
-     * Erstellt einen Text anhand seiner ID und einer KID
+     * Gets a Text from it's ID, a KID and a TextType
      *
      * @param cn Connection
      * @param id Long
      * @param kid Long
+     * @param type TextType
      */
-    public Text(final Connection cn, final Long id, final Long kid) {
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TID`=? AND `KID`=?");
-            pstmt.setLong(1, id);
-            pstmt.setLong(2, kid);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                this.setId(rs.getLong("TID"));
-                this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
-                this.setInhalt(rs.getString("inhalt"));
-            }
-        } catch (final Exception e) {
-            LOG.error("Text(Connection cn, Long id, Long kid): " + e.toString());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
-                }
-            }
-        }
-    }
-
-    /**
-     * Erstellt einen Text anhand seiner ID, einer KID und einer TYID
-     *
-     * @param cn Connection
-     * @param id Long
-     * @param kid Long
-     * @param tyid Long
-     */
-    public Text(final Connection cn, final Long id, final Long kid, final Long tyid) {
+    public Text(final Connection cn, final Long id, final Long kid, final TextType type) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `TID`=? AND `KID`=? AND `TYID`=?");
             pstmt.setLong(1, id);
             pstmt.setLong(2, kid);
-            pstmt.setLong(3, tyid);
+            pstmt.setLong(3, type.getValue());
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 this.setId(rs.getLong("TID"));
                 this.setKonto(new Konto(rs.getLong("KID"), cn));
-                this.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+                this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
         } catch (final Exception e) {
-            LOG.error("Text(Connection cn, Long id, Long kid, Long tyid): " + e.toString());
+            LOG.error("Text(final Connection cn, final Long id, final Long kid, final TextType type): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -449,7 +329,7 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("INSERT INTO `text` (`KID` , `TYID`, `inhalt`) VALUES (?, ?, ?)");
             pstmt.setLong(1, t.getKonto().getId());
-            pstmt.setLong(2, t.getTexttyp().getId());
+            pstmt.setLong(2, t.getTexttype().getValue());
             pstmt.setString(3, t.getInhalt());
 
             pstmt.executeUpdate();
@@ -480,7 +360,7 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `KID`=? AND `TYID`=?");
             pstmt.setLong(1, k.getId());
-            pstmt.setString(2, "9");
+            pstmt.setLong(2, TextType.IP.getValue());
 
             rs = pstmt.executeQuery();
 
@@ -525,7 +405,7 @@ public class Text extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE  `inhalt` LIKE ? AND `TYID`=? "
                     + "AND (`inhalt` LIKE '%.*%' OR `inhalt` LIKE '%-%')");
             pstmt.setString(1, ipPart + "%");
-            pstmt.setString(2, "9");
+            pstmt.setLong(2, TextType.IP.getValue());
 
             rs = pstmt.executeQuery();
 
@@ -533,7 +413,7 @@ public class Text extends AbstractIdEntity {
                 final Text txt = new Text();
                 txt.setId(rs.getLong("TID"));
                 txt.setKonto(new Konto(rs.getLong("KID"), cn));
-                txt.setTexttyp(new Texttyp(rs.getLong("TYID"), cn));
+                txt.setTexttype(TextType.IP);
                 txt.setInhalt(rs.getString("inhalt"));
                 list.add(txt);
             }
@@ -570,7 +450,7 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("UPDATE `text` SET `KID` = ?, `TYID` = ?, `inhalt` = ? WHERE `TID` = ?");
             pstmt.setLong(1, t.getKonto().getId());
-            pstmt.setLong(2, t.getTexttyp().getId());
+            pstmt.setLong(2, t.getTexttype().getValue());
             pstmt.setString(3, t.getInhalt());
             pstmt.setLong(4, t.getId());
 
@@ -616,29 +496,29 @@ public class Text extends AbstractIdEntity {
         }
     }
 
-
     /**
-     * Liefert alle Texte eines Kontos eines bestimmten Texttypes
+     * Gets all Texts of an account from a given TextType.
      *
-     * @return List mit Text
+     * @return List<Text>
      */
-    public List<Text> getAllKontoText(final Texttyp t, final Long kid, final Connection cn) {
+    public List<Text> getAllKontoText(final TextType type, final Long kid, final Connection cn) {
         final ArrayList<Text> sl = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? AND KID=? ORDER BY inhalt");
-            pstmt.setLong(1, t.getId());
+            pstmt.setLong(1, type.getValue());
             pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final Text text = new Text(cn, rs);
+                final Text text = new Text(cn, rs, type);
                 sl.add(text);
             }
 
         } catch (final Exception e) {
-            LOG.error("etAllKontoText(Texttyp t, Long kid, Connection cn): " + e.toString());
+            LOG.error("List<Text> getAllKontoText(final TextType type, final Long kid, final Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -660,26 +540,27 @@ public class Text extends AbstractIdEntity {
     }
 
     /**
-     * Liefert generell alle Texte anhand eines Texttypes plus alle kontospezifischen Texte dieses Texttypes
-     * @return List<Text> mit Stati-Texten
+     * Gets all general Texts from a TextType plus all account Texts.
+     * @return List<Text>
      */
-    public List<Text> getAllTextPlusKontoTexts(final Texttyp t, final Long kid, final Connection cn) {
+    public List<Text> getAllTextPlusKontoTexts(final TextType type, final Long kid, final Connection cn) {
         final ArrayList<Text> sl = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? AND (KID IS null OR KID=?) ORDER BY inhalt");
-            pstmt.setLong(1, t.getId());
+            pstmt.setLong(1, type.getValue());
             pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                final Text text = new Text(cn, rs);
+                final Text text = new Text(cn, rs, type);
                 sl.add(text);
             }
 
         } catch (final Exception e) {
-            LOG.error("getAllTextPlusKontoTexts(Texttyp t, Long kid, Connection cn): " + e.toString());
+            LOG.error("List<Text> getAllTextPlusKontoTexts(final TextType type, final Long kid, final Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -700,12 +581,12 @@ public class Text extends AbstractIdEntity {
         return sl;
     }
 
-    public Texttyp getTexttyp() {
-        return texttyp;
+    public TextType getTexttype() {
+        return texttype;
     }
 
-    public void setTexttyp(final Texttyp texttyp) {
-        this.texttyp = texttyp;
+    public void setTexttype(final TextType texttype) {
+        this.texttype = texttype;
     }
 
     public String getInhalt() {
@@ -723,6 +604,5 @@ public class Text extends AbstractIdEntity {
     public void setKonto(final Konto konto) {
         this.konto = konto;
     }
-
 
 }

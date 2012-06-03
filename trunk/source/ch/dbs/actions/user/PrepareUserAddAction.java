@@ -33,11 +33,11 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
 import enums.Result;
+import enums.TextType;
 
 public final class PrepareUserAddAction extends Action {
 
@@ -72,8 +72,8 @@ public final class PrepareUserAddAction extends Action {
                 }
 
                 final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                        ui.getKonto().getId(), cn.getConnection());
+                final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto().getId(),
+                        cn.getConnection());
 
                 final AbstractBenutzer b = new AbstractBenutzer(uf, cn.getConnection());
                 uf.setUser(b);

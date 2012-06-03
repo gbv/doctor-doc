@@ -30,6 +30,7 @@ import org.grlea.log.SimpleLogger;
 
 import ch.dbs.form.HoldingForm;
 import ch.dbs.form.OrderForm;
+import enums.TextType;
 
 /**
  * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu schreiben
@@ -54,8 +55,6 @@ public class Bestand extends AbstractIdEntity {
     private String shelfmark; // Notation, Büchergestellnummer etc.
     private String bemerkungen = "";
     private boolean internal;
-
-
 
     public Bestand() {
         this.setHolding(new Holding());
@@ -148,7 +147,7 @@ public class Bestand extends AbstractIdEntity {
         this.setEndissue(rs.getString("endissue"));
         this.setSuppl(rs.getInt("suppl"));
         this.setEissue(rs.getBoolean("eissue"));
-        this.setStandort(new Text(cn, rs.getLong("standort")));
+        this.setStandort(new Text(cn, rs.getLong("standort"), TextType.LOCATION));
         this.setShelfmark(rs.getString("shelfmark"));
         this.setBemerkungen(rs.getString("bemerkungen"));
         this.setInternal(rs.getBoolean("internal"));
@@ -173,7 +172,7 @@ public class Bestand extends AbstractIdEntity {
             this.setEndissue(rs.getString("endissue"));
             this.setSuppl(rs.getInt("suppl"));
             this.setEissue(rs.getBoolean("eissue"));
-            this.setStandort(new Text(cn, rs.getLong("standort")));
+            this.setStandort(new Text(cn, rs.getLong("standort"), TextType.LOCATION));
             this.setShelfmark(rs.getString("shelfmark"));
             this.setBemerkungen(rs.getString("bemerkungen"));
             this.setInternal(rs.getBoolean("internal"));
@@ -187,7 +186,7 @@ public class Bestand extends AbstractIdEntity {
      * MySQL autoincrement the STID.
      */
     private PreparedStatement setBestandValuesAutoincrement(final PreparedStatement pstmt, final Bestand be)
-    throws Exception {
+            throws Exception {
 
         pstmt.setLong(1, be.getHolding().getId());
         pstmt.setString(2, be.getStartyear());
@@ -432,8 +431,8 @@ public class Bestand extends AbstractIdEntity {
      *
      * @return List<Bestand> listBestand
      */
-    public List<Bestand> getAllBestandForHoldings(final List<String> hoids, final OrderForm pageForm, final boolean intern,
-            final Connection cn) {
+    public List<Bestand> getAllBestandForHoldings(final List<String> hoids, final OrderForm pageForm,
+            final boolean intern, final Connection cn) {
         final List<Bestand> listBestand = new ArrayList<Bestand>();
 
         if (!hoids.isEmpty()) {
@@ -530,11 +529,11 @@ public class Bestand extends AbstractIdEntity {
                     Collections.sort(listBestand, new Comparator<Bestand>() {
 
                         public int compare(final Bestand be1, final Bestand be2) {
-                            return be1.getHolding().getKonto().getBibliotheksname().compareToIgnoreCase(be2.getHolding().getKonto().getBibliotheksname());
+                            return be1.getHolding().getKonto().getBibliotheksname()
+                                    .compareToIgnoreCase(be2.getHolding().getKonto().getBibliotheksname());
                         }
 
                     });
-
 
                 } catch (final Exception e) {
                     LOG.error("ArrayList<Bestand> getAllBestandForHoldings: " + e.toString());
@@ -574,7 +573,8 @@ public class Bestand extends AbstractIdEntity {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.HOID = ? AND a.internal <= ?");
+            pstmt = cn
+                    .prepareStatement("SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.HOID = ? AND a.internal <= ?");
             pstmt.setLong(1, hoid);
             pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();
@@ -621,28 +621,28 @@ public class Bestand extends AbstractIdEntity {
             break;
         case 2: // ISSN, Year
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '')) "
-                + "AND (a.HOID = ?";
+                    + "AND (a.HOID = ?";
             break;
         case 3: // ISSN, Year, Volume
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '') "
-                + "AND (a.startvolume <= ?+0 OR a.startvolume = '') AND (a.endvolume >= ?+0 OR a.endvolume = '')) AND (a.HOID = ?";
+                    + "AND (a.startvolume <= ?+0 OR a.startvolume = '') AND (a.endvolume >= ?+0 OR a.endvolume = '')) AND (a.HOID = ?";
             break;
         case 4: // ISSN, Year, Volume, Issue
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
-                + "(a.startvolume <=?+0 OR a.startvolume = '') AND (a.endvolume >=?+0 OR a.endvolume = '') AND "
-                + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                + "((a.endyear > ? OR a.endyear = '') AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
-                + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
-                + "(a.startyear < ? AND ((a.endyear = ? AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
-                + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
+                    + "(a.startvolume <=?+0 OR a.startvolume = '') AND (a.endvolume >=?+0 OR a.endvolume = '') AND "
+                    + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                    + "((a.endyear > ? OR a.endyear = '') AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
+                    + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
+                    + "(a.startyear < ? AND ((a.endyear = ? AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
+                    + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                    + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
             break;
         case 5: // ISSN, Year, Issue
             sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
-                + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                + "((a.endyear > ? OR a.endyear = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
-                + "(a.startyear < ? AND ((a.endyear = ? AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
+                    + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                    + "((a.endyear > ? OR a.endyear = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
+                    + "(a.startyear < ? AND ((a.endyear = ? AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                    + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
             break;
         default:
             LOG.error("Bestand get SQL - Unpredicted switch case in default: " + mode);
@@ -739,7 +739,6 @@ public class Bestand extends AbstractIdEntity {
 
         return mode;
     }
-
 
     public Holding getHolding() {
         return holding;
@@ -847,7 +846,9 @@ public class Bestand extends AbstractIdEntity {
 
     private boolean isEmpty(final String input) {
 
-        if (input == null || "".equals(input.trim())) { return true; }
+        if (input == null || "".equals(input.trim())) {
+            return true;
+        }
 
         return false;
     }

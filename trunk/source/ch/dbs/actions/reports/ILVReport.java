@@ -65,7 +65,6 @@ import ch.dbs.actions.bestellung.Pubmed;
 import ch.dbs.entity.Countries;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.IlvReportForm;
@@ -75,6 +74,7 @@ import ch.dbs.form.UserInfo;
 import com.sun.mail.smtp.SMTPAddressFailedException;
 
 import enums.Result;
+import enums.TextType;
 
 /**
  * Creates PDF-Reports
@@ -211,10 +211,8 @@ public final class ILVReport extends DispatchAction {
                     ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
 
                     // default Subject & Mailtext
-                    final Text subject = new Text(l.getConnection(), new Texttyp("ILV Mailsubject", l.getConnection()),
-                            ui.getKonto().getId());
-                    final Text text = new Text(l.getConnection(), new Texttyp("ILV Mailtext", l.getConnection()), ui
-                            .getKonto().getId());
+                    final Text subject = new Text(l.getConnection(), TextType.MAIL_SUBJECT, ui.getKonto().getId());
+                    final Text text = new Text(l.getConnection(), TextType.MAIL_BODY, ui.getKonto().getId());
                     if (subject.getInhalt() != null) {
                         ilvf.setSubject(subject.getInhalt());
                     }

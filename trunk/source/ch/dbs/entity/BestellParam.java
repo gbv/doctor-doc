@@ -28,6 +28,7 @@ import org.apache.struts.validator.ValidatorForm;
 import org.grlea.log.SimpleLogger;
 
 import ch.dbs.form.Message;
+import enums.TextType;
 
 /**
  * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu schreiben
@@ -38,7 +39,6 @@ import ch.dbs.form.Message;
 public class BestellParam extends ValidatorForm {
 
     private static final SimpleLogger LOG = new SimpleLogger(BestellParam.class);
-
 
     private static final long serialVersionUID = 1L;
     private Long id;
@@ -116,8 +116,6 @@ public class BestellParam extends ValidatorForm {
     private Message message;
     private boolean back;
     private String link_back;
-
-
 
     public BestellParam() {
 
@@ -219,12 +217,14 @@ public class BestellParam extends ValidatorForm {
         try {
             if (t != null && t.getId() != null) {
                 // nur 1 Formular für alle IP-Zugriffe
-                if (t.getTexttyp().getId().equals(Long.valueOf(9))) { t.setInhalt(""); }
+                if (t.getTexttype().getValue() == TextType.IP.getValue()) {
+                    t.setInhalt("");
+                }
 
                 pstmt = cn
                         .prepareStatement("SELECT * FROM bestellform_param WHERE KID = ? AND TYID = ? AND kennung = ?");
                 pstmt.setLong(1, t.getKonto().getId());
-                pstmt.setLong(2, t.getTexttyp().getId());
+                pstmt.setLong(2, t.getTexttype().getValue());
                 pstmt.setString(3, t.getInhalt());
                 rs = pstmt.executeQuery();
 
@@ -306,7 +306,7 @@ public class BestellParam extends ValidatorForm {
      */
     public List<BestellParam> getAllBestellParam(final Konto k, final Connection cn) {
 
-        List<BestellParam> result = new ArrayList<BestellParam>();
+        final List<BestellParam> result = new ArrayList<BestellParam>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -352,18 +352,19 @@ public class BestellParam extends ValidatorForm {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = setBestellParamValues(cn.prepareStatement("INSERT INTO `bestellform_param` (`KID` , `TYID` , "
-                    + "`kennung` , `saveorder` , `deactivated` , `institution` , `abteilung` , `category` , `adresse` , `strasse` , "
-                    + "`plz` , `ort` , `telefon` , `benutzernr` , `land` , `prio` , `lieferart` , `lieferart_value1` , "
-                    + "`lieferart_value2` , `lieferart_value3` , `frei1` , `frei2` , `frei3` , `frei1_name` , "
-                    + "`frei2_name` , `frei3_name` , `comment1` , `comment2` , `option` , `option_name` , "
-                    + "`option_comment` , `option_linkout` , `option_linkoutname` , `option_value1` , "
-                    + "`option_value2` , `option_value3` , `gebuehren` , `gebuehren_link` , `agb` , `agb_link` , "
-                    + "`inst_required` , `abt_required` , `category_required` , `frei1_required` , `frei2_required` , `frei3_required` , "
-                    + "`adr_required` , `str_required` , `plz_required` , `ort_required` , `land_required` , "
-                    + "`tel_required` , `benutzernr_required`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?)"), bp);
+            pstmt = setBestellParamValues(
+                    cn.prepareStatement("INSERT INTO `bestellform_param` (`KID` , `TYID` , "
+                            + "`kennung` , `saveorder` , `deactivated` , `institution` , `abteilung` , `category` , `adresse` , `strasse` , "
+                            + "`plz` , `ort` , `telefon` , `benutzernr` , `land` , `prio` , `lieferart` , `lieferart_value1` , "
+                            + "`lieferart_value2` , `lieferart_value3` , `frei1` , `frei2` , `frei3` , `frei1_name` , "
+                            + "`frei2_name` , `frei3_name` , `comment1` , `comment2` , `option` , `option_name` , "
+                            + "`option_comment` , `option_linkout` , `option_linkoutname` , `option_value1` , "
+                            + "`option_value2` , `option_value3` , `gebuehren` , `gebuehren_link` , `agb` , `agb_link` , "
+                            + "`inst_required` , `abt_required` , `category_required` , `frei1_required` , `frei2_required` , `frei3_required` , "
+                            + "`adr_required` , `str_required` , `plz_required` , `ort_required` , `land_required` , "
+                            + "`tel_required` , `benutzernr_required`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                            + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                            + "?, ?, ?, ?, ?, ?)"), bp);
 
             pstmt.executeUpdate();
 
@@ -404,18 +405,19 @@ public class BestellParam extends ValidatorForm {
 
         PreparedStatement pstmt = null;
         try {
-            pstmt = setBestellParamValues(cn.prepareStatement("UPDATE `bestellform_param` SET "
-                    + "`KID` = ?, `TYID` = ?, `kennung` = ?, `saveorder` = ?, `deactivated` = ?, `institution` = ?, `abteilung` = ?, "
-                    + "`category` = ?, `adresse` = ?,`strasse` = ?, `plz` = ?, `ort` = ?, `telefon` = ?, `benutzernr` = ?, `land` = ?, "
-                    + "`prio` = ?, `lieferart` = ?,`lieferart_value1` = ?, `lieferart_value2` = ?, "
-                    + "`lieferart_value3` = ?, `frei1` = ?, `frei2` = ?, `frei3` = ?, `frei1_name` = ?, "
-                    + "`frei2_name` = ?, `frei3_name` = ?, `comment1` = ?, `comment2` = ?, `option` = ?, "
-                    + "`option_name` = ?, `option_comment` = ?, `option_linkout` = ?, `option_linkoutname` = ?, "
-                    + "`option_value1` = ?, `option_value2` = ?, `option_value3` = ?, `gebuehren` = ?, "
-                    + "`gebuehren_link` = ?, `agb` = ?, `agb_link` = ?, `inst_required` = ?, `abt_required` = ?, "
-                    + "`category_required` = ?, `frei1_required` = ?, `frei2_required` = ?, `frei3_required` = ?, `adr_required` = ?, "
-                    + "`str_required` = ?, `plz_required` = ?, `ort_required` = ?, `land_required` = ?, "
-                    + "`tel_required` = ?, `benutzernr_required` = ? WHERE `BPID` =?"), bp);
+            pstmt = setBestellParamValues(
+                    cn.prepareStatement("UPDATE `bestellform_param` SET "
+                            + "`KID` = ?, `TYID` = ?, `kennung` = ?, `saveorder` = ?, `deactivated` = ?, `institution` = ?, `abteilung` = ?, "
+                            + "`category` = ?, `adresse` = ?,`strasse` = ?, `plz` = ?, `ort` = ?, `telefon` = ?, `benutzernr` = ?, `land` = ?, "
+                            + "`prio` = ?, `lieferart` = ?,`lieferart_value1` = ?, `lieferart_value2` = ?, "
+                            + "`lieferart_value3` = ?, `frei1` = ?, `frei2` = ?, `frei3` = ?, `frei1_name` = ?, "
+                            + "`frei2_name` = ?, `frei3_name` = ?, `comment1` = ?, `comment2` = ?, `option` = ?, "
+                            + "`option_name` = ?, `option_comment` = ?, `option_linkout` = ?, `option_linkoutname` = ?, "
+                            + "`option_value1` = ?, `option_value2` = ?, `option_value3` = ?, `gebuehren` = ?, "
+                            + "`gebuehren_link` = ?, `agb` = ?, `agb_link` = ?, `inst_required` = ?, `abt_required` = ?, "
+                            + "`category_required` = ?, `frei1_required` = ?, `frei2_required` = ?, `frei3_required` = ?, `adr_required` = ?, "
+                            + "`str_required` = ?, `plz_required` = ?, `ort_required` = ?, `land_required` = ?, "
+                            + "`tel_required` = ?, `benutzernr_required` = ? WHERE `BPID` =?"), bp);
             pstmt.setLong(54, bp.getId());
             pstmt.executeUpdate();
 
@@ -496,7 +498,6 @@ public class BestellParam extends ValidatorForm {
 
     }
 
-
     private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
@@ -568,7 +569,11 @@ public class BestellParam extends ValidatorForm {
 
         pstmt.setLong(1, bp.getKid());
         pstmt.setLong(2, bp.getTyid());
-        if (bp.getKennung() != null) { pstmt.setString(3, bp.getKennung()); } else { pstmt.setString(3, ""); }
+        if (bp.getKennung() != null) {
+            pstmt.setString(3, bp.getKennung());
+        } else {
+            pstmt.setString(3, "");
+        }
         pstmt.setBoolean(4, bp.isSaveorder());
         pstmt.setBoolean(5, bp.isDeactivated());
         pstmt.setBoolean(6, bp.isInstitution());
@@ -672,7 +677,11 @@ public class BestellParam extends ValidatorForm {
             pstmt.setString(38, "");
         }
         pstmt.setBoolean(39, bp.isAgb());
-        if (bp.getLink_agb() != null) { pstmt.setString(40, bp.getLink_agb()); } else { pstmt.setString(40, ""); }
+        if (bp.getLink_agb() != null) {
+            pstmt.setString(40, bp.getLink_agb());
+        } else {
+            pstmt.setString(40, "");
+        }
         pstmt.setBoolean(41, bp.isInst_required());
         pstmt.setBoolean(42, bp.isAbt_required());
         pstmt.setBoolean(43, bp.isCategory_required());
@@ -689,7 +698,6 @@ public class BestellParam extends ValidatorForm {
 
         return pstmt;
     }
-
 
     public Long getId() {
         return id;
@@ -1154,6 +1162,5 @@ public class BestellParam extends ValidatorForm {
     public void setDeactivated(final boolean deactivated) {
         this.deactivated = deactivated;
     }
-
 
 }

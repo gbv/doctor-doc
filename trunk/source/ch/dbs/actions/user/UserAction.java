@@ -54,7 +54,6 @@ import ch.dbs.entity.Countries;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.entity.VKontoBenutzer;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -68,6 +67,7 @@ import ch.dbs.form.UserForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.login.Gtc;
 import enums.Result;
+import enums.TextType;
 
 public final class UserAction extends DispatchAction {
 
@@ -133,8 +133,8 @@ public final class UserAction extends DispatchAction {
 
                     // Auflistung möglicher Bestellstati um Statuswechsel dem User / Bibliothekar / Admin anzubieten
                     // wird auch für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
-                    of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui
-                            .getKonto().getId(), cn.getConnection()));
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                            cn.getConnection()));
 
                     // angegebener Zeitraum prüfen, resp. Defaultbereich von 1 Monat zusammenstellen
                     of = check.checkDateRegion(of, 1, ui.getKonto().getTimezone());
@@ -211,7 +211,7 @@ public final class UserAction extends DispatchAction {
             final Text t = new Text();
 
             try {
-                final Text status = new Text(t.getConnection(), of.getTid());
+                final Text status = new Text(t.getConnection(), of.getTid(), TextType.STATE_ORDER);
                 final Bestellungen b = new Bestellungen(t.getConnection(), of.getBid());
                 if (b != null && status != null) {
                     orderstate.changeOrderState(b, ui.getKonto().getTimezone(), status, null, ui.getBenutzer()
@@ -510,8 +510,8 @@ public final class UserAction extends DispatchAction {
                 }
 
                 final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-                final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie", cn.getConnection()),
-                        ui.getKonto().getId(), cn.getConnection());
+                final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto().getId(),
+                        cn.getConnection());
 
                 ui.setKontos(allPossKontos);
                 ui.setCountries(allPossCountries);
@@ -588,8 +588,7 @@ public final class UserAction extends DispatchAction {
                         }
 
                         final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-                        final List<Text> categories = cn.getAllKontoText(
-                                new Texttyp("Benutzer Kategorie", cn.getConnection()), ui.getKonto().getId(),
+                        final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto().getId(),
                                 cn.getConnection());
 
                         ui.setKontos(allPossKontos);
@@ -814,7 +813,8 @@ public final class UserAction extends DispatchAction {
                             u.setAbteilung(uf.getAbteilung());
                         }
 
-                        u.setCategory(new Text(cn.getConnection(), Long.valueOf(uf.getCategory())));
+                        u.setCategory(new Text(cn.getConnection(), Long.valueOf(uf.getCategory()),
+                                TextType.USER_CATEGORY));
 
                         if (uf.getAdresse() != null) {
                             u.setAdresse(uf.getAdresse().trim());
@@ -971,8 +971,7 @@ public final class UserAction extends DispatchAction {
                 // only accessible by librarians or admins
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
 
-                    final List<Text> categories = cn.getAllKontoText(
-                            new Texttyp("Benutzer Kategorie", cn.getConnection()), ui.getKonto().getId(),
+                    final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto().getId(),
                             cn.getConnection());
                     // only set into request, if we have at least one category
                     if (!categories.isEmpty()) {
@@ -1006,7 +1005,6 @@ public final class UserAction extends DispatchAction {
 
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-        final Texttyp ty = new Texttyp("Benutzer Kategorie", cn.getConnection());
         final Auth auth = new Auth();
 
         try {
@@ -1041,12 +1039,13 @@ public final class UserAction extends DispatchAction {
                             // save new category
                             final Text txt = new Text();
                             txt.setInhalt(category);
-                            txt.setTexttyp(ty);
+                            txt.setTexttype(TextType.USER_CATEGORY);
                             txt.setKonto(ui.getKonto());
                             txt.saveNewText(cn.getConnection(), txt);
                         }
 
-                        final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(), cn.getConnection());
+                        final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto().getId(),
+                                cn.getConnection());
 
                         // only set into request, if we have at least one category
                         if (!categories.isEmpty()) {
@@ -1059,7 +1058,7 @@ public final class UserAction extends DispatchAction {
 
                             // Make sure the Text() and the category belong to the given account
                             final Text txt = new Text(cn.getConnection(), Long.valueOf(id), ui.getKonto().getId(),
-                                    ty.getId());
+                                    TextType.USER_CATEGORY);
 
                             if (txt.getId() != null) {
                                 forward = Result.SUCCESS.getValue();
@@ -1078,8 +1077,8 @@ public final class UserAction extends DispatchAction {
                                     rq.setAttribute("categoryText", txt);
                                 }
 
-                                final List<Text> categories = cn.getAllKontoText(ty, ui.getKonto().getId(),
-                                        cn.getConnection());
+                                final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto()
+                                        .getId(), cn.getConnection());
 
                                 // only set into request, if we have at least one category
                                 if (!categories.isEmpty()) {
@@ -1222,13 +1221,12 @@ public final class UserAction extends DispatchAction {
                     final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                     rq.setAttribute("sortedSearchFields", result);
 
-                    final Texttyp tty = new Texttyp();
-                    long id = 2; // Bestellstati
-                    tty.setId(id);
-                    of.setStatitexts(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
-                    id = 7; // Waehrungen
-                    tty.setId(id);
-                    of.setWaehrungen(cn.getAllTextPlusKontoTexts(tty, ui.getKonto().getId(), cn.getConnection()));
+                    // Bestellstati
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                            cn.getConnection()));
+                    // Waehrungen
+                    of.setWaehrungen(cn.getAllTextPlusKontoTexts(TextType.CURRENCY, ui.getKonto().getId(),
+                            cn.getConnection()));
 
                     rq.setAttribute("overviewform", of);
 
@@ -1280,8 +1278,8 @@ public final class UserAction extends DispatchAction {
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
 
                     // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
-                    of.setStatitexts(cn.getAllTextPlusKontoTexts(new Texttyp("Status", cn.getConnection()), ui
-                            .getKonto().getId(), cn.getConnection()));
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                            cn.getConnection()));
 
                     // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
                     of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
@@ -1296,13 +1294,12 @@ public final class UserAction extends DispatchAction {
                     final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
                     rq.setAttribute("sortedSearchFields", result);
 
-                    final Texttyp t = new Texttyp();
-                    long id = 2; // Bestellstati
-                    t.setId(id);
-                    of.setStatitexts(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
-                    id = 7; // Waehrungen
-                    t.setId(id);
-                    of.setWaehrungen(cn.getAllTextPlusKontoTexts(t, ui.getKonto().getId(), cn.getConnection()));
+                    // Bestellstati
+                    of.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
+                            cn.getConnection()));
+                    // Waehrungen
+                    of.setWaehrungen(cn.getAllTextPlusKontoTexts(TextType.CURRENCY, ui.getKonto().getId(),
+                            cn.getConnection()));
 
                     final String dateFrom = of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + " 00:00:00";
                     final String dateTo = of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00";

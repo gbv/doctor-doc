@@ -49,7 +49,6 @@ import ch.dbs.entity.DaiaParam;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.entity.VKontoBenutzer;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
@@ -58,6 +57,7 @@ import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import enums.BestellformNumber;
 import enums.Result;
+import enums.TextType;
 
 /**
  * BestellformAction prüft ip-basierte Zugriffe und erlaubt Kundenbestellungen innerhalb einer Institution z.Hd. der
@@ -68,10 +68,6 @@ import enums.Result;
 public final class BestellformAction extends DispatchAction {
 
     private static final SimpleLogger LOG = new SimpleLogger(BestellformAction.class);
-    private static final long BKID = 11;
-    private static final long KKID = 12;
-    private static final long IP = 9;
-    private static final long LOGGED_IN = 13;
 
     /**
      * Prüft IP und ordnet den Request der betreffenden Bibliothek zu, ergänzt Angaben anhand PMID und DOI
@@ -135,15 +131,15 @@ public final class BestellformAction extends DispatchAction {
                 if (t != null && t.getInhalt() != null) {
                     rq.setAttribute("ip", t);
                     of.setBibliothek(t.getKonto().getBibliotheksname());
-                    if (t.getTexttyp().getId() == BKID) {
+                    if (t.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue()) {
                         of.setBkid(t.getInhalt());
                     }
-                    if (t.getTexttyp().getId() == KKID) {
+                    if (t.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDES_IP.getValue()) {
                         of.setKkid(t.getInhalt());
                     }
                 } else {
                     if (kkid != null) { // Kontokennung
-                        t = new Text(cn.getConnection(), KKID, kkid); // Text with Kontokennung
+                        t = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDES_IP, kkid); // Text with Kontokennung
                         if (t != null && t.getInhalt() != null) { // makes sure the kkid entered is valid!
                             rq.setAttribute("ip", t);
                             of.setBibliothek(t.getKonto().getBibliotheksname());
@@ -158,7 +154,7 @@ public final class BestellformAction extends DispatchAction {
                         }
                     }
                     if (bkid != null) { // Brokerkennung
-                        t = new Text(cn.getConnection(), BKID, bkid); // Text with Brokerkennung
+                        t = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, bkid); // Text with Brokerkennung
                         if (t != null && t.getInhalt() != null) { // makes sure the bkid entered is valid!
                             if (t.getKonto().getId() != null) { // Brokerkennung belongs to ONE account
                                 rq.setAttribute("ip", t);
@@ -189,8 +185,7 @@ public final class BestellformAction extends DispatchAction {
 
                     // get user categories for drop down menu
                     if (bp.isCategory()) {
-                        final List<Text> categories = cn.getAllKontoText(
-                                new Texttyp("Benutzer Kategorie", cn.getConnection()), t.getKonto().getId(),
+                        final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, t.getKonto().getId(),
                                 cn.getConnection());
                         // only set into request, if we have at least one category
                         rq.setAttribute("categories", categories);
@@ -285,9 +280,8 @@ public final class BestellformAction extends DispatchAction {
 
                         // get user categories for drop down menu
                         if (bp.isCategory()) {
-                            final List<Text> categories = cn.getAllKontoText(
-                                    new Texttyp("Benutzer Kategorie", cn.getConnection()), ui.getKonto().getId(),
-                                    cn.getConnection());
+                            final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto()
+                                    .getId(), cn.getConnection());
                             // only set into request, if we have at least one category
                             rq.setAttribute("categories", categories);
                         }
@@ -417,10 +411,10 @@ public final class BestellformAction extends DispatchAction {
 
                 if (t == null || t.getInhalt() == null) {
                     if (of.getKkid() != null) { // Kontokennung
-                        t = new Text(cn.getConnection(), KKID, of.getKkid()); // Text with Kontokennung
+                        t = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDES_IP, of.getKkid()); // Text with Kontokennung
                     }
                     if (of.getBkid() != null) { // Brokerkennung
-                        t = new Text(cn.getConnection(), BKID, of.getBkid()); // Text with Brokerkennung
+                        t = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, of.getBkid()); // Text with Brokerkennung
                     }
                 }
 
@@ -527,7 +521,7 @@ public final class BestellformAction extends DispatchAction {
                             b.setStatustext("zu bestellen");
                             b.save(cn.getConnection());
 
-                            final Text state = new Text(cn.getConnection(), "zu bestellen");
+                            final Text state = new Text(cn.getConnection(), TextType.STATE_ORDER, "zu bestellen");
                             final OrderState orderstate = new OrderState();
                             orderstate.setNewOrderState(b, k, state, null, u.getEmail(), cn.getConnection());
                         }
@@ -587,7 +581,8 @@ public final class BestellformAction extends DispatchAction {
 
                         if (of.getKundenkategorieID() != null && !"0".equals(of.getKundenkategorieID())) {
                             m.append("Category: ");
-                            m.append(new Text(cn.getConnection(), Long.valueOf(of.getKundenkategorieID())).getInhalt());
+                            m.append(new Text(cn.getConnection(), Long.valueOf(of.getKundenkategorieID()),
+                                    TextType.USER_CATEGORY).getInhalt());
                             m.append('\n');
                         } else { // use information from database
                             if (u.getCategory() != null && u.getCategory().getInhalt() != null) {
@@ -996,16 +991,16 @@ public final class BestellformAction extends DispatchAction {
 
                     if (hasIP) {
                         ip.setId(Long.valueOf(0));
-                        ip.setTexttyp(new Texttyp(IP, cn.getConnection()));
+                        ip.setTexttype(TextType.IP);
                         ip.setKonto(ui.getKonto());
                         ipbasiert = new BestellParam(ip, cn.getConnection());
                     }
 
                     final BestellParam eingeloggt = new BestellParam(ui.getKonto(), cn.getConnection());
 
-                    final List<Text> kkid = cn.getAllKontoText(new Texttyp(KKID, cn.getConnection()), ui.getKonto()
-                            .getId(), cn.getConnection());
-                    final List<Text> bkid = cn.getAllKontoText(new Texttyp(BKID, cn.getConnection()), ui.getKonto()
+                    final List<Text> kkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDES_IP, ui.getKonto().getId(),
+                            cn.getConnection());
+                    final List<Text> bkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, ui.getKonto()
                             .getId(), cn.getConnection());
 
                     if (eingeloggt != null && eingeloggt.getId() != null) {
@@ -1089,16 +1084,16 @@ public final class BestellformAction extends DispatchAction {
                                 custom = new BestellParam(bp.getId(), cn.getConnection());
                             }
                             if (bp.getId() == BestellformNumber.LOGGED_IN.getValue()) {
-                                custom.setTyid(LOGGED_IN);
+                                custom.setTyid(TextType.ORDERFORM_LOGGED_IN.getValue());
                                 custom.setKennung("Bestellformular eingeloggt");
                             }
                             if (bp.getId() == BestellformNumber.IP.getValue()) {
-                                custom.setTyid(IP); // IP
+                                custom.setTyid(TextType.IP.getValue()); // IP
                             }
                             if (bp.getId() == BestellformNumber.KKID.getValue()) { // Konto-Kennung
                                 custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
                                 if (custom.getId() == null) {
-                                    custom.setTyid(KKID);
+                                    custom.setTyid(TextType.ACCOUNT_ID_OVERRIDES_IP.getValue());
                                     custom.setKid(ui.getKonto().getId());
                                     custom.setKennung(bp.getKennung());
                                     custom.setId(bp.getId());
@@ -1107,7 +1102,7 @@ public final class BestellformAction extends DispatchAction {
                             if (bp.getId() == BestellformNumber.BKID.getValue()) { // Borker-Kennung
                                 custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
                                 if (custom.getId() == null) {
-                                    custom.setTyid(BKID);
+                                    custom.setTyid(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue());
                                     custom.setKid(ui.getKonto().getId());
                                     custom.setKennung(bp.getKennung());
                                     custom.setId(bp.getId());
@@ -1214,8 +1209,8 @@ public final class BestellformAction extends DispatchAction {
 
                                 // get user categories for drop down menu
                                 if (bp.isCategory()) {
-                                    final List<Text> categories = cn.getAllKontoText(new Texttyp("Benutzer Kategorie",
-                                            cn.getConnection()), ui.getKonto().getId(), cn.getConnection());
+                                    final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui
+                                            .getKonto().getId(), cn.getConnection());
                                     // only set into request, if we have at least one category
                                     rq.setAttribute("categories", categories);
                                 }
@@ -1466,14 +1461,14 @@ public final class BestellformAction extends DispatchAction {
                     return check;
                 }
                 if (bp.getId() == BestellformNumber.KKID.getValue() && bp.getKennung() != null) { // Konto-Kennung
-                    t = new Text(cn, bp.getKennung());
+                    t = new Text(cn, TextType.ACCOUNT_ID_OVERRIDES_IP, bp.getKennung());
                     if (t.getKonto().getId() != null && t.getKonto().getId().equals(ui.getKonto().getId())) {
                         check = true;
                         return check;
                     }
                 }
                 if (bp.getId() == BestellformNumber.BKID.getValue() && bp.getKennung() != null) { // Broker-Kennung
-                    t = new Text(cn, bp.getKennung());
+                    t = new Text(cn, TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, bp.getKennung());
                     if (t.getKonto().getId() != null && t.getKonto().getId().equals(ui.getKonto().getId())) {
                         check = true;
                         return check;

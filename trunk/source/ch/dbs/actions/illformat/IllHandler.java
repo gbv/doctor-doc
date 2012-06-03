@@ -39,6 +39,7 @@ import ch.dbs.form.IllForm;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import enums.Connect;
+import enums.TextType;
 
 public class IllHandler {
 
@@ -590,7 +591,7 @@ public class IllHandler {
                         statustext = ill.getResponder_note();
                     }
                     orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,
-                            "geliefert"), statustext, "automatisch", cn);
+                            TextType.STATE_ORDER, "geliefert"), statustext, "automatisch", cn);
                 }
             }
             if (ill.getMessage_type().equals("ANSWER")) {
@@ -622,7 +623,7 @@ public class IllHandler {
                         statustext = ill.getResponder_note();
                     }
                     orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,
-                            "nicht lieferbar"), statustext, "automatisch", cn);
+                            TextType.STATE_ORDER, "nicht lieferbar"), statustext, "automatisch", cn);
                 }
 
             }
