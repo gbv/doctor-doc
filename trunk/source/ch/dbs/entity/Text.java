@@ -360,7 +360,7 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `KID`=? AND `TYID`=?");
             pstmt.setLong(1, k.getId());
-            pstmt.setLong(2, TextType.IP.getValue());
+            pstmt.setLong(2, TextType.IP4.getValue());
 
             rs = pstmt.executeQuery();
 
@@ -390,22 +390,22 @@ public class Text extends AbstractIdEntity {
     }
 
     /**
-     * holt alle Texte mit Bereichen oder Wildcards anhand der ersten beiden Oktetten einer IP
+     * Gets all Texts with ranges or wildcards from the first two octets of an IP4 or IP6.
      *
      * @param ip String
      * @param cn Connection
      * @return list ArrayList<Text>
      */
-    public List<Text> possibleIPRanges(final String ip, final Connection cn) {
+    public List<Text> possibleIPRanges(final String ip, final TextType type, final Connection cn) {
         final List<Text> list = new ArrayList<Text>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            final String ipPart = ip.substring(0, ip.indexOf(".", ip.indexOf(".") + 1) + 1);
+            final String ipPart = getIPPart(ip, type);
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE  `inhalt` LIKE ? AND `TYID`=? "
                     + "AND (`inhalt` LIKE '%.*%' OR `inhalt` LIKE '%-%')");
             pstmt.setString(1, ipPart + "%");
-            pstmt.setLong(2, TextType.IP.getValue());
+            pstmt.setLong(2, type.getValue());
 
             rs = pstmt.executeQuery();
 
@@ -413,7 +413,7 @@ public class Text extends AbstractIdEntity {
                 final Text txt = new Text();
                 txt.setId(rs.getLong("TID"));
                 txt.setKonto(new Konto(rs.getLong("KID"), cn));
-                txt.setTexttype(TextType.IP);
+                txt.setTexttype(type);
                 txt.setInhalt(rs.getString("inhalt"));
                 list.add(txt);
             }
@@ -437,6 +437,18 @@ public class Text extends AbstractIdEntity {
             }
         }
         return list;
+    }
+
+    private String getIPPart(final String ip, final TextType type) {
+
+        if (TextType.IP4.getValue() == type.getValue()) {
+            return ip.substring(0, ip.indexOf(".", ip.indexOf(".") + 1) + 1);
+        } else if (TextType.IP6.getValue() == type.getValue()) {
+            return ip.substring(0, ip.indexOf(":", ip.indexOf(":") + 1) + 1);
+        } else {
+            throw new IllegalArgumentException("Invalid TextType for IP: " + type.getName()
+                    + ". Valid TextTypes are IP4 or IP6.");
+        }
     }
 
     /**

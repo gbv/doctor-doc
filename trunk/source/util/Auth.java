@@ -17,10 +17,6 @@
 
 package util;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,29 +81,9 @@ public class Auth {
         final Auth auth = new Auth();
 
         // IP-basiert
-        String ip = rq.getRemoteAddr();
+        final String ip = rq.getRemoteAddr();
 
         try {
-
-            if (ip != null && ip.contains(":")) { // Verdacht auf IPv6
-                try {
-                    final InetAddress a6 = InetAddress.getByName(ip);
-                    if (a6 instanceof Inet6Address) {
-                        // in Linux kann intern schon mal IPv6 zum Zuge kommen...
-                        if (!a6.isLoopbackAddress()) { // Nachricht schicken, falls IPv6 und nicht lokale Loopback
-                            final MHelper mh = new MHelper();
-                            mh.sendErrorMail("IPv6 empfangen!", a6.getHostAddress());
-                        }
-                        if (((Inet6Address) a6).isIPv4CompatibleAddress()) {
-                            final Inet4Address a4 = (Inet4Address) InetAddress.getByName(a6.getHostName());
-                            LOG.warn("umgewandelte IP6 to IP4: " + a4.getHostAddress());
-                            ip = a4.getHostAddress(); // Umwandlung in IP4 // TODO: IPv6 grundsätzlich ermöglichen
-                        }
-                    }
-                } catch (final UnknownHostException ex) {
-                    LOG.error("grantAccess ip: " + ip + "\040" + ex.toString());
-                }
-            }
 
             final IPChecker ipck = new IPChecker();
             final Text tip = ipck.contains(ip, cn.getConnection());

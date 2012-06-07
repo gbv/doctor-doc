@@ -991,7 +991,7 @@ public final class BestellformAction extends DispatchAction {
 
                     if (hasIP) {
                         ip.setId(Long.valueOf(0));
-                        ip.setTexttype(TextType.IP);
+                        ip.setTexttype(TextType.IP4);
                         ip.setKonto(ui.getKonto());
                         ipbasiert = new BestellParam(ip, cn.getConnection());
                     }
@@ -1088,7 +1088,7 @@ public final class BestellformAction extends DispatchAction {
                                 custom.setKennung("Bestellformular eingeloggt");
                             }
                             if (bp.getId() == BestellformNumber.IP.getValue()) {
-                                custom.setTyid(TextType.IP.getValue()); // IP
+                                custom.setTyid(TextType.IP4.getValue()); // IP
                             }
                             if (bp.getId() == BestellformNumber.KKID.getValue()) { // Konto-Kennung
                                 custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());

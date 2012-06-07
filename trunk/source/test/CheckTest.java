@@ -50,6 +50,8 @@ public class CheckTest {
 
     }
 
+    // CHECKSTYLE:OFF
+
     @Test
     public void testIsEmail() throws Exception {
         assertTrue(check.isEmail("test@test.ch"));
@@ -168,4 +170,6 @@ public class CheckTest {
         assertFalse(check.isYear(null));
 
     }
+
+    // CHECKSTYLE:ON
 }

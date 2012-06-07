@@ -217,7 +217,7 @@ public class BestellParam extends ValidatorForm {
         try {
             if (t != null && t.getId() != null) {
                 // nur 1 Formular für alle IP-Zugriffe
-                if (t.getTexttype().getValue() == TextType.IP.getValue()) {
+                if (t.getTexttype().getValue() == TextType.IP4.getValue()) {
                     t.setInhalt("");
                 }
 
@@ -269,7 +269,7 @@ public class BestellParam extends ValidatorForm {
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE KID = ? AND TYID = ? AND kennung = ?");
             pstmt.setLong(1, k.getId());
-            pstmt.setLong(2, Long.valueOf(13));
+            pstmt.setLong(2, TextType.ORDERFORM_LOGGED_IN.getValue());
             pstmt.setString(3, "Bestellformular eingeloggt");
             rs = pstmt.executeQuery();
 

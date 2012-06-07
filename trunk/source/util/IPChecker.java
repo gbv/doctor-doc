@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2005 - 2012  Markus Fischer, Pascal Steiner
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -18,10 +18,14 @@
 package util;
 
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.util.List;
+
+import main.java.com.googlecode.ipv6.IPv6Address;
+import main.java.com.googlecode.ipv6.IPv6AddressRange;
 
 import org.grlea.log.SimpleLogger;
 
@@ -33,33 +37,27 @@ public class IPChecker {
     private static final SimpleLogger LOG = new SimpleLogger(IPChecker.class);
 
     /**
-     * prüft eine IPv4 gegen eine IP-Adressliste in einer Datenbank
-     * 1. Priorität: ganze IPs
-     * 2. Priorität: IP-Bereiche, wobei nur Bereiche und Wildcards im dritten und vierten Oktett berücksichtigt werden
+     * Checks an IPv4 or IP6 against entries in the database.
+     * 1. Priority: distinct IPs
+     * 2. Priority: IP ranges. 
+     * 
+     * IP4: valid are ranges and wildcards in the third and fourth octet
+     * IP6: valid are ranges from the third and consequent octets
+     * 
      */
 
     public Text contains(final String ip, final Connection cn) {
         Text t = new Text();
 
-        try { // Zur Absicherung, damit nur richtige IPs geprüft werden
-            final InetAddress a4 = InetAddress.getByName(ip);
+        try {
 
-            if (a4 instanceof Inet4Address) {
+            // make sure we look up only valid IP addresses
+            final InetAddress inetaddress = InetAddress.getByName(ip);
 
-                // falls IP eindeutig hinterlegt
-                t = new Text(cn, TextType.IP, ip); // Text mit IP
-
-                if (isTextNull(t)) {
-                    // Prüfung auf IP-Bereiche
-                    final List<Text> list = t.possibleIPRanges(ip, cn);
-
-                    for (final Text ipToCheck : list) {
-                        if (compare(ip, ipToCheck.getInhalt())) {
-                            t = ipToCheck;
-                            return t;
-                        }
-                    }
-                }
+            if (inetaddress instanceof Inet4Address) {
+                t = lookUpIP(ip, TextType.IP4, cn);
+            } else if (inetaddress instanceof Inet6Address) {
+                t = lookUpIP(ip, TextType.IP6, cn);
             }
 
         } catch (final UnknownHostException ex) {
@@ -69,7 +67,38 @@ public class IPChecker {
         return t;
     }
 
-    private boolean compare(final String ip, final String ip_db) {
+    private Text lookUpIP(final String ip, final TextType type, final Connection cn) {
+
+        Text t = new Text();
+
+        // if we have a distinct IP in the database
+        t = new Text(cn, type, ip); // Text with IP
+
+        if (isTextNull(t)) {
+            // checking for ranges
+            final List<Text> list = t.possibleIPRanges(ip, type, cn);
+
+            if (TextType.IP4.getValue() == type.getValue()) {
+                for (final Text ipToCheck : list) {
+                    if (compareIP4(ip, ipToCheck.getInhalt())) {
+                        t = ipToCheck;
+                        return t;
+                    }
+                }
+            } else if (TextType.IP6.getValue() == type.getValue()) {
+                for (final Text ipToCheck : list) {
+                    if (compareIP6(ip, ipToCheck.getInhalt())) {
+                        t = ipToCheck;
+                        return t;
+                    }
+                }
+            }
+        }
+
+        return t;
+    }
+
+    private boolean compareIP4(final String ip, final String ip_db) {
         boolean check = false;
 
         try {
@@ -117,7 +146,30 @@ public class IPChecker {
             }
 
         } catch (final Exception e) {
-            LOG.error("boolean compare(String ip, String ip_db): " + e.toString());
+            LOG.error("boolean compareIP4(String ip, String ip_db): " + e.toString());
+        }
+
+        return check;
+    }
+
+    private boolean compareIP6(final String ip, final String ip_db) {
+        boolean check = false;
+
+        try {
+            // valid are only ranges for IP6 and no wildcards.
+            if (ip_db.contains("-")) {
+                final String fromAddress = ip_db.substring(0, ip_db.indexOf("-"));
+                final String toAddress = ip_db.substring(ip_db.indexOf("-") + 1);
+
+                final IPv6AddressRange range = IPv6AddressRange.fromFirstAndLast(IPv6Address.fromString(fromAddress),
+                        IPv6Address.fromString(toAddress));
+
+                check = range.contains(IPv6Address.fromString(ip));
+
+            }
+
+        } catch (final Exception e) {
+            LOG.error("boolean compareIP6(String ip, String ip_db): " + e.toString());
         }
 
         return check;
