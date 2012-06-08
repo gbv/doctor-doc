@@ -28,7 +28,7 @@ You now have an "Dynamic Web Project". Now let's checkout Doctor-Doc over SVN in
 
 You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a Tomcat server configuration.
 
-16. Download and unpack the latest Tomcat server version 7. Earlier version won't work for this setup. In production may to choose any Tomcat server version.
+16. Download and unpack the latest Tomcat server version 7. Earlier version won't work for this setup. In production you may choose any Tomcat server version.
 17. in eclipse right click in the tab "server" below => "new" => "Server"
 18. choose "Apache Tomcat 7.0" => next
 19. add your "available" project to "configured" => finish
