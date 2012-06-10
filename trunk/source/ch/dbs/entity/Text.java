@@ -398,41 +398,46 @@ public class Text extends AbstractIdEntity {
      */
     public List<Text> possibleIPRanges(final String ip, final TextType type, final Connection cn) {
         final List<Text> list = new ArrayList<Text>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            final String ipPart = getIPPart(ip, type);
-            pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE  `inhalt` LIKE ? AND `TYID`=? "
-                    + "AND (`inhalt` LIKE '%.*%' OR `inhalt` LIKE '%-%')");
-            pstmt.setString(1, ipPart + "%");
-            pstmt.setLong(2, type.getValue());
 
-            rs = pstmt.executeQuery();
+        // prevents a possible null pointer exception
+        if (ip != null) {
 
-            while (rs.next()) {
-                final Text txt = new Text();
-                txt.setId(rs.getLong("TID"));
-                txt.setKonto(new Konto(rs.getLong("KID"), cn));
-                txt.setTexttype(type);
-                txt.setInhalt(rs.getString("inhalt"));
-                list.add(txt);
-            }
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            try {
+                final String ipPart = getIPPart(ip, type);
+                pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE  `inhalt` LIKE ? AND `TYID`=? "
+                        + "AND (`inhalt` LIKE '%.*%' OR `inhalt` LIKE '%-%')");
+                pstmt.setString(1, ipPart + "%");
+                pstmt.setLong(2, type.getValue());
 
-        } catch (final Exception e) {
-            LOG.error("possibleIPRanges(Connection cn, String ip): " + e.toString());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    final Text txt = new Text();
+                    txt.setId(rs.getLong("TID"));
+                    txt.setKonto(new Konto(rs.getLong("KID"), cn));
+                    txt.setTexttype(type);
+                    txt.setInhalt(rs.getString("inhalt"));
+                    list.add(txt);
                 }
-            }
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (final SQLException e) {
-                    LOG.error(e.toString());
+
+            } catch (final Exception e) {
+                LOG.error("possibleIPRanges(Connection cn, String ip): " + e.toString());
+            } finally {
+                if (rs != null) {
+                    try {
+                        rs.close();
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
+                    }
+                }
+                if (pstmt != null) {
+                    try {
+                        pstmt.close();
+                    } catch (final SQLException e) {
+                        LOG.error(e.toString());
+                    }
                 }
             }
         }
