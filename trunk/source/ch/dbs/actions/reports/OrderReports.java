@@ -29,10 +29,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -146,7 +146,7 @@ public final class OrderReports extends DispatchAction {
                     final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
                     tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
                     for (final Bestellungen order : orders) {
-                        final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
+                        final HashMap<String, String> hm = new HashMap<String, String>();
                         hm.put("orderdate", order.getOrderdate());
                         // if (order.getBestellquelle() != null)if (order.getBestellquelle().equals("0"))
                         // order.setBestellquelle("k. A.");
@@ -221,7 +221,7 @@ public final class OrderReports extends DispatchAction {
                     }
 
                     //Parameter abfüllen
-                    final Map<String, Object> param = new ConcurrentHashMap<String, Object>();
+                    final Map<String, Object> param = new HashMap<String, Object>();
                     final Date from = new SimpleDateFormat("yyyy-MM-dd").parse(of.getFromdate());
                     final Date to = new SimpleDateFormat("yyyy-MM-dd").parse(of.getTodate());
                     param.put("from", new SimpleDateFormat("dd.MM.yyyy").format(from));

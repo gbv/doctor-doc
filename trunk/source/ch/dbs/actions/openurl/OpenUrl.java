@@ -18,8 +18,8 @@
 package ch.dbs.actions.openurl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,7 +46,7 @@ public class OpenUrl {
     public ContextObject readOpenUrlFromRequest(final HttpServletRequest rq) {
 
         final ContextObject co = new ContextObject();
-        final ConcurrentHashMap<String, String> params = getOpenUrlParameters(rq);
+        final HashMap<String, String> params = getOpenUrlParameters(rq);
 
         final ArrayList<String> uriSchemas = new ArrayList<String>();
 
@@ -1353,9 +1353,9 @@ public class OpenUrl {
     /**
      * Gets from a request all OpenURL parameters.
      */
-    private ConcurrentHashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
+    private HashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
 
-        final ConcurrentHashMap<String, String> hm = new ConcurrentHashMap<String, String>();
+        final HashMap<String, String> hm = new HashMap<String, String>();
 
         final Map<String, String[]> paramMap = rq.getParameterMap();
 

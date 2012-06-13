@@ -30,7 +30,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -385,7 +384,7 @@ public final class ILVReport extends DispatchAction {
 
     private Map<String, Object> reportMainz(final IlvReportForm ilvf, final UserInfo ui) {
 
-        final Map<String, Object> result = new ConcurrentHashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<String, Object>();
 
         final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
@@ -458,7 +457,7 @@ public final class ILVReport extends DispatchAction {
 
     private Map<String, Object> reportCharite(final IlvReportForm ilvf, final UserInfo ui) {
 
-        final Map<String, Object> result = new ConcurrentHashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<String, Object>();
 
         final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
