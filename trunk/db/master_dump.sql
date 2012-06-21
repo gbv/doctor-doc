@@ -1,13 +1,14 @@
--- works with  >= Revision 277 (see also dbchanges_forUpdate, e.g. if using SVN)
-
+-- works with  >= Revision 340 (see also dbchanges_forUpdate, e.g. if using SVN)
+--
+--
 -- phpMyAdmin SQL Dump
--- version 3.4.5deb1
+-- version 3.4.10.1deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. Mrz 2012 um 12:50
--- Server Version: 5.1.58
--- PHP-Version: 5.3.6-13ubuntu3.6
+-- Erstellungszeit: 21. Jun 2012 um 12:51
+-- Server Version: 5.5.24
+-- PHP-Version: 5.3.10-1ubuntu3.2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -240,6 +241,7 @@ CREATE TABLE IF NOT EXISTS `bestellungen` (
   `notizen` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `kaufpreis` decimal(6,2) DEFAULT NULL,
   `waehrung` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `signatur` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`BID`),
   KEY `KID` (`KID`),
   KEY `UID` (`UID`),
@@ -1198,7 +1200,7 @@ CREATE TABLE IF NOT EXISTS `texttyp` (
   `KID` bigint(20) DEFAULT NULL,
   `inhalt` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`TYID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=16 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=18 ;
 
 --
 -- Daten für Tabelle `texttyp`
@@ -1220,8 +1222,8 @@ INSERT INTO `texttyp` (`TYID`, `KID`, `inhalt`) VALUES
 (13, NULL, 'Bestellformular eingeloggt'),
 (14, NULL, 'DAIA-ID'),
 (15, NULL, 'Benutzer Kategorie'),
-(16 , NULL , 'ILV Mailsubject'),
-(17 , NULL , 'ILV Mailtext');
+(16, NULL, 'ILV Mailsubject'),
+(17, NULL, 'ILV Mailtext');
 
 -- --------------------------------------------------------
 
@@ -1262,3 +1264,4 @@ CREATE TABLE IF NOT EXISTS `zdb_id` (
   KEY `zdbid` (`zdbid`),
   KEY `identifier_id` (`identifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+

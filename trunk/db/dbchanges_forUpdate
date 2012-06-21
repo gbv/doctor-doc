@@ -2,8 +2,8 @@
 
 ALTER TABLE `bestellungen` ADD `signatur` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL 
 
-INSERT INTO `doctor-doc_com_dbs`.`texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailsubject');
-INSERT INTO `doctor-doc_com_dbs`.`texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailtext');
+INSERT INTO `texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailsubject');
+INSERT INTO `texttyp` (`TYID` ,`KID` ,`inhalt`) VALUES (NULL , NULL , 'ILV Mailtext');
 
 -- Revision 277 --
 
