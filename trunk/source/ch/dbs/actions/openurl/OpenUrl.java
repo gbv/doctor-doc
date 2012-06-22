@@ -20,6 +20,8 @@ package ch.dbs.actions.openurl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1506,7 +1508,14 @@ public class OpenUrl {
         try {
 
             if (input.length() > Decoder.utf8Convert(input).length()) {
-                check = true;
+
+                // if Umlauts are present, avoid recoding
+                final Pattern p = Pattern.compile("ä|ö|ü|à|è|é", Pattern.CASE_INSENSITIVE);
+                final Matcher m = p.matcher(input);
+
+                if (!m.find()) {
+                    check = true;
+                }
             }
 
         } catch (final Exception e) {
@@ -1515,5 +1524,4 @@ public class OpenUrl {
 
         return check;
     }
-
 }
