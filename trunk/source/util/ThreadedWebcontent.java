@@ -37,7 +37,7 @@ public class ThreadedWebcontent implements Callable<String> {
 
     public String call() {
         final Http http = new Http();
-        return http.getWebcontent(link);
+        return http.getContent(link);
     }
 
     public String getLink() {

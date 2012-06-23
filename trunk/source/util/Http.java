@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2012  Markus Fischer
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -17,20 +17,24 @@
 
 package util;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 import org.grlea.log.SimpleLogger;
 
 import enums.Connect;
@@ -38,209 +42,139 @@ import enums.Connect;
 public class Http {
 
     private static final SimpleLogger LOG = new SimpleLogger(Http.class);
-
-    private static final String LOC = "location";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
 
     /**
-     *
      * @param link
-     * @return Website als String mit fixem nicht einstellbarem timeout sowie mit 3 versuchen bei Fehler
+     * @return web site as String with a timeout of 2 seconds and 3 retries.
      */
-    public String getWebcontent(final String link) {
-        return getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
+    public String getContent(final String link) {
+        return getContent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
     }
 
     /**
-     * @param method
-     * @return Website als String mit fixem nicht einstellbarem timeout sowie mit 3 versuchen bei Fehler
+     * @param link
+     * @return web site as String with a timeout of 2 seconds and 3 retries.
      */
-    public String getWebcontent(final PostMethod method) {
-        return getWebcontent(method, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
+    public String getContent(final String link, final List<NameValuePair> nameValuePairs) {
+        return getContent(link, nameValuePairs, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
     }
 
     /**
-     *
      * @param String link
      * @param int timeout_ms
-     * @param int retrys
-     * @return Liefert den inhalt einer Website als String zurück
+     * @return web site as string
      */
-    public String getWebcontent(final String link, final int timeoutMs, final int retrys) {
-        final HttpClientParams params = new HttpClientParams();
-        final HttpClient client = new HttpClient(params);
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeoutMs); // funzt!
-
-        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-
-        String contents = "";
-        String redirectLocation = "";
-        int trys = 0;
-        boolean connection = false;
-        GetMethod gmethod = new GetMethod(link.replaceAll("&amp;", "&")); // doppelt gemoppelt mit Funktion encode!
-        while (!connection && trys < retrys) {
-            try {
-                int statusCode = client.executeMethod(gmethod);
-                if (statusCode != -1) {
-                    Header locationHeader = gmethod.getResponseHeader(LOC);
-                    while (locationHeader != null) {
-                        redirectLocation = locationHeader.getValue();
-                        gmethod = new GetMethod(redirectLocation);
-                        statusCode = client.executeMethod(gmethod);
-                        locationHeader = gmethod.getResponseHeader(LOC);
-                    }
-                    // Diese Methode bringt content ohne Umbrüche
-                    // d.h. content.substring+fixeZahl funktioniert nicht mehr...
-                    // ausserdem werden Umlaute anders behandelt
-                    ////                  Get the response
-                    //          BufferedReader rd = new BufferedReader(new InputStreamReader(gmethod.
-                    //          getResponseBodyAsStream()));
-                    //          StringBuffer sb = new StringBuffer();
-                    //          String s = null;
-                    //          while ((s = rd.readLine()) != null) {
-                    //            sb.append(s + "\n");
-                    //          }
-                    //                    contents = sb.toString();
-
-                    contents = gmethod.getResponseBodyAsString();
-                    connection = true;
-
-                    //                    DataInputStream dis = new DataInputStream( gmethod.getResponseBodyAsStream());
-                    //                    byte[] b =new byte[1000000];
-                    //                    dis.read(b);
-                    //                    String s = new String(b);
-                    //                    contents = s;
-                    //                    // Funzt nur wenn die Info im Header steht, ansonsten -1
-                    //                    Long l = gmethod.getResponseContentLength();
-                    //                    System.out.println(gmethod.getResponseCharSet()); //
-                }
-
-            } catch (final IOException e) {
-                LOG.ludicrous("getWebContent(String link, int timeout_ms, int retrys), failure attempt: " + trys
-                        + "\040" + e.toString());
-                if (trys + 1 == retrys) { // beim letzten Versuch ein Email schicken
-                    LOG.error("getWebContent(String link, int timeout_ms, int retrys), last attempt failed: " + link
-                            + "\040" + e.toString());
-                }
-                trys++;
-            } finally {
-                gmethod.releaseConnection();
-            }
-        }
-        return contents;
-    }
-
-    /**
-     *
-     * @param PostMethod method
-     * @return Liefert den inhalt einer Website als String zurück
-     */
-    public String getWebcontent(PostMethod method, final int timeoutMs, final int retrys) {
+    public String getContent(final String link, final int timeoutMs, final int retrys) {
 
         String content = "";
-        String f = "";
-        try {
-            f = method.getURI().toString();
-        } catch (final URIException e1) {
-            LOG.error("getWebcontent(PostMethod method, int timeout_ms, int retrys): " + e1.toString());
-        }
-        String redirectLocation = "";
+        HttpEntity entity = null;
 
-        //        Protocol myhttps = new Protocol("https", new SSLSocketFactory(), 443);
+        final HttpGet httpget = new HttpGet(link);
 
-        final HttpClient client = new HttpClient();
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeoutMs); // funzt!
+        final HttpParams httpParameters = new BasicHttpParams();
+        // Set the timeout in milliseconds until a connection is established.
+        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutMs);
+        // Set the default socket timeout in milliseconds which is the timeout for waiting for data.
+        HttpConnectionParams.setSoTimeout(httpParameters, timeoutMs);
+        // Set user agent
+        httpParameters.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
 
-        client.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        final HttpClient httpclient = new DefaultHttpClient(httpParameters);
 
-        boolean connection = false;
-        int trys = 0;
-        while (!connection && trys < retrys) {
+        int runs = 1;
+
+        while (entity == null && runs <= retrys) {
+
+            runs++;
+
             try {
-                int statusCode = client.executeMethod(method);
-                if (statusCode != -1) {
-                    Header locationHeader = method.getResponseHeader(LOC);
-                    while (locationHeader != null) {
-                        redirectLocation = locationHeader.getValue();
-                        method = new PostMethod(redirectLocation);
-                        statusCode = client.executeMethod(method);
-                        locationHeader = method.getResponseHeader(LOC);
-                        //                        System.out.println("Location: " + redirectLocation);
-                    }
-                    // Diese Methode bringt content ohne Umbrüche
-                    // d.h. content.substring+fixeZahl funktioniert nicht mehr...
-                    // ausserdem werden Umlaute anders behandelt
-                    //                    // Get the response
-                    //          BufferedReader rd = new BufferedReader(new InputStreamReader(method.
-                    //          getResponseBodyAsStream()));
-                    //          StringBuffer sb = new StringBuffer();
-                    //          String s = null;
-                    //          while ((s = rd.readLine()) != null) {
-                    //            sb.append(s);
-                    //          }
-                    //                    content = sb.toString();
 
-                    content = method.getResponseBodyAsString();
-                    connection = true;
-                    //                    System.out.println();
+                // Execute the request
+                final HttpResponse response = httpclient.execute(httpget);
+
+                // Get hold of the response entity
+                entity = response.getEntity();
+
+                if (entity != null) {
+                    content = EntityUtils.toString(entity);
                 }
 
             } catch (final IOException e) {
-                LOG.ludicrous("getWebContent(PostMethod method, int timeout_ms, int retrys), failure attempt: " + trys
-                        + "\040" + e.toString());
-                if (trys + 1 == retrys) { // letzter Versuch
-                    LOG.error("getWebContent(PostMethod method, int timeout_ms, int retrys), last attempt failed: "
-                            + e.toString() + "\012" + f);
-                }
-                trys++;
+                LOG.error(e.toString());
+            } catch (final Exception e) {
+                LOG.error(e.toString());
             } finally {
-                method.releaseConnection();
+                EntityUtils.consumeQuietly(entity);
             }
+
         }
+
         return content;
     }
 
     /**
-     *
-     * @param link
-     * @param postdata
-     * @return
+     * @param String link
+     * @param List<NameValuePair> nameValuePairs
+     * @param int timeout_ms
+     * @return web site as string
      */
-    public String getWebcontent(final String link, final String postdata) {
+    public String getContent(final String link, final List<NameValuePair> nameValuePairs, final int timeoutMs,
+            final int retrys) {
 
-        final StringBuffer response = new StringBuffer();
-        OutputStreamWriter writer = null;
-        BufferedReader reader = null;
+        String content = "";
+        HttpEntity entity = null;
+
         try {
-            DisableSSLCertificateCheckUtil.disableChecks();
-            // Send data
-            final URL url = new URL(link);
-            final URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            writer = new OutputStreamWriter(conn.getOutputStream());
-            writer.write(postdata);
-            writer.flush();
 
-            // Get the response
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String content = "";
-            while ((content = reader.readLine()) != null) {
-                response.append(content);
-                response.append('\n');
+            final HttpPost httppost = new HttpPost(link);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
+
+            final HttpParams httpParameters = new BasicHttpParams();
+            // Set the timeout in milliseconds until a connection is established.
+            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutMs);
+            // Set the default socket timeout in milliseconds which is the timeout for waiting for data.
+            HttpConnectionParams.setSoTimeout(httpParameters, timeoutMs);
+            // Set user agent
+            httpParameters.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+
+            final HttpClient httpclient = new DefaultHttpClient(httpParameters);
+
+            int runs = 1;
+
+            while (entity == null && runs <= retrys) {
+
+                runs++;
+
+                try {
+
+                    // Execute the request
+                    final HttpResponse response = httpclient.execute(httppost);
+
+                    // Get hold of the response entity
+                    entity = response.getEntity();
+
+                    if (entity != null) {
+                        content = EntityUtils.toString(entity);
+                    }
+
+                } catch (final ClientProtocolException e) {
+                    LOG.error(e.toString());
+                } catch (final IOException e) {
+                    LOG.error(e.toString());
+                } catch (final Exception e) {
+                    LOG.error(e.toString());
+                } finally {
+                    EntityUtils.consumeQuietly(entity);
+                }
+
             }
-        } catch (final Exception e) {
-            LOG.error("getWebcontent(String link, String postdata): " + e.toString() + "\012" + link + "\012"
-                    + postdata);
-        } finally {
-            try {
-                writer.close();
-                reader.close();
-            } catch (final IOException e) {
-                LOG.error(e.toString());
-            }
+
+        } catch (final UnsupportedEncodingException e) {
+            LOG.error(e.toString());
         }
 
-        return response.toString();
+        return content;
     }
+
 }

@@ -67,7 +67,7 @@ public class EZBXML {
         link.append("&jq_term1=");
         link.append(coder.encodeLatin1(jtitle));
 
-        String content = http.getWebcontent(link.toString(), Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
+        String content = http.getContent(link.toString(), Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
 
         // if we have > 30 hits, try a more concise search using: &jq_type1=KS (title starts with) instead of &jq_type1=KT (words in title)
         if (content != null && content.contains("<search_count>")) {
@@ -80,7 +80,7 @@ public class EZBXML {
                 link2.append(bibid);
                 link2.append("&jq_term1=");
                 link2.append(coder.encodeLatin1(jtitle));
-                content = http.getWebcontent(link2.toString(), Connect.TIMEOUT_2.getValue(),
+                content = http.getContent(link2.toString(), Connect.TIMEOUT_2.getValue(),
                         Connect.RETRYS_2.getValue());
             }
 
@@ -102,7 +102,7 @@ public class EZBXML {
         link.append("&jq_term4=");
         link.append(issn);
 
-        final String content = http.getWebcontent(link.toString(), Connect.TIMEOUT_2.getValue(),
+        final String content = http.getContent(link.toString(), Connect.TIMEOUT_2.getValue(),
                 Connect.RETRYS_2.getValue());
 
         final List<String> jourids = getJourids(content);
@@ -131,7 +131,7 @@ public class EZBXML {
 
                 final JournalDetails jd = new JournalDetails();
 
-                final String content = http.getWebcontent(link.toString() + jourid, Connect.TIMEOUT_1.getValue(),
+                final String content = http.getContent(link.toString() + jourid, Connect.TIMEOUT_1.getValue(),
                         Connect.RETRYS_1.getValue());
 
                 if (content != null) {

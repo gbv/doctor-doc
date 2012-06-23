@@ -47,13 +47,13 @@ import org.grlea.log.SimpleLogger;
 import util.Auth;
 import util.Check;
 import util.CodeUrl;
-import util.Http;
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.SpecialCharacters;
 import util.ThreadSafeSimpleDateFormat;
 import util.ThreadedJournalSeek;
 import util.ThreadedWebcontent;
+import util.Http;
 import ch.dbs.actions.bestand.Stock;
 import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
@@ -2293,7 +2293,7 @@ public final class OrderAction extends DispatchAction {
     private String getWebcontent(final String link, final int timeoutMs, final int retrys) {
         final Http http = new Http();
 
-        return http.getWebcontent(link, timeoutMs, retrys);
+        return http.getContent(link, timeoutMs, retrys);
     }
 
     private String shortenGoogleSearchPhrase(String artikeltitel) {

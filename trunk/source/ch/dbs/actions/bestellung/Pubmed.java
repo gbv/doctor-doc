@@ -66,7 +66,7 @@ public class Pubmed {
         String content = "";
 
         try {
-            content = http.getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
+            content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
             final ContextObject co = openurl.readXmlPubmed(content);
             of = openurlConv.makeOrderform(co);
         } catch (final Exception e) {
@@ -89,7 +89,7 @@ public class Pubmed {
 
         try {
 
-            final String content = http.getWebcontent(composePubmedlinkToPmid(of), Connect.TIMEOUT_2.getValue(),
+            final String content = http.getContent(composePubmedlinkToPmid(of), Connect.TIMEOUT_2.getValue(),
                     Connect.RETRYS_2.getValue());
 
             if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {

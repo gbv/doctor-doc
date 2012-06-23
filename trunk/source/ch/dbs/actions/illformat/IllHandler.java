@@ -18,19 +18,22 @@
 package ch.dbs.actions.illformat;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.grlea.log.SimpleLogger;
 
-import util.Http;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import util.UniqueID;
+import util.Http;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.OrderState;
@@ -63,249 +66,258 @@ public class IllHandler {
         // falls ein Wert unvermittelt null ist wird ein Leerstring verwendet, um in jedem Fall sicherzustellen,
         // dass die Methode nicht kracht
 
-        final PostMethod method = new PostMethod(baseurl);
+        final List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(47);
         if (ill.getMessage_type() != null) {
-            method.addParameter("message-type", ill.getMessage_type());
+            nameValuePairs.add(new BasicNameValuePair("message-type", ill.getMessage_type()));
         } else {
-            method.addParameter("message-type", "");
+            nameValuePairs.add(new BasicNameValuePair("message-type", ""));
         }
         if (ill.getTransaction_id() != null) {
-            method.addParameter("transaction-id", ill.getTransaction_id());
+            nameValuePairs.add(new BasicNameValuePair("transaction-id", ill.getTransaction_id()));
         } else {
-            method.addParameter("transaction-id", "");
+            nameValuePairs.add(new BasicNameValuePair("transaction-id", ""));
         }
         if (ill.getTransaction_initial_req_id_symbol() != null) {
-            method.addParameter("transaction-initial-req-id-symbol", ill.getTransaction_initial_req_id_symbol());
+            nameValuePairs.add(new BasicNameValuePair("transaction-initial-req-id-symbol", ill
+                    .getTransaction_initial_req_id_symbol()));
         } else {
-            method.addParameter("transaction-initial-req-id-symbol", "");
+            nameValuePairs.add(new BasicNameValuePair("transaction-initial-req-id-symbol", ""));
         }
         if (ill.getTransaction_group_qualifier() != null) {
-            method.addParameter("transaction-group-qualifier", ill.getTransaction_group_qualifier());
+            nameValuePairs.add(new BasicNameValuePair("transaction-group-qualifier", ill
+                    .getTransaction_group_qualifier()));
         } else {
-            method.addParameter("transaction-group-qualifier", "");
+            nameValuePairs.add(new BasicNameValuePair("transaction-group-qualifier", ""));
         }
         if (ill.getTransaction_qualifier() != null) {
-            method.addParameter("transaction-qualifier", ill.getTransaction_qualifier());
+            nameValuePairs.add(new BasicNameValuePair("transaction-qualifier", ill.getTransaction_qualifier()));
         } else {
-            method.addParameter("transaction-qualifier", "");
+            nameValuePairs.add(new BasicNameValuePair("transaction-qualifier", ""));
         }
         if (ill.getTransaction_sub_transaction_qualifier() != null) {
-            method.addParameter("transaction-sub-transaction-qualifier", ill.getTransaction_sub_transaction_qualifier());
+            nameValuePairs.add(new BasicNameValuePair("transaction-sub-transaction-qualifier", ill
+                    .getTransaction_sub_transaction_qualifier()));
         } else {
-            method.addParameter("transaction-sub-transaction-qualifier", "");
+            nameValuePairs.add(new BasicNameValuePair("transaction-sub-transaction-qualifier", ""));
         }
         if (ill.getService_date_time() != null) {
-            method.addParameter("service-date-time", ill.getService_date_time());
+            nameValuePairs.add(new BasicNameValuePair("service-date-time", ill.getService_date_time()));
         } else {
-            method.addParameter("service-date-time", "");
+            nameValuePairs.add(new BasicNameValuePair("service-date-time", ""));
         }
         if (ill.getRequester_id() != null) {
-            method.addParameter("requester-id", ill.getRequester_id());
+            nameValuePairs.add(new BasicNameValuePair("requester-id", ill.getRequester_id()));
         } else {
-            method.addParameter("requester-id", "");
+            nameValuePairs.add(new BasicNameValuePair("requester-id", ""));
         }
         if (ill.getRequester_group() != null) {
-            method.addParameter("requester-group", ill.getRequester_group());
+            nameValuePairs.add(new BasicNameValuePair("requester-group", ill.getRequester_group()));
         } else {
-            method.addParameter("requester-group", "");
+            nameValuePairs.add(new BasicNameValuePair("requester-group", ""));
         }
         if (ill.getResponder_id() != null) {
-            method.addParameter("responder-id", ill.getResponder_id());
+            nameValuePairs.add(new BasicNameValuePair("responder-id", ill.getResponder_id()));
         } else {
-            method.addParameter("responder-id", "");
+            nameValuePairs.add(new BasicNameValuePair("responder-id", ""));
         }
         if (ill.getClient_id() != null) {
-            method.addParameter("client-id", ill.getClient_id());
+            nameValuePairs.add(new BasicNameValuePair("client-id", ill.getClient_id()));
         } else {
-            method.addParameter("client-id", "");
+            nameValuePairs.add(new BasicNameValuePair("client-id", ""));
         }
         if (ill.getClient_name() != null) {
-            method.addParameter("client-name", ill.getClient_name());
+            nameValuePairs.add(new BasicNameValuePair("client-name", ill.getClient_name()));
         } else {
-            method.addParameter("client-name", "");
+            nameValuePairs.add(new BasicNameValuePair("client-name", ""));
         }
         if (ill.getClient_identifier() != null) {
-            method.addParameter("client-identifier", ill.getClient_identifier());
+            nameValuePairs.add(new BasicNameValuePair("client-identifier", ill.getClient_identifier()));
         } else {
-            method.addParameter("client-identifier", "");
+            nameValuePairs.add(new BasicNameValuePair("client-identifier", ""));
         }
         if (ill.getDelivery_address() != null) {
-            method.addParameter("delivery-address", ill.getDelivery_address());
+            nameValuePairs.add(new BasicNameValuePair("delivery-address", ill.getDelivery_address()));
         } else {
-            method.addParameter("delivery-address", "");
+            nameValuePairs.add(new BasicNameValuePair("delivery-address", ""));
         }
         if (ill.getDel_postal_name_of_person_or_institution() != null) {
-            method.addParameter("del-postal-name-of-person-or-institution",
-                    ill.getDel_postal_name_of_person_or_institution());
+            nameValuePairs.add(new BasicNameValuePair("del-postal-name-of-person-or-institution", ill
+                    .getDel_postal_name_of_person_or_institution()));
         } else {
-            method.addParameter("del-postal-name-of-person-or-institution", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-name-of-person-or-institution", ""));
         }
         if (ill.getDel_postal_extended_postal_delivery_address() != null) {
-            method.addParameter("del-postal-extended-postal-delivery-address",
-                    ill.getDel_postal_extended_postal_delivery_address());
+            nameValuePairs.add(new BasicNameValuePair("del-postal-extended-postal-delivery-address", ill
+                    .getDel_postal_extended_postal_delivery_address()));
         } else {
-            method.addParameter("del-postal-extended-postal-delivery-address", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-extended-postal-delivery-address", ""));
         }
         if (ill.getDel_postal_street_and_number() != null) {
-            method.addParameter("del-postal-street-and-number", ill.getDel_postal_street_and_number());
+            nameValuePairs.add(new BasicNameValuePair("del-postal-street-and-number", ill
+                    .getDel_postal_street_and_number()));
         } else {
-            method.addParameter("del-postal-street-and-number", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-street-and-number", ""));
         }
         if (ill.getDel_postal_post_office_box() != null) {
-            method.addParameter("del-postal-post-office-box", ill.getDel_postal_post_office_box());
+            nameValuePairs
+                    .add(new BasicNameValuePair("del-postal-post-office-box", ill.getDel_postal_post_office_box()));
         } else {
-            method.addParameter("del-postal-post-office-box", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-post-office-box", ""));
         }
         if (ill.getDel_postal_city() != null) {
-            method.addParameter("del-postal-city", ill.getDel_postal_city());
+            nameValuePairs.add(new BasicNameValuePair("del-postal-city", ill.getDel_postal_city()));
         } else {
-            method.addParameter("del-postal-city", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-city", ""));
         }
         if (ill.getDel_postal_country() != null) {
-            method.addParameter("del-postal-country", ill.getDel_postal_country());
+            nameValuePairs.add(new BasicNameValuePair("del-postal-country", ill.getDel_postal_country()));
         } else {
-            method.addParameter("del-postal-country", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-country", ""));
         }
         if (ill.getDel_postal_code() != null) {
-            method.addParameter("del-postal-code", ill.getDel_postal_code());
+            nameValuePairs.add(new BasicNameValuePair("del-postal-code", ill.getDel_postal_code()));
         } else {
-            method.addParameter("del-postal-code", "");
+            nameValuePairs.add(new BasicNameValuePair("del-postal-code", ""));
         }
         if (ill.getDel_fax_address() != null) {
-            method.addParameter("del-fax-address", ill.getDel_fax_address());
+            nameValuePairs.add(new BasicNameValuePair("del-fax-address", ill.getDel_fax_address()));
         } else {
-            method.addParameter("del-fax-address", "");
+            nameValuePairs.add(new BasicNameValuePair("del-fax-address", ""));
         }
         if (ill.getDel_status_level_requester() != null) {
-            method.addParameter("del-status-level-requester", ill.getDel_status_level_requester());
+            nameValuePairs
+                    .add(new BasicNameValuePair("del-status-level-requester", ill.getDel_status_level_requester()));
         } else {
-            method.addParameter("del-status-level-requester", "");
+            nameValuePairs.add(new BasicNameValuePair("del-status-level-requester", ""));
         }
         if (ill.getDel_status_level_user() != null) {
-            method.addParameter("del-status-level-user", ill.getDel_status_level_user());
+            nameValuePairs.add(new BasicNameValuePair("del-status-level-user", ill.getDel_status_level_user()));
         } else {
-            method.addParameter("del-status-level-user", "");
+            nameValuePairs.add(new BasicNameValuePair("del-status-level-user", ""));
         }
         if (ill.getDel_customer_info_to_keep() != null) {
-            method.addParameter("del-customer-info-to-keep", ill.getDel_customer_info_to_keep());
+            nameValuePairs.add(new BasicNameValuePair("del-customer-info-to-keep", ill.getDel_customer_info_to_keep()));
         } else {
-            method.addParameter("del-customer-info-to-keep", "");
+            nameValuePairs.add(new BasicNameValuePair("del-customer-info-to-keep", ""));
         }
         if (ill.getDel_email_address() != null) {
-            method.addParameter("del-email-address", ill.getDel_email_address());
+            nameValuePairs.add(new BasicNameValuePair("del-email-address", ill.getDel_email_address()));
         } else {
-            method.addParameter("del-email-address", "");
+            nameValuePairs.add(new BasicNameValuePair("del-email-address", ""));
         }
         if (ill.getDelivery_service() != null) {
-            method.addParameter("delivery-service", ill.getDelivery_service());
+            nameValuePairs.add(new BasicNameValuePair("delivery-service", ill.getDelivery_service()));
         } else {
-            method.addParameter("delivery-service", "");
+            nameValuePairs.add(new BasicNameValuePair("delivery-service", ""));
         }
         if (ill.getIll_service_type() != null) {
-            method.addParameter("ill-service-type", ill.getIll_service_type());
+            nameValuePairs.add(new BasicNameValuePair("ill-service-type", ill.getIll_service_type()));
         } else {
-            method.addParameter("ill-service-type", "");
+            nameValuePairs.add(new BasicNameValuePair("ill-service-type", ""));
         }
         if (ill.getItem_id() != null) {
-            method.addParameter("item-id", ill.getItem_id());
+            nameValuePairs.add(new BasicNameValuePair("item-id", ill.getItem_id()));
         } else {
-            method.addParameter("item-id", "");
+            nameValuePairs.add(new BasicNameValuePair("item-id", ""));
         }
         if (ill.getItem_system_no() != null) {
-            method.addParameter("item-system-no", ill.getItem_system_no());
+            nameValuePairs.add(new BasicNameValuePair("item-system-no", ill.getItem_system_no()));
         } else {
-            method.addParameter("item-system-no", "");
+            nameValuePairs.add(new BasicNameValuePair("item-system-no", ""));
         }
         if (ill.getDel_notes() != null) {
-            method.addParameter("del-notes", ill.getDel_notes());
+            nameValuePairs.add(new BasicNameValuePair("del-notes", ill.getDel_notes()));
         } else {
-            method.addParameter("del-notes", "");
+            nameValuePairs.add(new BasicNameValuePair("del-notes", ""));
         }
         if (ill.getMaximum_cost() != null) {
-            method.addParameter("maximum-cost", ill.getMaximum_cost());
+            nameValuePairs.add(new BasicNameValuePair("maximum-cost", ill.getMaximum_cost()));
         } else {
-            method.addParameter("maximum-cost", "");
+            nameValuePairs.add(new BasicNameValuePair("maximum-cost", ""));
         }
         if (ill.getSearch_type() != null) {
-            method.addParameter("search-type", ill.getSearch_type());
+            nameValuePairs.add(new BasicNameValuePair("search-type", ill.getSearch_type()));
         } else {
-            method.addParameter("search-type", "");
+            nameValuePairs.add(new BasicNameValuePair("search-type", ""));
         }
         if (ill.getSearch_type_level_of_service() != null) {
-            method.addParameter("search-type-level-of-service", ill.getSearch_type_level_of_service());
+            nameValuePairs.add(new BasicNameValuePair("search-type-level-of-service", ill
+                    .getSearch_type_level_of_service()));
         } else {
-            method.addParameter("search-type-level-of-service", "");
+            nameValuePairs.add(new BasicNameValuePair("search-type-level-of-service", ""));
         }
         if (ill.getSearch_type_expiry_date() != null) {
-            method.addParameter("search-type-expiry-date", ill.getSearch_type_expiry_date());
+            nameValuePairs.add(new BasicNameValuePair("search-type-expiry-date", ill.getSearch_type_expiry_date()));
         } else {
-            method.addParameter("search-type-expiry-date", "");
+            nameValuePairs.add(new BasicNameValuePair("search-type-expiry-date", ""));
         }
         if (ill.getItem_author() != null) {
-            method.addParameter("item-author", ill.getItem_author());
+            nameValuePairs.add(new BasicNameValuePair("item-author", ill.getItem_author()));
         } else {
-            method.addParameter("item-author", "");
+            nameValuePairs.add(new BasicNameValuePair("item-author", ""));
         }
         if (ill.getItem_title() != null) {
-            method.addParameter("item-title", ill.getItem_title());
+            nameValuePairs.add(new BasicNameValuePair("item-title", ill.getItem_title()));
         } else {
-            method.addParameter("item-title", "");
+            nameValuePairs.add(new BasicNameValuePair("item-title", ""));
         }
         if (ill.getItem_sub_title() != null) {
-            method.addParameter("item-sub-title", ill.getItem_sub_title());
+            nameValuePairs.add(new BasicNameValuePair("item-sub-title", ill.getItem_sub_title()));
         } else {
-            method.addParameter("item-sub-title", "");
+            nameValuePairs.add(new BasicNameValuePair("item-sub-title", ""));
         }
         if (ill.getItem_place_of_publication() != null) {
-            method.addParameter("item-place-of-publication", ill.getItem_place_of_publication());
+            nameValuePairs.add(new BasicNameValuePair("item-place-of-publication", ill.getItem_place_of_publication()));
         } else {
-            method.addParameter("item-place-of-publication", "");
+            nameValuePairs.add(new BasicNameValuePair("item-place-of-publication", ""));
         }
         if (ill.getItem_publisher() != null) {
-            method.addParameter("item-publisher", ill.getItem_publisher());
+            nameValuePairs.add(new BasicNameValuePair("item-publisher", ill.getItem_publisher()));
         } else {
-            method.addParameter("item-publisher", "");
+            nameValuePairs.add(new BasicNameValuePair("item-publisher", ""));
         }
         if (ill.getItem_publication_date_of_component() != null) {
-            method.addParameter("item-publication-date-of-component", ill.getItem_publication_date_of_component());
+            nameValuePairs.add(new BasicNameValuePair("item-publication-date-of-component", ill
+                    .getItem_publication_date_of_component()));
         } else {
-            method.addParameter("item-publication-date-of-component", "");
+            nameValuePairs.add(new BasicNameValuePair("item-publication-date-of-component", ""));
         }
         if (ill.getItem_author_of_article() != null) {
-            method.addParameter("item-author-of-article", ill.getItem_author_of_article());
+            nameValuePairs.add(new BasicNameValuePair("item-author-of-article", ill.getItem_author_of_article()));
         } else {
-            method.addParameter("item-author-of-article", "");
+            nameValuePairs.add(new BasicNameValuePair("item-author-of-article", ""));
         }
         if (ill.getItem_title_of_article() != null) {
-            method.addParameter("item-title-of-article", ill.getItem_title_of_article());
+            nameValuePairs.add(new BasicNameValuePair("item-title-of-article", ill.getItem_title_of_article()));
         } else {
-            method.addParameter("item-title-of-article", "");
+            nameValuePairs.add(new BasicNameValuePair("item-title-of-article", ""));
         }
         if (ill.getItem_volume_issue() != null) {
-            method.addParameter("item-volume-issue", ill.getItem_volume_issue());
+            nameValuePairs.add(new BasicNameValuePair("item-volume-issue", ill.getItem_volume_issue()));
         } else {
-            method.addParameter("item-volume-issue", "");
+            nameValuePairs.add(new BasicNameValuePair("item-volume-issue", ""));
         }
         if (ill.getItem_pagination() != null) {
-            method.addParameter("item-pagination", ill.getItem_pagination());
+            nameValuePairs.add(new BasicNameValuePair("item-pagination", ill.getItem_pagination()));
         } else {
-            method.addParameter("item-pagination", "");
+            nameValuePairs.add(new BasicNameValuePair("item-pagination", ""));
         }
         if (ill.getItem_iSSN() != null) {
-            method.addParameter("item-iSSN", ill.getItem_iSSN());
+            nameValuePairs.add(new BasicNameValuePair("item-iSSN", ill.getItem_iSSN()));
         } else {
-            method.addParameter("item-iSSN", "");
+            nameValuePairs.add(new BasicNameValuePair("item-iSSN", ""));
         }
         if (ill.getItem_iSBN() != null) {
-            method.addParameter("item-iSBN", ill.getItem_iSBN());
+            nameValuePairs.add(new BasicNameValuePair("item-iSBN", ill.getItem_iSBN()));
         } else {
-            method.addParameter("item-iSBN", "");
+            nameValuePairs.add(new BasicNameValuePair("item-iSBN", ""));
         }
 
         //... bei Subito gibt es noch tonnenweise zusätzlicher Parameter
         // sollte aber kombinierbar sein. GBV wertet einfach nicht alle Parameter aus
 
-        content = http.getWebcontent(method, Connect.TIMEOUT_8.getValue(), Connect.RETRYS_1.getValue()); // nur einmal abschicken!!!
+        content = http
+                .getContent(baseurl, nameValuePairs, Connect.TIMEOUT_8.getValue(), Connect.RETRYS_1.getValue()); // nur einmal abschicken!!!
 
         return content;
 

@@ -36,9 +36,9 @@ import org.grlea.log.SimpleLogger;
 import util.Auth;
 import util.Check;
 import util.CodeUrl;
-import util.Http;
 import util.MyException;
 import util.SpecialCharacters;
+import util.Http;
 import ch.dbs.actions.illformat.IllHandler;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.entity.AbstractBenutzer;
@@ -1630,7 +1630,7 @@ public final class OrderGbvAction extends DispatchAction {
                 + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encodeLatin1(gbvsearchterm)
                 + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
-        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link,
+        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
                 Connect.TIMEOUT_3.getValue(), Connect.RETRYS_2.getValue())));
 
     }
@@ -1653,7 +1653,7 @@ public final class OrderGbvAction extends DispatchAction {
                 + gbvfield.toLowerCase() + "%3D" + codeUrl.encodeLatin1(gbvsearchterm)
                 + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
-        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getWebcontent(link,
+        return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
                 Connect.TIMEOUT_3.getValue(), Connect.RETRYS_2.getValue())));
 
     }
