@@ -53,7 +53,7 @@ a demo-account
 In the source files in /source/resources/SystemConfiguration.properties please enter 
 the appropriate configurations for your system. Otherwise the system won't work!
 -
-You may also may want to use a custom icon, e.g. from your institution, for your installation:
+You also may want to use a custom icon, e.g. from your institution, for your installation:
 replace the following two images /img/sp.gif and /war/img/sp.gif with your own image but with the same name.
 The image should be quadratic to avoid distortion. 
 -
