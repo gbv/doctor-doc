@@ -21,8 +21,6 @@ import java.sql.Connection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.grlea.log.SimpleLogger;
-
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Administrator;
 import ch.dbs.entity.Benutzer;
@@ -39,7 +37,6 @@ import enums.TextType;
  */
 public class Auth {
 
-    private static final SimpleLogger LOG = new SimpleLogger(Auth.class);
     private static final String USERINFO = "userinfo";
 
     /**
