@@ -820,7 +820,7 @@ public final class OrderAction extends DispatchAction {
                     linkEZB.append(bibid);
                 } else {
                     // use IP for request
-                    linkEZB.append("client_ip=");
+                    linkEZB.append("&client_ip=");
                     linkEZB.append(rq.getRemoteAddr());
                 }
 
@@ -839,7 +839,7 @@ public final class OrderAction extends DispatchAction {
                     linkUIezb.append(bibid);
                 } else {
                     // use IP for request
-                    linkUIezb.append("client_ip=");
+                    linkUIezb.append("&client_ip=");
                     linkUIezb.append(rq.getRemoteAddr());
                 }
 
