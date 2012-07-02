@@ -43,17 +43,19 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import util.Auth;
 import util.Check;
 import util.CodeUrl;
+import util.Http;
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.SpecialCharacters;
 import util.ThreadSafeSimpleDateFormat;
 import util.ThreadedJournalSeek;
 import util.ThreadedWebcontent;
-import util.Http;
 import ch.dbs.actions.bestand.Stock;
 import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
@@ -290,7 +292,8 @@ public final class OrderAction extends DispatchAction {
                             if (!check.containsGoogleCaptcha(content)) {
 
                                 // Change this, to adapt to any major changes of GoogleScholars sourcecode.
-                                final String identifierHitsGoogleScholar = "[PDF]</span> <a href=\"";
+                                final String identifierHitsGoogleScholar = "<div class=\"gs_ggs gs_fl\"><a href=\"";
+                                //                                        "[PDF]</span> <a href=\"";
                                 //                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
 
                                 if (content.contains(identifierHitsGoogleScholar)) {
@@ -316,17 +319,10 @@ public final class OrderAction extends DispatchAction {
                                         linkPdfGS = correctGoogleURL(linkPdfGS);
 
                                         // url-text extrahieren
-                                        String textLinkPdfGoogleScholar = "";
-                                        textLinkPdfGoogleScholar = content2.substring(content2.indexOf('>', start) + 1,
-                                                content2.indexOf("</a>", start));
-                                        textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("<b>", "");
-                                        textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("</b>", "");
-                                        textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("<em>", "");
-                                        textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("</em>", "");
-                                        textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll(
-                                                "<font color=#CC0033>", "");
-                                        textLinkPdfGoogleScholar = textLinkPdfGoogleScholar.replaceAll("</font>", "");
-                                        textLinkPdfGoogleScholar = specialCharacters.replace(textLinkPdfGoogleScholar);
+                                        String textLinkPdfGoogleScholar = content2.substring(
+                                                content2.indexOf('>', start) + 1, content2.indexOf("</a>", start));
+                                        textLinkPdfGoogleScholar = specialCharacters.replace(Jsoup.clean(
+                                                textLinkPdfGoogleScholar, Whitelist.none()));
 
                                         jdGoogleScholar.setLink(linkPdfGS);
                                         jdGoogleScholar.setUrl_text(textLinkPdfGoogleScholar);
