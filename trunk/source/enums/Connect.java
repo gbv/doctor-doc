@@ -21,8 +21,8 @@ public enum Connect {
 
     TIMEOUT_1("TIMEOUT_1", 1000), TIMEOUT_2("TIMEOUT_2", 2000), TIMEOUT_3("TIMEOUT_3", 3000), TIMEOUT_4("TIMEOUT_4",
             4000), TIMEOUT_5("TIMEOUT_5", 5000), TIMEOUT_6("TIMEOUT_6", 6000), TIMEOUT_7("TIMEOUT_7", 7000), TIMEOUT_8(
-            "TIMEOUT_8", 8000), TIMEOUT_9("TIMEOUT_9", 9000), RETRYS_1("RETRYS_1", 1), RETRYS_2("RETRYS_2", 2), RETRYS_3(
-            "RETRYS_3", 3);
+            "TIMEOUT_8", 8000), TIMEOUT_9("TIMEOUT_9", 9000), TRIES_1("TRIES_1", 1), TRIES_2("TRIES_2", 2), TRIES_3(
+            "TRIES_3", 3);
 
     private final String name;
     private final int value;

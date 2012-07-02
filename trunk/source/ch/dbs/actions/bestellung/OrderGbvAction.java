@@ -1631,7 +1631,7 @@ public final class OrderGbvAction extends DispatchAction {
                 + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
-                Connect.TIMEOUT_3.getValue(), Connect.RETRYS_2.getValue())));
+                Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue())));
 
     }
 
@@ -1654,7 +1654,7 @@ public final class OrderGbvAction extends DispatchAction {
                 + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
-                Connect.TIMEOUT_3.getValue(), Connect.RETRYS_2.getValue())));
+                Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue())));
 
     }
 

@@ -317,7 +317,7 @@ public class IllHandler {
         // sollte aber kombinierbar sein. GBV wertet einfach nicht alle Parameter aus
 
         content = http
-                .getContent(baseurl, nameValuePairs, Connect.TIMEOUT_8.getValue(), Connect.RETRYS_1.getValue()); // nur einmal abschicken!!!
+                .getContent(baseurl, nameValuePairs, Connect.TIMEOUT_8.getValue(), Connect.TRIES_1.getValue()); // nur einmal abschicken!!!
 
         return content;
 

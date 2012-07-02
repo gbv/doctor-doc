@@ -74,7 +74,7 @@ public class DOI {
 
         try {
 
-            content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
+            content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
 
             content = content.replaceAll("&amp;amp;", "&amp;"); // falsche Doppelkodierung korrigieren...
 
@@ -111,7 +111,7 @@ public class DOI {
         final Http http = new Http();
         final String link = "http://www.crossref.org/guestquery?queryType=doi&restype=xsl_xml&doi=" + doi;
 
-        content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_1.getValue());
+        content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_1.getValue());
 
         of = openurl.readXMLCrossRef(content);
 

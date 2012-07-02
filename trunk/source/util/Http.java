@@ -46,18 +46,18 @@ public class Http {
 
     /**
      * @param link
-     * @return web site as String with a timeout of 2 seconds and 3 retries.
+     * @return web site as String with a timeout of 2 seconds and 3 tries.
      */
     public String getContent(final String link) {
-        return getContent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
+        return getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue());
     }
 
     /**
      * @param link
-     * @return web site as String with a timeout of 2 seconds and 3 retries.
+     * @return web site as String with a timeout of 2 seconds and 3 tries.
      */
     public String getContent(final String link, final List<NameValuePair> nameValuePairs) {
-        return getContent(link, nameValuePairs, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
+        return getContent(link, nameValuePairs, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue());
     }
 
     /**
@@ -65,7 +65,7 @@ public class Http {
      * @param int timeout_ms
      * @return web site as string
      */
-    public String getContent(final String link, final int timeoutMs, final int retrys) {
+    public String getContent(final String link, final int timeoutMs, final int trys) {
 
         String content = "";
         HttpEntity entity = null;
@@ -84,7 +84,7 @@ public class Http {
 
         int runs = 1;
 
-        while (entity == null && runs <= retrys) {
+        while (entity == null && runs <= trys) {
 
             runs++;
 
@@ -101,9 +101,9 @@ public class Http {
                 }
 
             } catch (final IOException e) {
-                LOG.error(e.toString());
+                LOG.error(e.toString() + ": " + link);
             } catch (final Exception e) {
-                LOG.error(e.toString());
+                LOG.error(e.toString() + ": " + link);
             } finally {
                 EntityUtils.consumeQuietly(entity);
             }
@@ -120,7 +120,7 @@ public class Http {
      * @return web site as string
      */
     public String getContent(final String link, final List<NameValuePair> nameValuePairs, final int timeoutMs,
-            final int retrys) {
+            final int trys) {
 
         String content = "";
         HttpEntity entity = null;
@@ -142,7 +142,7 @@ public class Http {
 
             int runs = 1;
 
-            while (entity == null && runs <= retrys) {
+            while (entity == null && runs <= trys) {
 
                 runs++;
 
@@ -159,11 +159,11 @@ public class Http {
                     }
 
                 } catch (final ClientProtocolException e) {
-                    LOG.error(e.toString());
+                    LOG.error(e.toString() + ": " + link);
                 } catch (final IOException e) {
-                    LOG.error(e.toString());
+                    LOG.error(e.toString() + ": " + link);
                 } catch (final Exception e) {
-                    LOG.error(e.toString());
+                    LOG.error(e.toString() + ": " + link);
                 } finally {
                     EntityUtils.consumeQuietly(entity);
                 }

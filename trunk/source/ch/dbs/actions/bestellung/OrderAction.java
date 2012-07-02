@@ -165,7 +165,7 @@ public final class OrderAction extends DispatchAction {
                             linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
 
                             content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(),
-                                    Connect.RETRYS_3.getValue());
+                                    Connect.TRIES_1.getValue());
 
                             //      content = "<form action=\"Captcha\" method=\"get\">" +
                             //      "<input type=\"hidden\" name=\"id\" value=\"17179006839024668804\">" +
@@ -208,11 +208,8 @@ public final class OrderAction extends DispatchAction {
                                         linkPdfGoogle = correctGoogleURL(linkPdfGoogle);
                                         String textLinkPdfGoogle = content2.substring(content2.indexOf('>', start) + 1,
                                                 content2.indexOf("</a>", start));
-                                        textLinkPdfGoogle = textLinkPdfGoogle.replaceAll("<b>", "");
-                                        textLinkPdfGoogle = textLinkPdfGoogle.replaceAll("</b>", "");
-                                        textLinkPdfGoogle = textLinkPdfGoogle.replaceAll("<em>", "");
-                                        textLinkPdfGoogle = textLinkPdfGoogle.replaceAll("</em>", "");
-                                        textLinkPdfGoogle = specialCharacters.replace(textLinkPdfGoogle);
+                                        textLinkPdfGoogle = specialCharacters.replace(Jsoup.clean(textLinkPdfGoogle,
+                                                Whitelist.none()));
 
                                         jdGoogle.setLink(linkPdfGoogle);
                                         jdGoogle.setUrl_text(textLinkPdfGoogle);
@@ -275,7 +272,7 @@ public final class OrderAction extends DispatchAction {
                         linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
                                 + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
 
-                        content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.RETRYS_3.getValue());
+                        content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.TRIES_1.getValue());
 
                         // make sure Google Scholar does not respond with Captcha
                         if (!check.containsGoogleCaptcha(content)) {
@@ -362,7 +359,7 @@ public final class OrderAction extends DispatchAction {
 
                         linkGoogle = "http://www.google.ch/sorry/Captcha?continue=http://www.google.ch/search?hl=de&id="
                                 + pageForm.getCaptcha_id() + "&captcha=" + pageForm.getCaptcha_text();
-                        content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(), Connect.RETRYS_1.getValue());
+                        content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(), Connect.TRIES_1.getValue());
 
                         if (!check.containsGoogleCaptcha(content)) {
                             // Important message
@@ -1065,7 +1062,7 @@ public final class OrderAction extends DispatchAction {
         link = link + zeitschriftentitel_encoded;
 
         //      System.out.println("Suchstring ISSN Journalseek erster Versuch: " + link + "\012");
-        String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
+        String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
 
         //zweiter Versuch ueber Journalseek
         String zeitschriftentitelEncodedTrunkiert = correctArtikeltitIssnAssist(concurrentCopyZeitschriftentitel);
@@ -1079,7 +1076,7 @@ public final class OrderAction extends DispatchAction {
                     + zeitschriftentitelEncodedTrunkiert;
 
             //          System.out.println("Suchstring ISSN Journalseek zweiter Versuch: " + link + "\012");
-            content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_3.getValue());
+            content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
         }
 
         //Trefferauswertung
@@ -1261,49 +1258,49 @@ public final class OrderAction extends DispatchAction {
         return link.toString();
     }
 
-    private boolean searchWorldCat(String link, final OrderForm pageForm) {
+    private boolean searchWorldCat(final String link, final OrderForm pageForm) {
 
         boolean worldcat = false;
 
-        String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
+        final String content = getWebcontent(link, Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue());
 
-        // reload to detail page of first record
-        if (content.contains("&referer=brief_results")) {
-            // get and create link to detail page
-            link = getWorldCatLinkDetailPage(content);
+        //        // reload to detail page of first record
+        //        if (content.contains("&referer=brief_results")) {
+        //            // get and create link to detail page
+        //            link = getWorldCatLinkDetailPage(content);
+        //
+        //            content = getWebcontent(link, Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue());
 
-            content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.RETRYS_2.getValue());
+        // get first article details from Z39.88
+        if (content.contains("url_ver=Z39.88")) {
+            worldcat = true;
+            pageForm.setRuns_autocomplete(+1);
 
-            // get article details from Z39.88
-            if (content.contains("url_ver=Z39.88")) {
-                worldcat = true;
-                pageForm.setRuns_autocomplete(+1);
+            String openURL = content.substring(content.indexOf("url_ver=Z39.88"),
+                    content.indexOf('>', content.indexOf("url_ver=Z39.88")));
+            //                System.out.println("String OpenURL: " + OpenURL);
+            openURL = correctWorldCat(openURL);
 
-                String openURL = content.substring(content.indexOf("url_ver=Z39.88"),
-                        content.indexOf('>', content.indexOf("url_ver=Z39.88")));
-                //                System.out.println("String OpenURL: " + OpenURL);
-                openURL = correctWorldCat(openURL);
+            // Hier folgt die OpenURL-Auswertung
+            final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+            final OpenUrl openurl = new OpenUrl();
+            // ContextObject mit Inhalten von content abfüllen
+            final ContextObject co = openurl.readOpenUrlFromString(openURL);
+            final OrderForm of = openurlConv.makeOrderform(co); // in ein OrderForm übersetzen
 
-                // Hier folgt die OpenURL-Auswertung
-                final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-                final OpenUrl openurl = new OpenUrl();
-                // ContextObject mit Inhalten von content abfüllen
-                final ContextObject co = openurl.readOpenUrlFromString(openURL);
-                final OrderForm of = openurlConv.makeOrderform(co); // in ein OrderForm übersetzen
-
-                // Artikeltitel als User-Eingabe muss behalten werden
-                pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
-                pageForm.setIssn(of.getIssn());
-                pageForm.setJahr(of.getJahr());
-                pageForm.setJahrgang(of.getJahrgang());
-                pageForm.setHeft(of.getHeft());
-                pageForm.setSeiten(of.getSeiten());
-                pageForm.setAuthor(of.getAuthor());
-                pageForm.setFlag_noissn(of.isFlag_noissn());
-
-            }
+            // Artikeltitel als User-Eingabe muss behalten werden
+            pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
+            pageForm.setIssn(of.getIssn());
+            pageForm.setJahr(of.getJahr());
+            pageForm.setJahrgang(of.getJahrgang());
+            pageForm.setHeft(of.getHeft());
+            pageForm.setSeiten(of.getSeiten());
+            pageForm.setAuthor(of.getAuthor());
+            pageForm.setFlag_noissn(of.isFlag_noissn());
 
         }
+
+        //        }
 
         return worldcat;
 
