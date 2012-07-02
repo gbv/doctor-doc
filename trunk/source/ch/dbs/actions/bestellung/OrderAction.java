@@ -269,100 +269,84 @@ public final class OrderAction extends DispatchAction {
                         }
 
                         // Google Scholar
-
-                        searches = 0;
-                        ergebnis = false;
                         start = 0;
 
-                        while ((!ergebnis) && (searches < 2)) {
+                        // phrase + allintitle
+                        linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
+                                + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
 
-                            if (searches == 0) { // phrase + allintitle + filetype:pdf
-                                linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                        + pageForm.getArtikeltitel_encoded()
-                                        + "%22+filetype%3Apdf+OR+filetype%3Ahtm&hl=de&lr=&btnG=Suche&lr=";
-                            }
-                            if (searches == 1) { // phrase + allintitle
-                                linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                        + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
-                            }
+                        content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.RETRYS_3.getValue());
 
-                            content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.RETRYS_3.getValue());
+                        // make sure Google Scholar does not respond with Captcha
+                        if (!check.containsGoogleCaptcha(content)) {
 
-                            // make sure Google Scholar does not respond with Captcha
-                            if (!check.containsGoogleCaptcha(content)) {
+                            // Change this, to adapt to any major changes of GoogleScholars sourcecode.
+                            final String identifierHitsGoogleScholar = "<h3 class=\"gs_rt\"><a href=\"";
+                            //                                        "[PDF]</span> <a href=\"";
+                            //                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
 
-                                // Change this, to adapt to any major changes of GoogleScholars sourcecode.
-                                final String identifierHitsGoogleScholar = "<div class=\"gs_ggs gs_fl\"><a href=\"";
-                                //                                        "[PDF]</span> <a href=\"";
-                                //                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
+                            if (content.contains(identifierHitsGoogleScholar)) {
 
-                                if (content.contains(identifierHitsGoogleScholar)) {
-                                    ergebnis = true;
+                                String linkPdfGS = "";
 
-                                    String linkPdfGS = "";
-
-                                    while (content.contains(identifierHitsGoogleScholar)) {
-                                        String content2 = "";
-                                        if (content.substring(content.indexOf(identifierHitsGoogleScholar) + 9)
-                                                .contains(identifierHitsGoogleScholar)) {
-                                            content2 = content.substring(
-                                                    content.indexOf(identifierHitsGoogleScholar),
-                                                    content.indexOf(identifierHitsGoogleScholar,
-                                                            content.indexOf(identifierHitsGoogleScholar) + 9));
-                                        } else {
-                                            content2 = content.substring(content.indexOf(identifierHitsGoogleScholar));
-                                        }
-
-                                        JournalDetails jdGoogleScholar = new JournalDetails();
-                                        start = content2.indexOf("<a href=\"") + 9;
-                                        linkPdfGS = content2.substring(start, content2.indexOf('"', start));
-                                        linkPdfGS = correctGoogleURL(linkPdfGS);
-
-                                        // url-text extrahieren
-                                        String textLinkPdfGoogleScholar = content2.substring(
-                                                content2.indexOf('>', start) + 1, content2.indexOf("</a>", start));
-                                        textLinkPdfGoogleScholar = specialCharacters.replace(Jsoup.clean(
-                                                textLinkPdfGoogleScholar, Whitelist.none()));
-
-                                        jdGoogleScholar.setLink(linkPdfGS);
-                                        jdGoogleScholar.setUrl_text(textLinkPdfGoogleScholar);
-                                        hitsGoogleScholar.add(jdGoogleScholar);
-
-                                        if (content2.contains("=cache:")) {
-
-                                            final int cachePosition = content2.indexOf("=cache:");
-                                            // bis + => ohne highlighten der Suchbegriffe im Cache
-                                            final String cache = content2.substring(
-                                                    content2.lastIndexOf("http:", cachePosition),
-                                                    content2.indexOf('+', cachePosition));
-
-                                            jdGoogleScholar = new JournalDetails();
-                                            jdGoogleScholar.setLink(cache);
-                                            jdGoogleScholar.setUrl_text("(Google-Cache): " + textLinkPdfGoogleScholar);
-                                            hitsGoogleScholar.add(jdGoogleScholar);
-                                        }
-
-                                        content = content.substring(content.indexOf(identifierHitsGoogleScholar) + 9);
-
+                                while (content.contains(identifierHitsGoogleScholar)) {
+                                    String content2 = "";
+                                    if (content.substring(content.indexOf(identifierHitsGoogleScholar) + 9).contains(
+                                            identifierHitsGoogleScholar)) {
+                                        content2 = content.substring(
+                                                content.indexOf(identifierHitsGoogleScholar),
+                                                content.indexOf(identifierHitsGoogleScholar,
+                                                        content.indexOf(identifierHitsGoogleScholar) + 9));
+                                    } else {
+                                        content2 = content.substring(content.indexOf(identifierHitsGoogleScholar));
                                     }
-                                    final FindFree ff = new FindFree();
-                                    ff.setZeitschriften(hitsGoogleScholar);
-                                    rq.setAttribute("treffer_gs", ff);
 
-                                } else {
-                                    searches = searches + 1;
+                                    JournalDetails jdGoogleScholar = new JournalDetails();
+                                    start = content2.indexOf("<a href=\"") + 9;
+                                    linkPdfGS = content2.substring(start, content2.indexOf('"', start));
+                                    linkPdfGS = correctGoogleURL(linkPdfGS);
+
+                                    // url-text extrahieren
+                                    String textLinkPdfGoogleScholar = content2.substring(
+                                            content2.indexOf('>', start) + 1, content2.indexOf("</a>", start));
+                                    textLinkPdfGoogleScholar = specialCharacters.replace(Jsoup.clean(
+                                            textLinkPdfGoogleScholar, Whitelist.none()));
+
+                                    jdGoogleScholar.setLink(linkPdfGS);
+                                    jdGoogleScholar.setUrl_text(textLinkPdfGoogleScholar);
+                                    hitsGoogleScholar.add(jdGoogleScholar);
+
+                                    if (content2.contains("=cache:")) {
+
+                                        final int cachePosition = content2.indexOf("=cache:");
+                                        // bis + => ohne highlighten der Suchbegriffe im Cache
+                                        final String cache = content2.substring(
+                                                content2.lastIndexOf("http:", cachePosition),
+                                                content2.indexOf('+', cachePosition));
+
+                                        jdGoogleScholar = new JournalDetails();
+                                        jdGoogleScholar.setLink(cache);
+                                        jdGoogleScholar.setUrl_text("(Google-Cache): " + textLinkPdfGoogleScholar);
+                                        hitsGoogleScholar.add(jdGoogleScholar);
+                                    }
+
+                                    content = content.substring(content.indexOf(identifierHitsGoogleScholar) + 9);
+
                                 }
-
-                            } else { // Google-Scholar captcha  => forward to resolve Captcha
-
-                                searches = 2;
-
-                                Message m = new Message();
-                                m = handleGoogleCaptcha(content);
-                                forward = "captcha";
-                                rq.setAttribute("message", m);
+                                final FindFree ff = new FindFree();
+                                ff.setZeitschriften(hitsGoogleScholar);
+                                rq.setAttribute("treffer_gs", ff);
 
                             }
+
+                        } else { // Google-Scholar captcha  => forward to resolve Captcha
+
+                            searches = 2;
+
+                            Message m = new Message();
+                            m = handleGoogleCaptcha(content);
+                            forward = "captcha";
+                            rq.setAttribute("message", m);
 
                         }
 
