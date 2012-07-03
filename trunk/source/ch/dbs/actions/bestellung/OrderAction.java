@@ -816,11 +816,11 @@ public final class OrderAction extends DispatchAction {
                 linkEZB.append(openurl);
                 if (bibid != null) {
                     // use bibid from account
-                    linkEZB.append("&pid=bibid=");
+                    linkEZB.append("&pid=bibid%3D");
                     linkEZB.append(bibid);
                 } else {
                     // use IP for request
-                    linkEZB.append("&client_ip=");
+                    linkEZB.append("&pid=client_ip%3D");
                     linkEZB.append(rq.getRemoteAddr());
                 }
 
