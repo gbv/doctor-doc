@@ -80,8 +80,7 @@ public class EZBXML {
                 link2.append(bibid);
                 link2.append("&jq_term1=");
                 link2.append(coder.encodeLatin1(jtitle));
-                content = http.getContent(link2.toString(), Connect.TIMEOUT_2.getValue(),
-                        Connect.TRIES_2.getValue());
+                content = http.getContent(link2.toString(), Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
             }
 
         }
@@ -156,7 +155,7 @@ public class EZBXML {
                         // Title
                         String title = getValue(journal.getElementsByTagName("title"));
                         if (title != null) {
-                            title = Jsoup.clean(title, Whitelist.basic());
+                            title = Jsoup.clean(title, Whitelist.none());
                             title = Jsoup.parse(title).text();
                         }
 

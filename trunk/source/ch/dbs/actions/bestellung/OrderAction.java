@@ -907,7 +907,7 @@ public final class OrderAction extends DispatchAction {
 
                 // ge back GBV thread
                 if (gbvThread) {
-                    final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 2, "GBV");
+                    final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 3, "GBV");
                     // holt aus ggf. mehreren möglichen Umleitungen die letztmögliche
                     if (gbvanswer != null) {
                         final String pZdbid = OrderGbvAction.getPrintZdbidIgnoreMultipleHits(gbvanswer);
@@ -919,7 +919,7 @@ public final class OrderAction extends DispatchAction {
 
                 // get back Pubmed thread
                 if (isPubmedSearchWithoutPmidPossible(pageForm)) {
-                    final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 1, "Pubmed");
+                    final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 2, "Pubmed");
                     if (pubmedanswer != null) {
                         pageForm.setPmid(pubmed.getPmid(pubmedanswer));
                     }

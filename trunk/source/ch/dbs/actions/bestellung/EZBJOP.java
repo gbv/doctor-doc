@@ -133,7 +133,7 @@ public class EZBJOP {
                     // title
                     String title = getValue(result.getElementsByTagName("Title"));
                     if (title != null) {
-                        title = Jsoup.clean(title, Whitelist.basic());
+                        title = Jsoup.clean(title, Whitelist.none());
                         online.setTitle(Jsoup.parse(title).text());
                     }
 
@@ -192,7 +192,7 @@ public class EZBJOP {
                     // title
                     String title = getValue(result.getElementsByTagName("Title"));
                     if (title != null) {
-                        title = Jsoup.clean(title, Whitelist.basic());
+                        title = Jsoup.clean(title, Whitelist.none());
                         print.setTitle(Jsoup.parse(title).text());
                     }
 

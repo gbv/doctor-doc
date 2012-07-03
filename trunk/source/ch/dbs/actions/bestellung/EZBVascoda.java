@@ -93,7 +93,7 @@ public class EZBVascoda {
                     // specified in the OpenURL request. It then brings back the title form the EZB...!
                     title = getValue(result.getElementsByTagName("title"));
                     if (title != null) {
-                        title = Jsoup.clean(title, Whitelist.basic());
+                        title = Jsoup.clean(title, Whitelist.none());
                         title = Jsoup.parse(title).text();
                     }
 
