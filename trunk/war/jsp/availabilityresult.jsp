@@ -10,6 +10,7 @@
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="robots" content="noindex" />
   <title><bean:message bundle="systemConfig" key="application.name"/> - <bean:message key="availresult.titel" /></title>
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
   
