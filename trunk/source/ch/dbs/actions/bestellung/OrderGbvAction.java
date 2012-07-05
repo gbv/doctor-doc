@@ -46,7 +46,6 @@ import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.OrderState;
 import ch.dbs.entity.Text;
-import ch.dbs.entity.Texttyp;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.GbvSruForm;
@@ -847,11 +846,11 @@ public final class OrderGbvAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
         final Auth auth = new Auth();
+        Text cn = new Text();
 
         // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
-            final Texttyp t = new Texttyp();
             try {
 
                 if (!"GBV-Suche".equals(of.getSubmit())) {
@@ -870,7 +869,7 @@ public final class OrderGbvAction extends DispatchAction {
                             kontouser.add(b);
                             of.setKontouser(kontouser);
                         } else {
-                            of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), t.getConnection()));
+                            of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                         }
 
                     } else {
@@ -893,7 +892,7 @@ public final class OrderGbvAction extends DispatchAction {
                 LOG.error("validate: " + e.toString());
 
             } finally {
-                t.close();
+                cn.close();
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
@@ -921,12 +920,12 @@ public final class OrderGbvAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) form;
         final Auth auth = new Auth();
+        Text cn = new Text();
 
         // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
 
             forward = Result.SUCCESS.getValue();
-            final Texttyp t = new Texttyp();
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
 
@@ -936,7 +935,7 @@ public final class OrderGbvAction extends DispatchAction {
                     kontouser.add(b);
                     of.setKontouser(kontouser);
                 } else {
-                    of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), t.getConnection()));
+                    of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                 }
 
                 if (of.getMediatype() == null) {
@@ -966,7 +965,7 @@ public final class OrderGbvAction extends DispatchAction {
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("changeMediaType: " + e.toString());
             } finally {
-                t.close();
+                cn.close();
             }
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
