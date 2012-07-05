@@ -919,7 +919,7 @@ public final class OrderAction extends DispatchAction {
 
                 // get back Pubmed thread
                 if (isPubmedSearchWithoutPmidPossible(pageForm)) {
-                    final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 2, "Pubmed");
+                    final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 3, "Pubmed");
                     if (pubmedanswer != null) {
                         pageForm.setPmid(pubmed.getPmid(pubmedanswer));
                     }
@@ -1246,30 +1246,11 @@ public final class OrderAction extends DispatchAction {
         return linkWC;
     }
 
-    /**
-     * Get Link of Worldcat detail page.
-     */
-    private String getWorldCatLinkDetailPage(final String content) {
-
-        final StringBuffer link = new StringBuffer("http://www.worldcat.org");
-        link.append(content.substring(content.lastIndexOf("href=\"", content.indexOf("&referer=brief_results")) + 6,
-                content.indexOf("&referer=brief_results") + 22));
-
-        return link.toString();
-    }
-
     private boolean searchWorldCat(final String link, final OrderForm pageForm) {
 
         boolean worldcat = false;
 
         final String content = getWebcontent(link, Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue());
-
-        //        // reload to detail page of first record
-        //        if (content.contains("&referer=brief_results")) {
-        //            // get and create link to detail page
-        //            link = getWorldCatLinkDetailPage(content);
-        //
-        //            content = getWebcontent(link, Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue());
 
         // get first article details from Z39.88
         if (content.contains("url_ver=Z39.88")) {
@@ -1299,8 +1280,6 @@ public final class OrderAction extends DispatchAction {
             pageForm.setFlag_noissn(of.isFlag_noissn());
 
         }
-
-        //        }
 
         return worldcat;
 
