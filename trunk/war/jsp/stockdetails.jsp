@@ -9,6 +9,7 @@
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="robots" content="noindex" />
   <title><bean:message key="availresult.details" /></title>
  </head>
  <body>
