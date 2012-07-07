@@ -46,7 +46,7 @@ public final class LocaleSwitcher extends Action {
 
         String loc = rq.getParameter("request_locale");
 
-        if (loc == null || loc.equals("")) { loc = "en"; } // Setting  a standardvalue
+        if (loc == null || loc.equals("")) { loc = "en"; } // Setting  a standard value
 
         rq.getSession().setAttribute("org.apache.struts.action.LOCALE", new Locale(loc));
 

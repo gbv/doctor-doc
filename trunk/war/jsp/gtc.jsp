@@ -1,12 +1,11 @@
-<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
-<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
-<%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en_US" xml:lang="en_US">
+<html>
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -25,7 +24,7 @@
 
 <div class="content">
 
-<br />
+<br>
 <h3>General Terms and Conditions (Version 1):</h3>
 <logic:present name="userinfo">
 	<logic:empty name="userinfo" property="benutzer.gtc">
@@ -40,8 +39,8 @@
 
 [Place your GTC here]
 
-</p>
 
+</p>
 
 <logic:present name="userinfo">
 <logic:present name="userinfo" property="benutzer.gtc">
@@ -81,7 +80,7 @@
 
   <tr>
     <td><html:submit property="method" value="accept" /></td>
-    <td><br /></td>
+    <td><br></td>
     <td><html:submit property="method" value="decline" /></td>
   </tr>
 </table>

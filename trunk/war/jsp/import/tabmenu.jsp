@@ -1,5 +1,5 @@
-<%@ taglib uri="/tags/struts-bean" prefix="bean"%>
-<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 
 <bean:define id="allowRegisterLibraryAccount" type="java.lang.String"><bean:message bundle="systemConfig" key="allow.registerLibraryAccounts"/></bean:define>
 <bean:define id="activateGTC" type="java.lang.String"><bean:message bundle="systemConfig" key="activate.gtc"/></bean:define>

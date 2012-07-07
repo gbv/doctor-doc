@@ -38,6 +38,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import org.apache.struts.util.MessageResources;
+import org.apache.struts.util.RequestUtils;
 import org.grlea.log.SimpleLogger;
 
 import util.Auth;
@@ -1653,7 +1654,8 @@ public final class UserAction extends DispatchAction {
 
         final List<String> searchFields = prepareOrderSearchFields();
         final SortedMap<String, String> result = new TreeMap<String, String>();
-        final Locale locale = getLocale(rq);
+//        final Locale locale = getLocale(rq);
+        final Locale locale = RequestUtils.getUserLocale(rq, null);
         final MessageResources msgs = getResources(rq);
         String key = null;
         String value = null;
