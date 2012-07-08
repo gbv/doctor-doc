@@ -1,4 +1,4 @@
-//  Copyright (C) 2005 - 2010  Markus Fischer, Pascal Steiner
+//  Copyright (C) 2005 - 2012  Markus Fischer, Pascal Steiner
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -86,9 +86,9 @@ import enums.Result;
 import enums.TextType;
 
 public final class OrderAction extends DispatchAction {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(OrderAction.class);
-
+    
     /**
      * Check if an article is freely available in the Internet.
      */
@@ -101,13 +101,13 @@ public final class OrderAction extends DispatchAction {
         String content;
         String linkGoogle = "";
         String linkGS = "";
-
+        
         String forward = Result.FAILURE.getValue();
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
         final CodeUrl codeUrl = new CodeUrl();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
-
+        
         // resolve a PMID entered by an user
         if (pageForm.getArtikeltitel().toLowerCase().contains("pmid:")) {
             pageForm = pubmed.resolvePmid(pubmed.extractPmid(pageForm.getArtikeltitel()));
@@ -117,40 +117,40 @@ public final class OrderAction extends DispatchAction {
                 forward = "pmidfailure";
             }
         }
-
+        
         // ISO-8859-1 encoding is important for automatic search!
         pageForm.setArtikeltitel_encoded(codeUrl.encodeLatin1(shortenGoogleSearchPhrase(pageForm.getArtikeltitel())));
-
+        
         // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
-
+            
             if (!"pmidfailure".equals(forward)) {
-
+                
                 // *** run autocomplete for the first time
                 if (!pageForm.isAutocomplete()) {
                     pageForm.setAutocomplete(autoComplete(pageForm, rq));
                 }
-
+                
                 // Automatic Google search
                 if (google(rq, auth)) {
-
+                    
                     // ...only search Google, if there we don't come from captcha.jsp!
                     if (pageForm.getCaptcha_id() == null && pageForm.getCaptcha_text() == null) {
-
+                        
                         // Google
-
+                        
                         //  Search steps:
                         // 1. phrase + allintitle: + filetype:pdf
                         // 2. phrase + allintitle + extract pdf
                         // 3. title as phrase + [text] pdf OR "full-text" => result without check for PDFs 3
-
+                        
                         int searches = 0;
                         boolean ergebnis = false;
                         int start = 0;
                         String compare = "";
-
+                        
                         while ((!ergebnis) && (searches < 3)) {
-
+                            
                             if (searches == 0) { // phrase + allintitle + filetype:pdf
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=10&btnG=Google-Suche&as_oq=&as_eq=&lr=&as_ft=i&as_filetype=pdf&as_qdr=all&as_occt=title&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
@@ -161,19 +161,19 @@ public final class OrderAction extends DispatchAction {
                                 // Number of result is set to 5.
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
-
+                            
                             linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
-
+                            
                             content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(),
                                     Connect.TRIES_1.getValue());
-
+                            
                             //      content = "<form action=\"Captcha\" method=\"get\">" +
                             //      "<input type=\"hidden\" name=\"id\" value=\"17179006839024668804\">" +
                             //      "<input type=\"text\" name=\"captcha\" value=\"\" id=\"captcha\" size=\"12\">" +
                             //      "<img src=\"/sorry/image?id=17179006839024668804&amp;hl=de\" border=\"1\" alt=\"Falls Sie dies lesen können, ist die Bilddarstellung bei Ihnen deaktiviert. Aktivieren Sie die Bilddarstellung, um fortzufahren.\"></div>";
-
+                            
                             try {
-
+                                
                                 if (check.containsGoogleCaptcha(content)) {
                                     Message m = new Message();
                                     m = handleGoogleCaptcha(content);
@@ -183,26 +183,26 @@ public final class OrderAction extends DispatchAction {
                             } catch (final Exception e) {
                                 LOG.error("Problem treating captcha: " + e.toString() + "\012" + content);
                             }
-
+                            
                             if (searches < 2) {
                                 compare = "[PDF]";
                             } else {
                                 compare = "class=\"r\">";
                             }
-
+                            
                             //   make sure Google did not respond with Captcha
                             if (!check.containsGoogleCaptcha(content)) {
-
+                                
                                 if (content.contains(compare)) {
                                     ergebnis = true;
                                     String linkPdfGoogle = "";
-
+                                    
                                     String content2 = content;
-
+                                    
                                     while (content2.contains(compare)) {
-
+                                        
                                         JournalDetails jdGoogle = new JournalDetails();
-
+                                        
                                         start = content2.indexOf("<a href=", content2.indexOf(compare)) + 9;
                                         linkPdfGoogle = content2.substring(start, content2.indexOf('"', start + 9));
                                         linkPdfGoogle = correctGoogleURL(linkPdfGoogle);
@@ -210,11 +210,11 @@ public final class OrderAction extends DispatchAction {
                                                 content2.indexOf("</a>", start));
                                         textLinkPdfGoogle = specialCharacters.replace(Jsoup.clean(textLinkPdfGoogle,
                                                 Whitelist.none()));
-
+                                        
                                         jdGoogle.setLink(linkPdfGoogle);
                                         jdGoogle.setUrl_text(textLinkPdfGoogle);
                                         hitsGoogle.add(jdGoogle);
-
+                                        
                                         if (searches < 2) { // use Google-Cache only, if looking for PDFs
                                             String cache = "";
                                             int cachePosition = 0;
@@ -226,7 +226,7 @@ public final class OrderAction extends DispatchAction {
                                                 // class=g => start of next record
                                                 end = content2.indexOf(compare, start);
                                             }
-
+                                            
                                             if ((end != -1) && (content2.substring(start, end).contains("=cache:"))
                                                     || (end == -1) && (content2.substring(start).contains("=cache:"))) {
                                                 cachePosition = content2.indexOf("=cache:", start);
@@ -234,58 +234,58 @@ public final class OrderAction extends DispatchAction {
                                                 cache = content2.substring(
                                                         content2.lastIndexOf("http:", cachePosition),
                                                         content2.indexOf('+', cachePosition));
-
+                                                
                                                 jdGoogle = new JournalDetails();
                                                 jdGoogle.setLink(cache);
                                                 jdGoogle.setUrl_text("(Google-Cache): " + textLinkPdfGoogle);
                                                 hitsGoogle.add(jdGoogle);
                                             }
                                         }
-
+                                        
                                         content2 = content2.substring(start);
                                     }
                                     searches = 3; // search successful
-
+                                    
                                     final FindFree ff = new FindFree();
                                     ff.setZeitschriften(hitsGoogle);
                                     rq.setAttribute("treffer_gl", ff);
-
+                                    
                                 } else {
                                     searches = searches + 1;
                                 }
-
+                                
                             } else { // Google captcha => forward to resolve Captcha
-
+                            
                                 searches = 6;
-
+                                
                                 Message m = new Message();
                                 m = handleGoogleCaptcha(content);
                                 forward = "captcha";
                                 rq.setAttribute("message", m);
                             }
                         }
-
+                        
                         // Google Scholar
                         start = 0;
-
+                        
                         // phrase + allintitle
                         linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
                                 + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
-
+                        
                         content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.TRIES_1.getValue());
-
+                        
                         // make sure Google Scholar does not respond with Captcha
                         if (!check.containsGoogleCaptcha(content)) {
-
+                            
                             // Change this, to adapt to any major changes of GoogleScholars sourcecode.
                             final String identifierHitsGoogleScholar = "<h3 class=\"gs_rt\"><a href=\"";
                             //                                        "[PDF]</span> <a href=\"";
                             //                                        "<div class=gs_rt><h3><span class=gs_ctc>[PDF]</span> <a href=\"";
-
+                            
                             if (content.contains(identifierHitsGoogleScholar)) {
-
+                                
                                 String linkPdfGS = "";
-
+                                
                                 while (content.contains(identifierHitsGoogleScholar)) {
                                     String content2 = "";
                                     if (content.substring(content.indexOf(identifierHitsGoogleScholar) + 9).contains(
@@ -297,58 +297,58 @@ public final class OrderAction extends DispatchAction {
                                     } else {
                                         content2 = content.substring(content.indexOf(identifierHitsGoogleScholar));
                                     }
-
+                                    
                                     JournalDetails jdGoogleScholar = new JournalDetails();
                                     start = content2.indexOf("<a href=\"") + 9;
                                     linkPdfGS = content2.substring(start, content2.indexOf('"', start));
                                     linkPdfGS = correctGoogleURL(linkPdfGS);
-
+                                    
                                     // url-text extrahieren
                                     String textLinkPdfGoogleScholar = content2.substring(
                                             content2.indexOf('>', start) + 1, content2.indexOf("</a>", start));
                                     textLinkPdfGoogleScholar = specialCharacters.replace(Jsoup.clean(
                                             textLinkPdfGoogleScholar, Whitelist.none()));
-
+                                    
                                     jdGoogleScholar.setLink(linkPdfGS);
                                     jdGoogleScholar.setUrl_text(textLinkPdfGoogleScholar);
                                     hitsGoogleScholar.add(jdGoogleScholar);
-
+                                    
                                     if (content2.contains("=cache:")) {
-
+                                        
                                         final int cachePosition = content2.indexOf("=cache:");
                                         // bis + => ohne highlighten der Suchbegriffe im Cache
                                         final String cache = content2.substring(
                                                 content2.lastIndexOf("http:", cachePosition),
                                                 content2.indexOf('+', cachePosition));
-
+                                        
                                         jdGoogleScholar = new JournalDetails();
                                         jdGoogleScholar.setLink(cache);
                                         jdGoogleScholar.setUrl_text("(Google-Cache): " + textLinkPdfGoogleScholar);
                                         hitsGoogleScholar.add(jdGoogleScholar);
                                     }
-
+                                    
                                     content = content.substring(content.indexOf(identifierHitsGoogleScholar) + 9);
-
+                                    
                                 }
                                 final FindFree ff = new FindFree();
                                 ff.setZeitschriften(hitsGoogleScholar);
                                 rq.setAttribute("treffer_gs", ff);
-
+                                
                             }
-
+                            
                         } else { // Google-Scholar captcha  => forward to resolve Captcha
-
+                        
                             searches = 2;
-
+                            
                             Message m = new Message();
                             m = handleGoogleCaptcha(content);
                             forward = "captcha";
                             rq.setAttribute("message", m);
-
+                            
                         }
-
+                        
                     } else { // resolve captcha...
-
+                    
                         // Suche ausführen mit test, dann folgendes aufrufen:
                         // http://www.google.ch/sorry/?continue=http://www.google.ch/search?hl=de&q=test&btnG=Google-Suche&meta=
                         // Captcha erscheint, aufzulösen mit:
@@ -356,81 +356,81 @@ public final class OrderAction extends DispatchAction {
                         // Bildquelle: http://www.google.ch/sorry/image?id=6926821699383349053
                         // wobei id aus Quelltext und Text aus captcha übereinstimmen
                         // müssen => man landet auf Google Grundseite...
-
+                        
                         linkGoogle = "http://www.google.ch/sorry/Captcha?continue=http://www.google.ch/search?hl=de&id="
                                 + pageForm.getCaptcha_id() + "&captcha=" + pageForm.getCaptcha_text();
                         content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(), Connect.TRIES_1.getValue());
-
+                        
                         if (!check.containsGoogleCaptcha(content)) {
                             // Important message
                             final MHelper mh = new MHelper();
                             mh.sendErrorMail("Catchpa has been successfully resolved!", "Cheers...\012");
                         }
-
+                        
                         // Captcha: prepare manual Google search
                         linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
                                 + pageForm.getArtikeltitel_encoded()
                                 + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
-
+                        
                         final JournalDetails jdGoogleCaptcha = new JournalDetails();
                         jdGoogleCaptcha.setLink(linkGoogle);
                         jdGoogleCaptcha.setUrl_text("Search Google!");
                         hitsGoogle.add(jdGoogleCaptcha);
-
+                        
                         final FindFree ff = new FindFree();
                         ff.setZeitschriften(hitsGoogle);
                         rq.setAttribute("treffer_gl", ff);
-
+                        
                         // needs to be UTF-8 encoded
                         linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
                                 + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
                                 + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
-
+                        
                         final JournalDetails jdGoogleScholarCaptcha = new JournalDetails();
                         jdGoogleScholarCaptcha.setLink(linkGS);
                         jdGoogleScholarCaptcha.setUrl_text("Search Google-Scholar!");
                         hitsGoogleScholar.add(jdGoogleScholarCaptcha);
-
+                        
                         final FindFree fs = new FindFree();
                         fs.setZeitschriften(hitsGoogleScholar);
                         rq.setAttribute("treffer_gs", fs);
-
+                        
                     }
-
+                    
                 } else {
-
+                    
                     // User: prepare manual Google search
                     linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
                             + pageForm.getArtikeltitel_encoded()
                             + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
-
+                    
                     final JournalDetails jdGoogleManual = new JournalDetails();
                     jdGoogleManual.setLink(linkGoogle);
                     jdGoogleManual.setUrl_text("Search Google!");
                     hitsGoogle.add(jdGoogleManual);
-
+                    
                     final FindFree ff = new FindFree();
                     ff.setZeitschriften(hitsGoogle);
                     rq.setAttribute("treffer_gl", ff);
-
+                    
                     // needs to be UTF-8 encoded
                     linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
                             + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
                             + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=";
-
+                    
                     final JournalDetails jdGoogleScholarManual = new JournalDetails();
                     jdGoogleScholarManual.setLink(linkGS);
                     jdGoogleScholarManual.setUrl_text("Search Google-Scholar!");
                     hitsGoogleScholar.add(jdGoogleScholarManual);
-
+                    
                     final FindFree fs = new FindFree();
                     fs.setZeitschriften(hitsGoogleScholar);
                     rq.setAttribute("treffer_gs", fs);
-
+                    
                 }
-
+                
             }
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -439,11 +439,11 @@ public final class OrderAction extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         // failure wird leider nicht als globale Fehlermeldung verwendet.
         // Deshalb Ausklammerung, falls ein tatsächlicher Fehler vorliegt...
         if (!"error".equals(forward)) {
-
+            
             if (!"captcha".equals(forward) && !"pmidfailure".equals(forward)) {
                 if ((hitsGoogle.isEmpty()) && (hitsGoogleScholar.isEmpty())) {
                     forward = "notfound";
@@ -451,7 +451,7 @@ public final class OrderAction extends DispatchAction {
                     forward = "found";
                 }
             }
-
+            
             // if we do not have a PMID, try to get it and complete any missing article details over Pubmed
             if (isPubmedSearchWithoutPmidPossible(pageForm) && pageForm.isAutocomplete()) { // autocomplete nust have been successful
                 pageForm.setPmid(pubmed.getPmid(pageForm)); // if we have several hits => set pmid = ""
@@ -462,51 +462,51 @@ public final class OrderAction extends DispatchAction {
                     pageForm.completeOrderForm(pageForm, of);
                 }
             }
-
+            
             // avoid in issnAssistent that autocomplete will be run again...
             if (!"captcha".equals(forward)) {
                 pageForm.setRuns_autocomplete(1);
             }
-
+            
             // replace greek alphabet to alpha, beta etc.
             pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         }
-
+        
         // URL encode for GET method in PrepareLogin
         pageForm = pageForm.encodeOrderForm(pageForm);
-
+        
         rq.setAttribute("orderform", pageForm);
         return mp.findForward(forward);
     }
-
+    
     public ActionForward issnAssistent(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo"); // to get ezbid
         String bibid = ui.getKonto().getEzbid();
         if (bibid == null || bibid.equals("")) {
             bibid = "AAAAA"; // library unknown
         }
-
+        
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
         final Pubmed pubmed = new Pubmed();
         final CodeUrl codeUrl = new CodeUrl();
-
+        
         final String artikeltitelEnc = codeUrl.encodeLatin1(pageForm.getArtikeltitel());
-
+        
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         boolean treffer = false;
         if (auth.isLogin(rq)) {
-
+            
             // no PMID => ordinary processing of ISSN assistent
             if (pageForm.getPmid() == null || pageForm.getPmid().equals("")) {
                 if (!(pageForm.getIssn().length() == 0 && pageForm.getZeitschriftentitel().length() == 0 && !pageForm
                         .isAutocomplete())) { // exclude no input without autocomplete...
                     forward = Result.SUCCESS.getValue();
                     try {
-
+                        
                         // autocomplete has been already done...
                         if ((pageForm.isAutocomplete())
                         //...we have input...
@@ -524,62 +524,62 @@ public final class OrderAction extends DispatchAction {
                             pageForm.setAutocomplete(false);
                             pageForm.setRuns_autocomplete(0);
                         }
-
+                        
                         if (pageForm.isAutocomplete() && pageForm.isFlag_noissn()) {
                             // special case: data from autocomplete but no ISSN
-
+                            
                             // alle anderen Angaben URL-codieren und vorbereiten für
                             // Übergabe an ff, da Weitergabe über Hyperlink auf jsp läuft
-
+                            
                             pageForm.setJahr(codeUrl.encodeLatin1(pageForm.getJahr()));
                             pageForm.setSeiten(codeUrl.encodeLatin1(pageForm.getSeiten()));
                             pageForm.setHeft(codeUrl.encodeLatin1(pageForm.getHeft()));
                             pageForm.setJahrgang(codeUrl.encodeLatin1(pageForm.getJahrgang()));
                             pageForm.setAuthor(codeUrl.encodeLatin1(pageForm.getAuthor()));
                         }
-
+                        
                         String zeitschriftentitelEncoded = correctArtikeltitIssnAssist(pageForm.getZeitschriftentitel());
                         zeitschriftentitelEncoded = codeUrl.encodeLatin1(zeitschriftentitelEncoded);
-
+                        
                         //              Methode 1 ueber Journalseek
                         final FindFree ff = new FindFree();
                         List<JournalDetails> issnJS = new ArrayList<JournalDetails>();
-
+                        
                         // der Zeitschriftentitel im OrderForm kann sich im Thread von Regensburg ändern
                         final String concurrentCopyZeitschriftentitel = pageForm.getZeitschriftentitel();
-
+                        
                         final ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelEncoded,
                                 artikeltitelEnc, pageForm, concurrentCopyZeitschriftentitel);
                         final ExecutorService executor = Executors.newCachedThreadPool();
                         Future<List<JournalDetails>> journalseekResult = null;
                         boolean jsThread = false;
-
+                        
                         if ((pageForm.getIssn().length() == 0)
                         // Ausklammerung von Journalseek bei Eingabe einer ISSN, da Auswertung anders ist...
                                 && (pageForm.getZeitschriftentitel().length() != 0)) {
-
+                            
                             jsThread = true;
                             journalseekResult = executor.submit(tjs);
-
+                            
                         } else {
                             // es wurde eine ISSN eingegeben. Zeitschriftentitel aus Regensburg holen...
                             forward = "issn_direkt";
                         }
-
+                        
                         //            Methode 2 ueber Regensburger Zeitschriftenkatalog
                         // Anzeige auf 30 limitiert (hits_per_page):
                         final FindFree ffRB = new FindFree();
-
+                        
                         // get ISSN from EZB Regensburg
                         final List<JournalDetails> issnRB = searchEZBxml(pageForm, bibid);
-
+                        
                         if (!issnRB.isEmpty()) {
                             treffer = true;
                             // es wird versucht den Zeitschriftentitel zu bestimmen...
                             if (issnRB.size() == 1) {
                                 pageForm.setZeitschriftentitel(issnRB.get(0).getZeitschriftentitel());
                             }
-
+                            
                         } else {
                             final JournalDetails jdRB = new JournalDetails();
                             jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
@@ -587,10 +587,10 @@ public final class OrderAction extends DispatchAction {
                             jdRB.setArtikeltitel_encoded(artikeltitelEnc);
                             issnRB.add(jdRB);
                         }
-
+                        
                         ffRB.setZeitschriften(issnRB);
                         rq.setAttribute("regensburg", ffRB);
-
+                        
                         // Journalseek-Thread zurückholen
                         try {
                             if (jsThread) {
@@ -617,16 +617,16 @@ public final class OrderAction extends DispatchAction {
                                     jd.setArtikeltitel_encoded(artikeltitelEnc);
                                     issnJS.add(jd);
                                 }
-
+                                
                                 ff.setZeitschriften(issnJS);
                                 rq.setAttribute("journalseek", ff);
-
+                                
                                 // ungefährlich, falls der Task schon beendet ist.
                                 // Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
                                 journalseekResult.cancel(true);
                             }
                         }
-
+                        
                     } catch (final Exception e) {
                         forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage();
@@ -634,20 +634,20 @@ public final class OrderAction extends DispatchAction {
                         em.setLink("searchfree.do?activemenu=suchenbestellen");
                         rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.error("issnAssistent: " + e.toString());
-
+                        
                     }
-
+                    
                 } else {
                     forward = "noresult"; // No input...
                 }
-
+                
             } else { // PMID present => resolve
                 forward = "noresult"; // back to input form
                 pageForm = pubmed.resolvePmid(pubmed.extractPmid(pageForm.getPmid()));
                 pageForm.setAutocomplete(true); // suppress autocomplete
                 pageForm.setRuns_autocomplete(1);
             }
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -655,7 +655,7 @@ public final class OrderAction extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         if ((!treffer) && (pageForm.getIssn().length() == 0)) {
             forward = "noresult";
         }
@@ -663,33 +663,33 @@ public final class OrderAction extends DispatchAction {
                 && (pageForm.getRuns_autocomplete() == 0 && pageForm.getIssn().length() != 0)) {
             // Funktion AutoComplete ausführen
             pageForm.setAutocomplete(autoComplete(pageForm, rq));
-
+            
             //        System.out.println("Ergebnis autocomplete: " + pageForm.isAutocomplete());
             //        System.out.println("Testausgabe ISSN: " + pageForm.getIssn());
-
+            
             // um zu verhindern, dass vor dem ISSN-Assistent nochmals erfolglos versucht wir Autocomplete auszuführen...
             pageForm.setRuns_autocomplete(1);
         } else {
             pageForm.setAutocomplete(false); // d.h. Autocomplete im nächsten Schritt...
             pageForm.setRuns_autocomplete(0);
         }
-
+        
         rq.setAttribute("orderform", pageForm);
         rq.setAttribute("form", pageForm);
-
+        
         return mp.findForward(forward);
     }
-
+    
     public ActionForward checkAvailabilityOpenUrl(final ActionMapping mp, final ActionForm form,
             final HttpServletRequest rq, final HttpServletResponse rp) {
-
+        
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         OrderForm pageForm = (OrderForm) form;
         final Pubmed pubmed = new Pubmed();
         Text cn = new Text();
         final Auth auth = new Auth();
         EZBForm ezbform = new EZBForm();
-
+        
         final ExecutorService executor = Executors.newCachedThreadPool();
         // EZB-Thread-Management
         final ThreadedWebcontent ezbthread = new ThreadedWebcontent();
@@ -703,36 +703,35 @@ public final class OrderAction extends DispatchAction {
         // Carelit-Thread-Management
         final ThreadedWebcontent carelitthread = new ThreadedWebcontent();
         Future<String> carelitcontent = null;
-
+        
         String forward = Result.FAILURE.getValue();
         String bibid = null;
         long daiaId = 0;
         long kid = 0;
-
+        
         try {
-
+            
             // if coming from getOpenUrlRequest or prepareReorder
             if (rq.getAttribute("ofjo") != null) {
                 pageForm = (OrderForm) rq.getAttribute("ofjo");
                 pageForm.setResolver(true);
                 rq.setAttribute("ofjo", pageForm);
             }
-
-            // if not logged in, try to get account from request
+            
+            // if not logged in, try to get account in Text cn from request
             if (!auth.isLogin(rq)) {
                 cn = (Text) rq.getAttribute("ip");
-                if (cn != null) {
-                    // Text mit Kontoangaben anhand Broker-Kennung holen
-                    if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue()) {
-                        pageForm.setBkid(cn.getInhalt());
-                    }
-                    // Text mit Kontoangaben anhand Konto-Kennung holen
-                    if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDES_IP.getValue()) {
-                        pageForm.setKkid(cn.getInhalt());
-                    }
+                // Text mit Kontoangaben anhand Broker-Kennung holen
+                if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue()) {
+                    pageForm.setBkid(cn.getInhalt());
+                }
+                // Text mit Kontoangaben anhand Konto-Kennung holen
+                if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDES_IP.getValue()) {
+                    pageForm.setKkid(cn.getInhalt());
                 }
             }
-
+            
+            // set bibid, kid and daiaId depending on access method
             if (ui != null) {
                 // get bibid from ui
                 if (ui.getKonto().getEzbid() != null && !ui.getKonto().getEzbid().equals("")) {
@@ -742,7 +741,7 @@ public final class OrderAction extends DispatchAction {
                 kid = ui.getKonto().getId();
             } else {
                 // get bibid from IP based access
-                if (cn != null && cn.getInhalt() != null) {
+                if (cn.getInhalt() != null) {
                     if (pageForm.getBkid() == null && cn.getKonto().getEzbid() != null
                             && !cn.getKonto().getEzbid().equals("")) {
                         bibid = cn.getKonto().getEzbid();
@@ -751,10 +750,10 @@ public final class OrderAction extends DispatchAction {
                     kid = cn.getKonto().getId();
                 }
             }
-
+            
             // normalize PMID if available
             pageForm.setPmid(pubmed.extractPmid(pageForm.getPmid()));
-
+            
             // PMID available and there are article references missing
             if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && pageForm.areArticleValuesMissing()) {
                 OrderForm of = new OrderForm();
@@ -767,7 +766,7 @@ public final class OrderAction extends DispatchAction {
                     pubmedcontent = executor.submit(pubmedthread);
                 }
             }
-
+            
             // get zdbid from ISSN. Only necessary if logged in...
             boolean gbvThread = false;
             if (auth.isLogin(rq) && pageForm.getIssn() != null && !pageForm.getIssn().equals("")) {
@@ -784,32 +783,33 @@ public final class OrderAction extends DispatchAction {
                     gbvThread = true;
                 }
             }
-
-            // logged in or access IP based/kkid/bkid
-            if (auth.isLogin(rq) || (cn != null && cn.getInhalt() != null)) {
+            
+            // logged in or access based on IP/kkid/bkid
+            if (auth.isLogin(rq) || cn.getInhalt() != null) {
                 forward = "notfreeebz";
-
+                
                 // set link in request if there is institution logo for this account
                 if (cn.getInhalt() != null && cn.getKonto().getInstlogolink() != null) {
                     rq.setAttribute("logolink", cn.getKonto().getInstlogolink());
                 }
-
+                
                 ContextObject co = new ContextObject();
                 final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
                 co = openurlConv.makeContextObject(pageForm);
-
+                
                 final OpenUrl openU = new OpenUrl();
                 final String openurl = openU.composeOpenUrl(co);
-
+                
                 // needed for  creating OpenURL links on checkavailability.jsp (e.g. Carelit)
                 pageForm.setLink(openurl);
-
+                
                 if (ReadSystemConfigurations.isSearchCarelit()) {
                     carelitthread.setLink("http://217.91.37.16/LISK_VOLLTEXT/resolver/drdoc.asp?sid=DRDOC:doctor-doc&"
                             + openurl);
                     carelitcontent = executor.submit(carelitthread);
                 }
-
+                
+                // TODO: open this up: get link for any linkresolver, configured on account level
                 // use link to services from ZDB/EZB
                 // http://services.dnb.de/fize-service/gvr/html-service.htm?
                 final StringBuffer linkEZB = new StringBuffer("http://services.dnb.de/fize-service/gvr/full.xml?");
@@ -823,13 +823,14 @@ public final class OrderAction extends DispatchAction {
                     linkEZB.append("&pid=client_ip%3D");
                     linkEZB.append(rq.getRemoteAddr());
                 }
-
+                
                 // set EZB request into thread, get back after timeout and if empty use alternate API over
                 // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
                 // http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?pid=format%3Dxml&genre=article&issn=1538-3598&bibid=AAAAA
                 ezbthread.setLink(linkEZB.toString());
                 ezbcontent = executor.submit(ezbthread);
-
+                
+                // TODO: open this up: get UIlink for any linkresolver, configured on account level
                 // compose link to EZB for UI
                 final StringBuffer linkUIezb = new StringBuffer("http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?");
                 linkUIezb.append(openurl);
@@ -842,12 +843,12 @@ public final class OrderAction extends DispatchAction {
                     linkUIezb.append("&client_ip=");
                     linkUIezb.append(rq.getRemoteAddr());
                 }
-
+                
                 // Check for internal / external Holdings using DAIA Document Availability Information API
                 List<Bestand> allHoldings = new ArrayList<Bestand>();
                 List<Bestand> internalHoldings = new ArrayList<Bestand>();
                 List<Bestand> externalHoldings = new ArrayList<Bestand>();
-
+                
                 if (ReadSystemConfigurations.isUseDaia()) { // Check an external register over DAIA
                     final DaiaRequest daiaRequest = new DaiaRequest();
                     allHoldings = daiaRequest.get(openurl);
@@ -859,7 +860,8 @@ public final class OrderAction extends DispatchAction {
                 allHoldings = stock.checkGeneralStockAvailability(pageForm, true);
                 internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
                 externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
-
+                
+                // TODO: open this up: read response from any linkresolver, configured on account level
                 // get back EZB thread
                 final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
                 if (ezbanswer != null && !ezbanswer.contains("<Error code=")
@@ -870,27 +872,27 @@ public final class OrderAction extends DispatchAction {
                 } else {
                     // use alternate Vascoda API
                     // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
-
+                    
                     final EZBVascoda vascoda = new EZBVascoda();
                     // &pid=format%3Dxml => output as XML
                     final EZBForm efVascoda = vascoda.read(getWebcontent(linkUIezb.toString() + "&pid=format%3Dxml",
                             2000, 2));
                     // returns only online holdings. Keep local print holdings...
                     ezbform.setOnline(efVascoda.getOnline());
-
+                    
                     // only show error in UI if library has ZDB holdings
-                    if (ui != null && ui.getKonto().isZdb() || cn != null && cn.getKonto() != null
-                            && cn.getKonto().isZdb()) {
+                    if (ui != null && ui.getKonto().isZdb() || cn.getKonto() != null && cn.getKonto().isZdb()) {
                         final EZBDataPrint timeout = new EZBDataPrint();
                         timeout.setAmpel("red");
                         timeout.setComment("error.zdb_timeout");
                         ezbform.getPrint().add(timeout);
                     }
                 }
-
+                
+                // TODO: open this up: set linkname for any linkresolver, configured on account level
                 // set Link for "Powered by EZB/ZDB" for manual checks by the user
                 ezbform.setLinkezb(linkUIezb.toString());
-
+                
                 if (!internalHoldings.isEmpty()) { // we have own holdings
                     forward = "freeezb";
                     addInternalHoldings(ezbform, pageForm, internalHoldings, cn.getConnection());
@@ -899,12 +901,12 @@ public final class OrderAction extends DispatchAction {
                 if (!externalHoldings.isEmpty()) { // there external holdings
                     rq.setAttribute("holdings", externalHoldings);
                 }
-
+                
                 // if logged in go to availabilityresult.jsp or if we have found some holdings
                 if (auth.isLogin(rq) || analyzeEZBResult(ezbform, pageForm, cn.getConnection())) {
                     forward = "freeezb";
                 }
-
+                
                 // ge back GBV thread
                 if (gbvThread) {
                     final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 3, "GBV");
@@ -916,21 +918,21 @@ public final class OrderAction extends DispatchAction {
                         }
                     }
                 }
-
+                
                 // get back Pubmed thread
                 if (isPubmedSearchWithoutPmidPossible(pageForm)) {
                     final String pubmedanswer = getBackThreadedWebcontent(pubmedcontent, 3, "Pubmed");
                     if (pubmedanswer != null) {
                         pageForm.setPmid(pubmed.getPmid(pubmedanswer));
                     }
-
+                    
                     if (pageForm.getPmid() != null && !pageForm.getPmid().equals("") && // falls PMID gefunden wurde
                             pageForm.areArticleValuesMissing()) { // und Artikelangaben fehlen
                         final OrderForm of = pubmed.resolvePmid(pageForm.getPmid());
                         pageForm.completeOrderForm(pageForm, of); // ergänzen
                     }
                 }
-
+                
                 // get back Carelit thread
                 if (ReadSystemConfigurations.isSearchCarelit()) {
                     final String carelitanswer = getBackThreadedWebcontent(carelitcontent, 1, "Carelit");
@@ -941,7 +943,7 @@ public final class OrderAction extends DispatchAction {
                         forward = "freeezb";
                     }
                 }
-
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
@@ -949,34 +951,32 @@ public final class OrderAction extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
             pageForm.setAutocomplete(false); // reset
             rq.setAttribute("ezb", ezbform);
-
+            
             // for get-method in PrepareLogin encode pageForm
             pageForm = pageForm.encodeOrderForm(pageForm);
-
+            
             rq.setAttribute("orderform", pageForm);
-
+            
         } finally {
-            if (cn != null) {
-                cn.close();
-            }
+            cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     private void addInternalHoldings(final EZBForm ezbform, final OrderForm pageForm,
             final List<Bestand> internalHoldings, final Connection cn) {
-
+        
         // set Supplier in pageForm
         final Lieferanten supplier = new Lieferanten();
         pageForm.setLieferant(supplier.getLieferantFromName("abonniert", cn));
         pageForm.setDeloptions("email");
-
+        
         for (final Bestand hold : internalHoldings) {
-
+            
             // set Print data
             final EZBDataPrint print = new EZBDataPrint();
             print.setLocation(hold.getStandort().getInhalt());
@@ -984,10 +984,10 @@ public final class OrderAction extends DispatchAction {
             print.setCoverage(hold.getCoverage(hold));
             print.setComment("availresult.print");
             print.setAmpel("yellow");
-
+            
             // set new Reference for Print
             final EZBReference ref = new EZBReference();
-
+            
             // set link for D-D holdings
             final StringBuffer buf = new StringBuffer();
             if (hold.getHolding().getBaseurl() != null) {
@@ -1007,21 +1007,21 @@ public final class OrderAction extends DispatchAction {
                 ref.setUrl(buf.toString());
                 ref.setUrl(buf.toString());
             }
-
+            
             ref.setLabel("availresult.link_title_print");
             print.setInfo(ref);
-
+            
             ezbform.getPrint().add(print);
-
+            
         }
-
+        
     }
-
+    
     private boolean analyzeEZBResult(final EZBForm ezbform, final OrderForm pageForm, final Connection cn) {
-
+        
         boolean result = false;
         final Lieferanten supplier = new Lieferanten();
-
+        
         for (final EZBDataOnline online : ezbform.getOnline()) {
             // 0 free accessible ; 1 partially free accesible
             if (online.getState() == 0 || online.getState() == 1) {
@@ -1036,7 +1036,7 @@ public final class OrderAction extends DispatchAction {
                 //
             }
         }
-
+        
         for (final EZBDataPrint print : ezbform.getPrint()) {
             // in stock ; partially in stock
             if (print.getState() == 2 || print.getState() == 3) {
@@ -1045,44 +1045,44 @@ public final class OrderAction extends DispatchAction {
                 pageForm.setDeloptions("email");
             }
         }
-
+        
         return result;
     }
-
+    
     public List<JournalDetails> searchJournalseek(final String zeitschriftentitel_encoded,
             final String artikeltitel_encoded, final OrderForm pageForm, final String concurrentCopyZeitschriftentitel) {
-
+        
         final List<JournalDetails> issnJS = new ArrayList<JournalDetails>();
         final CodeUrl codeUrl = new CodeUrl();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
-
+        
         // erster Versuch ueber Journalseek
-
+        
         String link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query=";
         link = link + zeitschriftentitel_encoded;
-
+        
         //      System.out.println("Suchstring ISSN Journalseek erster Versuch: " + link + "\012");
         String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
-
+        
         //zweiter Versuch ueber Journalseek
         String zeitschriftentitelEncodedTrunkiert = correctArtikeltitIssnAssist(concurrentCopyZeitschriftentitel);
-
+        
         if (content.contains("no matches")) { // falls keine Treffer => Suchbegriffe trunkieren
             // Achtung Regexp hat * spezielle Bedeutung...
             zeitschriftentitelEncodedTrunkiert = zeitschriftentitelEncodedTrunkiert.replaceAll("\040", "*\040") + "*";
-
+            
             zeitschriftentitelEncodedTrunkiert = codeUrl.encodeLatin1(zeitschriftentitelEncodedTrunkiert);
             link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query="
                     + zeitschriftentitelEncodedTrunkiert;
-
+            
             //          System.out.println("Suchstring ISSN Journalseek zweiter Versuch: " + link + "\012");
             content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
         }
-
+        
         //Trefferauswertung
-
+        
         if ((!content.contains("no matches")) && (!content.contains("Wildcards cannot be used on short searches"))) {
-
+            
             while (content.contains("query=")) {
                 final JournalDetails jd = new JournalDetails();
                 jd.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
@@ -1103,10 +1103,10 @@ public final class OrderAction extends DispatchAction {
                     LOG.error("ISSN-Assistent - Point F zeitschriftentitel_encoded_js: " + e.toString());
                 }
                 jd.setZeitschriftentitel_encoded(zeitschriftentitelEncodedJS);
-
+                
                 jd.setLink("http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=issn&query="
                         + jd.getIssn());
-
+                
                 if (pageForm.isFlag_noissn()) {
                     jd.setAuthor(pageForm.getAuthor());
                     jd.setJahr(pageForm.getJahr());
@@ -1114,36 +1114,36 @@ public final class OrderAction extends DispatchAction {
                     jd.setHeft(pageForm.getHeft());
                     jd.setSeiten(pageForm.getSeiten());
                 }
-
+                
                 content = content.substring(end);
                 issnJS.add(jd);
             }
         }
-
+        
         return issnJS;
     }
-
+    
     private List<JournalDetails> searchEZBxml(final OrderForm pageForm, final String bibid) {
-
+        
         List<JournalDetails> result = new ArrayList<JournalDetails>();
         final EZBXML ezb = new EZBXML();
-
+        
         if (pageForm.getIssn().length() == 0) {
             result = ezb.searchByTitle(pageForm.getZeitschriftentitel(), bibid);
         } else {
             result = ezb.searchByIssn(pageForm.getIssn(), bibid);
         }
-
+        
         // due to compatibility of legacy code
         final List<JournalDetails> issnRB = new ArrayList<JournalDetails>();
         final CodeUrl codeUrl = new CodeUrl();
         for (final JournalDetails jdRB : result) {
-
+            
             jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
             jdRB.setArtikeltitel(pageForm.getArtikeltitel());
             jdRB.setArtikeltitel_encoded(codeUrl.encodeLatin1(pageForm.getArtikeltitel()));
             jdRB.setZeitschriftentitel_encoded(codeUrl.encodeLatin1(jdRB.getZeitschriftentitel()));
-
+            
             if (pageForm.isFlag_noissn()) {
                 jdRB.setAuthor(pageForm.getAuthor());
                 jdRB.setJahr(pageForm.getJahr());
@@ -1153,29 +1153,29 @@ public final class OrderAction extends DispatchAction {
             }
             issnRB.add(jdRB);
         }
-
+        
         return issnRB;
     }
-
+    
     private boolean autoComplete(final OrderForm pageForm, final HttpServletRequest rq) {
-
+        
         boolean autocomplete = false;
         String link;
-
+        
         // Syntax WorldCat z.B. http://www.worldcat.org/search?q=ti%3AAntioxidant+supplementation+sepsis+and+systemic+inflammatory+response+syndrome+issn%3A0090-3493&qt=advanced
         // &fq=+dt%3Aart+%3E&qt=advanced (search only for articles)
-
+        
         final Auth auth = new Auth();
-
+        
         // make sure that this method will only be run, if the user is logged in
         if (auth.isLogin(rq)) {
-
+            
             // first correction, e.g. for β => beta
             final String artikeltitelWC = prepareWorldCat2(pageForm.getArtikeltitel());
-
+            
             // *** up to 2 runs on WorldCat
             // replace different versions of umlauts and use of "did you mean"
-
+            
             for (int i = 0; i < 2 && !autocomplete; i++) {
                 link = getWorldCatLinkBaseSearch(artikeltitelWC, pageForm, i);
                 autocomplete = searchWorldCat(link, pageForm);
@@ -1184,12 +1184,12 @@ public final class OrderAction extends DispatchAction {
                     i++;
                 }
             }
-
+            
         }
-
+        
         return autocomplete;
     }
-
+    
     /**
      * Create the link to search World Cat. The search of this link will return
      * several records. It is necessary to redirect on the detail page
@@ -1199,21 +1199,21 @@ public final class OrderAction extends DispatchAction {
     private String getWorldCatLinkBaseSearch(final String artikeltitelWC, final OrderForm pageForm, final int run) {
         String tmpWC = "";
         final CodeUrl codeUrl = new CodeUrl();
-
+        
         String artikeltitelEncoded = artikeltitelWC;
-
+        
         if (artikeltitelEncoded.contains("--")) { // The subtitle can not be search in the title field
             tmpWC = artikeltitelEncoded.substring(artikeltitelEncoded.indexOf("--") + 2); // Subtitle
             artikeltitelEncoded = artikeltitelEncoded.substring(0, artikeltitelEncoded.indexOf("--")); // Title
         }
-
+        
         artikeltitelEncoded = codeUrl.encodeLatin1(artikeltitelEncoded);
         //               System.out.println("artikeltitel_encoded_wc: " + artikeltitel_encoded);
         if (tmpWC.length() != 0) {
             tmpWC = codeUrl.encodeLatin1(tmpWC);
             //               System.out.println("tmp_wc (Untertitel): " + tmp_wc);
         }
-
+        
         if (run == 0) {
             artikeltitelEncoded = prepareWorldCat2(artikeltitelEncoded);
             if (tmpWC.length() != 0) {
@@ -1226,7 +1226,7 @@ public final class OrderAction extends DispatchAction {
                 tmpWC = prepareWorldCat1(tmpWC);
             }
         }
-
+        
         String link = "http://www.worldcat.org/search?q=";
         if (tmpWC.length() != 0) {
             link = link + tmpWC + "+";
@@ -1240,35 +1240,35 @@ public final class OrderAction extends DispatchAction {
             // keine ISSN vorhanden
             LOG.info("composeLinkWorldCat: no issn available" + e.toString());
         }
-
+        
         final String linkWC = link + "&fq=+dt%3Aart+%3E&qt=advanced";
-
+        
         return linkWC;
     }
-
+    
     private boolean searchWorldCat(final String link, final OrderForm pageForm) {
-
+        
         boolean worldcat = false;
-
+        
         final String content = getWebcontent(link, Connect.TIMEOUT_3.getValue(), Connect.TRIES_2.getValue());
-
+        
         // get first article details from Z39.88
         if (content.contains("url_ver=Z39.88")) {
             worldcat = true;
             pageForm.setRuns_autocomplete(+1);
-
+            
             String openURL = content.substring(content.indexOf("url_ver=Z39.88"),
                     content.indexOf('>', content.indexOf("url_ver=Z39.88")));
             //                System.out.println("String OpenURL: " + OpenURL);
             openURL = correctWorldCat(openURL);
-
+            
             // Hier folgt die OpenURL-Auswertung
             final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
             final OpenUrl openurl = new OpenUrl();
             // ContextObject mit Inhalten von content abfüllen
             final ContextObject co = openurl.readOpenUrlFromString(openURL);
             final OrderForm of = openurlConv.makeOrderform(co); // in ein OrderForm übersetzen
-
+            
             // Artikeltitel als User-Eingabe muss behalten werden
             pageForm.setZeitschriftentitel(prepareWorldCat2(of.getZeitschriftentitel()));
             pageForm.setIssn(of.getIssn());
@@ -1278,18 +1278,18 @@ public final class OrderAction extends DispatchAction {
             pageForm.setSeiten(of.getSeiten());
             pageForm.setAuthor(of.getAuthor());
             pageForm.setFlag_noissn(of.isFlag_noissn());
-
+            
         }
-
+        
         return worldcat;
-
+        
     }
-
+    
     private boolean isPubmedSearchWithoutPmidPossible(final OrderForm pageForm) {
         boolean check = false;
-
+        
         try {
-
+            
             if (pageForm.getPmid().equals("") // pmid nicht schon vorhanden
                     // issn muss vorhanden sein, damit überhaupt eine gewisse Chance besteht
                     && !pageForm.getIssn().equals("")
@@ -1300,30 +1300,30 @@ public final class OrderAction extends DispatchAction {
         } catch (final Exception e) {
             LOG.error("isPumedSearchWithoutPmidPossible: " + e.toString());
         }
-
+        
         return check;
     }
-
+    
     /**
      * Trys to get zdbid from an ISSN out of the local DB
      */
     public String getZdbidFromIssn(final String issn, final Connection cn) {
-
+        
         String zdbid = null;
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-
+            
             pstmt = cn.prepareStatement("SELECT DISTINCT a.zdbid FROM `zdb_id` AS a JOIN issn AS b "
                     + "ON a.identifier_id = b.identifier_id AND a.identifier = b.identifier WHERE b.issn = ?");
             pstmt.setString(1, issn);
             rs = pstmt.executeQuery();
-
+            
             if (rs.next()) { // only the first zdbid is used
                 zdbid = rs.getString("zdbid");
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getZdbidFromIssn in OrderAction: " + issn + "\040" + e.toString());
         } finally {
@@ -1342,16 +1342,16 @@ public final class OrderAction extends DispatchAction {
                 }
             }
         }
-
+        
         return zdbid;
     }
-
+    
     /**
      * Detailansicht einer einzelnen Bestellung vorbereiten
      */
     public ActionForward journalorderdetail(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OrderForm pageForm = (OrderForm) form;
         final OrderState orderstate = new OrderState();
         final Auth auth = new Auth();
@@ -1359,9 +1359,9 @@ public final class OrderAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         if (auth.isLogin(rq)) {
             forward = Result.SUCCESS.getValue();
-
+            
             final Text cn = new Text();
-
+            
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
@@ -1377,7 +1377,7 @@ public final class OrderAction extends DispatchAction {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                 } else {
                     forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage();
@@ -1386,16 +1386,16 @@ public final class OrderAction extends DispatchAction {
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     LOG.info("journalorderdetail: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
-
+                
             } catch (final Exception e) {
                 forward = Result.FAILURE.getValue();
-
+                
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("journalorderdetail: " + e.toString());
-
+                
             } finally {
                 cn.close();
             }
@@ -1408,42 +1408,42 @@ public final class OrderAction extends DispatchAction {
         }
         return mp.findForward(forward);
     }
-
+    
     /**
      * Bereitet das erneute Bestellen einer bestehenden Bestellung vor
      */
     public ActionForward prepareReorder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         String forward = Result.FAILURE.getValue();
         final OrderForm pageForm = (OrderForm) form;
         ErrorMessage em = new ErrorMessage();
         final Text cn = new Text();
         final Auth auth = new Auth();
-
+        
         try {
-
+            
             if (auth.isLogin(rq)) {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final Bestellungen order = new Bestellungen(cn.getConnection(), pageForm.getBid());
                 // URL-hacking unterdrücken!
                 if (auth.isLegitimateOrder(rq, order)) {
                     forward = Result.SUCCESS.getValue();
-
+                    
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                     final OrderForm of = new OrderForm(order);
-
+                    
                     rq.setAttribute("ofjo", of);
-
+                    
                     // mediatype != Artikel: go directly to the page for saving/modifying the order
                     // and not to checkavailability
                     if (!of.getMediatype().equals("Artikel")) {
                         forward = "save";
                     }
-
+                    
                 } else {
                     forward = Result.FAILURE.getValue();
                     em.setError("error.hack");
@@ -1451,7 +1451,7 @@ public final class OrderAction extends DispatchAction {
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     LOG.info("prepareReorder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
-
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
@@ -1459,51 +1459,51 @@ public final class OrderAction extends DispatchAction {
                 em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     public ActionForward prepareIssnSearch(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OrderForm pageForm = (OrderForm) form;
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
-
+            
             if (!pageForm.isAutocomplete() && pageForm.getRuns_autocomplete() == 0
                     && pageForm.getArtikeltitel().length() != 0) { // noch kein autocomplete ausgeführt...
                 // ...Funktion AutoComplete ausführen
                 pageForm.setAutocomplete(autoComplete(pageForm, rq));
-
+                
                 // basically replaces greek alphabet to alpha, beta...
                 pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
-
+                
             }
-
+            
             forward = Result.SUCCESS.getValue();
             try {
                 rq.setAttribute("orderform", pageForm);
-
+                
             } catch (final Exception e) {
                 forward = Result.FAILURE.getValue();
-
+                
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepareIssnSearch: " + e.toString());
             }
-
+            
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -1513,40 +1513,40 @@ public final class OrderAction extends DispatchAction {
         }
         return mp.findForward(forward);
     }
-
+    
     /**
      * Sucht u.a. die Benutzer des aktiven Kontos heraus, um sie für die
      * Bestellung zur Auswahl anzubieten
      */
     public ActionForward prepare(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final Text cn = new Text();
         Text t = new Text();
         final Auth auth = new Auth();
-
+        
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         OrderForm pageForm = (OrderForm) form;
-
+        
         if (rq.getAttribute("ofjo") != null) {
             // Übergabe aus checkAvailability von getOpenUrlRequest und nach Kunde neu erstellen...
             pageForm = (OrderForm) rq.getAttribute("ofjo");
             rq.setAttribute("ofjo", pageForm);
         }
-
+        
         if (pageForm.getKkid() == null) {
             t = auth.grantAccess(rq);
         }
-
+        
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         if ((t != null && t.getInhalt() != null) || (pageForm.getKkid() != null || pageForm.getBkid() != null)
                 || auth.isLogin(rq)) {
-
+            
             forward = Result.SUCCESS.getValue();
-
+            
             try {
-
+                
                 if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
                     final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
                     final AbstractBenutzer b = ui.getBenutzer();
@@ -1556,7 +1556,7 @@ public final class OrderAction extends DispatchAction {
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                     pageForm.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                 }
-
+                
                 if (ui != null) { // bei IP-basiertem Zugriff kein ui vorhanden
                     // in pageForm Defaultpreis von Subito legen, damit Preisauswahl
                     // für manuelle Bestellung bei Subito vorhanden ist
@@ -1571,7 +1571,7 @@ public final class OrderAction extends DispatchAction {
                         pageForm.setDeloptions(ui.getKonto().getDefault_deloptions());
                     }
                 }
-
+                
                 if (pageForm.getSubmit().contains("GBV")) { // Bestellung über GBV
                     if (auth.isUserGBVBestellung(rq)) { // verhindert URL-hacking
                         // setzt z.B. "zur GBV-Bestellung" auf "GBV", um in journalorder.jsp
@@ -1588,20 +1588,20 @@ public final class OrderAction extends DispatchAction {
                         pageForm.setSubmit("bestellform");
                     }
                 }
-
+                
                 // Benutzer ohne Bestellberechtigung werden auf Bestellformular
                 // (Mail an Bibliothek statt direkt bestellen) weitergeleitet
                 // Bei Übergabe aus Linkresolver, Einloggen und mediatype != Artikel => auf
                 // Bestellformular, da keine Bestellung über Subito möglich...
                 // ui == null => IP-basierter Zugriff
-
+                
                 if (ui == null
                         || // IP-basierter Zugriff
                            // erste Kondition ist problematisch falls die Übergabe ab pl (prepareLogin)
                            // kommt und der Kunde Benutzer mit GBV-Bestellberechtigung ist.
                            // d.h. GBV-Submit ist nicht vorhanden und er hat keine Wahl
                            // den Artikel beim GBV zu bestellen....
-
+                        
                         (!auth.isUserSubitoBestellung(rq)
                         // keine Bestellberechtigung
                         && !(auth.isUserGBVBestellung(rq) && pageForm.getSubmit().equals("GBV")))
@@ -1613,7 +1613,7 @@ public final class OrderAction extends DispatchAction {
                         || pageForm.getSubmit().contains("ma bibliothèque")
                         // der Kunde will das Doku bei seiner Bibliothek bestellen
                         || pageForm.getSubmit().contains("bestellform")) {
-
+                    
                     forward = "bestellform";
                     if (pageForm.getDeloptions() == null || // Defaultwert deloptions
                             (!pageForm.getDeloptions().equals("post") && !pageForm.getDeloptions().equals("fax to pdf") && !pageForm
@@ -1621,7 +1621,7 @@ public final class OrderAction extends DispatchAction {
                         pageForm.setDeloptions("fax to pdf");
                     }
                 }
-
+                
                 // Bei Bibliothekaren läuft eine Nicht-GBV-Bestellung mit
                 // mediatype!=Artikel auf das Formular zum manuellen Speichern einer Bestellung
                 if (ui != null && !pageForm.getSubmit().equals("GBV") && !auth.isBenutzer(rq)
@@ -1645,25 +1645,25 @@ public final class OrderAction extends DispatchAction {
                         }
                     }
                 }
-
+                
                 // für Get-Methode in PrepareLogin of URL-codieren
                 pageForm = pageForm.encodeOrderForm(pageForm);
-
+                
                 rq.setAttribute("orderform", pageForm);
-
+                
             } catch (final Exception e) {
                 forward = Result.FAILURE.getValue();
-
+                
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepare: " + e.toString());
-
+                
             } finally {
                 cn.close();
             }
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -1671,20 +1671,20 @@ public final class OrderAction extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
         rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * Bereitet das Abspeichern aller momentan vorhandenen Angaben vor
      */
     public ActionForward prepareJournalSave(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
         final Text cn = new Text();
@@ -1699,7 +1699,7 @@ public final class OrderAction extends DispatchAction {
             forward = Result.SUCCESS.getValue();
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-
+                
                 if (auth.isBenutzer(rq)) { // user may only see his own address
                     final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
                     final AbstractBenutzer b = ui.getBenutzer();
@@ -1708,7 +1708,7 @@ public final class OrderAction extends DispatchAction {
                 } else {
                     pageForm.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                 }
-
+                
                 if (pageForm.getDeloptions() == null || pageForm.getDeloptions().equals("")) {
                     pageForm.setDeloptions("email"); // default
                 }
@@ -1720,7 +1720,7 @@ public final class OrderAction extends DispatchAction {
                     pageForm.setDeloptions("post"); // logical consequence
                     pageForm.setFileformat("Papierkopie"); // logical consequence
                 }
-
+                
                 // Bestellstati
                 pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
                         cn.getConnection()));
@@ -1730,7 +1730,7 @@ public final class OrderAction extends DispatchAction {
                         cn.getConnection()));
                 final DefaultPreis dp = new DefaultPreis();
                 pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
-
+                
                 // benötigt damit auf journalsave.jsp lieferant.name nicht kracht...
                 Lieferanten l = new Lieferanten();
                 if (pageForm.getLid() != null && !pageForm.getLid().equals("") && !pageForm.getLid().equals("0")) { // lid wurde übermittelt aus pageForm
@@ -1739,24 +1739,24 @@ public final class OrderAction extends DispatchAction {
                     l.setName("k.A.");
                     l.setLid(Long.valueOf(0));
                 }
-
+                
                 pageForm.setLieferant(l);
                 pageForm.setBestellquelle(l.getName());
-
+                
                 if (pageForm.getStatus() == null) {
                     pageForm.setStatus("bestellt");
                 } // Default
-
+                
                 // deloptions
                 final Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
-
+                
                 rq.setAttribute("delopts", dynamicDeloptions);
-
+                
                 rq.setAttribute("orderform", pageForm);
-
+                
             } catch (final Exception e) {
                 forward = Result.FAILURE.getValue();
-
+                
                 final ErrorMessage em = new ErrorMessage();
                 em.setError("error.system");
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
@@ -1772,20 +1772,20 @@ public final class OrderAction extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu("suchenbestellen");
         rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * Speichert eine manuelle Bestellung ab
      */
     public ActionForward saveOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OrderForm pageForm = (OrderForm) form;
         final Lieferanten supplier = new Lieferanten();
         final OrderState orderstate = new OrderState();
@@ -1793,74 +1793,74 @@ public final class OrderAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
-
+            
             // aufgrund von IE Bug wird value bei einem eigenen Icon im submit nicht übermittelt:
             if (!pageForm.getSubmit().equals("neuen Kunden anlegen") && !pageForm.getSubmit().equals("add new patron")
             // Post-Methode um vor dem Abspeichern einer Bestellung einen neuen Kunden anzulegen
                     && !pageForm.getSubmit().equals("Ajouter un nouveau client")) {
-
+                
                 forward = Result.SUCCESS.getValue();
-
+                
                 final Text cn = new Text();
-
+                
                 try {
                     Bestellungen b = new Bestellungen();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-
+                    
                     // Defaultwert, falls keine Angaben (stellt sicher, dass History funktioniert)
                     if (pageForm.getStatus().equals("0")) {
                         pageForm.setStatus("bestellt");
                     }
-
+                    
                     pageForm.setKaufpreis(stringToBigDecimal(pageForm.getPreisvorkomma(), pageForm.getPreisnachkomma()));
-
+                    
                     try {
-
+                        
                         if (pageForm.isPreisdefault()) {
                             final DefaultPreis dp = new DefaultPreis(pageForm, ui);
                             dp.saveOrUpdate(cn.getConnection());
                         }
-
+                        
                     } catch (final Exception e) {
                         LOG.error("SaveOrder Default-Preis eintragen: " + e.toString());
                     }
-
+                    
                     final Date d = new Date();
                     final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     final String datum = fmt.format(d, ui.getKonto().getTimezone());
                     //                System.out.println("Bestelldatum: " + datum);
-
+                    
                     //               Bestellung in DB speichern:
                     AbstractBenutzer kunde = new AbstractBenutzer();
                     kunde = kunde.getUser(Long.valueOf(pageForm.getForuser()), cn.getConnection());
-
+                    
                     if (pageForm.getBid() != null) {
                         // zum Updaten vollständige Bestellung holen
                         b = new Bestellungen(cn.getConnection(), pageForm.getBid());
                         if (!pageForm.getStatus().equals(b.getStatustext())) { // falls Status verändert wurde
-
+                        
                             // um zu verhindern, dass eine Bestellung kein Statusdatum erhält,
                             // falls beim Statusschreiben etwas schief geht
                             b.setStatusdate(datum);
                             b.setStatustext(pageForm.getStatus());
-
+                            
                             final Text t = new Text(cn.getConnection(), TextType.STATE_ORDER, pageForm.getStatus());
-
+                            
                             // Status setzen
                             orderstate.setNewOrderState(b, ui.getKonto(), t, null, ui.getBenutzer().getEmail(),
                                     cn.getConnection());
-
+                            
                         }
                     }
-
+                    
                     // falls keine Kundenangaben => Besteller = eingeloggter User
                     if (kunde == null) {
                         kunde = ui.getBenutzer();
                     }
-
+                    
                     b.setKonto(ui.getKonto());
                     b.setBenutzer(kunde);
-
+                    
                     b.setLieferant(supplier.getLieferantFromLid(Long.valueOf(pageForm.getLid()), cn.getConnection()));
                     if (b.getLieferant().getSigel() == null || b.getLieferant().getSigel().equals("")) {
                         // doppelter Eintrag um Sortieren und Suche zu ermöglichen/vereinfachen
@@ -1894,7 +1894,7 @@ public final class OrderAction extends DispatchAction {
                     // Subitonr. normalisieren, da relativ komplex aufgebaut SUBITO:2009040801219
                     b.setSubitonr(extractSubitonummer(pageForm.getSubitonr()));
                     b.setGbvnr(pageForm.getGbvnr()); // relativ einfach aufgebaut: A09327811X
-
+                    
                     b.setSystembemerkung(pageForm.getAnmerkungen());
                     b.setNotizen(pageForm.getNotizen());
                     b.setKaufpreis(pageForm.getKaufpreis());
@@ -1904,55 +1904,55 @@ public final class OrderAction extends DispatchAction {
                         b.setWaehrung(null);
                     }
                     b.setSignatur(pageForm.getSignatur());
-
+                    
                     if (pageForm.getBid() == null) { // hier wird eine neue Bestellung abgespeichert
-
+                    
                         // um zu verhindern, dass eine Bestellung kein Datum erhält,
                         // falls beim Statusschreiben etwas schief geht
                         b.setOrderdate(datum);
                         b.setStatusdate(datum);
                         b.setStatustext(pageForm.getStatus());
-
+                        
                         b.save(cn.getConnection());
-
+                        
                         //Sicherheit, ob das so wirklich klappt mit Benachrichtigung
                         if (b.getId() == null) {
                             // Values may get truncated, while saving in DB. We need to use a reduced method to get the order back
                             b = b.getOrderSimpleWay(b, cn.getConnection());
                             log.warn("b.getId() has been null! We had to use b.getOrderSimpleWay!");
                         }
-
+                        
                         final Text t = new Text(cn.getConnection(), TextType.STATE_ORDER, pageForm.getStatus());
-
+                        
                         // Status Bestellt setzen
                         orderstate.setNewOrderState(b, ui.getKonto(), t, null, ui.getBenutzer().getEmail(),
                                 cn.getConnection());
-
+                        
                     } else { // hier wird eine bestehende Bestellung geupdated
                         b.update(cn.getConnection());
                     }
-
+                    
                     rq.setAttribute("orderform", pageForm);
-
+                    
                 } catch (final Exception e) {
                     forward = Result.FAILURE.getValue();
-
+                    
                     final ErrorMessage em = new ErrorMessage();
                     em.setError("error.save");
                     em.setLink("searchfree.do?activemenu=suchenbestellen");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     LOG.error("saveOrder: " + e.toString());
-
+                    
                 } finally {
                     cn.close();
                 }
-
+                
             } else { // Umleitung zu Kundenanlegen
                 forward = "newcustomer";
                 pageForm.setOrigin("js");
                 rq.setAttribute("orderform", pageForm);
             }
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -1962,31 +1962,31 @@ public final class OrderAction extends DispatchAction {
         }
         return mp.findForward(forward);
     }
-
+    
     /**
      * bereitet das manuelle Ändern einer Bestellung vor
      */
     public ActionForward prepareModifyOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         OrderForm pageForm = (OrderForm) form;
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
             forward = Result.SUCCESS.getValue();
-
+            
             final Text cn = new Text();
-
+            
             try {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-
+                
                 final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
-
+                
                 if (b.getId() != null) {
-
+                    
                     pageForm = new OrderForm(b);
-
+                    
                     if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
                         final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
                         final AbstractBenutzer ab = ui.getBenutzer();
@@ -1995,35 +1995,35 @@ public final class OrderAction extends DispatchAction {
                     } else {
                         pageForm.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                     }
-
+                    
                     // Bestellstati
                     pageForm.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
                             cn.getConnection()));
-
+                    
                     final Lieferanten supplier = new Lieferanten();
                     pageForm.setQuellen(supplier.getLieferanten(ui, cn.getConnection()));
                     // Waehrungen
                     pageForm.setWaehrungen(cn.getAllTextPlusKontoTexts(TextType.CURRENCY, ui.getKonto().getId(),
                             cn.getConnection()));
-
+                    
                     final DefaultPreis dp = new DefaultPreis();
                     pageForm.setDefaultpreise(dp.getAllKontoDefaultPreise(ui.getKonto().getId(), cn.getConnection()));
-
+                    
                     // deloptions
                     final Set<String> dynamicDeloptions = getDeloptions(ui.getKonto(), cn.getConnection());
-
+                    
                     rq.setAttribute("delopts", dynamicDeloptions);
                     rq.setAttribute("orderform", pageForm);
-
+                    
                     if (b.checkAnonymize(b)) {
-
+                        
                         forward = Result.FAILURE.getValue();
                         final ErrorMessage em = new ErrorMessage("error.anonymised",
                                 "listkontobestellungen.do?method=overview&filter=offen&sort=statedate&sortorder=desc");
                         rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     }
-
+                    
                     if (auth.isBibliothekar(rq)
                     // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
                             && !b.getKonto().getId().equals(ui.getKonto().getId())) {
@@ -2045,7 +2045,7 @@ public final class OrderAction extends DispatchAction {
                         rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                         LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     }
-
+                    
                 } else {
                     forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage("error.hack",
@@ -2053,7 +2053,7 @@ public final class OrderAction extends DispatchAction {
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     rq.setAttribute("orderform", null); // unterdrücken von "manuell bestellen"
                     LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
-
+                    
                 }
             } catch (final Exception e) {
                 forward = Result.FAILURE.getValue();
@@ -2062,7 +2062,7 @@ public final class OrderAction extends DispatchAction {
                 em.setLink("searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 LOG.error("prepareModifyOrder: " + e.toString());
-
+                
             } finally {
                 cn.close();
             }
@@ -2075,36 +2075,36 @@ public final class OrderAction extends DispatchAction {
         }
         return mp.findForward(forward);
     }
-
+    
     /**
      * löscht eine Bestellung
      */
     public ActionForward prepareDeleteOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OrderForm pageForm = (OrderForm) form;
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-
+        
         try {
-
+            
             final Auth auth = new Auth();
             if (auth.isLogin(rq)) { // Test auf gültige Session
                 final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
-
+                
                 if (b.getId() != null && // BID muss vorhanden sein
                         // nur Bibliothekare und Admins dürfen Bestellungen löschen
                         (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
-
+                
                     forward = "promptDelete";
                     pageForm.setDelete(true);
                     pageForm.setBestellung(b);
                     rq.setAttribute("orderform", pageForm);
-
+                    
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
@@ -2122,34 +2122,34 @@ public final class OrderAction extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * löscht eine Bestellung
      */
     public ActionForward deleteOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OrderForm pageForm = (OrderForm) form;
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-
+        
         try {
-
+            
             final Auth auth = new Auth();
             if (auth.isLogin(rq)) { // Test auf gültige Session
                 final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
-
+                
                 if (b.getId() != null && // BID muss vorhanden sein
                         // nur Bibliothekare und Admins dürfen Bestellungen löschen
                         (auth.isBibliothekar(rq) || auth.isAdmin(rq)) && auth.isLegitimateOrder(rq, b)) { // nur kontoeigene Bestellungen dürfen gelöscht werden
-
+                
                     if (b.deleteOrder(b, cn.getConnection())) {
                         forward = Result.SUCCESS.getValue();
                         final ActiveMenusForm mf = new ActiveMenusForm();
@@ -2165,7 +2165,7 @@ public final class OrderAction extends DispatchAction {
                         rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         LOG.error("deleteOrder: couldn't delete order");
                     }
-
+                    
                 } else {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("uebersicht");
@@ -2183,14 +2183,14 @@ public final class OrderAction extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     public String extractYear(final String date) {
         String year = "";
         // Search pattern works from 14th century till 22th century. This sould be usable for some time...
@@ -2204,18 +2204,18 @@ public final class OrderAction extends DispatchAction {
         } catch (final Exception e) {
             LOG.error("extractYear(String date): " + date + "\040" + e.toString());
         }
-
+        
         return year;
     }
-
+    
     private Set<String> getDeloptions(final Konto konto, final Connection cn) {
-
+        
         final Set<String> result = new TreeSet<String>();
-
+        
         final BestellParam bp = new BestellParam();
         // get all Bestellparams for the account
         final List<BestellParam> bps = bp.getAllBestellParam(konto, cn);
-
+        
         for (final BestellParam param : bps) {
             if (param.getLieferart_value1() != null) {
                 result.add(param.getLieferart_value1());
@@ -2227,12 +2227,12 @@ public final class OrderAction extends DispatchAction {
                 result.add(param.getLieferart_value3());
             }
         }
-
+        
         return result;
     }
-
+    
     private String extractSubitonummer(String subitonr) {
-
+        
         final Pattern z = Pattern.compile("[A-Z]{0,2}[0-9]+");
         final Matcher w = z.matcher(subitonr);
         try {
@@ -2242,41 +2242,41 @@ public final class OrderAction extends DispatchAction {
         } catch (final Exception e) {
             LOG.error("String extractSubitonummer(String subitonr): " + subitonr + "\040" + e.toString());
         }
-
+        
         return subitonr;
     }
-
+    
     private String getWebcontent(final String link, final int timeoutMs, final int retrys) {
         final Http http = new Http();
-
+        
         return http.getContent(link, timeoutMs, retrys);
     }
-
+    
     private String shortenGoogleSearchPhrase(String artikeltitel) {
-
+        
         try {
             // Google is limited for the length of the search term while searching as a phrase
             if (artikeltitel.length() > 75 && artikeltitel.substring(0, 75).contains("\040")) {
                 artikeltitel = artikeltitel.substring(0, artikeltitel.lastIndexOf('\040', 75));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("googlePreparePhraseSearch: " + artikeltitel + "\040" + e.toString());
         }
-
+        
         return artikeltitel;
     }
-
+    
     private Message handleGoogleCaptcha(String content) {
-
+        
         final Message m = new Message();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
         content = specialCharacters.replace(content);
         String link = "";
         String id = "";
-
+        
         if (content.contains("sorry/image?id=")) { // Versuch 1
-
+        
             link = content.substring(content.indexOf("sorry/image?id="),
                     content.indexOf('"', content.indexOf("sorry/image?id=")));
             if (link.contains("&")) {
@@ -2284,101 +2284,101 @@ public final class OrderAction extends DispatchAction {
             }
             link = "http://www.google.ch/" + link;
             id = link.substring(link.indexOf("sorry/image?id=") + 15);
-
+            
         } else {
-
+            
             if (content.contains("name=\"id\" value=\"")) { // Versuch 2
-
+            
                 id = content.substring(content.indexOf("name=\"id\" value=\"") + 17,
                         content.indexOf("\"", content.indexOf("name=\"id\" value=\"") + 17));
                 link = "http://www.google.ch/sorry/image?id=" + id;
-
+                
             }
-
+            
         }
-
+        
         m.setLink(link);
         m.setMessage(id);
-
+        
         log.warn("Google-Captcha!");
         // Important message
         final MHelper mh = new MHelper();
         mh.sendErrorMail("Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
-
+        
         return m;
     }
-
+    
     private String correctWorldCat(final String input) {
         // Methode um abartige Umlaute aus Resultat von WorldCat zu entfernen
         String output = input;
-
+        
         output = output.replaceAll("%CC%90%C6%B0", "");
         output = output.replaceAll(".\\+--&", "&"); // WorldCat setzt manchmal '. --' ans Ende eines Identifiers...
-
+        
         return output;
     }
-
+    
     private String correctGoogleURL(final String input) {
         // Methode um gefundene Google-URL für die Ausgabe vorzubereiten
         String output = input;
         final SpecialCharacters specialCharacters = new SpecialCharacters();
-
+        
         // hier ist eigentlich kein Treffer gefunden worde. Google schlägt ähnliche Treffer mit dieser URL-Syntax vor...
         if (input.startsWith("/url?q=")) {
             output = input.substring(7);
         }
-
+        
         output = specialCharacters.replace(output);
-
+        
         return output;
     }
-
+    
     private String correctArtikeltitIssnAssist(final String input) {
         // Methode um die Trefferchancen beim ISSN-Assistenten zu erhöhen
         String output = input;
         final SpecialCharacters specialCharacters = new SpecialCharacters();
-
+        
         output = output.replaceAll("\040und\040", "\040"); // entfernt "und"
         output = specialCharacters.replace(output); // übersetzt allfällige &amp; in &
         output = output.replaceAll("\040&\040", "\040"); // entfernt &
         output = output.replaceAll("\040+\040", "\040"); // entfernt +
-
+        
         return output;
     }
-
+    
     /**
      * Holt aus einer ArrayList<Bestand> die eigenen Bestände
      */
     private List<Bestand> extractInternalHoldings(final List<Bestand> bestaende, final long daiaId) {
-
+        
         final ArrayList<Bestand> internalHoldings = new ArrayList<Bestand>();
-
+        
         try {
-
+            
             for (final Bestand b : bestaende) {
                 if (b.getHolding().getKid().equals(daiaId)) {
                     internalHoldings.add(b);
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("ArrayList<Bestand> extractInternalHoldings (ArrayList<Bestand> bestaende, long daiaId): "
                     + e.toString());
         }
-
+        
         return internalHoldings;
     }
-
+    
     /**
      * Holt aus einer ArrayList<Bestand> die Fremdbestände
      */
     private List<Bestand> extractExternalHoldings(final List<Bestand> bestaende, final long daiaId, final UserInfo ui) {
-
+        
         final List<Bestand> externalHoldings = new ArrayList<Bestand>();
-
+        
         try {
             for (final Bestand b : bestaende) {
-
+                
                 // TODO: we need a better mechanism to manage the indication of external holdings
                 // We make sure that the holdings are from the same country as the requester
                 if (ui != null && b.getHolding().getKonto().getLand() != null
@@ -2388,15 +2388,15 @@ public final class OrderAction extends DispatchAction {
                     externalHoldings.add(b);
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("ArrayList<Bestand> extractExternalHoldings (ArrayList<Bestand> bestaende, long daiaId): "
                     + e.toString());
         }
-
+        
         return externalHoldings;
     }
-
+    
     /**
      * Nimmt grundsätzlich ein Mapping der KIDs aus verschiedenen
      * Doctor-Doc-Instanzen vor um die Bestände den entsprechenden Konti
@@ -2405,7 +2405,7 @@ public final class OrderAction extends DispatchAction {
     private long getDaiaId(final long kid) {
         long daiaId = 0;
         final Text cn = new Text();
-
+        
         try {
             final Text t = new Text(cn.getConnection(), TextType.DAIA_ID, kid);
             if (t != null && t.getInhalt() != null) {
@@ -2416,43 +2416,42 @@ public final class OrderAction extends DispatchAction {
         } finally {
             cn.close();
         }
-
+        
         return daiaId;
     }
-
+    
     private boolean checkPrepareWorldCat1(String input) {
-
+        
         // Methode um zu prüfen, ob eine zusätzliche WorldCat-Abfrage gefahren werden muss...
         boolean check = false;
         final CodeUrl codeUrl = new CodeUrl();
-
+        
         input = codeUrl.encodeLatin1(input);
-
+        
         if (input.contains("%E4") || input.contains("%F6") || input.contains("%FC") || input.contains("%C4")
                 || input.contains("%D6") || input.contains("%DC")) {
             check = true;
         }
-
+        
         // nicht abschliessend...
-
+        
         return check;
     }
-
+    
     /**
-    *
-    * @param vorkomma
-    * @param nachkomma
-    * @return
-    */
+     * @param vorkomma
+     * @param nachkomma
+     * @return
+     */
     private BigDecimal stringToBigDecimal(final String vorkomma, final String nachkomma) {
-
+        
         BigDecimal bd = null;
-
+        
         if (vorkomma != null && nachkomma != null && (!vorkomma.equals("") || !nachkomma.equals("")) // mind. ein Feld muss ausgefüllt sein
                 && vorkomma.matches("[0-9]*") && nachkomma.matches("[0-9]*")) {
-
+            
             bd = new BigDecimal("0.00");
-
+            
             if (!"".equals(vorkomma)) {
                 bd = new BigDecimal(vorkomma + ".00");
             }
@@ -2460,19 +2459,19 @@ public final class OrderAction extends DispatchAction {
             if (!"".equals(nachkomma)) {
                 bd = bd.add(new BigDecimal(nachkomma).movePointLeft(nachkomma.length()));
             }
-
+            
         }
-
+        
         return bd;
     }
-
+    
     private String prepareWorldCat1(final String input) {
-
+        
         // Methode um Treffer aus WorldCat bei Suchstrings mit Umlauten zu erhalten
         String output = input;
-
+        
         output = output.replaceAll("\\+-\\+", "\\+"); // WorldCat akzeptiert keine " - "
-
+        
         output = output.replaceAll("%E4", "u%92a");
         output = output.replaceAll("%F6", "u%92o");
         output = output.replaceAll("%FC", "u%92u");
@@ -2480,7 +2479,7 @@ public final class OrderAction extends DispatchAction {
         output = output.replaceAll("%D6", "u%92O");
         output = output.replaceAll("%DC", "u%92U");
         // nicht abschliessend...
-
+        
         //      C0  192  À  ANSI 192  großes A Grave
         //      C1  193  Á  ANSI 193  großes A Acute
         //      C2  194  Â  ANSI 194  großes A Zirkumflex
@@ -2545,19 +2544,19 @@ public final class OrderAction extends DispatchAction {
         //      FD  253  ý  ANSI 253  kleines y Acute
         //      FE  254  þ  ANSI 254  Isländisches kleines thorn
         //      FF  255  ÿ  ANSI 255  kleines y Umlaut
-
+        
         return output;
     }
-
+    
     private String prepareWorldCat2(final String input) {
         // Methode um Treffer aus WorldCat bei Suchstrings mit Umlauten zu erhalten
         String output = input;
-
+        
         output = output.replaceAll("–", "-"); // WorldCat akzeptiert keine ndash 
         output = output.replaceAll("", "-"); // WorldCat akzeptiert keine ndash 
         output = output.replaceAll("\\+-\\+", "\\+"); // WorldCat akzeptiert keine " - "
         output = output.replaceAll("", ""); // scheint für ¨ zu stehen...
-
+        
         output = output.replaceAll("%C0", "A"); //      C0  192  À  ANSI 192  großes A Grave
         output = output.replaceAll("%C1", "A"); //      C1  193  Á  ANSI 193  großes A Acute
         output = output.replaceAll("%C2", "A"); //      C2  194  Â  ANSI 194  großes A Zirkumflex
@@ -2622,7 +2621,7 @@ public final class OrderAction extends DispatchAction {
         output = output.replaceAll("%FD", "y"); //      FD  253  ý  ANSI 253  kleines y Acute
         output = output.replaceAll("%FE", "þ"); //      FE  254  þ  ANSI 254  Isländisches kleines thorn
         output = output.replaceAll("%FF", "y"); //      FF  255  ÿ  ANSI 255  kleines y Umlaut
-
+        
         output = output.replaceAll("&#913;", "Alpha");
         output = output.replaceAll("&#914;", "Beta");
         output = output.replaceAll("&#915;", "Gamma");
@@ -2640,7 +2639,7 @@ public final class OrderAction extends DispatchAction {
         output = output.replaceAll("&#927;", "Omicron");
         output = output.replaceAll("&#928;", "Pi");
         output = output.replaceAll("&#929;", "Rho");
-
+        
         output = output.replaceAll("&#931;", "Sigma");
         output = output.replaceAll("&#932;", "Tau");
         output = output.replaceAll("&#933;", "Ypsilon");
@@ -2648,7 +2647,7 @@ public final class OrderAction extends DispatchAction {
         output = output.replaceAll("&#935;", "Chi");
         output = output.replaceAll("&#936;", "Psi");
         output = output.replaceAll("&#937;", "Omega");
-
+        
         output = output.replaceAll("&#945;", "alpha");
         output = output.replaceAll("&#946;", "beta");
         output = output.replaceAll("&#947;", "gamma");
@@ -2674,32 +2673,32 @@ public final class OrderAction extends DispatchAction {
         output = output.replaceAll("&#967;", "chi");
         output = output.replaceAll("&#968;", "psi");
         output = output.replaceAll("&#969;", "omega");
-
+        
         output = output.replaceAll("&#977;", "theta");
         output = output.replaceAll("&#978;", "ypsilon");
-
+        
         return output;
     }
-
+    
     private boolean google(final HttpServletRequest rq, final Auth auth) {
         boolean result = false;
-
+        
         if (ReadSystemConfigurations.isActivatedGoogleSearch() // Google search must be globally activated
                 && (!auth.isBenutzer(rq) || // and the user must be a librarian or an admin...
                 // ...or the configuration for users must be set to true.
                 ReadSystemConfigurations.isAllowPatronAutomaticGoogleSearch())) {
             result = true;
         }
-
+        
         return result;
     }
-
+    
     private String getBackThreadedWebcontent(final Future<String> webcontent, final int i, final String serviceName) {
         String result = null;
-
+        
         try {
             result = webcontent.get(i, TimeUnit.SECONDS);
-
+            
         } catch (final TimeoutException e) {
             log.warn(serviceName + " TimeoutException: " + e.toString());
         } catch (final Exception e) {
@@ -2708,8 +2707,8 @@ public final class OrderAction extends DispatchAction {
             // secure if task is finished already.
             webcontent.cancel(true);
         }
-
+        
         return result;
     }
-
+    
 }
