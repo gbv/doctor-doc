@@ -721,13 +721,15 @@ public final class OrderAction extends DispatchAction {
             // if not logged in, try to get account in Text cn from request
             if (!auth.isLogin(rq)) {
                 cn = (Text) rq.getAttribute("ip");
-                // Text mit Kontoangaben anhand Broker-Kennung holen
-                if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue()) {
-                    pageForm.setBkid(cn.getInhalt());
-                }
-                // Text mit Kontoangaben anhand Konto-Kennung holen
-                if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDES_IP.getValue()) {
-                    pageForm.setKkid(cn.getInhalt());
+                if (cn != null) {
+                    // Text mit Kontoangaben anhand Broker-Kennung holen
+                    if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue()) {
+                        pageForm.setBkid(cn.getInhalt());
+                    }
+                    // Text mit Kontoangaben anhand Konto-Kennung holen
+                    if (cn.getTexttype().getValue() == TextType.ACCOUNT_ID_OVERRIDES_IP.getValue()) {
+                        pageForm.setKkid(cn.getInhalt());
+                    }
                 }
             }
             
@@ -741,7 +743,7 @@ public final class OrderAction extends DispatchAction {
                 kid = ui.getKonto().getId();
             } else {
                 // get bibid from IP based access
-                if (cn.getInhalt() != null) {
+                if (cn != null && cn.getInhalt() != null) {
                     if (pageForm.getBkid() == null && cn.getKonto().getEzbid() != null
                             && !cn.getKonto().getEzbid().equals("")) {
                         bibid = cn.getKonto().getEzbid();
@@ -784,8 +786,8 @@ public final class OrderAction extends DispatchAction {
                 }
             }
             
-            // logged in or access based on IP/kkid/bkid
-            if (auth.isLogin(rq) || cn.getInhalt() != null) {
+            // logged in or access IP based/kkid/bkid
+            if (auth.isLogin(rq) || (cn != null && cn.getInhalt() != null)) {
                 forward = "notfreeebz";
                 
                 // set link in request if there is institution logo for this account
@@ -881,7 +883,8 @@ public final class OrderAction extends DispatchAction {
                     ezbform.setOnline(efVascoda.getOnline());
                     
                     // only show error in UI if library has ZDB holdings
-                    if (ui != null && ui.getKonto().isZdb() || cn.getKonto() != null && cn.getKonto().isZdb()) {
+                    if (ui != null && ui.getKonto().isZdb() || cn != null && cn.getKonto() != null
+                            && cn.getKonto().isZdb()) {
                         final EZBDataPrint timeout = new EZBDataPrint();
                         timeout.setAmpel("red");
                         timeout.setComment("error.zdb_timeout");
