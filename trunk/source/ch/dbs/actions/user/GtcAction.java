@@ -67,9 +67,11 @@ public final class GtcAction extends DispatchAction {
                 if (ui.getKonto() != null) {
                     // user is attached only to 1 account
                     timezone = ui.getKonto().getTimezone();
+                    forward = Result.SUCCESS.getValue();
                 } else {
                     // user is attached only to several accounts
                     timezone = ui.getKontos().get(0).getTimezone();
+                    forward = "konto";
                 }
                 
                 final Date d = new Date(); // aktuelles Datum setzen
@@ -81,13 +83,6 @@ public final class GtcAction extends DispatchAction {
                 final AbstractBenutzer b = new AbstractBenutzer();
                 b.updateUser(ui.getBenutzer(), timezone, cn.getConnection());
                 rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
-                
-                if (ui.getKonto() != null) { // Prüfung ob mehrere Konti vorhanden
-                    forward = Result.SUCCESS.getValue();
-                    
-                } else {
-                    forward = "konto";
-                }
                 
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
