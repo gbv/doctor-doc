@@ -60,21 +60,22 @@ import enums.Result;
 import enums.TextType;
 
 /**
- * BestellformAction prüft ip-basierte Zugriffe und erlaubt Kundenbestellungen innerhalb einer Institution z.Hd. der
- * betreffenden Bibliothek
- *
+ * BestellformAction prüft ip-basierte Zugriffe und erlaubt Kundenbestellungen
+ * innerhalb einer Institution z.Hd. der betreffenden Bibliothek
+ * 
  * @author Markus Fischer
  */
 public final class BestellformAction extends DispatchAction {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(BestellformAction.class);
-
+    
     /**
-     * Prüft IP und ordnet den Request der betreffenden Bibliothek zu, ergänzt Angaben anhand PMID und DOI
+     * Prüft IP und ordnet den Request der betreffenden Bibliothek zu, ergänzt
+     * Angaben anhand PMID und DOI
      */
     public ActionForward validate(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         Text t = new Text();
         final Text cn = new Text();
         final Auth auth = new Auth();
@@ -84,36 +85,36 @@ public final class BestellformAction extends DispatchAction {
         final Countries country = new Countries();
         final DOI doi = new DOI();
         final Pubmed pubmed = new Pubmed();
-
+        
         try {
-
+            
             if (rq.getAttribute("ofjo") != null) {
                 of = (OrderForm) rq.getAttribute("ofjo"); // if coming from checkAvailability and getOpenUrlRequest
             }
-
+            
             // There are three ways of taking access, without being logged in. Priority is as follows:
             // 1. Kontokennung (overwrites IP-based access)
             // 2. IP-based (overwrites Broker-Kennung)
             // 3. Broker-Kennung (e.g. Careum Explorer)
-
+            
             if (of.getKkid() == null) {
                 t = auth.grantAccess(rq);
             }
-
+            
             // Not logged in: IP-based, Kontokennung or Brokerkennung
             if (((t != null && t.getInhalt() != null) || (of.getKkid() != null || of.getBkid() != null))
                     && !auth.isLogin(rq)) {
                 forward = Result.SUCCESS.getValue();
-
+                
                 final String kkid = of.getKkid(); // separate variables to avoid that kkid gets overwritten in resolvePmid
                 final String bkid = of.getBkid();
-
+                
                 if (of.getMediatype() == null || // default orderform 'Article'
                         (!"Artikel".equals(of.getMediatype()) && !"Teilkopie Buch".equals(of.getMediatype()) && !"Buch"
                                 .equals(of.getMediatype()))) {
                     of.setMediatype("Artikel");
                 }
-
+                
                 // resolve PMID or DOI
                 if (of.isResolve() && of.getPmid() != null && !of.getPmid().equals("") && of.areArticleValuesMissing()) {
                     of = pubmed.resolvePmid(pubmed.extractPmid(of.getPmid()));
@@ -126,7 +127,7 @@ public final class BestellformAction extends DispatchAction {
                         } // sometimes we can't resolve a DOI...
                     }
                 }
-
+                
                 // has to be placed after resolvePmid, to avoid overwriting of library name (Bibliotheksname)...
                 if (t != null && t.getInhalt() != null) {
                     rq.setAttribute("ip", t);
@@ -171,7 +172,7 @@ public final class BestellformAction extends DispatchAction {
                         }
                     }
                 }
-
+                
                 // get additional orderform parameters (BestellParam bp)
                 // Changes in this section have to be repeated in save()!
                 if (t != null && t.getInhalt() != null) {
@@ -182,7 +183,7 @@ public final class BestellformAction extends DispatchAction {
                     if (of.getRadiobutton().equals("")) {
                         of.setRadiobutton(bp.getOption_value1());
                     } // default Option1
-
+                    
                     // get user categories for drop down menu
                     if (bp.isCategory()) {
                         final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, t.getKonto().getId(),
@@ -190,13 +191,13 @@ public final class BestellformAction extends DispatchAction {
                         // only set into request, if we have at least one category
                         rq.setAttribute("categories", categories);
                     }
-
+                    
                     // set link in request if there is institution logo for this account
                     if (t.getKonto().getInstlogolink() != null) {
                         rq.setAttribute("logolink", t.getKonto().getInstlogolink());
                     }
                 }
-
+                
                 if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // default value deloptions
                     if (!bp.isLieferart()) {
                         of.setDeloptions("email");
@@ -204,7 +205,7 @@ public final class BestellformAction extends DispatchAction {
                         of.setDeloptions(bp.getLieferart_value1());
                     }
                 }
-
+                
                 // read Cookie
                 final Cookie[] cookies = rq.getCookies();
                 if (cookies != null) {
@@ -229,30 +230,30 @@ public final class BestellformAction extends DispatchAction {
                         }
                     }
                 }
-
+                
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                
                 // URL-encode contents of OrderForm for get-methode in PrepareLogin
                 of = of.encodeOrderForm(of);
-
+                
                 rq.setAttribute("bestellparam", bp);
                 rq.setAttribute("orderform", of);
             } else {
-
+                
                 // Case User is logged in
                 if (auth.isLogin(rq)) {
-
+                    
                     forward = Result.SUCCESS.getValue();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-
+                    
                     if (of.getMediatype() == null || // default orderform 'Artikel'
                             (!of.getMediatype().equals("Artikel") && !of.getMediatype().equals("Teilkopie Buch") && !of
                                     .getMediatype().equals("Buch"))) {
                         of.setMediatype("Artikel");
                     }
-
+                    
                     // resolve PMID or DOI
                     if (!of.isResolver() && of.getPmid() != null && !of.getPmid().equals("")
                             && of.areArticleValuesMissing()) {
@@ -266,10 +267,10 @@ public final class BestellformAction extends DispatchAction {
                             } // sometimes we can't resolve a DOI...
                         }
                     }
-
+                    
                     // special case BestellParam when logged in
                     bp = new BestellParam(ui.getKonto(), cn.getConnection());
-
+                    
                     // set country select
                     if (bp != null && bp.getId() != null) {
                         final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
@@ -277,7 +278,7 @@ public final class BestellformAction extends DispatchAction {
                         if (of.getRadiobutton().equals("")) {
                             of.setRadiobutton(bp.getOption_value1());
                         } // default Option1
-
+                        
                         // get user categories for drop down menu
                         if (bp.isCategory()) {
                             final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto()
@@ -285,7 +286,7 @@ public final class BestellformAction extends DispatchAction {
                             // only set into request, if we have at least one category
                             rq.setAttribute("categories", categories);
                         }
-
+                        
                         // values for customizable orderform
                         of.setKundeninstitution(ui.getBenutzer().getInstitut());
                         of.setKundenabteilung(ui.getBenutzer().getAbteilung());
@@ -307,7 +308,7 @@ public final class BestellformAction extends DispatchAction {
                             }
                         }
                     }
-
+                    
                     if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // default values all other
                         // situations of deloptions
                         if (!bp.isLieferart()) {
@@ -316,22 +317,22 @@ public final class BestellformAction extends DispatchAction {
                             of.setDeloptions(bp.getLieferart_value1());
                         }
                     }
-
+                    
                     // of.setBibliothek(t.getKonto().getBibliotheksname());
                     of.setKundenvorname(ui.getBenutzer().getVorname());
                     of.setKundenname(ui.getBenutzer().getName());
                     of.setKundenmail(ui.getBenutzer().getEmail());
-
+                    
                     // URL-encode contents of OrderForm for get-methode in PrepareLogin
                     of = of.encodeOrderForm(of);
-
+                    
                     rq.setAttribute("bestellparam", bp);
                     rq.setAttribute("orderform", of);
-
+                    
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                 } else {
                     final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -339,9 +340,9 @@ public final class BestellformAction extends DispatchAction {
                     mf.setActivemenu("bestellform");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 }
-
+                
             }
-
+            
             // if this Bestellform is deactivated show an error message
             if (bp.isDeactivated()) {
                 final ErrorMessage em = new ErrorMessage("error.deactivated", "login.do");
@@ -352,7 +353,7 @@ public final class BestellformAction extends DispatchAction {
                 //                cn.close(); // using finally for direct return => close
                 return mp.findForward(Result.FAILURE.getValue());
             }
-
+            
             // redirect to external order form
             if (bp.getUse_did() != null) {
                 final DaiaParam dp = new DaiaParam(bp.getUse_did(), cn.getConnection());
@@ -364,20 +365,21 @@ public final class BestellformAction extends DispatchAction {
                     forward = "redirect";
                 }
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
-     * Prüft Angaben und schickt Email mit Bestellangaben an Bibliothek und an User
+     * Prüft Angaben und schickt Email mit Bestellangaben an Bibliothek und an
+     * User
      */
     public ActionForward sendOrder(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         Text t = new Text();
         final Text cn = new Text();
         final Auth auth = new Auth();
@@ -388,27 +390,27 @@ public final class BestellformAction extends DispatchAction {
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
         final DOI doi = new DOI();
         final Pubmed pubmed = new Pubmed();
-
+        
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         Konto k = new Konto();
         String library = "";
         boolean saveOrder = false;
-
+        
         try {
-
+            
             // There are three ways of taking access, without being logged in. Priority is as follows:
             // 1. Kontokennung (overwrites IP-based access)
             // 2. IP-based (overwrites Broker-Kennung)
             // 3. Broker-Kennung (e.g. Careum Explorer)
-
+            
             if (of.getKkid() == null && !auth.isLogin(rq)) {
                 t = auth.grantAccess(rq);
             }
-
+            
             // Logged in. IP-based, Kontokennung or Brokerkennung
             if (((t != null && t.getInhalt() != null) || (of.getKkid() != null || of.getBkid() != null))
                     || auth.isLogin(rq)) {
-
+                
                 if (t == null || t.getInhalt() == null) {
                     if (of.getKkid() != null) { // Kontokennung
                         t = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDES_IP, of.getKkid()); // Text with Kontokennung
@@ -417,17 +419,17 @@ public final class BestellformAction extends DispatchAction {
                         t = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, of.getBkid()); // Text with Brokerkennung
                     }
                 }
-
+                
                 if (t != null && t.getInhalt() != null) {
                     library = t.getKonto().getBibliotheksname();
                     k = t.getKonto();
-
+                    
                     // set link in request if there is institution logo for this account
                     if (t.getKonto().getInstlogolink() != null) {
                         rq.setAttribute("logolink", t.getKonto().getInstlogolink());
                     }
                 }
-
+                
                 // get an eventual BestellParam
                 if (!auth.isLogin(rq) && t != null && t.getInhalt() != null) {
                     bp = new BestellParam(t, cn.getConnection());
@@ -443,11 +445,11 @@ public final class BestellformAction extends DispatchAction {
                         of.setCountries(allPossCountries);
                     }
                 }
-
+                
                 if (bp != null && bp.getId() != null) {
                     saveOrder = bp.isSaveorder();
                 } // additionally save order in the database?
-
+                
                 try {
                     // remove empty spaces from email
                     if (of.getKundenmail() != null) {
@@ -455,7 +457,7 @@ public final class BestellformAction extends DispatchAction {
                     }
                     final Message message = getMessageForMissingBestellParams(of, bp);
                     if (message.getMessage() == null) {
-
+                        
                         of.setKundenmail(extractEmail(of.getKundenmail())); // remove invalid characters
                         final Base64String base64String = new Base64String();
                         // Cookie Base64 encoded for better privacy
@@ -475,9 +477,9 @@ public final class BestellformAction extends DispatchAction {
                         } catch (final Exception e) {
                             LOG.error("Setting Cookie: " + e.toString());
                         }
-
+                        
                         AbstractBenutzer u = new AbstractBenutzer();
-
+                        
                         if (auth.isLogin(rq)) { // User is already known
                             u = ui.getBenutzer();
                             // if registered email is not the same as specified in the orderform
@@ -489,7 +491,7 @@ public final class BestellformAction extends DispatchAction {
                             library = k.getBibliotheksname();
                             u = getUserFromBestellformEmail(k, of.getKundenmail(), cn.getConnection());
                         }
-
+                        
                         if (u.getId() != null) { // we do have already a valid user
                             of.setForuser(u.getId().toString()); // Preselection of user for saving an order through the
                             // getMethod in the email (depreceated)
@@ -503,12 +505,12 @@ public final class BestellformAction extends DispatchAction {
                             if (u.getLand() == null || u.getLand().equals("0")) {
                                 u.setLand(k.getLand());
                             } // use same value as library, if not specified
-                            u.setId(u.saveNewUser(u, k, cn.getConnection()));
+                            u.setId(u.saveNewUser(u, k.getTimezone(), cn.getConnection()));
                             final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
                             vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
                             of.setForuser(u.getId().toString());
                         }
-
+                        
                         if (saveOrder) {
                             // save oder
                             final Bestellungen b = new Bestellungen(of, u, k);
@@ -520,23 +522,23 @@ public final class BestellformAction extends DispatchAction {
                             }
                             b.setStatustext("zu bestellen");
                             b.save(cn.getConnection());
-
+                            
                             final Text state = new Text(cn.getConnection(), TextType.STATE_ORDER, "zu bestellen");
                             final OrderState orderstate = new OrderState();
                             orderstate.setNewOrderState(b, k, state, null, u.getEmail(), cn.getConnection());
                         }
-
+                        
                         forward = Result.SUCCESS.getValue();
-
+                        
                         // set current date
                         final Date d = new Date();
                         final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                         final String date = sdf.format(d, k.getTimezone());
-
+                        
                         final MHelper mh = new MHelper();
                         final String[] to = new String[2];
                         to[0] = k.getDbsmail();
-
+                        
                         to[1] = of.getKundenmail();
                         final StringBuffer m = new StringBuffer();
                         m.append("First name: ");
@@ -546,7 +548,7 @@ public final class BestellformAction extends DispatchAction {
                         m.append("\nEmail: ");
                         m.append(of.getKundenmail());
                         m.append('\n');
-
+                        
                         // configurable part (orderforms)
                         if (of.getFreitxt1_inhalt() != null && !of.getFreitxt1_inhalt().equals("")) {
                             m.append(of.getFreitxt1_label());
@@ -554,7 +556,7 @@ public final class BestellformAction extends DispatchAction {
                             m.append(of.getFreitxt1_inhalt());
                             m.append('\n');
                         }
-
+                        
                         if (of.getKundeninstitution() != null && !of.getKundeninstitution().equals("")) {
                             m.append("Institution: ");
                             m.append(of.getKundeninstitution());
@@ -566,7 +568,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append('\n');
                             }
                         }
-
+                        
                         if (of.getKundenabteilung() != null && !of.getKundenabteilung().equals("")) {
                             m.append("Department: ");
                             m.append(of.getKundenabteilung());
@@ -578,7 +580,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append('\n');
                             }
                         }
-
+                        
                         if (of.getKundenkategorieID() != null && !"0".equals(of.getKundenkategorieID())) {
                             m.append("Category: ");
                             m.append(new Text(cn.getConnection(), Long.valueOf(of.getKundenkategorieID()),
@@ -591,7 +593,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append('\n');
                             }
                         }
-
+                        
                         if (of.getFreitxt2_inhalt() != null && !of.getFreitxt2_inhalt().equals("")) {
                             m.append(of.getFreitxt2_label());
                             m.append(": ");
@@ -623,7 +625,7 @@ public final class BestellformAction extends DispatchAction {
                             m.append(of.getKundenland());
                             m.append('\n');
                         }
-
+                        
                         if (of.getKundentelefon() != null && !of.getKundentelefon().equals("")) { // ggf. Angaben aus
                             // Formular
                             m.append("Phone: ");
@@ -641,7 +643,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append('\n');
                             }
                         }
-
+                        
                         if (of.getKundenbenutzernr() != null && !of.getKundenbenutzernr().equals("")) {
                             m.append("Library card #: ");
                             m.append(of.getKundenbenutzernr());
@@ -659,9 +661,9 @@ public final class BestellformAction extends DispatchAction {
                             m.append(of.getRadiobutton());
                             m.append('\n');
                         }
-
+                        
                         m.append('\n');
-
+                        
                         if (of.getDeloptions() != null && !of.getDeloptions().equals("")) {
                             m.append("Desired deliveryway: ");
                             m.append(of.getDeloptions().toUpperCase());
@@ -670,9 +672,9 @@ public final class BestellformAction extends DispatchAction {
                         if (of.getPrio() != null && of.getPrio().equals("urgent")) {
                             m.append("Priority: URGENT\n");
                         }
-
+                        
                         m.append("-----\n");
-
+                        
                         if (of.getMediatype().equals("Artikel")) {
                             if (of.getRfr_id() != null && !of.getRfr_id().equals("")) {
                                 m.append("DATABASE: ");
@@ -698,11 +700,11 @@ public final class BestellformAction extends DispatchAction {
                             m.append("\nPAGES: ");
                             m.append(of.getSeiten());
                             m.append('\n');
-
+                            
                             // If there is only an ISSN and no journaltitle present...
                             if (of.getIssn() != null && !of.getIssn().equals("")
                                     && (of.getZeitschriftentitel() == null || of.getZeitschriftentitel().equals(""))) {
-
+                                
                                 // Add a link to the EZB
                                 String bibid = "AAAAA";
                                 if (k.getEzbid() != null && !k.getEzbid().equals("")) {
@@ -714,13 +716,13 @@ public final class BestellformAction extends DispatchAction {
                                         + "KS&jq_term2=&jq_bool3=AND&jq_not3=+&jq_type3=PU&jq_term3=&jq_bool4=AND&jq_not4=+"
                                         + "&jq_type4=IS&offset=-1&hits_per_page=50&search_journal=Suche+starten&"
                                         + "Notations%5B%5D=all&selected_colors%5B%5D=1&selected_colors%5B%5D=4&jq_term4=";
-
+                                
                                 m.append("EZB link: ");
                                 m.append(link);
                                 m.append(of.getIssn());
                                 m.append('\n');
                             }
-
+                            
                             if (of.getDoi() != null && !of.getDoi().equals("")) {
                                 m.append("DOI: " + of.getDoi() + '\n');
                                 if (!doi.extractDoi(of.getDoi()).contains("http://")) {
@@ -742,7 +744,7 @@ public final class BestellformAction extends DispatchAction {
                             }
                             m.append('\n');
                         }
-
+                        
                         if ("Teilkopie Buch".equals(of.getMediatype()) || "Buch".equals(of.getMediatype())) {
                             if (of.getRfr_id() != null && !of.getRfr_id().equals("")) {
                                 m.append("DATABASE: ");
@@ -761,7 +763,7 @@ public final class BestellformAction extends DispatchAction {
                             m.append("AUTHOR: ");
                             m.append(of.getAuthor());
                             m.append('\n');
-
+                            
                             if ("Teilkopie Buch".equals(of.getMediatype())) {
                                 m.append("CHAPTER: ");
                                 m.append(of.getKapitel());
@@ -792,7 +794,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append(of.getSeiten());
                                 m.append('\n');
                             }
-
+                            
                             if (of.getDoi() != null && !of.getDoi().equals("")) {
                                 m.append("DOI: " + of.getDoi() + '\n');
                                 if (!doi.extractDoi(of.getDoi()).contains("http://")) {
@@ -806,15 +808,15 @@ public final class BestellformAction extends DispatchAction {
                                 }
                             }
                             m.append('\n');
-
+                            
                         }
-
+                        
                         if (of.getNotizen() != null && !of.getNotizen().equals("")) {
                             m.append("Remarks of patron: ");
                             m.append(of.getNotizen());
                             m.append('\n');
                         }
-
+                        
                         m.append("-----\nOrder date: ");
                         m.append(date);
                         m.append("\nBrought to you by ");
@@ -822,26 +824,26 @@ public final class BestellformAction extends DispatchAction {
                         m.append(": ");
                         m.append(ReadSystemConfigurations.getServerWelcomepage());
                         m.append('\n');
-
+                        
                         // Prepare a direct login link for librarians, to save order details
                         final String loginlink = ReadSystemConfigurations.getServerInstallation() + "/pl.do?"
                                 + openurlConv.makeGetMethodString(of) + "&foruser=" + of.getForuser();
-
+                        
                         String adduserlink = "";
                         if (u.getId() == null) { // User unknown => Prepare a direct login link for librarians, to save new
                             // user
                             adduserlink = ReadSystemConfigurations.getServerInstallation() + "/add.do?"
                                     + createUrlParamsForAddUser(of);
                         }
-
+                        
                         String prio = "3"; // Email priority 3 = normal
                         if (of.getPrio() != null && of.getPrio().equals("urgent")) {
                             prio = "1";
                         } // high
-
+                        
                         if (of.getMediatype().equals("Artikel")) {
                             final String[] toemail = new String[1];
-
+                            
                             // Mail to patron, ReplyTo = library
                             toemail[0] = to[1]; // email of patron
                             mh.sendMailReplyTo(
@@ -849,7 +851,7 @@ public final class BestellformAction extends DispatchAction {
                                     "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr() + ";"
                                             + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(),
                                     m.toString(), to[0]);
-
+                            
                             // Mail to library, ReplyTo = patron
                             toemail[0] = to[0]; // email of library
                             if (u.getId() != null) { // User already exists
@@ -872,15 +874,15 @@ public final class BestellformAction extends DispatchAction {
                                         of.getKundenmail(), prio);
                             }
                         }
-
+                        
                         if (of.getMediatype().equals("Teilkopie Buch")) {
                             final String[] toemail = new String[1];
-
+                            
                             // Mail to patron, ReplyTo = library
                             toemail[0] = to[1]; // email of patron
                             mh.sendMailReplyTo(toemail, "Book part: " + of.getBuchtitel() + "\040" + of.getJahr() + ":"
                                     + of.getSeiten(), m.toString(), to[0]);
-
+                            
                             // Mail to library, ReplyTo = patron
                             toemail[0] = to[0]; // email of library
                             if (u.getId() != null) { // User already exists
@@ -893,15 +895,15 @@ public final class BestellformAction extends DispatchAction {
                                         of.getKundenmail(), prio);
                             }
                         }
-
+                        
                         if (of.getMediatype().equals("Buch")) {
                             final String[] toemail = new String[1];
-
+                            
                             // Mail to patron, ReplyTo = library
                             toemail[0] = to[1]; // email of patron
                             mh.sendMailReplyTo(toemail, "Book: " + of.getBuchtitel() + "\040" + of.getJahr(),
                                     m.toString(), to[0]);
-
+                            
                             // Mail to library, ReplyTo = patron
                             toemail[0] = to[0]; // email of library
                             if (u.getId() != null) { // User already exists
@@ -916,20 +918,20 @@ public final class BestellformAction extends DispatchAction {
                                         of.getKundenmail(), prio);
                             }
                         }
-
+                        
                     } else {
                         forward = "missingvalues";
                         rq.setAttribute("messagemissing", message);
                     }
-
+                    
                     // URL-encode for get-methode in PrepareLogin
                     of = of.encodeOrderForm(of);
-
+                    
                     rq.setAttribute("orderform", of);
                     if (!"".equals(library)) {
                         rq.setAttribute("library", library);
                     }
-
+                    
                 } catch (final Exception e) {
                     forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage("error.send", "login.do");
@@ -938,7 +940,7 @@ public final class BestellformAction extends DispatchAction {
                     final MHelper mh = new MHelper();
                     mh.sendErrorMail(e.toString(), "Order form - Error sending an order");
                 }
-
+                
                 if (auth.isLogin(rq)) {
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("suchenbestellen");
@@ -948,7 +950,7 @@ public final class BestellformAction extends DispatchAction {
                     mf.setActivemenu("bestellform");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                 }
-
+                
             } else {
                 final ErrorMessage em = new ErrorMessage("error.ip", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -956,60 +958,60 @@ public final class BestellformAction extends DispatchAction {
                 mf.setActivemenu("bestellform");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * Bereitet die Bestellformular-Konfiguration vor
      */
     public ActionForward prepareConfigure(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Text ip = new Text();
         final Auth auth = new Auth();
         BestellParam ipbasiert = new BestellParam();
-
+        
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-
+                
                 try {
                     forward = Result.SUCCESS.getValue();
-
+                    
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("konto");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                     final boolean hasIP = cn.hasIP(cn.getConnection(), ui.getKonto());
-
+                    
                     if (hasIP) {
                         ip.setId(Long.valueOf(0));
                         ip.setTexttype(TextType.IP4);
                         ip.setKonto(ui.getKonto());
                         ipbasiert = new BestellParam(ip, cn.getConnection());
                     }
-
+                    
                     final BestellParam eingeloggt = new BestellParam(ui.getKonto(), cn.getConnection());
-
+                    
                     final List<Text> kkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDES_IP, ui.getKonto().getId(),
                             cn.getConnection());
                     final List<Text> bkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, ui.getKonto()
                             .getId(), cn.getConnection());
-
+                    
                     if (eingeloggt != null && eingeloggt.getId() != null) {
                         rq.setAttribute("eingeloggt", eingeloggt.getId()); // allenfalls vorhandene BestellParam-ID in
                         // Request
                     } else {
                         rq.setAttribute("eingeloggt", "0"); // 0 als ID
                     }
-
+                    
                     if (hasIP) { // IP hinterlegt
                         if (ipbasiert != null && ipbasiert.getId() != null) {
                             rq.setAttribute("ipbasiert", ipbasiert.getId()); // allenfalls vorhandene BestellParam-ID in
@@ -1018,20 +1020,20 @@ public final class BestellformAction extends DispatchAction {
                             rq.setAttribute("ipbasiert", "-1"); // -1 als ID
                         }
                     }
-
+                    
                     if (!kkid.isEmpty()) {
                         rq.setAttribute("kkid", kkid);
                     }
                     if (!bkid.isEmpty()) {
                         rq.setAttribute("bkid", bkid);
                     }
-
+                    
                 } catch (final Exception e) {
                     LOG.error("BestellformAction - prepareConfigure: " + e.toString());
                 } finally {
                     cn.close();
                 }
-
+                
             } else { // keine Berechtigung
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("suchenbestellen");
@@ -1047,39 +1049,39 @@ public final class BestellformAction extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * ändert und erstellt angepasste Bestellformulare
      */
     public ActionForward modify(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Auth auth = new Auth();
-
+        
         final BestellParam bp = (BestellParam) fm;
-
+        
         try {
-
+            
             if (auth.isLogin(rq)) {
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                     if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
-
+                    
                         try {
                             forward = Result.SUCCESS.getValue();
-
+                            
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("konto");
                             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                            
                             BestellParam custom = new BestellParam();
                             custom.setKid(ui.getKonto().getId());
-
+                            
                             if (bp.getId() > 0) { // bestehendes BestellParam (eingeloggt oder IP-basiert)
                                 custom = new BestellParam(bp.getId(), cn.getConnection());
                             }
@@ -1108,15 +1110,15 @@ public final class BestellformAction extends DispatchAction {
                                     custom.setId(bp.getId());
                                 }
                             }
-
+                            
                             rq.setAttribute("bestellform", custom);
-
+                            
                         } catch (final Exception e) {
                             LOG.error("modify: " + e.toString());
                         } finally {
                             cn.close();
                         }
-
+                        
                     } else { // URL-hacking
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("suchenbestellen");
@@ -1141,48 +1143,48 @@ public final class BestellformAction extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * speichert neue und bestehende Bestellformulare
      */
     public ActionForward save(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Auth auth = new Auth();
-
+        
         BestellParam bp = (BestellParam) fm;
         final Countries country = new Countries();
-
+        
         try {
-
+            
             if (auth.isLogin(rq)) {
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                     if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
-
+                    
                         try {
                             forward = Result.SUCCESS.getValue();
-
+                            
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("konto");
                             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                            
                             bp = checkBPLogic(bp); // logische Prüfungen und setzt abhängige Werte
-
+                            
                             if (bp.getMessage() == null) { // keine Fehlermedlungen
-
+                            
                                 forward = "bestellform";
                                 final OrderForm of = new OrderForm();
-
+                                
                                 if (bp.getId() <= 0) { // negative ID => save
                                     bp.setId(bp.save(bp, cn.getConnection()));
                                 } else { // positive ID => update
@@ -1190,7 +1192,7 @@ public final class BestellformAction extends DispatchAction {
                                 }
                                 bp.setBack(true); // Flag für "Back" auf Bestellform
                                 bp.setLink_back("bfconfigure.do?method=modify&id=" + bp.getId());
-
+                                
                                 // analog wie in validate()
                                 // Länderauswahl setzen
                                 final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
@@ -1198,7 +1200,7 @@ public final class BestellformAction extends DispatchAction {
                                 if (of.getRadiobutton().equals("")) {
                                     of.setRadiobutton(bp.getOption_value1());
                                 } // default Option1
-
+                                
                                 if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // Defaultwert deloptions
                                     if (!bp.isLieferart()) {
                                         of.setDeloptions("email");
@@ -1206,7 +1208,7 @@ public final class BestellformAction extends DispatchAction {
                                         of.setDeloptions(bp.getLieferart_value1());
                                     }
                                 }
-
+                                
                                 // get user categories for drop down menu
                                 if (bp.isCategory()) {
                                     final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui
@@ -1214,22 +1216,22 @@ public final class BestellformAction extends DispatchAction {
                                     // only set into request, if we have at least one category
                                     rq.setAttribute("categories", categories);
                                 }
-
+                                
                                 rq.setAttribute("orderform", of);
                                 rq.setAttribute("bestellparam", bp);
-
+                                
                             } else { // Fehlermeldung vorhanden
                                 forward = Result.SUCCESS.getValue(); // auf bestellformconfigure
                                 rq.setAttribute("message", bp.getMessage());
                                 rq.setAttribute("bestellform", bp);
                             }
-
+                            
                         } catch (final Exception e) {
                             LOG.error("save: " + e.toString());
                         } finally {
                             cn.close();
                         }
-
+                        
                     } else { // URL-hacking
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("suchenbestellen");
@@ -1254,25 +1256,26 @@ public final class BestellformAction extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
-     * prüft, ob of-Werte bei Mussfeldern bei einem allfällig vorliegenden BestellParam fehlen, und gibt ggf. eine
-     * Message mit der entsprechenden Fehlermeldung zurück
+     * prüft, ob of-Werte bei Mussfeldern bei einem allfällig vorliegenden
+     * BestellParam fehlen, und gibt ggf. eine Message mit der entsprechenden
+     * Fehlermeldung zurück
      */
     private Message getMessageForMissingBestellParams(final OrderForm of, final BestellParam bp) {
-
+        
         final Message m = new Message();
         final Check ck = new Check();
-
+        
         try {
-
+            
             if (!ck.isMinLength(of.getKundenvorname(), 1)) {
                 m.setMessage("error.vorname");
             } // auf jeden Fall Mussfeld
@@ -1282,7 +1285,7 @@ public final class BestellformAction extends DispatchAction {
             if (!ck.isEmail(of.getKundenmail())) {
                 m.setMessage("error.mail");
             } // auf jeden Fall Mussfeld
-
+            
             if (bp != null && bp.getId() != null) {
                 if (bp.isInst_required() && !ck.isMinLength(of.getKundeninstitution(), 1)) {
                     m.setMessage("error.institution");
@@ -1331,40 +1334,41 @@ public final class BestellformAction extends DispatchAction {
                     m.setMessage("error.agb");
                 } // muss "on" sein
             }
-
+            
         } catch (final Exception e) {
             LOG.error("areBestellParamMissing: " + e.toString());
         }
-
+        
         return m;
     }
-
+    
     /**
-     * Sucht anhand der im Bestellformular eingegebenen Email den zugehörigen Benutzer des betreffenden Kontos zu holen
+     * Sucht anhand der im Bestellformular eingegebenen Email den zugehörigen
+     * Benutzer des betreffenden Kontos zu holen
      */
     private AbstractBenutzer getUserFromBestellformEmail(final Konto k, final String email, final Connection cn) {
-
+        
         AbstractBenutzer u = new AbstractBenutzer();
-
+        
         try {
-
+            
             final List<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(k, email, cn);
-
+            
             if (!list.isEmpty()) {
                 u = list.get(0);
             } // es wird der erste Benutzer zurückgegeben
-
+            
         } catch (final Exception e) {
             LOG.error("getUserFromBestellformEmail: " + email + "\040" + e.toString());
         }
-
+        
         return u;
     }
-
+    
     private String createUrlParamsForAddUser(final OrderForm of) {
         final StringBuffer urlParam = new StringBuffer();
         final CodeUrl urlCoder = new CodeUrl();
-
+        
         if (of.getKundenmail() != null && !"".equals(of.getKundenmail())) {
             urlParam.append("email=");
             urlParam.append(of.getKundenmail());
@@ -1413,10 +1417,10 @@ public final class BestellformAction extends DispatchAction {
             urlParam.append("&land=");
             urlParam.append(urlCoder.encodeLatin1(of.getKundenland()));
         }
-
+        
         return urlParam.toString();
     }
-
+    
     /**
      * extrahiert mit einem Regex die Email aus einem String
      */
@@ -1426,30 +1430,30 @@ public final class BestellformAction extends DispatchAction {
             final Pattern p = Pattern
                     .compile("[A-Za-z0-9._-]+@[A-Za-z0-9][A-Za-z0-9.-]{0,61}[A-Za-z0-9]\\.[A-Za-z.]{2,6}");
             final Matcher m = p.matcher(email);
-
+            
             if (m.find()) {
                 extractedEmail = email.substring(m.start(), m.end());
             }
-
+            
         } catch (final Exception e) {
             LOG.error("extractEmail(String email): " + email + "\040" + e.toString());
         }
-
+        
         return extractedEmail;
     }
-
+    
     /**
      * Prüft auf URL-hacking bei modify (Bestellformular)
      */
     private boolean checkPermission(final UserInfo ui, final BestellParam bp, final Connection cn) {
-
+        
         boolean check = false;
         Text t = new Text();
-
+        
         try {
-
+            
             if (bp != null && bp.getId() != null) {
-
+                
                 if (bp.getId() == 0) {
                     check = true; // Bestellformular eingeloggt
                     return check;
@@ -1481,39 +1485,40 @@ public final class BestellformAction extends DispatchAction {
                     return check;
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("checkPermission(UserInfo ui, Long id): " + e.toString());
         }
-
+        
         return check;
     }
-
+    
     /**
-     * Prüft Eingaben bei einem BestellParam auf die logischen Abhängigkeiten, setzt automatisch abhängige Werte und
-     * gibt bei fehlenden Werten ggf. eine Fehlermeldung aus
+     * Prüft Eingaben bei einem BestellParam auf die logischen Abhängigkeiten,
+     * setzt automatisch abhängige Werte und gibt bei fehlenden Werten ggf. eine
+     * Fehlermeldung aus
      */
     private BestellParam checkBPLogic(final BestellParam bp) {
-
+        
         // serielle Ausgabe um ggf. auf der jsp mehrsprachige Fehlermeldungen zu triggern
-
+        
         try {
-
+            
             final Message m = new Message();
             final Check ck = new Check();
-
+            
             if (ck.isMinLength(bp.getLieferart_value1(), 1) || ck.isMinLength(bp.getLieferart_value2(), 1)
                     || ck.isMinLength(bp.getLieferart_value3(), 1)) {
-
+                
                 if (ck.isMinLength(bp.getLieferart_value1(), 1)) {
                     bp.setLieferart(true); // gültige Eingaben erfolgt
                 } else {
                     m.setMessage("bestellformconfigure.deliveryway");
                     bp.setMessage(m);
                 }
-
+                
             }
-
+            
             if (bp.isFreitxt1() && !ck.isMinLength(bp.getFreitxt1_name(), 1)) {
                 m.setMessage("bestellformconfigure.frei1");
                 bp.setMessage(m);
@@ -1541,24 +1546,24 @@ public final class BestellformAction extends DispatchAction {
                     // werden
                 }
             }
-
+            
             if (ck.isMinLength(bp.getOption_value1(), 1) || ck.isMinLength(bp.getOption_value2(), 1)
                     || ck.isMinLength(bp.getOption_value3(), 1)) {
-
+                
                 if (ck.isMinLength(bp.getOption_value1(), 1)) {
                     bp.setOption(true); // gültige Eingaben erfolgt
                 } else {
                     m.setMessage("bestellformconfigure.option");
                     bp.setMessage(m);
                 }
-
+                
             } else {
                 bp.setOption_name("");
                 bp.setOption_comment("");
                 bp.setOption_linkout("");
                 bp.setOption_linkoutname("");
             }
-
+            
             if (bp.isGebuehren()) {
                 if (!ck.isMinLength(bp.getLink_gebuehren(), 1)) {
                     m.setMessage("bestellformconfigure.fee");
@@ -1590,12 +1595,12 @@ public final class BestellformAction extends DispatchAction {
                     bp.setLink_agb(""); // verhindert ,dass Werte bei nicht aktivierter Option in DB geschrieben werden
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("checkBPLogic(BestellParam bp): " + e.toString());
         }
-
+        
         return bp;
     }
-
+    
 }

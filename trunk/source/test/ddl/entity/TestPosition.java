@@ -36,9 +36,9 @@ import ch.dbs.entity.Konto;
 import ch.ddl.entity.Position;
 
 public class TestPosition {
-
+    
     private static Konto k = new Konto();
-
+    
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         final Konto tz = new Konto(); // we need this for setting a default timezone
@@ -47,30 +47,30 @@ public class TestPosition {
         final String datum = fmt.format(d, tz.getTimezone());
         final AbstractBenutzer b = PrepareTestObjects.getBibliothekar();
         b.setDatum(datum);
-        b.saveNewUser(b, tz, k.getSingleConnection());
+        b.saveNewUser(b, tz.getTimezone(), k.getSingleConnection());
         k.close();
     }
-
+    
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         final AbstractBenutzer b = new AbstractBenutzer();
         b.deleteUser(PrepareTestObjects.getTestBibliothekarFromDb(k.getSingleConnection()), k.getSingleConnection());
         k.close();
     }
-
+    
     @Before
     public void setUp() throws Exception {
-
+        
     }
-
+    
     @After
     public void tearDown() throws Exception {
-
+        
     }
-
+    
     @Test
     public void testSaveLoadUpdateDeletePostionen() {
-
+        
         // Test
         final Position p = PrepareTestObjects.getPosition();
         p.save(p.getSingleConnection());
@@ -80,7 +80,7 @@ public class TestPosition {
         loadestpos = new Position(p.getId(), p.getSingleConnection());
         final Boolean del = p.deleteSelf(p.getSingleConnection());
         p.close();
-
+        
         // Prüfung
         assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", p.getSingleConnection());
         assertNotNull("Positionen wurde nicht gespeichert", p.getId());
@@ -88,12 +88,12 @@ public class TestPosition {
         assertEquals("Update von Positionen hat nicht geklappt", "modified", loadestpos.getAutor());
         assertTrue("Löschen von Positionen hat nicht geklappt", del);
     }
-
+    
     @Test
     public void testFillPositionenFromFormBean() {
         //        final PositionForm pf = PrepareTestObjects.getPositionForm();
         //        final Position p = new Position(pf);
         //        assertNotNull(p.getId());
     }
-
+    
 }

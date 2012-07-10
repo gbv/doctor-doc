@@ -39,47 +39,56 @@ import ch.dbs.login.Gtc;
 import enums.Result;
 
 public final class GtcAction extends DispatchAction {
-
+    
     /**
      * Prüft ob AGB in einer bestimmten Version angenommen wurden
-     *
+     * 
      * @author Markus Fischer
      */
     public ActionForward accept(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OrderForm pageForm = (OrderForm) form; // falls Artikelangaben aus Linkresolver vorhanden
-
+        
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Auth auth = new Auth();
-
+        
         try {
-
+            
             // Sicherstellen, dass die Action nur von Benutzern nach Prüfung aufgerufen wird
             if (auth.isLogin(rq)) {
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-
+                
                 final Gtc gtc = new Gtc();
                 final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
-
+                
+                String timezone = null;
+                if (ui.getKonto() != null) {
+                    // user is attached only to 1 account
+                    timezone = ui.getKonto().getTimezone();
+                } else {
+                    // user is attached only to several accounts
+                    timezone = ui.getKontos().get(0).getTimezone();
+                }
+                
                 final Date d = new Date(); // aktuelles Datum setzen
                 final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                final String datum = fmt.format(d, ui.getKonto().getTimezone());
-
+                final String datum = fmt.format(d, timezone);
+                
                 ui.getBenutzer().setGtc(t.getInhalt());
                 ui.getBenutzer().setGtcdate(datum);
                 final AbstractBenutzer b = new AbstractBenutzer();
-                b.updateUser(ui.getBenutzer(), ui.getKonto(), cn.getConnection());
+                b.updateUser(ui.getBenutzer(), timezone, cn.getConnection());
                 rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
-
+                
                 if (ui.getKonto() != null) { // Prüfung ob mehrere Konti vorhanden
                     forward = Result.SUCCESS.getValue();
-
+                    
                 } else {
                     forward = "konto";
                 }
-
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
@@ -87,7 +96,7 @@ public final class GtcAction extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
             if (pageForm.isResolver()) {
                 // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
                 rq.setAttribute("orderform", pageForm); // Übergabe in jedem Fall
@@ -100,28 +109,28 @@ public final class GtcAction extends DispatchAction {
                     forward = "checkavailability";
                 }
             }
-
+            
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("suchenbestellen");
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     public ActionForward decline(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
         // Make sure method is only accessible when user is logged in
-
+        
         if (auth.isLogin(rq)) {
             forward = "decline";
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -131,5 +140,5 @@ public final class GtcAction extends DispatchAction {
         }
         return mp.findForward(forward);
     }
-
+    
 }
