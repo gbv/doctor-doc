@@ -1128,7 +1128,7 @@ public final class OrderAction extends DispatchAction {
     
     private List<JournalDetails> searchEZBxml(final OrderForm pageForm, final String bibid) {
         
-        List<JournalDetails> result = new ArrayList<JournalDetails>();
+        List<JournalDetails> result;
         final EZBXML ezb = new EZBXML();
         
         if (pageForm.getIssn().length() == 0) {

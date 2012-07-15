@@ -921,7 +921,7 @@ public final class KontoAction extends DispatchAction {
             if (auth.isAdmin(rq)) {
                 try {
                     final KontoForm kf = (KontoForm) fm;
-                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final Konto k = new Konto(kf.getKid(), cn.getConnection());
                     k.setKontotyp(kf.getKontotyp());
                     if (k.getKontotyp() == 0) {
                         k.setExpdate(null);
@@ -967,7 +967,7 @@ public final class KontoAction extends DispatchAction {
             if (auth.isAdmin(rq)) {
                 try {
                     final KontoForm kf = (KontoForm) fm;
-                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final Konto k = new Konto(kf.getKid(), cn.getConnection());
                     k.setKontostatus(kf.isKontostatus());
                     k.update(cn.getConnection());
                     
@@ -1010,7 +1010,7 @@ public final class KontoAction extends DispatchAction {
             if (auth.isAdmin(rq)) {
                 try {
                     final KontoForm kf = (KontoForm) fm;
-                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final Konto k = new Konto(kf.getKid(), cn.getConnection());
                     k.setExpdate(kf.getExpdate());
                     k.update(cn.getConnection());
                     
@@ -1053,7 +1053,7 @@ public final class KontoAction extends DispatchAction {
             if (auth.isAdmin(rq)) {
                 try {
                     final KontoForm kf = (KontoForm) fm;
-                    final Konto k = new Konto(Long.valueOf(kf.getKid()), cn.getConnection());
+                    final Konto k = new Konto(kf.getKid(), cn.getConnection());
                     k.setPopfaxend(kf.getPopfaxend());
                     k.update(cn.getConnection());
                     
