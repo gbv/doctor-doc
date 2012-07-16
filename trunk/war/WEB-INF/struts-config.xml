@@ -39,7 +39,7 @@
 
 	<!-- =================================== Global Forward Definitions -->
 	<global-forwards>
-		<forward name="start" path="/Eingabe.do" />
+		<forward name="failure" path="/error.do" />
 	</global-forwards>
 
 	<!-- =================================== Action Mapping Definitions -->
@@ -69,7 +69,6 @@
 			<forward name="konto" path="/kontochoose.do" />
 			<forward name="gtc" path="/gtc.do" />
 			<forward name="adduser" path="/add.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Übernahme von Bestelldaten aus Bestellform-Email  -->
@@ -78,7 +77,6 @@
 			<forward name="success" path="/login.do" />
 			<forward name="checkavailability"
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Übernahme von Userangaben aus Bestellform-Email  -->
@@ -86,7 +84,6 @@
 			type="ch.dbs.actions.user.PrepareUserAddAction">
 			<forward name="login" path="/login.do" />
 			<forward name="adduser" path="/modifykontousers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/login1" name="LoginForm" validate="false" scope="request"
@@ -98,7 +95,6 @@
 			<forward name="konto" path="/kontochoose.do" />
 			<forward name="chooseuser" path="/chooseuser.do" />
 			<forward name="gtc" path="/gtc.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action name="LoginForm" forward="/jsp/chooseuser.jsp?activemenu=login"
@@ -113,7 +109,6 @@
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
 			<forward name="kontochoose" path="/kontochoose.do" />
 			<forward name="gtc" path="/gtc.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -141,7 +136,6 @@
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
 			<forward name="decline" path="/logout.do" />
 			<forward name="konto" path="/kontochoose.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -164,7 +158,6 @@
 		<action path="/pwreset" input="/login.do" name="LoginForm"
 			parameter="method" validate="false" scope="request"
 			type="ch.dbs.actions.user.UserAction">
-			<forward name="failure" path="/error.do" />
 			<forward name="success" path="/jsp/message.jsp" />
 		</action>
 
@@ -172,7 +165,6 @@
 		<action path="/test" validate="false" scope="request"
 			type="ch.dbs.admin.AdminServerTest">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -184,7 +176,6 @@
 			<forward name="success" path="/uebersicht.do" />
 			<forward name="search" path="/searchord.do?method=search" />
 			<forward name="result" path="/uebersicht.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/kontochoose.jsp" path="/kontochoose" />
 		<action forward="/jsp/uebersicht.jsp" path="/uebersicht" />
@@ -208,7 +199,6 @@
 			<forward name="checkavailability"
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
 			<forward name="adduser" path="/add.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/uebersicht.jsp" path="/uebersicht" />
 
@@ -224,14 +214,12 @@
 		<action path="/anmeldungkont" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/anmeldungkonto.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/anmeldungkonto" input="/jsp/anmeldungkonto.jsp"
 			name="KontoForm" parameter="method" validate="false" scope="request"
 			type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/anmeldungbibliothekar.do" />
-			<forward name="failure" path="/error.do" />
 			<forward name="subitofailed" path="/anmeldungkonto.do" />
 		</action>
 		<action forward="/jsp/anmeldungkonto.jsp" path="/anmeldungkonto" />
@@ -239,7 +227,6 @@
 			name="KontoForm" parameter="method" scope="request"
 			type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/anmeldungbibliothekar.do" />
-			<forward name="failure" path="/error.do" />
 			<forward name="subitofailed" path="/anmeldungkonto.do" />
 		</action>
 
@@ -249,7 +236,6 @@
 			type="ch.dbs.actions.user.KontoAction">
 			<forward name="weiter" path="/login1.do?method=LoginAction" />
 			<forward name="userfailed" path="/anmeldungbibliothekar.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action name="ActiveMenus" forward="/jsp/anmeldungtyp.jsp"
@@ -258,14 +244,12 @@
 			name="UserForm" scope="request" type="ch.dbs.actions.user.UserAction">
 			<forward name="weiter" path="/login.do" />
 			<forward name="zurueck" path="/anmeldungbibliothekar.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 
 		<action path="/modifykont" input="/jsp/modifykonto.jsp" name="KontoForm"
 			parameter="method" scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/modifykonto.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 
@@ -273,7 +257,6 @@
 		<action path="/modifykonto_" input="/jsp/modifykonto.jsp" name="KontoForm"
 			parameter="method" scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/modifykont.do?method=prepareModifyKonto" />
-			<forward name="failure" path="/error.do" />
 			<forward name="missingvalues" path="/modifykonto.do" />
 			<forward name="subitofailed" path="/modifykonto.do" />
 		</action>
@@ -282,63 +265,54 @@
 		<action path="/kontoadmin" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/listkontos.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action name="ActiveMenus" forward="/jsp/kontolist.jsp" path="/listkontos" />
 
-		<!-- Kontotyp aender -->
+		<!-- Kontotyp ändern -->
 		<action path="/changekontotyp" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Kontostatus ändern -->
 		<action path="/changekontostate" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Paydate setzen -->
 		<action path="/setpaydate" name="BillingForm" parameter="method"
 			scope="request" type="ch.dbs.actions.billing.BillingAction">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Expdate setzen -->
 		<action path="/setexpdate" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<!-- Expdate Popfax-Server setzen -->
 		<action path="/setexpdateserver" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Rechnung vorbereiten -->
 		<action path="/preparebillingtext" name="BillingForm"
 			parameter="method" scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/editbillingtext.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Rechnung versenden -->
 		<action path="/sendbill" name="BillingForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Rechnung zu Konto auflisten -->
 		<action path="/listbillings" name="KontoForm" parameter="method"
 			scope="request" type="ch.dbs.actions.billing.BillingAction">
 			<forward name="success" path="/jsp/billinglist.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<!--
@@ -348,7 +322,6 @@
 		<action path="/listsuppliers" input="/jsp/suppliers.jsp" name="SupplierForm"
 			parameter="method" scope="request" type="ch.dbs.actions.suppliers.PrepareList">
 			<forward name="success" path="/suppliers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action forward="/jsp/suppliers.jsp" path="/suppliers" />
@@ -358,7 +331,6 @@
 			<forward name="success" path="/listsuppliers.do" />
 			<forward name="edit" path="/supplieredit.do" />
 			<forward name="create" path="/suppliernew.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action forward="/jsp/supplieredit.jsp" path="/supplieredit" />
@@ -367,7 +339,6 @@
 		<action path="/suppliersettings" input="/jsp/suppliers.jsp" validate="false" name="SupplierForm"
 			parameter="method" scope="request" type="ch.dbs.actions.suppliers.Settings">
 			<forward name="success" path="/listsuppliers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -378,7 +349,6 @@
 		<action path="/issnsearch_" validate="false" name="OrderForm"
 			parameter="method" scope="request" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/issnsearch.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action name="ActiveMenus" forward="/jsp/searchfree.jsp" path="/searchfree" />
@@ -391,7 +361,6 @@
 			<forward name="notfreeebz" path="/journalorder.do?method=prepare" />
 			<forward name="freeezb" path="/jsp/availabilityresult.jsp" />
 			<forward name="noresult" path="/jsp/issnsearch.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -404,7 +373,6 @@
 			<forward name="success" path="/bestellformjsp.do" />
 			<forward name="redirect" path="/jsp/redirectdaia.jsp" />
 			<forward name="redirectpost" path="/jsp/redirectdaiapost.jsp" />
-			<forward name="failure" path="/jsp/error.jsp" />
 		</action>
 
 		<action path="/validateBestellform" input="/jsp/bestellformular.jsp"
@@ -412,14 +380,12 @@
 			type="ch.dbs.actions.bestellung.BestellformAction">
 			<forward name="success" path="/bestellformsuccess.do" />
 			<forward name="missingvalues" path="/bestellform.do?method=validate" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/bfconfigureselect" name="BestellParam" validate="false"
 			parameter="method" scope="request"
 			type="ch.dbs.actions.bestellung.BestellformAction">
 			<forward name="success" path="/bestellformconfigureselect.do" />
-			<forward name="failure" path="/jsp/error.jsp" />
 		</action>
 
 		<action path="/bfconfigure" name="BestellParam" validate="false"
@@ -427,7 +393,6 @@
 			type="ch.dbs.actions.bestellung.BestellformAction">
 			<forward name="success" path="/bestellformconfigure.do" />
 			<forward name="bestellform" path="/bestellformjsp.do" />
-			<forward name="failure" path="/jsp/error.jsp" />
 		</action>
 
 		<action name="ActiveMenus" forward="/jsp/bestellformular.jsp"
@@ -445,9 +410,7 @@
 
 		<action path="/openurl" name="OrderForm" validate="false"
 			parameter="method" scope="request" type="ch.dbs.actions.openurl.GetOpenUrlRequest">
-			<forward name="success"
-				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
-			<forward name="failure" path="/error.do" />
+			<forward name="success" path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
 		</action>
 
 		<!--
@@ -456,7 +419,6 @@
 
 		<action path="/daia" name="OrderForm" validate="false"
 			parameter="method" scope="request" type="ch.ddl.daia.Daia">
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -467,7 +429,6 @@
 			parameter="method" scope="request"
 			type="ch.dbs.actions.illformat.GetIllFormatRequest">
 			<forward name="success" path="/illanswer.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action forward="/jsp/illanswer.jsp" path="/illanswer" />
@@ -480,7 +441,6 @@
 			parameter="method" scope="request" type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/jsp/searchorders.jsp" />
 			<forward name="result" path="/uebersicht.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/searchord" input="/jsp/searchorders.jsp" name="OverviewForm"
@@ -488,7 +448,6 @@
 			type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/searchresult.do" />
 			<forward name="result" path="/uebersicht.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action forward="/jsp/searchresult.jsp" path="/searchresult" />
@@ -501,18 +460,14 @@
 			<forward name="success" path="/jsp/journalorder.jsp" />
 			<forward name="redirectsubito" path="/jsp/redirectsubito.jsp" />
 			<forward name="bestellform" path="/bestellform.do?method=validate" />
-			<forward name="save"
-				path="/prepareJournalSave.do?method=prepareJournalSave" />
-			<forward name="failure" path="/error.do" />
+			<forward name="save" path="/prepareJournalSave.do?method=prepareJournalSave" />
 		</action>
 		<action path="/journalorder2" name="OrderForm" validate="false"
 			parameter="method" scope="request" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/journalorder.jsp" />
 			<forward name="redirectsubito" path="/jsp/redirectsubito.jsp" />
 			<forward name="bestellform" path="/bestellform.do?method=validate" />
-			<forward name="save"
-				path="/prepareJournalSave.do?method=prepareJournalSave" />
-			<forward name="failure" path="/error.do" />
+			<forward name="save" path="/prepareJournalSave.do?method=prepareJournalSave" />
 		</action>
 		<action path="/journalorder1" input="/jsp/journalorder.jsp"
 			name="OrderForm" parameter="method" scope="request" validate="false"
@@ -532,7 +487,6 @@
 			<forward name="journalorder" path="/journalorder1.do?method=journalorder" />
 			<forward name="abbrechen" path="/uebersicht.do" />
 			<forward name="notpossible" path="/uebersicht.do" />
-			<forward name="failure" path="/error.do" />
 			<forward name="error" path="/error.do" />
 		</action>
 		<action forward="/jsp/ordersuccess.jsp" path="/ordersuccess" />
@@ -543,7 +497,6 @@
 		<action path="/journalorderdetail" name="OrderForm" validate="false"
 			scope="request" parameter="method" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/orderview.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/orderview.jsp" path="/orderview" />
 
@@ -551,9 +504,7 @@
 			scope="request" parameter="method" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success"
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
-			<forward name="save"
-				path="/prepareJournalSave.do?method=prepareJournalSave" />
-			<forward name="failure" path="/error.do" />
+			<forward name="save" path="/prepareJournalSave.do?method=prepareJournalSave" />
 		</action>
 
 		<!--
@@ -563,7 +514,6 @@
 		<action path="/changeMediatypeGbv" name="OrderForm" validate="false"
 			parameter="method" scope="request" type="ch.dbs.actions.bestellung.OrderGbvAction">
 			<forward name="success" path="/jsp/journalorder.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/orderGbv" name="OrderForm" validate="false"
@@ -574,7 +524,6 @@
 			<forward name="search" path="/jsp/searchgbv.jsp" />
 			<forward name="trefferauswahl" path="/choosehits.do" />
 			<forward name="ordersuccess" path="/jsp/ordersuccess.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -585,14 +534,12 @@
 			parameter="method" scope="request"
 			type="ch.dbs.actions.bestellung.OrderUBBaselAction">
 			<forward name="redirect" path="/jsp/redirectdaiapost.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action path="/redirectmbczurich" name="OrderForm" validate="false"
 			parameter="method" scope="request"
 			type="ch.dbs.actions.bestellung.OrderMBCZurichAction">
 			<forward name="redirect" path="/jsp/redirectdaiapostiso.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -603,14 +550,12 @@
 		<action path="/changestat" name="OverviewForm" validate="false"
 			scope="request" parameter="method" type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/listkontobestellungen.do?method=overview" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Notizen einer Bestellung ändern  -->
 		<action path="/changenotes" name="OverviewForm" validate="false"
 			scope="request" parameter="method" type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/listkontobestellungen.do?method=overview" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -622,21 +567,18 @@
 			name="OrderForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/journalsave.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/journalsave.jsp" path="/journalsave" />
 
 		<action path="/changeMediatype" name="OrderForm" validate="false"
 			parameter="method" scope="request" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/journalsave.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/journalsave.jsp" path="/journalsave" />
 
 		<action path="/preparemodifyorder" name="OrderForm" scope="request"
 			parameter="method" validate="false" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/journalsave.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/journalsave.jsp" path="/journalsave" />
 
@@ -646,7 +588,6 @@
 			<forward name="success" path="/listkontobestellungen.do?method=overview" />
 			<forward name="newcustomer"
 				path="/addkontousersfrombestellung.do?method=keepOrderDetails" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action forward="/jsp/ordersuccess.jsp" path="/ordersuccess" />
 
@@ -654,7 +595,6 @@
 			parameter="method" validate="false" type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="promptDelete" path="/orderview.do" />
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 
@@ -667,7 +607,6 @@
 			scope="request" parameter="method" validate="false"
 			type="ch.dbs.action.statistik.OrderStatistik">
 			<forward name="success" path="/jsp/showkontoorderstats.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -677,7 +616,6 @@
 		<action path="/listkontousers" name="UserForm" scope="request"
 			parameter="method" validate="false" type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/showkontousers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action name="ActiveMenus" forward="/jsp/showkontousers.jsp"
 			path="/showkontousers" />
@@ -691,7 +629,6 @@
 			type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/modifykontousers.do" />
 			<forward name="abbrechen" path="/listkontousers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action name="ActiveMenus" forward="/jsp/modifykontousers.jsp"
 			path="/modifykontousers" />
@@ -700,7 +637,6 @@
 			type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/jsp/message.jsp" />
 			<forward name="abbrechen" path="/listkontousers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- neue Kunden anlegen und Bestellangaben behalten mapping -->
@@ -708,7 +644,6 @@
 			name="OrderForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/addkontousers.do?method=prepareAddUser" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!-- Kunden bearbeiten mapping -->
@@ -717,7 +652,6 @@
 			type="ch.dbs.actions.user.UserAction">
 			<forward name="success" path="/modifykontousers.do" />
 			<forward name="abbrechen" path="/listkontousers.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		<action path="/editkontousers1" input="/jsp/modifykontousers.jsp"
 			name="UserForm" parameter="method" validate="false" scope="request"
@@ -725,7 +659,6 @@
 			<forward name="success" path="/jsp/message.jsp" />
 			<forward name="missing" path="/modifykontousers.do" />
 			<forward name="abbrechen" path="/listkontousers.do" />
-			<forward name="failure" path="/error.do" />
 			<forward name="returntojournalorder" path="/journalorder.do?method=prepare" />
 			<forward name="returntojournalsave"
 				path="/prepareJournalSave.do?method=prepareJournalSave" />
@@ -734,7 +667,6 @@
 		<!-- Modify / create user categories -->
 		<action path="/usercategories" name="HoldingForm" scope="request"
 			parameter="method" validate="false" type="ch.dbs.actions.user.UserAction">
-			<forward name="failure" path="/error.do" />
 			<forward name="success" path="/modifyusercategories.do" />
 		</action>
 
@@ -756,7 +688,6 @@
 		<action path="/maintenance" input="/jsp/maintenance.jsp" name="MaintenanceForm"
 			parameter="method" scope="request" type="ch.dbs.actions.maintenance.ListOptions">
 			<forward name="success" path="/preparemaintenance.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action forward="/jsp/maintenance.jsp" path="/preparemaintenance" />
@@ -765,7 +696,6 @@
 			parameter="method" scope="request" type="ch.dbs.actions.maintenance.BulkOperations">
 			<forward name="success" path="/jsp/message.jsp" />
 			<forward name="confirm" path="/confirmmaintenance.do" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action forward="/jsp/maintenanceconfirm.jsp" path="/confirmmaintenance" />
@@ -779,7 +709,6 @@
 		<action path="/orderreport" input="/jsp/choosestat.jsp" name="OverviewForm"
 			scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.reports.OrderReports">
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/prepare-ilv-order-pdf-*" input="/jsp/orderview.jsp"
@@ -787,45 +716,38 @@
 			type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success"
 				path="/ilv-order-modifymanual-{1}.do?method=prepareFormIlv" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/ilv-order-modifymanual-*" name="OrderForm" scope="request"
 			parameter="method" validate="false" type="ch.dbs.actions.reports.ILVReport">
 			<forward name="success" path="/jsp/prepareilvreport_{1}.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/ilv-order-pdf*" input="/jsp/prepareilvreport_*" name="IlvReportForm"
 			scope="request" parameter="method" type="ch.dbs.actions.reports.ILVReport">
 			<forward name="preparemail" path="/jsp/prepareilvmail.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action path="/prepare-ilv-mailorder" input="/jsp/prepareilvreport_*"
 			name="OrderForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestellung.OrderAction">
 			<forward name="success" path="/jsp/prepareilvmail.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action path="/send-ilv-mailorder" input="/jsp/prepareilvmail.jsp"
 			name="IlvReportForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.reports.ILVReport">
 			<forward name="success" path="/jsp/modifydefaultilvmailfields.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 		
 		<action path="/save-ilv-maildefaultfields" input="/jsp/modifydefaultilvmailfields.jsp"
 			name="IlvReportForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.reports.ILVMailfields">
 			<forward name="success" path="/jsp/message.jsp" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action path="/export-holdings" scope="request" parameter="method"
 			type="ch.dbs.actions.reports.HoldingsReport">
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<!--
@@ -836,7 +758,6 @@
 		<action path="/allstock" input="/jsp/stockexport.jsp" name="HoldingForm"
 			scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestand.Stock">
-			<forward name="failure" path="/error.do" />
 			<forward name="success" path="/stockexport.do" />
 		</action>
 
@@ -844,14 +765,12 @@
 		<action path="/stock" input="/jsp/stockimport.jsp" name="HoldingForm"
 			scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestand.Stock">
-			<forward name="failure" path="/error.do" />
 			<forward name="success" path="/stockimport.do" />
 		</action>
 
 		<!-- Upload a CSV-File of holdings -->
 		<action path="/importholdinglist" name="FileForm" parameter="method"
 			validate="false" scope="request" type="ch.dbs.actions.bestand.Stock">
-			<forward name="failure" path="/error.do" />
 			<forward name="importError" path="/jsp/messages.jsp" />
 			<forward name="success" path="/jsp/message.jsp" />
 		</action>
@@ -860,7 +779,6 @@
 		<action path="/modplace" input="/jsp/stockplacesmodify.jsp"
 			name="HoldingForm" scope="request" parameter="method" validate="false"
 			type="ch.dbs.actions.bestand.Stock">
-			<forward name="failure" path="/error.do" />
 			<forward name="success" path="/stockplacesmodify.do" />
 		</action>
 
@@ -871,7 +789,6 @@
 			<forward name="redirect" path="/jsp/redirectdaia.jsp" />
 			<forward name="redirectpost" path="/jsp/redirectdaiapost.jsp" />
 			<forward name="redirectIP" path="/bestellform.do?method=validate" />
-			<forward name="failure" path="/error.do" />
 		</action>
 
 		<action name="ActiveMenus" forward="/jsp/stockimport.jsp" path="/stockimport" />
