@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -2703,9 +2705,17 @@ public final class OrderAction extends DispatchAction {
             result = webcontent.get(i, TimeUnit.SECONDS);
             
         } catch (final TimeoutException e) {
-            log.warn(serviceName + " TimeoutException: " + e.toString());
+            log.warn(serviceName + " thread - TimeoutException: " + e.toString());
+        } catch (final InterruptedException e) {
+            log.warn(serviceName + " thread - InterruptedException: " + e.toString());
+        } catch (final ExecutionException e) {
+            log.warn(serviceName + " thread - ExecutionException: " + e.toString());
+        } catch (final CancellationException e) {
+            log.warn(serviceName + " thread - CancellationException: " + e.toString());
+        } catch (final IllegalArgumentException e) {
+            log.warn(serviceName + " thread - IllegalArgumentException: " + e.toString());
         } catch (final Exception e) {
-            LOG.error(serviceName + " Thread failed in checkAvailability: " + e.toString());
+            LOG.error(serviceName + " thread - Exception: " + e.toString());
         } finally {
             // secure if task is finished already.
             webcontent.cancel(true);
