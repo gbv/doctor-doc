@@ -1,5 +1,6 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 <%@ page import="ch.dbs.form.*" %>
 
@@ -24,7 +25,8 @@
 
 <logic:notPresent name="errormessage" property="error">
 <!-- general error without bean 'errormessage'. Occurs with invalid paths and methods. -->
-	<bean:message key="ordersuccess.error" />
+	<bean:message key="ordersuccess.error" />	
+	<p><html:errors/></p>	
 </logic:notPresent>
 
 <logic:present name="errormessage" property="error">
