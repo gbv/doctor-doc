@@ -21,8 +21,16 @@
 <br>
 <h3><bean:message key="error.titel" /></h3>
 <bean:define id="appName" type="java.lang.String"><bean:message bundle="systemConfig" key="application.name"/></bean:define>
-<bean:define id="em"><bean:write name="errormessage" property="error"/></bean:define>
-<p><bean:message arg0="<%=appName%>" key="<%=em%>" /></p>
+
+<logic:notPresent name="errormessage" property="error">
+<!-- general error without bean 'errormessage'. Occurs with invalid paths -->
+	<bean:message key="ordersuccess.error" />
+</logic:notPresent>
+
+<logic:present name="errormessage" property="error">
+	<bean:define id="em"><bean:write name="errormessage" property="error"/></bean:define>
+	<p><bean:message arg0="<%=appName%>" key="<%=em%>" /></p>
+</logic:present>
 
 <logic:present name="errormessage" property="error_specific">
   <p><bean:write name="errormessage" property="error_specific" /></p>
