@@ -32,7 +32,10 @@
 		<form-bean name="MaintenanceForm" type="ch.dbs.form.MaintenanceForm" />
 	</form-beans>
 
-	<global-exceptions />
+	<global-exceptions>
+	    <exception key="ordersuccess.error" type="java.lang.NoSuchMethodException" path="/jsp/error.jsp" />
+	    <exception key="ordersuccess.error" type="javax.servlet.ServletException" path="/jsp/error.jsp" />
+	</global-exceptions>
 
 	<!-- =================================== Global Forward Definitions -->
 	<global-forwards>

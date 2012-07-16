@@ -23,7 +23,7 @@
 <bean:define id="appName" type="java.lang.String"><bean:message bundle="systemConfig" key="application.name"/></bean:define>
 
 <logic:notPresent name="errormessage" property="error">
-<!-- general error without bean 'errormessage'. Occurs with invalid paths -->
+<!-- general error without bean 'errormessage'. Occurs with invalid paths and methods. -->
 	<bean:message key="ordersuccess.error" />
 </logic:notPresent>
 
