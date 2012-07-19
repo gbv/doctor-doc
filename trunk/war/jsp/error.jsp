@@ -10,6 +10,7 @@
 
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="robots" content="noindex" />
   <title> <bean:message key="error.heading" /> </title>
   <link rel="stylesheet" type="text/css" href="jsp/import/styles.css" />
  </head>
@@ -26,7 +27,7 @@
 <logic:notPresent name="errormessage" property="error">
 <!-- general error without bean 'errormessage'. Occurs with invalid paths and methods. -->
 	<bean:message key="ordersuccess.error" />	
-	<p><html:errors/></p>	
+	<p><html:errors/></p>
 </logic:notPresent>
 
 <logic:present name="errormessage" property="error">
