@@ -8,7 +8,7 @@
 <hr>
 <p>
   <small>
-    &copy; 2005-2010 <a href="http://www.doctor-doc.com" target="_blank">doctor-doc.com</a> | Licensed under the GPL as open source: <a href="http://sourceforge.net/projects/doctor-doc/" target="_blank">SourceForge.net</a>
+    &copy; 2005-2012 <a href="http://www.doctor-doc.com" target="_blank">doctor-doc.com</a> | Licensed under the GPL as open source: <a href="http://sourceforge.net/projects/doctor-doc/" target="_blank">SourceForge.net</a>
   </small>
 </p>
 
