@@ -132,7 +132,6 @@ public class Pubmed {
      */
     public String composePubmedlinkToPmid(final OrderForm pageForm) {
         
-        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
         // encode user entered values, to avoid illegalArgumentException
         final CodeUrl enc = new CodeUrl();
         
@@ -142,17 +141,17 @@ public class Pubmed {
         link.append("[TA]");
         if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(pageForm.getJahrgang().trim()));
+            link.append(enc.encodeUTF8(prepareVolumeNIssue(pageForm.getJahrgang().trim())));
             link.append("[VI]");
         }
         if (pageForm.getHeft() != null && !"".equals(pageForm.getHeft().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(pageForm.getHeft().trim()));
+            link.append(enc.encodeUTF8(prepareVolumeNIssue(pageForm.getHeft().trim())));
             link.append("[IP]");
         }
         if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(openurlConv.extractSpage(pageForm.getSeiten().trim())));
+            link.append(enc.encodeUTF8(preparePage(pageForm.getSeiten()))); // no need to trim
             link.append("[PG]");
         }
         if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr().trim())) {
@@ -162,6 +161,53 @@ public class Pubmed {
         }
         
         return link.toString();
+    }
+    
+    /**
+     * Remove any illegal text. Add "Suppl" if text contains S || s.
+     */
+    private String prepareVolumeNIssue(final String input) {
+        
+        final StringBuffer result = new StringBuffer();
+        
+        final char[] cArray = input.toCharArray();
+        
+        boolean supplSet = false;
+        
+        for (final char c : cArray) {
+            
+            if (Character.isDigit(c) || c == ' ') {
+                result.append(c);
+            } else if (!supplSet && c == 'S' || c == 's') {
+                // make sure there are whitespaces
+                result.append(" Suppl ");
+                supplSet = true;
+            }
+        }
+        
+        // remove double whitespaces
+        return result.toString().replaceAll("\\s+", " ");
+    }
+    
+    /**
+     * Remove any illegal text. Returns only the start page and adds S in front
+     * of it, if text contains S || s.
+     */
+    private String preparePage(final String input) {
+        
+        final StringBuffer result = new StringBuffer();
+        final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
+        
+        // append S for Supplements
+        if (input.contains("s") || input.contains("S")) {
+            result.append("S");
+        }
+        
+        // use only start page
+        result.append(openurlConv.extractFirstNumber(input));
+        
+        return result.toString();
+        
     }
     
 }

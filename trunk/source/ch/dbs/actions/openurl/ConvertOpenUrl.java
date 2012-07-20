@@ -27,35 +27,36 @@ import ch.dbs.actions.bestellung.OrderAction;
 import ch.dbs.form.OrderForm;
 
 public class ConvertOpenUrl {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(ConvertOpenUrl.class);
-
+    
     /**
      * Klasse um OpenURL in "Doctor-Doc" zu übersetzen
+     * 
      * @author Markus Fischer
      */
-
+    
     /**
      * Interpretiert aus einem ContextObject ein OrderForm für Doctor-Doc.
      * Relativ komplex und hier mit Vereinfachungen und Anpassungen umgesetzt...
      */
     public OrderForm makeOrderform(final ContextObject co) {
-
+        
         OrderForm of = new OrderForm();
         // OpenURL V1.0 has clear identifiers, so no additional controls for mediatype "Artikel" are necessary
         boolean valFmt = false;
-
+        
         // if we have a SICI, resolve and use it
         if (!co.getRft_sici().equals("")) {
             of = resolveSiciNumber(co.getRft_sici());
         }
-
+        
         // zuerst allfällige Seitenbereiche eruieren => Unterscheidung von Buch / Teilkopie Buch
-
+        
         if (co.getRft_spage() != null && !co.getRft_spage().equals("")) {
             of.setSeiten(co.getRft_spage());
         }
-
+        
         if (co.getRft_epage() != null && !co.getRft_epage().equals("")) {
             // Worldcat repeats the startpage in the endpage
             if (co.getRft_epage().contains("-")) {
@@ -65,19 +66,19 @@ public class ConvertOpenUrl {
                 of.setSeiten(of.getSeiten() + "-" + co.getRft_epage());
             }
         }
-
+        
         if (co.getRft_pages() != null && !co.getRft_pages().equals("")) { // überschreibt spage und epage
             of.setSeiten(co.getRft_pages());
         }
-
+        
         // ...nur ausführen, falls Seiten nicht schon gesetzt
         if (co.getRft_tpages() != null && !co.getRft_tpages().equals("")
                 && (of.getSeiten() == null || of.getSeiten().equals(""))) {
             of.setSeiten(co.getRft_tpages());
         }
-
+        
         of.setMediatype("Artikel"); // Default-Wert, falls rft_val_fmt, resp. rft.genre nicht analysierbar..
-
+        
         if (co.getRft_val_fmt() != null && !co.getRft_val_fmt().equals("")) {
             if (co.getRft_val_fmt().contains("journal")) {
                 of.setMediatype("Artikel");
@@ -93,7 +94,7 @@ public class ConvertOpenUrl {
                 }
             }
         }
-
+        
         if (co.getRft_genre() != null && !co.getRft_genre().equals("")) { // falls rft_val_fmt fehlt...
             if (co.getRft_genre().toLowerCase().contains("journal")
                     || co.getRft_genre().toLowerCase().contains("article")) {
@@ -112,7 +113,7 @@ public class ConvertOpenUrl {
                 of.setGenre(co.getRft_genre());
             }
         }
-
+        
         if (co.getRft_atitle() != null && !co.getRft_atitle().equals("")) {
             if (of.getMediatype().equals("Artikel")) {
                 of.setArtikeltitel(removeEndDot(co.getRft_atitle())); // Artikeltitel
@@ -125,7 +126,7 @@ public class ConvertOpenUrl {
                 }
             }
         }
-
+        
         if (co.getRft_title() != null && !co.getRft_title().equals("")) { // nur OpenURL 0.1
             if (of.getMediatype().equals("Artikel")) {
                 of.setZeitschriftentitel(toNormalLetters(removeEndDot(co.getRft_title()))); // Zeitschrift
@@ -133,7 +134,7 @@ public class ConvertOpenUrl {
                 of.setBuchtitel(toNormalLetters(removeEndDot(co.getRft_title()))); // Buch
             }
         }
-
+        
         if (co.getRft_jtitle() != null && !co.getRft_jtitle().equals("")) { // OpenURL 1.0, überschreibt Rft_title
             if (of.getMediatype().equals("Artikel")) {
                 of.setZeitschriftentitel(toNormalLetters(removeEndDot(co.getRft_jtitle()))); // Zeitschrift
@@ -141,21 +142,21 @@ public class ConvertOpenUrl {
                 of.setBuchtitel(toNormalLetters(removeEndDot(co.getRft_jtitle()))); // Buch [unwahrscheinlich]
             }
         }
-
+        
         if (co.getRft_btitle() != null && !co.getRft_btitle().equals("")) {
             of.setBuchtitel(toNormalLetters(removeEndDot(co.getRft_btitle())));
         }
-
+        
         if (co.getRft_pub() != null && !co.getRft_pub().equals("")) {
             of.setVerlag(co.getRft_pub());
         }
-
+        
         if (co.getRft_publisher() != null && !co.getRft_publisher().equals("")
         // ...nur ausführen, falls Verlag noch nicht gesetzt
                 && (of.getVerlag() == null || of.getVerlag().equals(""))) {
             of.setVerlag(co.getRft_publisher());
         }
-
+        
         if (co.getRft_stitle() != null
                 && !co.getRft_stitle().equals("")
                 && // stitle = Titelabkürzung...
@@ -168,16 +169,16 @@ public class ConvertOpenUrl {
                 of.setBuchtitel(removeEndDot(co.getRft_stitle())); // Buch [unwahrscheinlich]
             }
         }
-
+        
         if (co.getRft_series() != null && !co.getRft_series().equals("")) { // Serientitel
             if (of.getMediatype().equals("Artikel")) { // unwahrscheinlich
                 of.setZeitschriftentitel(of.getZeitschriftentitel() + "\040-\040" + co.getRft_series());
             } else {
                 of.setBuchtitel(of.getBuchtitel() + "\040-\040" + co.getRft_series());
             }
-
+            
         }
-
+        
         // if issn or eissn are empty and issn1 or eissn1 are available => set them
         if ((co.getRft_issn() == null || co.getRft_issn().equals(""))
                 && (co.getRft_issn1() != null && !co.getRft_issn1().equals(""))) {
@@ -187,30 +188,30 @@ public class ConvertOpenUrl {
                 && (co.getRft_eissn1() != null && !co.getRft_eissn1().equals(""))) {
             co.setRft_eissn(co.getRft_eissn1());
         }
-
+        
         if (co.getRft_issn() != null && !co.getRft_issn().equals("")) {
             of.setIssn(normalizeIssn(extractFromSeveralIssns(co.getRft_issn())));
         }
-
+        
         if (co.getRft_eissn() != null && !co.getRft_eissn().equals("")
         // ...nur ausführen, falls P-ISSN nicht schon gesetzt
                 && (of.getIssn() == null || of.getIssn().equals(""))) {
             of.setIssn(normalizeIssn(extractFromSeveralIssns(co.getRft_eissn())));
         }
-
+        
         if (co.getRft_isbn() != null && !co.getRft_isbn().equals("")) {
             of.setIsbn(co.getRft_isbn());
         }
-
+        
         if (co.getRft_date() != null && !co.getRft_date().equals("")) {
             final OrderAction orderAction = new OrderAction();
             of.setJahr(orderAction.extractYear(co.getRft_date()));
         }
-
+        
         if (co.getRft_volume() != null && !co.getRft_volume().equals("")) {
             of.setJahrgang(co.getRft_volume());
         }
-
+        
         if (co.getRft_part() != null && !co.getRft_part().equals("")) {
             if (of.getJahrgang() != null && !of.getJahrgang().equals("")) {
                 of.setJahrgang(of.getJahrgang() + "\040" + co.getRft_part()); // zum Jahrgang addieren
@@ -218,27 +219,27 @@ public class ConvertOpenUrl {
                 of.setJahrgang(co.getRft_part());
             }
         }
-
+        
         if (co.getRft_issue() != null && !co.getRft_issue().equals("")) {
             of.setHeft(co.getRft_issue());
         }
-
+        
         if (co.getRft_author() != null && !co.getRft_author().equals("")) {
             of.setAuthor(co.getRft_author());
         }
-
+        
         if (co.getRft_au() != null && !co.getRft_au().equals("")
         // nur ausführen, falls Author nicht schon gesetzt
                 && (of.getAuthor() == null || of.getAuthor().equals(""))) {
             of.setAuthor(co.getRft_au());
         }
-
+        
         if (co.getRft_creator() != null && !co.getRft_creator().equals("")
         // inoffizieller Identif. ...nur ausführen, falls Author nicht schon gesetzt
                 && (of.getAuthor() == null || of.getAuthor().equals(""))) {
             of.setAuthor(co.getRft_creator());
         }
-
+        
         if (co.getRft_aulast() != null && !co.getRft_aulast().equals("")) {
             final String authorCopy = of.getAuthor(); // bis jetzt bereits vorhandene Einträge kopieren
             // Normalfall (auinit enthält sämtliche Initialen der Vornamen)
@@ -263,7 +264,7 @@ public class ConvertOpenUrl {
                 of.setAuthor(of.getAuthor() + "\040;\040" + authorCopy);
             }
         }
-
+        
         if (co.getRft_aucorp() != null && !co.getRft_aucorp().equals("")) {
             if (of.getAuthor() != null && !of.getAuthor().equals("")) {
                 of.setAuthor(of.getAuthor() + " ; " + co.getRft_aucorp()); // zum Author addieren
@@ -271,13 +272,13 @@ public class ConvertOpenUrl {
                 of.setAuthor(co.getRft_aucorp());
             }
         }
-
+        
         if (co.getRft_id() != null) {
             for (final String eachRftID : co.getRft_id()) {
                 of = resolveUriScheme(eachRftID, of);
             }
         }
-
+        
         // Kontrollmechanismen
         if (!valFmt && of.getMediatype().equals("Buch") && isBookItem(of)) {
             of.setMediatype("Teilkopie Buch");
@@ -285,7 +286,7 @@ public class ConvertOpenUrl {
         if (!valFmt && of.getMediatype().equals("Artikel") && isBook(of)) {
             of.setMediatype("Buch");
         }
-
+        
         if (!valFmt && of.getMediatype().equals("Artikel") && isBookItem(of)) {
             of.setMediatype("Teilkopie Buch");
             // Nach Umstellen auf Teilkopie sicherstellen dass Kapitel abgefüllt wird
@@ -324,40 +325,39 @@ public class ConvertOpenUrl {
                 of.setIsbn(getIsbnSpringerBook(of.getDoi()));
             }
         }
-
+        
         if (of.getMediatype().equals("Artikel") && of.getIssn().length() == 0) {
             of.setFlag_noissn(true);
         }
-
+        
         // ggf. Sprache des Artikels setzen
         if (co.getRft_language() != null && !co.getRft_language().equals("")
         // nur Sprachangabe wenn NICHT englisch
                 && !co.getRft_language().equalsIgnoreCase("English")) {
             of.setLanguage(co.getRft_language());
         }
-
+        
         return of;
     }
-
+    
     /**
      * Stellt aus einem Ordeform ein ContextObject her.
-     *
      */
     public ContextObject makeContextObject(final OrderForm of) {
-
+        
         final ContextObject co = new ContextObject();
         final CodeUrl codeUrl = new CodeUrl();
-
+        
         if (of.getMediatype().equals("Artikel")) {
             co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:journal"));
         }
         if (of.getMediatype().contains("Buch")) {
             co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:book"));
         }
-
+        
         // Aus Kompatibilität mit OpenURl 01.1 momentan ausserhalb dieser Methode zu implementieren
         // co.setRfr_id(UrlCode.encode("DRDOC:doctor-doc"));
-
+        
         if (of.getMediatype().equals("Artikel")) {
             co.setRft_genre(codeUrl.encodeLatin1("article"));
         }
@@ -367,7 +367,7 @@ public class ConvertOpenUrl {
         if (of.getMediatype().equals("Teilkopie Buch")) {
             co.setRft_genre(codeUrl.encodeLatin1("bookitem"));
         }
-
+        
         co.setRft_atitle(codeUrl.encodeLatin1(of.getArtikeltitel()));
         co.setRft_btitle(codeUrl.encodeLatin1(of.getBuchtitel()));
         co.setRft_jtitle(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
@@ -379,21 +379,21 @@ public class ConvertOpenUrl {
         co.setRft_volume(codeUrl.encodeLatin1(of.getJahrgang()));
         co.setRft_issue(codeUrl.encodeLatin1(of.getHeft()));
         co.setRft_pages(codeUrl.encodeLatin1(of.getSeiten()));
-        co.setRft_spage(codeUrl.encodeLatin1(extractSpage(of.getSeiten())));
+        co.setRft_spage(codeUrl.encodeLatin1(extractFirstNumber(of.getSeiten())));
         co.setRft_author(codeUrl.encodeLatin1(of.getAuthor()));
-
+        
         // enthält uri-infos wie pmid, doi, lccn etc.: // http://www.info-uri.info/registry/
         // TODO: private List rft_id;
-
+        
         return co;
     }
-
+    
     /**
-     * Stellt aus einem Orderform einen "Doctor-Doc-String" für interne Get-Methoden her.
-     *
+     * Stellt aus einem Orderform einen "Doctor-Doc-String" für interne
+     * Get-Methoden her.
      */
     public String makeGetMethodString(final OrderForm of) {
-
+        
         final StringBuffer sb = new StringBuffer(800);
         final CodeUrl codeUrl = new CodeUrl();
         sb.append("mediatype="); // Default "Artikel" (s.a. OrderForm)
@@ -480,19 +480,19 @@ public class ConvertOpenUrl {
             sb.append("&lccn=");
             sb.append(codeUrl.encodeLatin1(of.getLccn()));
         }
-
+        
         return sb.toString();
     }
-
+    
     /**
      * Holt den Inhalt aus einem URI-Schema und legt ihn ins OrderForm
      */
     private OrderForm resolveUriScheme(final String input, final OrderForm of) {
-
+        
         // http://www.info-uri.info/registry/
-
+        
         try {
-
+            
             if (input.contains("info:doi/")) {
                 of.setDoi(input.substring(input.indexOf("info:doi/")));
             }
@@ -505,28 +505,28 @@ public class ConvertOpenUrl {
             if (input.contains("info:lccn/")) {
                 of.setLccn(input.substring(input.indexOf("info:lccn/")));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("resolveUriScheme: " + e.toString());
         }
-
+        
         return of;
     }
-
+    
     /**
      * Löst eine SICI-Number auf und legt die Angaben ins OrderForm
      */
     private OrderForm resolveSiciNumber(final String sici) {
-
+        
         final OrderForm of = new OrderForm();
-
+        
         // http://en.wikipedia.org/wiki/SICI
         // ANSI/NISO Z39.56
         // 0002-8231(199412)45:10<737:TIODIM>2.3.TX;2-M => Abstract from Lynch, Clifford A.
         // "The Integrity of Digital Information; Mechanics and Definitional Issues." JASIS 45:10 (Dec. 1994) p. 737-44
-
+        
         try {
-
+            
             if (sici.contains("(")) {
                 final int start = sici.indexOf('(');
                 String tmp = "";
@@ -552,60 +552,60 @@ public class ConvertOpenUrl {
                 // Seiten nach < bis :
                 of.setSeiten(sici.substring(sici.indexOf('<') + 1, sici.indexOf(':', sici.indexOf('<'))));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("resolveSiciNumber: " + sici + "\040" + e.toString());
         }
-
+        
         return of;
     }
-
+    
     /**
      * Prüft, ob Bestellobjekt logischerweise ein Buch sein muss
      */
     private boolean isBook(final OrderForm of) {
-
+        
         boolean check = false;
-
+        
         try {
-
+            
             if (of.getIsbn() != null && !of.getIsbn().equals("")
                     && (of.getArtikeltitel() == null || of.getArtikeltitel().equals(""))
                     // ISBN vorhanden, aber kein Kapitel (hier noch Artikeltitel) oder spezifische Seitenangaben
                     && (of.getSeiten() == null || of.getSeiten().equals(""))) {
                 check = true;
             }
-
+            
             if (of.getBuchtitel() != null && !of.getBuchtitel().equals("")
                     && (of.getArtikeltitel() == null || of.getArtikeltitel().equals(""))
                     // Buchtitel vorhanden, aber kein Kapitel (hier noch Artikeltitel) oder spezifische Seitenangaben
                     && (of.getSeiten() == null || of.getSeiten().equals(""))) {
                 check = true;
             }
-
+            
         } catch (final Exception e) {
             LOG.error("isBook: " + e.toString());
         }
-
+        
         return check;
     }
-
+    
     /**
      * Prüft, ob das Bestellobjekt logischerweise eine Teilkopie Buch sein muss
      */
     private boolean isBookItem(final OrderForm of) {
-
+        
         boolean check = false;
-
+        
         try {
-
+            
             if (of.getIsbn() != null && !of.getIsbn().equals("")
                     && ((of.getKapitel() != null && !of.getKapitel().equals(""))
                     // ISBN vorhanden und Kapitel oder Artikeltitel oder spezifische Angaben vorhanden
                     || (of.getSeiten() != null && !of.getSeiten().equals("")))) {
                 check = true;
             }
-
+            
             if (of.getBuchtitel() != null
                     && !of.getBuchtitel().equals("")
                     && ((of.getKapitel() != null && !of.getKapitel().equals(""))
@@ -614,25 +614,25 @@ public class ConvertOpenUrl {
                     || (of.getSeiten() != null && !of.getSeiten().equals("")))) {
                 check = true;
             }
-
+            
         } catch (final Exception e) {
             LOG.error("isBookItem: " + e.toString());
         }
-
+        
         return check;
     }
-
+    
     /**
      * Prüft, ob das Bestellobjekt ein Springer-Buch ist
      */
     private boolean isSpringerBook(final OrderForm of) {
-
+        
         boolean check = false;
-
+        
         try {
-
+            
             if (of.getIssn() == null || "".equals(of.getIssn())) { // treat Springer-Books with ISSN as article / journal
-
+            
                 if (of.getDoi().contains("10.1007/3-") || of.getDoi().contains("10.1007/978-3-") || // deutsch / spanisch
                         of.getDoi().contains("10.1007/1-") || of.getDoi().contains("10.1007/978-1-") || // englisch
                         of.getDoi().contains("10.1007/0-") || of.getDoi().contains("10.1007/978-0-") || // englisch
@@ -642,43 +642,42 @@ public class ConvertOpenUrl {
                     check = true;
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("isSpringerBook:" + e.toString());
         }
-
+        
         return check;
     }
-
+    
     /**
      * Holt aus einer doi von Springer die ISBN
      */
     private String getIsbnSpringerBook(final String doi) {
-
+        
         String isbn = "";
-
+        
         try {
-
+            
             if (doi.contains("_")) {
                 isbn = doi.substring(doi.indexOf("10.1007/") + 8, doi.indexOf('_'));
             } else {
                 isbn = doi.substring(doi.indexOf("10.1007/") + 8);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getIsbnSpringerBook: " + doi + "\040" + e.toString());
         }
-
+        
         return isbn;
     }
-
+    
     /**
-     * gets an ISSN out of a String with several ISSNs
-     * e.g. Refworks is sending multiple ISSN in the param:
-     * issn=1234-1234; 2345-2345
+     * gets an ISSN out of a String with several ISSNs e.g. Refworks is sending
+     * multiple ISSN in the param: issn=1234-1234; 2345-2345
      */
     private String extractFromSeveralIssns(String input) {
-
+        
         try {
             // must have at least the lenght of two ISSNs plus a separation character
             if (input != null && input.length() > 19 && (input.contains(";") || input.contains(","))) { // Separation character is comma or semicolon
@@ -691,121 +690,120 @@ public class ConvertOpenUrl {
                     input = input.substring(0, input.indexOf(',')).trim(); // take the first ISSN
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("extractFromSeveralIssns:\040" + input + "\040" + e.toString());
         }
-
+        
         return input;
     }
-
+    
     /**
      * Bringt eine ISSN ohne Bindestrich in die "normale Form"
      */
     public String normalizeIssn(String input) {
-
+        
         try {
             if (input != null && input.length() == 8 && !input.contains("-")) {
                 input = input.substring(0, 4) + "-" + input.substring(4, 8);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("normalizeIssn:\040" + input + "\040" + e.toString());
         }
-
+        
         return input;
     }
-
+    
     /**
      * Entfernt Punkt am Ende eines Strings
      */
     private String removeEndDot(String input) {
-
+        
         try {
-
+            
             if (input != null && !input.equals("") && input.endsWith(".")) {
-
+                
                 final int l = input.length();
                 // falls letztes Zeichen "." => eliminieren
                 if (input.lastIndexOf('.') == l - 1) {
                     input = input.substring(0, input.lastIndexOf('.'));
                 }
-
+                
             }
-
+            
         } catch (final Exception e) {
             LOG.error("removeEndDot: " + input + "\040" + e.toString());
         }
-
+        
         return input;
     }
-
-    public String extractSpage(final String seiten) {
-        String spage = "";
-        if (seiten != null && seiten.length() != 0) {
+    
+    public String extractFirstNumber(final String input) {
+        String result = "";
+        if (input != null && input.length() != 0) {
             try {
-                final Pattern z = Pattern.compile("[0-9]*");
-                final Matcher w = z.matcher(seiten);
-
-                if (w.find()) { // Idee: nur erste Zahl abfüllen...
-                    spage = seiten.substring(w.start(), w.end()); // hier wird nur der erste Treffer abgefüllt...
+                final Pattern z = Pattern.compile("\\d+");
+                final Matcher w = z.matcher(input);
+                
+                if (w.find()) { // only extract first number
+                    result = input.substring(w.start(), w.end());
                 }
-                // if (spage.equals("")) spage = seiten;
             } catch (final Exception e) {
-                LOG.error("extractSpage: " + seiten + "\040" + e.toString());
+                LOG.error("extractFirstNumber: " + input + "\040" + e.toString());
             }
         }
-
-        return spage;
+        
+        return result;
     }
-
+    
     /**
-     * Setzt einen String aus lauter GROSSBUCHSTABEN in die englische Schreibeweise:
-     * 1. Buchstabe gross, alles andere klein. Z.B. aus METHODS IN ENZYMOLOGY => wird Methods in enzymology
+     * Setzt einen String aus lauter GROSSBUCHSTABEN in die englische
+     * Schreibeweise: 1. Buchstabe gross, alles andere klein. Z.B. aus METHODS
+     * IN ENZYMOLOGY => wird Methods in enzymology
      */
     private String toNormalLetters(String input) {
-
+        
         try {
-
+            
             if (input != null && input.length() != 0 && !checkLowercase(input)) {
-
+                
                 input = input.toLowerCase();
                 input = input.substring(0, 1).toUpperCase() + input.substring(1);
-
+                
             }
-
+            
         } catch (final Exception e) {
             LOG.error("toNormalLetters: " + input + "\040" + e.toString());
         }
-
+        
         return input;
     }
-
+    
     /**
      * Testet ob ein String Kleinbuchstaben enthält
-     *
      */
     private boolean checkLowercase(final String input) {
-
+        
         boolean check = false;
-
+        
         if (input != null && input.length() != 0) {
-
+            
             try {
-
+                
                 final Pattern z = Pattern.compile("\\p{Lower}");
                 final Matcher w = z.matcher(input);
-
+                
                 if (w.find()) { // Testen, ob String Kleinbuchstaben enthält...
                     check = true;
                 }
-
+                
             } catch (final Exception e) {
                 LOG.error("testLowercase: " + input + "\040" + e.toString());
             }
         }
-
+        
         return check;
     }
-
+    
 }

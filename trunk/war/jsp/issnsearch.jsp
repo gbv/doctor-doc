@@ -204,13 +204,13 @@
           <td><bean:message key="bestellform.jahrgang" />&nbsp;</td>
           <td><input name="jahrgang" type="text"
             value="<bean:write name="orderform" property="jahrgang" />"
-            size="4" maxlength="4" /> <bean:message key="issnsearch.jahrgang_example" /></td>
+            size="4" maxlength="10" /> <bean:message key="issnsearch.jahrgang_example" /></td>
         </tr>
         <tr>
           <td><bean:message key="bestellform.heft" />&nbsp;</td>
           <td><input name="heft" type="text"
             value="<bean:write name="orderform" property="heft" />" size="4"
-            maxlength="4" /> <bean:message key="issnsearch.heft_example" /></td>
+            maxlength="10" /> <bean:message key="issnsearch.heft_example" /></td>
         </tr>
         <tr>
           <td><bean:message key="bestellform.seiten" />&nbsp;</td>
