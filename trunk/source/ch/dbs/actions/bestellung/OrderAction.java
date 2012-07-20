@@ -2703,11 +2703,11 @@ public final class OrderAction extends DispatchAction {
         } catch (final TimeoutException e) {
             log.warn(serviceName + " thread - TimeoutException: " + e.toString());
         } catch (final InterruptedException e) {
-            log.warn(serviceName + " thread - InterruptedException: " + e.toString());
+            log.error(serviceName + " thread - InterruptedException: " + e.toString());
         } catch (final ExecutionException e) {
-            log.warn(serviceName + " thread - ExecutionException: ", e);
+            log.error(serviceName + " thread - ExecutionException: ", e);
         } catch (final CancellationException e) {
-            log.warn(serviceName + " thread - CancellationException: " + e.toString());
+            log.error(serviceName + " thread - CancellationException: " + e.toString());
         } catch (final Exception e) {
             LOG.error(serviceName + " thread - Exception: " + e.toString());
         } finally {
