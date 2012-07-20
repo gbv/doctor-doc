@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import org.grlea.log.SimpleLogger;
 
+import util.CodeUrl;
 import util.Http;
 import ch.dbs.actions.openurl.ContextObject;
 import ch.dbs.actions.openurl.ConvertOpenUrl;
@@ -30,14 +31,14 @@ import ch.dbs.form.OrderForm;
 import enums.Connect;
 
 public class Pubmed {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(Pubmed.class);
-
+    
     /**
      * Extracts the PMID out of a string.
      */
     public String extractPmid(String pmid) {
-
+        
         if (pmid != null && !pmid.equals("")) {
             try {
                 final Matcher w = Pattern.compile("[0-9]+").matcher(pmid);
@@ -48,15 +49,15 @@ public class Pubmed {
                 LOG.error("extractPmid: " + pmid + "\040" + e.toString());
             }
         }
-
+        
         return pmid;
     }
-
+    
     /**
      * Gets from a PMID all article details.
      */
     public OrderForm resolvePmid(final String pmid) {
-
+        
         OrderForm of = new OrderForm();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
         final OpenUrl openurl = new OpenUrl();
@@ -64,7 +65,7 @@ public class Pubmed {
         final String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id="
                 + pmid;
         String content = "";
-
+        
         try {
             content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
             final ContextObject co = openurl.readXmlPubmed(content);
@@ -72,93 +73,95 @@ public class Pubmed {
         } catch (final Exception e) {
             LOG.error("resolvePmid: " + pmid + "\040" + e.toString());
         }
-
+        
         return of;
     }
-
+    
     /**
      * Gets the PMID from the article details.
-     *
+     * 
      * @param OrderForm of
      * @return String pmid
      */
     public String getPmid(final OrderForm of) {
-
+        
         String pmid = "";
         final Http http = new Http();
-
+        
         try {
-
+            
             final String content = http.getContent(composePubmedlinkToPmid(of), Connect.TIMEOUT_2.getValue(),
                     Connect.TRIES_2.getValue());
-
+            
             if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
                 pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getPmid(of): " + e.toString());
         }
-
+        
         return pmid;
     }
-
+    
     /**
      * Extracts the PMID from the web content.
-     *
+     * 
      * @param String content
      * @return String pmid
      */
     public String getPmid(final String content) {
-
+        
         String pmid = "";
-
+        
         try {
-
+            
             if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
                 pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getPmid(String): " + e.toString() + "\012" + content);
         }
-
+        
         return pmid;
     }
-
+    
     /**
      * Creates the search link to get the PMID from the article details.
      */
     public String composePubmedlinkToPmid(final OrderForm pageForm) {
-
+        
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-
+        // encode user entered values, to avoid illegalArgumentException
+        final CodeUrl enc = new CodeUrl();
+        
         final StringBuffer link = new StringBuffer(128);
         link.append("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=");
         link.append(pageForm.getIssn());
         link.append("[TA]");
-        if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang())) {
+        if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang().trim())) {
             link.append("+AND+");
-            link.append(pageForm.getJahrgang());
+            link.append(enc.encodeUTF8(pageForm.getJahrgang().trim()));
             link.append("[VI]");
         }
-        if (pageForm.getHeft() != null && !"".equals(pageForm.getHeft())) {
+        if (pageForm.getHeft() != null && !"".equals(pageForm.getHeft().trim())) {
             link.append("+AND+");
-            link.append(pageForm.getHeft());
+            link.append(enc.encodeUTF8(pageForm.getHeft().trim()));
             link.append("[IP]");
         }
-        if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten())) {
+        if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten().trim())) {
             link.append("+AND+");
-            link.append(openurlConv.extractSpage(pageForm.getSeiten()));
+            link.append(enc.encodeUTF8(openurlConv.extractSpage(pageForm.getSeiten().trim())));
             link.append("[PG]");
         }
-        if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr())) {
+        if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr().trim())) {
             link.append("+AND+");
-            link.append(pageForm.getJahr());
+            link.append(enc.encodeUTF8(pageForm.getJahr().trim()));
             link.append("[DP]");
         }
-
+        
         return link.toString();
     }
-
+    
 }

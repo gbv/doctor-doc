@@ -1167,9 +1167,6 @@ public final class OrderAction extends DispatchAction {
         boolean autocomplete = false;
         String link;
         
-        // Syntax WorldCat z.B. http://www.worldcat.org/search?q=ti%3AAntioxidant+supplementation+sepsis+and+systemic+inflammatory+response+syndrome+issn%3A0090-3493&qt=advanced
-        // &fq=+dt%3Aart+%3E&qt=advanced (search only for articles)
-        
         final Auth auth = new Auth();
         
         // make sure that this method will only be run, if the user is logged in
@@ -1237,16 +1234,15 @@ public final class OrderAction extends DispatchAction {
             link = link + tmpWC + "+";
         }
         link = link + "ti%3A" + artikeltitelEncoded;
-        try {
-            if (pageForm.getIssn().length() != 0) {
-                link = link + "+issn%3A" + pageForm.getIssn();
-            }
-        } catch (final Exception e) {
-            // keine ISSN vorhanden
-            LOG.info("composeLinkWorldCat: no issn available" + e.toString());
+        if (pageForm.getIssn() != null && pageForm.getIssn().length() != 0) {
+            //                link = link + "+issn%3A" + pageForm.getIssn(); // old link
+            link = link + "+n2%3A" + pageForm.getIssn(); // new link
         }
         
-        final String linkWC = link + "&fq=+dt%3Aart+%3E&qt=advanced";
+        // old link, looking only for type article
+        //        final String linkWC = link + "&fq=+dt%3Aart+%3E&qt=advanced";
+        // new link, looking for type article and chapter
+        final String linkWC = link + "&fq=x0%3Aartchap&qt=advanced";
         
         return linkWC;
     }
@@ -2709,11 +2705,9 @@ public final class OrderAction extends DispatchAction {
         } catch (final InterruptedException e) {
             log.warn(serviceName + " thread - InterruptedException: " + e.toString());
         } catch (final ExecutionException e) {
-            log.warn(serviceName + " thread - ExecutionException: " + e.toString());
+            log.warn(serviceName + " thread - ExecutionException: ", e);
         } catch (final CancellationException e) {
             log.warn(serviceName + " thread - CancellationException: " + e.toString());
-        } catch (final IllegalArgumentException e) {
-            log.warn(serviceName + " thread - IllegalArgumentException: " + e.toString());
         } catch (final Exception e) {
             LOG.error(serviceName + " thread - Exception: " + e.toString());
         } finally {
