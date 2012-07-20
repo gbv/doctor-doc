@@ -26,7 +26,7 @@ import test.dbs.entity.TestKonto;
 //disabled, outdated and not working test classes: TestKontoAction.class, TestLoginAction.class, TestPosition.class
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestBenutzer.class, TestKonto.class, CheckTest.class })
+@Suite.SuiteClasses({ TestBenutzer.class, TestKonto.class, CheckTest.class, ConvertOpenUrlTest.class })
 public class AllTests {
-
+    
 }
