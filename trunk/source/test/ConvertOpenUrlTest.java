@@ -15,7 +15,10 @@
 
 package test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,5 +68,46 @@ public class ConvertOpenUrlTest {
         assertTrue("1234-1234".equals(check.normalizeIssn("12341234")));
         assertTrue("".equals(check.extractFirstNumber("")));
     }
+    
+    @Test
+    public void extractFromSeveralIssns() throws Exception {
+        // using reflection to test private method
+        final Method method = ConvertOpenUrl.class.getDeclaredMethod("extractFromSeveralIssns", String.class);
+        method.setAccessible(true);
+        assertTrue("1234-1234".equals(method.invoke(check, "1234-1234; 2345-2345")));
+        assertTrue("1234-12342345-2345".equals(method.invoke(check, "1234-12342345-2345"))); // returns input
+        assertTrue("1234-1234".equals(method.invoke(check, "1234-1234; gtz66 2345-2345")));
+        assertTrue("1234-1234".equals(method.invoke(check, "1234-1234; gtz662345-2345")));
+        assertTrue("".equals(method.invoke(check, "")));
+    }
+    
+    @Test
+    public void checkLowercase() throws Exception {
+        // using reflection to test private method
+        final Method method = ConvertOpenUrl.class.getDeclaredMethod("checkLowercase", String.class);
+        method.setAccessible(true);
+        
+        boolean test = (Boolean) method.invoke(check, "aHHH");
+        assertTrue(test);
+        test = (Boolean) method.invoke(check, "HHHa");
+        assertTrue(test);
+        test = (Boolean) method.invoke(check, "HHH");
+        assertFalse(test);
+        test = (Boolean) method.invoke(check, " ");
+        assertFalse(test);
+        test = (Boolean) method.invoke(check, "");
+        assertFalse(test);
+    }
+    
+    @Test
+    public void toNormalLetters() throws Exception {
+        // using reflection to test private method
+        final Method method = ConvertOpenUrl.class.getDeclaredMethod("toNormalLetters", String.class);
+        method.setAccessible(true);
+        assertTrue("Methods in enzymology".equals(method.invoke(check, "METHODS IN ENZYMOLOGY")));
+        assertTrue("Methods in enzymology ".equals(method.invoke(check, "METHODS IN ENZYMOLOGY ")));
+        assertTrue("".equals(method.invoke(check, "")));
+    }
+    
     // CHECKSTYLE:ON
 }

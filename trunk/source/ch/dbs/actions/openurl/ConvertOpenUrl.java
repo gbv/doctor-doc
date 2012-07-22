@@ -741,7 +741,7 @@ public class ConvertOpenUrl {
     
     public String extractFirstNumber(final String input) {
         String result = "";
-        if (input != null && input.length() != 0) {
+        if (input != null) {
             try {
                 final Pattern z = Pattern.compile("\\d+");
                 final Matcher w = z.matcher(input);
