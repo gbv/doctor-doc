@@ -34,7 +34,7 @@ You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a Tomcat s
 19. add your "available" project to "configured" => finish
 
 Depending on your configuartion in source/resources/SystemConfiguration you need to configure Tomcat for pooled connections. See README.txt to get an idea.
-You can add this configurationdirectly in the available new folder "server" which contains the files context.xml and server.xml. If you don't use pooled 
+You can add this configuration directly in the available new folder "server" which contains the files context.xml and server.xml. If you don't use pooled 
 connections you're done.
 
 Configure your build path:
@@ -55,6 +55,6 @@ To start/stop/restart Tomcat you also may use the icons in the "Servers" tab in 
 
 localhost:8080/[project name in eclispe]/
 
-To debung use Debug as => Debug on server. Breakpoints work only in this mode.
+To debug use "Debug as" => "Debug on server". Breakpoints work only in this mode.
 
 To build a deployable war file, simply right click on the project => export war file
