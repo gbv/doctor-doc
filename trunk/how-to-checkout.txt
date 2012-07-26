@@ -9,19 +9,19 @@ https://lists.sourceforge.net/lists/listinfo/doctor-doc-tech
 4. Go to workbench
 
 This is the most important step. You will not be able to change the type of project afterwards, once created!
-5. File => new "Dynamic Web Project"
+5. "File" => new "Dynamic Web Project"
 If you can't find the type "Dynamic Web Project", choose "other" and search for "Dynamic Web Project"
 
-6. Give it a project name like DD => next
-7. delete "src" folder and create a new one "source" => next
-8. delete in Content directory "WebContent" and replace with "war" => finish
+6. Give it a project name like DD => "next"
+7. delete "src" folder and create a new one "source" => "next"
+8. delete in Content directory "WebContent" and replace with "war" => "finish"
 
 You now have an "Dynamic Web Project". Now let's checkout Doctor-Doc over SVN into this empty project.
 
-9. Right click on your empty project => import => import => type "SVN" => choose "Checkout projects from SVN"
+9. Right click on your empty project => "import" => "import" => type "SVN" => choose "Checkout projects from SVN"
 10. "Create a new repository location"
 11. URL => https://doctor-doc.svn.sourceforge.net/svnroot/doctor-doc/trunk
-12. Select the folder to be checked out from SVN => click on root level => next
+12. Select the folder to be checked out from SVN => click on root level => "next"
 13. Switch to "Check out as project in the workspace"!
 14. Use the same project name you used in step 6!
 15. Confirm that the existing project will be deleted.
@@ -30,8 +30,8 @@ You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a Tomcat s
 
 16. Download and unpack the latest Tomcat server version 7. Earlier version won't work for this setup. In production you may choose any Tomcat server version.
 17. in eclipse right click in the tab "server" below => "new" => "Server"
-18. choose "Apache Tomcat 7.0" => next
-19. add your "available" project to "configured" => finish
+18. choose "Apache Tomcat 7.0" => "next"
+19. add your "available" project to "configured" => "finish"
 
 Depending on your configuartion in source/resources/SystemConfiguration you need to configure Tomcat for pooled connections. See README.txt to get an idea.
 You can add this configuration directly in the available new folder "server" which contains the files context.xml and server.xml. If you don't use pooled 
@@ -41,15 +41,15 @@ Configure your build path:
 
 20. Add all libraries under war/WEB-INF/lib to your build path. Make sure they get exported
 21. Add the libraries under libs/ to your build path. You do not need to get them exported
-22. Choose "configure build path" and add external jar => your_tomcat_server/lib/servlet-api.jar => Make sure this one does not get exported!
+22. Choose "configure build path" and "add external jar" => your_tomcat_server/lib/servlet-api.jar => Make sure this one does not get exported!
 
 To use your normal browser for working on the project:
 
-23. in eclipse go to "Window" => Preferences => type "browser" in the search/filter field => General Webbrowser => add your favorite external browser
+23. in eclipse go to "Window" => "Preferences" => type "browser" in the search/filter field => "General Webbrowser" => add your favorite external browser
 
 All done!
 
-Always start Tomcat by right click on your project => Run as => Run on server (this will lauch the project in your browser).
+Always start Tomcat by right click on your project => "Run as" => "Run on server" (this will launch the project in your browser).
 
 To start/stop/restart Tomcat you also may use the icons in the "Servers" tab in eclipse. To access the project manually, the path is:
 
@@ -57,4 +57,4 @@ localhost:8080/[project name in eclispe]/
 
 To debug use "Debug as" => "Debug on server". Breakpoints work only in this mode.
 
-To build a deployable war file, simply right click on the project => export war file
+To build a deployable war file, simply right click on the project => "export" => "war file"
