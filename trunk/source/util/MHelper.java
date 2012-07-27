@@ -33,12 +33,13 @@ import javax.mail.internet.MimeUtility;
 import org.grlea.log.SimpleLogger;
 
 /**
- * Diese Klasse vereinfacht verschiedene Abläufe zwischen Programm und Mailserver.
- * </P></P>
+ * Diese Klasse vereinfacht verschiedene Abläufe zwischen Programm und
+ * Mailserver. </P></P>
+ * 
  * @author Pascal Steiner
  */
 public class MHelper extends AbstractReadSystemConfigurations {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(MHelper.class);
     private static final String PRIORITY = "3"; // normal
     private static final String XPRIO = "X-Priority";
@@ -46,40 +47,40 @@ public class MHelper extends AbstractReadSystemConfigurations {
     private static final String TRUE = "true";
     private static final String CHARSET = "charset";
     private static final String UTF8 = "UTF-8";
-
+    
     public void sendMail(final String[] to, final Message msg) {
         sendMail(to, msg, PRIORITY);
     }
-
+    
     //    public void sendMailReplyTo(String[] to, Message msg, String replyto) {
     //      sendMailReplyTo(to, msg, replyto, PRIORITY);
     //    }
-
+    
     public void sendMail(final String[] recipients, final String subject, final String message) {
         final String from = SYSTEM_EMAIL;
         sendMail(recipients, subject, message, from, PRIORITY);
     }
-
+    
     public void sendErrorMail(final String subject, final String message) {
         final String[] recipients = new String[1];
         recipients[0] = ERROR_EMAIL;
         final String from = SYSTEM_EMAIL;
         sendMail(recipients, subject, message, from, PRIORITY);
     }
-
+    
     public void sendMailReplyTo(final String[] recipients, final String subject, final String message,
             final String replyto) {
         sendMailReplyTo(recipients, subject, message, replyto, PRIORITY);
     }
-
+    
     /**
      * Versendet eine {@link Message} an Empfänger</P></P>
-     *
+     * 
      * @param to die Empfängerliste in einem {@link String[]}
      * @param msg das Mail welches versendet werden soll als {@link Message}
      * </P></P>
      * @author Pascal Steiner
-     * */
+     */
     public void sendMail(final String[] to, final Message msg, final String prio) {
         // set the from and to address
         try {
@@ -89,15 +90,15 @@ public class MHelper extends AbstractReadSystemConfigurations {
             }
             InternetAddress[] addressFrom = null;
             addressFrom = InternetAddress.parse(SYSTEM_EMAIL);
-
+            
             // SMPT Authentifizierung einschalten
             final Properties props = new Properties();
             props.put(SMTP_AUTH, TRUE);
-
+            
             // create some properties and get the default Session
             final Session session = Session.getInstance(props, null);
             session.setDebug(false);
-
+            
             //          create a message
             final MimeMessage m = new MimeMessage(session);
             m.setFrom(addressFrom[0]); // From setzen
@@ -114,7 +115,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
-
+            
             // Mail versenden
             final Transport bus = session.getTransport("smtp");
             try {
@@ -123,7 +124,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             } finally {
                 bus.close();
             }
-
+            
         } catch (final Exception e) {
             LOG.error("sendMail(String[] to, Message msg, String prio): " + e.toString());
             // Critical Error-Message
@@ -135,17 +136,17 @@ public class MHelper extends AbstractReadSystemConfigurations {
             }
             sendError(e + "\n" + msgText);
         }
-
+        
     }
-
+    
     /**
      * Versendet eine {@link Message} an Empfänger</P></P>
-     *
+     * 
      * @param to die Empfängerliste in einem {@link String[]}
      * @param msg das Mail welches versendet werden soll als {@link Message}
      * </P></P>
      * @author Pascal Steiner
-     * */
+     */
     public void sendMailReplyTo(final String[] to, final Message msg, final String replyto, final String prio) {
         // set the from and to address
         try {
@@ -155,15 +156,15 @@ public class MHelper extends AbstractReadSystemConfigurations {
             }
             InternetAddress[] addressFrom = null;
             addressFrom = InternetAddress.parse(SYSTEM_EMAIL);
-
+            
             // SMPT Authentifizierung einschalten
             final Properties props = new Properties();
             props.put(SMTP_AUTH, TRUE);
-
+            
             // create some properties and get the default Session
             final Session session = Session.getInstance(props, null);
             session.setDebug(false);
-
+            
             //          create a message
             final MimeMessage m = new MimeMessage(session);
             m.setFrom(addressFrom[0]); // From setzen
@@ -181,10 +182,10 @@ public class MHelper extends AbstractReadSystemConfigurations {
             m.setText(msg.getContent().toString(), UTF8);
             //            m.setContent(msg.getContent(), msg.getContentType()); // Inhalt/Attachements der Mail anhngen
             m.saveChanges();
-
+            
             // Mail versenden
             sendMessage(session, m, addressTo);
-
+            
         } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String[] to, Message msg, String replyto, String prio): " + e.toString());
             // Critical Error-Message
@@ -197,46 +198,45 @@ public class MHelper extends AbstractReadSystemConfigurations {
             }
             sendError(e + "\n" + msgText);
         }
-
+        
     }
-
+    
     /**
-     * Verschickt ein Mail anhand der mitgegebenen Parameter
-     * </P></P>
+     * Verschickt ein Mail anhand der mitgegebenen Parameter </P></P>
+     * 
      * @param recipients
      * @param subject
      * @param message
-     * @param from
-     * </P></P>
+     * @param from </P></P>
      * @author Pascal Steiner
      */
     public void sendMail(final String[] recipients, final String subject, final String message, final String from,
             final String prio) {
-
+        
         try {
             // Set the host smtp address
             final Properties props = new Properties();
             props.put(SMTP_AUTH, TRUE);
-
+            
             // create some properties and get the default Session
             final Session session = Session.getInstance(props, null);
             session.setDebug(false);
-
+            
             // create a message
             final Message msg = new MimeMessage(session);
-
+            
             msg.addHeader(CHARSET, UTF8);
             msg.addHeader(XPRIO, prio);
-
+            
             // set the from and to address
             final InternetAddress addressFrom = new InternetAddress(from);
             msg.setFrom(addressFrom);
-
+            
             // Setting the Subject and Content Type
             msg.setSubject(MimeUtility.encodeText(subject, UTF8, null));
             msg.setSentDate(new Date());
-            msg.setContent(message, "text/plain");
-
+            msg.setContent(message, "text/plain; charset=UTF-8");
+            
             sendMail(recipients, msg, prio);
         } catch (final Exception e) {
             LOG.error("String recipients[], String subject, String message, String from, String prio: " + e.toString());
@@ -245,48 +245,47 @@ public class MHelper extends AbstractReadSystemConfigurations {
                     + "String message, String from, String prio)" + "\n" + message);
         }
     }
-
+    
     /**
-     * Verschickt ein Mail anhand der mitgegebenen Parameter
-     * </P></P>
+     * Verschickt ein Mail anhand der mitgegebenen Parameter </P></P>
+     * 
      * @param recipients
      * @param subject
      * @param message
      * @param from
-     * @param replyto
-     * </P></P>
+     * @param replyto </P></P>
      * @author Pascal Steiner
      */
     public void sendMailReplyTo(final String[] recipients, final String subject, final String message,
             final String replyto, final String prio) {
-
+        
         try {
             // Set the host smtp address
             final Properties props = new Properties();
             props.put(SMTP_AUTH, TRUE);
-
+            
             // create some properties and get the default Session
             final Session session = Session.getInstance(props, null);
             session.setDebug(false);
-
+            
             // create a message
             final Message msg = new MimeMessage(session);
-
+            
             msg.addHeader(CHARSET, UTF8);
             msg.addHeader(XPRIO, prio);
-
+            
             // set the from and to address
             final InternetAddress addressFrom = new InternetAddress(SYSTEM_EMAIL);
             final InternetAddress[] addressReplyTo = new InternetAddress[1];
             addressReplyTo[0] = new InternetAddress(replyto);
             msg.setFrom(addressFrom);
             msg.setReplyTo(addressReplyTo);
-
+            
             // Setting the Subject and Content Type
             msg.setSubject(MimeUtility.encodeText(subject, UTF8, null));
             msg.setSentDate(new Date());
-            msg.setContent(message, "text/plain");
-
+            msg.setContent(message, "text/plain; charset=UTF-8");
+            
             sendMailReplyTo(recipients, msg, replyto, prio);
         } catch (final Exception e) {
             LOG.error("sendMailReplyTo(String recipients[], String subject, String message, "
@@ -296,13 +295,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
                     + "String from, String replyto, String prio)" + "\n" + message);
         }
     }
-
+    
     /**
-     * Verschickt eine Fehlermeldung an eine E-Mail-Adresse
-     * <p></p>
+     * Verschickt eine Fehlermeldung an eine E-Mail-Adresse <p></p>
+     * 
      * @param too Die E-Mail-Adresse
-     * @param e Die {@link Exception}
-     * <p></p>
+     * @param e Die {@link Exception} <p></p>
      * @author Pascal Steiner
      */
     public void sendError(final Exception e) {
@@ -315,13 +313,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
             LOG.error("sendError(Exception e): " + ee.toString());
         }
     }
-
+    
     /**
-     * Verschickt eine Fehlermeldung an eine E-Mail-Adresse
-     * <p></p>
+     * Verschickt eine Fehlermeldung an eine E-Mail-Adresse <p></p>
+     * 
      * @param too Die E-Mail-Adresse
-     * @param e Die {@link Exception}
-     * <p></p>
+     * @param e Die {@link Exception} <p></p>
      * @author Pascal Steiner
      */
     public void sendError(final String e) {
@@ -334,13 +331,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
             LOG.error("sendError(String e): " + ee.toString());
         }
     }
-
+    
     /**
-     * Verschickt eine Fehlermeldung an eine E-Mail-Adresse
-     * <p></p>
+     * Verschickt eine Fehlermeldung an eine E-Mail-Adresse <p></p>
+     * 
      * @param too Die E-Mail-Adresse
-     * @param e Die {@link Exception}
-     * <p></p>
+     * @param e Die {@link Exception} <p></p>
      * @author Pascal Steiner
      */
     public void sendError(final String subject, final Exception e) {
@@ -352,31 +348,31 @@ public class MHelper extends AbstractReadSystemConfigurations {
             LOG.error("sendError(String subject, Exception e): " + ee.toString());
         }
     }
-
+    
     /**
      * Gibt ein geöffnetes Verzeichnis eines pop3 Mailservers zurück <p></p>
      * </P></P>
+     * 
      * @param host
      * @param bn
      * @param pw
      * @param folder_ das zu ffnende Verzeichnis. Z. B. INBOX
-     * @return folder gibt das geffnete Verzeichniss zurück
-     * </P></P>
+     * @return folder gibt das geffnete Verzeichniss zurück </P></P>
      * @author Pascal Steiner
      */
     public Folder getPop3Folder(final String host, final String bn, final String pw, final String folder_) {
         Folder folder = null;
         try {
-
+            
             //          SMPT Authentifizierung einschalten
             final Properties props = new Properties();
             props.put(SMTP_AUTH, TRUE);
-
+            
             final Session session = Session.getInstance(props, null);
-
+            
             final Store store = session.getStore("pop3");
             store.connect(host, bn, pw);
-
+            
             folder = store.getFolder(folder_);
             folder.open(Folder.READ_ONLY);
         } catch (final Exception e) {
@@ -385,10 +381,10 @@ public class MHelper extends AbstractReadSystemConfigurations {
         }
         return folder;
     }
-
+    
     private void process() {
         final Folder inbox = getPop3Folder(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD, "INBOX");
-
+        
         try {
             final Message[] message = inbox.getMessages();
             for (int i = 0; i < message.length; i++) { // was passiert wenn Inbox leer ist?
@@ -397,7 +393,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
                 //                System.out.println("From: " + m.getFrom()[0]);
                 //                System.out.println("Subject: " + m.getSubject());
                 //                System.out.println("Contenttype: " + m.getContentType());
-
+                
                 final String[] to = new String[1];
                 to[0] = SYSTEM_EMAIL;
                 sendMail(to, m);
@@ -407,9 +403,9 @@ public class MHelper extends AbstractReadSystemConfigurations {
             LOG.error("process(): " + e.toString());
             sendError(e);
         }
-
+        
     }
-
+    
     //    /*
     //     * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
     //     */
@@ -424,13 +420,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
     //
     //        return session;
     //    }
-
+    
     public static void main(final String[] args) {
         final MHelper mail = new MHelper();
         mail.process();
     }
-
-    /** Gets the system properties     */
+    
+    /** Gets the system properties */
     public Properties getProperties() {
         // Get system properties
         final Properties props = System.getProperties();
@@ -444,11 +440,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
          * SMTP Server verweigert das Senden mit einem falschen Absender
          * und man bekommt eine entsprechende Exception (Ausnahme: SMTP-Relay).
          */
-
+        
         props.setProperty(SMTP_AUTH, TRUE);
         return props;
     }
-
+    
     /** Gets the MimeMessage */
     public MimeMessage getMimeMessage(final Session session) throws MessagingException {
         // Define message
@@ -459,8 +455,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
         message.setSentDate(new Date()); // set date
         return message;
     }
-
-    /** send the message to @addressTo*/
+    
+    /** send the message to @addressTo */
     public void sendMessage(final Session session, final Message m, final InternetAddress[] addressTo)
             throws MessagingException {
         // Mail versenden
@@ -472,5 +468,5 @@ public class MHelper extends AbstractReadSystemConfigurations {
             bus.close();
         }
     }
-
+    
 }
