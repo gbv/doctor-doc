@@ -20,24 +20,7 @@
   <property name="dist.dir"          value="${basedir}/dist"/>
   <property name="war.dir"           value="${basedir}/war"/>
   <property name="webinf.dir"        value="${war.dir}/WEB-INF"/>
-  <property name="webinflib.dir"     value="${webinf.dir}/lib"/>
-  <!-- <property name="compile-deps.dir"  value="${basedir}/deps/compile"/> <property name="config.dir"        value="${basedir}/source/config"/>     
-  <copy todir="${classes.dir}">
-      <fileset dir="${config.dir}">
-        <include name="**/*.properties"/>
-        <include name="**/*.xml"/>
-      </fileset>
-    </copy>
-    <copy todir="${classes.dir}">
-      <fileset dir="${hbm.dir}">
-        <include name="**/*.properties"/>
-        <include name="**/*.xml"/>
-      </fileset>
-   </copy>   
-    
-   --> 
-
-  
+  <property name="webinflib.dir"     value="${webinf.dir}/lib"/>  
   <property name="classes.dir"       value="${webinf.dir}/classes"/>
   <property name="version.string"    value="version ${version} (${TODAY})"/>
   <property name="version.file"      value="${webinf.dir}/VERSION"/>
@@ -56,6 +39,10 @@
       <include name="**"/>
     </dirset>
     <fileset dir="${webinflib.dir}">
+      <include name="*.jar"/>
+      <include name="*.zip"/>
+    </fileset>
+    <fileset dir="${basedir}/libs">
       <include name="*.jar"/>
       <include name="*.zip"/>
     </fileset>
@@ -89,6 +76,7 @@
     <defaultexcludes add="**/*.skel"/>
     <defaultexcludes add="**/*.input"/>
     <defaultexcludes add="**/.svn"/>
+  	<defaultexcludes add="**/servlet-api*.jar"/> 
   </target>
 
   <target name="compile" depends="init" description="Compiles all source. And does version string update.">
@@ -107,8 +95,10 @@
         <include name="**/*.properties"/>
         <include name="**/*.xml"/>
       </fileset>
+        <fileset dir="${src.dir}">
+         <include name="**/*.properties"/>
+        </fileset>
     </copy>
-
 
     <echo file="${version.file}" message="${version.string}"/>
   </target>
