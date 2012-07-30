@@ -33,7 +33,7 @@ You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a Tomcat s
 18. choose "Apache Tomcat 7.0" => "next"
 19. add your "available" project to "configured" => "finish"
 
-Doctor-Doc depends on UTF-8 encoded URIs. Tomcat uses as default ISO-8895-1. So you need the following configuration:
+Doctor-Doc depends on UTF-8 encoded URIs. Tomcat uses by default ISO-8895-1. So you need the following configuration:
 
 20. In Eclispse browse through the folder "Servers" below your project and open the file server.xml.
 21. Add in the section <Connector port="8080"... protocol="HTTP/1.1" redirectPort="8443" /> the parameter URIEncoding="UTF-8":
