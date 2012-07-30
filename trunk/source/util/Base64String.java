@@ -20,29 +20,39 @@ package util;
 import org.grlea.log.SimpleLogger;
 
 public class Base64String {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(Base64String.class);
-
+    
     /**
-     * Encodes and decodes a string with Base64. Not meant to be an encryption but rather a simple encoding!
-     * This method is used to hide the user details in the cookie of the order form.
+     * Encodes and decodes a string with Base64. Not meant to be an encryption
+     * but rather a simple encoding! This method is used to hide the user
+     * details in the cookie of the order form.
      */
-
+    
     public String encodeString(final String psString) {
-        if (psString == null) { return ""; }
-
-        return new String(org.apache.commons.codec.binary.Base64.encodeBase64(psString.getBytes()));
-    }
-
-    public String decodeString(final String psString) {
-        if (psString == null || psString.equals("")) { return null; }
-
+        if (psString == null) {
+            return "";
+        }
+        
         try {
-            return new String(org.apache.commons.codec.binary.Base64.decodeBase64(psString.getBytes()));
+            return new String(org.apache.commons.codec.binary.Base64.encodeBase64(psString.getBytes("UTF-8")));
+        } catch (final Exception e) {
+            LOG.error("encodeString: " + psString + "\040" + e.toString());
+            return null;
+        }
+    }
+    
+    public String decodeString(final String psString) {
+        if (psString == null || psString.equals("")) {
+            return null;
+        }
+        
+        try {
+            return new String(org.apache.commons.codec.binary.Base64.decodeBase64(psString.getBytes("UTF-8")));
         } catch (final Exception e) {
             LOG.error("decodeString: " + psString + "\040" + e.toString());
             return null;
         }
     }
-
+    
 }

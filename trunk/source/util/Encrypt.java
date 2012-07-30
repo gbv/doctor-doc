@@ -22,33 +22,34 @@ import java.security.MessageDigest;
 import org.grlea.log.SimpleLogger;
 
 public class Encrypt {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(Encrypt.class);
-
+    
     /**
      * Erstellt aus einem String den SHA-1 Hash.
+     * 
      * @param input
      * @return
      */
     public String makeSHA(final String input) {
-
+        
         final StringBuffer encoded = new StringBuffer();
-
+        
         try {
-
+            
             final MessageDigest digester = MessageDigest.getInstance("SHA-1");
-            final byte[] digest = digester.digest(input.getBytes());
-
+            final byte[] digest = digester.digest(input.getBytes("UTF-8"));
+            
             for (final byte d : digest) {
                 encoded.append(Integer.toHexString(d & 0xFF));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("makeSHA: " + e.toString());
         }
-
+        
         return encoded.toString();
-
+        
     }
-
+    
 }
