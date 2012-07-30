@@ -75,7 +75,7 @@ public final class OrderGbvAction extends DispatchAction {
             final HttpServletResponse rp) {
         
         String forward = Result.FAILURE.getValue();
-        OrderForm of = (OrderForm) fm;
+        final OrderForm of = (OrderForm) fm;
         final OrderState orderstate = new OrderState();
         final OrderAction orderAction = new OrderAction();
         final IllHandler illHandler = new IllHandler();
@@ -719,9 +719,6 @@ public final class OrderGbvAction extends DispatchAction {
             of.setPreisvorkomma("0");
             of.setPreisnachkomma("00");
             of.setWaehrung("EUR");
-            
-            // für Get-Methode in PrepareLogin of URL-codieren
-            of = of.encodeOrderForm(of);
             
             rq.setAttribute("orderform", of);
             
@@ -1629,7 +1626,7 @@ public final class OrderGbvAction extends DispatchAction {
         final SpecialCharacters specialCharacters = new SpecialCharacters();
         
         final String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
-                + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encodeLatin1(gbvsearchterm)
+                + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encode(gbvsearchterm, "ISO-8859-1")
                 + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
         
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
@@ -1652,7 +1649,7 @@ public final class OrderGbvAction extends DispatchAction {
         final SpecialCharacters specialCharacters = new SpecialCharacters();
         
         final String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
-                + gbvfield.toLowerCase() + "%3D" + codeUrl.encodeLatin1(gbvsearchterm)
+                + gbvfield.toLowerCase() + "%3D" + codeUrl.encode(gbvsearchterm, "ISO-8859-1")
                 + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
         
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,

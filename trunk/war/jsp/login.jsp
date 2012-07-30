@@ -4,6 +4,8 @@
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 <%@ page import="ch.dbs.form.*" %>
 
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 
 <html>
@@ -65,8 +67,6 @@
        <input type="hidden" name="sici" value="<bean:write name="loginform" property="sici" />" />
        <input type="hidden" name="lccn" value="<bean:write name="loginform" property="lccn" />" />
        <input type="hidden" name="zdbid" value="<bean:write name="loginform" property="zdbid" />" />
-       <input type="hidden" name="artikeltitel_encoded" value="<bean:write name="loginform" property="artikeltitel_encoded" />" />
-       <input type="hidden" name="author_encoded" value="<bean:write name="loginform" property="author_encoded" />" />
        <input type="hidden" name="foruser" value="<bean:write name="loginform" property="foruser" />" />
      </logic:present>
      <logic:present name="userform">

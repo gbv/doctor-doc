@@ -3,6 +3,8 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+
 <!DOCTYPE html>
 
 <html>
@@ -42,6 +44,8 @@
 
 </p>
 
+</p>
+
 <logic:present name="userinfo">
 <logic:present name="userinfo" property="benutzer.gtc">
 <logic:equal name="userinfo" property="benutzer.gtc" value=""> 
@@ -71,8 +75,6 @@
  <input type="hidden" name="sici" value="<bean:write name="orderform" property="sici" />" />
  <input type="hidden" name="lccn" value="<bean:write name="orderform" property="lccn" />" />
  <input type="hidden" name="zdbid" value="<bean:write name="orderform" property="zdbid" />" />
- <input type="hidden" name="artikeltitel_encoded" value="<bean:write name="orderform" property="artikeltitel_encoded" />" />
- <input type="hidden" name="author_encoded" value="<bean:write name="orderform" property="author_encoded" />" />
  <input type="hidden" name="foruser" value="<bean:write name="orderform" property="foruser" />" />
  <input type="hidden" name="category" value="<bean:write name="orderform" property="kundenkategorieID" />" />
  </logic:present>

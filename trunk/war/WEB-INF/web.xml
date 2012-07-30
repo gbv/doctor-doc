@@ -5,7 +5,22 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-  <display-name>Struts Blank Application</display-name>
+  <display-name>Struts Application</display-name>
+  
+  <!--CharsetFilter start-->
+  <filter>
+    <filter-name>CharsetFilter</filter-name>
+    <filter-class>util.CharsetFilter</filter-class>
+      <init-param>
+        <param-name>requestEncoding</param-name>
+        <param-value>UTF-8</param-value>
+      </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CharsetFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
   
   <!-- Standard Action Servlet Configuration (with debugging) -->
   <servlet>

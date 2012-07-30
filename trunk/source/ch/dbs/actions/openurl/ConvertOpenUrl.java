@@ -343,44 +343,44 @@ public class ConvertOpenUrl {
     /**
      * Stellt aus einem Ordeform ein ContextObject her.
      */
-    public ContextObject makeContextObject(final OrderForm of) {
+    public ContextObject makeContextObject(final OrderForm of, final String encoding) {
         
         final ContextObject co = new ContextObject();
         final CodeUrl codeUrl = new CodeUrl();
         
         if (of.getMediatype().equals("Artikel")) {
-            co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:journal"));
+            co.setRft_val_fmt(codeUrl.encode("info:ofi/fmt:kev:mtx:journal", encoding));
         }
         if (of.getMediatype().contains("Buch")) {
-            co.setRft_val_fmt(codeUrl.encodeLatin1("info:ofi/fmt:kev:mtx:book"));
+            co.setRft_val_fmt(codeUrl.encode("info:ofi/fmt:kev:mtx:book", encoding));
         }
         
         // Aus Kompatibilität mit OpenURl 01.1 momentan ausserhalb dieser Methode zu implementieren
         // co.setRfr_id(UrlCode.encode("DRDOC:doctor-doc"));
         
         if (of.getMediatype().equals("Artikel")) {
-            co.setRft_genre(codeUrl.encodeLatin1("article"));
+            co.setRft_genre(codeUrl.encode("article", encoding));
         }
         if (of.getMediatype().equals("Buch")) {
-            co.setRft_genre(codeUrl.encodeLatin1("book"));
+            co.setRft_genre(codeUrl.encode("book", encoding));
         }
         if (of.getMediatype().equals("Teilkopie Buch")) {
-            co.setRft_genre(codeUrl.encodeLatin1("bookitem"));
+            co.setRft_genre(codeUrl.encode("bookitem", encoding));
         }
         
-        co.setRft_atitle(codeUrl.encodeLatin1(of.getArtikeltitel()));
-        co.setRft_btitle(codeUrl.encodeLatin1(of.getBuchtitel()));
-        co.setRft_jtitle(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+        co.setRft_atitle(codeUrl.encode(of.getArtikeltitel(), encoding));
+        co.setRft_btitle(codeUrl.encode(of.getBuchtitel(), encoding));
+        co.setRft_jtitle(codeUrl.encode(of.getZeitschriftentitel(), encoding));
         // fragwürdig, da vermutlich nicht immer im korrekten Format...
-        co.setRft_pub(codeUrl.encodeLatin1(of.getVerlag()));
-        co.setRft_issn(codeUrl.encodeLatin1(of.getIssn()));
-        co.setRft_isbn(codeUrl.encodeLatin1(of.getIsbn()));
-        co.setRft_date(codeUrl.encodeLatin1(of.getJahr()));
-        co.setRft_volume(codeUrl.encodeLatin1(of.getJahrgang()));
-        co.setRft_issue(codeUrl.encodeLatin1(of.getHeft()));
-        co.setRft_pages(codeUrl.encodeLatin1(of.getSeiten()));
-        co.setRft_spage(codeUrl.encodeLatin1(extractFirstNumber(of.getSeiten())));
-        co.setRft_author(codeUrl.encodeLatin1(of.getAuthor()));
+        co.setRft_pub(codeUrl.encode(of.getVerlag(), encoding));
+        co.setRft_issn(codeUrl.encode(of.getIssn(), encoding));
+        co.setRft_isbn(codeUrl.encode(of.getIsbn(), encoding));
+        co.setRft_date(codeUrl.encode(of.getJahr(), encoding));
+        co.setRft_volume(codeUrl.encode(of.getJahrgang(), encoding));
+        co.setRft_issue(codeUrl.encode(of.getHeft(), encoding));
+        co.setRft_pages(codeUrl.encode(of.getSeiten(), encoding));
+        co.setRft_spage(codeUrl.encode(extractFirstNumber(of.getSeiten()), encoding));
+        co.setRft_author(codeUrl.encode(of.getAuthor(), encoding));
         
         // enthält uri-infos wie pmid, doi, lccn etc.: // http://www.info-uri.info/registry/
         // TODO: private List rft_id;
@@ -397,26 +397,26 @@ public class ConvertOpenUrl {
         final StringBuffer sb = new StringBuffer(800);
         final CodeUrl codeUrl = new CodeUrl();
         sb.append("mediatype="); // Default "Artikel" (s.a. OrderForm)
-        sb.append(codeUrl.encodeLatin1(of.getMediatype()));
+        sb.append(codeUrl.encode(of.getMediatype(), "UTF-8"));
         if (of.getIssn() != null && !of.getIssn().equals("")) {
             sb.append("&issn=");
-            sb.append(codeUrl.encodeLatin1(of.getIssn()));
+            sb.append(codeUrl.encode(of.getIssn(), "UTF-8"));
         }
         if (of.getJahr() != null && !of.getJahr().equals("")) {
             sb.append("&jahr=");
-            sb.append(codeUrl.encodeLatin1(of.getJahr()));
+            sb.append(codeUrl.encode(of.getJahr(), "UTF-8"));
         }
         if (of.getJahrgang() != null && !of.getJahrgang().equals("")) {
             sb.append("&jahrgang=");
-            sb.append(codeUrl.encodeLatin1(of.getJahrgang()));
+            sb.append(codeUrl.encode(of.getJahrgang(), "UTF-8"));
         } // könnte Leerschläge und Interpunktion enthalten
         if (of.getHeft() != null && !of.getHeft().equals("")) {
             sb.append("&heft=");
-            sb.append(codeUrl.encodeLatin1(of.getHeft()));
+            sb.append(codeUrl.encode(of.getHeft(), "UTF-8"));
         } // Leerschläge etc.
         if (of.getSeiten() != null && !of.getSeiten().equals("")) {
             sb.append("&seiten=");
-            sb.append(codeUrl.encodeLatin1(of.getSeiten()));
+            sb.append(codeUrl.encode(of.getSeiten(), "UTF-8"));
         } // Leerschläge etc.
         if (of.getIsbn() != null && !of.getIsbn().equals("")) {
             sb.append("&isbn=");
@@ -424,61 +424,61 @@ public class ConvertOpenUrl {
         }
         if (of.getArtikeltitel() != null && !of.getArtikeltitel().equals("")) {
             sb.append("&artikeltitel=");
-            sb.append(codeUrl.encodeLatin1(of.getArtikeltitel()));
+            sb.append(codeUrl.encode(of.getArtikeltitel(), "UTF-8"));
         }
         if (of.getZeitschriftentitel() != null && !of.getZeitschriftentitel().equals("")) {
             sb.append("&zeitschriftentitel=");
-            sb.append(codeUrl.encodeLatin1(of.getZeitschriftentitel()));
+            sb.append(codeUrl.encode(of.getZeitschriftentitel(), "UTF-8"));
         }
         if (of.getAuthor() != null && !of.getAuthor().equals("")) {
             sb.append("&author=");
-            sb.append(codeUrl.encodeLatin1(of.getAuthor()));
+            sb.append(codeUrl.encode(of.getAuthor(), "UTF-8"));
         }
         if (of.getKapitel() != null && !of.getKapitel().equals("")) {
             sb.append("&kapitel=");
-            sb.append(codeUrl.encodeLatin1(of.getKapitel()));
+            sb.append(codeUrl.encode(of.getKapitel(), "UTF-8"));
         }
         if (of.getBuchtitel() != null && !of.getBuchtitel().equals("")) {
             sb.append("&buchtitel=");
-            sb.append(codeUrl.encodeLatin1(of.getBuchtitel()));
+            sb.append(codeUrl.encode(of.getBuchtitel(), "UTF-8"));
         }
         if (of.getVerlag() != null && !of.getVerlag().equals("")) {
             sb.append("&verlag=");
-            sb.append(codeUrl.encodeLatin1(of.getVerlag()));
+            sb.append(codeUrl.encode(of.getVerlag(), "UTF-8"));
         }
         if (of.getRfr_id() != null && !of.getRfr_id().equals("")) {
             sb.append("&rfr_id=");
-            sb.append(codeUrl.encodeLatin1(of.getRfr_id()));
+            sb.append(codeUrl.encode(of.getRfr_id(), "UTF-8"));
         }
         if (of.getForuser() != null && !of.getForuser().equals("0")) {
             // falls in bestellform.sendOrder bereits ein User anhand der Email gefunden wurde
             sb.append("&foruser=");
-            sb.append(codeUrl.encodeLatin1(of.getForuser()));
+            sb.append(codeUrl.encode(of.getForuser(), "UTF-8"));
         }
         if (of.getGenre() != null && !of.getGenre().equals("")) {
             sb.append("&genre=");
-            sb.append(codeUrl.encodeLatin1(of.getGenre()));
+            sb.append(codeUrl.encode(of.getGenre(), "UTF-8"));
         }
         if (of.getPmid() != null && !of.getPmid().equals("")) {
             sb.append("&pmid=");
-            sb.append(codeUrl.encodeLatin1(of.getPmid()));
+            sb.append(codeUrl.encode(of.getPmid(), "UTF-8"));
         }
         if (of.getDoi() != null && !of.getDoi().equals("")) {
             sb.append("&doi=");
-            sb.append(codeUrl.encodeLatin1(of.getDoi()));
+            sb.append(codeUrl.encode(of.getDoi(), "UTF-8"));
         }
         if (of.getSici() != null && !of.getSici().equals("")) {
             sb.append("&sici=");
-            sb.append(codeUrl.encodeLatin1(of.getSici()));
+            sb.append(codeUrl.encode(of.getSici(), "UTF-8"));
         } // kann Sonderzeichen enthalten
         if (of.getZdbid() != null && !of.getZdbid().equals("")) {
             sb.append("&zdbid=");
-            sb.append(codeUrl.encodeLatin1(of.getZdbid()));
+            sb.append(codeUrl.encode(of.getZdbid(), "UTF-8"));
         }
         if (of.getLccn() != null && !of.getLccn().equals("")) {
             // http://www.info-uri.info/registry/
             sb.append("&lccn=");
-            sb.append(codeUrl.encodeLatin1(of.getLccn()));
+            sb.append(codeUrl.encode(of.getLccn(), "UTF-8"));
         }
         
         return sb.toString();

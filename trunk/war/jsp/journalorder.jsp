@@ -3,6 +3,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 
@@ -91,7 +92,7 @@
 <input name="mediatype" type="hidden" value="<bean:write name="orderform" property="mediatype" />" /> 
     <tr>   
       <td><bean:message key="bestellform.bestellart" /></td><td>
-      <!-- GBV akzeptiert für den Moment nur Bestellungen per Post, obwohl technisch möglich...
+      <!-- GBV akzeptiert fï¿½r den Moment nur Bestellungen per Post, obwohl technisch mï¿½glich...
       <logic:present name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" <logic:equal name="orderform" property="deloptions" value="post"> checked="checked"</logic:equal>>Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<logic:notEqual name="orderform" property="mediatype" value="Buch"><input type="radio" name="deloptions" value="fax to pdf" <logic:notEqual name="orderform" property="deloptions" value="post"> checked="checked"</logic:notEqual>>Fax to Email [als PDF | Faxnummer: <bean:write name="userinfo" property="konto.faxno" /> ]</logic:notEqual></logic:present>
       <logic:notPresent name="userinfo" property="konto.faxno"><input type="radio" name="deloptions" value="post" checked="checked">Post&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<logic:notEqual name="orderform" property="mediatype" value="Buch"><logic:present name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" value="fax">Fax &nbsp;[ <bean:write name="userinfo" property="konto.fax_extern" /> ]</logic:present><logic:notPresent name="userinfo" property="konto.fax_extern"><input type="radio" name="deloptions" disabled="true" value="fax">Fax <font color="white"><i>(Hinterlegen Sie unter 'Konto' ihre lokale Faxnummer!) </i></font></logic:notPresent></logic:notEqual></logic:notPresent>
       -->

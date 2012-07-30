@@ -2,6 +2,8 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%--********  Konto wechseln  ********--%>
 <logic:present name="userinfo" property="kontos">
   <html:form action="/changekonto">

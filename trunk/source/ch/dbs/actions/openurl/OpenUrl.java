@@ -18,17 +18,12 @@
 package ch.dbs.actions.openurl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.grlea.log.SimpleLogger;
 
 import util.CodeUrl;
-import util.Decoder;
 import util.SpecialCharacters;
 import ch.dbs.form.OrderForm;
 
@@ -48,476 +43,18 @@ public class OpenUrl {
      */
     public ContextObject readOpenUrlFromRequest(final HttpServletRequest rq) {
         
-        final ContextObject co = new ContextObject();
-        final HashMap<String, String> params = getOpenUrlParameters(rq);
+        // Since we use URIEncoding="UTF-8" in server.xml, we may get problems with requests sent as ISO-8895-1 encoded:
+        // request.getQueryString() gets the raw String ("highByte=%E4%B8%AD"), but if we do request.getParameter("highByte") or
+        // rq.getParameterMap() instead, then we'd get ISO-8859-1 encoded values decoded as UTF-8. Sigh. This could
+        // not get corrected, since the failed characters will all look the same (�).
         
-        final ArrayList<String> uriSchemas = new ArrayList<String>();
+        // delegate to OpenUrlFromString
+        return readOpenUrlFromString(rq.getQueryString());
         
-        for (final Map.Entry<String, String> pair : params.entrySet()) {
-            
-            final String key = pair.getKey();
-            final String value = pair.getValue();
-            
-            try {
-                
-                // Parameter from OpenURL Version 1.0
-                if ("rft_val_fmt".equals(key)) {
-                    co.setRft_val_fmt(value);
-                    continue;
-                }
-                if ("rfr_id".equals(key)) {
-                    co.setRfr_id(value);
-                    continue;
-                }
-                if ("rft.genre".equals(key)) {
-                    co.setRft_genre(value);
-                    continue;
-                }
-                if ("rft.atitle".equals(key)) {
-                    co.setRft_atitle(value);
-                    continue;
-                }
-                if ("rft.btitle".equals(key)) {
-                    co.setRft_btitle(value);
-                    continue;
-                }
-                if ("rft.series".equals(key)) {
-                    co.setRft_series(value);
-                    continue;
-                }
-                if ("rft.pub".equals(key)) {
-                    co.setRft_pub(value);
-                    continue;
-                }
-                if ("rft.place".equals(key)) {
-                    co.setRft_place(value);
-                    continue;
-                }
-                if ("rft.edition".equals(key)) {
-                    co.setRft_edition(value);
-                    continue;
-                }
-                if ("rft.title".equals(key)) {
-                    co.setRft_title(value);
-                    continue;
-                }
-                if ("rft.jtitle".equals(key)) {
-                    co.setRft_jtitle(value);
-                    continue;
-                }
-                if ("rft.stitle".equals(key)) {
-                    co.setRft_stitle(value);
-                    continue;
-                }
-                if ("rft.issn".equals(key)) {
-                    co.setRft_issn(value);
-                    continue;
-                }
-                if ("rft.issn1".equals(key)) {
-                    co.setRft_issn1(value);
-                    continue;
-                }
-                if ("rft.eissn".equals(key)) {
-                    co.setRft_eissn(value);
-                    continue;
-                }
-                if ("rft.eissn1".equals(key)) {
-                    co.setRft_eissn1(value);
-                    continue;
-                }
-                if ("rft.isbn".equals(key)) {
-                    co.setRft_isbn(value);
-                    continue;
-                }
-                if ("rft.date".equals(key)) {
-                    co.setRft_date(value);
-                    continue;
-                }
-                if ("rft.volume".equals(key)) {
-                    co.setRft_volume(value);
-                    continue;
-                }
-                if ("rft.part".equals(key)) {
-                    co.setRft_part(value);
-                    continue;
-                }
-                if ("rft.issue".equals(key)) {
-                    co.setRft_issue(value);
-                    continue;
-                }
-                if ("rft.spage".equals(key)) {
-                    co.setRft_spage(value);
-                    continue;
-                }
-                if ("rft.epage".equals(key)) {
-                    co.setRft_epage(value);
-                    continue;
-                }
-                if ("rft.pages".equals(key)) {
-                    co.setRft_pages(value);
-                    continue;
-                }
-                if ("rft.tpages".equals(key)) {
-                    co.setRft_tpages(value);
-                    continue;
-                }
-                if ("rft.author".equals(key)) {
-                    co.setRft_author(value);
-                    continue;
-                }
-                if ("rft.au".equals(key)) {
-                    co.setRft_au(value);
-                    continue;
-                }
-                if ("rft.aucorp".equals(key)) {
-                    co.setRft_aucorp(value);
-                    continue;
-                }
-                if ("rft.auinit".equals(key)) {
-                    co.setRft_auinit(value);
-                    continue;
-                }
-                if ("rft.auinit1".equals(key)) {
-                    co.setRft_auinit1(value);
-                    continue;
-                }
-                if ("rft.auinitm".equals(key)) {
-                    co.setRft_auinitm(value);
-                    continue;
-                }
-                if ("rft.ausuffix".equals(key)) {
-                    co.setRft_ausuffix(value);
-                    continue;
-                }
-                if ("rft.aulast".equals(key)) {
-                    co.setRft_aulast(value);
-                    continue;
-                }
-                if ("rft.aufirst".equals(key)) {
-                    co.setRft_aufirst(value);
-                    continue;
-                }
-                if ("rft.sici".equals(key)) {
-                    co.setRft_sici(value);
-                    continue;
-                }
-                if ("rft.bici".equals(key)) {
-                    co.setRft_bici(value);
-                    continue;
-                }
-                if ("rft.coden".equals(key)) {
-                    co.setRft_coden(value);
-                    continue;
-                }
-                if ("rft.artnum".equals(key)) {
-                    co.setRft_artnum(value);
-                    continue;
-                }
-                // RFTs Dublin Core, e.g. in blogs:
-                if ("rft.creator".equals(key)) {
-                    co.setRft_creator(value);
-                    continue;
-                }
-                if ("rft.publisher".equals(key)) {
-                    co.setRft_publisher(value);
-                    continue;
-                }
-                if ("rft.type".equals(key)) {
-                    co.setRft_type(value);
-                    continue;
-                }
-                if ("rft.subject".equals(key)) {
-                    co.setRft_subject(value);
-                    continue;
-                }
-                if ("rft.format".equals(key)) {
-                    co.setRft_format(value);
-                    continue;
-                }
-                if ("rft.language".equals(key)) {
-                    co.setRft_language(value);
-                    continue;
-                }
-                if ("rft.source".equals(key)) {
-                    co.setRft_source(value);
-                    continue;
-                }
-                if ("rft.identifier".equals(key)) {
-                    co.setRft_identifier(value);
-                    continue;
-                }
-                if ("rft.description".equals(key)) {
-                    co.setRft_description(value);
-                    continue;
-                }
-                if ("rft.relation".equals(key)) {
-                    co.setRft_relation(value);
-                    continue;
-                }
-                if ("rft.coverage".equals(key)) {
-                    co.setRft_coverage(value);
-                    continue;
-                }
-                if ("rft.rights".equals(key)) {
-                    co.setRft_rights(value);
-                    continue;
-                }
-                
-                // Parameter from OpenURL 0.1.
-                if ("id".equals(key) && !value.startsWith("doi:")) { // BIOONE and Inforama: id=doi:
-                    co.setRfr_id(value);
-                    continue;
-                }
-                if ("sid".equals(key)) {
-                    co.setRfr_id(value); // overrides &id=
-                    continue;
-                }
-                if ("genre".equals(key)) {
-                    co.setRft_genre(value);
-                    continue;
-                }
-                if ("atitle".equals(key)) {
-                    co.setRft_atitle(value);
-                    continue;
-                }
-                if ("btitle".equals(key)) {
-                    co.setRft_btitle(value);
-                    continue;
-                }
-                if ("series".equals(key)) {
-                    co.setRft_series(value);
-                    continue;
-                }
-                if ("pub".equals(key)) {
-                    co.setRft_pub(value);
-                    continue;
-                }
-                if ("place".equals(key)) {
-                    co.setRft_place(value);
-                    continue;
-                }
-                if ("edition".equals(key)) {
-                    co.setRft_edition(value);
-                    continue;
-                }
-                if ("title".equals(key)) {
-                    co.setRft_title(value);
-                    continue;
-                }
-                if ("jtitle".equals(key)) {
-                    co.setRft_jtitle(value);
-                    continue;
-                }
-                if ("stitle".equals(key)) {
-                    co.setRft_stitle(value);
-                    continue;
-                }
-                if ("issn".equals(key)) {
-                    co.setRft_issn(value);
-                    continue;
-                }
-                if ("issn1".equals(key)) {
-                    co.setRft_issn1(value); // ISSN with hyphen
-                    continue;
-                }
-                if ("eissn".equals(key)) {
-                    co.setRft_eissn(value);
-                    continue;
-                }
-                if ("eissn1".equals(key)) {
-                    co.setRft_eissn1(value);
-                    continue;
-                }
-                if ("isbn".equals(key)) {
-                    co.setRft_isbn(value);
-                    continue;
-                }
-                if ("date".equals(key)) {
-                    co.setRft_date(value);
-                    continue;
-                }
-                if ("volume".equals(key)) {
-                    co.setRft_volume(value);
-                    continue;
-                }
-                if ("part".equals(key)) {
-                    co.setRft_part(value);
-                    continue;
-                }
-                if ("issue".equals(key)) {
-                    co.setRft_issue(value);
-                    continue;
-                }
-                if ("spage".equals(key)) {
-                    co.setRft_spage(value);
-                    continue;
-                }
-                if ("epage".equals(key)) {
-                    co.setRft_epage(value);
-                    continue;
-                }
-                if ("pages".equals(key)) {
-                    co.setRft_pages(value);
-                    continue;
-                }
-                if ("tpages".equals(key)) {
-                    co.setRft_tpages(value);
-                    continue;
-                }
-                if ("author".equals(key)) {
-                    co.setRft_author(value);
-                    continue;
-                }
-                if ("au".equals(key)) {
-                    co.setRft_au(value);
-                    continue;
-                }
-                if ("aucorp".equals(key)) {
-                    co.setRft_aucorp(value);
-                    continue;
-                }
-                if ("auinit".equals(key)) {
-                    co.setRft_auinit(value);
-                    continue;
-                }
-                if ("auinit1".equals(key)) {
-                    co.setRft_auinit1(value);
-                    continue;
-                }
-                if ("auinitm".equals(key)) {
-                    co.setRft_auinitm(value);
-                    continue;
-                }
-                if ("ausuffix".equals(key)) {
-                    co.setRft_ausuffix(value);
-                    continue;
-                }
-                if ("aulast".equals(key)) {
-                    co.setRft_aulast(value);
-                    continue;
-                }
-                if ("aufirst".equals(key)) {
-                    co.setRft_aufirst(value);
-                    continue;
-                }
-                if ("sici".equals(key)) {
-                    co.setRft_sici(value);
-                    continue;
-                }
-                if ("bici".equals(key)) {
-                    co.setRft_bici(value);
-                    continue;
-                }
-                if ("coden".equals(key)) {
-                    co.setRft_coden(value);
-                    continue;
-                }
-                if ("artnum".equals(key)) {
-                    co.setRft_artnum(value);
-                    continue;
-                }
-                // RFTs Dublin Core, e.g. in blogs:
-                if ("creator".equals(key)) {
-                    co.setRft_creator(value);
-                    continue;
-                }
-                if ("publisher".equals(key)) {
-                    co.setRft_publisher(value);
-                    continue;
-                }
-                if ("type".equals(key)) {
-                    co.setRft_type(value);
-                    continue;
-                }
-                if ("subject".equals(key)) {
-                    co.setRft_subject(value);
-                    continue;
-                }
-                if ("format".equals(key)) {
-                    co.setRft_format(value);
-                    continue;
-                }
-                if ("language".equals(key)) {
-                    co.setRft_language(value);
-                    continue;
-                }
-                if ("source".equals(key)) {
-                    co.setRft_source(value);
-                    continue;
-                }
-                if ("identifier".equals(key)) {
-                    co.setRft_identifier(value);
-                    continue;
-                }
-                if ("description".equals(key)) {
-                    co.setRft_description(value);
-                    continue;
-                }
-                if ("relation".equals(key)) {
-                    co.setRft_relation(value);
-                    continue;
-                }
-                if ("coverage".equals(key)) {
-                    co.setRft_coverage(value);
-                    continue;
-                }
-                if ("rights".equals(key)) {
-                    co.setRft_rights(value);
-                    continue;
-                }
-                
-                // URI-Scheme
-                // http://www.info-uri.info/registry/
-                if ("rft_id".equals(key)) {
-                    uriSchemas.add(value);
-                    continue;
-                }
-                if ("pmid".equals(key)) {
-                    if (value.length() > 0) {
-                        uriSchemas.add("info:pmid/" + value);
-                    }
-                    continue;
-                }
-                if ("id".equals(key) && value.startsWith("doi:")) { // BIOONE und Inforama
-                    if (value.length() > 9) {
-                        uriSchemas.add("info:doi/" + value.substring(value.indexOf("doi:") + 4));
-                    }
-                    continue;
-                }
-                if ("doi".equals(key)) {
-                    if (value.length() > 9) {
-                        uriSchemas.add("info:doi/" + value);
-                    }
-                    continue;
-                }
-                if ("sici".equals(key)) {
-                    if (value.length() > 10) {
-                        uriSchemas.add("info:sici/" + value);
-                    }
-                    continue;
-                }
-                if ("lccn".equals(key)) {
-                    if (value.length() > 0) {
-                        uriSchemas.add("info:lccn/" + value);
-                    }
-                    continue;
-                }
-                
-            } catch (final Exception e) {
-                LOG.error("readOpenUrlFromRequest: " + key + "\040value:\040" + value + "\040" + e.toString());
-            }
-            
-        }
-        
-        if (!uriSchemas.isEmpty()) {
-            co.setRft_id(uriSchemas);
-        }
-        
-        return co;
     }
     
     /**
-     * Gets the contents of OpenURL from a web-site (e.g. OCoins / Worlcat
+     * Gets the contents of OpenURL from a web-site (e.g. OCoins / Worldcat
      * etc.).
      */
     public ContextObject readOpenUrlFromString(final String content) {
@@ -1351,43 +888,6 @@ public class OpenUrl {
     }
     
     /**
-     * Gets from a request all OpenURL parameters.
-     */
-    private HashMap<String, String> getOpenUrlParameters(final HttpServletRequest rq) {
-        
-        final HashMap<String, String> hm = new HashMap<String, String>();
-        
-        final Map<String, String[]> paramMap = rq.getParameterMap();
-        
-        for (final Map.Entry<String, String[]> pair : paramMap.entrySet()) {
-            
-            final String key = pair.getKey();
-            final String[] values = pair.getValue();
-            
-            if ("rft_id".equals(key)) { // rft_id contains different identifiers
-                for (final String eachRftID : values) {
-                    hm.put(key, getOpenUrlValue(eachRftID));
-                }
-            } else { // Concat multiple parameters (e.g. several authors)
-                final StringBuffer buf = new StringBuffer();
-                final int max = values.length;
-                for (int z = 0; z < max; z++) {
-                    if (z == 0) {
-                        buf.append(values[z]);
-                    } else {
-                        buf.append("\040;\040");
-                        buf.append(values[z]);
-                    }
-                }
-                hm.put(key, getOpenUrlValue(buf.toString()));
-            }
-            
-        }
-        
-        return hm;
-    }
-    
-    /**
      * Extracts the content of RFTs, RFRs oder RFEs (standard-version).
      */
     private String getOpenUrlIdentifiersVersion1_0(final String rft, final String content) {
@@ -1422,7 +922,14 @@ public class OpenUrl {
             }
         }
         
-        output = codeUrl.decode(output); // RFTs are URL-encoded
+        // decode URL encoded values
+        if (!codeUrl.decode(output, "UTF-8").contains("�")) {
+            // UTF-8 encoded
+            output = codeUrl.decode(output, "UTF-8");
+        } else {
+            // ISO-8859-1 encoded
+            output = codeUrl.decode(output, "ISO-8859-1");
+        }
         
         return output;
     }
@@ -1463,7 +970,14 @@ public class OpenUrl {
             }
         }
         
-        output = codeUrl.decode(output); // RFTs sind URL-codiert
+        // decode URL encoded values
+        if (!codeUrl.decode(output, "UTF-8").contains("�")) {
+            // UTF-8 encoded
+            output = codeUrl.decode(output, "UTF-8");
+        } else {
+            // ISO-8859-1 encoded
+            output = codeUrl.decode(output, "ISO-8859-1");
+        }
         
         return output;
     }
@@ -1481,46 +995,4 @@ public class OpenUrl {
         return output;
     }
     
-    private String getOpenUrlValue(String input) {
-        
-        try {
-            
-            if (decode(input)) {
-                input = Decoder.utf8Convert(input);
-            }
-            
-        } catch (final Exception e) {
-            LOG.error("private boolean decode (String input): " + e.toString());
-        }
-        
-        return input;
-    }
-    
-    /**
-     * OpenURL-request sometimes are UTF-8 encoded, sometimes ISO-8895-1. Here
-     * we will check if we need to decode a string or not.
-     */
-    private boolean decode(final String input) {
-        
-        boolean check = false;
-        
-        try {
-            
-            if (input.length() > Decoder.utf8Convert(input).length()) {
-                
-                // if Umlauts are present, avoid recoding
-                final Pattern p = Pattern.compile("ä|ö|ü|à|è|é", Pattern.CASE_INSENSITIVE);
-                final Matcher m = p.matcher(input);
-                
-                if (!m.find()) {
-                    check = true;
-                }
-            }
-            
-        } catch (final Exception e) {
-            LOG.error("private boolean decode (String input): " + e.toString());
-        }
-        
-        return check;
-    }
 }

@@ -234,10 +234,6 @@ public final class BestellformAction extends DispatchAction {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                
-                // URL-encode contents of OrderForm for get-methode in PrepareLogin
-                of = of.encodeOrderForm(of);
-                
                 rq.setAttribute("bestellparam", bp);
                 rq.setAttribute("orderform", of);
             } else {
@@ -323,9 +319,6 @@ public final class BestellformAction extends DispatchAction {
                     of.setKundenname(ui.getBenutzer().getName());
                     of.setKundenmail(ui.getBenutzer().getEmail());
                     
-                    // URL-encode contents of OrderForm for get-methode in PrepareLogin
-                    of = of.encodeOrderForm(of);
-                    
                     rq.setAttribute("bestellparam", bp);
                     rq.setAttribute("orderform", of);
                     
@@ -384,7 +377,7 @@ public final class BestellformAction extends DispatchAction {
         final Text cn = new Text();
         final Auth auth = new Auth();
         String forward = Result.FAILURE.getValue();
-        OrderForm of = (OrderForm) fm;
+        final OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
         final Countries country = new Countries();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
@@ -924,9 +917,6 @@ public final class BestellformAction extends DispatchAction {
                         rq.setAttribute("messagemissing", message);
                     }
                     
-                    // URL-encode for get-methode in PrepareLogin
-                    of = of.encodeOrderForm(of);
-                    
                     rq.setAttribute("orderform", of);
                     if (!"".equals(library)) {
                         rq.setAttribute("library", library);
@@ -1375,31 +1365,31 @@ public final class BestellformAction extends DispatchAction {
         }
         if (of.getKundenname() != null && !"".equals(of.getKundenname())) {
             urlParam.append("&name=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenname()));
+            urlParam.append(urlCoder.encode(of.getKundenname(), "UTF-8"));
         }
         if (of.getKundenvorname() != null && !"".equals(of.getKundenvorname())) {
             urlParam.append("&vorname=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenvorname()));
+            urlParam.append(urlCoder.encode(of.getKundenvorname(), "UTF-8"));
         }
         if (of.getKundeninstitution() != null && !"".equals(of.getKundeninstitution())) {
             urlParam.append("&institut=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundeninstitution()));
+            urlParam.append(urlCoder.encode(of.getKundeninstitution(), "UTF-8"));
         }
         if (of.getKundenabteilung() != null && !"".equals(of.getKundenabteilung())) {
             urlParam.append("&abteilung=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenabteilung()));
+            urlParam.append(urlCoder.encode(of.getKundenabteilung(), "UTF-8"));
         }
         if (of.getKundenkategorieID() != null && !"0".equals(of.getKundenkategorieID())) {
             urlParam.append("&category=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenkategorieID()));
+            urlParam.append(urlCoder.encode(of.getKundenkategorieID(), "UTF-8"));
         }
         if (of.getKundenadresse() != null && !"".equals(of.getKundenadresse())) {
             urlParam.append("&adresse=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenadresse()));
+            urlParam.append(urlCoder.encode(of.getKundenadresse(), "UTF-8"));
         }
         if (of.getKundenstrasse() != null && !"".equals(of.getKundenstrasse())) {
             urlParam.append("&adresse=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenstrasse()));
+            urlParam.append(urlCoder.encode(of.getKundenstrasse(), "UTF-8"));
         }
         if (of.getKundentelefon() != null && !"".equals(of.getKundentelefon())) {
             urlParam.append("&telefonnrg=");
@@ -1407,15 +1397,15 @@ public final class BestellformAction extends DispatchAction {
         }
         if (of.getKundenplz() != null && !"".equals(of.getKundenplz())) {
             urlParam.append("&plz=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenplz()));
+            urlParam.append(urlCoder.encode(of.getKundenplz(), "UTF-8"));
         }
         if (of.getKundenort() != null && !"".equals(of.getKundenort())) {
             urlParam.append("&ort=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenort()));
+            urlParam.append(urlCoder.encode(of.getKundenort(), "UTF-8"));
         }
         if (of.getKundenland() != null && !"".equals(of.getKundenland())) {
             urlParam.append("&land=");
-            urlParam.append(urlCoder.encodeLatin1(of.getKundenland()));
+            urlParam.append(urlCoder.encode(of.getKundenland(), "UTF-8"));
         }
         
         return urlParam.toString();

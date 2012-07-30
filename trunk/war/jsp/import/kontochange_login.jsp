@@ -2,6 +2,8 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%--********  Konto wechseln  ********--%>
 <logic:present name="userinfo" property="kontos">
   <html:form action="/changekonto">
@@ -34,8 +36,6 @@
        <input type="hidden" name="sici" value="<bean:write name="orderform" property="sici" />" />
        <input type="hidden" name="lccn" value="<bean:write name="orderform" property="lccn" />" />
        <input type="hidden" name="zbid" value="<bean:write name="orderform" property="zdbid" />" />
-       <input type="hidden" name="artikeltitel_encoded" value="<bean:write name="orderform" property="artikeltitel_encoded" />" />
-       <input type="hidden" name="author_encoded" value="<bean:write name="orderform" property="author_encoded" />" />
        <input type="hidden" name="foruser" value="<bean:write name="orderform" property="foruser" />" />
     </logic:present>
     <logic:present name="userform">

@@ -141,22 +141,22 @@ public class Pubmed {
         link.append("[TA]");
         if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(prepareVolumeNIssue(pageForm.getJahrgang().trim())));
+            link.append(enc.encode(prepareVolumeNIssue(pageForm.getJahrgang().trim()), "UTF-8"));
             link.append("[VI]");
         }
         if (pageForm.getHeft() != null && !"".equals(pageForm.getHeft().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(prepareVolumeNIssue(pageForm.getHeft().trim())));
+            link.append(enc.encode(prepareVolumeNIssue(pageForm.getHeft().trim()), "UTF-8"));
             link.append("[IP]");
         }
         if (pageForm.getSeiten() != null && !"".equals(pageForm.getSeiten().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(preparePage(pageForm.getSeiten()))); // no need to trim
+            link.append(enc.encode(preparePage(pageForm.getSeiten()), "UTF-8")); // no need to trim
             link.append("[PG]");
         }
         if (pageForm.getJahr() != null && !"".equals(pageForm.getJahr().trim())) {
             link.append("+AND+");
-            link.append(enc.encodeUTF8(pageForm.getJahr().trim()));
+            link.append(enc.encode(pageForm.getJahr().trim(), "UTF-8"));
             link.append("[DP]");
         }
         

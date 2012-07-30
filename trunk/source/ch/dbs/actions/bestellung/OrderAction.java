@@ -121,7 +121,8 @@ public final class OrderAction extends DispatchAction {
         }
         
         // ISO-8859-1 encoding is important for automatic search!
-        pageForm.setArtikeltitel_encoded(codeUrl.encodeLatin1(shortenGoogleSearchPhrase(pageForm.getArtikeltitel())));
+        pageForm.setArtikeltitel_encoded(codeUrl.encode(shortenGoogleSearchPhrase(pageForm.getArtikeltitel()),
+                "ISO-8859-1"));
         
         // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
@@ -385,7 +386,7 @@ public final class OrderAction extends DispatchAction {
                         
                         // needs to be UTF-8 encoded
                         linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
-                                + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
+                                + codeUrl.encode(pageForm.getArtikeltitel(), "UTF-8")
                                 + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&hl=de&lr=";
                         
                         final JournalDetails jdGoogleScholarCaptcha = new JournalDetails();
@@ -417,7 +418,7 @@ public final class OrderAction extends DispatchAction {
                     
                     // needs to be UTF-8 encoded
                     linkGS = "http://scholar.google.com/scholar?as_q=&num=4&btnG=Scholar-Suche&as_epq="
-                            + codeUrl.encodeUTF8(pageForm.getArtikeltitel())
+                            + codeUrl.encode(pageForm.getArtikeltitel(), "UTF-8")
                             + "&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr=";
                     
                     final JournalDetails jdGoogleScholarManual = new JournalDetails();
@@ -474,9 +475,6 @@ public final class OrderAction extends DispatchAction {
             pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         }
         
-        // URL encode for GET method in PrepareLogin
-        pageForm = pageForm.encodeOrderForm(pageForm);
-        
         rq.setAttribute("orderform", pageForm);
         return mp.findForward(forward);
     }
@@ -495,7 +493,7 @@ public final class OrderAction extends DispatchAction {
         final Pubmed pubmed = new Pubmed();
         final CodeUrl codeUrl = new CodeUrl();
         
-        final String artikeltitelEnc = codeUrl.encodeLatin1(pageForm.getArtikeltitel());
+        final String artikeltitelEnc = codeUrl.encode(pageForm.getArtikeltitel(), "ISO-8859-1");
         
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
@@ -527,21 +525,8 @@ public final class OrderAction extends DispatchAction {
                             pageForm.setRuns_autocomplete(0);
                         }
                         
-                        if (pageForm.isAutocomplete() && pageForm.isFlag_noissn()) {
-                            // special case: data from autocomplete but no ISSN
-                            
-                            // alle anderen Angaben URL-codieren und vorbereiten für
-                            // Übergabe an ff, da Weitergabe über Hyperlink auf jsp läuft
-                            
-                            pageForm.setJahr(codeUrl.encodeLatin1(pageForm.getJahr()));
-                            pageForm.setSeiten(codeUrl.encodeLatin1(pageForm.getSeiten()));
-                            pageForm.setHeft(codeUrl.encodeLatin1(pageForm.getHeft()));
-                            pageForm.setJahrgang(codeUrl.encodeLatin1(pageForm.getJahrgang()));
-                            pageForm.setAuthor(codeUrl.encodeLatin1(pageForm.getAuthor()));
-                        }
-                        
                         String zeitschriftentitelEncoded = correctArtikeltitIssnAssist(pageForm.getZeitschriftentitel());
-                        zeitschriftentitelEncoded = codeUrl.encodeLatin1(zeitschriftentitelEncoded);
+                        zeitschriftentitelEncoded = codeUrl.encode(zeitschriftentitelEncoded, "ISO-8859-1");
                         
                         //              Methode 1 ueber Journalseek
                         final FindFree ff = new FindFree();
@@ -736,7 +721,7 @@ public final class OrderAction extends DispatchAction {
             }
             
             // set bibid, kid and daiaId depending on access method
-            if (ui != null) {
+            if (ui != null && ui.getKonto() != null) {
                 // get bibid from ui
                 if (ui.getKonto().getEzbid() != null && !ui.getKonto().getEzbid().equals("")) {
                     bibid = ui.getKonto().getEzbid();
@@ -799,7 +784,7 @@ public final class OrderAction extends DispatchAction {
                 
                 ContextObject co = new ContextObject();
                 final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-                co = openurlConv.makeContextObject(pageForm);
+                co = openurlConv.makeContextObject(pageForm, "ISO-8859-1");
                 
                 final OpenUrl openU = new OpenUrl();
                 final String openurl = openU.composeOpenUrl(co);
@@ -960,7 +945,7 @@ public final class OrderAction extends DispatchAction {
             pageForm.setAutocomplete(false); // reset
             rq.setAttribute("ezb", ezbform);
             
-            // for get-method in PrepareLogin encode pageForm
+            // set ISO-8859-1 encoded values in OrderForm. Some get methods use Latin1.
             pageForm = pageForm.encodeOrderForm(pageForm);
             
             rq.setAttribute("orderform", pageForm);
@@ -1076,7 +1061,7 @@ public final class OrderAction extends DispatchAction {
             // Achtung Regexp hat * spezielle Bedeutung...
             zeitschriftentitelEncodedTrunkiert = zeitschriftentitelEncodedTrunkiert.replaceAll("\040", "*\040") + "*";
             
-            zeitschriftentitelEncodedTrunkiert = codeUrl.encodeLatin1(zeitschriftentitelEncodedTrunkiert);
+            zeitschriftentitelEncodedTrunkiert = codeUrl.encode(zeitschriftentitelEncodedTrunkiert, "ISO-8859-1");
             link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query="
                     + zeitschriftentitelEncodedTrunkiert;
             
@@ -1146,8 +1131,8 @@ public final class OrderAction extends DispatchAction {
             
             jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
             jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-            jdRB.setArtikeltitel_encoded(codeUrl.encodeLatin1(pageForm.getArtikeltitel()));
-            jdRB.setZeitschriftentitel_encoded(codeUrl.encodeLatin1(jdRB.getZeitschriftentitel()));
+            jdRB.setArtikeltitel_encoded(codeUrl.encode(pageForm.getArtikeltitel(), "ISO-8859-1"));
+            jdRB.setZeitschriftentitel_encoded(codeUrl.encode(jdRB.getZeitschriftentitel(), "ISO-8859-1"));
             
             if (pageForm.isFlag_noissn()) {
                 jdRB.setAuthor(pageForm.getAuthor());
@@ -1209,10 +1194,10 @@ public final class OrderAction extends DispatchAction {
             artikeltitelEncoded = artikeltitelEncoded.substring(0, artikeltitelEncoded.indexOf("--")); // Title
         }
         
-        artikeltitelEncoded = codeUrl.encodeLatin1(artikeltitelEncoded);
+        artikeltitelEncoded = codeUrl.encode(artikeltitelEncoded, "ISO-8859-1");
         //               System.out.println("artikeltitel_encoded_wc: " + artikeltitel_encoded);
         if (tmpWC.length() != 0) {
-            tmpWC = codeUrl.encodeLatin1(tmpWC);
+            tmpWC = codeUrl.encode(tmpWC, "ISO-8859-1");
             //               System.out.println("tmp_wc (Untertitel): " + tmp_wc);
         }
         
@@ -1647,7 +1632,7 @@ public final class OrderAction extends DispatchAction {
                     }
                 }
                 
-                // für Get-Methode in PrepareLogin of URL-codieren
+                // set ISO-8859-1 encoded values in OrderForm. Some get methods use Latin1.
                 pageForm = pageForm.encodeOrderForm(pageForm);
                 
                 rq.setAttribute("orderform", pageForm);
@@ -2427,7 +2412,7 @@ public final class OrderAction extends DispatchAction {
         boolean check = false;
         final CodeUrl codeUrl = new CodeUrl();
         
-        input = codeUrl.encodeLatin1(input);
+        input = codeUrl.encode(input, "ISO-8859-1");
         
         if (input.contains("%E4") || input.contains("%F6") || input.contains("%FC") || input.contains("%C4")
                 || input.contains("%D6") || input.contains("%DC")) {

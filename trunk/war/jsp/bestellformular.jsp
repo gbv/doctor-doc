@@ -3,6 +3,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
 
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 
@@ -56,13 +57,13 @@
 
 <table>
   <logic:notPresent name="userinfo" property="benutzer">
-    <logic:notEmpty name="orderform" property="artikeltitel_encoded">
+    <logic:notEmpty name="orderform" property="artikeltitel">
         <tr>
           <td><a
-            href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encoded" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images"
+            href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images"
             target="_blank"><i><bean:message key="bestellform.google" />&nbsp;</i></a></td>
           <td><a
-            href="http://scholar.google.com/scholar?as_q=&num=10&btnG=Scholar-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr="
+            href="http://scholar.google.com/scholar?as_q=&num=10&btnG=Scholar-Suche&as_epq=<bean:write name="orderform" property="artikeltitel" />&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr="
             target="_blank"><i><bean:message key="bestellform.googlescholar" /></i></a></td>
         </tr>
     </logic:notEmpty>
