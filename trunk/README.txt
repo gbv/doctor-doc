@@ -62,7 +62,7 @@ You also may want to use a custom icon, e.g. from your institution, for your ins
 replace the following two images /img/sp.gif and /war/img/sp.gif with your own image but with the same name.
 The image should be quadratic to avoid distortion. 
 -
-Doctor-Doc is able to use pooled Connections to MySQL. We use c3p0, since with c3p0 we can
+Doctor-Doc is able to use pooled Connections for MySQL. We use c3p0, since with c3p0 we can
 directly include the necessary libraries. But you still have to configure Tomcat appropriately:
 
 This configuration is easy but the configuration depends on the Tomcat-Version in use. Therefore
@@ -82,8 +82,8 @@ The configuration has to be made in the context.xml. Place in your $CATALINA_HOM
 the following configuration:
 
 <Context>
-    <!-- Tomcat 5.5 -->
-    <Resource auth="Container" 
+ <!-- Tomcat 5.5 -->
+ <Resource auth="Container" 
   description="DB Connection" 
   driverClass="com.mysql.jdbc.Driver" 
   maxPoolSize="30" 
@@ -105,7 +105,7 @@ the following configuration:
 ---
 
 3. Build a war-file using e.g. the predefined build.xml with Ant.
-Deploy the war-file in the webapps-folder of your Tomcat-installation.
+Deploy the war-file in the webapps-folder of your Tomcat installation.
 
 ---
 4. Login
