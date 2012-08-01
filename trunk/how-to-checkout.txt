@@ -48,7 +48,7 @@ Configure your build path:
 
 22. Add all libraries under war/WEB-INF/lib to your build path. Make sure they get exported
 23. Add the libraries under libs/ to your build path. You do not need to get them exported
-24. Choose "configure build path" and "add external jar" => your_tomcat_server/lib/servlet-api.jar => Make sure this one does not get exported!
+24. Choose "configure build path" => Make sure servlet-api.jar does not get exported!
 
 To use your normal browser for working on the project:
 
