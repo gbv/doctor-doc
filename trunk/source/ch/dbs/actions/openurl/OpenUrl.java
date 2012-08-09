@@ -944,8 +944,11 @@ public class OpenUrl {
         final CodeUrl codeUrl = new CodeUrl();
         
         // we may have " & " in the entities, e.g. jtitle=Anaesthesia%20&%20Analgesia. This
-        // will interfere with the & as delimiter => // escape ampersand
+        // will interfere with the & as delimiter. Therefore we escape ampersand to %26%20.
+        // This will unescape both with UTF-8 and ISO-8859-1 nicely.
         content = content.replaceAll("&%20", "%26%20");
+        content = content.replaceAll("& ", "%26%20");
+        content = content.replaceAll("&+", "%26%20");
         
         // Delimiter is the next &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
