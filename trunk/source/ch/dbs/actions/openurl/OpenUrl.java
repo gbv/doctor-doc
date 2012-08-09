@@ -938,17 +938,21 @@ public class OpenUrl {
      * Extracts the content of RFTs, RFRs oder RFEs (non standard version RFTs,
      * without RFT-identifier).
      */
-    private String getOpenUrlIdentifiersVersion0_1(final String rft, final String content) {
+    private String getOpenUrlIdentifiersVersion0_1(final String rft, String content) {
         
         String output = "";
         final CodeUrl codeUrl = new CodeUrl();
+        
+        // we may have " & " in the entities, e.g. jtitle=Anaesthesia%20&%20Analgesia. This
+        // will interfere with the & as delimiter => // escape ampersand
+        content = content.replaceAll("&%20", "%26%20");
         
         // Delimiter is the next &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
             output = content.substring(content.indexOf(rft) + rft.length(),
                     content.indexOf("&", content.indexOf(rft) + 1));
         } else {
-            // Delimiter is the " at the end of anURL in HTML
+            // Delimiter is the " at the end of an URL in HTML
             if (content.substring(content.indexOf(rft)).contains("\"")) {
                 output = content.substring(content.indexOf(rft) + rft.length(),
                         content.indexOf("\"", content.indexOf(rft)));

@@ -475,6 +475,9 @@ public final class OrderAction extends DispatchAction {
             pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         }
         
+        // URL encode for GET method
+        pageForm = pageForm.encodeOrderForm(pageForm);
+        
         rq.setAttribute("orderform", pageForm);
         return mp.findForward(forward);
     }

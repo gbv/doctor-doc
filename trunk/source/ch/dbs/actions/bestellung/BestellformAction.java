@@ -234,6 +234,10 @@ public final class BestellformAction extends DispatchAction {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("bestellform");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                
+                // URL-encode contents of OrderForm for get-method in PrepareLogin      
+                of = of.encodeOrderForm(of);
+                
                 rq.setAttribute("bestellparam", bp);
                 rq.setAttribute("orderform", of);
             } else {
@@ -319,6 +323,9 @@ public final class BestellformAction extends DispatchAction {
                     of.setKundenname(ui.getBenutzer().getName());
                     of.setKundenmail(ui.getBenutzer().getEmail());
                     
+                    // URL-encode contents of OrderForm for get-method in PrepareLogin      
+                    of = of.encodeOrderForm(of);
+                    
                     rq.setAttribute("bestellparam", bp);
                     rq.setAttribute("orderform", of);
                     
@@ -377,7 +384,7 @@ public final class BestellformAction extends DispatchAction {
         final Text cn = new Text();
         final Auth auth = new Auth();
         String forward = Result.FAILURE.getValue();
-        final OrderForm of = (OrderForm) fm;
+        OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
         final Countries country = new Countries();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
@@ -916,6 +923,9 @@ public final class BestellformAction extends DispatchAction {
                         forward = "missingvalues";
                         rq.setAttribute("messagemissing", message);
                     }
+                    
+                    // URL-encode contents of OrderForm for get-method in PrepareLogin      
+                    of = of.encodeOrderForm(of);
                     
                     rq.setAttribute("orderform", of);
                     if (!"".equals(library)) {
