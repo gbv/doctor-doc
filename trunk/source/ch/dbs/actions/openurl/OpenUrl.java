@@ -948,7 +948,7 @@ public class OpenUrl {
         // This will unescape both with UTF-8 and ISO-8859-1 nicely.
         content = content.replaceAll("&%20", "%26%20");
         content = content.replaceAll("& ", "%26%20");
-        content = content.replaceAll("&+", "%26%20");
+        content = content.replaceAll("&\\+", "%26%20");
         
         // Delimiter is the next &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
