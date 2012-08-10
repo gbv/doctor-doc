@@ -32,7 +32,6 @@ import ch.dbs.form.OrderForm;
 public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
     
     private String zeitschriftentitel_encoded;
-    private String artikeltitel_encoded;
     private OrderForm pageForm;
     private transient String concurrCopyTitle;
     final CodeUrl codeUrl = new CodeUrl();
@@ -40,10 +39,8 @@ public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
     public ThreadedJournalSeek() {
     }
     
-    public ThreadedJournalSeek(final String zeitschriftenTitel, final String artikelTitel, final OrderForm of,
-            final String concurrCopyZTit) {
-        this.zeitschriftentitel_encoded = codeUrl.encode(zeitschriftenTitel, "ISO-8859-1");
-        this.artikeltitel_encoded = codeUrl.encode(artikelTitel, "ISO-8859-1");
+    public ThreadedJournalSeek(final String optimizedZeitschriftenTitel, final OrderForm of, final String concurrCopyZTit) {
+        this.zeitschriftentitel_encoded = codeUrl.encode(optimizedZeitschriftenTitel, "ISO-8859-1");
         this.pageForm = of;
         this.concurrCopyTitle = concurrCopyZTit;
     }
@@ -60,14 +57,6 @@ public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
     
     public void setZeitschriftentitel_encoded(final String zeitschriftentitelEncoded) {
         zeitschriftentitel_encoded = zeitschriftentitelEncoded;
-    }
-    
-    public String getArtikeltitel_encoded() {
-        return artikeltitel_encoded;
-    }
-    
-    public void setArtikeltitel_encoded(final String artikeltitelEncoded) {
-        artikeltitel_encoded = artikeltitelEncoded;
     }
     
     public OrderForm getPageForm() {

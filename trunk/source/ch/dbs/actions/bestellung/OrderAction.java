@@ -535,8 +535,8 @@ public final class OrderAction extends DispatchAction {
                         // der Zeitschriftentitel im OrderForm kann sich im Thread von Regensburg ändern
                         final String concurrentCopyZeitschriftentitel = pageForm.getZeitschriftentitel();
                         
-                        final ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelCorrected,
-                                pageForm.getArtikeltitel(), pageForm, concurrentCopyZeitschriftentitel);
+                        final ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelCorrected, pageForm,
+                                concurrentCopyZeitschriftentitel);
                         final ExecutorService executor = Executors.newCachedThreadPool();
                         Future<List<JournalDetails>> journalseekResult = null;
                         boolean jsThread = false;
@@ -598,7 +598,7 @@ public final class OrderAction extends DispatchAction {
                                     }
                                     final JournalDetails jd = new JournalDetails();
                                     jd.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
-                                    jd.setZeitschriftentitel(zeitschriftentitelCorrected);
+                                    jd.setZeitschriftentitel(pageForm.getZeitschriftentitel());
                                     jd.setArtikeltitel(pageForm.getArtikeltitel());
                                     issnJS.add(jd);
                                 }
