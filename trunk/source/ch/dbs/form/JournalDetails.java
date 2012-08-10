@@ -28,14 +28,8 @@ public final class JournalDetails extends ActionForm {
     final CodeUrl codeUrl = new CodeUrl();
     
     private String artikeltitel;
-    private String artikeltitel_encoded; // ISO-8859-1
-    private String artikeltitel_encodedUTF8;
     private String zeitschriftentitel;
-    private String zeitschriftentitel_encoded; // ISO-8859-1
-    private String zeitschriftentitel_encodedUTF8;
     private String author;
-    private String author_encoded; // ISO-8859-1
-    private String author_encodedUTF8;
     private String jahr;
     private String jahrgang;
     private String heft;
@@ -44,6 +38,14 @@ public final class JournalDetails extends ActionForm {
     private String url_text;
     private String issn;
     private String submit = "";
+    
+    // these get set automatically. There are not public setter methods. Only getter methods are available.
+    private String artikeltitel_encoded; // ISO-8859-1
+    private String artikeltitel_encodedUTF8;
+    private String zeitschriftentitel_encoded; // ISO-8859-1
+    private String zeitschriftentitel_encodedUTF8;
+    private String author_encoded; // ISO-8859-1
+    private String author_encodedUTF8;
     
     public String getArtikeltitel() {
         return artikeltitel;
