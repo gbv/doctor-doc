@@ -26,64 +26,64 @@ import ch.dbs.form.OrderForm;
 
 /**
  * Holt einen Webcontent in einem neuen Thread
- *
+ * 
  * @author Markus Fischer
  */
 public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
-
+    
     private String zeitschriftentitel_encoded;
     private String artikeltitel_encoded;
     private OrderForm pageForm;
     private transient String concurrCopyTitle;
-
+    final CodeUrl codeUrl = new CodeUrl();
+    
     public ThreadedJournalSeek() {
     }
-
-    public ThreadedJournalSeek(final String zeitschrifttitEnc, final String artikeltitelEnc, final OrderForm of,
+    
+    public ThreadedJournalSeek(final String zeitschriftenTitel, final String artikelTitel, final OrderForm of,
             final String concurrCopyZTit) {
-        this.zeitschriftentitel_encoded = zeitschrifttitEnc;
-        this.artikeltitel_encoded = artikeltitelEnc;
+        this.zeitschriftentitel_encoded = codeUrl.encode(zeitschriftenTitel, "ISO-8859-1");
+        this.artikeltitel_encoded = codeUrl.encode(artikelTitel, "ISO-8859-1");
         this.pageForm = of;
         this.concurrCopyTitle = concurrCopyZTit;
     }
-
+    
     public List<JournalDetails> call() {
         final OrderAction oa = new OrderAction();
-        final List<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded, artikeltitel_encoded,
-                pageForm, concurrCopyTitle);
+        final List<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded, pageForm, concurrCopyTitle);
         return jd;
     }
-
+    
     public String getZeitschriftentitel_encoded() {
         return zeitschriftentitel_encoded;
     }
-
+    
     public void setZeitschriftentitel_encoded(final String zeitschriftentitelEncoded) {
         zeitschriftentitel_encoded = zeitschriftentitelEncoded;
     }
-
+    
     public String getArtikeltitel_encoded() {
         return artikeltitel_encoded;
     }
-
+    
     public void setArtikeltitel_encoded(final String artikeltitelEncoded) {
         artikeltitel_encoded = artikeltitelEncoded;
     }
-
+    
     public OrderForm getPageForm() {
         return pageForm;
     }
-
+    
     public void setPageForm(final OrderForm pageForm) {
         this.pageForm = pageForm;
     }
-
+    
     public String getConcurrentCopyZeitschriftentitel() {
         return concurrCopyTitle;
     }
-
+    
     public void setConcurrentCopyZeitschriftentitel(final String concurrentCopyZeitschriftentitel) {
         this.concurrCopyTitle = concurrentCopyZeitschriftentitel;
     }
-
+    
 }
