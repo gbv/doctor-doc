@@ -28,12 +28,13 @@ public final class JournalDetails extends ActionForm {
     final CodeUrl codeUrl = new CodeUrl();
     
     private String artikeltitel;
-    private String artikeltitel_encoded;
+    private String artikeltitel_encoded; // ISO-8859-1
     private String artikeltitel_encodedUTF8;
     private String zeitschriftentitel;
-    private String zeitschriftentitel_encoded;
+    private String zeitschriftentitel_encoded; // ISO-8859-1
     private String zeitschriftentitel_encodedUTF8;
     private String author;
+    private String author_encoded; // ISO-8859-1
     private String author_encodedUTF8;
     private String jahr;
     private String jahrgang;
@@ -50,15 +51,12 @@ public final class JournalDetails extends ActionForm {
     
     public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
+        this.artikeltitel_encoded = codeUrl.encode(artikeltitel, "ISO-8859-1");
         this.artikeltitel_encodedUTF8 = codeUrl.encode(artikeltitel, "UTF-8");
     }
     
     public String getArtikeltitel_encoded() {
         return artikeltitel_encoded;
-    }
-    
-    public void setArtikeltitel_encoded(final String artikeltitel_encoded) {
-        this.artikeltitel_encoded = artikeltitel_encoded;
     }
     
     public String getAuthor() {
@@ -67,6 +65,7 @@ public final class JournalDetails extends ActionForm {
     
     public void setAuthor(final String author) {
         this.author = author;
+        this.author_encoded = codeUrl.encode(author, "ISO-8859-1");
         this.author_encodedUTF8 = codeUrl.encode(author, "UTF-8");
     }
     
@@ -132,15 +131,12 @@ public final class JournalDetails extends ActionForm {
     
     public void setZeitschriftentitel(final String zeitschriftentitel) {
         this.zeitschriftentitel = zeitschriftentitel;
+        this.zeitschriftentitel_encoded = codeUrl.encode(zeitschriftentitel, "ISO-8859-1");
         this.zeitschriftentitel_encodedUTF8 = codeUrl.encode(zeitschriftentitel, "UTF-8");
     }
     
     public String getZeitschriftentitel_encoded() {
         return zeitschriftentitel_encoded;
-    }
-    
-    public void setZeitschriftentitel_encoded(final String zeitschriftentitel_encoded) {
-        this.zeitschriftentitel_encoded = zeitschriftentitel_encoded;
     }
     
     public String getSubmit() {
@@ -155,24 +151,16 @@ public final class JournalDetails extends ActionForm {
         return zeitschriftentitel_encodedUTF8;
     }
     
-    public void setZeitschriftentitel_encodedUTF8(final String zeitschriftentitel_encodedUTF8) {
-        this.zeitschriftentitel_encodedUTF8 = zeitschriftentitel_encodedUTF8;
-    }
-    
     public String getArtikeltitel_encodedUTF8() {
         return artikeltitel_encodedUTF8;
-    }
-    
-    public void setArtikeltitel_encodedUTF8(final String artikeltitel_encodedUTF8) {
-        this.artikeltitel_encodedUTF8 = artikeltitel_encodedUTF8;
     }
     
     public String getAuthor_encodedUTF8() {
         return author_encodedUTF8;
     }
     
-    public void setAuthor_encodedUTF8(final String author_encodedUTF8) {
-        this.author_encodedUTF8 = author_encodedUTF8;
+    public String getAuthor_encoded() {
+        return author_encoded;
     }
     
 }

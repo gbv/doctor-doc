@@ -494,9 +494,6 @@ public final class OrderAction extends DispatchAction {
         OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
         final Pubmed pubmed = new Pubmed();
-        final CodeUrl codeUrl = new CodeUrl();
-        
-        final String artikeltitelEnc = codeUrl.encode(pageForm.getArtikeltitel(), "ISO-8859-1");
         
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
@@ -528,8 +525,8 @@ public final class OrderAction extends DispatchAction {
                             pageForm.setRuns_autocomplete(0);
                         }
                         
-                        String zeitschriftentitelEncoded = correctArtikeltitIssnAssist(pageForm.getZeitschriftentitel());
-                        zeitschriftentitelEncoded = codeUrl.encode(zeitschriftentitelEncoded, "ISO-8859-1");
+                        final String zeitschriftentitelCorrected = correctArtikeltitIssnAssist(pageForm
+                                .getZeitschriftentitel());
                         
                         //              Methode 1 ueber Journalseek
                         final FindFree ff = new FindFree();
@@ -538,8 +535,8 @@ public final class OrderAction extends DispatchAction {
                         // der Zeitschriftentitel im OrderForm kann sich im Thread von Regensburg ändern
                         final String concurrentCopyZeitschriftentitel = pageForm.getZeitschriftentitel();
                         
-                        final ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelEncoded,
-                                artikeltitelEnc, pageForm, concurrentCopyZeitschriftentitel);
+                        final ThreadedJournalSeek tjs = new ThreadedJournalSeek(zeitschriftentitelCorrected,
+                                pageForm.getArtikeltitel(), pageForm, concurrentCopyZeitschriftentitel);
                         final ExecutorService executor = Executors.newCachedThreadPool();
                         Future<List<JournalDetails>> journalseekResult = null;
                         boolean jsThread = false;
@@ -574,7 +571,6 @@ public final class OrderAction extends DispatchAction {
                             final JournalDetails jdRB = new JournalDetails();
                             jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
                             jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-                            jdRB.setArtikeltitel_encoded(artikeltitelEnc);
                             issnRB.add(jdRB);
                         }
                         
@@ -602,9 +598,8 @@ public final class OrderAction extends DispatchAction {
                                     }
                                     final JournalDetails jd = new JournalDetails();
                                     jd.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
-                                    jd.setZeitschriftentitel_encoded(zeitschriftentitelEncoded);
+                                    jd.setZeitschriftentitel(zeitschriftentitelCorrected);
                                     jd.setArtikeltitel(pageForm.getArtikeltitel());
-                                    jd.setArtikeltitel_encoded(artikeltitelEnc);
                                     issnJS.add(jd);
                                 }
                                 
@@ -1042,8 +1037,8 @@ public final class OrderAction extends DispatchAction {
         return result;
     }
     
-    public List<JournalDetails> searchJournalseek(final String zeitschriftentitel_encoded,
-            final String artikeltitel_encoded, final OrderForm pageForm, final String concurrentCopyZeitschriftentitel) {
+    public List<JournalDetails> searchJournalseek(final String zeitschriftentitel_encoded, final OrderForm pageForm,
+            final String concurrentCopyZeitschriftentitel) {
         
         final List<JournalDetails> issnJS = new ArrayList<JournalDetails>();
         final CodeUrl codeUrl = new CodeUrl();
@@ -1086,16 +1081,8 @@ public final class OrderAction extends DispatchAction {
                 start = content.indexOf('>', startIssn) + 1;
                 final int end = content.indexOf('<', startIssn);
                 jd.setArtikeltitel(pageForm.getArtikeltitel());
-                jd.setArtikeltitel_encoded(artikeltitel_encoded);
                 final String zeitschriftentitelJS = specialCharacters.replace(content.substring(start, end));
                 jd.setZeitschriftentitel(zeitschriftentitelJS);
-                String zeitschriftentitelEncodedJS = zeitschriftentitelJS;
-                try {
-                    zeitschriftentitelEncodedJS = java.net.URLEncoder.encode(zeitschriftentitelEncodedJS, "ISO-8859-1");
-                } catch (final Exception e) {
-                    LOG.error("ISSN-Assistent - Point F zeitschriftentitel_encoded_js: " + e.toString());
-                }
-                jd.setZeitschriftentitel_encoded(zeitschriftentitelEncodedJS);
                 
                 jd.setLink("http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=issn&query="
                         + jd.getIssn());
@@ -1129,13 +1116,10 @@ public final class OrderAction extends DispatchAction {
         
         // due to compatibility of legacy code
         final List<JournalDetails> issnRB = new ArrayList<JournalDetails>();
-        final CodeUrl codeUrl = new CodeUrl();
         for (final JournalDetails jdRB : result) {
             
             jdRB.setSubmit(pageForm.getSubmit()); // für modifystock, kann 'minus' enthalten
             jdRB.setArtikeltitel(pageForm.getArtikeltitel());
-            jdRB.setArtikeltitel_encoded(codeUrl.encode(pageForm.getArtikeltitel(), "ISO-8859-1"));
-            jdRB.setZeitschriftentitel_encoded(codeUrl.encode(jdRB.getZeitschriftentitel(), "ISO-8859-1"));
             
             if (pageForm.isFlag_noissn()) {
                 jdRB.setAuthor(pageForm.getAuthor());
