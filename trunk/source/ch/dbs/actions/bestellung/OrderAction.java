@@ -121,8 +121,7 @@ public final class OrderAction extends DispatchAction {
         }
         
         // ISO-8859-1 encoding is important for automatic search!
-        pageForm.setArtikeltitel_encoded(codeUrl.encode(shortenGoogleSearchPhrase(pageForm.getArtikeltitel()),
-                "ISO-8859-1"));
+        final String title4GoogleSearch = shortenGoogleSearchPhrase(pageForm.getArtikeltitel_encoded());
         
         // Make sure method is only accessible when user is logged in
         if (auth.isLogin(rq)) {
@@ -165,7 +164,7 @@ public final class OrderAction extends DispatchAction {
                                 linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=5&btnG=Google-Suche&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images&as_epq=";
                             }
                             
-                            linkGoogle = linkGoogle + pageForm.getArtikeltitel_encoded();
+                            linkGoogle = linkGoogle + title4GoogleSearch;
                             
                             content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(),
                                     Connect.TRIES_1.getValue());
@@ -272,8 +271,8 @@ public final class OrderAction extends DispatchAction {
                         start = 0;
                         
                         // phrase + allintitle
-                        linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22"
-                                + pageForm.getArtikeltitel_encoded() + "%22&hl=de&lr=&btnG=Suche&lr=";
+                        linkGS = "http://scholar.google.com/scholar?q=allintitle%3A%22" + title4GoogleSearch
+                                + "%22&hl=de&lr=&btnG=Suche&lr=";
                         
                         content = getWebcontent(linkGS, Connect.TIMEOUT_1.getValue(), Connect.TRIES_1.getValue());
                         
@@ -372,7 +371,7 @@ public final class OrderAction extends DispatchAction {
                         
                         // Captcha: prepare manual Google search
                         linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
-                                + pageForm.getArtikeltitel_encoded()
+                                + title4GoogleSearch
                                 + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
                         
                         final JournalDetails jdGoogleCaptcha = new JournalDetails();
@@ -404,7 +403,7 @@ public final class OrderAction extends DispatchAction {
                     
                     // User: prepare manual Google search
                     linkGoogle = "http://www.google.ch/search?as_q=&hl=de&num=4&btnG=Google-Suche&as_epq="
-                            + pageForm.getArtikeltitel_encoded()
+                            + title4GoogleSearch
                             + "&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images";
                     
                     final JournalDetails jdGoogleManual = new JournalDetails();
@@ -474,9 +473,6 @@ public final class OrderAction extends DispatchAction {
             // replace greek alphabet to alpha, beta etc.
             pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         }
-        
-        // URL encode for GET method
-        pageForm = pageForm.encodeOrderForm(pageForm);
         
         rq.setAttribute("orderform", pageForm);
         return mp.findForward(forward);
@@ -941,11 +937,8 @@ public final class OrderAction extends DispatchAction {
             }
             
             pageForm.setAutocomplete(false); // reset
+            
             rq.setAttribute("ezb", ezbform);
-            
-            // set ISO-8859-1 encoded values in OrderForm. Some get methods use Latin1.
-            pageForm = pageForm.encodeOrderForm(pageForm);
-            
             rq.setAttribute("orderform", pageForm);
             
         } finally {
@@ -1618,9 +1611,6 @@ public final class OrderAction extends DispatchAction {
                         }
                     }
                 }
-                
-                // set ISO-8859-1 encoded values in OrderForm. Some get methods use Latin1.
-                pageForm = pageForm.encodeOrderForm(pageForm);
                 
                 rq.setAttribute("orderform", pageForm);
                 

@@ -75,7 +75,7 @@ public final class OrderGbvAction extends DispatchAction {
             final HttpServletResponse rp) {
         
         String forward = Result.FAILURE.getValue();
-        OrderForm of = (OrderForm) fm;
+        final OrderForm of = (OrderForm) fm;
         final OrderState orderstate = new OrderState();
         final OrderAction orderAction = new OrderAction();
         final IllHandler illHandler = new IllHandler();
@@ -719,9 +719,6 @@ public final class OrderGbvAction extends DispatchAction {
             of.setPreisvorkomma("0");
             of.setPreisnachkomma("00");
             of.setWaehrung("EUR");
-            
-            // für Get-Methode URL-codieren   
-            of = of.encodeOrderForm(of);
             
             rq.setAttribute("orderform", of);
             

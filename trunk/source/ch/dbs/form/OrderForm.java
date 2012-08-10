@@ -39,6 +39,8 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     private static final SimpleLogger LOG = new SimpleLogger(OrderForm.class);
     
+    final CodeUrl codeUrl = new CodeUrl();
+    
     private static final long serialVersionUID = 1L;
     private transient List<Bestellungen> bestellungen;
     private transient List<OrderState> states;
@@ -54,8 +56,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String uid;
     private String lid;
     private String artikeltitel = "";
-    private String artikeltitel_encoded = ""; // ISO-8859-1
-    private String artikeltitel_encodedUTF8 = "";
     private String heft = "";
     private String jahr = "";
     private String jahrgang = "";
@@ -66,8 +66,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String deloptions = "";
     private String prio = "";
     private String author = "";
-    private String author_encoded = ""; // ISO-8859-1
-    private String author_encodedUTF8 = "";
     private String seiten = "";
     private String foruser = "0"; // ID of patron/customer. 0 = "Please select" in the select menu
     private String sessionid;
@@ -80,8 +78,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String sigel = "";
     private String faxno;
     private String zeitschriftentitel = "";
-    private String zeitschriftentitel_encoded = ""; // ISO-8859-1
-    private String zeitschriftentitel_encodedUTF8 = "";
     private String contents;
     private String link;
     private String anmerkungen = "";
@@ -115,14 +111,8 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     private String rfr_id = ""; // Referrent-ID (Angabe woher die OpenURL-Anfrage stammt)
     private String mediatype = "Artikel"; // Artikel, Buch oder Teilkopie Buch, Defaultwert Artikel
     private String verlag = ""; // Buchverlag
-    private String verlag_encoded = ""; // ISO-8859-1
-    private String verlag_encodedUTF8 = "";
     private String kapitel = "";
-    private String kapitel_encoded = ""; // ISO-8859-1
-    private String kapitel_encodedUTF8 = "";
     private String buchtitel = "";
-    private String buchtitel_encoded = ""; // ISO-8859-1
-    private String buchtitel_encodedUTF8 = "";
     private String kundenvorname;
     private String kundenname;
     private String kundenmail;
@@ -173,6 +163,20 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     //DDL
     private String Preis;
+    
+    // these get set automatically. There are not public setter methods. Only getter methods are available.
+    private String artikeltitel_encoded = ""; // ISO-8859-1
+    private String artikeltitel_encodedUTF8 = "";
+    private String author_encoded = ""; // ISO-8859-1
+    private String author_encodedUTF8 = "";
+    private String zeitschriftentitel_encoded = ""; // ISO-8859-1
+    private String zeitschriftentitel_encodedUTF8 = "";
+    private String verlag_encoded = ""; // ISO-8859-1
+    private String verlag_encodedUTF8 = "";
+    private String kapitel_encoded = ""; // ISO-8859-1
+    private String kapitel_encodedUTF8 = "";
+    private String buchtitel_encoded = ""; // ISO-8859-1
+    private String buchtitel_encodedUTF8 = "";
     
     public OrderForm() {
         
@@ -252,8 +256,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.setSici(lf.getSici());
         this.setLccn(lf.getLccn());
         this.setZdbid(lf.getZdbid());
-        this.setArtikeltitel_encoded(lf.getArtikeltitel_encoded());
-        this.setAuthor_encoded(lf.getAuthor_encoded());
         this.setForuser(lf.getForuser());
     }
     
@@ -268,7 +270,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.setIsbn(kf.getIsbn());
         this.setArtikeltitel(kf.getArtikeltitel());
         this.setZeitschriftentitel(kf.getZeitschriftentitel());
-        this.setAuthor(this.getAuthor());
+        this.setAuthor(kf.getAuthor());
         this.setKapitel(kf.getKapitel());
         this.setBuchtitel(kf.getBuchtitel());
         this.setVerlag(kf.getVerlag());
@@ -279,8 +281,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         this.setSici(kf.getSici());
         this.setLccn(kf.getLccn());
         this.setZdbid(kf.getZdbid());
-        this.setArtikeltitel_encoded(kf.getArtikeltitel_encoded());
-        this.setAuthor_encoded(kf.getAuthor_encoded());
     }
     
     /**
@@ -333,38 +333,6 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         }
         
         return tocomplete;
-    }
-    
-    /**
-     * Encodiert diejenigen Felder, die einen Textstring mit Sonderzeichen
-     * enthalten können. Verhindert Fehler bei der Übergabe in Get-Methoden
-     * 
-     * @param OrderForm of
-     * @return OrderForm of
-     */
-    public OrderForm encodeOrderForm(final OrderForm of) {
-        
-        final CodeUrl codeUrl = new CodeUrl();
-        
-        try {
-            of.setArtikeltitel_encoded(codeUrl.encode(of.getArtikeltitel(), "ISO-8859-1"));
-            of.setArtikeltitel_encodedUTF8(codeUrl.encode(of.getArtikeltitel(), "UTF-8"));
-            of.setAuthor_encoded(codeUrl.encode(of.getAuthor(), "ISO-8859-1"));
-            of.setAuthor_encodedUTF8(codeUrl.encode(of.getAuthor(), "UTF-8"));
-            of.setZeitschriftentitel_encoded(codeUrl.encode(of.getZeitschriftentitel(), "ISO-8859-1"));
-            of.setZeitschriftentitel_encodedUTF8(codeUrl.encode(of.getZeitschriftentitel(), "UTF-8"));
-            of.setVerlag_encoded(codeUrl.encode(of.getVerlag(), "ISO-8859-1"));
-            of.setVerlag_encodedUTF8(codeUrl.encode(of.getVerlag(), "UTF-8"));
-            of.setKapitel_encoded(codeUrl.encode(of.getKapitel(), "ISO-8859-1"));
-            of.setKapitel_encodedUTF8(codeUrl.encode(of.getKapitel(), "UTF-8"));
-            of.setBuchtitel_encoded(codeUrl.encode(of.getBuchtitel(), "ISO-8859-1"));
-            of.setBuchtitel_encodedUTF8(codeUrl.encode(of.getBuchtitel(), "UTF-8"));
-            
-        } catch (final Exception e) {
-            LOG.error("encodeOrderForm(OrderForm of): " + e.toString());
-        }
-        
-        return of;
     }
     
     /**
@@ -512,14 +480,12 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     public void setZeitschriftentitel(final String zeitschriftentitel) {
         this.zeitschriftentitel = zeitschriftentitel;
+        this.zeitschriftentitel_encoded = codeUrl.encode(zeitschriftentitel, "ISO-8859-1");
+        this.zeitschriftentitel_encodedUTF8 = codeUrl.encode(zeitschriftentitel, "UTF-8");
     }
     
     public String getZeitschriftentitel_encoded() {
         return zeitschriftentitel_encoded;
-    }
-    
-    public void setZeitschriftentitel_encoded(final String zeitschriftentitel_encoded) {
-        this.zeitschriftentitel_encoded = zeitschriftentitel_encoded;
     }
     
     public String getSigel() {
@@ -704,14 +670,12 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     public void setAuthor(final String author) {
         this.author = author;
+        this.author_encoded = codeUrl.encode(author, "ISO-8859-1");
+        this.author_encodedUTF8 = codeUrl.encode(author, "UTF-8");
     }
     
     public String getAuthor() {
         return author;
-    }
-    
-    public void setAuthor_encoded(final String author_encoded) {
-        this.author_encoded = author_encoded;
     }
     
     public String getAuthor_encoded() {
@@ -756,14 +720,12 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     public void setArtikeltitel(final String artikeltitel) {
         this.artikeltitel = artikeltitel;
+        this.artikeltitel_encoded = codeUrl.encode(artikeltitel, "ISO-8859-1");
+        this.artikeltitel_encodedUTF8 = codeUrl.encode(artikeltitel, "UTF-8");
     }
     
     public String getArtikeltitel_encoded() {
         return artikeltitel_encoded;
-    }
-    
-    public void setArtikeltitel_encoded(final String artikeltitel_encoded) {
-        this.artikeltitel_encoded = artikeltitel_encoded;
     }
     
     public List<AbstractBenutzer> getKontouser() {
@@ -812,6 +774,8 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     public void setVerlag(final String verlag) {
         this.verlag = verlag;
+        this.verlag_encoded = codeUrl.encode(verlag, "ISO-8859-1");
+        this.verlag_encodedUTF8 = codeUrl.encode(verlag, "UTF-8");
     }
     
     public String getKundenmail() {
@@ -932,6 +896,8 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     public void setBuchtitel(final String buchtitel) {
         this.buchtitel = buchtitel;
+        this.buchtitel_encoded = codeUrl.encode(buchtitel, "ISO-8859-1");
+        this.buchtitel_encodedUTF8 = codeUrl.encode(buchtitel, "UTF-8");
     }
     
     public String getKapitel() {
@@ -940,6 +906,8 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
+        this.kapitel_encoded = codeUrl.encode(kapitel, "ISO-8859-1");
+        this.kapitel_encodedUTF8 = codeUrl.encode(kapitel, "UTF-8");
     }
     
     public String getKkid() {
@@ -1250,24 +1218,12 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return verlag_encoded;
     }
     
-    public void setVerlag_encoded(final String verlag_encoded) {
-        this.verlag_encoded = verlag_encoded;
-    }
-    
     public String getKapitel_encoded() {
         return kapitel_encoded;
     }
     
-    public void setKapitel_encoded(final String kapitel_encoded) {
-        this.kapitel_encoded = kapitel_encoded;
-    }
-    
     public String getBuchtitel_encoded() {
         return buchtitel_encoded;
-    }
-    
-    public void setBuchtitel_encoded(final String buchtitel_encoded) {
-        this.buchtitel_encoded = buchtitel_encoded;
     }
     
     public boolean isPreisdefault() {
@@ -1346,48 +1302,24 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
         return author_encodedUTF8;
     }
     
-    public void setAuthor_encodedUTF8(final String authorEncodedUTF8) {
-        author_encodedUTF8 = authorEncodedUTF8;
-    }
-    
     public String getArtikeltitel_encodedUTF8() {
         return artikeltitel_encodedUTF8;
-    }
-    
-    public void setArtikeltitel_encodedUTF8(final String artikeltitel_encodedUTF8) {
-        this.artikeltitel_encodedUTF8 = artikeltitel_encodedUTF8;
     }
     
     public String getZeitschriftentitel_encodedUTF8() {
         return zeitschriftentitel_encodedUTF8;
     }
     
-    public void setZeitschriftentitel_encodedUTF8(final String zeitschriftentitelEncodedUTF8) {
-        zeitschriftentitel_encodedUTF8 = zeitschriftentitelEncodedUTF8;
-    }
-    
     public String getVerlag_encodedUTF8() {
         return verlag_encodedUTF8;
-    }
-    
-    public void setVerlag_encodedUTF8(final String verlagEncodedUTF8) {
-        verlag_encodedUTF8 = verlagEncodedUTF8;
     }
     
     public String getKapitel_encodedUTF8() {
         return kapitel_encodedUTF8;
     }
     
-    public void setKapitel_encodedUTF8(final String kapitelEncodedUTF8) {
-        kapitel_encodedUTF8 = kapitelEncodedUTF8;
-    }
-    
     public String getBuchtitel_encodedUTF8() {
         return buchtitel_encodedUTF8;
-    }
-    
-    public void setBuchtitel_encodedUTF8(final String buchtitelEncodedUTF8) {
-        buchtitel_encodedUTF8 = buchtitelEncodedUTF8;
     }
     
     /**
