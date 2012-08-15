@@ -33,6 +33,9 @@ You just checked out Doctor-Doc as Dynamic Web Project! Now let's add a Tomcat s
 18. choose "Apache Tomcat 7.0" => "next"
 19. add your "available" project to "configured" => "finish"
 
+[If in step 19 there is no available project to add, cancel the operation. Then => right click on your project => "Properties" => type "facets" 
+=> choose "Project Facets" => check "Java", "Javascript" and "Dynamic Web Module". Start over with step 17]
+
 Doctor-Doc depends on UTF-8 encoded URIs. Tomcat uses by default ISO-8895-1. So you need the following configuration:
 
 20. In Eclispse browse through the folder "Servers" below your project and open the file server.xml.
