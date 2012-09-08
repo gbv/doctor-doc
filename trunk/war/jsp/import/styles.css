@@ -15,6 +15,10 @@ html,body {
   width: 100%;
 }
 
+input {
+      font-family: Verdana, Arial, Helvetica, SunSans-Regular, Sans-Serif;
+}
+
 a:link {
   text-decoration:none;
 }
