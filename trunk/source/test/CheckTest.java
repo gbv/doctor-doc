@@ -27,43 +27,45 @@ import org.junit.Test;
 import util.Check;
 
 public class CheckTest {
-
+    
     private final Check check = new Check();
-
+    
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-
+        
     }
-
+    
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-
+        
     }
-
+    
     @Before
     public void setUp() throws Exception {
-
+        
     }
-
+    
     @After
     public void tearDown() throws Exception {
-
+        
     }
-
+    
     // CHECKSTYLE:OFF
-
+    
     @Test
     public void testIsEmail() throws Exception {
         assertTrue(check.isEmail("test@test.ch"));
         assertFalse(check.isEmail("test@testch"));
         assertFalse(check.isEmail("test@test.c"));
+        assertFalse(check.isEmail("'test@test.ch'"));
+        assertFalse(check.isEmail("test@test.kom"));
         assertFalse(check.isEmail("test@"));
         assertFalse(check.isEmail("test"));
         assertFalse(check.isEmail("@"));
         assertFalse(check.isEmail(""));
         assertFalse(check.isEmail(null));
     }
-
+    
     @Test
     public void testIsMinLength() throws Exception {
         assertTrue(check.isMinLength("", 0));
@@ -73,7 +75,7 @@ public class CheckTest {
         assertTrue(check.isMinLength("ABC", 3));
         assertFalse(check.isMinLength(null, 0));
     }
-
+    
     @Test
     public void testIsExactLength() throws Exception {
         assertTrue(check.isExactLength("", 0));
@@ -83,7 +85,7 @@ public class CheckTest {
         assertTrue(check.isExactLength("ABC", 3));
         assertFalse(check.isExactLength(null, 0));
     }
-
+    
     @Test
     public void testIsLengthInMinMax() throws Exception {
         assertTrue(check.isLengthInMinMax("", 0, 1));
@@ -97,7 +99,7 @@ public class CheckTest {
         assertTrue(check.isLengthInMinMax("ABC", 0, 20));
         assertFalse(check.isLengthInMinMax(null, 30, 106));
     }
-
+    
     @Test
     public void testIsUrl() throws Exception {
         assertTrue(check.isUrl("http://test.ch"));
@@ -108,7 +110,7 @@ public class CheckTest {
         assertFalse(check.isUrl("fttp://test.ch"));
         assertFalse(check.isUrl(null));
     }
-
+    
     @Test
     public void testIsFiletypeExtension() throws Exception {
         assertTrue(check.isFiletypeExtension("test.xls", ".xls"));
@@ -120,7 +122,7 @@ public class CheckTest {
         assertFalse(check.isFiletypeExtension(null, null));
         assertFalse(check.isFiletypeExtension(null, ".xls"));
     }
-
+    
     @Test
     public void testGetAlphanumericWordCharacters() throws Exception {
         assertTrue(check.getAlphanumericWordCharacters("").size() == 0);
@@ -129,7 +131,7 @@ public class CheckTest {
         assertTrue(check.getAlphanumericWordCharacters("Aa!9o= 2? El ").size() == 4);
         assertTrue(check.getAlphanumericWordCharacters(null).size() == 0);
     }
-
+    
     @Test
     public void testCountCharacterInString() throws Exception {
         assertTrue(check.countCharacterInString("", "") == 0);
@@ -139,7 +141,7 @@ public class CheckTest {
         assertTrue(check.countCharacterInString("testATest ", "test") == 1);
         assertTrue(check.countCharacterInString("test", null) == 0);
     }
-
+    
     @Test
     public void testContainsOnlyNumbers() throws Exception {
         assertFalse(check.containsOnlyNumbers(""));
@@ -147,9 +149,9 @@ public class CheckTest {
         assertFalse(check.containsOnlyNumbers("11 "));
         assertTrue(check.containsOnlyNumbers("11"));
         assertFalse(check.containsOnlyNumbers(null));
-
+        
     }
-
+    
     @Test
     public void testIsValidIssn() throws Exception {
         assertFalse(check.isValidIssn(""));
@@ -158,7 +160,7 @@ public class CheckTest {
         assertTrue(check.isValidIssn("1420-4398"));
         assertFalse(check.isValidIssn(null));
     }
-
+    
     @Test
     public void testIsYear() throws Exception {
         assertFalse(check.isYear(""));
@@ -168,8 +170,8 @@ public class CheckTest {
         assertTrue(check.isYear("2120"));
         assertFalse(check.isYear("2012 "));
         assertFalse(check.isYear(null));
-
+        
     }
-
+    
     // CHECKSTYLE:ON
 }
