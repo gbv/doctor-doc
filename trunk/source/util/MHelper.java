@@ -119,7 +119,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             // Mail versenden
             final Transport bus = session.getTransport("smtp");
             try {
-                bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
+                bus.connect(SYSTEM_EMAIL_HOST, getLoadBalancedAccontname(), SYSTEM_EMAIL_PASSWORD);
                 bus.sendMessage(m, addressTo); // An diese Adressen senden
             } finally {
                 bus.close();
@@ -383,7 +383,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     private void process() {
-        final Folder inbox = getPop3Folder(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD, "INBOX");
+        final Folder inbox = getPop3Folder(SYSTEM_EMAIL_HOST, getLoadBalancedAccontname(), SYSTEM_EMAIL_PASSWORD,
+                "INBOX");
         
         try {
             final Message[] message = inbox.getMessages();
@@ -432,8 +433,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
         final Properties props = System.getProperties();
         // Setup mail server
         props.setProperty("mail.smtp.host", SYSTEM_EMAIL_HOST);
-        props.setProperty("mail.user", "SYSTEM_EMAIL_ACCOUNTNAME");
-        props.setProperty("mail.password", "SYSTEM_EMAIL_PASSWORD");
+        props.setProperty("mail.user", getLoadBalancedAccontname());
+        props.setProperty("mail.password", SYSTEM_EMAIL_PASSWORD);
         /* Antwortadresse setzen
         //props.setProperty("mail.smtp.from", "set@reaply.de");
          * Problem:
@@ -462,11 +463,26 @@ public class MHelper extends AbstractReadSystemConfigurations {
         // Mail versenden
         final Transport bus = session.getTransport("smtp");
         try {
-            bus.connect(SYSTEM_EMAIL_HOST, SYSTEM_EMAIL_ACCOUNTNAME, SYSTEM_EMAIL_PASSWORD);
+            bus.connect(SYSTEM_EMAIL_HOST, getLoadBalancedAccontname(), SYSTEM_EMAIL_PASSWORD);
             bus.sendMessage(m, addressTo); // An diese Adressen senden
         } finally {
             bus.close();
         }
     }
     
+    private String getLoadBalancedAccontname() {
+        
+        final int randomNumber = getRandomNumber(1, SYSTEM_EMAIL_ACCOUNTNAME.length);
+        
+        System.out.println(SYSTEM_EMAIL_ACCOUNTNAME[randomNumber - 1]);
+        
+        return SYSTEM_EMAIL_ACCOUNTNAME[randomNumber - 1];
+        
+    }
+    
+    private int getRandomNumber(final int min, final int max) {
+        
+        return min + (int) (Math.random() * ((max - min) + 1));
+        
+    }
 }
