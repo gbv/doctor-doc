@@ -41,7 +41,7 @@ public class Check {
     private static final SimpleLogger LOG = new SimpleLogger(Check.class);
     
     /**
-     * Prüft ob der String eine E-Mail Adresse ist
+     * Checks if a string is a valid email address.
      * 
      * @param email
      * @return
@@ -52,12 +52,12 @@ public class Check {
             final InternetAddress ia = new InternetAddress();
             ia.setAddress(email);
             try {
-                ia.validate(); // wirft bei grundsätzlich ungültigen Adressen eine AdressException
+                ia.validate(); // throws an error for invalid addresses and null input, but does not catch all errors
                 final Pattern p = Pattern
                         .compile("\\b^['_a-z0-9-\\+]+(\\.['_a-z0-9-\\+]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\"
                                 + ".([a-z]{2}|aero|arpa|asia|biz|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|nato|net|"
                                 + "org|pro|tel|travel|xxx)$\\b");
-                
+                // we need to match against lower case for the above regex
                 final Matcher m = p.matcher(email.toLowerCase());
                 if (m.find()) {
                     check = true;
