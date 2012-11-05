@@ -55,6 +55,7 @@ public class CheckTest {
     @Test
     public void testIsEmail() throws Exception {
         assertTrue(check.isEmail("test@test.ch"));
+        assertTrue(check.isEmail("Test.TEST@test.ch"));
         assertFalse(check.isEmail("test@testch"));
         assertFalse(check.isEmail("test@test.c"));
         assertFalse(check.isEmail("'test@test.ch'"));
