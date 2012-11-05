@@ -474,8 +474,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
         
         final int randomNumber = getRandomNumber(1, SYSTEM_EMAIL_ACCOUNTNAME.length);
         
-        System.out.println(SYSTEM_EMAIL_ACCOUNTNAME[randomNumber - 1]);
-        
         return SYSTEM_EMAIL_ACCOUNTNAME[randomNumber - 1];
         
     }
