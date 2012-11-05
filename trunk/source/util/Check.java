@@ -54,11 +54,11 @@ public class Check {
             try {
                 ia.validate(); // wirft bei grundsätzlich ungültigen Adressen eine AdressException
                 final Pattern p = Pattern
-                        .compile("\\b^['_a-zA-Z0-9-\\+]+(\\.['_a-zA-Z0-9-\\+]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\"
-                                + ".([a-zA-Z]{2}|aero|arpa|asia|biz|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|nato|net|"
+                        .compile("\\b^['_a-z0-9-\\+]+(\\.['_a-z0-9-\\+]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\"
+                                + ".([a-z]{2}|aero|arpa|asia|biz|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|nato|net|"
                                 + "org|pro|tel|travel|xxx)$\\b");
                 
-                final Matcher m = p.matcher(email);
+                final Matcher m = p.matcher(email.toLowerCase());
                 if (m.find()) {
                     check = true;
                 }
