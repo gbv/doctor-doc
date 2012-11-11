@@ -36,7 +36,7 @@ import org.grlea.log.SimpleLogger;
  * Diese Klasse vereinfacht verschiedene Abläufe zwischen Programm und
  * Mailserver. </P></P>
  * 
- * @author Pascal Steiner
+ * @author Pascal Steiner, Markus Fischer
  */
 public class MHelper extends AbstractReadSystemConfigurations {
     
@@ -51,10 +51,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
     public void sendMail(final String[] to, final Message msg) {
         sendMail(to, msg, PRIORITY);
     }
-    
-    //    public void sendMailReplyTo(String[] to, Message msg, String replyto) {
-    //      sendMailReplyTo(to, msg, replyto, PRIORITY);
-    //    }
     
     public void sendMail(final String[] recipients, final String subject, final String message) {
         final String from = SYSTEM_EMAIL;
@@ -407,21 +403,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
         
     }
     
-    //    /*
-    //     * Mail Session, Debug eingeschalten, im Normalfall zum erstellen einer Nachricht Message
-    //     */
-    //    public Session getSession() {
-    //        //       SMPT Authentifizierung einschalten
-    //        final Properties props = new Properties();
-    //        props.put(SMTP_AUTH, TRUE);
-    //
-    //        // create some properties and get the default Session
-    //        final Session session = Session.getInstance(props, null);
-    //        session.setDebug(false);
-    //
-    //        return session;
-    //    }
-    
     public static void main(final String[] args) {
         final MHelper mail = new MHelper();
         mail.process();
@@ -435,13 +416,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
         props.setProperty("mail.smtp.host", SYSTEM_EMAIL_HOST);
         props.setProperty("mail.user", getLoadBalancedAccontname());
         props.setProperty("mail.password", SYSTEM_EMAIL_PASSWORD);
-        /* Antwortadresse setzen
-        //props.setProperty("mail.smtp.from", "set@reaply.de");
-         * Problem:
-         * SMTP Server verweigert das Senden mit einem falschen Absender
-         * und man bekommt eine entsprechende Exception (Ausnahme: SMTP-Relay).
-         */
-        
         props.setProperty(SMTP_AUTH, TRUE);
         return props;
     }
@@ -470,17 +444,18 @@ public class MHelper extends AbstractReadSystemConfigurations {
         }
     }
     
+    /**
+     * Gets a random email from the array list of the system emails specified.
+     * It returns always the same email, if only one email is specified,
+     **/
     private String getLoadBalancedAccontname() {
-        
         final int randomNumber = getRandomNumber(1, SYSTEM_EMAIL_ACCOUNTNAME.length);
-        
         return SYSTEM_EMAIL_ACCOUNTNAME[randomNumber - 1];
         
     }
     
+    /** Returns a random number between and including a minimum and maximum. */
     private int getRandomNumber(final int min, final int max) {
-        
         return min + (int) (Math.random() * ((max - min) + 1));
-        
     }
 }
