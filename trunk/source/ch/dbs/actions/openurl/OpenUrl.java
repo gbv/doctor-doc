@@ -880,7 +880,7 @@ public class OpenUrl {
                     of.setJahr(getXmlTag("<year", "</year>", xml));
                 }
             } else {
-                LOG.warn("Resolving DOI failed, using CrossRef!");
+                LOG.warn("Resolving DOI failed:\n" + content);
             }
         }
         
