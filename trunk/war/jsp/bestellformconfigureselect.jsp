@@ -64,7 +64,7 @@
   </tr>
 </table>
 
-<p><bean:message key="bestellformconfigureselect.kontakt" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message bundle="systemConfig" key="systemEmail.email"/></a></p>
+<p><bean:message key="bestellformconfigureselect.kontakt" /></p>
 
 <h3><bean:message key="bestellformconfigureselect.config" /></h3>
 

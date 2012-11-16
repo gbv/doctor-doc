@@ -421,25 +421,10 @@ public final class KontoAction extends DispatchAction {
                                 + "register you for this service and we will contact you with the details as soon as "
                                 + "possible.\012\012");
                     }
-                    if (k.getKontotyp() != 0 && k.getLand().equals("DE")) {
-                        mg.append("-------------------\012"
-                                + "GILT FÜR DEUTSCHLAND:\012"
-                                + "Aufgrund der geltenden Bestimmungen des deutschen Gesetzes für Telekommunikation "
-                                + "bezüglich der Ortsnetzrufnummern, die von der Bundesnetzagentur "
-                                + "(http://www.bundesnetzagentur.de/media/archive/11497.pdf) verwaltet werden, "
-                                + "benötigen wir eine schriftliche Bescheinigung, dass Sie tatsächlich den Sitz im selben "
-                                + "Ortsnetzbereich mit der von uns vergebenen Faxnummer haben.\012"
-                                + "Bitte senden Sie uns, deshalb per Email eine Bescheinigung des \"Firmensitzes\", "
-                                + "entweder in Form einer:\012"
-                                + "- Kopie einer Rechnung für Wasser, Strom, Gas usw.\012"
-                                + "- Kopie des Handelsregisterauszugs/Gewerbeanmeldung\012"
-                                + "Bitte entschuldigen Sie diesen Zusatzaufwand, aber leider verlangt die deutsche "
-                                + "Gesetzgebung diese Überprüfung.\012" + "-------------------\012\012");
-                        
-                    }
                     mg.append("We hope you enjoy using ");
                     mg.append(ReadSystemConfigurations.getApplicationName());
-                    mg.append("!\n\nGet in contact with us if you have any questions!\012\012"
+                    mg.append("!\n\nGet in contact with us by using our mailing list if you have any questions: "
+                            + "https://lists.sourceforge.net/lists/listinfo/doctor-doc-general\012\012"
                             + "Best regards\012Your Team\040");
                     mg.append(ReadSystemConfigurations.getApplicationName());
                     final String[] sendto = new String[1];

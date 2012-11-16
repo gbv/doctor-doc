@@ -77,7 +77,7 @@ OpenURL - Linkresolver
       
       <ol>
         <li><bean:message arg0="<%=appName%>" key="openurl.newkonto" /></li>
-        <li><a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="openurl.ip.send.subject" />"><bean:message key="openurl.ip.send" /></a> <bean:message key="openurl.ip" /></li>
+        <li><bean:message key="openurl.ip" /></li>
         <li><bean:message key="openurl.baseurl" /></li>
       </ol>
 
@@ -142,7 +142,7 @@ OpenURL - Linkresolver
   </tr>
 </table>
       
-      <p><bean:message key="openurl.gbv_anleitung" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message key="openurl.kontakt" /></a> <bean:message key="openurl.kontakt.text" /></p>
+      <p><bean:message key="openurl.gbv_anleitung" /></p>
       
    <h3>
      Demo
@@ -187,8 +187,7 @@ OpenURL - Linkresolver
   </tr>
 </table>
 
-<p><bean:message key="bestellformconfigureselect.kontakt" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/>"><bean:message bundle="systemConfig" key="systemEmail.email"/></a></p>
-
+<br>
 	
    <h3>
      <bean:message key="bestellformconfigureselect.external.title" />

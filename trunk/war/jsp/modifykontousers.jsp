@@ -212,7 +212,7 @@
       </logic:equal>
       <logic:notEqual name="userform" property="delete" value="true">
         <td><br><input type="submit" value="sichern"></td>
-        <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+        <td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:info@doctor-doc.com<bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           <input name="method" type="hidden" value="modifykontousers" />
         </logic:notEqual>
         </tr>
@@ -224,13 +224,13 @@
       <tr>
         <logic:notEqual name="userinfo" property="keepordervalues2" value="true">
         	<td><br><input type="submit" value="<bean:message key="modifykontousers.save" />"/></td>
-        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:info@doctor-doc.com<bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           	<input name="method" type="hidden" value="modifykontousers" />
         </logic:notEqual>
           
         <logic:equal name="userinfo" property="keepordervalues2" value="true">
         	<td><br><input type="submit" value="<bean:message key="modifykontousers.save_continue" />"></td>
-        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:<bean:message bundle="systemConfig" key="systemEmail.email"/><bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
+        	<td><logic:notEqual name="userinfo" property="benutzer.rechte" value="1"><br><bean:message key="modifykontousers.new_librarian" /> <a href="mailto:info@doctor-doc.com<bean:message key="modifykontousers.new_librarian.subject"/>"><bean:message key="modifykontousers.new_librarian.contact"/></a></logic:notEqual></td>
           	<input name="method" type="hidden" value="modifykontousers" />
         </logic:equal>
           
