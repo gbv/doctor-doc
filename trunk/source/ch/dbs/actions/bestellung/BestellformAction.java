@@ -657,6 +657,11 @@ public final class BestellformAction extends DispatchAction {
                         
                         m.append('\n');
                         
+                        if (library != null && !"".equals(library)) {
+                            m.append(library);
+                            m.append("\n\n");
+                        }
+                        
                         if (of.getDeloptions() != null && !of.getDeloptions().equals("")) {
                             m.append("Desired deliveryway: ");
                             m.append(of.getDeloptions().toUpperCase());
