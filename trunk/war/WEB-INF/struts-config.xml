@@ -198,6 +198,7 @@
 			<forward name="checkavailability"
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
 			<forward name="adduser" path="/add.do" />
+			<forward name="logout" path="/logout.do" />
 		</action>
 		<action forward="/jsp/uebersicht.jsp" path="/uebersicht" />
 

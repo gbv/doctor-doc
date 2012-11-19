@@ -304,11 +304,25 @@ public final class UserAction extends DispatchAction {
         final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            final Konto k = new Konto();
+            final Text cn = new Text();
             try {
-                ui.setKonto(new Konto(kf.getKid(), k.getConnection()));
+                // check that user is allowed to change to this account...
+                final VKontoBenutzer vkb = new VKontoBenutzer();
+                if (vkb.isUserFromKonto(kf.getKid(), ui.getBenutzer().getId(), cn.getConnection())
+                        || ui.getBenutzer().getRechte() == 3) {
+                    ui.setKonto(new Konto(kf.getKid(), cn.getConnection()));
+                } else {
+                    // ...we have some form hacking.
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu(Result.LOGIN.getValue());
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                    final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                    return mp.findForward("logout");
+                }
+                
             } finally {
-                k.close();
+                cn.close();
             }
             rq.getSession().setAttribute("userinfo", ui);
             
