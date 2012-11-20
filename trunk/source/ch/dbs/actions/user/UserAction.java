@@ -312,12 +312,11 @@ public final class UserAction extends DispatchAction {
                         || ui.getBenutzer().getRechte() == 3) {
                     ui.setKonto(new Konto(kf.getKid(), cn.getConnection()));
                 } else {
-                    // ...we have some form hacking.
+                    // ...we have some form hacking => logout
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu(Result.LOGIN.getValue());
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                    LOG.info("changekonto: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                     return mp.findForward("logout");
                 }
                 
