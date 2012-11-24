@@ -149,7 +149,7 @@ public final class OrderAction extends DispatchAction {
                         int searches = 0;
                         boolean ergebnis = false;
                         int start = 0;
-                        String compare = "";
+                        final String compare = "class=\"r\">";
                         
                         while ((!ergebnis) && (searches < 3)) {
                             
@@ -168,7 +168,7 @@ public final class OrderAction extends DispatchAction {
                             
                             content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(),
                                     Connect.TRIES_1.getValue());
-                            
+  
                             //      content = "<form action=\"Captcha\" method=\"get\">" +
                             //      "<input type=\"hidden\" name=\"id\" value=\"17179006839024668804\">" +
                             //      "<input type=\"text\" name=\"captcha\" value=\"\" id=\"captcha\" size=\"12\">" +
@@ -186,12 +186,6 @@ public final class OrderAction extends DispatchAction {
                                 LOG.error("Problem treating captcha: " + e.toString() + "\012" + content);
                             }
                             
-                            if (searches < 2) {
-                                compare = "[PDF]";
-                            } else {
-                                compare = "class=\"r\">";
-                            }
-                            
                             //   make sure Google did not respond with Captcha
                             if (!check.containsGoogleCaptcha(content)) {
                                 
@@ -203,10 +197,20 @@ public final class OrderAction extends DispatchAction {
                                     
                                     while (content2.contains(compare)) {
                                         
-                                        JournalDetails jdGoogle = new JournalDetails();
+                                        String startpoint = null;
                                         
-                                        start = content2.indexOf("<a href=", content2.indexOf(compare)) + 9;
-                                        linkPdfGoogle = content2.substring(start, content2.indexOf('"', start + 9));
+                                        if (content2.contains(compare + "<a href=\"/url?url=")) {
+                                            startpoint = "<a href=\"/url?url=";
+                                        } else {
+                                            startpoint = "<a href=\"";
+                                        }
+                                        
+                                        final JournalDetails jdGoogle = new JournalDetails();
+                                        
+                                        start = content2.indexOf(startpoint, content2.indexOf(compare))
+                                                + startpoint.length();
+                                        linkPdfGoogle = content2.substring(start,
+                                                content2.indexOf('"', start + startpoint.length()));
                                         linkPdfGoogle = correctGoogleURL(linkPdfGoogle);
                                         String textLinkPdfGoogle = content2.substring(content2.indexOf('>', start) + 1,
                                                 content2.indexOf("</a>", start));
@@ -216,33 +220,6 @@ public final class OrderAction extends DispatchAction {
                                         jdGoogle.setLink(linkPdfGoogle);
                                         jdGoogle.setUrl_text(textLinkPdfGoogle);
                                         hitsGoogle.add(jdGoogle);
-                                        
-                                        if (searches < 2) { // use Google-Cache only, if looking for PDFs
-                                            String cache = "";
-                                            int cachePosition = 0;
-                                            int end = 0;
-                                            if (searches < 2) {
-                                                // class=w => start of next record
-                                                end = content2.indexOf("class=w", start);
-                                            } else {
-                                                // class=g => start of next record
-                                                end = content2.indexOf(compare, start);
-                                            }
-                                            
-                                            if ((end != -1) && (content2.substring(start, end).contains("=cache:"))
-                                                    || (end == -1) && (content2.substring(start).contains("=cache:"))) {
-                                                cachePosition = content2.indexOf("=cache:", start);
-                                                // bis + => ohne highlighten der Suchbegriffe im Cache
-                                                cache = content2.substring(
-                                                        content2.lastIndexOf("http:", cachePosition),
-                                                        content2.indexOf('+', cachePosition));
-                                                
-                                                jdGoogle = new JournalDetails();
-                                                jdGoogle.setLink(cache);
-                                                jdGoogle.setUrl_text("(Google-Cache): " + textLinkPdfGoogle);
-                                                hitsGoogle.add(jdGoogle);
-                                            }
-                                        }
                                         
                                         content2 = content2.substring(start);
                                     }
@@ -2285,13 +2262,17 @@ public final class OrderAction extends DispatchAction {
     private String correctGoogleURL(final String input) {
         // Methode um gefundene Google-URL für die Ausgabe vorzubereiten
         String output = input;
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
         
         // hier ist eigentlich kein Treffer gefunden worde. Google schlägt ähnliche Treffer mit dieser URL-Syntax vor...
         if (input.startsWith("/url?q=")) {
             output = input.substring(7);
         }
+        // cut Parameters from Google away... 
+        if (input.contains("&amp;rct=")) {
+            output = input.substring(0, input.indexOf("&amp;rct="));
+        }
         
+        final SpecialCharacters specialCharacters = new SpecialCharacters();
         output = specialCharacters.replace(output);
         
         return output;
