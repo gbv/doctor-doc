@@ -42,38 +42,38 @@ import ch.dbs.form.OrderForm;
 import enums.Result;
 
 /**
- * Class to show stock details. One does not need to be logged in,
- * in order to view the information card of a holding.
+ * Class to show stock details. One does not need to be logged in, in order to
+ * view the information card of a holding.
  */
 public class Stockdetails extends Action {
-
+    
     /**
      * Presents all the details for a given holding/stock.
      */
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         String forward = Result.FAILURE.getValue();
-
+        
         // read article values, if request comes from within D-D
         final OrderForm of = (OrderForm) form;
-
+        
         // read from OpenURL
         final OpenUrl openURL = new OpenUrl();
         final ConvertOpenUrl convert = new ConvertOpenUrl();
         final ContextObject co = openURL.readOpenUrlFromRequest(rq);
         final OrderForm ofOpenURL = convert.makeOrderform(co);
-
+        
         // combine OrderForms
         of.completeOrderForm(of, ofOpenURL);
-
+        
         // get holding parameters
         final String kid = rq.getParameter("library");
         final String hoid = rq.getParameter("holding");
         final String stid = rq.getParameter("stock");
-
+        
         final List<Bestand> holdings = getHoldings(kid, hoid, stid);
-
+        
         // make sure we found some holdings
         if (holdings.isEmpty()) {
             final ActiveMenusForm mf = new ActiveMenusForm();
@@ -83,25 +83,25 @@ public class Stockdetails extends Action {
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             return mp.findForward(forward);
         }
-
+        
         forward = Result.SUCCESS.getValue();
-
+        
         // get Konto from holding
         final Konto k = holdings.get(0).getHolding().getKonto();
-
+        
         // if we have an DID in the Konto, and the request is for a stock ID, we will
         // redirect to the defined order form (external / internal)
         if (k.getDid() != null && stid != null) {
-
+            
             try {
                 final DaiaParam dp = new DaiaParam(k.getDid(), k.getConnection());
-
+                
                 // additional check if the request comes out of the IP range of the account
-
+                
                 // get Konto from IP
                 final Auth auth = new Auth();
                 final Text t = auth.grantAccess(rq);
-
+                
                 // use IP based order form if applicable
                 if (useIPBasedForm(k, t) && dp.isIp_overrides()) {
                     rq.setAttribute("ofjo", of);
@@ -127,67 +127,78 @@ public class Stockdetails extends Action {
                 k.close();
             }
         }
-
+        
         // in any case set parameters into request
         rq.setAttribute("konto", k);
         rq.setAttribute("holdings", holdings);
         rq.setAttribute("orderform", of);
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * Gets a list with the holdings.
-     *
+     * 
      * @param String kid
      * @param String hoid
      * @param String stid
      * @return List<Bestand> holdings
      */
-    private List<Bestand> getHoldings(final String kid, final String hoid, final String stid) {
-
+    private List<Bestand> getHoldings(String kid, String hoid, String stid) {
+        
         List<Bestand> holdings = new ArrayList<Bestand>();
         Bestand bestand = new Bestand();
         final Text cn = new Text();
-
-        // we need at least one parameter
+        
+        // make sure we only get numbers and set "" to null
+        if (!org.apache.commons.lang.StringUtils.isNumeric(kid) || "".equals(kid)) {
+            kid = null;
+        }
+        if (!org.apache.commons.lang.StringUtils.isNumeric(hoid) || "".equals(hoid)) {
+            hoid = null;
+        }
+        if (!org.apache.commons.lang.StringUtils.isNumeric(stid) || "".equals(stid)) {
+            stid = null;
+        }
+        
+        // we need at least one valid parameter
         if (kid == null && hoid == null && stid == null) {
             return holdings;
         }
-
+        
         try {
             // return holdings upon the most specific identifier, ignoring
             // less specific identifiers. The order is: stid, hoid, kid
-            if (stid != null && !"".equals(stid)) {
+            if (stid != null) {
                 // with a stockid, internal holdings have to be visible
                 bestand = new Bestand(Long.valueOf(stid), true, cn.getConnection());
                 // to avoid NullPointerException if internal of holding = true
                 if (bestand.getId() != null) {
                     holdings.add(bestand);
                 }
-            } else if (hoid != null && !"".equals(hoid)) {
+            } else if (hoid != null) {
                 // internal holdings are not visible
                 holdings = bestand.getAllBestandForHoid(Long.valueOf(hoid), false, cn.getConnection());
-            } else if (kid != null && !"".equals(kid)) {
+            } else if (kid != null) {
                 // we only have a kid
                 holdings = bestand.getAllKontoBestand(Long.valueOf(kid), false, cn.getConnection());
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return holdings;
     }
-
+    
     private boolean useIPBasedForm(final Konto k, final Text t) {
         boolean result = false;
-
+        
         if (t.getKonto() != null && k.getId().equals(t.getKonto().getId())) {
             result = true;
         }
-
+        
         return result;
     }
-
+    
 }
