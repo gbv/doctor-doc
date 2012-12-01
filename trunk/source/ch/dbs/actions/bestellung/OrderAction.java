@@ -168,7 +168,7 @@ public final class OrderAction extends DispatchAction {
                             
                             content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(),
                                     Connect.TRIES_1.getValue());
-  
+                            
                             //      content = "<form action=\"Captcha\" method=\"get\">" +
                             //      "<input type=\"hidden\" name=\"id\" value=\"17179006839024668804\">" +
                             //      "<input type=\"text\" name=\"captcha\" value=\"\" id=\"captcha\" size=\"12\">" +
@@ -2271,9 +2271,8 @@ public final class OrderAction extends DispatchAction {
         if (input.contains("&amp;rct=")) {
             output = input.substring(0, input.indexOf("&amp;rct="));
         }
-        
-        final SpecialCharacters specialCharacters = new SpecialCharacters();
-        output = specialCharacters.replace(output);
+        final CodeUrl url = new CodeUrl();
+        output = url.decode(output, "UTF-8");
         
         return output;
     }
