@@ -2264,12 +2264,16 @@ public final class OrderAction extends DispatchAction {
         String output = input;
         
         // hier ist eigentlich kein Treffer gefunden worde. Google schlägt ähnliche Treffer mit dieser URL-Syntax vor...
-        if (input.startsWith("/url?q=")) {
-            output = input.substring(7);
+        if (output.startsWith("/url?q=")) {
+            output = output.substring(7);
         }
         // cut Parameters from Google away... 
-        if (input.contains("&amp;rct=")) {
-            output = input.substring(0, input.indexOf("&amp;rct="));
+        if (output.contains("&amp;rct=")) {
+            output = output.substring(0, output.indexOf("&amp;rct="));
+        }
+        // cut Parameters from Google away... 
+        if (output.contains("&amp;sa=U")) {
+            output = output.substring(0, output.indexOf("&amp;sa=U"));
         }
         final CodeUrl url = new CodeUrl();
         output = url.decode(output, "UTF-8");
