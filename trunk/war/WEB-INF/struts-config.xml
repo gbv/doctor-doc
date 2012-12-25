@@ -307,10 +307,17 @@
 		<action path="/sendbill" name="BillingForm" parameter="method"
 			scope="request" type="ch.dbs.actions.user.KontoAction">
 			<forward name="success" path="/jsp/message.jsp" />
+			<forward name="preview" path="/billpreview.do?method=billingPreview" />
 		</action>
 
 		<!-- Rechnung zu Konto auflisten -->
 		<action path="/listbillings" name="KontoForm" parameter="method"
+			scope="request" type="ch.dbs.actions.billing.BillingAction">
+			<forward name="success" path="/jsp/billinglist.jsp" />
+		</action>
+				
+		<!-- Rechnung als PDF preview erstellen -->
+		<action path="/billpreview" name="BillingForm" parameter="method"
 			scope="request" type="ch.dbs.actions.billing.BillingAction">
 			<forward name="success" path="/jsp/billinglist.jsp" />
 		</action>
