@@ -1114,61 +1114,77 @@ public final class KontoAction extends DispatchAction {
     /**
      * Admins können Rechnungen versenden
      */
-    public ActionForward sendBill(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
-            final HttpServletResponse rp) {
-        
-        String forward = Result.FAILURE.getValue();
-        final Text cn = new Text();
-        final Auth auth = new Auth();
-        // Benutzer eingeloggt?
-        if (auth.isLogin(rq)) {
-            
-            if (auth.isAdmin(rq)) {
-                try {
-                    BillingForm bf = (BillingForm) fm;
-                    final MHelper mh = new MHelper();
-                    
-                    final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
-                    
-                    final String[] to = new String[1];
-                    to[0] = k.getBibliotheksmail();
-                    
-                    // Rechnung speichern
-                    final KontoAdmin ka = new KontoAdmin();
-                    bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
-                    bf.getBill().save(cn.getConnection());
-                    
-                    // Mail versenden
-                    mh.sendMail(to, "Rechnung für ihr Konto auf doctor-doc.com", bf.getBillingtext());
-                    
-                    // Meldung verfassen
-                    final Message m = new Message("message.sendbill", k.getBibliotheksname() + "\n\n"
-                            + bf.getBillingtext(), "listbillings.do?method=listBillings&kid=" + k.getId());
-                    rq.setAttribute("message", m);
-                    
-                    forward = Result.SUCCESS.getValue();
-                    
-                } catch (final Exception e) {
-                    LOG.error("sendBilling: " + e.toString());
-                    final ErrorMessage em = new ErrorMessage("error.sendbilling", e.getMessage(),
-                            "kontoadmin.do?method=listKontos");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                } finally {
-                    cn.close();
-                }
-            } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(Result.LOGIN.getValue());
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-        }
-        
-        return mp.findForward(forward);
-    }
+	public ActionForward sendBill(final ActionMapping mp, final ActionForm fm,
+			final HttpServletRequest rq, final HttpServletResponse rp) {
+
+		String forward = Result.FAILURE.getValue();
+		final Text cn = new Text();
+		final Auth auth = new Auth();
+		// Benutzer eingeloggt?
+		if (auth.isLogin(rq)) {
+
+			if (auth.isAdmin(rq)) {
+				try {
+					BillingForm bf = (BillingForm) fm;
+					final MHelper mh = new MHelper();
+
+					if (bf.getAction().equals("PDF Vorschau")) {
+						forward = "preview";
+//						rq.setAttribute("billingform", fm);
+					} else {
+						final Konto k = new Konto(bf.getKontoid(),
+								cn.getConnection());
+
+						final String[] to = new String[1];
+						to[0] = k.getBibliotheksmail();
+
+						// Rechnung speichern
+						final KontoAdmin ka = new KontoAdmin();
+						bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
+						bf.getBill().save(cn.getConnection());
+
+						// Mail versenden
+						mh.sendMail(to,
+								"Rechnung für ihr Konto auf doctor-doc.com",
+								bf.getBillingtext());
+
+						// Meldung verfassen
+						final Message m = new Message("message.sendbill",
+								k.getBibliotheksname() + "\n\n"
+										+ bf.getBillingtext(),
+								"listbillings.do?method=listBillings&kid="
+										+ k.getId());
+						rq.setAttribute("message", m);
+
+						forward = Result.SUCCESS.getValue();
+					}
+
+					
+				} catch (final Exception e) {
+					LOG.error("sendBilling: " + e.toString());
+					final ErrorMessage em = new ErrorMessage(
+							"error.sendbilling", e.getMessage(),
+							"kontoadmin.do?method=listKontos");
+					rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+				} finally {
+					cn.close();
+				}
+
+			} else {
+				final ErrorMessage em = new ErrorMessage("error.berechtigung",
+						"searchfree.do");
+				rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+			}
+		} else {
+			final ActiveMenusForm mf = new ActiveMenusForm();
+			mf.setActivemenu(Result.LOGIN.getValue());
+			rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+			final ErrorMessage em = new ErrorMessage("error.timeout",
+					"login.do");
+			rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+		}
+
+		return mp.findForward(forward);
+	}
     
 }
