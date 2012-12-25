@@ -57,9 +57,17 @@ public final class BillingForm extends ActionForm {
     private boolean storniert;
     private String billingtext = "";
     private String manuelltext = "";
+    private String action = "";
 
-
-    public double getBetrag() {
+    
+    
+    public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
+	}
+	public double getBetrag() {
         return betrag;
     }
     public void setBetrag(final double betrag) {
