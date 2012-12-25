@@ -1,143 +1,73 @@
-<?xml version="1.0" encoding="ISO-8859-1"  ?>
-<!-- Created with iReport - A designer for JasperReports -->
-<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
-<jasperReport
-     name="rechnung"
-     columnCount="1"
-     printOrder="Vertical"
-     orientation="Portrait"
-     pageWidth="595"
-     pageHeight="842"
-     columnWidth="535"
-     columnSpacing="0"
-     leftMargin="30"
-     rightMargin="30"
-     topMargin="20"
-     bottomMargin="20"
-     whenNoDataType="NoPages"
-     isTitleNewPage="false"
-     isSummaryNewPage="false">
-  <property name="ireport.scriptlethandling" value="0" />
-  <property name="ireport.encoding" value="ISO-8859-1" />
-  <import value="java.util.*" />
-  <import value="net.sf.jasperreports.engine.*" />
-  <import value="net.sf.jasperreports.engine.data.*" />
-  <reportFont name="Courier" isDefault="false" fontName="Courier New" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
-  <reportFont name="Arial" isDefault="true" fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="ARIAL.TTF" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
-
-  <style 
-    name="Arial"
-    isDefault="true"
-    isStyledText="false"
-    fontName="Arial"
-    pdfFontName="Arial.ttf"
-    isPdfEmbedded="true"
-  >
-  </style>
-
-
-  <field name="billingtext" class="java.lang.String"/>
-  <field name="adress" class="java.lang.String"/>
-
-    <background>
-      <band height="0"  isSplitAllowed="true" >
-      </band>
-    </background>
-    <title>
-      <band height="113"  isSplitAllowed="true" >
-        <image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-          <reportElement
-            x="121"
-            y="0"
-            width="60"
-            height="57"
-            key="image-1"/>
-          <box></box>
-          <graphicElement stretchType="NoStretch"/>
-          <imageExpression class="java.lang.String"><![CDATA[../../img/sp.gif]]></imageExpression>
-        </image>
-        <staticText>
-          <reportElement
-            x="0"
-            y="3"
-            width="115"
-            height="79"
-            key="staticText-1"/>
-          <box></box>
-          <textElement textAlignment="Right">
-            <font reportFont="Arial" size="12"/>
-          </textElement>
-        <text><![CDATA[Verein Doctor-Doc
-Inkasso
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rechnung" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="77013638-60cb-43ff-a6dd-106393942551">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="ISO-8859-1"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Courier" fontName="Courier New" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Courier" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+	<parameter name="billingtext" class="java.lang.String"/>
+	<parameter name="adress" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="113" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="c9c6d58d-af15-46f1-8aae-495c92aef318" key="staticText-1" x="0" y="3" width="117" height="79"/>
+				<textElement textAlignment="Right">
+					<font size="12" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Verein Doctor-Doc
 Pascal Steiner
-Gysulastrasse 83
-CH-5022 Rombach
+Pfanne 4
+CH-5032 Aarau Rohr
 
 www.doctor-doc.com]]></text>
-        </staticText>
-      </band>
-    </title>
-    <pageHeader>
-      <band height="0"  isSplitAllowed="true" >
-      </band>
-    </pageHeader>
-    <columnHeader>
-      <band height="0"  isSplitAllowed="true" >
-      </band>
-    </columnHeader>
-    <detail>
-      <band height="100"  isSplitAllowed="true" >
-        <staticText>
-          <reportElement
-            x="0"
-            y="0"
-            width="154"
-            height="13"
-            key="staticText-2"/>
-          <box></box>
-          <textElement textAlignment="Left">
-            <font reportFont="Arial" size="8" isUnderline="true"/>
-          </textElement>
-        <text><![CDATA[Inkasso Verein DoctorDoc]]></text>
-        </staticText>
-        <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-          <reportElement
-            x="33"
-            y="56"
-            width="502"
-            height="18"
-            key="textField-1"/>
-          <box></box>
-          <textElement>
-            <font reportFont="Arial"/>
-          </textElement>
-        <textFieldExpression   class="java.lang.String"><![CDATA[$F{billingtext}]]></textFieldExpression>
-        </textField>
-        <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-          <reportElement
-            x="334"
-            y="23"
-            width="201"
-            height="18"
-            key="textField-2"/>
-          <box></box>
-          <textElement>
-            <font reportFont="Arial"/>
-          </textElement>
-        <textFieldExpression   class="java.lang.String"><![CDATA[$F{adress}]]></textFieldExpression>
-        </textField>
-      </band>
-    </detail>
-    <columnFooter>
-      <band height="0"  isSplitAllowed="true" >
-      </band>
-    </columnFooter>
-    <pageFooter>
-      <band height="0"  isSplitAllowed="true" >
-      </band>
-    </pageFooter>
-    <summary>
-      <band height="0"  isSplitAllowed="true" >
-      </band>
-    </summary>
+			</staticText>
+			<image>
+				<reportElement uuid="5f129eea-3707-489f-86e7-e57b120434eb" x="129" y="3" width="37" height="34"/>
+				<imageExpression><![CDATA["C:\\Users\\ps\\workspace\\docidoc\\reports\\sp.gif"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="100" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="692e1e01-05be-48f4-863c-da77cdb2c781" key="staticText-2" x="0" y="0" width="154" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Verein DoctorDoc]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="acf4a8d7-3d3d-4501-908f-44b913c5ee40" key="textField-1" x="33" y="56" width="502" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{billingtext}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="32935892-120a-415b-8d8f-c4692b217779" key="textField-2" x="334" y="23" width="201" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{adress}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
 </jasperReport>
