@@ -41,7 +41,9 @@ Folgende Rechnung f&uuml;r das Konto <bean:write name="billingform"
 <input type="hidden" name="manuelltext"
   value="<bean:write name="billingform" property="manuelltext" />" /> <input
   type="hidden" name="method" value="sendBill" /> <input name="action"
-  value="Rechnung so versenden" type="submit" /></form>
+  value="Rechnung so versenden" type="submit" /> 
+  <input name="action" 
+  value="PDF Vorschau" type="submit" /></form>
 
 <p></p>
 <hr />
