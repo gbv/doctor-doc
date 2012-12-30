@@ -78,8 +78,13 @@ public final class UserAction extends DispatchAction {
     public ActionForward stati(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
         
         //    Make sure user is logged in
         if (auth.isLogin(rq)) {
@@ -207,11 +212,16 @@ public final class UserAction extends DispatchAction {
     public ActionForward changestat(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final OverviewForm of = (OverviewForm) form;
         final OrderState orderstate = new OrderState();
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
-        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             
@@ -256,10 +266,15 @@ public final class UserAction extends DispatchAction {
     public ActionForward changenotes(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final OverviewForm of = (OverviewForm) form;
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
-        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
             
             final Text cn = new Text();
@@ -305,8 +320,8 @@ public final class UserAction extends DispatchAction {
         //    Make sure method is only accessible when user is logged in
         final KontoForm kf = (KontoForm) form;
         final OrderForm pageForm = new OrderForm(kf);
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        String forward = Result.FAILURE.getValue();
         if (auth.isLogin(rq)) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             final Text cn = new Text();
@@ -380,6 +395,12 @@ public final class UserAction extends DispatchAction {
     public ActionForward setuser(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final LoginForm authuserlist = (LoginForm) rq.getSession().getAttribute("authuserlist");
         final UserInfo ui = new UserInfo();
         final LoginForm lf = (LoginForm) form; // Infos mit welchem Benutzer gearbeitet werden soll
@@ -388,7 +409,6 @@ public final class UserAction extends DispatchAction {
         final ActiveMenusForm mf = new ActiveMenusForm();
         mf.setActivemenu(Result.LOGIN.getValue());
         
-        final Auth auth = new Auth();
         final Text cn = new Text();
         
         //  Ueberprüfung ob Auswahl aus LoginForm tatsächlich authorisierte Benutzer sind
@@ -466,8 +486,13 @@ public final class UserAction extends DispatchAction {
     public ActionForward keepOrderDetails(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
         if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
             forward = Result.SUCCESS.getValue();
             final OrderForm pageForm = (OrderForm) form;
@@ -499,12 +524,17 @@ public final class UserAction extends DispatchAction {
     public ActionForward prepareAddUser(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         ErrorMessage em = new ErrorMessage();
         final Text cn = new Text();
         final Countries country = new Countries();
         final Konto konto = new Konto();
-        final Auth auth = new Auth();
         
         try {
             
@@ -566,11 +596,16 @@ public final class UserAction extends DispatchAction {
     public ActionForward changeuserdetails(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         ErrorMessage em = new ErrorMessage();
         final Countries country = new Countries();
         final Text cn = new Text();
-        final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
         
         try {
@@ -721,10 +756,15 @@ public final class UserAction extends DispatchAction {
     public ActionForward showkontousers(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         final UserForm uf = new UserForm();
-        final Auth auth = new Auth();
         
         if (auth.isLogin(rq)) {
             forward = Result.SUCCESS.getValue();
@@ -761,11 +801,16 @@ public final class UserAction extends DispatchAction {
     public ActionForward modifykontousers(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final Check check = new Check();
-        final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
         
         try {
@@ -980,8 +1025,13 @@ public final class UserAction extends DispatchAction {
     public ActionForward prepareCategories(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
         try {
@@ -1025,9 +1075,14 @@ public final class UserAction extends DispatchAction {
     public ActionForward changeCategory(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-        final Auth auth = new Auth();
         
         try {
             
@@ -1149,10 +1204,15 @@ public final class UserAction extends DispatchAction {
     public ActionForward deleteKontousers(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-        final Auth auth = new Auth();
         final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
         
         try {
@@ -1217,8 +1277,13 @@ public final class UserAction extends DispatchAction {
     public ActionForward prepareSearch(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
         try {
@@ -1277,8 +1342,13 @@ public final class UserAction extends DispatchAction {
     public ActionForward search(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
         final Bestellungen b = new Bestellungen();
         
         if (auth.isLogin(rq)) {

@@ -1296,9 +1296,14 @@ public final class OrderAction extends DispatchAction {
     public ActionForward journalorderdetail(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final OrderForm pageForm = (OrderForm) form;
         final OrderState orderstate = new OrderState();
-        final Auth auth = new Auth();
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         if (auth.isLogin(rq)) {
@@ -1359,11 +1364,16 @@ public final class OrderAction extends DispatchAction {
     public ActionForward prepareReorder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final OrderForm pageForm = (OrderForm) form;
         ErrorMessage em = new ErrorMessage();
         final Text cn = new Text();
-        final Auth auth = new Auth();
         
         try {
             
@@ -1626,8 +1636,13 @@ public final class OrderAction extends DispatchAction {
     public ActionForward prepareJournalSave(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        OrderForm pageForm = (OrderForm) form;
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        OrderForm pageForm = (OrderForm) form;
         final Text cn = new Text();
         final Lieferanten supplier = new Lieferanten();
         if (rq.getAttribute("ofjo") != null) {
@@ -1727,12 +1742,17 @@ public final class OrderAction extends DispatchAction {
     public ActionForward saveOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final OrderForm pageForm = (OrderForm) form;
         final Lieferanten supplier = new Lieferanten();
         final OrderState orderstate = new OrderState();
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
-        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
             
             // aufgrund von IE Bug wird value bei einem eigenen Icon im submit nicht übermittelt:
@@ -1910,10 +1930,15 @@ public final class OrderAction extends DispatchAction {
     public ActionForward prepareModifyOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         OrderForm pageForm = (OrderForm) form;
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
-        final Auth auth = new Auth();
         if (auth.isLogin(rq)) {
             forward = Result.SUCCESS.getValue();
             
@@ -2023,13 +2048,18 @@ public final class OrderAction extends DispatchAction {
     public ActionForward prepareDeleteOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final OrderForm pageForm = (OrderForm) form;
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
         try {
             
-            final Auth auth = new Auth();
             if (auth.isLogin(rq)) { // Test auf gültige Session
                 final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
                 
@@ -2077,13 +2107,18 @@ public final class OrderAction extends DispatchAction {
     public ActionForward deleteOrder(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final OrderForm pageForm = (OrderForm) form;
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
         try {
             
-            final Auth auth = new Auth();
             if (auth.isLogin(rq)) { // Test auf gültige Session
                 final Bestellungen b = new Bestellungen(cn.getConnection(), pageForm.getBid());
                 

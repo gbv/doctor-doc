@@ -40,62 +40,65 @@ import ch.dbs.statistik.Statistik;
 import enums.Result;
 
 /**
- * Class for retrieving statistics of the orders during a
- * given period.
- *
+ * Class for retrieving statistics of the orders during a given period.
  */
 public final class OrderStatistik extends DispatchAction {
-
+    
     private static final int DEFAULT_PERIOD = 4; // default period in months for select
-
+    
     /**
      * Gets all statistics for an account of a specified period.
      */
     public ActionForward kontoOrders(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         OverviewForm of = (OverviewForm) fm; // contains the desired time period
         String forward = Result.FAILURE.getValue();
-        final Auth auth = new Auth();
         final Bestellungen b = new Bestellungen();
-
+        
         try {
-
+            
             if (auth.isLogin(rq)) { // is user logged in?
                 // Only accessible for librarians and admins
                 if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
                     forward = Result.SUCCESS.getValue();
                     final Statistik st = new Statistik();
                     final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-
+                    
                     final Check check = new Check();
-
+                    
                     // Set the default time period in select. Starting from the beginning of the actual year.
                     if (of.getYfrom() == null || of.getYto() == null || of.getMfrom() == null || of.getMto() == null
                             || of.getDfrom() == null || of.getDto() == null) {
-
+                        
                         final Calendar calTo = Calendar.getInstance();
                         calTo.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
-
+                        
                         of.setYfrom(new SimpleDateFormat("yyyy").format(calTo.getTime()));
                         of.setMfrom("01");
                         of.setDfrom("01");
                         of.setFromdate(of.getYfrom() + "-" + of.getMfrom() + "-" + of.getDfrom() + "00:00:00");
-
+                        
                         of.setYto(new SimpleDateFormat("yyyy").format(calTo.getTime()));
                         of.setMto(new SimpleDateFormat("MM").format(calTo.getTime()));
                         of.setDto(new SimpleDateFormat("dd").format(calTo.getTime()));
                         of.setTodate(of.getYto() + "-" + of.getMto() + "-" + of.getDto() + "23:59:59");
                     }
-
+                    
                     of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
-
+                    
                     rq.setAttribute("overviewform", of);
-
+                    
                     // ***************** Statistics ******************
-
+                    
                     final Long kid = ui.getKonto().getId();
-
+                    
                     st.setKontoordersstat(b.countOrdersPerKonto(kid, of.getFromdate(), of.getTodate(),
                             b.getConnection()));
                     st.setLieferantstat(b.countLieferantPerKonto(kid, of.getFromdate(), of.getTodate(),
@@ -121,20 +124,20 @@ public final class OrderStatistik extends DispatchAction {
                             b.getConnection()));
                     st.setOrtstat(b.countPLZPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
                     st.setLandstat(b.countLandPerKonto(kid, of.getFromdate(), of.getTodate(), b.getConnection()));
-
+                    
                     rq.setAttribute("statistics", st);
-
+                    
                     // Navigation: tab statistics
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("stats");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                 } else {
                     final ErrorMessage m = new ErrorMessage("error.berechtigung");
                     m.setLink("searchfree.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
                 }
-
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
@@ -142,12 +145,12 @@ public final class OrderStatistik extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             b.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
 }

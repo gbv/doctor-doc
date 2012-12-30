@@ -91,8 +91,13 @@ public final class ILVReport extends DispatchAction {
     public ActionForward prepareFormIlv(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        final OrderForm pageForm = (OrderForm) fm;
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        final OrderForm pageForm = (OrderForm) fm;
         String forward = Result.FAILURE.getValue();
         
         if (auth.isLogin(rq)) {

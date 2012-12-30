@@ -41,54 +41,59 @@ import enums.Result;
  * configured.
  */
 public class Settings extends DispatchAction {
-
+    
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
-        String forward = Result.FAILURE.getValue();
+        
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final SupplierForm sf = (SupplierForm) form;
-
+        
         // catching session timeouts
         if (auth.isLogin(rq)) {
             // access restricted to librarians and admins only
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-
+                
                 final Lieferanten sup = new Lieferanten();
                 final Text cn = new Text();
-
+                
                 try {
-
+                    
                     final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
-
+                    
                     // we do not have any private suppliers...
                     if (privSuppliers.isEmpty()) {
                         // ...there is only one logical display option
                         sf.setShowprivsuppliers(false);
                         sf.setShowpubsuppliers(true);
                     }
-
+                    
                     // update account with new settings
                     sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
-
+                    
                     // set back updated UserInfo / account into session
                     ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
                     ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
                     rq.getSession().setAttribute("userinfo", ui);
-
+                    
                     // trigger update message
                     sf.setChangedsettings(true);
-
+                    
                     rq.setAttribute("form", sf);
-
+                    
                     // navigation: set 'account/konto' tab as active
                     final ActiveMenusForm mf = new ActiveMenusForm();
                     mf.setActivemenu("konto");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                    
                     forward = Result.SUCCESS.getValue();
-
+                    
                 } finally {
                     cn.close();
                 }
@@ -97,7 +102,7 @@ public class Settings extends DispatchAction {
                 m.setLink("searchfree.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -105,8 +110,8 @@ public class Settings extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
 }

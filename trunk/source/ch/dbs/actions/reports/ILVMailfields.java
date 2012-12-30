@@ -37,34 +37,39 @@ import enums.TextType;
 
 /**
  * Default ILV Mailfields operation
- *
+ * 
  * @author Pascal Steiner
- *
  */
 public final class ILVMailfields extends DispatchAction {
-
+    
     /**
-     * Save default Mailfields subject and mailtext for ILV ordermail with attached PDF
+     * Save default Mailfields subject and mailtext for ILV ordermail with
+     * attached PDF
      */
     public ActionForward saveMailFields(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         final Text cn = new Text();
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
-
+        
         try {
-
+            
             if (auth.isLogin(rq)) {
-
+                
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final IlvReportForm ilvf = (IlvReportForm) fm;
-
+                
                 // Exists already a Mailtext or a subject?
                 final Text subject = new Text(cn.getConnection(), TextType.MAIL_SUBJECT, ui.getKonto().getId());
                 final Text text = new Text(cn.getConnection(), TextType.MAIL_BODY, ui.getKonto().getId());
-
+                
                 subject.setKonto(ui.getKonto());
                 if (subject.getInhalt() == null) { // save a new subject for the konto
                     subject.setInhalt(ilvf.getSubject());
@@ -74,7 +79,7 @@ public final class ILVMailfields extends DispatchAction {
                     subject.setInhalt(ilvf.getSubject());
                     subject.updateText(cn.getConnection(), subject);
                 }
-
+                
                 text.setKonto(ui.getKonto());
                 if (text.getInhalt() == null) { // save a new subject for the konto
                     text.setInhalt(ilvf.getMailtext());
@@ -84,12 +89,12 @@ public final class ILVMailfields extends DispatchAction {
                     text.setInhalt(ilvf.getMailtext());
                     text.updateText(cn.getConnection(), text);
                 }
-
+                
                 forward = Result.SUCCESS.getValue();
                 final Message mes = new Message("ilvmail.defaultmailfiedsset",
                         "listkontobestellungen.do?method=overview");
                 rq.setAttribute("message", mes);
-
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
@@ -97,12 +102,12 @@ public final class ILVMailfields extends DispatchAction {
                 final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
 }

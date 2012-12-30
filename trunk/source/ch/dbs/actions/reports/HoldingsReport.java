@@ -48,40 +48,45 @@ import enums.Result;
 
 /**
  * Creates an export of the holdings of a given library
- *
+ * 
  * @author Markus Fischer
  */
 public final class HoldingsReport extends DispatchAction {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(HoldingsReport.class);
-
+    
     /**
      * Gets all holdings of a given library and creates an Export-File
      */
     public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
-        String forward = Result.FAILURE.getValue();
+        
         final Auth auth = new Auth();
-
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
+        
         // Get export filetype for export as either CSV with semicolon delimiter, TXT as tab delimited file or as XLS
         final String filetype = rq.getParameter("filetype");
         String contenttype = "text/txt;charset=UTF-8"; // used for CSV and TXT
-
+        
         // Check if the user is logged in and is librarian or admin
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-
+            
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                 final Date date = new Date();
-
+                
                 try {
                     // Compose filename with date and time
                     final StringBuffer filename = new StringBuffer("holdings-");
                     filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
                     filename.append('.');
-
+                    
                     // CSV- or TXT-Export
                     if (filetype != null && (filetype.equals("csv") || filetype.equals("txt"))) {
                         char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // ';' as default delimiter
@@ -95,9 +100,9 @@ public final class HoldingsReport extends DispatchAction {
                         rp.setContentType(contenttype); // Set ContentType in the response for the Browser
                         rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
                         rp.setCharacterEncoding("UTF-8");
-
+                        
                         rp.flushBuffer();
-
+                        
                         // Use writer to render text
                         PrintWriter pw = null;
                         try {
@@ -113,7 +118,7 @@ public final class HoldingsReport extends DispatchAction {
                         // Prepare Output
                         rp.setContentType(contenttype); // Set ContentType in the response for the Browser
                         rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
-
+                        
                         ServletOutputStream outputStream = null;
                         try {
                             outputStream = rp.getOutputStream();
@@ -124,9 +129,9 @@ public final class HoldingsReport extends DispatchAction {
                         } finally {
                             outputStream.close();
                         }
-
+                        
                     }
-
+                    
                 } catch (final IOException e) {
                     // Output failed
                     LOG.error("Failure in HoldingsReport.execute: " + e.toString());
@@ -135,7 +140,7 @@ public final class HoldingsReport extends DispatchAction {
                 } finally {
                     forward = null;
                 }
-
+                
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -147,68 +152,68 @@ public final class HoldingsReport extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     private String getCSVContent(final Konto k, final char delimiter) {
         final Text cn = new Text();
         // get a StringBuffer with a header describing the content of the fields
         final StringBuffer buf = initCSV(delimiter);
-
+        
         try {
             // internal holdings are visible
             final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
-
+            
             for (final Bestand b : stock) {
                 buf.append(getCSVLine(b, delimiter));
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return buf.toString();
     }
-
+    
     private HSSFWorkbook getXLSContent(final Konto k) {
         final Text cn = new Text();
         final Workbook wb = new HSSFWorkbook();
         final Sheet s = wb.createSheet();
-
+        
         try {
             // add header for XLS
             initXLS(wb, s);
-
+            
             // internal holdings are visible
             final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
-
+            
             short rowNr = 0;
-
+            
             for (final Bestand b : stock) {
                 rowNr++;
                 // add holdings
                 getXLSLine(wb, s, b, rowNr);
             }
-
+            
             // adjust all columns in size
             short columnNr = 0;
             while (columnNr < 21) {
                 s.autoSizeColumn(columnNr);
                 columnNr++;
             }
-
+            
         } finally {
             cn.close();
         }
-
+        
         return (HSSFWorkbook) wb;
     }
-
+    
     private String getCSVLine(final Bestand b, final char delimiter) {
-
+        
         final StringBuffer buf = new StringBuffer(336);
-
+        
         if (b.getId() != null) {
             buf.append("\"" + b.getId() + "\"");
         } else {
@@ -324,14 +329,14 @@ public final class HoldingsReport extends DispatchAction {
         buf.append('"');
         buf.append(b.isInternal());
         buf.append("\"\n");
-
+        
         return buf.toString();
     }
-
+    
     private void getXLSLine(final Workbook wb, final Sheet s, final Bestand b, final short rownumber) {
-
+        
         final Row row = s.createRow(rownumber);
-
+        
         if (b.getId() != null) {
             row.createCell((short) 0).setCellValue(b.getId().toString());
         } else {
@@ -425,13 +430,13 @@ public final class HoldingsReport extends DispatchAction {
         }
         row.createCell((short) 19).setCellValue(String.valueOf(b.isEissue()));
         row.createCell((short) 20).setCellValue(String.valueOf(b.isInternal()));
-
+        
     }
-
+    
     private StringBuffer initCSV(final char delimiter) {
-
+        
         final StringBuffer buf = new StringBuffer(251);
-
+        
         buf.append("\"Stock ID\"");
         buf.append(delimiter);
         buf.append("\"Holding ID\"");
@@ -473,12 +478,12 @@ public final class HoldingsReport extends DispatchAction {
         buf.append("\"eissue\"");
         buf.append(delimiter);
         buf.append("\"internal\"\n");
-
+        
         return buf;
     }
-
+    
     private void initXLS(final Workbook wb, final Sheet s) {
-
+        
         final Row rowhead = s.createRow((short) 0);
         rowhead.createCell((short) 0).setCellValue("Stock ID");
         rowhead.createCell((short) 1).setCellValue("Holding ID");
@@ -501,16 +506,16 @@ public final class HoldingsReport extends DispatchAction {
         rowhead.createCell((short) 18).setCellValue("remarks");
         rowhead.createCell((short) 19).setCellValue("eissue");
         rowhead.createCell((short) 20).setCellValue("internal");
-
+        
     }
-
+    
     private String removeSpecialCharacters(String str) {
-
+        
         if (str != null) {
             str = str.replaceAll("\012", "\040").trim();
         }
-
+        
         return str;
     }
-
+    
 }

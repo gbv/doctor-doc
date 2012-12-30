@@ -62,57 +62,61 @@ import enums.TextType;
 
 /**
  * Erstellt PDF-Reports
- *
+ * 
  * @author Pascal Steiner
- *
  */
 public final class OrderReports extends DispatchAction {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(OrderReports.class);
-
+    
     /**
-     * Erstelt ein PDF- Report wie die aktuelle Sicht der Bestellungen
-     * inklusive Filterkriterien (Status) und Sortierfolge (Feld, Auf- oder Absteigend
+     * Erstelt ein PDF- Report wie die aktuelle Sicht der Bestellungen inklusive
+     * Filterkriterien (Status) und Sortierfolge (Feld, Auf- oder Absteigend
      */
     public ActionForward orderspdf(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
-        String forward = Result.FAILURE.getValue();
+        
         final Auth auth = new Auth();
-
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
+        
         // Ist der Benutzer als Bibliothekar angemeldet? Ist das Konto berechtigt Stats anzuzeigen?
         if (auth.isLogin(rq)) {
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-
+                
                 // Klassen vorbereiten
                 OverviewForm of = (OverviewForm) fm; //Parameter für Einschraenkungen
                 final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
                 OutputStream out = null;
                 final Text cn = new Text();
-
+                
                 // wird für checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts benötigt
                 of.setStatitexts(cn.getAllTextPlusKontoTexts(TextType.STATE_ORDER, ui.getKonto().getId(),
                         cn.getConnection()));
-
+                
                 //Eingaben Testen und Notfalls korrigieren mit defaultwerten
                 final Check c = new Check();
                 of = c.checkDateRegion(of, 4, ui.getKonto().getTimezone());
                 of = c.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
                 of = c.checkOrdersSortCriterias(of);
                 of = c.checkSortOrderValues(of);
-
+                
                 List<SearchesForm> searches = new ArrayList<SearchesForm>();
-
+                
                 if (of.isS()) { // Suchkriterien aus Session holen, falls Anzeige von einer Suche stammt
                     searches = ui.getSearches();
                 }
-
+                
                 // Daten holen
                 final Bestellungen b = new Bestellungen();
                 try {
                     //          Reportdaten vorbereiten
                     List<Bestellungen> orders = null;
-
+                    
                     if (!searches.isEmpty()) { // hier liegt Liste aus Suche vor...
                         final UserAction userAction = new UserAction();
                         PreparedStatement pstmt = null;
@@ -138,11 +142,11 @@ public final class OrderReports extends DispatchAction {
                             orders = b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(), of.getSort(),
                                     of.getSortorder(), of.getFromdate(), of.getTodate(), false, cn.getConnection());
                         }
-
+                        
                     }
-
+                    
                     final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
-
+                    
                     final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm");
                     tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
                     for (final Bestellungen order : orders) {
@@ -183,7 +187,7 @@ public final class OrderReports extends DispatchAction {
                             bf.append(order.getSeiten());
                         }
                         hm.put("zeitschrift", bf.toString());
-
+                        
                         // Hier werden die Notizen so aufbereitet, dass Bestellnummern immer am Anfang stehen
                         // und keine unnötigen Zeilenumbrüche enthalten.
                         final StringBuffer numbers = new StringBuffer();
@@ -215,11 +219,11 @@ public final class OrderReports extends DispatchAction {
                         if (numbers.length() > 0) {
                             order.setNotizen(numbers.toString() + "\n" + order.getNotizen());
                         }
-
+                        
                         hm.put("notes", order.getNotizen());
                         al.add(hm);
                     }
-
+                    
                     //Parameter abfüllen
                     final Map<String, Object> param = new HashMap<String, Object>();
                     final Date from = new SimpleDateFormat("yyyy-MM-dd").parse(of.getFromdate());
@@ -229,7 +233,7 @@ public final class OrderReports extends DispatchAction {
                     final Calendar cal = new GregorianCalendar();
                     cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
                     param.put("today", tf.format(cal.getTime(), ui.getKonto().getTimezone()));
-
+                    
                     //Reportauswahl, Verbindung zum Report aufbauen
                     // JasperReports need absolute paths!
                     if (of.getReport() == null) {
@@ -237,15 +241,15 @@ public final class OrderReports extends DispatchAction {
                     }
                     final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                             .getResourceAsStream(of.getReport()));
-
+                    
                     //Ausgabestream vorbereiten
                     rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
                     out = rp.getOutputStream();
-
+                    
                     //Daten zusammenstellen und abfüllen
                     final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
                     JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
-
+                    
                 } catch (final Exception e) {
                     // ServletOutputStream konnte nicht erstellt werden
                     LOG.error("orderspdf: " + e.toString());
@@ -260,7 +264,7 @@ public final class OrderReports extends DispatchAction {
                     cn.close();
                     forward = null;
                 }
-
+                
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -272,23 +276,23 @@ public final class OrderReports extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
     /**
      * Bestellungen nach Lieferant gruppiert
      */
     public ActionForward orderSourcePdf(final ActionMapping mp, ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final OverviewForm of = (OverviewForm) fm;
         // JasperReports need absolute paths!
         of.setReport("/reports/AllOrdersOrdersource.jasper");
         of.setSort("bestellquelle");
         fm = of;
         orderspdf(mp, fm, rq, rp);
-
+        
         return mp.findForward(null);
     }
 }

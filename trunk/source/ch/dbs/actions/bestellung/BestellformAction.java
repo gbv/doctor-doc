@@ -373,9 +373,14 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward sendOrder(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         Text t = new Text();
         final Text cn = new Text();
-        final Auth auth = new Auth();
         String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
         BestellParam bp = new BestellParam();
@@ -917,6 +922,9 @@ public final class BestellformAction extends DispatchAction {
                             }
                         }
                         
+                        // temporary log to see who is using the system as mailing system
+                        LOG.warn("Order sent by email for library: " + library + " ; " + to[0]);
+                        
                     } else {
                         forward = "missingvalues";
                         rq.setAttribute("messagemissing", message);
@@ -967,11 +975,16 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward prepareConfigure(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
         final Text ip = new Text();
-        final Auth auth = new Auth();
         BestellParam ipbasiert = new BestellParam();
         
         if (auth.isLogin(rq)) {
@@ -1054,10 +1067,15 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward modify(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
-        final Auth auth = new Auth();
         
         final BestellParam bp = (BestellParam) fm;
         
@@ -1152,10 +1170,15 @@ public final class BestellformAction extends DispatchAction {
     public ActionForward save(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text cn = new Text();
-        final Auth auth = new Auth();
         
         BestellParam bp = (BestellParam) fm;
         final Countries country = new Countries();
