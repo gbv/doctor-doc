@@ -39,6 +39,7 @@
 	<!-- =================================== Global Forward Definitions -->
 	<global-forwards>
 		<forward name="failure" path="/error.do" />
+		<forward name="errorpaidonly" path="/globalerrorpaidonly.do"/>
 	</global-forwards>
 
 	<!-- =================================== Action Mapping Definitions -->
@@ -50,6 +51,16 @@
 		-->
 		
 		<action path="/unknown" forward="/jsp/error.jsp" unknown="true" />
+		
+				<!--
+			*************************************************Global errors*************************************************
+		-->
+		
+		<!-- Paid only access  -->
+		<action path="/globalerrorpaidonly" name="LoginForm" validate="false" scope="request"
+			type="ch.dbs.actions.globalerrors.PaidOnlyAction">
+			<forward name="success" path="/error.do" />
+		</action>
 		
 		<!--
 			*************************************************Login*************************************************

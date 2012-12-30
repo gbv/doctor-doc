@@ -18,24 +18,25 @@
 package enums;
 
 public enum Result {
-
+    
     FAILURE("FAILURE", "failure"), SUCCESS("SUCCESS", "success"), ACTIVEMENUS("ACTIVEMENUS", "ActiveMenus"), ERRORMESSAGE(
-            "ERRORMESSAGE", "errormessage"), LOGIN("LOGIN", "login");
-
+            "ERRORMESSAGE", "errormessage"), ERROR_PAID_ONLY("ERROR_PAID_ONLY", "errorpaidonly"), LOGIN("LOGIN",
+            "login");
+    
     private final String name;
     private final String value;
-
+    
     private Result(final String name, final String value) {
         this.name = name;
         this.value = value;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public String getValue() {
         return value;
     }
-
+    
 }

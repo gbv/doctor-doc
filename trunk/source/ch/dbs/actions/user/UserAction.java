@@ -108,6 +108,12 @@ public final class UserAction extends DispatchAction {
     public ActionForward overview(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         
@@ -116,7 +122,6 @@ public final class UserAction extends DispatchAction {
         final Bestellungen b = new Bestellungen();
         
         final Check check = new Check();
-        final Auth auth = new Auth();
         final Text cn = new Text();
         
         try {

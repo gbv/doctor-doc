@@ -56,6 +56,7 @@ abstract class AbstractReadSystemConfigurations {
     protected static final boolean ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH = readAllowPatronAutomaticGoogleSearch();
     protected static final boolean ACTIVATE_GOOGLE_SEARCH = readActivateGoogleSearch();
     protected static final boolean ACTIVATE_GTC = readActivateGTC();
+    protected static final boolean ACTIVATE_PAID_ACCESS = readActivatePaidAccess();
     
     protected static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
     protected static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
@@ -341,6 +342,21 @@ abstract class AbstractReadSystemConfigurations {
         try {
             final Configuration config = new PropertiesConfiguration(PATH);
             activate = config.getBoolean("activate.gtc");
+            
+        } catch (final ConfigurationException e) {
+            LOG.error(e.toString());
+        }
+        
+        return activate;
+    }
+    
+    private static boolean readActivatePaidAccess() {
+        
+        boolean activate = false;
+        
+        try {
+            final Configuration config = new PropertiesConfiguration(PATH);
+            activate = config.getBoolean("activate.paidAccess");
             
         } catch (final ConfigurationException e) {
             LOG.error(e.toString());

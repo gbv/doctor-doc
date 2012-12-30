@@ -17,81 +17,85 @@
 
 package util;
 
-
 /**
- * Liefert eine Teilmenge an Systemparameter aus SystemConfiguration.properties. Sämtliche
- * Systemparameter sind über AbstractReadSystemConfigurations zugänglich
- *
+ * Liefert eine Teilmenge an Systemparameter aus SystemConfiguration.properties.
+ * Sämtliche Systemparameter sind über AbstractReadSystemConfigurations
+ * zugänglich
+ * 
  * @author Markus Fischer
  */
 public final class ReadSystemConfigurations {
-
-    private ReadSystemConfigurations()  {
-
+    
+    private ReadSystemConfigurations() {
+        
     }
-
-    public static String getSystemTimezone() {
+    
+    public static final String getSystemTimezone() {
         return AbstractReadSystemConfigurations.SYSTEM_TIMEZONE;
     }
-
-    public static String getLocale() {
+    
+    public static final String getLocale() {
         return AbstractReadSystemConfigurations.LOCALE;
     }
-
-    public static String getSystemEmail() {
+    
+    public static final String getSystemEmail() {
         return AbstractReadSystemConfigurations.SYSTEM_EMAIL;
     }
-
-    public static String getErrorEmail() {
+    
+    public static final String getErrorEmail() {
         return AbstractReadSystemConfigurations.ERROR_EMAIL;
     }
-
-    public static String getApplicationName() {
+    
+    public static final String getApplicationName() {
         return AbstractReadSystemConfigurations.APPLICATION_NAME;
     }
-
-    public static String getServerWelcomepage() {
+    
+    public static final String getServerWelcomepage() {
         return AbstractReadSystemConfigurations.SERVER_WELCOMEPAGE;
     }
-
-    public static String getServerInstallation() {
+    
+    public static final String getServerInstallation() {
         return AbstractReadSystemConfigurations.SERVER_INSTALLATION;
     }
-
-    public static boolean isAllowRegisterLibraryAccounts() {
+    
+    public static final boolean isAllowRegisterLibraryAccounts() {
         return AbstractReadSystemConfigurations.ALLOW_REGISTER_LIBRARY_ACCOUNTS;
     }
-
-    public static boolean isAllowPatronAutomaticGoogleSearch() {
+    
+    public static final boolean isAllowPatronAutomaticGoogleSearch() {
         return AbstractReadSystemConfigurations.ALLOW_PATRON_AUTOMATIC_GOOGLE_SEARCH;
     }
-
-    public static boolean isActivatedGoogleSearch() {
+    
+    public static final boolean isActivatedGoogleSearch() {
         return AbstractReadSystemConfigurations.ACTIVATE_GOOGLE_SEARCH;
     }
-
-    public static boolean isGTC() {
+    
+    public static final boolean isGTC() {
         return AbstractReadSystemConfigurations.ACTIVATE_GTC;
     }
-
-    public static boolean isAnonymizationActivated() {
+    
+    public static final boolean isPaidAccess() {
+        return AbstractReadSystemConfigurations.ACTIVATE_PAID_ACCESS;
+    }
+    
+    public static final boolean isAnonymizationActivated() {
         return AbstractReadSystemConfigurations.ANONYMIZATION_ACTIVATED;
     }
-
-    public static int getAnonymizationAfterMonths() {
+    
+    public static final int getAnonymizationAfterMonths() {
         return AbstractReadSystemConfigurations.ANONYMIZATION_AFTER_MONTHS;
     }
-
-    public static boolean isSearchCarelit() {
+    
+    public static final boolean isSearchCarelit() {
         return AbstractReadSystemConfigurations.SEARCH_CARELIT;
     }
-
-    public static boolean isUseDaia() {
+    
+    public static final boolean isUseDaia() {
         return AbstractReadSystemConfigurations.USE_DAIA;
     }
-
-    public static String[] getDaiaHosts() {
+    
+    public static final String[] getDaiaHosts() {
         return AbstractReadSystemConfigurations.DAIA_HOSTS;
     }
-
+    
 }
