@@ -32,7 +32,6 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
-import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import ch.dbs.login.Gtc;
@@ -48,49 +47,44 @@ public final class GtcAction extends DispatchAction {
     public ActionForward accept(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         final OrderForm pageForm = (OrderForm) form; // falls Artikelangaben aus Linkresolver vorhanden
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-        final Auth auth = new Auth();
         
         try {
             
-            // Sicherstellen, dass die Action nur von Benutzern nach Prüfung aufgerufen wird
-            if (auth.isLogin(rq)) {
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                
-                final Gtc gtc = new Gtc();
-                final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
-                
-                String timezone = null;
-                if (ui.getKonto() != null) {
-                    // user is attached only to 1 account
-                    timezone = ui.getKonto().getTimezone();
-                    forward = Result.SUCCESS.getValue();
-                } else {
-                    // user is attached only to several accounts
-                    timezone = ui.getKontos().get(0).getTimezone();
-                    forward = "konto";
-                }
-                
-                final Date d = new Date(); // aktuelles Datum setzen
-                final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                final String datum = fmt.format(d, timezone);
-                
-                ui.getBenutzer().setGtc(t.getInhalt());
-                ui.getBenutzer().setGtcdate(datum);
-                final AbstractBenutzer b = new AbstractBenutzer();
-                b.updateUser(ui.getBenutzer(), timezone, cn.getConnection());
-                rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
-                
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            
+            final Gtc gtc = new Gtc();
+            final Text t = gtc.getCurrentGtc(cn.getConnection()); // Text der aktuellen Version
+            
+            String timezone = null;
+            if (ui.getKonto() != null) {
+                // user is attached only to 1 account
+                timezone = ui.getKonto().getTimezone();
+                forward = Result.SUCCESS.getValue();
             } else {
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu(Result.LOGIN.getValue());
-                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                // user is attached only to several accounts
+                timezone = ui.getKontos().get(0).getTimezone();
+                forward = "konto";
             }
+            
+            final Date d = new Date(); // aktuelles Datum setzen
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final String datum = fmt.format(d, timezone);
+            
+            ui.getBenutzer().setGtc(t.getInhalt());
+            ui.getBenutzer().setGtcdate(datum);
+            final AbstractBenutzer b = new AbstractBenutzer();
+            b.updateUser(ui.getBenutzer(), timezone, cn.getConnection());
+            rq.getSession().setAttribute("userinfo", ui); // userinfo in Request aktualisieren
             
             if (pageForm.isResolver()) {
                 // hier kommen auch Artikelangaben aus der Übergabe des Linkresolvers mit...
@@ -119,20 +113,14 @@ public final class GtcAction extends DispatchAction {
     public ActionForward decline(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
-        // Make sure method is only accessible when user is logged in
-        
-        if (auth.isLogin(rq)) {
-            forward = "decline";
-            
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(Result.LOGIN.getValue());
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        
+        final String forward = "decline";
+        
         return mp.findForward(forward);
     }
     

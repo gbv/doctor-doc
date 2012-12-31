@@ -20,8 +20,8 @@ package enums;
 public enum Result {
     
     FAILURE("FAILURE", "failure"), SUCCESS("SUCCESS", "success"), ACTIVEMENUS("ACTIVEMENUS", "ActiveMenus"), ERRORMESSAGE(
-            "ERRORMESSAGE", "errormessage"), ERROR_PAID_ONLY("ERROR_PAID_ONLY", "errorpaidonly"), LOGIN("LOGIN",
-            "login");
+            "ERRORMESSAGE", "errormessage"), ERROR_PAID_ONLY("ERROR_PAID_ONLY", "errorpaidonly"), ERROR_TIMEOUT(
+            "ERROR_TIMEOUT", "errortimeout"), LOGIN("LOGIN", "login");
     
     private final String name;
     private final String value;

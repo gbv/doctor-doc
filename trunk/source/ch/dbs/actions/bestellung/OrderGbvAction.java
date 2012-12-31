@@ -74,6 +74,12 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward order(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
         final OrderState orderstate = new OrderState();
@@ -83,118 +89,169 @@ public final class OrderGbvAction extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Text t = new Text();
         final Check ck = new Check();
-        final Auth auth = new Auth();
         // URL Test-System des GBV
         //    String baseurl = "http://cbst.gbv.de:8080/cgi-bin/vuefl_0702/vuefl_recv_data.pl";
         
         try {
             
-            if (auth.isLogin(rq)) { // Make sure method is only accessible when user is logged in
-            
-                // Fileformat für Statistik aus gemachten Angaben schliessen
-                if ("Buch".equals(of.getMediatype())) {
+            // Fileformat für Statistik aus gemachten Angaben schliessen
+            if ("Buch".equals(of.getMediatype())) {
+                of.setFileformat("Papierkopie");
+            } else {
+                if (of.getDeloptions().equals("post")) {
                     of.setFileformat("Papierkopie");
-                } else {
-                    if (of.getDeloptions().equals("post")) {
-                        of.setFileformat("Papierkopie");
-                    }
-                    if (of.getDeloptions().equals("fax")) {
-                        of.setFileformat("Papierkopie");
-                    }
-                    if (of.getDeloptions().equals("fax to pdf")) {
-                        of.setFileformat("PDF");
-                    }
                 }
+                if (of.getDeloptions().equals("fax")) {
+                    of.setFileformat("Papierkopie");
+                }
+                if (of.getDeloptions().equals("fax to pdf")) {
+                    of.setFileformat("PDF");
+                }
+            }
+            
+            if (!"GBV-Suche".equals(of.getSubmit())) {
                 
-                if (!"GBV-Suche".equals(of.getSubmit())) {
-                    
-                    // Bestellkunde darf nicht "deaktiviert" sein
-                    if (auth.isUserAccount(of.getForuser(), t.getConnection())) {
-                        // Kontrolle max. Bestellungen aller Kunden pro Kalenderjahr auf einem Konto
-                        if (auth.isMaxordersj(rq, t.getConnection())) {
-                            // Kontrolle max. Bestellungen eines Kunden pro Kalenderjahr
-                            if (auth.isMaxordersutotal(of.getForuser(), rq, t.getConnection())) {
+                // Bestellkunde darf nicht "deaktiviert" sein
+                if (auth.isUserAccount(of.getForuser(), t.getConnection())) {
+                    // Kontrolle max. Bestellungen aller Kunden pro Kalenderjahr auf einem Konto
+                    if (auth.isMaxordersj(rq, t.getConnection())) {
+                        // Kontrolle max. Bestellungen eines Kunden pro Kalenderjahr
+                        if (auth.isMaxordersutotal(of.getForuser(), rq, t.getConnection())) {
+                            
+                            try {
                                 
-                                try {
+                                // *** Bestelltyp Copy
+                                if ("Artikel".equals(of.getMediatype()) || "Teilkopie Buch".equals(of.getMediatype())) {
                                     
-                                    // *** Bestelltyp Copy
-                                    if ("Artikel".equals(of.getMediatype())
-                                            || "Teilkopie Buch".equals(of.getMediatype())) {
+                                    // noch keine PPN vorhanden, d.h. choosehits.do noch nicht durchlaufen
+                                    if (of.getPpn() == null) {
                                         
-                                        // noch keine PPN vorhanden, d.h. choosehits.do noch nicht durchlaufen
-                                        if (of.getPpn() == null) {
-                                            
-                                            GbvSruForm gsf = new GbvSruForm();
-                                            List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
-                                            
-                                            // *** hier gibt es zwei Chancen ein GBV-Bestellobjekt zu erhalten:
-                                            // ZDB-ID und ISSN vorhanden
-                                            if (ck.isMinLength(of.getZdbid(), 2) && ck.isMinLength(of.getIssn(), 8)) {
-                                                try { // allfällige SRU-Fehler-Codes abfangen
-                                                      // 1. Chance anhand der vorhandenen ZDB-ID
-                                                    matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("zdb",
-                                                            of.getZdbid(), 1));
-                                                    of.setGbvfield("zdb");
-                                                    of.setGbvsearch(of.getZdbid());
-                                                } catch (final MyException e) {
-                                                    LOG.info("GBV-Message: " + e.getMessage());
-                                                    final Message m = new Message();
-                                                    m.setMessage(e.getMessage());
-                                                    rq.setAttribute("gbvmessage", m);
+                                        GbvSruForm gsf = new GbvSruForm();
+                                        List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
+                                        
+                                        // *** hier gibt es zwei Chancen ein GBV-Bestellobjekt zu erhalten:
+                                        // ZDB-ID und ISSN vorhanden
+                                        if (ck.isMinLength(of.getZdbid(), 2) && ck.isMinLength(of.getIssn(), 8)) {
+                                            try { // allfällige SRU-Fehler-Codes abfangen
+                                                  // 1. Chance anhand der vorhandenen ZDB-ID
+                                                matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("zdb",
+                                                        of.getZdbid(), 1));
+                                                of.setGbvfield("zdb");
+                                                of.setGbvsearch(of.getZdbid());
+                                            } catch (final MyException e) {
+                                                LOG.info("GBV-Message: " + e.getMessage());
+                                                final Message m = new Message();
+                                                m.setMessage(e.getMessage());
+                                                rq.setAttribute("gbvmessage", m);
+                                            }
+                                            gsf = getGbvOrderObject(matches, of);
+                                            // ...ist das Bestellobjekt da und kein E-Journal?
+                                            if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
+                                                // 2. Chance anhand der vorhandenen ISSN
+                                                of.setZdbid(orderAction.getZdbidFromIssn(of.getIssn(),
+                                                        t.getConnection()));
+                                                // hier kann es sein dass dbs keine zdbid liefert
+                                                // => ggf. Suche anhand ISSN
+                                                if (of.getZdbid() != null && !of.getZdbid().equals("")) {
+                                                    try { // allfällige SRU-Fehler-Codes abfangen
+                                                        matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("zdb",
+                                                                of.getZdbid(), 1));
+                                                        of.setGbvfield("zdb");
+                                                        of.setGbvsearch(of.getZdbid());
+                                                        gsf = getGbvOrderObject(matches, of);
+                                                    } catch (final MyException e) {
+                                                        LOG.info("GBV-Message: " + e.getMessage());
+                                                        final Message m = new Message();
+                                                        m.setMessage(e.getMessage());
+                                                        rq.setAttribute("gbvmessage", m);
+                                                    }
                                                 }
-                                                gsf = getGbvOrderObject(matches, of);
                                                 // ...ist das Bestellobjekt da und kein E-Journal?
                                                 if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
-                                                    // 2. Chance anhand der vorhandenen ISSN
-                                                    of.setZdbid(orderAction.getZdbidFromIssn(of.getIssn(),
-                                                            t.getConnection()));
-                                                    // hier kann es sein dass dbs keine zdbid liefert
-                                                    // => ggf. Suche anhand ISSN
-                                                    if (of.getZdbid() != null && !of.getZdbid().equals("")) {
-                                                        try { // allfällige SRU-Fehler-Codes abfangen
-                                                            matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
-                                                                    "zdb", of.getZdbid(), 1));
-                                                            of.setGbvfield("zdb");
-                                                            of.setGbvsearch(of.getZdbid());
-                                                            gsf = getGbvOrderObject(matches, of);
-                                                        } catch (final MyException e) {
-                                                            LOG.info("GBV-Message: " + e.getMessage());
-                                                            final Message m = new Message();
-                                                            m.setMessage(e.getMessage());
-                                                            rq.setAttribute("gbvmessage", m);
-                                                        }
-                                                    }
-                                                    // ...ist das Bestellobjekt da und kein E-Journal?
-                                                    if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
-                                                        try { // allfällige SRU-Fehler-Codes abfangen
-                                                              // 3. anhand der ISSN eine GBV-Suche machen
-                                                            matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
-                                                                    "iss", of.getIssn(), 1));
-                                                            of.setGbvfield("iss");
-                                                            of.setGbvsearch(of.getIssn());
-                                                            gsf = getGbvOrderObject(matches, of);
-                                                        } catch (final MyException e) {
-                                                            LOG.info("GBV-Message: " + e.getMessage());
-                                                            final Message m = new Message();
-                                                            m.setMessage(e.getMessage());
-                                                            rq.setAttribute("gbvmessage", m);
-                                                        }
+                                                    try { // allfällige SRU-Fehler-Codes abfangen
+                                                          // 3. anhand der ISSN eine GBV-Suche machen
+                                                        matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("iss",
+                                                                of.getIssn(), 1));
+                                                        of.setGbvfield("iss");
+                                                        of.setGbvsearch(of.getIssn());
+                                                        gsf = getGbvOrderObject(matches, of);
+                                                    } catch (final MyException e) {
+                                                        LOG.info("GBV-Message: " + e.getMessage());
+                                                        final Message m = new Message();
+                                                        m.setMessage(e.getMessage());
+                                                        rq.setAttribute("gbvmessage", m);
                                                     }
                                                 }
-                                                // *** normaler Versuch GBV-Bestellobjekt zu erhalten
+                                            }
+                                            // *** normaler Versuch GBV-Bestellobjekt zu erhalten
+                                        } else {
+                                            // handelt es sich um eine Zeitschrift?
+                                            if (ck.isMinLength(of.getIssn(), 2)) {
+                                                of.setZdbid(orderAction.getZdbidFromIssn(of.getIssn(),
+                                                        t.getConnection()));
+                                                // hier kann es sein dass dbs keine zdbid liefert
+                                                // => ggf. Suche anhand ISSN
+                                                if (of.getZdbid() != null && !of.getZdbid().equals("")) {
+                                                    try { // allfällige SRU-Fehler-Codes abfangen
+                                                        matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("zdb",
+                                                                of.getZdbid(), 1));
+                                                        of.setGbvfield("zdb");
+                                                        of.setGbvsearch(of.getZdbid());
+                                                        gsf = getGbvOrderObject(matches, of);
+                                                    } catch (final MyException e) {
+                                                        LOG.info("GBV-Message: " + e.getMessage());
+                                                        final Message m = new Message();
+                                                        m.setMessage(e.getMessage());
+                                                        rq.setAttribute("gbvmessage", m);
+                                                    }
+                                                }
+                                                // ...ist das Bestellobjekt da und kein E-Journal?
+                                                if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
+                                                    try { // allfällige SRU-Fehler-Codes abfangen
+                                                        matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("iss",
+                                                                of.getIssn(), 1));
+                                                        of.setGbvfield("iss");
+                                                        of.setGbvsearch(of.getIssn());
+                                                        gsf = getGbvOrderObject(matches, of);
+                                                    } catch (final MyException e) {
+                                                        LOG.info("GBV-Message: " + e.getMessage());
+                                                        final Message m = new Message();
+                                                        m.setMessage(e.getMessage());
+                                                        rq.setAttribute("gbvmessage", m);
+                                                    }
+                                                }
+                                                // falls Bestimmung anhand ISSN fehlgeschlagen ist => Titelsuche
+                                                if (matches.isEmpty() && ck.isMinLength(of.getZeitschriftentitel(), 2)) {
+                                                    try { // allfällige SRU-Fehler-Codes abfangen
+                                                          // erster Versuch eng, als Phrase
+                                                        matches = getGbvMatches(getGbvSrucontentSearch("zti",
+                                                                of.getZeitschriftentitel(), 1));
+                                                        of.setGbvfield("zti");
+                                                        of.setGbvsearch(of.getZeitschriftentitel());
+                                                        // zweiter Versuch als Stichwort-Suche
+                                                        if (matches.isEmpty()) {
+                                                            matches = getGbvMatches(getGbvSrucontentSearch("sha",
+                                                                    of.getZeitschriftentitel(), 1));
+                                                            of.setGbvfield("sha");
+                                                            of.setGbvsearch(of.getZeitschriftentitel());
+                                                        }
+                                                    } catch (final MyException e) {
+                                                        LOG.info("GBV-Message: " + e.getMessage());
+                                                        final Message m = new Message();
+                                                        m.setMessage(e.getMessage());
+                                                        rq.setAttribute("gbvmessage", m);
+                                                    }
+                                                    gsf = getGbvOrderObject(matches, of);
+                                                }
                                             } else {
-                                                // handelt es sich um eine Zeitschrift?
-                                                if (ck.isMinLength(of.getIssn(), 2)) {
-                                                    of.setZdbid(orderAction.getZdbidFromIssn(of.getIssn(),
-                                                            t.getConnection()));
-                                                    // hier kann es sein dass dbs keine zdbid liefert
-                                                    // => ggf. Suche anhand ISSN
-                                                    if (of.getZdbid() != null && !of.getZdbid().equals("")) {
+                                                if (of.getMediatype().equals("Teilkopie Buch")) {
+                                                    // Versuch anhand der ISBN GBV-Bestellobjekt zu erhalten
+                                                    if (ck.isMinLength(of.getIsbn(), 2)) {
                                                         try { // allfällige SRU-Fehler-Codes abfangen
                                                             matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
-                                                                    "zdb", of.getZdbid(), 1));
-                                                            of.setGbvfield("zdb");
-                                                            of.setGbvsearch(of.getZdbid());
+                                                                    "isb", of.getIsbn(), 1));
+                                                            of.setGbvfield("isb");
+                                                            of.setGbvsearch(of.getIsbn());
                                                             gsf = getGbvOrderObject(matches, of);
                                                         } catch (final MyException e) {
                                                             LOG.info("GBV-Message: " + e.getMessage());
@@ -202,25 +259,38 @@ public final class OrderGbvAction extends DispatchAction {
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
-                                                    }
-                                                    // ...ist das Bestellobjekt da und kein E-Journal?
-                                                    if (gsf.getPpn_003AT() == null || gbvIsEjournal(gsf)) {
+                                                    } else {
+                                                        // Versuch anhand des Titels ein GBV-Bestellobjekt zu erhalten
                                                         try { // allfällige SRU-Fehler-Codes abfangen
+                                                              // erster Versuch eng, als Phrase
                                                             matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
-                                                                    "iss", of.getIssn(), 1));
-                                                            of.setGbvfield("iss");
-                                                            of.setGbvsearch(of.getIssn());
-                                                            gsf = getGbvOrderObject(matches, of);
+                                                                    "tit", of.getBuchtitel(), 1));
+                                                            of.setGbvfield("tit");
+                                                            of.setGbvsearch(of.getBuchtitel());
+                                                            // zweiter Versuch als Stichwort-Suche
+                                                            if (matches.isEmpty()) {
+                                                                matches = getGbvMatches(getGbvSrucontentSearch("tit",
+                                                                        of.getBuchtitel(), 1));
+                                                                of.setGbvfield("tit");
+                                                                of.setGbvsearch(of.getBuchtitel());
+                                                            }
+                                                            // dritter Versuch über alle Wörter
+                                                            if (matches.isEmpty()) {
+                                                                matches = getGbvMatches(getGbvSrucontentSearch("all",
+                                                                        of.getBuchtitel(), 1));
+                                                                of.setGbvfield("all");
+                                                                of.setGbvsearch(of.getBuchtitel());
+                                                            }
                                                         } catch (final MyException e) {
                                                             LOG.info("GBV-Message: " + e.getMessage());
                                                             final Message m = new Message();
                                                             m.setMessage(e.getMessage());
                                                             rq.setAttribute("gbvmessage", m);
                                                         }
+                                                        gsf = getGbvOrderObject(matches, of);
                                                     }
-                                                    // falls Bestimmung anhand ISSN fehlgeschlagen ist => Titelsuche
-                                                    if (matches.isEmpty()
-                                                            && ck.isMinLength(of.getZeitschriftentitel(), 2)) {
+                                                } else { // Titelsuche für Zeitschriften ohne ISSN
+                                                    if (ck.isMinLength(of.getZeitschriftentitel(), 2)) {
                                                         try { // allfällige SRU-Fehler-Codes abfangen
                                                               // erster Versuch eng, als Phrase
                                                             matches = getGbvMatches(getGbvSrucontentSearch("zti",
@@ -242,216 +312,40 @@ public final class OrderGbvAction extends DispatchAction {
                                                         }
                                                         gsf = getGbvOrderObject(matches, of);
                                                     }
-                                                } else {
-                                                    if (of.getMediatype().equals("Teilkopie Buch")) {
-                                                        // Versuch anhand der ISBN GBV-Bestellobjekt zu erhalten
-                                                        if (ck.isMinLength(of.getIsbn(), 2)) {
-                                                            try { // allfällige SRU-Fehler-Codes abfangen
-                                                                matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
-                                                                        "isb", of.getIsbn(), 1));
-                                                                of.setGbvfield("isb");
-                                                                of.setGbvsearch(of.getIsbn());
-                                                                gsf = getGbvOrderObject(matches, of);
-                                                            } catch (final MyException e) {
-                                                                LOG.info("GBV-Message: " + e.getMessage());
-                                                                final Message m = new Message();
-                                                                m.setMessage(e.getMessage());
-                                                                rq.setAttribute("gbvmessage", m);
-                                                            }
-                                                        } else {
-                                                            // Versuch anhand des Titels ein GBV-Bestellobjekt zu erhalten
-                                                            try { // allfällige SRU-Fehler-Codes abfangen
-                                                                  // erster Versuch eng, als Phrase
-                                                                matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(
-                                                                        "tit", of.getBuchtitel(), 1));
-                                                                of.setGbvfield("tit");
-                                                                of.setGbvsearch(of.getBuchtitel());
-                                                                // zweiter Versuch als Stichwort-Suche
-                                                                if (matches.isEmpty()) {
-                                                                    matches = getGbvMatches(getGbvSrucontentSearch(
-                                                                            "tit", of.getBuchtitel(), 1));
-                                                                    of.setGbvfield("tit");
-                                                                    of.setGbvsearch(of.getBuchtitel());
-                                                                }
-                                                                // dritter Versuch über alle Wörter
-                                                                if (matches.isEmpty()) {
-                                                                    matches = getGbvMatches(getGbvSrucontentSearch(
-                                                                            "all", of.getBuchtitel(), 1));
-                                                                    of.setGbvfield("all");
-                                                                    of.setGbvsearch(of.getBuchtitel());
-                                                                }
-                                                            } catch (final MyException e) {
-                                                                LOG.info("GBV-Message: " + e.getMessage());
-                                                                final Message m = new Message();
-                                                                m.setMessage(e.getMessage());
-                                                                rq.setAttribute("gbvmessage", m);
-                                                            }
-                                                            gsf = getGbvOrderObject(matches, of);
-                                                        }
-                                                    } else { // Titelsuche für Zeitschriften ohne ISSN
-                                                        if (ck.isMinLength(of.getZeitschriftentitel(), 2)) {
-                                                            try { // allfällige SRU-Fehler-Codes abfangen
-                                                                  // erster Versuch eng, als Phrase
-                                                                matches = getGbvMatches(getGbvSrucontentSearch("zti",
-                                                                        of.getZeitschriftentitel(), 1));
-                                                                of.setGbvfield("zti");
-                                                                of.setGbvsearch(of.getZeitschriftentitel());
-                                                                // zweiter Versuch als Stichwort-Suche
-                                                                if (matches.isEmpty()) {
-                                                                    matches = getGbvMatches(getGbvSrucontentSearch(
-                                                                            "sha", of.getZeitschriftentitel(), 1));
-                                                                    of.setGbvfield("sha");
-                                                                    of.setGbvsearch(of.getZeitschriftentitel());
-                                                                }
-                                                            } catch (final MyException e) {
-                                                                LOG.info("GBV-Message: " + e.getMessage());
-                                                                final Message m = new Message();
-                                                                m.setMessage(e.getMessage());
-                                                                rq.setAttribute("gbvmessage", m);
-                                                            }
-                                                            gsf = getGbvOrderObject(matches, of);
-                                                        }
-                                                    }
                                                 }
                                             }
-                                            
-                                            // *** ein Bestellobjekt erhalten und nicht ein E-Journal => Bestellverarbeitung
-                                            if (gsf.getPpn_003AT() != null && !gbvIsEjournal(gsf)
-                                                    && of.getMediatype().equals("Artikel")) {
-                                                // bei Teilkopie Buch immer zuerst zur Trefferauswahl!
-                                                
-                                                if (of.isManuell()) { // manuelle Bestellung
-                                                    forward = "redirect";
-                                                    // of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" + ui.getKonto().getGbvbenutzername() + "&PASSWORD=" +
-                                                    // ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F" +
-                                                    // "COPY%3FPPN%3D" + gsf.getPpn_003AT() + "%26LANGCODE%3DDU");
-                                                    // bei Artikeln kann per OpenURL die Datenübergeben übergeben werden (bessere Übernahme der Angaben)
-                                                    of.setLink("http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn="
-                                                            + of.getIssn()
-                                                            + "&date="
-                                                            + of.getJahr()
-                                                            + "&volume="
-                                                            + of.getJahrgang()
-                                                            + "&issue="
-                                                            + of.getHeft()
-                                                            + "&pages="
-                                                            + of.getSeiten()
-                                                            + "&title="
-                                                            + of.getZeitschriftentitel()
-                                                            + "&atitle="
-                                                            + of.getArtikeltitel()
-                                                            + "&aulast="
-                                                            + of.getAuthor());
-                                                    
-                                                } else { // *** automatische Bestellung
-                                                    of.setPpn(gsf.getPpn_003AT());
-                                                    IllForm gbv = new IllForm();
-                                                    gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                                    final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
-                                                    final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
-                                                    forward = "ordersuccess";
-                                                    if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
-                                                        AbstractBenutzer kunde = new AbstractBenutzer();
-                                                        kunde = kunde.getUser(Long.valueOf(of.getForuser()),
-                                                                t.getConnection());
-                                                        of.setLieferant(supplier.getLieferantFromName(
-                                                                "GBV - Gemeinsamer Bibliotheksverbund",
-                                                                t.getConnection()));
-                                                        // doppelter Eintrag um Sortieren und Suche zu ermöglichen
-                                                        of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
-                                                        of.setStatus("bestellt");
-                                                        of.setKaufpreis(new BigDecimal("0.00"));
-                                                        of.setWaehrung("EUR");
-                                                        of.setTrackingnr(gbv.getTransaction_group_qualifier());
-                                                        of.setGbvnr(returnValue);
-                                                        final Bestellungen b = new Bestellungen(of, kunde,
-                                                                ui.getKonto());
-                                                        if (of.getBid() == null) {
-                                                            b.save(t.getConnection());
-                                                        } else {
-                                                            b.setId(of.getBid());
-                                                            b.update(t.getConnection());
-                                                        }
-                                                        if (b.getId() != null) {
-                                                            // Status bestellt setzen wenn Bestellung gültige ID hat
-                                                            orderstate.setNewOrderState(b, ui.getKonto(),
-                                                                    new Text(t.getConnection(), TextType.STATE_ORDER,
-                                                                            "bestellt"), null, ui.getBenutzer()
-                                                                            .getEmail(), t.getConnection());
-                                                        }
-                                                        
-                                                    } else {
-                                                        final ErrorMessage em = new ErrorMessage();
-                                                        em.setError("error.gbvorder");
-                                                        em.setError_specific(returnValue);
-                                                        em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                                                        // Für die manuelle Bestellung
-                                                        of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
-                                                                + ui.getKonto().getGbvbenutzername()
-                                                                + "&PASSWORD="
-                                                                + ui.getKonto().getGbvpasswort()
-                                                                + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
-                                                                + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
-                                                        
-                                                        LOG.ludicrous("Failure GBV-Order: "
-                                                                + ui.getKonto().getBibliotheksname() + "\012"
-                                                                + returnValue + "\012" + gbvanswer);
-                                                    }
-                                                }
-                                                // *** keine (0), keine eindeutigen (>1) oder nur ein E-Journal (1) erhalten
-                                            } else {
-                                                if (!matches.isEmpty()) { // Teilkopie oder E-Journal kann 1 sein
-                                                    // Pfad auf Trefferauswahl
-                                                    forward = "trefferauswahl";
-                                                    of.setTreffer_total(matches.get(0).getTreffer_total());
-                                                    final int start = matches.get(0).getStart_record();
-                                                    final int max = matches.get(0).getMaximum_record();
-                                                    if (of.getTreffer_total() - (start + max - 1) > 0) {
-                                                        of.setForwrd(start + max);
-                                                    }
-                                                    if (start - max > 0) {
-                                                        of.setBack(start - max);
-                                                    }
-                                                    rq.setAttribute("matches", matches);
-                                                } else {
-                                                    // Pfad auf Suche
-                                                    forward = "search";
-                                                }
-                                            }
-                                            
-                                            // *** PPN bereits vorhanden => Bestellverarbeitung
-                                        } else {
+                                        }
+                                        
+                                        // *** ein Bestellobjekt erhalten und nicht ein E-Journal => Bestellverarbeitung
+                                        if (gsf.getPpn_003AT() != null && !gbvIsEjournal(gsf)
+                                                && of.getMediatype().equals("Artikel")) {
+                                            // bei Teilkopie Buch immer zuerst zur Trefferauswahl!
                                             
                                             if (of.isManuell()) { // manuelle Bestellung
                                                 forward = "redirect";
-                                                if (!"Artikel".equals(of.getMediatype())) { // Bei Büchern und Teilkopien...
-                                                    of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
-                                                            + ui.getKonto().getGbvbenutzername()
-                                                            + "&PASSWORD="
-                                                            + ui.getKonto().getGbvpasswort()
-                                                            + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
-                                                            + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
-                                                } else { // bei Artikeln
-                                                    // bei Artikeln kann per OpenURL die Datenübergeben übergeben werden (bessere Übernahme der Angaben)
-                                                    of.setLink("http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn="
-                                                            + of.getIssn()
-                                                            + "&date="
-                                                            + of.getJahr()
-                                                            + "&volume="
-                                                            + of.getJahrgang()
-                                                            + "&issue="
-                                                            + of.getHeft()
-                                                            + "&pages="
-                                                            + of.getSeiten()
-                                                            + "&title="
-                                                            + of.getZeitschriftentitel()
-                                                            + "&atitle="
-                                                            + of.getArtikeltitel()
-                                                            + "&aulast="
-                                                            + of.getAuthor());
-                                                }
+                                                // of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=" + ui.getKonto().getGbvbenutzername() + "&PASSWORD=" +
+                                                // ui.getKonto().getGbvpasswort() + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F" +
+                                                // "COPY%3FPPN%3D" + gsf.getPpn_003AT() + "%26LANGCODE%3DDU");
+                                                // bei Artikeln kann per OpenURL die Datenübergeben übergeben werden (bessere Übernahme der Angaben)
+                                                of.setLink("http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn="
+                                                        + of.getIssn()
+                                                        + "&date="
+                                                        + of.getJahr()
+                                                        + "&volume="
+                                                        + of.getJahrgang()
+                                                        + "&issue="
+                                                        + of.getHeft()
+                                                        + "&pages="
+                                                        + of.getSeiten()
+                                                        + "&title="
+                                                        + of.getZeitschriftentitel()
+                                                        + "&atitle="
+                                                        + of.getArtikeltitel()
+                                                        + "&aulast="
+                                                        + of.getAuthor());
+                                                
                                             } else { // *** automatische Bestellung
+                                                of.setPpn(gsf.getPpn_003AT());
                                                 IllForm gbv = new IllForm();
                                                 gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
                                                 final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
@@ -504,110 +398,167 @@ public final class OrderGbvAction extends DispatchAction {
                                                             + "\012" + gbvanswer);
                                                 }
                                             }
-                                            
+                                            // *** keine (0), keine eindeutigen (>1) oder nur ein E-Journal (1) erhalten
+                                        } else {
+                                            if (!matches.isEmpty()) { // Teilkopie oder E-Journal kann 1 sein
+                                                // Pfad auf Trefferauswahl
+                                                forward = "trefferauswahl";
+                                                of.setTreffer_total(matches.get(0).getTreffer_total());
+                                                final int start = matches.get(0).getStart_record();
+                                                final int max = matches.get(0).getMaximum_record();
+                                                if (of.getTreffer_total() - (start + max - 1) > 0) {
+                                                    of.setForwrd(start + max);
+                                                }
+                                                if (start - max > 0) {
+                                                    of.setBack(start - max);
+                                                }
+                                                rq.setAttribute("matches", matches);
+                                            } else {
+                                                // Pfad auf Suche
+                                                forward = "search";
+                                            }
                                         }
                                         
-                                        // *** Bestelltyp Loan
+                                        // *** PPN bereits vorhanden => Bestellverarbeitung
                                     } else {
-                                        // noch keine PPN vorhanden, d.h. choosehits.do noch nicht durchlaufen
-                                        if (of.getPpn() == null) {
-                                            
-                                            GbvSruForm gsf = new GbvSruForm();
-                                            List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
-                                            
-                                            // Versuch anhand der ISBN GBV-Bestellobjekt zu erhalten
-                                            if (ck.isMinLength(of.getIsbn(), 2)) {
-                                                try { // allfällige SRU-Fehler-Codes abfangen
-                                                    matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("isb",
-                                                            of.getIsbn(), 1));
-                                                    of.setGbvfield("isb");
-                                                    of.setGbvsearch(of.getIsbn());
-                                                } catch (final MyException e) {
-                                                    LOG.info("GBV-Message: " + e.getMessage());
-                                                    final Message m = new Message();
-                                                    m.setMessage(e.getMessage());
-                                                    rq.setAttribute("gbvmessage", m);
+                                        
+                                        if (of.isManuell()) { // manuelle Bestellung
+                                            forward = "redirect";
+                                            if (!"Artikel".equals(of.getMediatype())) { // Bei Büchern und Teilkopien...
+                                                of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
+                                                        + ui.getKonto().getGbvbenutzername()
+                                                        + "&PASSWORD="
+                                                        + ui.getKonto().getGbvpasswort()
+                                                        + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
+                                                        + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
+                                            } else { // bei Artikeln
+                                                // bei Artikeln kann per OpenURL die Datenübergeben übergeben werden (bessere Übernahme der Angaben)
+                                                of.setLink("http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn="
+                                                        + of.getIssn()
+                                                        + "&date="
+                                                        + of.getJahr()
+                                                        + "&volume="
+                                                        + of.getJahrgang()
+                                                        + "&issue="
+                                                        + of.getHeft()
+                                                        + "&pages="
+                                                        + of.getSeiten()
+                                                        + "&title="
+                                                        + of.getZeitschriftentitel()
+                                                        + "&atitle="
+                                                        + of.getArtikeltitel()
+                                                        + "&aulast="
+                                                        + of.getAuthor());
+                                            }
+                                        } else { // *** automatische Bestellung
+                                            IllForm gbv = new IllForm();
+                                            gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                            final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
+                                            final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
+                                            forward = "ordersuccess";
+                                            if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
+                                                AbstractBenutzer kunde = new AbstractBenutzer();
+                                                kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
+                                                of.setLieferant(supplier.getLieferantFromName(
+                                                        "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
+                                                // doppelter Eintrag um Sortieren und Suche zu ermöglichen
+                                                of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
+                                                of.setStatus("bestellt");
+                                                of.setKaufpreis(new BigDecimal("0.00"));
+                                                of.setWaehrung("EUR");
+                                                of.setTrackingnr(gbv.getTransaction_group_qualifier());
+                                                of.setGbvnr(returnValue);
+                                                final Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
+                                                if (of.getBid() == null) {
+                                                    b.save(t.getConnection());
+                                                } else {
+                                                    b.setId(of.getBid());
+                                                    b.update(t.getConnection());
                                                 }
-                                                gsf = getGbvOrderObject(matches, of);
-                                            } else { // Versuch anhand des Titels ein GBV-Bestellobjekt zu erhalten
-                                                try { // allfällige SRU-Fehler-Codes abfangen
-                                                      // erster Versuch eng, als Phrase
-                                                    matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("tit",
+                                                if (b.getId() != null) {
+                                                    // Status bestellt setzen wenn Bestellung gültige ID hat
+                                                    orderstate.setNewOrderState(b, ui.getKonto(),
+                                                            new Text(t.getConnection(), TextType.STATE_ORDER,
+                                                                    "bestellt"), null, ui.getBenutzer().getEmail(), t
+                                                                    .getConnection());
+                                                }
+                                                
+                                            } else {
+                                                final ErrorMessage em = new ErrorMessage();
+                                                em.setError("error.gbvorder");
+                                                em.setError_specific(returnValue);
+                                                em.setLink("searchfree.do?activemenu=suchenbestellen");
+                                                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                                                // Für die manuelle Bestellung
+                                                of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
+                                                        + ui.getKonto().getGbvbenutzername()
+                                                        + "&PASSWORD="
+                                                        + ui.getKonto().getGbvpasswort()
+                                                        + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
+                                                        + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
+                                                
+                                                LOG.ludicrous("Failure GBV-Order: "
+                                                        + ui.getKonto().getBibliotheksname() + "\012" + returnValue
+                                                        + "\012" + gbvanswer);
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+                                    // *** Bestelltyp Loan
+                                } else {
+                                    // noch keine PPN vorhanden, d.h. choosehits.do noch nicht durchlaufen
+                                    if (of.getPpn() == null) {
+                                        
+                                        GbvSruForm gsf = new GbvSruForm();
+                                        List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
+                                        
+                                        // Versuch anhand der ISBN GBV-Bestellobjekt zu erhalten
+                                        if (ck.isMinLength(of.getIsbn(), 2)) {
+                                            try { // allfällige SRU-Fehler-Codes abfangen
+                                                matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("isb",
+                                                        of.getIsbn(), 1));
+                                                of.setGbvfield("isb");
+                                                of.setGbvsearch(of.getIsbn());
+                                            } catch (final MyException e) {
+                                                LOG.info("GBV-Message: " + e.getMessage());
+                                                final Message m = new Message();
+                                                m.setMessage(e.getMessage());
+                                                rq.setAttribute("gbvmessage", m);
+                                            }
+                                            gsf = getGbvOrderObject(matches, of);
+                                        } else { // Versuch anhand des Titels ein GBV-Bestellobjekt zu erhalten
+                                            try { // allfällige SRU-Fehler-Codes abfangen
+                                                  // erster Versuch eng, als Phrase
+                                                matches = getGbvMatches(getGbvSrucontentSearchAsPhrase("tit",
+                                                        of.getBuchtitel(), 1));
+                                                of.setGbvfield("tit");
+                                                of.setGbvsearch(of.getBuchtitel());
+                                                // zweiter Versuch als Stichwort-Suche
+                                                if (matches.isEmpty()) {
+                                                    matches = getGbvMatches(getGbvSrucontentSearch("tit",
                                                             of.getBuchtitel(), 1));
                                                     of.setGbvfield("tit");
                                                     of.setGbvsearch(of.getBuchtitel());
-                                                    // zweiter Versuch als Stichwort-Suche
-                                                    if (matches.isEmpty()) {
-                                                        matches = getGbvMatches(getGbvSrucontentSearch("tit",
-                                                                of.getBuchtitel(), 1));
-                                                        of.setGbvfield("tit");
-                                                        of.setGbvsearch(of.getBuchtitel());
-                                                    }
-                                                    // dritter Versuch über alle Wörter
-                                                    if (matches.isEmpty()) {
-                                                        matches = getGbvMatches(getGbvSrucontentSearch("all",
-                                                                of.getBuchtitel(), 1));
-                                                        of.setGbvfield("all");
-                                                        of.setGbvsearch(of.getBuchtitel());
-                                                    }
-                                                } catch (final MyException e) {
-                                                    LOG.info("GBV-Message: " + e.getMessage());
-                                                    final Message m = new Message();
-                                                    m.setMessage(e.getMessage());
-                                                    rq.setAttribute("gbvmessage", m);
                                                 }
-                                                gsf = getGbvOrderObject(matches, of);
+                                                // dritter Versuch über alle Wörter
+                                                if (matches.isEmpty()) {
+                                                    matches = getGbvMatches(getGbvSrucontentSearch("all",
+                                                            of.getBuchtitel(), 1));
+                                                    of.setGbvfield("all");
+                                                    of.setGbvsearch(of.getBuchtitel());
+                                                }
+                                            } catch (final MyException e) {
+                                                LOG.info("GBV-Message: " + e.getMessage());
+                                                final Message m = new Message();
+                                                m.setMessage(e.getMessage());
+                                                rq.setAttribute("gbvmessage", m);
                                             }
-                                            
-                                            // *** ein Loan-Bestellobjekt erhalten => Bestellverarbeitung
-                                            if (gsf.getPpn_003AT() != null) {
-                                                
-                                                if (of.isManuell()) { // manuelle Bestellung
-                                                    forward = "redirect";
-                                                    of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
-                                                            + ui.getKonto().getGbvbenutzername()
-                                                            + "&PASSWORD="
-                                                            + ui.getKonto().getGbvpasswort()
-                                                            + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
-                                                            + "LOAN%3FPPN%3D" + gsf.getPpn_003AT() + "%26LANGCODE%3DDU");
-                                                } else { // *** Trefferauswahl vor automatischer Bestellung bei Büchern
-                                                    // Hier wird auf jeden Fall Choosehits durchlaufen, da die
-                                                    // Angaben sonst zu ungenau sind!!!
-                                                    // Pfad auf Trefferauswahl
-                                                    forward = "trefferauswahl";
-                                                    of.setTreffer_total(matches.get(0).getTreffer_total());
-                                                    final int start = matches.get(0).getStart_record();
-                                                    final int max = matches.get(0).getMaximum_record();
-                                                    if (of.getTreffer_total() - (start + max - 1) > 0) {
-                                                        of.setForwrd(start + max);
-                                                    }
-                                                    if (start - max > 0) {
-                                                        of.setBack(start - max);
-                                                    }
-                                                    rq.setAttribute("matches", matches);
-                                                }
-                                                // *** keine (0), keine eindeutigen (>1)
-                                            } else {
-                                                if (matches.size() > 1) {
-                                                    // Pfad auf Trefferauswahl
-                                                    forward = "trefferauswahl";
-                                                    of.setTreffer_total(matches.get(0).getTreffer_total());
-                                                    final int start = matches.get(0).getStart_record();
-                                                    final int max = matches.get(0).getMaximum_record();
-                                                    if (of.getTreffer_total() - (start + max - 1) > 0) {
-                                                        of.setForwrd(start + max);
-                                                    }
-                                                    if (start - max > 0) {
-                                                        of.setBack(start - max);
-                                                    }
-                                                    rq.setAttribute("matches", matches);
-                                                } else {
-                                                    // Pfad auf Suche
-                                                    forward = "search";
-                                                }
-                                            }
-                                            // *** PPN vorhanden => Bestellverarbeitung Loan
-                                        } else {
+                                            gsf = getGbvOrderObject(matches, of);
+                                        }
+                                        
+                                        // *** ein Loan-Bestellobjekt erhalten => Bestellverarbeitung
+                                        if (gsf.getPpn_003AT() != null) {
                                             
                                             if (of.isManuell()) { // manuelle Bestellung
                                                 forward = "redirect";
@@ -616,102 +567,140 @@ public final class OrderGbvAction extends DispatchAction {
                                                         + "&PASSWORD="
                                                         + ui.getKonto().getGbvpasswort()
                                                         + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
-                                                        + "LOAN%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
-                                            } else { // *** automatische Bestellung
-                                                IllForm gbv = new IllForm();
-                                                gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
-                                                final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
-                                                final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
-                                                forward = "ordersuccess";
-                                                if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
-                                                    AbstractBenutzer kunde = new AbstractBenutzer();
-                                                    kunde = kunde.getUser(Long.valueOf(of.getForuser()),
-                                                            t.getConnection());
-                                                    of.setLieferant(supplier.getLieferantFromName(
-                                                            "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
-                                                    // doppelter Eintrag um Sortieren und Suche zu ermöglichen
-                                                    of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
-                                                    of.setStatus("bestellt");
-                                                    of.setKaufpreis(new BigDecimal("0.00"));
-                                                    of.setWaehrung("EUR");
-                                                    of.setTrackingnr(gbv.getTransaction_group_qualifier());
-                                                    of.setGbvnr(returnValue);
-                                                    final Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
-                                                    if (of.getBid() == null) {
-                                                        b.save(t.getConnection());
-                                                    } else {
-                                                        b.setId(of.getBid());
-                                                        b.update(t.getConnection());
-                                                    }
-                                                    if (b.getId() != null) {
-                                                        // Status bestellt setzen wenn Bestellung gültige ID hat
-                                                        orderstate.setNewOrderState(b, ui.getKonto(),
-                                                                new Text(t.getConnection(), TextType.STATE_ORDER,
-                                                                        "bestellt"), null, ui.getBenutzer().getEmail(),
-                                                                t.getConnection());
-                                                    }
-                                                    
-                                                } else {
-                                                    final ErrorMessage em = new ErrorMessage();
-                                                    em.setError("error.gbvorder");
-                                                    em.setError_specific(returnValue);
-                                                    em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                                                    // Für die manuelle Bestellung
-                                                    of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
-                                                            + ui.getKonto().getGbvbenutzername()
-                                                            + "&PASSWORD="
-                                                            + ui.getKonto().getGbvpasswort()
-                                                            + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
-                                                            + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
-                                                    
-                                                    LOG.ludicrous("Failure GBV-Order: "
-                                                            + ui.getKonto().getBibliotheksname() + "\012" + returnValue
-                                                            + "\012" + gbvanswer);
+                                                        + "LOAN%3FPPN%3D" + gsf.getPpn_003AT() + "%26LANGCODE%3DDU");
+                                            } else { // *** Trefferauswahl vor automatischer Bestellung bei Büchern
+                                                // Hier wird auf jeden Fall Choosehits durchlaufen, da die
+                                                // Angaben sonst zu ungenau sind!!!
+                                                // Pfad auf Trefferauswahl
+                                                forward = "trefferauswahl";
+                                                of.setTreffer_total(matches.get(0).getTreffer_total());
+                                                final int start = matches.get(0).getStart_record();
+                                                final int max = matches.get(0).getMaximum_record();
+                                                if (of.getTreffer_total() - (start + max - 1) > 0) {
+                                                    of.setForwrd(start + max);
                                                 }
+                                                if (start - max > 0) {
+                                                    of.setBack(start - max);
+                                                }
+                                                rq.setAttribute("matches", matches);
                                             }
-                                            
+                                            // *** keine (0), keine eindeutigen (>1)
+                                        } else {
+                                            if (matches.size() > 1) {
+                                                // Pfad auf Trefferauswahl
+                                                forward = "trefferauswahl";
+                                                of.setTreffer_total(matches.get(0).getTreffer_total());
+                                                final int start = matches.get(0).getStart_record();
+                                                final int max = matches.get(0).getMaximum_record();
+                                                if (of.getTreffer_total() - (start + max - 1) > 0) {
+                                                    of.setForwrd(start + max);
+                                                }
+                                                if (start - max > 0) {
+                                                    of.setBack(start - max);
+                                                }
+                                                rq.setAttribute("matches", matches);
+                                            } else {
+                                                // Pfad auf Suche
+                                                forward = "search";
+                                            }
+                                        }
+                                        // *** PPN vorhanden => Bestellverarbeitung Loan
+                                    } else {
+                                        
+                                        if (of.isManuell()) { // manuelle Bestellung
+                                            forward = "redirect";
+                                            of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
+                                                    + ui.getKonto().getGbvbenutzername()
+                                                    + "&PASSWORD="
+                                                    + ui.getKonto().getGbvpasswort()
+                                                    + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
+                                                    + "LOAN%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
+                                        } else { // *** automatische Bestellung
+                                            IllForm gbv = new IllForm();
+                                            gbv = illHandler.prepareGbvIllRequest(of, ui.getKonto(), ui);
+                                            final String gbvanswer = illHandler.sendIllRequest(gbv, BASEURL);
+                                            final String returnValue = illHandler.readGbvIllAnswer(gbvanswer);
+                                            forward = "ordersuccess";
+                                            if (gbvIsOrdernumber(gbvanswer)) { // autom. Bestellung erfolgreich
+                                                AbstractBenutzer kunde = new AbstractBenutzer();
+                                                kunde = kunde.getUser(Long.valueOf(of.getForuser()), t.getConnection());
+                                                of.setLieferant(supplier.getLieferantFromName(
+                                                        "GBV - Gemeinsamer Bibliotheksverbund", t.getConnection()));
+                                                // doppelter Eintrag um Sortieren und Suche zu ermöglichen
+                                                of.setBestellquelle("GBV - Gemeinsamer Bibliotheksverbund");
+                                                of.setStatus("bestellt");
+                                                of.setKaufpreis(new BigDecimal("0.00"));
+                                                of.setWaehrung("EUR");
+                                                of.setTrackingnr(gbv.getTransaction_group_qualifier());
+                                                of.setGbvnr(returnValue);
+                                                final Bestellungen b = new Bestellungen(of, kunde, ui.getKonto());
+                                                if (of.getBid() == null) {
+                                                    b.save(t.getConnection());
+                                                } else {
+                                                    b.setId(of.getBid());
+                                                    b.update(t.getConnection());
+                                                }
+                                                if (b.getId() != null) {
+                                                    // Status bestellt setzen wenn Bestellung gültige ID hat
+                                                    orderstate.setNewOrderState(b, ui.getKonto(),
+                                                            new Text(t.getConnection(), TextType.STATE_ORDER,
+                                                                    "bestellt"), null, ui.getBenutzer().getEmail(), t
+                                                                    .getConnection());
+                                                }
+                                                
+                                            } else {
+                                                final ErrorMessage em = new ErrorMessage();
+                                                em.setError("error.gbvorder");
+                                                em.setError_specific(returnValue);
+                                                em.setLink("searchfree.do?activemenu=suchenbestellen");
+                                                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                                                // Für die manuelle Bestellung
+                                                of.setLink("http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY="
+                                                        + ui.getKonto().getGbvbenutzername()
+                                                        + "&PASSWORD="
+                                                        + ui.getKonto().getGbvpasswort()
+                                                        + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
+                                                        + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
+                                                
+                                                LOG.ludicrous("Failure GBV-Order: "
+                                                        + ui.getKonto().getBibliotheksname() + "\012" + returnValue
+                                                        + "\012" + gbvanswer);
+                                            }
                                         }
                                         
                                     }
                                     
-                                } catch (final Exception e) {
-                                    final ErrorMessage em = new ErrorMessage();
-                                    em.setError("error.system");
-                                    em.setLink("searchfree.do?activemenu=suchenbestellen");
-                                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                                    LOG.error("order: " + e.toString());
                                 }
                                 
-                            } else {
-                                of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
-                                rq.setAttribute("orderform", of);
-                                final ErrorMessage em = new ErrorMessage("error.maxorder", "searchfree.do");
+                            } catch (final Exception e) {
+                                final ErrorMessage em = new ErrorMessage();
+                                em.setError("error.system");
+                                em.setLink("searchfree.do?activemenu=suchenbestellen");
                                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                                LOG.error("order: " + e.toString());
                             }
+                            
                         } else {
                             of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                             rq.setAttribute("orderform", of);
-                            final ErrorMessage em = new ErrorMessage("error.maxorderyear", "searchfree.do");
+                            final ErrorMessage em = new ErrorMessage("error.maxorder", "searchfree.do");
                             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         }
                     } else {
                         of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
                         rq.setAttribute("orderform", of);
-                        final ErrorMessage em = new ErrorMessage("error.inactive", "searchfree.do");
+                        final ErrorMessage em = new ErrorMessage("error.maxorderyear", "searchfree.do");
                         rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     }
-                    
-                } else { // GBV-Suche
-                    forward = "search";
+                } else {
+                    of.setIssn(null); // naja, unterdrücken von "manuell bestellen"...
+                    rq.setAttribute("orderform", of);
+                    final ErrorMessage em = new ErrorMessage("error.inactive", "searchfree.do");
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
                 
-            } else {
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu(Result.LOGIN.getValue());
-                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            } else { // GBV-Suche
+                forward = "search";
             }
             
             of.setSubmit("GBV");
@@ -739,88 +728,82 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward search(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
-        final Auth auth = new Auth();
         
-        // Make sure method is only accessible when user is logged in
-        if (auth.isLogin(rq)) {
+        try {
             
-            try {
-                
-                final Check ck = new Check();
-                int startRecord = 1;
-                if (of.getBack() != 0) {
-                    startRecord = of.getBack();
-                } // in der Anzeige wurde zurück geblättert
-                if (of.getForwrd() != 0) {
-                    startRecord = of.getForwrd();
-                } // in der Anzeige wurde vorwärts geblättert
-                of.setBack(0); // zurücksetzen für korrkete Anzeige
-                of.setForwrd(0); // // zurücksetzen für korrkete Anzeige
-                
-                if (ck.isMinLength(of.getGbvsearch(), 1) && ck.isMinLength(of.getGbvfield(), 3)) { // Eingabe erfolgt
-                
-                    try { // allfällige SRU-Fehler-Codes abfangen
-                          // erste Suche eng als Phrase
-                        List<GbvSruForm> matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(of.getGbvfield(),
-                                of.getGbvsearch(), startRecord));
-                        // zweite Suche als Stichwörter
-                        if (matches.isEmpty()) {
-                            matches = getGbvMatches(getGbvSrucontentSearch(of.getGbvfield(), of.getGbvsearch(),
-                                    startRecord));
+            final Check ck = new Check();
+            int startRecord = 1;
+            if (of.getBack() != 0) {
+                startRecord = of.getBack();
+            } // in der Anzeige wurde zurück geblättert
+            if (of.getForwrd() != 0) {
+                startRecord = of.getForwrd();
+            } // in der Anzeige wurde vorwärts geblättert
+            of.setBack(0); // zurücksetzen für korrkete Anzeige
+            of.setForwrd(0); // // zurücksetzen für korrkete Anzeige
+            
+            if (ck.isMinLength(of.getGbvsearch(), 1) && ck.isMinLength(of.getGbvfield(), 3)) { // Eingabe erfolgt
+            
+                try { // allfällige SRU-Fehler-Codes abfangen
+                      // erste Suche eng als Phrase
+                    List<GbvSruForm> matches = getGbvMatches(getGbvSrucontentSearchAsPhrase(of.getGbvfield(),
+                            of.getGbvsearch(), startRecord));
+                    // zweite Suche als Stichwörter
+                    if (matches.isEmpty()) {
+                        matches = getGbvMatches(getGbvSrucontentSearch(of.getGbvfield(), of.getGbvsearch(), startRecord));
+                    }
+                    
+                    if (!matches.isEmpty()) {
+                        // Pfad auf Trefferauswahl
+                        forward = "trefferauswahl";
+                        of.setTreffer_total(matches.get(0).getTreffer_total());
+                        final int start = matches.get(0).getStart_record();
+                        final int max = matches.get(0).getMaximum_record();
+                        if (of.getTreffer_total() - (start + max - 1) > 0) {
+                            of.setForwrd(start + max);
                         }
-                        
-                        if (!matches.isEmpty()) {
-                            // Pfad auf Trefferauswahl
-                            forward = "trefferauswahl";
-                            of.setTreffer_total(matches.get(0).getTreffer_total());
-                            final int start = matches.get(0).getStart_record();
-                            final int max = matches.get(0).getMaximum_record();
-                            if (of.getTreffer_total() - (start + max - 1) > 0) {
-                                of.setForwrd(start + max);
-                            }
-                            if (start - max > 0) {
-                                of.setBack(start - max);
-                            }
-                            rq.setAttribute("matches", matches);
-                        } else {
-                            // Pfad auf Suche
-                            forward = "search";
-                            final Message m = new Message();
-                            m.setMessage("Keine Treffer!");
-                            rq.setAttribute("gbvmessage", m);
+                        if (start - max > 0) {
+                            of.setBack(start - max);
                         }
-                        
-                    } catch (final MyException e) {
-                        LOG.info("GBV-Message: " + e.getMessage());
+                        rq.setAttribute("matches", matches);
+                    } else {
+                        // Pfad auf Suche
                         forward = "search";
                         final Message m = new Message();
-                        m.setMessage(e.getMessage());
+                        m.setMessage("Keine Treffer!");
                         rq.setAttribute("gbvmessage", m);
                     }
                     
-                } else { // keine Eingabe erfolgt => zurück zur Suche
+                } catch (final MyException e) {
+                    LOG.info("GBV-Message: " + e.getMessage());
                     forward = "search";
                     final Message m = new Message();
-                    m.setMessage("Keine Treffer!");
+                    m.setMessage(e.getMessage());
                     rq.setAttribute("gbvmessage", m);
                 }
                 
-            } catch (final Exception e) {
-                forward = Result.FAILURE.getValue();
-                final ErrorMessage em = new ErrorMessage();
-                em.setError("error.system");
-                em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                LOG.error("search: " + e.toString());
+            } else { // keine Eingabe erfolgt => zurück zur Suche
+                forward = "search";
+                final Message m = new Message();
+                m.setMessage("Keine Treffer!");
+                rq.setAttribute("gbvmessage", m);
             }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(Result.LOGIN.getValue());
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            
+        } catch (final Exception e) {
+            forward = Result.FAILURE.getValue();
+            final ErrorMessage em = new ErrorMessage();
+            em.setError("error.system");
+            em.setLink("searchfree.do?activemenu=suchenbestellen");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            LOG.error("search: " + e.toString());
         }
         
         of.setSubmit("GBV");
@@ -840,63 +823,58 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward validate(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final OrderForm of = (OrderForm) fm;
-        final Auth auth = new Auth();
         final Text cn = new Text();
         
-        // Make sure method is only accessible when user is logged in
-        if (auth.isLogin(rq)) {
+        try {
             
-            try {
+            if (!"GBV-Suche".equals(of.getSubmit())) {
                 
-                if (!"GBV-Suche".equals(of.getSubmit())) {
+                if (!gbvOrderValues(of)) {
                     
-                    if (!gbvOrderValues(of)) {
-                        
-                        forward = "missingvalues";
-                        final Message m = new Message("Fehlende Mussfelder oder zuwenig Angaben für eine Bestellung.");
-                        rq.setAttribute("gbvmessage", m);
-                        
-                        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                        
-                        if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
-                            final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                            final AbstractBenutzer b = ui.getBenutzer();
-                            kontouser.add(b);
-                            of.setKontouser(kontouser);
-                        } else {
-                            of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
-                        }
-                        
+                    forward = "missingvalues";
+                    final Message m = new Message("Fehlende Mussfelder oder zuwenig Angaben für eine Bestellung.");
+                    rq.setAttribute("gbvmessage", m);
+                    
+                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                    
+                    if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
+                        final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
+                        final AbstractBenutzer b = ui.getBenutzer();
+                        kontouser.add(b);
+                        of.setKontouser(kontouser);
                     } else {
-                        forward = Result.SUCCESS.getValue();
+                        of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
                     }
                     
-                } else { // zur GBV-Suche
-                    forward = "search";
+                } else {
+                    forward = Result.SUCCESS.getValue();
                 }
                 
-                of.setSubmit("GBV");
-                rq.setAttribute("orderform", of);
-                
-            } catch (final Exception e) {
-                forward = Result.FAILURE.getValue();
-                final ErrorMessage em = new ErrorMessage();
-                em.setError("error.system");
-                em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                LOG.error("validate: " + e.toString());
-                
-            } finally {
-                cn.close();
+            } else { // zur GBV-Suche
+                forward = "search";
             }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(Result.LOGIN.getValue());
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            
+            of.setSubmit("GBV");
+            rq.setAttribute("orderform", of);
+            
+        } catch (final Exception e) {
+            forward = Result.FAILURE.getValue();
+            final ErrorMessage em = new ErrorMessage();
+            em.setError("error.system");
+            em.setLink("searchfree.do?activemenu=suchenbestellen");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            LOG.error("validate: " + e.toString());
+            
+        } finally {
+            cn.close();
         }
         
         final ActiveMenusForm mf = new ActiveMenusForm();
@@ -913,62 +891,56 @@ public final class OrderGbvAction extends DispatchAction {
     public ActionForward changeMediatypeGbv(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
-        final OrderForm of = (OrderForm) form;
         final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
+        String forward = Result.SUCCESS.getValue();
+        final OrderForm of = (OrderForm) form;
         final Text cn = new Text();
         
-        // Make sure method is only accessible when user is logged in
-        if (auth.isLogin(rq)) {
+        try {
+            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             
-            forward = Result.SUCCESS.getValue();
-            try {
-                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                
-                if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
-                    final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
-                    final AbstractBenutzer b = ui.getBenutzer();
-                    kontouser.add(b);
-                    of.setKontouser(kontouser);
-                } else {
-                    of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
-                }
-                
-                if (of.getMediatype() == null) {
-                    of.setMediatype("Artikel");
-                } // Defaultwert Artikel
-                if (of.getMediatype().equals("Buch")) {
-                    of.setDeloptions("post"); // logische Konsequenz
-                    of.setFileformat("Papierkopie"); // logische Konsequenz
-                }
-                
-                // ISIL und requester-id werden für autom. Bestellung benötigt
-                if (ui.getKonto().getIsil() == null || ui.getKonto().getGbvrequesterid() == null) {
-                    of.setManuell(true);
-                } else {
-                    of.setManuell(false);
-                }
-                of.setSubmit("GBV");
-                of.setMaximum_cost("8");
-                
-                rq.setAttribute("orderform", of);
-                
-            } catch (final Exception e) {
-                forward = Result.FAILURE.getValue();
-                final ErrorMessage em = new ErrorMessage();
-                em.setError("error.system");
-                em.setLink("searchfree.do?activemenu=suchenbestellen");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                LOG.error("changeMediaType: " + e.toString());
-            } finally {
-                cn.close();
+            if (auth.isBenutzer(rq)) { // Benutzer sehen nur die eigenen Adressen
+                final List<AbstractBenutzer> kontouser = new ArrayList<AbstractBenutzer>();
+                final AbstractBenutzer b = ui.getBenutzer();
+                kontouser.add(b);
+                of.setKontouser(kontouser);
+            } else {
+                of.setKontouser(ui.getBenutzer().getKontoUser(ui.getKonto(), cn.getConnection()));
             }
-        } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(Result.LOGIN.getValue());
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            
+            if (of.getMediatype() == null) {
+                of.setMediatype("Artikel");
+            } // Defaultwert Artikel
+            if (of.getMediatype().equals("Buch")) {
+                of.setDeloptions("post"); // logische Konsequenz
+                of.setFileformat("Papierkopie"); // logische Konsequenz
+            }
+            
+            // ISIL und requester-id werden für autom. Bestellung benötigt
+            if (ui.getKonto().getIsil() == null || ui.getKonto().getGbvrequesterid() == null) {
+                of.setManuell(true);
+            } else {
+                of.setManuell(false);
+            }
+            of.setSubmit("GBV");
+            of.setMaximum_cost("8");
+            
+            rq.setAttribute("orderform", of);
+            
+        } catch (final Exception e) {
+            forward = Result.FAILURE.getValue();
+            final ErrorMessage em = new ErrorMessage();
+            em.setError("error.system");
+            em.setLink("searchfree.do?activemenu=suchenbestellen");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            LOG.error("changeMediaType: " + e.toString());
+        } finally {
+            cn.close();
         }
         
         final ActiveMenusForm mf = new ActiveMenusForm();

@@ -75,26 +75,22 @@ public class Stock extends DispatchAction {
     public ActionForward prepareExport(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        String forward = Result.FAILURE.getValue();
         final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
         
-        // Access control
-        if (auth.isLogin(rq)) {
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                forward = Result.SUCCESS.getValue();
-                
-            } else {
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu(Result.LOGIN.getValue());
-                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            }
+        String forward = Result.FAILURE.getValue();
+        
+        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+            forward = Result.SUCCESS.getValue();
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+            final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         
@@ -107,34 +103,31 @@ public class Stock extends DispatchAction {
     public ActionForward prepareImport(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final Text t = new Text();
-        final Auth auth = new Auth();
         
         try {
-            // Access control
-            if (auth.isLogin(rq)) {
-                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                    forward = Result.SUCCESS.getValue();
-                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                    final HoldingForm hf = (HoldingForm) fm;
-                    
-                    hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
-                    
-                    rq.setAttribute("holdingform", hf);
-                    
-                } else {
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu(Result.LOGIN.getValue());
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                }
+            
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+                forward = Result.SUCCESS.getValue();
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final HoldingForm hf = (HoldingForm) fm;
+                
+                hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
+                
+                rq.setAttribute("holdingform", hf);
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
             
@@ -151,9 +144,14 @@ public class Stock extends DispatchAction {
     public ActionForward importHoldings(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         // Prepare classes
         String forward = Result.FAILURE.getValue();
-        final Auth auth = new Auth();
         final Check ck = new Check();
         final Text cn = new Text();
         final FileForm fileForm = (FileForm) fm;
@@ -164,89 +162,75 @@ public class Stock extends DispatchAction {
             final FormFile upload = fileForm.getFile();
             final String fileName = upload.getFileName();
             
-            // Access control
-            if (auth.isLogin(rq)) {
-                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                    if (fileForm.isCondition()) { // conditions for upload must be accepted
-                        // must be tab delimited or csv file
-                        if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")
-                                || ck.isFiletypeExtension(fileName, ".xls")
-                                || ck.isFiletypeExtension(fileName, ".xlsx")) {
-                            if (upload.getFileSize() < FILESIZELIMIT) { // limit file size to avoid OutOfMemory errors
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+                if (fileForm.isCondition()) { // conditions for upload must be accepted
+                    // must be tab delimited or csv file
+                    if (ck.isFiletypeExtension(fileName, ".txt") || ck.isFiletypeExtension(fileName, ".csv")
+                            || ck.isFiletypeExtension(fileName, ".xls") || ck.isFiletypeExtension(fileName, ".xlsx")) {
+                        if (upload.getFileSize() < FILESIZELIMIT) { // limit file size to avoid OutOfMemory errors
+                        
+                            // Excel is able to read UTF-8 encoded tab delimited files. But after editing the file,
+                            // it will save the file as ANSI CP1250. There is no option to save the file as UTF-8.
+                            // So we have to switch encoding if there has been uploaded a TXT file.
+                            String encoding = "UTF-8";
+                            char delimiter = DELIMITER_CSV; // default value
+                            if (ck.isFiletypeExtension(fileName, ".txt")) {
+                                delimiter = DELIMITER_TXT; // tab delimited file
+                                encoding = "CP1250"; // Windows ANSI encoding...
+                            }
                             
-                                // Excel is able to read UTF-8 encoded tab delimited files. But after editing the file,
-                                // it will save the file as ANSI CP1250. There is no option to save the file as UTF-8.
-                                // So we have to switch encoding if there has been uploaded a TXT file.
-                                String encoding = "UTF-8";
-                                char delimiter = DELIMITER_CSV; // default value
-                                if (ck.isFiletypeExtension(fileName, ".txt")) {
-                                    delimiter = DELIMITER_TXT; // tab delimited file
-                                    encoding = "CP1250"; // Windows ANSI encoding...
-                                }
-                                
-                                List<List<String>> stockList = new ArrayList<List<String>>();
-                                List<Message> messageList = new ArrayList<Message>();
-                                
-                                try {
-                                    // Get an List<List<String>> representation of the file
-                                    if (ck.isFiletypeExtension(fileName, ".txt")
-                                            || ck.isFiletypeExtension(fileName, ".csv")) {
-                                        stockList = readCSVImport(upload, delimiter, encoding);
-                                    } else if (ck.isFiletypeExtension(fileName, ".xls")) {
-                                        stockList = readXLSImport(upload);
-                                    } else {
-                                        // TODO: add support for XLSX
-                                        final Message msg = new Message("error.import.failed",
-                                                "Filetype XLSX not supported! Use XLS...", "");
-                                        messageList.add(msg);
-                                    }
-                                } catch (final Exception e) {
-                                    final Message msg = new Message("error.import.failed", e.toString(), "");
+                            List<List<String>> stockList = new ArrayList<List<String>>();
+                            List<Message> messageList = new ArrayList<Message>();
+                            
+                            try {
+                                // Get an List<List<String>> representation of the file
+                                if (ck.isFiletypeExtension(fileName, ".txt")
+                                        || ck.isFiletypeExtension(fileName, ".csv")) {
+                                    stockList = readCSVImport(upload, delimiter, encoding);
+                                } else if (ck.isFiletypeExtension(fileName, ".xls")) {
+                                    stockList = readXLSImport(upload);
+                                } else {
+                                    // TODO: add support for XLSX
+                                    final Message msg = new Message("error.import.failed",
+                                            "Filetype XLSX not supported! Use XLS...", "");
                                     messageList.add(msg);
                                 }
+                            } catch (final Exception e) {
+                                final Message msg = new Message("error.import.failed", e.toString(), "");
+                                messageList.add(msg);
+                            }
+                            
+                            // Check for errors reading file
+                            if (messageList.isEmpty()) {
                                 
-                                // Check for errors reading file
+                                // Check if the file contains the correct number of columns
+                                messageList = checkColumns(stockList);
                                 if (messageList.isEmpty()) {
                                     
-                                    // Check if the file contains the correct number of columns
-                                    messageList = checkColumns(stockList);
+                                    // Basic checks and make sure all entries in stockList are parsable
+                                    messageList = checkBasicParsability(stockList);
                                     if (messageList.isEmpty()) {
                                         
-                                        // Basic checks and make sure all entries in stockList are parsable
-                                        messageList = checkBasicParsability(stockList);
+                                        // Convert to ArrayList<Bestand>
+                                        final List<Bestand> bestandList = convertToBestand(stockList, ui);
+                                        
+                                        // Check integrity of Bestand()
+                                        messageList = checkBestandIntegrity(bestandList, ui, cn.getConnection());
                                         if (messageList.isEmpty()) {
                                             
-                                            // Convert to ArrayList<Bestand>
-                                            final List<Bestand> bestandList = convertToBestand(stockList, ui);
+                                            // save or update holdings, delete all other holdings
+                                            final String successMessage = update(bestandList, ui, cn.getConnection());
                                             
-                                            // Check integrity of Bestand()
-                                            messageList = checkBestandIntegrity(bestandList, ui, cn.getConnection());
-                                            if (messageList.isEmpty()) {
-                                                
-                                                // save or update holdings, delete all other holdings
-                                                final String successMessage = update(bestandList, ui,
-                                                        cn.getConnection());
-                                                
-                                                // TODO: check DAIA-ID
-                                                
-                                                forward = Result.SUCCESS.getValue();
-                                                
-                                                final Message msg = new Message("import.success", successMessage,
-                                                        "allstock.do?method=prepareExport&activemenu=stock");
-                                                
-                                                rq.setAttribute("message", msg);
-                                                
-                                            } else { // detailed errors while checking integrity of Bestand() objects
-                                                forward = "importError";
-                                                final ActiveMenusForm mf = new ActiveMenusForm();
-                                                mf.setActivemenu("stock");
-                                                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                                                rq.setAttribute("messageList", messageList);
-                                                final Message em = new Message("error.import.heading",
-                                                        "stock.do?method=prepareImport&activemenu=stock");
-                                                rq.setAttribute("singleMessage", em);
-                                            }
-                                        } else { // basic errors before parsing to Bestand() objects
+                                            // TODO: check DAIA-ID
+                                            
+                                            forward = Result.SUCCESS.getValue();
+                                            
+                                            final Message msg = new Message("import.success", successMessage,
+                                                    "allstock.do?method=prepareExport&activemenu=stock");
+                                            
+                                            rq.setAttribute("message", msg);
+                                            
+                                        } else { // detailed errors while checking integrity of Bestand() objects
                                             forward = "importError";
                                             final ActiveMenusForm mf = new ActiveMenusForm();
                                             mf.setActivemenu("stock");
@@ -256,7 +240,7 @@ public class Stock extends DispatchAction {
                                                     "stock.do?method=prepareImport&activemenu=stock");
                                             rq.setAttribute("singleMessage", em);
                                         }
-                                    } else { // Wrong number of columns
+                                    } else { // basic errors before parsing to Bestand() objects
                                         forward = "importError";
                                         final ActiveMenusForm mf = new ActiveMenusForm();
                                         mf.setActivemenu("stock");
@@ -266,7 +250,7 @@ public class Stock extends DispatchAction {
                                                 "stock.do?method=prepareImport&activemenu=stock");
                                         rq.setAttribute("singleMessage", em);
                                     }
-                                } else { // Error reading file
+                                } else { // Wrong number of columns
                                     forward = "importError";
                                     final ActiveMenusForm mf = new ActiveMenusForm();
                                     mf.setActivemenu("stock");
@@ -276,42 +260,45 @@ public class Stock extends DispatchAction {
                                             "stock.do?method=prepareImport&activemenu=stock");
                                     rq.setAttribute("singleMessage", em);
                                 }
-                            } else { // Filesize limit
+                            } else { // Error reading file
+                                forward = "importError";
                                 final ActiveMenusForm mf = new ActiveMenusForm();
                                 mf.setActivemenu("stock");
                                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                                final ErrorMessage em = new ErrorMessage("error.filesize",
+                                rq.setAttribute("messageList", messageList);
+                                final Message em = new Message("error.import.heading",
                                         "stock.do?method=prepareImport&activemenu=stock");
-                                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                                rq.setAttribute("singleMessage", em);
                             }
-                        } else { // Filetype error
+                        } else { // Filesize limit
                             final ActiveMenusForm mf = new ActiveMenusForm();
                             mf.setActivemenu("stock");
                             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                            final ErrorMessage em = new ErrorMessage("error.filetype",
+                            final ErrorMessage em = new ErrorMessage("error.filesize",
                                     "stock.do?method=prepareImport&activemenu=stock");
                             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                         }
-                    } else { // Did not accept conditions
+                    } else { // Filetype error
                         final ActiveMenusForm mf = new ActiveMenusForm();
                         mf.setActivemenu("stock");
                         rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                        final ErrorMessage em = new ErrorMessage("error.import.condition",
+                        final ErrorMessage em = new ErrorMessage("error.filetype",
                                 "stock.do?method=prepareImport&activemenu=stock");
                         rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     }
-                } else { // User is not allowed to access this function
+                } else { // Did not accept conditions
                     final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu(Result.LOGIN.getValue());
+                    mf.setActivemenu("stock");
                     rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                    final ErrorMessage em = new ErrorMessage("error.import.condition",
+                            "stock.do?method=prepareImport&activemenu=stock");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                 }
-            } else { // Timeout
+            } else { // User is not allowed to access this function
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
             
@@ -328,38 +315,35 @@ public class Stock extends DispatchAction {
     public ActionForward listStockplaces(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final Text t = new Text();
-        final Auth auth = new Auth();
         
         try {
-            // Access control
-            if (auth.isLogin(rq)) {
-                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                    forward = Result.SUCCESS.getValue();
-                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                    final HoldingForm hf = (HoldingForm) fm;
-                    
-                    hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
-                    
-                    if (hf.getStandorte().size() == 0) { //
-                        hf.setMessage("error.stockplacesmodify.nolocations");
-                    }
-                    
-                    rq.setAttribute("holdingform", hf);
-                    
-                } else {
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu(Result.LOGIN.getValue());
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+                forward = Result.SUCCESS.getValue();
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final HoldingForm hf = (HoldingForm) fm;
+                
+                hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
+                
+                if (hf.getStandorte().size() == 0) { //
+                    hf.setMessage("error.stockplacesmodify.nolocations");
                 }
+                
+                rq.setAttribute("holdingform", hf);
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
             
@@ -376,70 +360,65 @@ public class Stock extends DispatchAction {
     public ActionForward changeStockplace(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        
         String forward = Result.FAILURE.getValue();
         final Text t = new Text();
-        final Auth auth = new Auth();
         
         try {
-            // Access control
-            if (auth.isLogin(rq)) {
-                if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
-                    final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-                    final HoldingForm hf = (HoldingForm) fm;
+            
+            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+                final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+                final HoldingForm hf = (HoldingForm) fm;
+                
+                // Make sure the Text() and the location belongs to the given account
+                final Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), TextType.LOCATION);
+                if (txt.getId() != null) {
+                    forward = Result.SUCCESS.getValue();
                     
-                    // Make sure the Text() and the location belongs to the given account
-                    final Text txt = new Text(t.getConnection(), hf.getStid(), ui.getKonto().getId(), TextType.LOCATION);
-                    if (txt.getId() != null) {
-                        forward = Result.SUCCESS.getValue();
-                        
-                        if (!hf.isMod() && !hf.isDel()) { // Prepares for changing a location
-                            hf.setMod(true); // flags a location to be changed for the JSP
-                            final ArrayList<Text> sl = new ArrayList<Text>();
-                            sl.add(txt);
-                            hf.setStandorte(sl);
-                        } else if (hf.isMod()) { // update the given Text() / location
-                            txt.setInhalt(hf.getStandortid());
-                            txt.updateText(t.getConnection(), txt);
-                            hf.setMod(false); // back to the location list
-                            hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(),
-                                    t.getConnection()));
-                        } else if (hf.isDel()) { // delete the given Text() / location
-                            // Check if there still exist holdings for this location
-                            final Bestand bestand = new Bestand();
-                            final ArrayList<Bestand> sl = new ArrayList<Bestand>(bestand.getAllBestandForStandortId(
-                                    txt.getId(), t.getConnection()));
-                            if (sl == null || sl.isEmpty()) {
-                                txt.deleteText(t.getConnection(), txt);
-                                hf.setMod(false);
-                                hf.setDel(false);
-                            } else {
-                                // there are still holdings for this location!
-                                hf.setMessage("error.stockplacesmodify.notdeletable");
-                            }
-                            hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(),
-                                    t.getConnection()));
+                    if (!hf.isMod() && !hf.isDel()) { // Prepares for changing a location
+                        hf.setMod(true); // flags a location to be changed for the JSP
+                        final ArrayList<Text> sl = new ArrayList<Text>();
+                        sl.add(txt);
+                        hf.setStandorte(sl);
+                    } else if (hf.isMod()) { // update the given Text() / location
+                        txt.setInhalt(hf.getStandortid());
+                        txt.updateText(t.getConnection(), txt);
+                        hf.setMod(false); // back to the location list
+                        hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
+                    } else if (hf.isDel()) { // delete the given Text() / location
+                        // Check if there still exist holdings for this location
+                        final Bestand bestand = new Bestand();
+                        final ArrayList<Bestand> sl = new ArrayList<Bestand>(bestand.getAllBestandForStandortId(
+                                txt.getId(), t.getConnection()));
+                        if (sl == null || sl.isEmpty()) {
+                            txt.deleteText(t.getConnection(), txt);
+                            hf.setMod(false);
+                            hf.setDel(false);
+                        } else {
+                            // there are still holdings for this location!
+                            hf.setMessage("error.stockplacesmodify.notdeletable");
                         }
-                        
-                        rq.setAttribute("holdingform", hf);
-                        
-                    } else { // URL-hacking
-                        final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
-                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                        LOG.info("changeStockplace: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+                        hf.setStandorte(t.getAllKontoText(TextType.LOCATION, ui.getKonto().getId(), t.getConnection()));
                     }
                     
-                } else {
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu(Result.LOGIN.getValue());
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+                    rq.setAttribute("holdingform", hf);
+                    
+                } else { // URL-hacking
+                    final ErrorMessage em = new ErrorMessage("error.hack", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                    LOG.info("changeStockplace: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
+                
             } else {
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu(Result.LOGIN.getValue());
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+                final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
             

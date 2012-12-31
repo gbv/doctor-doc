@@ -40,6 +40,7 @@
 	<global-forwards>
 		<forward name="failure" path="/error.do" />
 		<forward name="errorpaidonly" path="/globalerrorpaidonly.do"/>
+		<forward name="errortimeout" path="/globalerrortimeout.do"/>
 	</global-forwards>
 
 	<!-- =================================== Action Mapping Definitions -->
@@ -59,6 +60,12 @@
 		<!-- Paid only access  -->
 		<action path="/globalerrorpaidonly" name="LoginForm" validate="false" scope="request"
 			type="ch.dbs.actions.globalerrors.PaidOnlyAction">
+			<forward name="success" path="/error.do" />
+		</action>
+		
+		<!-- Timeout / user not logged in  -->
+		<action path="/globalerrortimeout" name="LoginForm" validate="false" scope="request"
+			type="ch.dbs.actions.globalerrors.TimeoutAction">
 			<forward name="success" path="/error.do" />
 		</action>
 		

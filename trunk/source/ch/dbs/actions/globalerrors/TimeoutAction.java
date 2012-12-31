@@ -15,7 +15,7 @@
 //
 //  Contact: info@doctor-doc.com
 
-package ch.dbs.actions.maintenance;
+package ch.dbs.actions.globalerrors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,48 +25,25 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import util.Auth;
 import ch.dbs.form.ActiveMenusForm;
 import ch.dbs.form.ErrorMessage;
 import enums.Result;
 
 /**
- * List the possible options for the maintenance of a given account.
+ * Prepares an error message if the user is not logged in.
  */
-public class ListOptions extends DispatchAction {
+public class TimeoutAction extends DispatchAction {
     
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
         
-        final Auth auth = new Auth();
-        // make sure the user is logged in
-        if (!auth.isLogin(rq)) {
-            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
-        }
-        // if activated on system level, access will be restricted to paid only
-        if (auth.isPaidOnly(rq)) {
-            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
-        }
+        final ActiveMenusForm mf = new ActiveMenusForm();
+        mf.setActivemenu(Result.LOGIN.getValue());
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+        final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
+        rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         
-        String forward = Result.FAILURE.getValue();
-        
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            
-            forward = Result.SUCCESS.getValue();
-            
-            // navigation: set 'account/konto' tab as active
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("konto");
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
-        }
-        
-        return mp.findForward(forward);
+        return mp.findForward(Result.SUCCESS.getValue());
     }
     
 }

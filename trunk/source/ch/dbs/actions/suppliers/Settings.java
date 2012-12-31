@@ -46,6 +46,10 @@ public class Settings extends DispatchAction {
             final HttpServletResponse rp) {
         
         final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -55,60 +59,50 @@ public class Settings extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final SupplierForm sf = (SupplierForm) form;
         
-        // catching session timeouts
-        if (auth.isLogin(rq)) {
-            // access restricted to librarians and admins only
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                
-                final Lieferanten sup = new Lieferanten();
-                final Text cn = new Text();
-                
-                try {
-                    
-                    final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
-                    
-                    // we do not have any private suppliers...
-                    if (privSuppliers.isEmpty()) {
-                        // ...there is only one logical display option
-                        sf.setShowprivsuppliers(false);
-                        sf.setShowpubsuppliers(true);
-                    }
-                    
-                    // update account with new settings
-                    sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
-                    
-                    // set back updated UserInfo / account into session
-                    ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
-                    ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
-                    rq.getSession().setAttribute("userinfo", ui);
-                    
-                    // trigger update message
-                    sf.setChangedsettings(true);
-                    
-                    rq.setAttribute("form", sf);
-                    
-                    // navigation: set 'account/konto' tab as active
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("konto");
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    
-                    forward = Result.SUCCESS.getValue();
-                    
-                } finally {
-                    cn.close();
-                }
-            } else {
-                final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                m.setLink("searchfree.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
-            }
+        // access restricted to librarians and admins only
+        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
             
+            final Lieferanten sup = new Lieferanten();
+            final Text cn = new Text();
+            
+            try {
+                
+                final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
+                
+                // we do not have any private suppliers...
+                if (privSuppliers.isEmpty()) {
+                    // ...there is only one logical display option
+                    sf.setShowprivsuppliers(false);
+                    sf.setShowpubsuppliers(true);
+                }
+                
+                // update account with new settings
+                sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
+                
+                // set back updated UserInfo / account into session
+                ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
+                ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
+                rq.getSession().setAttribute("userinfo", ui);
+                
+                // trigger update message
+                sf.setChangedsettings(true);
+                
+                rq.setAttribute("form", sf);
+                
+                // navigation: set 'account/konto' tab as active
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("konto");
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                
+                forward = Result.SUCCESS.getValue();
+                
+            } finally {
+                cn.close();
+            }
         } else {
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu(Result.LOGIN.getValue());
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            final ErrorMessage m = new ErrorMessage("error.berechtigung");
+            m.setLink("searchfree.do");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
         }
         
         return mp.findForward(forward);
