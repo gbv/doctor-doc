@@ -34,31 +34,36 @@ import enums.Result;
  * List the possible options for the maintenance of a given account.
  */
 public class ListOptions extends DispatchAction {
-
+    
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
-        String forward = Result.FAILURE.getValue();
+        
         final Auth auth = new Auth();
-
+        // if activated on system level, access will be restricted to paid only
+        if (auth.isPaidOnly(rq)) {
+            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
+        
         // catching session timeouts
         if (auth.isLogin(rq)) {
             // access restricted to librarians and admins only
             if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-
+                
                 forward = Result.SUCCESS.getValue();
-
+                
                 // navigation: set 'account/konto' tab as active
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("konto");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-
+                
             } else {
                 final ErrorMessage m = new ErrorMessage("error.berechtigung");
                 m.setLink("searchfree.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
-
+            
         } else {
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu(Result.LOGIN.getValue());
@@ -66,8 +71,8 @@ public class ListOptions extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.timeout", "login.do");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
-
+        
         return mp.findForward(forward);
     }
-
+    
 }
