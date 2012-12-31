@@ -27,6 +27,7 @@ import ch.dbs.entity.Administrator;
 import ch.dbs.entity.Benutzer;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Bibliothekar;
+import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserInfo;
@@ -222,6 +223,32 @@ public class Auth {
                 if (ui.getKonto().getKontotyp() > 0 || diffInDays <= 30) {
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Checks if the account has paid access. May be invoked in any Action by
+     * returning: return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+     * 
+     * @param Konto konto
+     * @return true / false
+     */
+    public boolean isPaidOnly(final Konto konto) {
+        
+        // only perform check, if activated on system level
+        if (!ReadSystemConfigurations.isPaidAccess()) {
+            return false;
+        }
+        
+        if (konto != null) {
+            final Date now = new Date();
+            // allow 30 days for a trial account
+            final int diffInDays = (int) ((now.getTime() - konto.getEdatum().getTime()) / (1000 * 60 * 60 * 24));
+            // 0 = free account
+            if (konto.getKontotyp() > 0 || diffInDays <= 30) {
+                return false;
             }
         }
         return true;

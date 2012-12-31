@@ -374,10 +374,6 @@ public final class BestellformAction extends DispatchAction {
             final HttpServletResponse rp) {
         
         final Auth auth = new Auth();
-        // if activated on system level, access will be restricted to paid only
-        if (auth.isPaidOnly(rq)) {
-            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
-        }
         
         Text t = new Text();
         final Text cn = new Text();
@@ -396,10 +392,12 @@ public final class BestellformAction extends DispatchAction {
         
         try {
             
-            // There are three ways of taking access, without being logged in. Priority is as follows:
-            // 1. Kontokennung (overwrites IP-based access)
-            // 2. IP-based (overwrites Broker-Kennung)
-            // 3. Broker-Kennung (e.g. Careum Explorer)
+            // There are four ways of taking access. Priority is as follows:
+            // 1. Being logged in
+            // Not being logged in:
+            // 2. Kontokennung (overwrites IP based access)
+            // 3. IP-based (overwrites Brokerkennung)
+            // 4. Brokerkennung
             
             if (of.getKkid() == null && !auth.isLogin(rq)) {
                 t = auth.grantAccess(rq);
@@ -418,13 +416,22 @@ public final class BestellformAction extends DispatchAction {
                     }
                 }
                 
+                // case Konto/Brokerkennung or IP based
                 if (t != null && t.getInhalt() != null) {
+                    // if activated on system level, access will be restricted to paid only
+                    if (auth.isPaidOnly(t.getKonto())) {
+                        return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
+                    }
                     library = t.getKonto().getBibliotheksname();
                     k = t.getKonto();
-                    
                     // set link in request if there is institution logo for this account
                     if (t.getKonto().getInstlogolink() != null) {
                         rq.setAttribute("logolink", t.getKonto().getInstlogolink());
+                    }
+                } else { // case logged in
+                    // if activated on system level, access will be restricted to paid only
+                    if (auth.isPaidOnly(rq)) {
+                        return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
                     }
                 }
                 
