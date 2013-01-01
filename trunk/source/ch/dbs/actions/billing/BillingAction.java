@@ -142,7 +142,6 @@ public final class BillingAction extends DispatchAction {
         return mp.findForward(forward);
     }
     
-
     /**
      * PDF Vorschau für eine Rechnung
      */
@@ -155,84 +154,69 @@ public final class BillingAction extends DispatchAction {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
         
-        final String forward = Result.FAILURE.getValue();
         final Billing b = new Billing();
         
         try {
-
-            // Benutzer eingeloggt
-            if (auth.isLogin(rq)) {
-
-                // Benutzer ein Admin?
-                if (auth.isAdmin(rq)) {
-
-                	BillingForm bf = (BillingForm) fm;
-					final Konto k = new Konto(bf.getKontoid(),
-							b.getConnection());
-
-					// Rechnung speichern
-					final KontoAdmin ka = new KontoAdmin();
-					bf = ka.prepareBillingText(k, b.getConnection(), null, bf);
-//					bf.getBill().save(b.getConnection());
-
-					// Parameter abfüllen
-					final Map<String, Object> param = new HashMap<String, Object>();
-					param.put("adress", k.getBibliotheksname());
-					param.put("billingtext", bf.getBillingtext());
-
-					final InputStream reportStream = new BufferedInputStream(
-							this.getServlet()
-									.getServletContext()
-									.getResourceAsStream(
-											"/reports/rechnung.jasper"));
-
-					// PDF erstellen
-					OutputStream out = null;
-
-					// prepare output stream
-					rp.setContentType("application/pdf");
-
-					final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
-					final HashMap<String, String> hm = new HashMap<String, String>();
-					hm.put("Fake", "Daten damit Report nicht leer wird..");
-					al.add(hm);
-					final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(
-							al);
-
-					try {
-						out = rp.getOutputStream();
-						JasperRunManager.runReportToPdfStream(reportStream,
-								out, param, ds);
-					} catch (JRException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					// Report an den Browser senden
-					try {
-						out.flush();
-						out.close();
-					} catch (final IOException e) {
-						// LOG.error("BillingAction.billingPreview: " +
-						// e.toString());
-					}
-                    
-
-                } else {
-                    final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            
+            // Benutzer ein Admin?
+            if (auth.isAdmin(rq)) {
+                
+                BillingForm bf = (BillingForm) fm;
+                final Konto k = new Konto(bf.getKontoid(), b.getConnection());
+                
+                // Rechnung speichern
+                final KontoAdmin ka = new KontoAdmin();
+                bf = ka.prepareBillingText(k, b.getConnection(), null, bf);
+                //					bf.getBill().save(b.getConnection());
+                
+                // Parameter abfüllen
+                final Map<String, Object> param = new HashMap<String, Object>();
+                param.put("adress", k.getBibliotheksname());
+                param.put("billingtext", bf.getBillingtext());
+                
+                final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                        .getResourceAsStream("/reports/rechnung.jasper"));
+                
+                // PDF erstellen
+                OutputStream out = null;
+                
+                // prepare output stream
+                rp.setContentType("application/pdf");
+                
+                final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
+                final HashMap<String, String> hm = new HashMap<String, String>();
+                hm.put("Fake", "Daten damit Report nicht leer wird..");
+                al.add(hm);
+                final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
+                
+                try {
+                    out = rp.getOutputStream();
+                    JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
+                } catch (final JRException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (final IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
+                // Report an den Browser senden
+                try {
+                    out.flush();
+                    out.close();
+                } catch (final IOException e) {
+                    // LOG.error("BillingAction.billingPreview: " +
+                    // e.toString());
+                }
+                
             } else {
                 final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
-           
+            
         } finally {
             b.close();
         }
         return mp.findForward(null);
     }
-
+    
 }
