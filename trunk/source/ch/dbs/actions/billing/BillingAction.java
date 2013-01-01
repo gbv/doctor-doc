@@ -18,6 +18,7 @@
 package ch.dbs.actions.billing;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.util.SimpleFileResolver;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -167,6 +170,9 @@ public final class BillingAction extends DispatchAction {
             final Map<String, Object> param = new HashMap<String, Object>();
             param.put("adress", k.getBibliotheksname());
             param.put("billingtext", bf.getBillingtext());
+            param.put(JRParameter.REPORT_FILE_RESOLVER, 
+            			new SimpleFileResolver(
+            					new File(this.getServlet().getServletContext().getRealPath("/reports/"))));
             
             final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                     .getResourceAsStream("/reports/rechnung.jasper"));

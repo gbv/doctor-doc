@@ -30,7 +30,7 @@ www.doctor-doc.com]]></text>
 			</staticText>
 			<image>
 				<reportElement uuid="5f129eea-3707-489f-86e7-e57b120434eb" x="129" y="3" width="37" height="34"/>
-				<imageExpression><![CDATA["C:\\Users\\ps\\workspace\\docidoc\\reports\\sp.gif"]]></imageExpression>
+				<imageExpression><![CDATA["sp.gif"]]></imageExpression>
 			</image>
 		</band>
 	</title>
