@@ -146,6 +146,10 @@ public final class ILVReport extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -153,38 +157,31 @@ public final class ILVReport extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            
-            final IlvReportForm ilvf = (IlvReportForm) fm;
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            OutputStream out = null;
-            
-            // set ILL form number from wildcard mapping
-            ilvf.setIlvformnr(getIlvNumber(mp.getPath()));
-            
-            // prepare output stream
-            rp.setContentType("application/pdf");
-            rp.setHeader("Content-Disposition", "attachment;filename=" + composeFilename(ilvf, ui));
-            // run report, depending on ILL form number
+        final IlvReportForm ilvf = (IlvReportForm) fm;
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        OutputStream out = null;
+        
+        // set ILL form number from wildcard mapping
+        ilvf.setIlvformnr(getIlvNumber(mp.getPath()));
+        
+        // prepare output stream
+        rp.setContentType("application/pdf");
+        rp.setHeader("Content-Disposition", "attachment;filename=" + composeFilename(ilvf, ui));
+        // run report, depending on ILL form number
+        try {
+            out = rp.getOutputStream();
+            runReport(ilvf, ui, out);
+        } catch (final Exception e) {
+            LOG.error("OutputStream failed: " + e.toString());
+        } finally {
+            // send report to browser
             try {
-                out = rp.getOutputStream();
-                runReport(ilvf, ui, out);
-            } catch (final Exception e) {
-                LOG.error("OutputStream failed: " + e.toString());
-            } finally {
-                // send report to browser
-                try {
-                    out.flush();
-                    out.close();
-                } catch (final IOException e) {
-                    LOG.error("orderspdf: " + e.toString());
-                }
-                forward = null;
+                out.flush();
+                out.close();
+            } catch (final IOException e) {
+                LOG.error("orderspdf: " + e.toString());
             }
-            
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            forward = null;
         }
         
         return mp.findForward(forward);
@@ -201,6 +198,10 @@ public final class ILVReport extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -208,40 +209,33 @@ public final class ILVReport extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final IlvReportForm ilvf = (IlvReportForm) fm;
+        final Lieferanten l = new Lieferanten();
+        
+        try {
             
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            final IlvReportForm ilvf = (IlvReportForm) fm;
-            final Lieferanten l = new Lieferanten();
+            ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
             
-            try {
-                
-                ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
-                
-                // default Subject & Mailtext
-                final Text subject = new Text(l.getConnection(), TextType.MAIL_SUBJECT, ui.getKonto().getId());
-                final Text text = new Text(l.getConnection(), TextType.MAIL_BODY, ui.getKonto().getId());
-                if (subject.getInhalt() != null) {
-                    ilvf.setSubject(subject.getInhalt());
-                }
-                if (text.getInhalt() != null) {
-                    ilvf.setMailtext(text.getInhalt());
-                }
-                
-                rq.setAttribute("IlvReportForm", ilvf);
-                // set ILL form number back into request
-                rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-                // set ILL form number back into request
-                rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
-                forward = "preparemail";
-                
-            } finally {
-                l.close();
+            // default Subject & Mailtext
+            final Text subject = new Text(l.getConnection(), TextType.MAIL_SUBJECT, ui.getKonto().getId());
+            final Text text = new Text(l.getConnection(), TextType.MAIL_BODY, ui.getKonto().getId());
+            if (subject.getInhalt() != null) {
+                ilvf.setSubject(subject.getInhalt());
+            }
+            if (text.getInhalt() != null) {
+                ilvf.setMailtext(text.getInhalt());
             }
             
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            rq.setAttribute("IlvReportForm", ilvf);
+            // set ILL form number back into request
+            rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
+            // set ILL form number back into request
+            rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
+            forward = "preparemail";
+            
+        } finally {
+            l.close();
         }
         
         return mp.findForward(forward);
@@ -258,6 +252,10 @@ public final class ILVReport extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -265,93 +263,86 @@ public final class ILVReport extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final IlvReportForm ilvf = (IlvReportForm) fm;
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        
+        try {
+            // prepare attachement
+            DataSource aAttachment = null;
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             
-            final IlvReportForm ilvf = (IlvReportForm) fm;
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+            // create PDF report using the appropriate ILL form number
+            runReport(ilvf, ui, baos);
             
-            try {
-                // prepare attachement
-                DataSource aAttachment = null;
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                
-                // create PDF report using the appropriate ILL form number
-                runReport(ilvf, ui, baos);
-                
-                aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
-                
-                // prepare email
-                final InternetAddress[] to = new InternetAddress[2];
-                to[0] = new InternetAddress(ilvf.getTo());
-                to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
-                final MHelper mh = new MHelper();
-                final Session session = Session.getDefaultInstance(mh.getProperties());
-                
-                // define message
-                final MimeMessage message = mh.getMimeMessage(session);
-                
-                // set header
-                message.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
-                
-                // set subject UTF-8 encoded
-                message.setSubject(MimeUtility.encodeText(ilvf.getSubject(), "UTF-8", null));
-                
-                // set reply to address
-                message.setReplyTo(new InternetAddress[] { new InternetAddress(ui.getKonto().getBibliotheksmail()) });
-                
-                // create the message part
-                MimeBodyPart messageBodyPart = new MimeBodyPart();
-                
-                // set text message
-                messageBodyPart.setText(composeMailBody(ui, ilvf));
-                final Multipart multipart = new MimeMultipart();
-                multipart.addBodyPart(messageBodyPart);
-                
-                // part two is the attachment
-                messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setDataHandler(new DataHandler(aAttachment));
-                messageBodyPart.setFileName(composeFilename(ilvf, ui));
-                multipart.addBodyPart(messageBodyPart);
-                
-                // put parts in message
-                message.setContent(multipart);
-                message.saveChanges();
-                
-                // send the email
-                mh.sendMessage(session, message, to);
-                
-                forward = Result.SUCCESS.getValue();
-                final String content = "ilvmail.confirmation";
-                final String link = "listkontobestellungen.do?method=overview";
-                final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
-                rq.setAttribute("message", mes);
-                rq.setAttribute("IlvReportForm", ilvf);
-                
-            } catch (final JRException e1) {
-                final ErrorMessage em = new ErrorMessage("error.createilvreport",
-                        "listkontobestellungen.do?method=overview");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } catch (final SMTPAddressFailedException e) {
-                final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(),
-                        "listkontobestellungen.do?method=overview");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } catch (final AuthenticationFailedException e) {
-                final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(),
-                        "listkontobestellungen.do?method=overview");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                //SMTPSendFailedException
-            } catch (final MessagingException e) {
-                final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
-                        "listkontobestellungen.do?method=overview");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } catch (final Exception e) {
-                final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
-                        "listkontobestellungen.do?method=overview");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            }
+            aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
             
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
+            // prepare email
+            final InternetAddress[] to = new InternetAddress[2];
+            to[0] = new InternetAddress(ilvf.getTo());
+            to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
+            final MHelper mh = new MHelper();
+            final Session session = Session.getDefaultInstance(mh.getProperties());
+            
+            // define message
+            final MimeMessage message = mh.getMimeMessage(session);
+            
+            // set header
+            message.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
+            
+            // set subject UTF-8 encoded
+            message.setSubject(MimeUtility.encodeText(ilvf.getSubject(), "UTF-8", null));
+            
+            // set reply to address
+            message.setReplyTo(new InternetAddress[] { new InternetAddress(ui.getKonto().getBibliotheksmail()) });
+            
+            // create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            
+            // set text message
+            messageBodyPart.setText(composeMailBody(ui, ilvf));
+            final Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            
+            // part two is the attachment
+            messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setDataHandler(new DataHandler(aAttachment));
+            messageBodyPart.setFileName(composeFilename(ilvf, ui));
+            multipart.addBodyPart(messageBodyPart);
+            
+            // put parts in message
+            message.setContent(multipart);
+            message.saveChanges();
+            
+            // send the email
+            mh.sendMessage(session, message, to);
+            
+            forward = Result.SUCCESS.getValue();
+            final String content = "ilvmail.confirmation";
+            final String link = "listkontobestellungen.do?method=overview";
+            final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
+            rq.setAttribute("message", mes);
+            rq.setAttribute("IlvReportForm", ilvf);
+            
+        } catch (final JRException e1) {
+            final ErrorMessage em = new ErrorMessage("error.createilvreport",
+                    "listkontobestellungen.do?method=overview");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } catch (final SMTPAddressFailedException e) {
+            final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(),
+                    "listkontobestellungen.do?method=overview");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } catch (final AuthenticationFailedException e) {
+            final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(),
+                    "listkontobestellungen.do?method=overview");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            //SMTPSendFailedException
+        } catch (final MessagingException e) {
+            final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
+                    "listkontobestellungen.do?method=overview");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } catch (final Exception e) {
+            final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
+                    "listkontobestellungen.do?method=overview");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         }
         

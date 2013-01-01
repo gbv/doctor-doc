@@ -27,7 +27,6 @@ import org.apache.struts.actions.DispatchAction;
 
 import util.Auth;
 import ch.dbs.entity.DaiaParam;
-import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
 import enums.Result;
@@ -45,71 +44,64 @@ public class OrderUBBaselAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
-        
-        String forward = Result.FAILURE.getValue();
-        
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            
-            final OrderForm ofjo = (OrderForm) form;
-            final DaiaParam dp = new DaiaParam();
-            
-            // set parameters for UB Basel
-            dp.setLinkout("http://www.ub.unibas.ch/cgi-bin/sfx_dod_m.pl");
-            dp.setMapAuthors("Author");
-            dp.setMapAtitle("Article");
-            dp.setMapJournal("Journal");
-            dp.setMapIssn("ISSN");
-            dp.setMapDate("Year");
-            dp.setMapVolume("Volume");
-            dp.setMapIssue("Issue");
-            dp.setMapPages("Pages");
-            dp.setMapPmid("meduid");
-            
-            // Identification
-            dp.setFree1("Source");
-            dp.setFree1Value("doctor-doc");
-            // get Values from Konto
-            dp.setFree2("uid");
-            if (ui.getKonto().getIdsid() != null) {
-                dp.setFree2Value(ui.getKonto().getIdsid());
-            } else {
-                dp.setFree2Value("");
-            }
-            dp.setFree3("pwd");
-            if (ui.getKonto().getIdspasswort() != null) {
-                dp.setFree3Value(ui.getKonto().getIdspasswort());
-            } else {
-                dp.setFree3Value("");
-            }
-            // additional parameters
-            dp.setFree4("action");
-            dp.setFree4Value("submit");
-            dp.setFree5("pickup");
-            dp.setFree5Value("EMAIL - E-Mail");
-            dp.setFree6("sfxurl");
-            dp.setFree6Value("#sfxurl");
-            dp.setFree7("legal");
-            dp.setFree7Value("on");
-            dp.setFree8("B1");
-            dp.setFree8Value("Bestellung abschicken");
-            
-            // set reference into remarks due to indication bug (missing issue) at UB Basel
-            dp.setFree9("bemerkung");
-            dp.setFree9Value(dp.combineReference(ofjo));
-            
-            rq.setAttribute("ofjo", ofjo);
-            rq.setAttribute("daiaparam", dp);
-            
-            forward = "redirect";
-            
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
         }
         
-        return mp.findForward(forward);
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        
+        final OrderForm ofjo = (OrderForm) form;
+        final DaiaParam dp = new DaiaParam();
+        
+        // set parameters for UB Basel
+        dp.setLinkout("http://www.ub.unibas.ch/cgi-bin/sfx_dod_m.pl");
+        dp.setMapAuthors("Author");
+        dp.setMapAtitle("Article");
+        dp.setMapJournal("Journal");
+        dp.setMapIssn("ISSN");
+        dp.setMapDate("Year");
+        dp.setMapVolume("Volume");
+        dp.setMapIssue("Issue");
+        dp.setMapPages("Pages");
+        dp.setMapPmid("meduid");
+        
+        // Identification
+        dp.setFree1("Source");
+        dp.setFree1Value("doctor-doc");
+        // get Values from Konto
+        dp.setFree2("uid");
+        if (ui.getKonto().getIdsid() != null) {
+            dp.setFree2Value(ui.getKonto().getIdsid());
+        } else {
+            dp.setFree2Value("");
+        }
+        dp.setFree3("pwd");
+        if (ui.getKonto().getIdspasswort() != null) {
+            dp.setFree3Value(ui.getKonto().getIdspasswort());
+        } else {
+            dp.setFree3Value("");
+        }
+        // additional parameters
+        dp.setFree4("action");
+        dp.setFree4Value("submit");
+        dp.setFree5("pickup");
+        dp.setFree5Value("EMAIL - E-Mail");
+        dp.setFree6("sfxurl");
+        dp.setFree6Value("#sfxurl");
+        dp.setFree7("legal");
+        dp.setFree7Value("on");
+        dp.setFree8("B1");
+        dp.setFree8Value("Bestellung abschicken");
+        
+        // set reference into remarks due to indication bug (missing issue) at UB Basel
+        dp.setFree9("bemerkung");
+        dp.setFree9Value(dp.combineReference(ofjo));
+        
+        rq.setAttribute("ofjo", ofjo);
+        rq.setAttribute("daiaparam", dp);
+        
+        return mp.findForward("redirect");
     }
     
 }

@@ -28,7 +28,6 @@ import org.apache.struts.actions.DispatchAction;
 import util.Auth;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
-import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.MaintenanceForm;
 import ch.dbs.form.Message;
 import ch.dbs.form.UserInfo;
@@ -47,6 +46,10 @@ public class BulkOperations extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -54,54 +57,45 @@ public class BulkOperations extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final MaintenanceForm operation = (MaintenanceForm) form;
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Text cn = new Text();
+        
+        try {
             
-            final MaintenanceForm operation = (MaintenanceForm) form;
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            final Text cn = new Text();
-            
-            try {
+            if (operation.isConfirmed()) {
+                // execute operation
+                final int deleted = operation.deleteOrders(ui, cn.getConnection());
                 
-                if (operation.isConfirmed()) {
-                    // execute operation
-                    final int deleted = operation.deleteOrders(ui, cn.getConnection());
-                    
-                    // set result from DELETE back into form
-                    operation.setNumerOfRecords(deleted);
-                    
-                    final Message msg = new Message();
-                    msg.setMessage("maintenance.numberOfRecordsDeleted");
-                    msg.setSystemMessage(String.valueOf(operation.getNumerOfRecords()));
-                    msg.setLink("maintenance.do");
-                    rq.setAttribute("message", msg);
-                    
-                    forward = Result.SUCCESS.getValue();
-                } else {
-                    // force confirmation of operation
-                    forward = "confirm";
-                    
-                    // get number of records involved
-                    operation.setNumerOfRecords(operation.countDeleteOrders(ui, cn.getConnection()));
-                    
-                    operation.setMethod("deleteorders");
-                    rq.setAttribute("operation", operation);
-                }
+                // set result from DELETE back into form
+                operation.setNumerOfRecords(deleted);
                 
-            } finally {
-                cn.close();
+                final Message msg = new Message();
+                msg.setMessage("maintenance.numberOfRecordsDeleted");
+                msg.setSystemMessage(String.valueOf(operation.getNumerOfRecords()));
+                msg.setLink("maintenance.do");
+                rq.setAttribute("message", msg);
+                
+                forward = Result.SUCCESS.getValue();
+            } else {
+                // force confirmation of operation
+                forward = "confirm";
+                
+                // get number of records involved
+                operation.setNumerOfRecords(operation.countDeleteOrders(ui, cn.getConnection()));
+                
+                operation.setMethod("deleteorders");
+                rq.setAttribute("operation", operation);
             }
             
-            // navigation: set 'account/konto' tab as active
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("konto");
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
+        } finally {
+            cn.close();
         }
+        
+        // navigation: set 'account/konto' tab as active
+        final ActiveMenusForm mf = new ActiveMenusForm();
+        mf.setActivemenu("konto");
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
         
         return mp.findForward(forward);
     }
@@ -114,6 +108,10 @@ public class BulkOperations extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -121,54 +119,45 @@ public class BulkOperations extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final MaintenanceForm operation = (MaintenanceForm) form;
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Text cn = new Text();
+        
+        try {
             
-            final MaintenanceForm operation = (MaintenanceForm) form;
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            final Text cn = new Text();
-            
-            try {
+            if (operation.isConfirmed()) {
+                // execute operation
+                final int deleted = operation.deleteUserNoOrders(ui, cn.getConnection());
                 
-                if (operation.isConfirmed()) {
-                    // execute operation
-                    final int deleted = operation.deleteUserNoOrders(ui, cn.getConnection());
-                    
-                    // set result from DELETE back into form
-                    operation.setNumerOfRecords(deleted);
-                    
-                    final Message msg = new Message();
-                    msg.setMessage("maintenance.numberOfRecordsDeleted");
-                    msg.setSystemMessage(String.valueOf(operation.getNumerOfRecords()));
-                    msg.setLink("maintenance.do");
-                    rq.setAttribute("message", msg);
-                    
-                    forward = Result.SUCCESS.getValue();
-                } else {
-                    // force confirmation of operation
-                    forward = "confirm";
-                    
-                    // get number of records involved
-                    operation.setNumerOfRecords(operation.countDeleteUserNoOrders(ui, cn.getConnection()));
-                    
-                    operation.setMethod("deleteusernoroders");
-                    rq.setAttribute("operation", operation);
-                }
+                // set result from DELETE back into form
+                operation.setNumerOfRecords(deleted);
                 
-            } finally {
-                cn.close();
+                final Message msg = new Message();
+                msg.setMessage("maintenance.numberOfRecordsDeleted");
+                msg.setSystemMessage(String.valueOf(operation.getNumerOfRecords()));
+                msg.setLink("maintenance.do");
+                rq.setAttribute("message", msg);
+                
+                forward = Result.SUCCESS.getValue();
+            } else {
+                // force confirmation of operation
+                forward = "confirm";
+                
+                // get number of records involved
+                operation.setNumerOfRecords(operation.countDeleteUserNoOrders(ui, cn.getConnection()));
+                
+                operation.setMethod("deleteusernoroders");
+                rq.setAttribute("operation", operation);
             }
             
-            // navigation: set 'account/konto' tab as active
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("konto");
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
+        } finally {
+            cn.close();
         }
+        
+        // navigation: set 'account/konto' tab as active
+        final ActiveMenusForm mf = new ActiveMenusForm();
+        mf.setActivemenu("konto");
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
         
         return mp.findForward(forward);
     }

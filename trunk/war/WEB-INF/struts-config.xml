@@ -41,6 +41,7 @@
 		<forward name="failure" path="/error.do" />
 		<forward name="errorpaidonly" path="/globalerrorpaidonly.do"/>
 		<forward name="errortimeout" path="/globalerrortimeout.do"/>
+		<forward name="errormissingrights" path="/globalerrormissingrights.do"/>
 	</global-forwards>
 
 	<!-- =================================== Action Mapping Definitions -->
@@ -57,15 +58,21 @@
 			*************************************************Global errors*************************************************
 		-->
 		
-		<!-- Paid only access  -->
-		<action path="/globalerrorpaidonly" name="LoginForm" validate="false" scope="request"
+		<!-- Error: paid only access  -->
+		<action path="/globalerrorpaidonly" validate="false" scope="request"
 			type="ch.dbs.actions.globalerrors.PaidOnlyAction">
 			<forward name="success" path="/error.do" />
 		</action>
 		
-		<!-- Timeout / user not logged in  -->
-		<action path="/globalerrortimeout" name="LoginForm" validate="false" scope="request"
+		<!-- Error: timeout / user not logged in  -->
+		<action path="/globalerrortimeout" validate="false" scope="request"
 			type="ch.dbs.actions.globalerrors.TimeoutAction">
+			<forward name="success" path="/error.do" />
+		</action>
+		
+		<!-- Error: not allowed operation due to missing rights  -->
+		<action path="/globalerrormissingrights" validate="false" scope="request"
+			type="ch.dbs.actions.globalerrors.MissingRightsAction">
 			<forward name="success" path="/error.do" />
 		</action>
 		

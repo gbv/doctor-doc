@@ -474,6 +474,10 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         
@@ -484,113 +488,106 @@ public final class KontoAction extends DispatchAction {
         
         try {
             
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                
-                final TimeZones tz = new TimeZones();
-                final SortedSet<String> setTZ = tz.getTimeZonesAsString();
-                rq.setAttribute(TIMEZONES, setTZ);
-                
-                final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
-                
-                forward = Result.SUCCESS.getValue();
-                
-                if (auth.isAdmin(rq)) {
-                    kf.setFaxusername(k.getFaxusername());
-                    kf.setFaxpassword(k.getFaxpassword());
-                    kf.setGbvrequesterid(k.getGbvrequesterid());
-                }
-                
-                //TODO: folgender Quelltext mittels Konto abhandeln
-                kf.setKid(k.getId());
-                if (k.getBibliotheksname() != null) {
-                    kf.setBiblioname(k.getBibliotheksname().trim());
-                } else {
-                    kf.setBiblioname(k.getBibliotheksname());
-                }
-                if (k.getIsil() != null) {
-                    kf.setIsil(k.getIsil().trim());
-                } else {
-                    kf.setIsil(k.getIsil());
-                }
-                if (k.getAdresse() != null) {
-                    kf.setAdresse(k.getAdresse().trim());
-                } else {
-                    kf.setAdresse(k.getAdresse());
-                }
-                if (k.getAdressenzusatz() != null) {
-                    kf.setAdressenzusatz(k.getAdressenzusatz().trim());
-                } else {
-                    kf.setAdressenzusatz(k.getAdressenzusatz());
-                }
-                if (k.getPLZ() != null) {
-                    kf.setPLZ(k.getPLZ().trim());
-                } else {
-                    kf.setPLZ(k.getPLZ());
-                }
-                if (k.getOrt() != null) {
-                    kf.setOrt(k.getOrt().trim());
-                } else {
-                    kf.setOrt(k.getOrt());
-                }
-                kf.setLand(k.getLand());
-                if (k.getTimezone() != null) {
-                    kf.setTimezone(k.getTimezone());
-                } // only set Timezone if not null, else we will use default value of initialized kontoform
-                if (k.getTelefon() != null) {
-                    kf.setTelefon(k.getTelefon().trim());
-                } else {
-                    kf.setTelefon(k.getTelefon());
-                }
-                kf.setFaxno(k.getFaxno()); // Bibliothekar nur Leserecht!
-                if (k.getFax_extern() != null) {
-                    kf.setFax_extern(k.getFax_extern().trim());
-                } else {
-                    kf.setFax_extern(k.getFax_extern());
-                } // Bibliothekar Schreibrecht!
-                if (k.getBibliotheksmail() != null) {
-                    kf.setBibliotheksmail(k.getBibliotheksmail().trim());
-                } else {
-                    kf.setBibliotheksmail(k.getBibliotheksmail());
-                }
-                if (k.getDbsmail() != null) {
-                    kf.setDbsmail(k.getDbsmail().trim());
-                } else {
-                    kf.setDbsmail(k.getDbsmail());
-                }
-                kf.setGbvbenutzername(k.getGbvbenutzername());
-                kf.setGbvpasswort(k.getGbvpasswort());
-                kf.setIdsid(k.getIdsid());
-                kf.setIdspasswort(k.getIdspasswort());
-                kf.setPopfaxend(k.getPopfaxend());
-                kf.setEzbid(k.getEzbid());
-                kf.setInstlogolink(k.getInstlogolink());
-                kf.setZdb(k.isZdb());
-                
-                // Kontoeinstellungen
-                kf.setBilling(k.getBilling());
-                kf.setBillingtype(k.getBillingtype());
-                kf.setAccounting_rhythmvalue(k.getAccounting_rhythmvalue());
-                kf.setAccounting_rhythmday(k.getAccounting_rhythmday());
-                kf.setAccounting_rhythmtimeout(k.getAccounting_rhythmtimeout());
-                kf.setThreshold_value(k.getThreshold_value()); // Billingschwellwert?
-                kf.setMaxordersu(k.getMaxordersu());
-                kf.setMaxordersutotal(k.getMaxordersutotal());
-                kf.setMaxordersj(k.getMaxordersj());
-                kf.setOrderlimits(k.getOrderlimits());
-                kf.setUserlogin(k.isUserlogin());
-                kf.setUserbestellung(k.isUserbestellung()); // SUBITO
-                kf.setGbvbestellung(k.isGbvbestellung()); // GBV
-                kf.setKontostatus(k.isKontostatus()); // Bibliothekar nur Leserecht!
-                kf.setKontotyp(k.getKontotyp()); // Bibliothekar nur Leserecht!
-                kf.setDefault_deloptions(k.getDefault_deloptions());
-                kf.setEdatum(k.getEdatum()); // Alle nur Leserecht!
-                kf.setGtc(k.getGtc()); // Alle nur Leserecht!
-                kf.setGtcdate(k.getGtcdate()); // Alle nur Leserecht!
-                
-            } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            final TimeZones tz = new TimeZones();
+            final SortedSet<String> setTZ = tz.getTimeZonesAsString();
+            rq.setAttribute(TIMEZONES, setTZ);
+            
+            final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
+            
+            forward = Result.SUCCESS.getValue();
+            
+            if (auth.isAdmin(rq)) {
+                kf.setFaxusername(k.getFaxusername());
+                kf.setFaxpassword(k.getFaxpassword());
+                kf.setGbvrequesterid(k.getGbvrequesterid());
             }
+            
+            //TODO: folgender Quelltext mittels Konto abhandeln
+            kf.setKid(k.getId());
+            if (k.getBibliotheksname() != null) {
+                kf.setBiblioname(k.getBibliotheksname().trim());
+            } else {
+                kf.setBiblioname(k.getBibliotheksname());
+            }
+            if (k.getIsil() != null) {
+                kf.setIsil(k.getIsil().trim());
+            } else {
+                kf.setIsil(k.getIsil());
+            }
+            if (k.getAdresse() != null) {
+                kf.setAdresse(k.getAdresse().trim());
+            } else {
+                kf.setAdresse(k.getAdresse());
+            }
+            if (k.getAdressenzusatz() != null) {
+                kf.setAdressenzusatz(k.getAdressenzusatz().trim());
+            } else {
+                kf.setAdressenzusatz(k.getAdressenzusatz());
+            }
+            if (k.getPLZ() != null) {
+                kf.setPLZ(k.getPLZ().trim());
+            } else {
+                kf.setPLZ(k.getPLZ());
+            }
+            if (k.getOrt() != null) {
+                kf.setOrt(k.getOrt().trim());
+            } else {
+                kf.setOrt(k.getOrt());
+            }
+            kf.setLand(k.getLand());
+            if (k.getTimezone() != null) {
+                kf.setTimezone(k.getTimezone());
+            } // only set Timezone if not null, else we will use default value of initialized kontoform
+            if (k.getTelefon() != null) {
+                kf.setTelefon(k.getTelefon().trim());
+            } else {
+                kf.setTelefon(k.getTelefon());
+            }
+            kf.setFaxno(k.getFaxno()); // Bibliothekar nur Leserecht!
+            if (k.getFax_extern() != null) {
+                kf.setFax_extern(k.getFax_extern().trim());
+            } else {
+                kf.setFax_extern(k.getFax_extern());
+            } // Bibliothekar Schreibrecht!
+            if (k.getBibliotheksmail() != null) {
+                kf.setBibliotheksmail(k.getBibliotheksmail().trim());
+            } else {
+                kf.setBibliotheksmail(k.getBibliotheksmail());
+            }
+            if (k.getDbsmail() != null) {
+                kf.setDbsmail(k.getDbsmail().trim());
+            } else {
+                kf.setDbsmail(k.getDbsmail());
+            }
+            kf.setGbvbenutzername(k.getGbvbenutzername());
+            kf.setGbvpasswort(k.getGbvpasswort());
+            kf.setIdsid(k.getIdsid());
+            kf.setIdspasswort(k.getIdspasswort());
+            kf.setPopfaxend(k.getPopfaxend());
+            kf.setEzbid(k.getEzbid());
+            kf.setInstlogolink(k.getInstlogolink());
+            kf.setZdb(k.isZdb());
+            
+            // Kontoeinstellungen
+            kf.setBilling(k.getBilling());
+            kf.setBillingtype(k.getBillingtype());
+            kf.setAccounting_rhythmvalue(k.getAccounting_rhythmvalue());
+            kf.setAccounting_rhythmday(k.getAccounting_rhythmday());
+            kf.setAccounting_rhythmtimeout(k.getAccounting_rhythmtimeout());
+            kf.setThreshold_value(k.getThreshold_value()); // Billingschwellwert?
+            kf.setMaxordersu(k.getMaxordersu());
+            kf.setMaxordersutotal(k.getMaxordersutotal());
+            kf.setMaxordersj(k.getMaxordersj());
+            kf.setOrderlimits(k.getOrderlimits());
+            kf.setUserlogin(k.isUserlogin());
+            kf.setUserbestellung(k.isUserbestellung()); // SUBITO
+            kf.setGbvbestellung(k.isGbvbestellung()); // GBV
+            kf.setKontostatus(k.isKontostatus()); // Bibliothekar nur Leserecht!
+            kf.setKontotyp(k.getKontotyp()); // Bibliothekar nur Leserecht!
+            kf.setDefault_deloptions(k.getDefault_deloptions());
+            kf.setEdatum(k.getEdatum()); // Alle nur Leserecht!
+            kf.setGtc(k.getGtc()); // Alle nur Leserecht!
+            kf.setGtcdate(k.getGtcdate()); // Alle nur Leserecht!
             
             final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
@@ -615,6 +612,10 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         
@@ -630,204 +631,191 @@ public final class KontoAction extends DispatchAction {
         
         try {
             
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+            // ggf. Leerschläge entfernen
+            if (kf.getBibliotheksmail() != null) {
+                kf.setBibliotheksmail(kf.getBibliotheksmail().trim());
+            }
+            if (kf.getDbsmail() != null) {
+                kf.setDbsmail(kf.getDbsmail().trim());
+            }
+            
+            if (check.isMinLength(kf.getBiblioname(), 1) && check.isMinLength(kf.getAdresse(), 1)
+                    && check.isMinLength(kf.getPLZ(), 4) && check.isMinLength(kf.getOrt(), 1)
+                    && check.isMinLength(kf.getLand(), 2) && check.isMinLength(kf.getTelefon(), 4)
+                    && check.isEmail(kf.getBibliotheksmail()) && check.isEmail(kf.getDbsmail())) {
                 
-                // ggf. Leerschläge entfernen
-                if (kf.getBibliotheksmail() != null) {
-                    kf.setBibliotheksmail(kf.getBibliotheksmail().trim());
-                }
-                if (kf.getDbsmail() != null) {
-                    kf.setDbsmail(kf.getDbsmail().trim());
-                }
+                final String[] allowedFiletypes = { "jpg", "jpeg", "gif", "png" };
                 
-                if (check.isMinLength(kf.getBiblioname(), 1) && check.isMinLength(kf.getAdresse(), 1)
-                        && check.isMinLength(kf.getPLZ(), 4) && check.isMinLength(kf.getOrt(), 1)
-                        && check.isMinLength(kf.getLand(), 2) && check.isMinLength(kf.getTelefon(), 4)
-                        && check.isEmail(kf.getBibliotheksmail()) && check.isEmail(kf.getDbsmail())) {
+                if (kf.getInstlogolink() == null || kf.getInstlogolink().equals("") || // no entry is valid
+                        check.isUrlAndFiletype(kf.getInstlogolink(), allowedFiletypes)) {
                     
-                    final String[] allowedFiletypes = { "jpg", "jpeg", "gif", "png" };
+                    // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
+                    if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
+                        final StringBuffer gbvLink = new StringBuffer(GBV_LINK);
+                        gbvLink.append(kf.getGbvbenutzername());
+                        gbvLink.append("&PASSWORD=");
+                        gbvLink.append(kf.getGbvpasswort());
+                        gbvLink.append(GBV_REDIRECT);
+                        gbvthread.setLink(gbvLink.toString());
+                        gbvcontent = executor.submit(gbvthread);
+                    }
                     
-                    if (kf.getInstlogolink() == null || kf.getInstlogolink().equals("") || // no entry is valid
-                            check.isUrlAndFiletype(kf.getInstlogolink(), allowedFiletypes)) {
-                        
-                        // mit einem neuen Thread ist hier die Timeout-Kontrolle besser
-                        if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
-                            final StringBuffer gbvLink = new StringBuffer(GBV_LINK);
-                            gbvLink.append(kf.getGbvbenutzername());
-                            gbvLink.append("&PASSWORD=");
-                            gbvLink.append(kf.getGbvpasswort());
-                            gbvLink.append(GBV_REDIRECT);
-                            gbvthread.setLink(gbvLink.toString());
-                            gbvcontent = executor.submit(gbvthread);
-                        }
-                        
-                        // default true: Wird erst geprüft, wenn tatsächlich ein Benutzername eingegeben wird
-                        boolean checkgbv = true;
-                        // falls beim GBV ein Benutzername angegeben wurde
-                        if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
-                            try {
-                                checkgbv = false;
-                                String gbvanswer = "";
-                                gbvanswer = gbvcontent.get(3, TimeUnit.SECONDS);
-                                if (!gbvanswer.contains("Bitte identifizieren Sie sich")) {
-                                    checkgbv = true;
-                                } else {
-                                    forward = "subitofailed"; // Pfad i.O.
-                                    kf.setMessage("error.gbv_values");
-                                    final TimeZones tz = new TimeZones();
-                                    final SortedSet<String> setTZ = tz.getTimeZonesAsString();
-                                    rq.setAttribute(TIMEZONES, setTZ);
-                                    final List<Countries> allPossCountries = country
-                                            .getAllCountries(cn.getConnection());
-                                    kf.setCountries(allPossCountries);
-                                }
-                            } catch (final TimeoutException e) {
-                                LOG.info("GBV-Timeout: " + e.toString());
+                    // default true: Wird erst geprüft, wenn tatsächlich ein Benutzername eingegeben wird
+                    boolean checkgbv = true;
+                    // falls beim GBV ein Benutzername angegeben wurde
+                    if (kf.getGbvbenutzername() != null && !kf.getGbvbenutzername().equals("")) {
+                        try {
+                            checkgbv = false;
+                            String gbvanswer = "";
+                            gbvanswer = gbvcontent.get(3, TimeUnit.SECONDS);
+                            if (!gbvanswer.contains("Bitte identifizieren Sie sich")) {
+                                checkgbv = true;
+                            } else {
                                 forward = "subitofailed"; // Pfad i.O.
-                                kf.setMessage("error.gbv_timeout");
+                                kf.setMessage("error.gbv_values");
                                 final TimeZones tz = new TimeZones();
                                 final SortedSet<String> setTZ = tz.getTimeZonesAsString();
                                 rq.setAttribute(TIMEZONES, setTZ);
                                 final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                                 kf.setCountries(allPossCountries);
-                            } catch (final Exception e) {
-                                LOG.error("GBV-Thread failed in modifykonto: " + e.toString());
-                            } finally {
-                                // ungefährlich, falls der Task schon beendet ist.
-                                // Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
-                                gbvcontent.cancel(true);
                             }
-                            
+                        } catch (final TimeoutException e) {
+                            LOG.info("GBV-Timeout: " + e.toString());
+                            forward = "subitofailed"; // Pfad i.O.
+                            kf.setMessage("error.gbv_timeout");
+                            final TimeZones tz = new TimeZones();
+                            final SortedSet<String> setTZ = tz.getTimeZonesAsString();
+                            rq.setAttribute(TIMEZONES, setTZ);
+                            final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+                            kf.setCountries(allPossCountries);
+                        } catch (final Exception e) {
+                            LOG.error("GBV-Thread failed in modifykonto: " + e.toString());
+                        } finally {
+                            // ungefährlich, falls der Task schon beendet ist.
+                            // Stellt sicher, dass nicht noch unnötige Ressourcen belegt werden
+                            gbvcontent.cancel(true);
                         }
                         
-                        if (checkgbv) {
-                            
-                            forward = Result.SUCCESS.getValue();
-                            
-                            final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
-                            
-                            if (auth.isAdmin(rq)) {
-                                // Faxno == null => Deaktivierung von Faxserver-Cronjob
-                                if (kf.getFaxno().equals("")) {
-                                    k.setFaxno(null);
-                                } else {
-                                    k.setFaxno(kf.getFaxno());
-                                }
-                                k.setFaxusername(kf.getFaxusername()); // nur Admin
-                                k.setFaxpassword(kf.getFaxpassword()); // nur Admin
-                                k.setGbvrequesterid(kf.getGbvrequesterid()); // nur Admin
-                            }
-                            
-                            if (kf.getGbvbenutzername() == null || kf.getGbvbenutzername().equals("")) {
-                                k.setGbvbenutzername(null);
-                            } else {
-                                k.setGbvbenutzername(kf.getGbvbenutzername().trim());
-                            } // null wegen Anzeigelogik
-                            if (kf.getGbvpasswort() == null || kf.getGbvpasswort().equals("")) {
-                                k.setGbvpasswort(null);
-                            } else {
-                                k.setGbvpasswort(kf.getGbvpasswort().trim());
-                            } // null wegen Anzeigelogik
-                            if (kf.getIdsid() == null || kf.getIdsid().equals("")) {
-                                k.setIdsid(null);
-                            } else {
-                                k.setIdsid(kf.getIdsid().trim());
-                            }
-                            if (kf.getIdspasswort() == null || kf.getIdspasswort().equals("")) {
-                                k.setIdspasswort(null);
-                            } else {
-                                k.setIdspasswort(kf.getIdspasswort().trim());
-                            }
-                            if (kf.getBiblioname() != null) {
-                                k.setBibliotheksname(kf.getBiblioname().trim());
-                            } else {
-                                k.setBibliotheksname(kf.getBiblioname());
-                            }
-                            // if (kf.getIsil() != null) { k.setIsil(correctIsil(kf.getIsil().trim())); } else {
-                            // k.setIsil(kf.getIsil()); }// Sollte nicht mehr nötig sein da bereits in Formbean
-                            // abgehandelt
-                            k.setIsil(kf.getIsil());
-                            if (kf.getAdresse() != null) {
-                                k.setAdresse(kf.getAdresse().trim());
-                            } else {
-                                k.setAdresse(kf.getAdresse());
-                            }
-                            if (kf.getAdressenzusatz() != null) {
-                                k.setAdressenzusatz(kf.getAdressenzusatz().trim());
-                            } else {
-                                k.setAdressenzusatz(kf.getAdressenzusatz());
-                            }
-                            if (kf.getPLZ() != null) {
-                                k.setPLZ(kf.getPLZ().trim());
-                            } else {
-                                k.setPLZ(kf.getPLZ());
-                            }
-                            if (kf.getOrt() != null) {
-                                k.setOrt(kf.getOrt().trim());
-                            } else {
-                                k.setOrt(kf.getOrt());
-                            }
-                            k.setLand(kf.getLand());
-                            k.setTimezone(kf.getTimezone());
-                            if (kf.getTelefon() != null) {
-                                k.setTelefon(kf.getTelefon().trim());
-                            } else {
-                                k.setTelefon(kf.getTelefon());
-                            }
-                            if (kf.getFax_extern() != null) {
-                                k.setFax_extern(kf.getFax_extern().trim());
-                            } else {
-                                k.setFax_extern(kf.getFax_extern());
-                            }
-                            if (kf.getBibliotheksmail() != null) {
-                                k.setBibliotheksmail(kf.getBibliotheksmail().trim());
-                            } else {
-                                k.setBibliotheksmail(kf.getBibliotheksmail());
-                            }
-                            if (kf.getDbsmail() != null) {
-                                k.setDbsmail(kf.getDbsmail().trim());
-                            } else {
-                                k.setDbsmail(kf.getDbsmail());
-                            }
-                            k.setEzbid(kf.getEzbid());
-                            k.setInstlogolink(kf.getInstlogolink());
-                            k.setZdb(kf.isZdb());
-                            k.setUserlogin(kf.isUserlogin());
-                            k.setUserbestellung(kf.isUserbestellung()); // SUBITO
-                            k.setGbvbestellung(kf.isGbvbestellung()); // GBV
-                            k.setOrderlimits(kf.getOrderlimits());
-                            k.setMaxordersu(kf.getMaxordersu());
-                            k.setMaxordersutotal(kf.getMaxordersutotal());
-                            k.setMaxordersj(kf.getMaxordersj());
-                            
-                            k.setDefault_deloptions(kf.getDefault_deloptions());
-                            
-                            k.update(cn.getConnection());
-                            //                                k.setCn(cn.getConnection());
-                            
-                            // veränderte Kontos in Session legen, damit neue Angaben angezeigt werden. Z.B. kontochange
-                            ui.setKonto(k);
-                            final List<Konto> kontolist = ui.getKonto().getLoginKontos(ui.getBenutzer(),
-                                    cn.getConnection());
-                            ui.setKontoanz(kontolist.size()); // Anzahl Kontos im UserInfo hinterlegen
-                            ui.setKontos(kontolist);
-                            rq.getSession().setAttribute("userinfo", ui);
-                            
-                        } // benötigt keine separate else-Schlaufe, da der Negativfall schon oben behandelt wurde
-                        
-                    } else {
-                        forward = "missingvalues";
-                        kf.setMessage("error.url");
-                        final TimeZones tz = new TimeZones();
-                        final SortedSet<String> setTZ = tz.getTimeZonesAsString();
-                        rq.setAttribute(TIMEZONES, setTZ);
-                        final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-                        kf.setCountries(allPossCountries);
                     }
+                    
+                    if (checkgbv) {
+                        
+                        forward = Result.SUCCESS.getValue();
+                        
+                        final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
+                        
+                        if (auth.isAdmin(rq)) {
+                            // Faxno == null => Deaktivierung von Faxserver-Cronjob
+                            if (kf.getFaxno().equals("")) {
+                                k.setFaxno(null);
+                            } else {
+                                k.setFaxno(kf.getFaxno());
+                            }
+                            k.setFaxusername(kf.getFaxusername()); // nur Admin
+                            k.setFaxpassword(kf.getFaxpassword()); // nur Admin
+                            k.setGbvrequesterid(kf.getGbvrequesterid()); // nur Admin
+                        }
+                        
+                        if (kf.getGbvbenutzername() == null || kf.getGbvbenutzername().equals("")) {
+                            k.setGbvbenutzername(null);
+                        } else {
+                            k.setGbvbenutzername(kf.getGbvbenutzername().trim());
+                        } // null wegen Anzeigelogik
+                        if (kf.getGbvpasswort() == null || kf.getGbvpasswort().equals("")) {
+                            k.setGbvpasswort(null);
+                        } else {
+                            k.setGbvpasswort(kf.getGbvpasswort().trim());
+                        } // null wegen Anzeigelogik
+                        if (kf.getIdsid() == null || kf.getIdsid().equals("")) {
+                            k.setIdsid(null);
+                        } else {
+                            k.setIdsid(kf.getIdsid().trim());
+                        }
+                        if (kf.getIdspasswort() == null || kf.getIdspasswort().equals("")) {
+                            k.setIdspasswort(null);
+                        } else {
+                            k.setIdspasswort(kf.getIdspasswort().trim());
+                        }
+                        if (kf.getBiblioname() != null) {
+                            k.setBibliotheksname(kf.getBiblioname().trim());
+                        } else {
+                            k.setBibliotheksname(kf.getBiblioname());
+                        }
+                        // if (kf.getIsil() != null) { k.setIsil(correctIsil(kf.getIsil().trim())); } else {
+                        // k.setIsil(kf.getIsil()); }// Sollte nicht mehr nötig sein da bereits in Formbean
+                        // abgehandelt
+                        k.setIsil(kf.getIsil());
+                        if (kf.getAdresse() != null) {
+                            k.setAdresse(kf.getAdresse().trim());
+                        } else {
+                            k.setAdresse(kf.getAdresse());
+                        }
+                        if (kf.getAdressenzusatz() != null) {
+                            k.setAdressenzusatz(kf.getAdressenzusatz().trim());
+                        } else {
+                            k.setAdressenzusatz(kf.getAdressenzusatz());
+                        }
+                        if (kf.getPLZ() != null) {
+                            k.setPLZ(kf.getPLZ().trim());
+                        } else {
+                            k.setPLZ(kf.getPLZ());
+                        }
+                        if (kf.getOrt() != null) {
+                            k.setOrt(kf.getOrt().trim());
+                        } else {
+                            k.setOrt(kf.getOrt());
+                        }
+                        k.setLand(kf.getLand());
+                        k.setTimezone(kf.getTimezone());
+                        if (kf.getTelefon() != null) {
+                            k.setTelefon(kf.getTelefon().trim());
+                        } else {
+                            k.setTelefon(kf.getTelefon());
+                        }
+                        if (kf.getFax_extern() != null) {
+                            k.setFax_extern(kf.getFax_extern().trim());
+                        } else {
+                            k.setFax_extern(kf.getFax_extern());
+                        }
+                        if (kf.getBibliotheksmail() != null) {
+                            k.setBibliotheksmail(kf.getBibliotheksmail().trim());
+                        } else {
+                            k.setBibliotheksmail(kf.getBibliotheksmail());
+                        }
+                        if (kf.getDbsmail() != null) {
+                            k.setDbsmail(kf.getDbsmail().trim());
+                        } else {
+                            k.setDbsmail(kf.getDbsmail());
+                        }
+                        k.setEzbid(kf.getEzbid());
+                        k.setInstlogolink(kf.getInstlogolink());
+                        k.setZdb(kf.isZdb());
+                        k.setUserlogin(kf.isUserlogin());
+                        k.setUserbestellung(kf.isUserbestellung()); // SUBITO
+                        k.setGbvbestellung(kf.isGbvbestellung()); // GBV
+                        k.setOrderlimits(kf.getOrderlimits());
+                        k.setMaxordersu(kf.getMaxordersu());
+                        k.setMaxordersutotal(kf.getMaxordersutotal());
+                        k.setMaxordersj(kf.getMaxordersj());
+                        
+                        k.setDefault_deloptions(kf.getDefault_deloptions());
+                        
+                        k.update(cn.getConnection());
+                        //                                k.setCn(cn.getConnection());
+                        
+                        // veränderte Kontos in Session legen, damit neue Angaben angezeigt werden. Z.B. kontochange
+                        ui.setKonto(k);
+                        final List<Konto> kontolist = ui.getKonto()
+                                .getLoginKontos(ui.getBenutzer(), cn.getConnection());
+                        ui.setKontoanz(kontolist.size()); // Anzahl Kontos im UserInfo hinterlegen
+                        ui.setKontos(kontolist);
+                        rq.getSession().setAttribute("userinfo", ui);
+                        
+                    } // benötigt keine separate else-Schlaufe, da der Negativfall schon oben behandelt wurde
                     
                 } else {
                     forward = "missingvalues";
-                    kf.setMessage("error.values");
+                    kf.setMessage("error.url");
                     final TimeZones tz = new TimeZones();
                     final SortedSet<String> setTZ = tz.getTimeZonesAsString();
                     rq.setAttribute(TIMEZONES, setTZ);
@@ -836,8 +824,13 @@ public final class KontoAction extends DispatchAction {
                 }
                 
             } else {
-                final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                forward = "missingvalues";
+                kf.setMessage("error.values");
+                final TimeZones tz = new TimeZones();
+                final SortedSet<String> setTZ = tz.getTimeZonesAsString();
+                rq.setAttribute(TIMEZONES, setTZ);
+                final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+                kf.setCountries(allPossCountries);
             }
             
             rq.setAttribute("kontoform", kf);
@@ -860,29 +853,27 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         
-        if (auth.isAdmin(rq)) {
-            final KontoForm kf = new KontoForm();
-            final Konto k = new Konto();
-            
-            try {
-                kf.setKontos(k.getAllKontos(k.getConnection()));
-                rq.setAttribute("kontoform", kf);
-                if (kf.getKontos() == null) {
-                    final ErrorMessage em = new ErrorMessage("error.missingaccounts", "searchfree.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                } else {
-                    forward = Result.SUCCESS.getValue();
-                }
-            } finally {
-                k.close();
+        final KontoForm kf = new KontoForm();
+        final Konto k = new Konto();
+        
+        try {
+            kf.setKontos(k.getAllKontos(k.getConnection()));
+            rq.setAttribute("kontoform", kf);
+            if (kf.getKontos() == null) {
+                final ErrorMessage em = new ErrorMessage("error.missingaccounts", "searchfree.do");
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            } else {
+                forward = Result.SUCCESS.getValue();
             }
-            
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            k.close();
         }
         
         return mp.findForward(forward);
@@ -900,36 +891,34 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
-        if (auth.isAdmin(rq)) {
-            try {
-                final KontoForm kf = (KontoForm) fm;
-                final Konto k = new Konto(kf.getKid(), cn.getConnection());
-                k.setKontotyp(kf.getKontotyp());
-                if (k.getKontotyp() == 0) {
-                    k.setExpdate(null);
-                } // Gratiskontos laufen nicht ab!
-                k.update(cn.getConnection());
-                
-                final Message em = new Message("message.changekontotyp", k.getBibliotheksname(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute("message", em);
-                forward = Result.SUCCESS.getValue();
-            } catch (final Exception e) {
-                LOG.error("changeKonto" + e.toString());
-                final ErrorMessage em = new ErrorMessage("error.changetype", e.getMessage(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } finally {
-                cn.close();
-            }
+        try {
+            final KontoForm kf = (KontoForm) fm;
+            final Konto k = new Konto(kf.getKid(), cn.getConnection());
+            k.setKontotyp(kf.getKontotyp());
+            if (k.getKontotyp() == 0) {
+                k.setExpdate(null);
+            } // Gratiskontos laufen nicht ab!
+            k.update(cn.getConnection());
             
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+            final Message em = new Message("message.changekontotyp", k.getBibliotheksname(),
+                    "kontoadmin.do?method=listKontos");
+            rq.setAttribute("message", em);
+            forward = Result.SUCCESS.getValue();
+        } catch (final Exception e) {
+            LOG.error("changeKonto" + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.changetype", e.getMessage(),
+                    "kontoadmin.do?method=listKontos");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -946,33 +935,32 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
-        if (auth.isAdmin(rq)) {
-            try {
-                final KontoForm kf = (KontoForm) fm;
-                final Konto k = new Konto(kf.getKid(), cn.getConnection());
-                k.setKontostatus(kf.isKontostatus());
-                k.update(cn.getConnection());
-                
-                final Message em = new Message("message.changekontostatus", k.getBibliotheksname(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute("message", em);
-                forward = Result.SUCCESS.getValue();
-                
-            } catch (final Exception e) {
-                LOG.error("changeKontoState: " + e.toString());
-                final ErrorMessage em = new ErrorMessage("error.changestate", e.getMessage(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } finally {
-                cn.close();
-            }
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+        try {
+            final KontoForm kf = (KontoForm) fm;
+            final Konto k = new Konto(kf.getKid(), cn.getConnection());
+            k.setKontostatus(kf.isKontostatus());
+            k.update(cn.getConnection());
+            
+            final Message em = new Message("message.changekontostatus", k.getBibliotheksname(),
+                    "kontoadmin.do?method=listKontos");
+            rq.setAttribute("message", em);
+            forward = Result.SUCCESS.getValue();
+            
+        } catch (final Exception e) {
+            LOG.error("changeKontoState: " + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.changestate", e.getMessage(),
+                    "kontoadmin.do?method=listKontos");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -989,33 +977,32 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
-        if (auth.isAdmin(rq)) {
-            try {
-                final KontoForm kf = (KontoForm) fm;
-                final Konto k = new Konto(kf.getKid(), cn.getConnection());
-                k.setExpdate(kf.getExpdate());
-                k.update(cn.getConnection());
-                
-                final Message em = new Message("message.changeexpdate", k.getBibliotheksname(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute("message", em);
-                forward = Result.SUCCESS.getValue();
-                
-            } catch (final Exception e) {
-                LOG.error("setExpdate: " + e.toString());
-                final ErrorMessage em = new ErrorMessage("error.timeperiode", e.getMessage(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } finally {
-                cn.close();
-            }
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+        try {
+            final KontoForm kf = (KontoForm) fm;
+            final Konto k = new Konto(kf.getKid(), cn.getConnection());
+            k.setExpdate(kf.getExpdate());
+            k.update(cn.getConnection());
+            
+            final Message em = new Message("message.changeexpdate", k.getBibliotheksname(),
+                    "kontoadmin.do?method=listKontos");
+            rq.setAttribute("message", em);
+            forward = Result.SUCCESS.getValue();
+            
+        } catch (final Exception e) {
+            LOG.error("setExpdate: " + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.timeperiode", e.getMessage(),
+                    "kontoadmin.do?method=listKontos");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -1032,33 +1019,32 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
-        if (auth.isAdmin(rq)) {
-            try {
-                final KontoForm kf = (KontoForm) fm;
-                final Konto k = new Konto(kf.getKid(), cn.getConnection());
-                k.setPopfaxend(kf.getPopfaxend());
-                k.update(cn.getConnection());
-                
-                final Message em = new Message("message.changeexpdatefax", k.getBibliotheksname(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute("message", em);
-                forward = Result.SUCCESS.getValue();
-                
-            } catch (final Exception e) {
-                LOG.error("setExpDate: " + e.toString());
-                final ErrorMessage em = new ErrorMessage("error.timeperiodefax", e.getMessage(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } finally {
-                cn.close();
-            }
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+        try {
+            final KontoForm kf = (KontoForm) fm;
+            final Konto k = new Konto(kf.getKid(), cn.getConnection());
+            k.setPopfaxend(kf.getPopfaxend());
+            k.update(cn.getConnection());
+            
+            final Message em = new Message("message.changeexpdatefax", k.getBibliotheksname(),
+                    "kontoadmin.do?method=listKontos");
+            rq.setAttribute("message", em);
+            forward = Result.SUCCESS.getValue();
+            
+        } catch (final Exception e) {
+            LOG.error("setExpDate: " + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.timeperiodefax", e.getMessage(),
+                    "kontoadmin.do?method=listKontos");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -1075,35 +1061,34 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
-        if (auth.isAdmin(rq)) {
-            try {
-                BillingForm bf = (BillingForm) fm;
-                final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
-                
-                // Rechnung vorbereiten
-                final KontoAdmin ka = new KontoAdmin();
-                bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
-                bf.setKonto(k);
-                
-                rq.setAttribute("billingform", bf);
-                
-                forward = Result.SUCCESS.getValue();
-                
-            } catch (final Exception e) {
-                LOG.error("prepareBilling: " + e.toString());
-                final ErrorMessage em = new ErrorMessage("error.preparebilling", e.getMessage(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } finally {
-                cn.close();
-            }
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+        try {
+            BillingForm bf = (BillingForm) fm;
+            final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
+            
+            // Rechnung vorbereiten
+            final KontoAdmin ka = new KontoAdmin();
+            bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
+            bf.setKonto(k);
+            
+            rq.setAttribute("billingform", bf);
+            
+            forward = Result.SUCCESS.getValue();
+            
+        } catch (final Exception e) {
+            LOG.error("prepareBilling: " + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.preparebilling", e.getMessage(),
+                    "kontoadmin.do?method=listKontos");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -1120,52 +1105,51 @@ public final class KontoAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         
-        if (auth.isAdmin(rq)) {
-            try {
-                BillingForm bf = (BillingForm) fm;
-                final MHelper mh = new MHelper();
+        try {
+            BillingForm bf = (BillingForm) fm;
+            final MHelper mh = new MHelper();
+            
+            if (bf.getAction().equals("PDF Vorschau")) {
+                forward = "preview";
+                //						rq.setAttribute("billingform", fm);
+            } else {
+                final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
-                if (bf.getAction().equals("PDF Vorschau")) {
-                    forward = "preview";
-                    //						rq.setAttribute("billingform", fm);
-                } else {
-                    final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
-                    
-                    final String[] to = new String[1];
-                    to[0] = k.getBibliotheksmail();
-                    
-                    // Rechnung speichern
-                    final KontoAdmin ka = new KontoAdmin();
-                    bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
-                    bf.getBill().save(cn.getConnection());
-                    
-                    // Mail versenden
-                    mh.sendMail(to, "Rechnung für ihr Konto auf doctor-doc.com", bf.getBillingtext());
-                    
-                    // Meldung verfassen
-                    final Message m = new Message("message.sendbill", k.getBibliotheksname() + "\n\n"
-                            + bf.getBillingtext(), "listbillings.do?method=listBillings&kid=" + k.getId());
-                    rq.setAttribute("message", m);
-                    
-                    forward = Result.SUCCESS.getValue();
-                }
+                final String[] to = new String[1];
+                to[0] = k.getBibliotheksmail();
                 
-            } catch (final Exception e) {
-                LOG.error("sendBilling: " + e.toString());
-                final ErrorMessage em = new ErrorMessage("error.sendbilling", e.getMessage(),
-                        "kontoadmin.do?method=listKontos");
-                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            } finally {
-                cn.close();
+                // Rechnung speichern
+                final KontoAdmin ka = new KontoAdmin();
+                bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
+                bf.getBill().save(cn.getConnection());
+                
+                // Mail versenden
+                mh.sendMail(to, "Rechnung für ihr Konto auf doctor-doc.com", bf.getBillingtext());
+                
+                // Meldung verfassen
+                final Message m = new Message("message.sendbill",
+                        k.getBibliotheksname() + "\n\n" + bf.getBillingtext(),
+                        "listbillings.do?method=listBillings&kid=" + k.getId());
+                rq.setAttribute("message", m);
+                
+                forward = Result.SUCCESS.getValue();
             }
             
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do");
+        } catch (final Exception e) {
+            LOG.error("sendBilling: " + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.sendbilling", e.getMessage(),
+                    "kontoadmin.do?method=listKontos");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);

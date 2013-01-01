@@ -50,6 +50,10 @@ public class Supplier extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -60,42 +64,34 @@ public class Supplier extends DispatchAction {
         
         final String sid = rq.getParameter("sid");
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final Text cn = new Text();
+        
+        try {
             
-            final Text cn = new Text();
-            
-            try {
+            // make sure sid is not null and is editable
+            if (editable(Long.valueOf(sid), ui, cn.getConnection())) {
                 
-                // make sure sid is not null and is editable
-                if (editable(Long.valueOf(sid), ui, cn.getConnection())) {
-                    
-                    Lieferanten sup = new Lieferanten();
-                    
-                    sup = sup.getLieferantFromLid(Long.valueOf(sid), cn.getConnection());
-                    
-                    rq.setAttribute("supplier", sup);
-                    
-                    // navigation: set 'account/konto' tab as active
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("konto");
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    
-                    forward = "edit";
-                    
-                } else {
-                    final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                    m.setLink("listsuppliers.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
-                }
+                Lieferanten sup = new Lieferanten();
                 
-            } finally {
-                cn.close();
+                sup = sup.getLieferantFromLid(Long.valueOf(sid), cn.getConnection());
+                
+                rq.setAttribute("supplier", sup);
+                
+                // navigation: set 'account/konto' tab as active
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("konto");
+                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                
+                forward = "edit";
+                
+            } else {
+                final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                m.setLink("listsuppliers.do");
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
+            
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -109,34 +105,24 @@ public class Supplier extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
         
-        String forward = Result.FAILURE.getValue();
+        final Lieferanten sup = new Lieferanten();
+        rq.setAttribute("supplier", sup);
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-            
-            final Lieferanten sup = new Lieferanten();
-            
-            rq.setAttribute("supplier", sup);
-            
-            forward = "create";
-            
-            // navigation: set 'account/konto' tab as active
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("konto");
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
-        }
+        // navigation: set 'account/konto' tab as active
+        final ActiveMenusForm mf = new ActiveMenusForm();
+        mf.setActivemenu("konto");
+        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
         
-        return mp.findForward(forward);
+        return mp.findForward("create");
     }
     
     public ActionForward save(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
@@ -147,6 +133,10 @@ public class Supplier extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -156,61 +146,53 @@ public class Supplier extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final SupplierForm sf = (SupplierForm) form;
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final Text cn = new Text();
+        
+        try {
             
-            final Text cn = new Text();
-            
-            try {
+            // update
+            if (sf.getLid() != null) {
                 
-                // update
-                if (sf.getLid() != null) {
+                // make sure lid is editable
+                if (editable(sf.getLid(), ui, cn.getConnection())) {
                     
-                    // make sure lid is editable
-                    if (editable(sf.getLid(), ui, cn.getConnection())) {
-                        
-                        Lieferanten sup = new Lieferanten();
-                        sup = sup.getLieferantFromLid(sf.getLid(), cn.getConnection());
-                        
-                        // set Lieferanten values from SupplierForm
-                        sup.setFormValues(sup, sf, ui);
-                        
-                        sup.update(sup, cn.getConnection());
-                        
-                        rq.setAttribute("supplier", sup);
-                        
-                        // navigation: set 'account/konto' tab as active
-                        final ActiveMenusForm mf = new ActiveMenusForm();
-                        mf.setActivemenu("konto");
-                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                        
-                        forward = Result.SUCCESS.getValue();
-                        
-                    } else {
-                        final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                        m.setLink("listsuppliers.do");
-                        rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
-                    }
-                    
-                } else {
-                    // save new supplier
-                    final Lieferanten sup = new Lieferanten();
+                    Lieferanten sup = new Lieferanten();
+                    sup = sup.getLieferantFromLid(sf.getLid(), cn.getConnection());
                     
                     // set Lieferanten values from SupplierForm
                     sup.setFormValues(sup, sf, ui);
                     
-                    sup.save(sup, cn.getConnection());
+                    sup.update(sup, cn.getConnection());
+                    
+                    rq.setAttribute("supplier", sup);
+                    
+                    // navigation: set 'account/konto' tab as active
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
                     
                     forward = Result.SUCCESS.getValue();
+                    
+                } else {
+                    final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                    m.setLink("listsuppliers.do");
+                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
                 }
                 
-            } finally {
-                cn.close();
+            } else {
+                // save new supplier
+                final Lieferanten sup = new Lieferanten();
+                
+                // set Lieferanten values from SupplierForm
+                sup.setFormValues(sup, sf, ui);
+                
+                sup.save(sup, cn.getConnection());
+                
+                forward = Result.SUCCESS.getValue();
             }
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
+            
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -224,6 +206,10 @@ public class Supplier extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -234,40 +220,32 @@ public class Supplier extends DispatchAction {
         
         final String sid = rq.getParameter("sid");
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final Text cn = new Text();
+        
+        try {
             
-            final Text cn = new Text();
-            
-            try {
+            // make sure sid is not null and is editable
+            if (deleteable(sid, ui, cn.getConnection())) {
                 
-                // make sure sid is not null and is editable
-                if (deleteable(sid, ui, cn.getConnection())) {
-                    
-                    // delete supplier
-                    final Lieferanten sup = new Lieferanten();
-                    sup.delete(sid, cn.getConnection());
-                    
-                    // navigation: set 'account/konto' tab as active
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("konto");
-                    rq.setAttribute("activemenu", mf);
-                    
-                    forward = Result.SUCCESS.getValue();
-                    
-                } else {
-                    final ErrorMessage m = new ErrorMessage("error.berechtigung");
-                    m.setLink("listsuppliers.do");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
-                }
+                // delete supplier
+                final Lieferanten sup = new Lieferanten();
+                sup.delete(sid, cn.getConnection());
                 
-            } finally {
-                cn.close();
+                // navigation: set 'account/konto' tab as active
+                final ActiveMenusForm mf = new ActiveMenusForm();
+                mf.setActivemenu("konto");
+                rq.setAttribute("activemenu", mf);
+                
+                forward = Result.SUCCESS.getValue();
+                
+            } else {
+                final ErrorMessage m = new ErrorMessage("error.berechtigung");
+                m.setLink("listsuppliers.do");
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
             }
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
+            
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);

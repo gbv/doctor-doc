@@ -987,6 +987,10 @@ public final class BestellformAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -998,66 +1002,56 @@ public final class BestellformAction extends DispatchAction {
         final Text ip = new Text();
         BestellParam ipbasiert = new BestellParam();
         
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        try {
+            forward = Result.SUCCESS.getValue();
             
-            try {
-                forward = Result.SUCCESS.getValue();
-                
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("konto");
-                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                
-                final boolean hasIP = cn.hasIP(cn.getConnection(), ui.getKonto());
-                
-                if (hasIP) {
-                    ip.setId(Long.valueOf(0));
-                    ip.setTexttype(TextType.IP4);
-                    ip.setKonto(ui.getKonto());
-                    ipbasiert = new BestellParam(ip, cn.getConnection());
-                }
-                
-                final BestellParam eingeloggt = new BestellParam(ui.getKonto(), cn.getConnection());
-                
-                final List<Text> kkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDES_IP, ui.getKonto().getId(),
-                        cn.getConnection());
-                final List<Text> bkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, ui.getKonto().getId(),
-                        cn.getConnection());
-                
-                if (eingeloggt != null && eingeloggt.getId() != null) {
-                    rq.setAttribute("eingeloggt", eingeloggt.getId()); // allenfalls vorhandene BestellParam-ID in
-                    // Request
-                } else {
-                    rq.setAttribute("eingeloggt", "0"); // 0 als ID
-                }
-                
-                if (hasIP) { // IP hinterlegt
-                    if (ipbasiert != null && ipbasiert.getId() != null) {
-                        rq.setAttribute("ipbasiert", ipbasiert.getId()); // allenfalls vorhandene BestellParam-ID in
-                        // Request
-                    } else {
-                        rq.setAttribute("ipbasiert", "-1"); // -1 als ID
-                    }
-                }
-                
-                if (!kkid.isEmpty()) {
-                    rq.setAttribute("kkid", kkid);
-                }
-                if (!bkid.isEmpty()) {
-                    rq.setAttribute("bkid", bkid);
-                }
-                
-            } catch (final Exception e) {
-                LOG.error("BestellformAction - prepareConfigure: " + e.toString());
-            } finally {
-                cn.close();
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("konto");
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+            
+            final boolean hasIP = cn.hasIP(cn.getConnection(), ui.getKonto());
+            
+            if (hasIP) {
+                ip.setId(Long.valueOf(0));
+                ip.setTexttype(TextType.IP4);
+                ip.setKonto(ui.getKonto());
+                ipbasiert = new BestellParam(ip, cn.getConnection());
             }
             
-        } else { // keine Berechtigung
-            final ActiveMenusForm mf = new ActiveMenusForm();
-            mf.setActivemenu("suchenbestellen");
-            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "searchfree.do?activemenu=suchenbestellen");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            final BestellParam eingeloggt = new BestellParam(ui.getKonto(), cn.getConnection());
+            
+            final List<Text> kkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDES_IP, ui.getKonto().getId(),
+                    cn.getConnection());
+            final List<Text> bkid = cn.getAllKontoText(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, ui.getKonto().getId(),
+                    cn.getConnection());
+            
+            if (eingeloggt != null && eingeloggt.getId() != null) {
+                rq.setAttribute("eingeloggt", eingeloggt.getId()); // allenfalls vorhandene BestellParam-ID in
+                // Request
+            } else {
+                rq.setAttribute("eingeloggt", "0"); // 0 als ID
+            }
+            
+            if (hasIP) { // IP hinterlegt
+                if (ipbasiert != null && ipbasiert.getId() != null) {
+                    rq.setAttribute("ipbasiert", ipbasiert.getId()); // allenfalls vorhandene BestellParam-ID in
+                    // Request
+                } else {
+                    rq.setAttribute("ipbasiert", "-1"); // -1 als ID
+                }
+            }
+            
+            if (!kkid.isEmpty()) {
+                rq.setAttribute("kkid", kkid);
+            }
+            if (!bkid.isEmpty()) {
+                rq.setAttribute("bkid", bkid);
+            }
+            
+        } catch (final Exception e) {
+            LOG.error("BestellformAction - prepareConfigure: " + e.toString());
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
@@ -1074,6 +1068,10 @@ public final class BestellformAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -1087,71 +1085,62 @@ public final class BestellformAction extends DispatchAction {
         
         try {
             
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
-                
-                    try {
-                        forward = Result.SUCCESS.getValue();
-                        
-                        final ActiveMenusForm mf = new ActiveMenusForm();
-                        mf.setActivemenu("konto");
-                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                        
-                        BestellParam custom = new BestellParam();
-                        custom.setKid(ui.getKonto().getId());
-                        
-                        if (bp.getId() > 0) { // bestehendes BestellParam (eingeloggt oder IP-basiert)
-                            custom = new BestellParam(bp.getId(), cn.getConnection());
+            if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
+            
+                try {
+                    forward = Result.SUCCESS.getValue();
+                    
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                    
+                    BestellParam custom = new BestellParam();
+                    custom.setKid(ui.getKonto().getId());
+                    
+                    if (bp.getId() > 0) { // bestehendes BestellParam (eingeloggt oder IP-basiert)
+                        custom = new BestellParam(bp.getId(), cn.getConnection());
+                    }
+                    if (bp.getId() == BestellformNumber.LOGGED_IN.getValue()) {
+                        custom.setTyid(TextType.ORDERFORM_LOGGED_IN.getValue());
+                        custom.setKennung("Bestellformular eingeloggt");
+                    }
+                    if (bp.getId() == BestellformNumber.IP.getValue()) {
+                        custom.setTyid(TextType.IP4.getValue()); // IP
+                    }
+                    if (bp.getId() == BestellformNumber.KKID.getValue()) { // Konto-Kennung
+                        custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
+                        if (custom.getId() == null) {
+                            custom.setTyid(TextType.ACCOUNT_ID_OVERRIDES_IP.getValue());
+                            custom.setKid(ui.getKonto().getId());
+                            custom.setKennung(bp.getKennung());
+                            custom.setId(bp.getId());
                         }
-                        if (bp.getId() == BestellformNumber.LOGGED_IN.getValue()) {
-                            custom.setTyid(TextType.ORDERFORM_LOGGED_IN.getValue());
-                            custom.setKennung("Bestellformular eingeloggt");
+                    }
+                    if (bp.getId() == BestellformNumber.BKID.getValue()) { // Borker-Kennung
+                        custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
+                        if (custom.getId() == null) {
+                            custom.setTyid(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue());
+                            custom.setKid(ui.getKonto().getId());
+                            custom.setKennung(bp.getKennung());
+                            custom.setId(bp.getId());
                         }
-                        if (bp.getId() == BestellformNumber.IP.getValue()) {
-                            custom.setTyid(TextType.IP4.getValue()); // IP
-                        }
-                        if (bp.getId() == BestellformNumber.KKID.getValue()) { // Konto-Kennung
-                            custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
-                            if (custom.getId() == null) {
-                                custom.setTyid(TextType.ACCOUNT_ID_OVERRIDES_IP.getValue());
-                                custom.setKid(ui.getKonto().getId());
-                                custom.setKennung(bp.getKennung());
-                                custom.setId(bp.getId());
-                            }
-                        }
-                        if (bp.getId() == BestellformNumber.BKID.getValue()) { // Borker-Kennung
-                            custom = new BestellParam(bp.getKennung(), ui.getKonto().getId(), cn.getConnection());
-                            if (custom.getId() == null) {
-                                custom.setTyid(TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP.getValue());
-                                custom.setKid(ui.getKonto().getId());
-                                custom.setKennung(bp.getKennung());
-                                custom.setId(bp.getId());
-                            }
-                        }
-                        
-                        rq.setAttribute("bestellform", custom);
-                        
-                    } catch (final Exception e) {
-                        LOG.error("modify: " + e.toString());
-                    } finally {
-                        cn.close();
                     }
                     
-                } else { // URL-hacking
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.hack", "searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                    LOG.info("modify: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+                    rq.setAttribute("bestellform", custom);
+                    
+                } catch (final Exception e) {
+                    LOG.error("modify: " + e.toString());
+                } finally {
+                    cn.close();
                 }
-            } else { // keine Berechtigung
+                
+            } else { // URL-hacking
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("suchenbestellen");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.berechtigung",
-                        "searchfree.do?activemenu=suchenbestellen");
+                final ErrorMessage em = new ErrorMessage("error.hack", "searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                LOG.info("modify: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             }
             
         } finally {
@@ -1172,6 +1161,10 @@ public final class BestellformAction extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -1186,85 +1179,76 @@ public final class BestellformAction extends DispatchAction {
         
         try {
             
-            if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
-                if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
-                
-                    try {
-                        forward = Result.SUCCESS.getValue();
+            if (checkPermission(ui, bp, cn.getConnection())) { // Prüfung auf URL-hacking
+            
+                try {
+                    forward = Result.SUCCESS.getValue();
+                    
+                    final ActiveMenusForm mf = new ActiveMenusForm();
+                    mf.setActivemenu("konto");
+                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                    
+                    bp = checkBPLogic(bp); // logische Prüfungen und setzt abhängige Werte
+                    
+                    if (bp.getMessage() == null) { // keine Fehlermedlungen
+                    
+                        forward = "bestellform";
+                        final OrderForm of = new OrderForm();
                         
-                        final ActiveMenusForm mf = new ActiveMenusForm();
-                        mf.setActivemenu("konto");
-                        rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+                        if (bp.getId() <= 0) { // negative ID => save
+                            bp.setId(bp.save(bp, cn.getConnection()));
+                        } else { // positive ID => update
+                            bp.update(bp, cn.getConnection());
+                        }
+                        bp.setBack(true); // Flag für "Back" auf Bestellform
+                        bp.setLink_back("bfconfigure.do?method=modify&id=" + bp.getId());
                         
-                        bp = checkBPLogic(bp); // logische Prüfungen und setzt abhängige Werte
+                        // analog wie in validate()
+                        // Länderauswahl setzen
+                        final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
+                        of.setCountries(allPossCountries);
+                        if (of.getRadiobutton().equals("")) {
+                            of.setRadiobutton(bp.getOption_value1());
+                        } // default Option1
                         
-                        if (bp.getMessage() == null) { // keine Fehlermedlungen
-                        
-                            forward = "bestellform";
-                            final OrderForm of = new OrderForm();
-                            
-                            if (bp.getId() <= 0) { // negative ID => save
-                                bp.setId(bp.save(bp, cn.getConnection()));
-                            } else { // positive ID => update
-                                bp.update(bp, cn.getConnection());
+                        if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // Defaultwert deloptions
+                            if (!bp.isLieferart()) {
+                                of.setDeloptions("email");
+                            } else {
+                                of.setDeloptions(bp.getLieferart_value1());
                             }
-                            bp.setBack(true); // Flag für "Back" auf Bestellform
-                            bp.setLink_back("bfconfigure.do?method=modify&id=" + bp.getId());
-                            
-                            // analog wie in validate()
-                            // Länderauswahl setzen
-                            final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
-                            of.setCountries(allPossCountries);
-                            if (of.getRadiobutton().equals("")) {
-                                of.setRadiobutton(bp.getOption_value1());
-                            } // default Option1
-                            
-                            if (of.getDeloptions() == null || of.getDeloptions().equals("")) { // Defaultwert deloptions
-                                if (!bp.isLieferart()) {
-                                    of.setDeloptions("email");
-                                } else {
-                                    of.setDeloptions(bp.getLieferart_value1());
-                                }
-                            }
-                            
-                            // get user categories for drop down menu
-                            if (bp.isCategory()) {
-                                final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto()
-                                        .getId(), cn.getConnection());
-                                // only set into request, if we have at least one category
-                                rq.setAttribute("categories", categories);
-                            }
-                            
-                            rq.setAttribute("orderform", of);
-                            rq.setAttribute("bestellparam", bp);
-                            
-                        } else { // Fehlermeldung vorhanden
-                            forward = Result.SUCCESS.getValue(); // auf bestellformconfigure
-                            rq.setAttribute("message", bp.getMessage());
-                            rq.setAttribute("bestellform", bp);
                         }
                         
-                    } catch (final Exception e) {
-                        LOG.error("save: " + e.toString());
-                    } finally {
-                        cn.close();
+                        // get user categories for drop down menu
+                        if (bp.isCategory()) {
+                            final List<Text> categories = cn.getAllKontoText(TextType.USER_CATEGORY, ui.getKonto()
+                                    .getId(), cn.getConnection());
+                            // only set into request, if we have at least one category
+                            rq.setAttribute("categories", categories);
+                        }
+                        
+                        rq.setAttribute("orderform", of);
+                        rq.setAttribute("bestellparam", bp);
+                        
+                    } else { // Fehlermeldung vorhanden
+                        forward = Result.SUCCESS.getValue(); // auf bestellformconfigure
+                        rq.setAttribute("message", bp.getMessage());
+                        rq.setAttribute("bestellform", bp);
                     }
                     
-                } else { // URL-hacking
-                    final ActiveMenusForm mf = new ActiveMenusForm();
-                    mf.setActivemenu("suchenbestellen");
-                    rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                    final ErrorMessage em = new ErrorMessage("error.hack", "searchfree.do?activemenu=suchenbestellen");
-                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                    LOG.info("save: prevented URL-hacking! " + ui.getBenutzer().getEmail());
+                } catch (final Exception e) {
+                    LOG.error("save: " + e.toString());
+                } finally {
+                    cn.close();
                 }
-            } else { // keine Berechtigung
+                
+            } else { // URL-hacking
                 final ActiveMenusForm mf = new ActiveMenusForm();
                 mf.setActivemenu("suchenbestellen");
                 rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                final ErrorMessage em = new ErrorMessage("error.berechtigung",
-                        "searchfree.do?activemenu=suchenbestellen");
+                final ErrorMessage em = new ErrorMessage("error.hack", "searchfree.do?activemenu=suchenbestellen");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+                LOG.info("save: prevented URL-hacking! " + ui.getBenutzer().getEmail());
             }
             
         } finally {

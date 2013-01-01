@@ -21,7 +21,8 @@ public enum Result {
     
     FAILURE("FAILURE", "failure"), SUCCESS("SUCCESS", "success"), ACTIVEMENUS("ACTIVEMENUS", "ActiveMenus"), ERRORMESSAGE(
             "ERRORMESSAGE", "errormessage"), ERROR_PAID_ONLY("ERROR_PAID_ONLY", "errorpaidonly"), ERROR_TIMEOUT(
-            "ERROR_TIMEOUT", "errortimeout"), LOGIN("LOGIN", "login");
+            "ERROR_TIMEOUT", "errortimeout"), ERROR_MISSING_RIGHTS("ERROR_MISSING_RIGHTS", "errormissingrights"), LOGIN(
+            "LOGIN", "login");
     
     private final String name;
     private final String value;

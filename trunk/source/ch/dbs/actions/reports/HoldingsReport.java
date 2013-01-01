@@ -41,7 +41,6 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
-import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.UserInfo;
 import enums.Result;
 
@@ -65,89 +64,82 @@ public final class HoldingsReport extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
         
-        String forward = Result.FAILURE.getValue();
-        
         // Get export filetype for export as either CSV with semicolon delimiter, TXT as tab delimited file or as XLS
         final String filetype = rq.getParameter("filetype");
         String contenttype = "text/txt;charset=UTF-8"; // used for CSV and TXT
         
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) { // not accessible for users
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        final Date date = new Date();
         
-            final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-            final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-            final Date date = new Date();
+        try {
+            // Compose filename with date and time
+            final StringBuffer filename = new StringBuffer("holdings-");
+            filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
+            filename.append('.');
             
-            try {
-                // Compose filename with date and time
-                final StringBuffer filename = new StringBuffer("holdings-");
-                filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
-                filename.append('.');
+            // CSV- or TXT-Export
+            if (filetype != null && (filetype.equals("csv") || filetype.equals("txt"))) {
+                char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // ';' as default delimiter
+                if ("csv".equals(filetype)) {
+                    filename.append("csv");
+                } else {
+                    filename.append("txt");
+                    delimiter = ch.dbs.actions.bestand.Stock.getDelimiterTxt(); // tab as delimiter
+                }
+                // Prepare Output
+                rp.setContentType(contenttype); // Set ContentType in the response for the Browser
+                rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
+                rp.setCharacterEncoding("UTF-8");
                 
-                // CSV- or TXT-Export
-                if (filetype != null && (filetype.equals("csv") || filetype.equals("txt"))) {
-                    char delimiter = ch.dbs.actions.bestand.Stock.getDelimiterCsv(); // ';' as default delimiter
-                    if ("csv".equals(filetype)) {
-                        filename.append("csv");
-                    } else {
-                        filename.append("txt");
-                        delimiter = ch.dbs.actions.bestand.Stock.getDelimiterTxt(); // tab as delimiter
-                    }
-                    // Prepare Output
-                    rp.setContentType(contenttype); // Set ContentType in the response for the Browser
-                    rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
-                    rp.setCharacterEncoding("UTF-8");
-                    
-                    rp.flushBuffer();
-                    
-                    // Use writer to render text
-                    PrintWriter pw = null;
-                    try {
-                        pw = rp.getWriter();
-                        pw.write(getCSVContent(ui.getKonto(), delimiter));
-                        pw.flush();
-                    } finally {
-                        pw.close();
-                    }
-                } else { // Excel-Export
-                    filename.append("xls");
-                    contenttype = "application/vnd.ms-excel";
-                    // Prepare Output
-                    rp.setContentType(contenttype); // Set ContentType in the response for the Browser
-                    rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
-                    
-                    ServletOutputStream outputStream = null;
-                    try {
-                        outputStream = rp.getOutputStream();
-                        // get WorkBook and write to output stream
-                        getXLSContent(ui.getKonto()).write(outputStream);
-                        // Flush the stream
-                        outputStream.flush();
-                    } finally {
-                        outputStream.close();
-                    }
-                    
+                rp.flushBuffer();
+                
+                // Use writer to render text
+                PrintWriter pw = null;
+                try {
+                    pw = rp.getWriter();
+                    pw.write(getCSVContent(ui.getKonto(), delimiter));
+                    pw.flush();
+                } finally {
+                    pw.close();
+                }
+            } else { // Excel-Export
+                filename.append("xls");
+                contenttype = "application/vnd.ms-excel";
+                // Prepare Output
+                rp.setContentType(contenttype); // Set ContentType in the response for the Browser
+                rp.addHeader("Content-Disposition", "attachment;filename=" + filename.toString()); // Set filename
+                
+                ServletOutputStream outputStream = null;
+                try {
+                    outputStream = rp.getOutputStream();
+                    // get WorkBook and write to output stream
+                    getXLSContent(ui.getKonto()).write(outputStream);
+                    // Flush the stream
+                    outputStream.flush();
+                } finally {
+                    outputStream.close();
                 }
                 
-            } catch (final IOException e) {
-                // Output failed
-                LOG.error("Failure in HoldingsReport.execute: " + e.toString());
-            } catch (final Exception e) {
-                LOG.error("Failure in HoldingsReport.execute: " + e.toString());
-            } finally {
-                forward = null;
             }
             
-        } else {
-            final ErrorMessage em = new ErrorMessage("error.berechtigung", "login.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } catch (final IOException e) {
+            // Output failed
+            LOG.error("Failure in HoldingsReport.execute: " + e.toString());
+        } catch (final Exception e) {
+            LOG.error("Failure in HoldingsReport.execute: " + e.toString());
         }
         
-        return mp.findForward(forward);
+        return mp.findForward(null);
     }
     
     private String getCSVContent(final Konto k, final char delimiter) {

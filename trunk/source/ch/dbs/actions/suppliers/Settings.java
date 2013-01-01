@@ -31,7 +31,6 @@ import util.Auth;
 import ch.dbs.entity.Lieferanten;
 import ch.dbs.entity.Text;
 import ch.dbs.form.ActiveMenusForm;
-import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.SupplierForm;
 import ch.dbs.form.UserInfo;
 import enums.Result;
@@ -50,6 +49,10 @@ public class Settings extends DispatchAction {
         if (!auth.isLogin(rq)) {
             return mp.findForward(Result.ERROR_TIMEOUT.getValue());
         }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
         // if activated on system level, access will be restricted to paid only
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -59,50 +62,42 @@ public class Settings extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final SupplierForm sf = (SupplierForm) form;
         
-        // access restricted to librarians and admins only
-        if (auth.isBibliothekar(rq) || auth.isAdmin(rq)) {
+        final Lieferanten sup = new Lieferanten();
+        final Text cn = new Text();
+        
+        try {
             
-            final Lieferanten sup = new Lieferanten();
-            final Text cn = new Text();
+            final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
             
-            try {
-                
-                final List<SupplierForm> privSuppliers = sup.getPrivates(ui.getKonto().getId(), cn.getConnection());
-                
-                // we do not have any private suppliers...
-                if (privSuppliers.isEmpty()) {
-                    // ...there is only one logical display option
-                    sf.setShowprivsuppliers(false);
-                    sf.setShowpubsuppliers(true);
-                }
-                
-                // update account with new settings
-                sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
-                
-                // set back updated UserInfo / account into session
-                ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
-                ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
-                rq.getSession().setAttribute("userinfo", ui);
-                
-                // trigger update message
-                sf.setChangedsettings(true);
-                
-                rq.setAttribute("form", sf);
-                
-                // navigation: set 'account/konto' tab as active
-                final ActiveMenusForm mf = new ActiveMenusForm();
-                mf.setActivemenu("konto");
-                rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-                
-                forward = Result.SUCCESS.getValue();
-                
-            } finally {
-                cn.close();
+            // we do not have any private suppliers...
+            if (privSuppliers.isEmpty()) {
+                // ...there is only one logical display option
+                sf.setShowprivsuppliers(false);
+                sf.setShowpubsuppliers(true);
             }
-        } else {
-            final ErrorMessage m = new ErrorMessage("error.berechtigung");
-            m.setLink("searchfree.do");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), m);
+            
+            // update account with new settings
+            sf.updateAccount(sf, ui.getKonto(), cn.getConnection());
+            
+            // set back updated UserInfo / account into session
+            ui.getKonto().setShowprivsuppliers(sf.isShowprivsuppliers());
+            ui.getKonto().setShowpubsuppliers(sf.isShowpubsuppliers());
+            rq.getSession().setAttribute("userinfo", ui);
+            
+            // trigger update message
+            sf.setChangedsettings(true);
+            
+            rq.setAttribute("form", sf);
+            
+            // navigation: set 'account/konto' tab as active
+            final ActiveMenusForm mf = new ActiveMenusForm();
+            mf.setActivemenu("konto");
+            rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
+            
+            forward = Result.SUCCESS.getValue();
+            
+        } finally {
+            cn.close();
         }
         
         return mp.findForward(forward);
