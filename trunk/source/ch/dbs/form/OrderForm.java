@@ -39,7 +39,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
     
     private static final SimpleLogger LOG = new SimpleLogger(OrderForm.class);
     
-    final CodeUrl codeUrl = new CodeUrl();
+    final transient CodeUrl codeUrl = new CodeUrl();
     
     private static final long serialVersionUID = 1L;
     private transient List<Bestellungen> bestellungen;
