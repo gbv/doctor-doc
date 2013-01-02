@@ -519,7 +519,6 @@
 			<forward name="journalorder" path="/journalorder1.do?method=journalorder" />
 			<forward name="abbrechen" path="/uebersicht.do" />
 			<forward name="notpossible" path="/uebersicht.do" />
-			<forward name="error" path="/error.do" />
 		</action>
 		<action forward="/jsp/ordersuccess.jsp" path="/ordersuccess" />
 		<action forward="/jsp/choosehits.jsp" path="/choosehits" />
