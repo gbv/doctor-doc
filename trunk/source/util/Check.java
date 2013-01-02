@@ -329,19 +329,20 @@ public class Check {
      * @param String path
      * @return boolean check
      */
-    public boolean isFiletypeExtension(String fileName, String extension) {
+    public boolean isFiletypeExtension(final String fileName, final String extension) {
         
         boolean check = false;
         
         // filename must be longer than the filetype extension plus leading dot
         if (fileName != null && extension != null && fileName.length() > extension.length()) {
             // make case insensitive
-            fileName = fileName.toLowerCase();
-            extension = extension.toLowerCase();
+            final String fileNameLower = fileName.toLowerCase();
+            final String extensionLower = extension.toLowerCase();
             try {
-                if (fileName.contains(extension) // must contain extension
+                if (fileNameLower.contains(extensionLower) // must contain extension
                         // extension must be placed at the end
-                        && fileName.lastIndexOf(extension) == fileName.length() - extension.length()) {
+                        && fileNameLower.lastIndexOf(extensionLower) == fileNameLower.length()
+                                - extensionLower.length()) {
                     check = true;
                 }
                 

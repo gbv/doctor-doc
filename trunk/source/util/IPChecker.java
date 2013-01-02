@@ -101,9 +101,9 @@ public class IPChecker {
         
         try {
             
-            final String compare = ip_db.substring(ip.indexOf(".", ip.indexOf(".") + 1) + 1);
-            final String oktett3 = ip.substring(ip.indexOf(".", ip.indexOf(".") + 1) + 1, ip.lastIndexOf("."));
-            final String oktett4 = ip.substring(ip.lastIndexOf(".") + 1);
+            final String compare = ip_db.substring(ip.indexOf('.', ip.indexOf('.') + 1) + 1);
+            final String oktett3 = ip.substring(ip.indexOf('.', ip.indexOf('.') + 1) + 1, ip.lastIndexOf('.'));
+            final String oktett4 = ip.substring(ip.lastIndexOf('.') + 1);
             
             if (!compare.contains(".")) { // Wildcard oder Bereich im dritten Oktett
             
@@ -156,8 +156,8 @@ public class IPChecker {
         try {
             // valid are only ranges for IP6 and no wildcards.
             if (ip_db.contains("-")) {
-                final String fromAddress = ip_db.substring(0, ip_db.indexOf("-"));
-                final String toAddress = ip_db.substring(ip_db.indexOf("-") + 1);
+                final String fromAddress = ip_db.substring(0, ip_db.indexOf('-'));
+                final String toAddress = ip_db.substring(ip_db.indexOf('-') + 1);
                 
                 final IPv6AddressRange range = IPv6AddressRange.fromFirstAndLast(IPv6Address.fromString(fromAddress),
                         IPv6Address.fromString(toAddress));

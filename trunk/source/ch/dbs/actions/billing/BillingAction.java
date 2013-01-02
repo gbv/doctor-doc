@@ -40,6 +40,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
+import org.grlea.log.SimpleLogger;
 
 import util.Auth;
 import ch.dbs.admin.KontoAdmin;
@@ -56,6 +57,8 @@ import enums.Result;
  * @author Pascal Steiner
  */
 public final class BillingAction extends DispatchAction {
+    
+    private static final SimpleLogger LOG = new SimpleLogger(BillingAction.class);
     
     /**
      * Listet die Rechnungen zu einem Konto sortiert nach Offenen Rechnungen,
@@ -170,9 +173,8 @@ public final class BillingAction extends DispatchAction {
             final Map<String, Object> param = new HashMap<String, Object>();
             param.put("adress", k.getBibliotheksname());
             param.put("billingtext", bf.getBillingtext());
-            param.put(JRParameter.REPORT_FILE_RESOLVER, 
-            			new SimpleFileResolver(
-            					new File(this.getServlet().getServletContext().getRealPath("/reports/"))));
+            param.put(JRParameter.REPORT_FILE_RESOLVER, new SimpleFileResolver(new File(this.getServlet()
+                    .getServletContext().getRealPath("/reports/"))));
             
             final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                     .getResourceAsStream("/reports/rechnung.jasper"));
@@ -193,19 +195,16 @@ public final class BillingAction extends DispatchAction {
                 out = rp.getOutputStream();
                 JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
             } catch (final JRException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.toString());
             } catch (final IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.toString());
             }
             // Report an den Browser senden
             try {
                 out.flush();
                 out.close();
             } catch (final IOException e) {
-                // LOG.error("BillingAction.billingPreview: " +
-                // e.toString());
+                LOG.error("BillingAction.billingPreview: " + e.toString());
             }
             
         } finally {
