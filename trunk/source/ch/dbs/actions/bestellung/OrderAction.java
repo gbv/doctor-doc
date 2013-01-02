@@ -412,37 +412,32 @@ public final class OrderAction extends DispatchAction {
             
         }
         
-        // failure wird leider nicht als globale Fehlermeldung verwendet.
-        // Deshalb Ausklammerung, falls ein tatsächlicher Fehler vorliegt...
-        if (!"error".equals(forward)) {
-            
-            if (!"captcha".equals(forward) && !"pmidfailure".equals(forward)) {
-                if ((hitsGoogle.isEmpty()) && (hitsGoogleScholar.isEmpty())) {
-                    forward = "notfound";
-                } else {
-                    forward = "found";
-                }
+        if (!"captcha".equals(forward) && !"pmidfailure".equals(forward)) {
+            if ((hitsGoogle.isEmpty()) && (hitsGoogleScholar.isEmpty())) {
+                forward = "notfound";
+            } else {
+                forward = "found";
             }
-            
-            // if we do not have a PMID, try to get it and complete any missing article details over Pubmed
-            if (isPubmedSearchWithoutPmidPossible(pageForm) && pageForm.isAutocomplete()) { // autocomplete nust have been successful
-                pageForm.setPmid(pubmed.getPmid(pageForm)); // if we have several hits => set pmid = ""
-                // complete any missing article details:
-                if (!pageForm.getPmid().equals("") && pageForm.areArticleValuesMissing()) {
-                    OrderForm of = new OrderForm();
-                    of = pubmed.resolvePmid(pubmed.extractPmid(pageForm.getPmid()));
-                    pageForm.completeOrderForm(pageForm, of);
-                }
-            }
-            
-            // avoid in issnAssistent that autocomplete will be run again...
-            if (!"captcha".equals(forward)) {
-                pageForm.setRuns_autocomplete(1);
-            }
-            
-            // replace greek alphabet to alpha, beta etc.
-            pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         }
+        
+        // if we do not have a PMID, try to get it and complete any missing article details over Pubmed
+        if (isPubmedSearchWithoutPmidPossible(pageForm) && pageForm.isAutocomplete()) { // autocomplete nust have been successful
+            pageForm.setPmid(pubmed.getPmid(pageForm)); // if we have several hits => set pmid = ""
+            // complete any missing article details:
+            if (!pageForm.getPmid().equals("") && pageForm.areArticleValuesMissing()) {
+                OrderForm of = new OrderForm();
+                of = pubmed.resolvePmid(pubmed.extractPmid(pageForm.getPmid()));
+                pageForm.completeOrderForm(pageForm, of);
+            }
+        }
+        
+        // avoid in issnAssistent that autocomplete will be run again...
+        if (!"captcha".equals(forward)) {
+            pageForm.setRuns_autocomplete(1);
+        }
+        
+        // replace greek alphabet to alpha, beta etc.
+        pageForm.setArtikeltitel(prepareWorldCat2(pageForm.getArtikeltitel()));
         
         rq.setAttribute("orderform", pageForm);
         return mp.findForward(forward);
