@@ -495,100 +495,16 @@ public final class KontoAction extends DispatchAction {
             final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
             
             forward = Result.SUCCESS.getValue();
-            
+
             if (auth.isAdmin(rq)) {
                 kf.setFaxusername(k.getFaxusername());
                 kf.setFaxpassword(k.getFaxpassword());
                 kf.setGbvrequesterid(k.getGbvrequesterid());
-            }
+            }            
             
-            //TODO: folgender Quelltext mittels Konto abhandeln
-            kf.setKid(k.getId());
-            if (k.getBibliotheksname() != null) {
-                kf.setBiblioname(k.getBibliotheksname().trim());
-            } else {
-                kf.setBiblioname(k.getBibliotheksname());
-            }
-            if (k.getIsil() != null) {
-                kf.setIsil(k.getIsil().trim());
-            } else {
-                kf.setIsil(k.getIsil());
-            }
-            if (k.getAdresse() != null) {
-                kf.setAdresse(k.getAdresse().trim());
-            } else {
-                kf.setAdresse(k.getAdresse());
-            }
-            if (k.getAdressenzusatz() != null) {
-                kf.setAdressenzusatz(k.getAdressenzusatz().trim());
-            } else {
-                kf.setAdressenzusatz(k.getAdressenzusatz());
-            }
-            if (k.getPLZ() != null) {
-                kf.setPLZ(k.getPLZ().trim());
-            } else {
-                kf.setPLZ(k.getPLZ());
-            }
-            if (k.getOrt() != null) {
-                kf.setOrt(k.getOrt().trim());
-            } else {
-                kf.setOrt(k.getOrt());
-            }
-            kf.setLand(k.getLand());
-            if (k.getTimezone() != null) {
-                kf.setTimezone(k.getTimezone());
-            } // only set Timezone if not null, else we will use default value of initialized kontoform
-            if (k.getTelefon() != null) {
-                kf.setTelefon(k.getTelefon().trim());
-            } else {
-                kf.setTelefon(k.getTelefon());
-            }
-            kf.setFaxno(k.getFaxno()); // Bibliothekar nur Leserecht!
-            if (k.getFax_extern() != null) {
-                kf.setFax_extern(k.getFax_extern().trim());
-            } else {
-                kf.setFax_extern(k.getFax_extern());
-            } // Bibliothekar Schreibrecht!
-            if (k.getBibliotheksmail() != null) {
-                kf.setBibliotheksmail(k.getBibliotheksmail().trim());
-            } else {
-                kf.setBibliotheksmail(k.getBibliotheksmail());
-            }
-            if (k.getDbsmail() != null) {
-                kf.setDbsmail(k.getDbsmail().trim());
-            } else {
-                kf.setDbsmail(k.getDbsmail());
-            }
-            kf.setGbvbenutzername(k.getGbvbenutzername());
-            kf.setGbvpasswort(k.getGbvpasswort());
-            kf.setIdsid(k.getIdsid());
-            kf.setIdspasswort(k.getIdspasswort());
-            kf.setPopfaxend(k.getPopfaxend());
-            kf.setEzbid(k.getEzbid());
-            kf.setInstlogolink(k.getInstlogolink());
-            kf.setZdb(k.isZdb());
-            
-            // Kontoeinstellungen
-            kf.setBilling(k.getBilling());
-            kf.setBillingtype(k.getBillingtype());
-            kf.setAccounting_rhythmvalue(k.getAccounting_rhythmvalue());
-            kf.setAccounting_rhythmday(k.getAccounting_rhythmday());
-            kf.setAccounting_rhythmtimeout(k.getAccounting_rhythmtimeout());
-            kf.setThreshold_value(k.getThreshold_value()); // Billingschwellwert?
-            kf.setMaxordersu(k.getMaxordersu());
-            kf.setMaxordersutotal(k.getMaxordersutotal());
-            kf.setMaxordersj(k.getMaxordersj());
-            kf.setOrderlimits(k.getOrderlimits());
-            kf.setUserlogin(k.isUserlogin());
-            kf.setUserbestellung(k.isUserbestellung()); // SUBITO
-            kf.setGbvbestellung(k.isGbvbestellung()); // GBV
-            kf.setKontostatus(k.isKontostatus()); // Bibliothekar nur Leserecht!
-            kf.setKontotyp(k.getKontotyp()); // Bibliothekar nur Leserecht!
-            kf.setDefault_deloptions(k.getDefault_deloptions());
-            kf.setEdatum(k.getEdatum()); // Alle nur Leserecht!
-            kf.setGtc(k.getGtc()); // Alle nur Leserecht!
-            kf.setGtcdate(k.getGtcdate()); // Alle nur Leserecht!
-            
+            kf.setKonto(k);
+            kf.setValuesFromKonto();
+   
             final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
             

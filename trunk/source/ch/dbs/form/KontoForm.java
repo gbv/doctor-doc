@@ -870,7 +870,7 @@ public final class KontoForm extends ValidatorForm {
     }
     
     /**
-     * Setzt den Inhalt des Kontos aus konto in die Felder des Forms
+     * Setzt den Inhalt des Kontos aus Konto in die Felder des Forms
      */
     public void setValuesFromKonto() {
         
@@ -897,22 +897,26 @@ public final class KontoForm extends ValidatorForm {
         if (konto.getLand() != null) {
             this.Land = konto.getLand();
         }
-        if (konto.getTimezone() != null) {
+        if (konto.getTimezone() != null) {  // only set Timezone if not null, else we will use default value of initialized kontoform
             this.timezone = konto.getTimezone();
         }
-        if (konto.getFaxno() != null) {
+        if (konto.getFaxno() != null) { // Bibliothekar nur Leserecht!
             this.faxno = konto.getFaxno();
         }
-        if (konto.getFaxusername() != null) {
-            this.faxusername = konto.getFaxusername();
-        }
-        if (konto.getFaxpassword() != null) {
-            this.faxpassword = konto.getFaxpassword();
-        }
+//        Darf nur von Admins eingesehen werden
+//        ***********************************************************************
+//        if (konto.getFaxusername() != null) {
+//            this.faxusername = konto.getFaxusername();
+//        }
+//        if (konto.getFaxpassword() != null) {
+//            this.faxpassword = konto.getFaxpassword();
+//        }
+//        this.gbvrequesterid = konto.getGbvrequesterid();
+//        ***********************************************************************
         if (konto.getPopfaxend() != null) {
             this.popfaxend = konto.getPopfaxend();
         }
-        if (konto.getFax_extern() != null) {
+        if (konto.getFax_extern() != null) { // Bibliothekar Schreibrecht!
             this.fax_extern = konto.getFax_extern().trim();
         }
         if (konto.getTelefon() != null) {
@@ -927,9 +931,11 @@ public final class KontoForm extends ValidatorForm {
         if (konto.getDbsmailpw() != null) {
             this.dbsmailpw = konto.getDbsmailpw();
         }
+        if (konto.getId() != null) {
+            this.kid = konto.getId();
+        }
         this.gbvbenutzername = konto.getGbvbenutzername();
         this.gbvpasswort = konto.getGbvpasswort();
-        this.gbvrequesterid = konto.getGbvrequesterid();
         this.idsid = konto.getIdsid();
         this.idspasswort = konto.getIdspasswort();
         if (konto.getEzbid() != null) {
@@ -952,15 +958,18 @@ public final class KontoForm extends ValidatorForm {
         this.maxordersj = konto.getMaxordersj();
         this.orderlimits = konto.getOrderlimits();
         this.userlogin = konto.isUserlogin();
-        this.userbestellung = konto.isUserbestellung();
-        this.gbvbestellung = konto.isGbvbestellung();
-        this.selected = konto.isSelected();
+        this.userbestellung = konto.isUserbestellung(); // SUBITO
+        this.gbvbestellung = konto.isGbvbestellung(); // GBV
+        this.selected = konto.isSelected(); 
         this.kontostatus = konto.isKontostatus();
-        this.kontotyp = konto.getKontotyp();
+        this.kontotyp = konto.getKontotyp(); // Bibliothekar nur Leserecht!
         this.default_deloptions = konto.getDefault_deloptions();
         this.showprivsuppliers = konto.isShowprivsuppliers();
         this.showpubsuppliers = konto.isShowpubsuppliers();
         this.ilvformnr = konto.getIlvformnr();
+        this.edatum = konto.getEdatum(); // Alle nur Leserecht!
+        this.gtc = konto.getGtc(); // Alle nur Leserecht!
+        this.gtcdate = konto.getGtcdate(); // Alle nur Leserecht!
     }
     
 }

@@ -214,6 +214,10 @@ public final class KontoAdmin {
                 b = new Billing(k, new Text(cn, TextType.BILLING_REASON,
                         "3 Monate Doctor-Doc Enhanced plus Fax to Mail"), Double.valueOf("90"), "CHF");
             }
+            if (k.getKontotyp() == 4) {
+                b = new Billing(k, new Text(cn, TextType.BILLING_REASON,
+                        "Doctor-Doc Premium"), Double.valueOf("600"), "CHF");
+            }
         }
 
         //Betrag aendern
