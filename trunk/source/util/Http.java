@@ -40,10 +40,10 @@ import org.grlea.log.SimpleLogger;
 import enums.Connect;
 
 public class Http {
-
+    
     private static final SimpleLogger LOG = new SimpleLogger(Http.class);
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
-
+    private static final String USER_AGENT = "Mozilla/6.0 (Windows NT 6.2; WOW64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1";
+    
     /**
      * @param link
      * @return web site as String with a timeout of 2 seconds and 3 tries.
@@ -51,7 +51,7 @@ public class Http {
     public String getContent(final String link) {
         return getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue());
     }
-
+    
     /**
      * @param link
      * @return web site as String with a timeout of 2 seconds and 3 tries.
@@ -59,19 +59,19 @@ public class Http {
     public String getContent(final String link, final List<NameValuePair> nameValuePairs) {
         return getContent(link, nameValuePairs, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue());
     }
-
+    
     /**
      * @param String link
      * @param int timeout_ms
      * @return web site as string
      */
     public String getContent(final String link, final int timeoutMs, final int trys) {
-
+        
         String content = "";
         HttpEntity entity = null;
-
+        
         final HttpGet httpget = new HttpGet(link);
-
+        
         final HttpParams httpParameters = new BasicHttpParams();
         // Set the timeout in milliseconds until a connection is established.
         HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutMs);
@@ -79,27 +79,27 @@ public class Http {
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutMs);
         // Set user agent
         httpParameters.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-
+        
         final HttpClient httpclient = new DefaultHttpClient(httpParameters);
-
+        
         int runs = 1;
-
+        
         while (entity == null && runs <= trys) {
-
+            
             runs++;
-
+            
             try {
-
+                
                 // Execute the request
                 final HttpResponse response = httpclient.execute(httpget);
-
+                
                 // Get hold of the response entity
                 entity = response.getEntity();
-
+                
                 if (entity != null) {
                     content = EntityUtils.toString(entity);
                 }
-
+                
             } catch (final IOException e) {
                 LOG.error(e.toString() + ": " + link);
             } catch (final Exception e) {
@@ -107,12 +107,12 @@ public class Http {
             } finally {
                 EntityUtils.consumeQuietly(entity);
             }
-
+            
         }
-
+        
         return content;
     }
-
+    
     /**
      * @param String link
      * @param List<NameValuePair> nameValuePairs
@@ -121,15 +121,15 @@ public class Http {
      */
     public String getContent(final String link, final List<NameValuePair> nameValuePairs, final int timeoutMs,
             final int trys) {
-
+        
         String content = "";
         HttpEntity entity = null;
-
+        
         try {
-
+            
             final HttpPost httppost = new HttpPost(link);
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
-
+            
             final HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
             HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutMs);
@@ -137,27 +137,27 @@ public class Http {
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutMs);
             // Set user agent
             httpParameters.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-
+            
             final HttpClient httpclient = new DefaultHttpClient(httpParameters);
-
+            
             int runs = 1;
-
+            
             while (entity == null && runs <= trys) {
-
+                
                 runs++;
-
+                
                 try {
-
+                    
                     // Execute the request
                     final HttpResponse response = httpclient.execute(httppost);
-
+                    
                     // Get hold of the response entity
                     entity = response.getEntity();
-
+                    
                     if (entity != null) {
                         content = EntityUtils.toString(entity);
                     }
-
+                    
                 } catch (final ClientProtocolException e) {
                     LOG.error(e.toString() + ": " + link);
                 } catch (final IOException e) {
@@ -167,14 +167,14 @@ public class Http {
                 } finally {
                     EntityUtils.consumeQuietly(entity);
                 }
-
+                
             }
-
+            
         } catch (final UnsupportedEncodingException e) {
             LOG.error(e.toString());
         }
-
+        
         return content;
     }
-
+    
 }
