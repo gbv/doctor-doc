@@ -46,7 +46,7 @@
 
 	<!-- =================================== Action Mapping Definitions -->
 
-	<action-mappings>
+	<action-mappings type="org.apache.struts.config.SecureActionConfig">
 
 		<!--
 			*************************************************All unknown paths*************************************************
@@ -82,9 +82,12 @@
 
 		<!-- Loginvorgang  -->
 		<action name="ActiveMenus" forward="/jsp/login.jsp?activemenu=login"
-			path="/login" />
+			path="/login">
+			<set-property property="secure" value="false"/>
+		</action>
 		<action path="/logincheck" input="/login.do" name="LoginForm"
 			validate="true" scope="request" type="ch.dbs.actions.user.LoginAction">
+			<set-property property="secure" value="true"/>
 			<forward name="success" path="/searchfree.do" />
 			<forward name="order" path="/journalorder.do?method=prepare" />
 			<forward name="checkavailability"
@@ -98,6 +101,7 @@
 		<!-- Übernahme von Bestelldaten aus Bestellform-Email  -->
 		<action path="/pl" name="LoginForm" validate="false" scope="request"
 			type="ch.dbs.actions.user.PrepareLoginAction">
+			<set-property property="secure" value="false"/>
 			<forward name="success" path="/login.do" />
 			<forward name="checkavailability"
 				path="/journalorder1.do?method=checkAvailabilityOpenUrl" />
@@ -106,12 +110,14 @@
 		<!-- Übernahme von Userangaben aus Bestellform-Email  -->
 		<action path="/add" name="UserForm" validate="false" scope="request"
 			type="ch.dbs.actions.user.PrepareUserAddAction">
+			<set-property property="secure" value="false"/>
 			<forward name="login" path="/login.do" />
 			<forward name="adduser" path="/modifykontousers.do" />
 		</action>
 
 		<action path="/login1" name="LoginForm" validate="false" scope="request"
 			type="ch.dbs.actions.user.LoginAction">
+			<set-property property="secure" value="false"/>
 			<forward name="success" path="/searchfree.do" />
 			<forward name="order" path="/journalorder.do?method=prepare" />
 			<forward name="checkavailability"
@@ -122,11 +128,14 @@
 		</action>
 
 		<action name="LoginForm" forward="/jsp/chooseuser.jsp?activemenu=login"
-			path="/chooseuser" />
+			path="/chooseuser">
+			<set-property property="secure" value="false"/>
+		</action>
 
 		<action path="/setuser" input="/chooseuser.do" name="LoginForm"
 			parameter="method" validate="false" scope="request"
 			type="ch.dbs.actions.user.UserAction">
+			<set-property property="secure" value="false"/>
 			<forward name="success" path="/searchfree.do" />
 			<forward name="order" path="/journalorder.do?method=prepare" />
 			<forward name="checkavailability"
@@ -851,6 +860,13 @@
 		<!-- Set Module-awareness to true -->
 		<set-property property="moduleAware" value="true" />
 	</plug-in>
+	
+    <plug-in className="org.apache.struts.action.SecurePlugIn">
+        <set-property property="httpPort" value="8080"/>
+        <set-property property="httpsPort" value="8443"/>
+        <set-property property="enable" value="true"/>
+        <set-property property="addSession" value="true"/>
+    </plug-in>
 
 </struts-config>
 

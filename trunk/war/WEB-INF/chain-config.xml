@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <catalog name="struts">
+        <chain name="servlet-standard-preprocess">
+            <command className="org.apache.struts.chain.commands.servlet.SelectAction"/>
+            <command className="org.nkp.struts13.sslext.SSLExtCommand"/>
+        </chain>
+    </catalog>
