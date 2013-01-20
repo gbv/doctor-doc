@@ -87,7 +87,7 @@
 		</action>
 		<action path="/logincheck" input="/login.do" name="LoginForm"
 			validate="true" scope="request" type="ch.dbs.actions.user.LoginAction">
-			<set-property property="secure" value="true"/>
+			<set-property property="secure" value="false"/>
 			<forward name="success" path="/searchfree.do" />
 			<forward name="order" path="/journalorder.do?method=prepare" />
 			<forward name="checkavailability"

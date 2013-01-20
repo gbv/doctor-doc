@@ -120,3 +120,27 @@ For a productive system, please change the passwords and emails, or delete the u
 You may change the account information completely to use the system in a productive environment.
 
 ---
+5. SSL
+
+To use SSL for the login process, change in the plugin section of struts-config.xml the port numbers needed for you environment:
+
+    <plug-in className="org.apache.struts.action.SecurePlugIn">
+        <set-property property="httpPort" value="80"/>
+        <set-property property="httpsPort" value="443"/>
+        <set-property property="enable" value="true"/>
+        <set-property property="addSession" value="true"/>
+    </plug-in>
+    
+Set also all existing entries in struts-config.xml with
+
+<set-property property="secure" value="false"/> to <set-property property="secure" value="true"/>
+
+Configure Tomcat's server.xml with an additional connector like this:
+
+     <Connector port="443" protocol="HTTP/1.1" SSLEnabled="true"
+               maxThreads="150" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" 
+	      	   keystoreFile="/path/to/tomcatkeystore"
+	       	   keystorePass="mySecretPassword" URIEncoding="UTF-8" />
+	       	   
+Make sure to use URIEncoding="UTF-8"! And of course you need a valid keystore...
