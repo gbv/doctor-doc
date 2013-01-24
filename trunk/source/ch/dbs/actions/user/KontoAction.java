@@ -404,7 +404,7 @@ public final class KontoAction extends DispatchAction {
                     }
                     mg.append("\n\nWelcome at ");
                     mg.append(ReadSystemConfigurations.getApplicationName());
-                    mg.append("!\n\nTo use the IP-based oderform for your patrons within your institution, send us your "
+                    mg.append("!\n\nTo use the IP based oderform for your patrons within your institution, send us your "
                             + "IP. We'll activate this function for your account at ");
                     mg.append(ReadSystemConfigurations.getApplicationName());
                     mg.append(".\n\nThis link will show you your IP: http://www.whatismyip.com (if your institution uses "
@@ -495,16 +495,16 @@ public final class KontoAction extends DispatchAction {
             final Konto k = new Konto(ui.getKonto().getId(), cn.getConnection());
             
             forward = Result.SUCCESS.getValue();
-
+            
             if (auth.isAdmin(rq)) {
                 kf.setFaxusername(k.getFaxusername());
                 kf.setFaxpassword(k.getFaxpassword());
                 kf.setGbvrequesterid(k.getGbvrequesterid());
-            }            
+            }
             
             kf.setKonto(k);
             kf.setValuesFromKonto();
-   
+            
             final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
             kf.setCountries(allPossCountries);
             

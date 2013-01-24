@@ -93,15 +93,15 @@ public final class BestellformAction extends DispatchAction {
             }
             
             // There are three ways of taking access, without being logged in. Priority is as follows:
-            // 1. Kontokennung (overwrites IP-based access)
-            // 2. IP-based (overwrites Broker-Kennung)
+            // 1. Kontokennung (overwrites IP based access)
+            // 2. IP based (overwrites Broker-Kennung)
             // 3. Broker-Kennung (e.g. Careum Explorer)
             
             if (of.getKkid() == null) {
                 t = auth.grantAccess(rq);
             }
             
-            // Not logged in: IP-based, Kontokennung or Brokerkennung
+            // Not logged in: IP based, Kontokennung or Brokerkennung
             if (((t != null && t.getInhalt() != null) || (of.getKkid() != null || of.getBkid() != null))
                     && !auth.isLogin(rq)) {
                 forward = Result.SUCCESS.getValue();
@@ -396,14 +396,14 @@ public final class BestellformAction extends DispatchAction {
             // 1. Being logged in
             // Not being logged in:
             // 2. Kontokennung (overwrites IP based access)
-            // 3. IP-based (overwrites Brokerkennung)
+            // 3. IP based (overwrites Brokerkennung)
             // 4. Brokerkennung
             
             if (of.getKkid() == null && !auth.isLogin(rq)) {
                 t = auth.grantAccess(rq);
             }
             
-            // Logged in. IP-based, Kontokennung or Brokerkennung
+            // Logged in. IP based, Kontokennung or Brokerkennung
             if (((t != null && t.getInhalt() != null) || (of.getKkid() != null || of.getBkid() != null))
                     || auth.isLogin(rq)) {
                 
