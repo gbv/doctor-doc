@@ -58,6 +58,21 @@ Doctor-Doc uses UTF-8 encoded URIs. Add the parameter URIEncoding="UTF-8" to the
 <Connector port="... URIEncoding="UTF-8" />
 
 -
+
+Change in the plugin section of struts-config.xml the port numbers needed for you environment:
+
+    <plug-in className="org.apache.struts.action.SecurePlugIn">
+        <set-property property="httpPort" value="8080"/>
+        <set-property property="httpsPort" value="8443"/>
+        <set-property property="enable" value="true"/>
+        <set-property property="addSession" value="true"/>
+    </plug-in>
+    
+Make sure if you deploy the application to a productive system, you don't forget to adapt the port numbers
+from your test situation to the new environment: e.g. Port 80/443 instead of 8080/8443.
+
+-
+
 You also may want to use a custom icon, e.g. from your institution, for your installation:
 replace the following two images /img/sp.gif and /war/img/sp.gif with your own image but with the same name.
 The image should be quadratic to avoid distortion. 
