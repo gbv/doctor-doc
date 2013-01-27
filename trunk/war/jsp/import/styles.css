@@ -15,8 +15,9 @@ html,body {
   width: 100%;
 }
 
-input {
-      font-family: Verdana, Arial, Helvetica, SunSans-Regular, Sans-Serif;
+input, select, textarea {
+      padding: 2px;
+      margin: 1px;
 }
 
 a:link {
@@ -38,6 +39,8 @@ a:visited {
   background: #0000B2;
 }
 
+
+
 table {
   border-collapse: collapse;
   border-width: 1px;
@@ -58,7 +61,7 @@ th {
 td {
   border-color: #404040;
   border-width: 1px;
-  padding: 1px;
+  padding: 0px;
 }
 
 table.border {
