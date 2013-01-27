@@ -43,10 +43,13 @@ import org.apache.struts.actions.DispatchAction;
 import org.grlea.log.SimpleLogger;
 
 import util.Auth;
+import util.MHelper;
 import ch.dbs.admin.KontoAdmin;
 import ch.dbs.entity.Billing;
 import ch.dbs.entity.Konto;
+import ch.dbs.entity.Text;
 import ch.dbs.form.BillingForm;
+import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.Message;
 import enums.Result;
@@ -59,6 +62,8 @@ import enums.Result;
 public final class BillingAction extends DispatchAction {
     
     private static final SimpleLogger LOG = new SimpleLogger(BillingAction.class);
+  //Output Stream für PDF erstellen
+    private OutputStream out = null;
     
     /**
      * Listet die Rechnungen zu einem Konto sortiert nach Offenen Rechnungen,
@@ -157,14 +162,89 @@ public final class BillingAction extends DispatchAction {
             return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
         }
         
-        final Billing b = new Billing();
+        runReport(fm, rp);
         
+     // Report an den Browser senden
+        try {
+            out.flush();
+            out.close();
+        } catch (final IOException e) {
+            LOG.error("BillingAction.billingPreview: " + e.toString());
+        }
+        
+        return mp.findForward(null);
+    }
+    
+    /**
+     * Admins können Rechnungen versenden
+     */
+    public ActionForward sendBill(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+        
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        // check access rights
+        if (!auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
+        
+        String forward = Result.FAILURE.getValue();
+        final Text cn = new Text();
+        
+        try {
+            BillingForm bf = (BillingForm) fm;
+            final MHelper mh = new MHelper();
+            
+            if (bf.getAction().equals("PDF Vorschau")) {
+                forward = "preview";
+ 
+            } else {
+                final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
+                
+                final String[] to = new String[1];
+                to[0] = k.getBibliotheksmail();
+                
+                // Rechnung speichern
+                final KontoAdmin ka = new KontoAdmin();
+                bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
+                bf.getBill().save(cn.getConnection());
+                
+                // Mail versenden
+                mh.sendMail(to, "Rechnung für ihr doctor-doc.com Konto", bf.getBillingtext());
+                
+                // Meldung verfassen
+                final Message m = new Message("message.sendbill",
+                        k.getBibliotheksname() + "\n\n" + bf.getBillingtext(),
+                        "listbillings.do?method=listBillings&kid=" + k.getId());
+                rq.setAttribute("message", m);
+                
+                forward = Result.SUCCESS.getValue();
+            }
+            
+        } catch (final Exception e) {
+            LOG.error("sendBilling: " + e.toString());
+            final ErrorMessage em = new ErrorMessage("error.sendbilling", e.getMessage(),
+                    "BillingAction?method=sendBill");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            cn.close();
+        }
+        
+        return mp.findForward(forward);
+    }
+    
+    private void runReport(ActionForm fm, HttpServletResponse rp){
+    	
+    	final Billing b = new Billing();        
         try {
             
             BillingForm bf = (BillingForm) fm;
             final Konto k = new Konto(bf.getKontoid(), b.getConnection());
             
-            // Rechnung paraameter abfüllen
+            // Rechnung parameter abfüllen
             final KontoAdmin ka = new KontoAdmin();
             bf = ka.prepareBillingText(k, b.getConnection(), null, bf);
             StringBuffer kadress = new StringBuffer();
@@ -181,10 +261,7 @@ public final class BillingAction extends DispatchAction {
             
             final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                     .getResourceAsStream("/reports/rechnung.jasper"));
-            
-            // PDF erstellen
-            OutputStream out = null;
-            
+                        
             // prepare output stream
             rp.setContentType("application/pdf");
             
@@ -202,18 +279,11 @@ public final class BillingAction extends DispatchAction {
             } catch (final IOException e) {
                 LOG.error(e.toString());
             }
-            // Report an den Browser senden
-            try {
-                out.flush();
-                out.close();
-            } catch (final IOException e) {
-                LOG.error("BillingAction.billingPreview: " + e.toString());
-            }
-            
+                        
         } finally {
             b.close();
         }
-        return mp.findForward(null);
+    	
     }
     
 }

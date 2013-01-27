@@ -339,7 +339,7 @@
 
 		<!-- Rechnung versenden -->
 		<action path="/sendbill" name="BillingForm" parameter="method"
-			scope="request" type="ch.dbs.actions.user.KontoAction">
+			scope="request" type="ch.dbs.actions.billing.BillingAction">
 			<forward name="success" path="/jsp/message.jsp" />
 			<forward name="preview" path="/billpreview.do?method=billingPreview" />
 		</action>
