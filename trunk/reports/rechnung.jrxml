@@ -41,7 +41,7 @@ www.doctor-doc.com]]></text>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="100" splitType="Stretch">
+		<band height="143" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="692e1e01-05be-48f4-863c-da77cdb2c781" key="staticText-2" x="0" y="0" width="154" height="13"/>
 				<textElement textAlignment="Left">
@@ -50,7 +50,7 @@ www.doctor-doc.com]]></text>
 				<text><![CDATA[Verein DoctorDoc]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="acf4a8d7-3d3d-4501-908f-44b913c5ee40" key="textField-1" x="33" y="56" width="502" height="18"/>
+				<reportElement uuid="acf4a8d7-3d3d-4501-908f-44b913c5ee40" key="textField-1" positionType="Float" x="33" y="56" width="502" height="18"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{billingtext}]]></textFieldExpression>
 			</textField>

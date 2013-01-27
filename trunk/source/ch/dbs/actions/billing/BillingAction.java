@@ -164,14 +164,17 @@ public final class BillingAction extends DispatchAction {
             BillingForm bf = (BillingForm) fm;
             final Konto k = new Konto(bf.getKontoid(), b.getConnection());
             
-            // Rechnung speichern
+            // Rechnung paraameter abfüllen
             final KontoAdmin ka = new KontoAdmin();
             bf = ka.prepareBillingText(k, b.getConnection(), null, bf);
-            //					bf.getBill().save(b.getConnection());
+            StringBuffer kadress = new StringBuffer();
+            kadress.append(k.getBibliotheksname()+"\n"+k.getAdresse()+"\n");
+            if (!k.getAdressenzusatz().equals("")) kadress.append(k.getAdressenzusatz()+"\n");
+            kadress.append(k.getPLZ()+" "+k.getOrt());
             
             // Parameter abfüllen
             final Map<String, Object> param = new HashMap<String, Object>();
-            param.put("adress", k.getBibliotheksname());
+            param.put("adress", kadress.toString());
             param.put("billingtext", bf.getBillingtext());
             param.put(JRParameter.REPORT_FILE_RESOLVER, new SimpleFileResolver(new File(this.getServlet()
                     .getServletContext().getRealPath("/reports/"))));
