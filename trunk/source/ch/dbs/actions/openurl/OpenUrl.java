@@ -880,7 +880,7 @@ public class OpenUrl {
                     of.setJahr(getXmlTag("<year", "</year>", xml));
                 }
             } else {
-                LOG.info("Resolving DOI failed:\n" + content);
+                LOG.info("Resolving DOI failed!");
             }
         }
         
