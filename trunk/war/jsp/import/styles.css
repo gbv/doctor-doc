@@ -18,6 +18,7 @@ html,body {
 input {
   /* font-family is needed for IE to render input and password fields with the same length */
   font-family: Verdana, Arial, Helvetica, SunSans-Regular, Sans-Serif;
+  margin: 1px;
 }
 
 select, textarea {
