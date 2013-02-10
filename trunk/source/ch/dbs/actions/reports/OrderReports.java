@@ -44,7 +44,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.Check;
@@ -65,7 +66,7 @@ import enums.TextType;
  */
 public final class OrderReports extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(OrderReports.class);
+    final Logger LOG = LoggerFactory.getLogger(OrderReports.class);
     
     /**
      * Erstelt ein PDF- Report wie die aktuelle Sicht der Bestellungen inklusive

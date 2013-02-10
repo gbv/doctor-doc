@@ -20,7 +20,8 @@ package ch.dbs.actions.bestellung;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.CodeUrl;
 import util.Http;
@@ -32,7 +33,7 @@ import enums.Connect;
 
 public class Pubmed {
     
-    private static final SimpleLogger LOG = new SimpleLogger(Pubmed.class);
+    final Logger LOG = LoggerFactory.getLogger(Pubmed.class);
     
     /**
      * Extracts the PMID out of a string.

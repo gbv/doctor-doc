@@ -32,9 +32,10 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.grlea.log.SimpleLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -54,7 +55,7 @@ import enums.Connect;
  */
 public class EZBXML {
     
-    private static final SimpleLogger LOG = new SimpleLogger(EZBXML.class);
+    final Logger LOG = LoggerFactory.getLogger(EZBXML.class);
     
     public List<JournalDetails> searchByTitle(final String jtitle, final String bibid) {
         

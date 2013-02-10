@@ -44,9 +44,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.Check;
@@ -89,7 +90,7 @@ import enums.TextType;
 
 public final class OrderAction extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(OrderAction.class);
+    final Logger LOG = LoggerFactory.getLogger(OrderAction.class);
     
     /**
      * Check if an article is freely available in the Internet.
@@ -857,7 +858,8 @@ public final class OrderAction extends DispatchAction {
                     final String gbvanswer = getBackThreadedWebcontent(gbvcontent, 3, "GBV");
                     // holt aus ggf. mehreren möglichen Umleitungen die letztmögliche
                     if (gbvanswer != null) {
-                        final String pZdbid = OrderGbvAction.getPrintZdbidIgnoreMultipleHits(gbvanswer);
+                        final OrderGbvAction gbv = new OrderGbvAction();
+                        final String pZdbid = gbv.getPrintZdbidIgnoreMultipleHits(gbvanswer);
                         if (pZdbid != null) {
                             pageForm.setZdbid(pZdbid); // e-ZDB-ID wird nur überschrieben, falls p-ZDB-ID erhalten
                         }

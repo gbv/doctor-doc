@@ -24,7 +24,8 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.util.List;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.dbs.entity.Text;
 
@@ -35,7 +36,7 @@ import enums.TextType;
 
 public class IPChecker {
     
-    private static final SimpleLogger LOG = new SimpleLogger(IPChecker.class);
+    final Logger LOG = LoggerFactory.getLogger(IPChecker.class);
     
     /**
      * Checks an IPv4 or IP6 against entries in the database. 1. Priority:

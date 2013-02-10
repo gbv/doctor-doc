@@ -30,7 +30,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Diese Klasse vereinfacht verschiedene Abläufe zwischen Programm und
@@ -40,7 +41,7 @@ import org.grlea.log.SimpleLogger;
  */
 public class MHelper extends AbstractReadSystemConfigurations {
     
-    private static final SimpleLogger LOG = new SimpleLogger(MHelper.class);
+    final Logger LOG = LoggerFactory.getLogger(MHelper.class);
     private static final String PRIORITY = "3"; // normal
     private static final String XPRIO = "X-Priority";
     private static final String SMTP_AUTH = "mail.smtp.auth";

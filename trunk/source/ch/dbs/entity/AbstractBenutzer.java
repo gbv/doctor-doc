@@ -29,7 +29,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.form.OrderForm;
@@ -46,7 +47,7 @@ import enums.TextType;
 
 public class AbstractBenutzer extends AbstractIdEntity {
     
-    private static final SimpleLogger LOG = new SimpleLogger(AbstractBenutzer.class);
+    final Logger LOG = LoggerFactory.getLogger(AbstractBenutzer.class);
     
     private Long billing;
     private String institut;

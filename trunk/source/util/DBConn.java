@@ -27,7 +27,8 @@ import java.sql.SQLException;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DBConn stellt Methoden zum Kommunizieren mit dem DB-Server zur Verfügung
@@ -36,9 +37,9 @@ import org.grlea.log.SimpleLogger;
  * @author Pascal Steiner
  */
 public class DBConn extends AbstractReadSystemConfigurations {
-
-    private static final SimpleLogger LOG = new SimpleLogger(DBConn.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(DBConn.class);
+    
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String SERVER = "jdbc:mysql://"
             + DATABASE_SERVERADDRESS

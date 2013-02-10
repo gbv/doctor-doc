@@ -20,7 +20,8 @@ package ch.dbs.actions.openurl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.CodeUrl;
 import ch.dbs.actions.bestellung.OrderAction;
@@ -28,7 +29,7 @@ import ch.dbs.form.OrderForm;
 
 public class ConvertOpenUrl {
     
-    private static final SimpleLogger LOG = new SimpleLogger(ConvertOpenUrl.class);
+    final Logger LOG = LoggerFactory.getLogger(ConvertOpenUrl.class);
     
     /**
      * Klasse um OpenURL in "Doctor-Doc" zu übersetzen

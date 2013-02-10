@@ -22,7 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for entities having a {@link Long} unique identifier,
@@ -32,7 +33,7 @@ import org.grlea.log.SimpleLogger;
  */
 public class VKontoBenutzer extends AbstractIdEntity {
     
-    private static final SimpleLogger LOG = new SimpleLogger(VKontoBenutzer.class);
+    final Logger LOG = LoggerFactory.getLogger(VKontoBenutzer.class);
     
     private Long KID;
     private Long BID;

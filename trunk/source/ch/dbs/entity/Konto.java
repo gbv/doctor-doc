@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.DBConn;
 import util.ReadSystemConfigurations;
@@ -35,17 +36,16 @@ import ch.dbs.form.UserInfo;
 
 /**
  * Abstract base class for entities having a {@link Long} unique identifier,
- * this provides the base functionality for them.
- * <p></p>
- *
+ * this provides the base functionality for them. <p></p>
+ * 
  * @author Pascal Steiner
  */
 public class Konto extends AbstractIdEntity implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
-    private static final SimpleLogger LOG = new SimpleLogger(Konto.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(Konto.class);
+    
     private Long did;
     private String bibliotheksname;
     private String isil; // International Standard Identifier for Libraries and Related Organizations (must be null)
@@ -112,11 +112,11 @@ public class Konto extends AbstractIdEntity implements Serializable {
     private boolean showprivsuppliers;
     private boolean showpubsuppliers = true; // default to true
     private int ilvformnr; // default form number for PDFs and mails for ILV
-
+    
     public Konto() {
-
+        
     }
-
+    
     public Konto(final KontoForm kf) {
         if (kf.getBiblioname() != null) {
             this.bibliotheksname = kf.getBiblioname().trim();
@@ -214,15 +214,15 @@ public class Konto extends AbstractIdEntity implements Serializable {
         //      this.gtc; // enthält GTC-Version (General Terms and Conditions)
         //      this.gtcdate; // Datum der Annahme durch User
     }
-
+    
     /*
      * Füllt ein Kontoobjekt mit einer Zeile aus der Datenbank
      */
     public Konto(final ResultSet rs) throws Exception {
-
+        
         this.setRsValues(rs);
     }
-
+    
     private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("KID"));
         if (rs.getString("DID") != null) { // avoid setting Long to 0
@@ -283,29 +283,27 @@ public class Konto extends AbstractIdEntity implements Serializable {
         this.setShowpubsuppliers(rs.getBoolean("showpubsuppliers"));
         this.setIlvformnr(rs.getInt("ilvformnr"));
     }
-
+    
     /**
      * Erstellt ein Kontoobjekt anhand einer Verbindung und der ID
-     *
-     * @param Long
-     * kid
-     * @param Connection
-     * cn
+     * 
+     * @param Long kid
+     * @param Connection cn
      * @return
      */
     public Konto(final Long kid, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM konto WHERE KID = ?");
             pstmt.setLong(1, kid);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("Konto (Long kid, Connection cn): " + e.toString());
         } finally {
@@ -325,25 +323,25 @@ public class Konto extends AbstractIdEntity implements Serializable {
             }
         }
     }
-
+    
     /**
      * Listet alle Kontos auf, sortiert nach Bibliotheksnamen
-     *
+     * 
      * @return Kontolist
      */
     public List<Konto> getAllKontos(final Connection cn) {
-
+        
         final List<Konto> kontos = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `konto` order by `kontotyp` desc, `biblioname` asc");
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 kontos.add(new Konto(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("Konto (Long kid, Connection cn): " + e.toString());
         } finally {
@@ -364,16 +362,14 @@ public class Konto extends AbstractIdEntity implements Serializable {
         }
         return kontos;
     }
-
+    
     /**
-     * Speichert diese Konto und hinterlegt die ID
-     * <p>
-     * </p>
-     *
+     * Speichert diese Konto und hinterlegt die ID <p> </p>
+     * 
      * @param cn
      */
     public Long save(final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -391,15 +387,15 @@ public class Konto extends AbstractIdEntity implements Serializable {
                                     + "`showprivsuppliers` , `showpubsuppliers` , `ilvformnr`) "
                                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                                     + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)"), this);
-
+            
             pstmt.executeUpdate();
-
+            
             // ID des gerade gespeicherten Konto ermitteln und hinterlegen
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
             if (rs.next()) {
                 this.setId(rs.getLong("LAST_INSERT_ID()"));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("save(Connection cn): " + e.toString());
         } finally {
@@ -418,15 +414,13 @@ public class Konto extends AbstractIdEntity implements Serializable {
                 }
             }
         }
-
+        
         return this.getId();
     }
-
+    
     /**
-     * Modifiziert dieses Konto
-     * <p>
-     * </p>
-     *
+     * Modifiziert dieses Konto <p> </p>
+     * 
      * @param cn
      */
     public void update(final Connection cn) {
@@ -442,9 +436,9 @@ public class Konto extends AbstractIdEntity implements Serializable {
                             + "orderlimits=?, userlogin=?, userbestellung=?, gbvbestellung=?, kontostatus=?, kontotyp=?, "
                             + "default_deloptions=?, paydate=?, expdate=?, showprivsuppliers=?, showpubsuppliers=?, ilvformnr=? "
                             + "WHERE `KID` = " + this.getId()), this);
-
+            
             pstmt.executeUpdate();
-
+            
         } catch (final Exception e) {
             LOG.error("update(): " + e.toString());
         } finally {
@@ -457,25 +451,25 @@ public class Konto extends AbstractIdEntity implements Serializable {
             }
         }
     }
-
+    
     /**
      * Löscht dieses Kontoobjekt, ohne weitere Prüfungen. Vorsicht vor
      * Benutzern, Kontoverknüpfungen, Texten,usw...
-     *
+     * 
      * @return Rückmeldung o das Konto gelöscht werden konnte
      */
     public boolean deleteSelf(final Connection cn) {
-
+        
         boolean success = false;
-
+        
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE FROM `konto` WHERE `KID` = ?");
             pstmt.setLong(1, this.getId());
             pstmt.executeUpdate();
-
+            
             success = true;
-
+            
         } catch (final SQLException e) {
             LOG.error("deleteSelf(Connection cn): " + e.toString());
         } finally {
@@ -487,10 +481,10 @@ public class Konto extends AbstractIdEntity implements Serializable {
                 }
             }
         }
-
+        
         return success;
     }
-
+    
     /*
      * holt alle für einen User erlaubte Kontos und selecktiert dasjenige unter
      * dem er eingeloggt ist
@@ -509,17 +503,14 @@ public class Konto extends AbstractIdEntity implements Serializable {
         } catch (final Exception e) {
             LOG.error("getAllAllowedKontosAndSelectActive(UserInfo ui, Connection cn): " + e.toString());
         }
-
+        
         return allPossKontos;
     }
-
+    
     /**
-     * Sucht Kontos welche in expiredays ablaufen werden
-     * <p>
-     * </p>
-     *
-     * @param the
-     * expiredays
+     * Sucht Kontos welche in expiredays ablaufen werden <p> </p>
+     * 
+     * @param the expiredays
      * @return a {@link Konto}
      */
     public List<Konto> getExpireKontos(final int expiredays) {
@@ -531,11 +522,11 @@ public class Konto extends AbstractIdEntity implements Serializable {
             pstmt = cn.getConnection().prepareStatement("SELECT * FROM konto WHERE expiredate < ?");
             pstmt.setInt(1, expiredays);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 kl.add(new Konto(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getExpireKontos(int expiredays): " + e.toString());
         } finally {
@@ -555,15 +546,13 @@ public class Konto extends AbstractIdEntity implements Serializable {
             }
             cn.close();
         }
-
+        
         return kl;
     }
-
+    
     /**
-     * Sucht alle Faxserver-Konten heraus
-     * <p>
-     * </p>
-     *
+     * Sucht alle Faxserver-Konten heraus <p> </p>
+     * 
      * @return a {@link Konto}
      */
     public List<Konto> getFaxserverKontos() {
@@ -574,11 +563,11 @@ public class Konto extends AbstractIdEntity implements Serializable {
         try {
             pstmt = cn.getConnection().prepareStatement("SELECT * FROM konto WHERE `faxno` is not null");
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 kl.add(new Konto(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getFaxServerKontos(): " + e.toString());
         } finally {
@@ -598,13 +587,13 @@ public class Konto extends AbstractIdEntity implements Serializable {
             }
             cn.close();
         }
-
+        
         return kl;
     }
-
+    
     /**
      * Listet alle Kontos auf, bei welchen der Benutzer hinterlegt ist
-     *
+     * 
      * @param AbstractBenutzer
      * @return List<Konto> kl
      */
@@ -617,11 +606,11 @@ public class Konto extends AbstractIdEntity implements Serializable {
                     .prepareStatement("SELECT k.* FROM `konto` AS k INNER JOIN (`v_konto_benutzer` AS vkb ) ON (k.KID=vkb.KID) WHERE vkb.UID = ?");
             pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 kl.add(new Konto(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getKontosForBenutzer(): " + e.toString());
         } finally {
@@ -642,10 +631,10 @@ public class Konto extends AbstractIdEntity implements Serializable {
         }
         return kl;
     }
-
+    
     /**
      * Listet alle Kontos auf, bei welchem ein Benutzer sich anmelden kann
-     *
+     * 
      * @param AbstractBenutzer
      * @return
      */
@@ -666,11 +655,11 @@ public class Konto extends AbstractIdEntity implements Serializable {
             }
             pstmt.setLong(1, u.getId());
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 kl.add(new Konto(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getLoginKontos(): " + e.toString());
         } finally {
@@ -691,13 +680,13 @@ public class Konto extends AbstractIdEntity implements Serializable {
         }
         return kl;
     }
-
+    
     /*
      * Setzt die Werte im Preparestatement der Methoden updateKonto() sowie
      * saveNewKonto()
      */
     private PreparedStatement setKontoValues(final PreparedStatement pstmt, final Konto k) throws Exception {
-
+        
         if (k.getBibliotheksname() != null) {
             pstmt.setString(1, k.getBibliotheksname());
         } else {
@@ -870,537 +859,527 @@ public class Konto extends AbstractIdEntity implements Serializable {
         pstmt.setInt(46, k.getIlvformnr());
         return pstmt;
     }
-
+    
     public Long getDid() {
         return did;
     }
-
+    
     public void setDid(final Long did) {
         this.did = did;
     }
-
+    
     public java.sql.Date getExpdate() {
         return expdate;
     }
-
+    
     public void setExpdate(final java.sql.Date expdate) {
         this.expdate = expdate;
     }
-
+    
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll. (in Tagen)
-     *
+     * 
      * @return Returns the accounting_rhythmday.
      */
     public int getAccounting_rhythmday() {
         return accounting_rhythmday;
     }
-
+    
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll. (in Tagen)
-     *
-     * @param accounting_rhythmday
-     * The accounting_rhythmday to set.
+     * 
+     * @param accounting_rhythmday The accounting_rhythmday to set.
      */
     public void setAccounting_rhythmday(final int accounting_rhythmday) {
         this.accounting_rhythmday = accounting_rhythmday;
     }
-
+    
     /**
      * Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach ....
      * trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
-     *
+     * 
      * @return Returns the accounting_rhythmtimeout.
      */
     public int getAccounting_rhythmtimeout() {
         return accounting_rhythmtimeout;
     }
-
+    
     /**
      * Wird die Schwelle im Accounting_rhytm nicht erreicht, wird nach ....
      * trotzdem eine Rechnung gestellt. Feld leer oder 0 = kein Schwellwert
-     *
-     * @param accounting_rhythmtimeout
-     * The accounting_rhythmtimeout to set.
+     * 
+     * @param accounting_rhythmtimeout The accounting_rhythmtimeout to set.
      */
     public void setAccounting_rhythmtimeout(final int accounting_rhythmtimeout) {
         this.accounting_rhythmtimeout = accounting_rhythmtimeout;
     }
-
+    
     public boolean isZdb() {
         return zdb;
     }
-
+    
     public void setZdb(final boolean zdb) {
         this.zdb = zdb;
     }
-
+    
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll in Fr.-
-     *
+     * 
      * @return Returns the accounting_rhythmvalue.
      */
     public int getAccounting_rhythmvalue() {
         return accounting_rhythmvalue;
     }
-
+    
     /**
      * Globale Einstellung ab wann die Rechnung an den Kunden geschickt werden
      * soll in Fr.-
-     *
-     * @param accounting_rhythmvalue
-     * The accounting_rhythmvalue to set.
+     * 
+     * @param accounting_rhythmvalue The accounting_rhythmvalue to set.
      */
     public void setAccounting_rhythmvalue(final int accounting_rhythmvalue) {
         this.accounting_rhythmvalue = accounting_rhythmvalue;
     }
-
+    
     public String getAdresse() {
         return Adresse;
     }
-
+    
     public void setAdresse(final String adresse) {
         Adresse = adresse;
     }
-
+    
     public String getAdressenzusatz() {
         return Adressenzusatz;
     }
-
+    
     public void setAdressenzusatz(final String adressenzusatz) {
         Adressenzusatz = adressenzusatz;
     }
-
+    
     public String getBibliotheksmail() {
         return Bibliotheksmail;
     }
-
+    
     public void setBibliotheksmail(final String bibliotheksmail) {
         Bibliotheksmail = bibliotheksmail;
     }
-
+    
     public String getBibliotheksname() {
         return bibliotheksname;
     }
-
+    
     public void setBibliotheksname(final String bibname) {
         bibliotheksname = bibname;
     }
-
+    
     /**
      * Globale Einstellung, von wem die Rechnungen beglichen werden soll. Diese
      * Einstellung kann durch den Wert welcher beim User hinterlegt ist
      * berschrieben werden.
-     *
+     * 
      * @return Returns the billing.
      */
     public Text getBilling() {
         return billing;
     }
-
+    
     /**
      * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll.
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
-     *
-     * @param billing
-     * The billing to set.
+     * 
+     * @param billing The billing to set.
      */
     public void setBilling(final Text billing) {
         this.billing = billing;
     }
-
+    
     /**
      * Globale Einstellung wie die Rechnung an den Kunden geschickt werden soll.
      * Verweis auf die Tabelle Text mit dem Texttyp Billingtype
-     *
+     * 
      * @return Returns the billingtype.
      */
     public Text getBillingtype() {
         return billingtype;
     }
-
+    
     public void setBillingtype(final Text billingtype) {
         this.billingtype = billingtype;
     }
-
+    
     /**
      * This is the email that receives ILL deliveries
-     *
+     * 
      * @return Returns the dbsmail.
      */
     public String getDbsmail() {
         return dbsmail;
     }
-
+    
     /**
      * This is the email that receives ILL deliveries
-     *
-     * @param dbsmail
-     * The dbsmail to set.
+     * 
+     * @param dbsmail The dbsmail to set.
      */
     public void setDbsmail(final String dbsmail) {
         this.dbsmail = dbsmail;
     }
-
+    
     public String getDbsmailpw() {
         return dbsmailpw;
     }
-
+    
     public void setDbsmailpw(final String dbsmailpw) {
         this.dbsmailpw = dbsmailpw;
     }
-
+    
     public Date getEdatum() {
         return edatum;
     }
-
+    
     public void setEdatum(final Date edatum) {
         this.edatum = edatum;
     }
-
+    
     public boolean isKontostatus() {
         return kontostatus;
     }
-
+    
     public void setKontostatus(final boolean kontostatus) {
         this.kontostatus = kontostatus;
     }
-
+    
     public String getDefault_deloptions() {
         return default_deloptions;
     }
-
+    
     public void setDefault_deloptions(final String default_deloptions) {
         this.default_deloptions = default_deloptions;
     }
-
+    
     public String getGtc() {
         return gtc;
     }
-
+    
     public void setGtc(final String gtc) {
         this.gtc = gtc;
     }
-
+    
     public String getGtcdate() {
         return gtcdate;
     }
-
+    
     public void setGtcdate(final String gtcdate) {
         this.gtcdate = gtcdate;
     }
-
+    
     public String getLand() {
         return Land;
     }
-
+    
     public void setLand(final String land) {
         Land = land;
     }
-
+    
     public String getTimezone() {
         return timezone;
     }
-
+    
     public void setTimezone(final String timezone) {
         this.timezone = timezone;
     }
-
+    
     /**
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
-     *
+     * 
      * @return Returns the maxordersj.
      */
     public int getMaxordersj() {
         return maxordersj;
     }
-
+    
     /**
      * Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
-     *
-     * @param maxordersj
-     * The maxordersj to set.
+     * 
+     * @param maxordersj The maxordersj to set.
      */
     public void setMaxordersj(final int maxordersj) {
         this.maxordersj = maxordersj;
     }
-
+    
     /**
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-     *
+     * 
      * @return Returns the maxordersu.
      */
     public int getMaxordersu() {
         return maxordersu;
     }
-
+    
     /**
      * Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
-     *
-     * @param maxordersu
-     * The maxordersu to set.
+     * 
+     * @param maxordersu The maxordersu to set.
      */
     public void setMaxordersu(final int maxordersu) {
         this.maxordersu = maxordersu;
     }
-
+    
     /**
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
-     *
+     * 
      * @return Returns the maxordersutotal.
      */
     public int getMaxordersutotal() {
         return maxordersutotal;
     }
-
+    
     /**
      * Begrenzung mglicher Bestellungen durch einen Benutzer pro Jahr
-     *
-     * @param maxordersutotal
-     * The maxordersutotal to set.
+     * 
+     * @param maxordersutotal The maxordersutotal to set.
      */
     public void setMaxordersutotal(final int maxordersutotal) {
         this.maxordersutotal = maxordersutotal;
     }
-
+    
     public int getOrderlimits() {
         return orderlimits;
     }
-
+    
     public void setOrderlimits(final int orderlimits) {
         this.orderlimits = orderlimits;
     }
-
+    
     public String getOrt() {
         return Ort;
     }
-
+    
     public void setOrt(final String ort) {
         Ort = ort;
     }
-
+    
     public String getPLZ() {
         return PLZ;
     }
-
+    
     public void setPLZ(final String plz) {
         PLZ = plz;
     }
-
+    
     public String getGbvbenutzername() {
         return gbvbenutzername;
     }
-
+    
     public void setGbvbenutzername(final String gbvbenutzername) {
         this.gbvbenutzername = gbvbenutzername;
     }
-
+    
     public String getGbvpasswort() {
         return gbvpasswort;
     }
-
+    
     public void setGbvpasswort(final String gbvpasswort) {
         this.gbvpasswort = gbvpasswort;
     }
-
+    
     public String getGbvrequesterid() {
         return gbvrequesterid;
     }
-
+    
     public void setGbvrequesterid(final String gbvrequesterid) {
         this.gbvrequesterid = gbvrequesterid;
     }
-
+    
     public String getIdsid() {
         return idsid;
     }
-
+    
     public void setIdsid(final String idsid) {
         this.idsid = idsid;
     }
-
+    
     public String getIdspasswort() {
         return idspasswort;
     }
-
+    
     public void setIdspasswort(final String idspasswort) {
         this.idspasswort = idspasswort;
     }
-
+    
     public String getEzbid() {
         return ezbid;
     }
-
+    
     public void setEzbid(final String ezbid) {
         this.ezbid = ezbid;
     }
-
+    
     public String getInstlogolink() {
         return instlogolink;
     }
-
+    
     public void setInstlogolink(final String instlogolink) {
         this.instlogolink = instlogolink;
     }
-
+    
     /**
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
-     *
+     * 
      * @return Returns the threshold_value.
      */
     public int getThreshold_value() {
         return threshold_value;
     }
-
+    
     /**
      * Verrechnungsschwellwert Sammelrechnungen in Tagen
-     *
-     * @param threshold_value
-     * The threshold_value to set.
+     * 
+     * @param threshold_value The threshold_value to set.
      */
     public void setThreshold_value(final int threshold_value) {
         this.threshold_value = threshold_value;
     }
-
+    
     /**
      * @return Returns the userbestellung.
      */
     public boolean isUserbestellung() {
         return userbestellung;
     }
-
+    
     /**
-     * @param userbestellung
-     * The userbestellung to set.
+     * @param userbestellung The userbestellung to set.
      */
     public void setUserbestellung(final boolean userbestellung) {
         this.userbestellung = userbestellung;
     }
-
+    
     public boolean isGbvbestellung() {
         return gbvbestellung;
     }
-
+    
     public void setGbvbestellung(final boolean gbvbestellung) {
         this.gbvbestellung = gbvbestellung;
     }
-
+    
     public boolean isUserlogin() {
         return userlogin;
     }
-
+    
     public void setUserlogin(final boolean userlogin) {
         this.userlogin = userlogin;
     }
-
+    
     public boolean isSelected() {
         return selected;
     }
-
+    
     public void setSelected(final boolean selected) {
         this.selected = selected;
     }
-
+    
     public String getTelefon() {
         return Telefon;
     }
-
+    
     public void setTelefon(final String telefon) {
         Telefon = telefon;
     }
-
+    
     public String getFaxno() {
         return faxno;
     }
-
+    
     public void setFaxno(final String faxno) {
         this.faxno = faxno;
     }
-
+    
     public String getFaxpassword() {
         return faxpassword;
     }
-
+    
     public void setFaxpassword(final String faxpassword) {
         this.faxpassword = faxpassword;
     }
-
+    
     public String getPopfaxend() {
         return popfaxend;
     }
-
+    
     public void setPopfaxend(final String popfaxend) {
         this.popfaxend = popfaxend;
     }
-
+    
     public String getFaxusername() {
         return faxusername;
     }
-
+    
     public void setFaxusername(final String faxusername) {
         this.faxusername = faxusername;
     }
-
+    
     public String getFax_extern() {
         return fax_extern;
     }
-
+    
     public void setFax_extern(final String fax_extern) {
         this.fax_extern = fax_extern;
     }
-
+    
     public int getKontotyp() {
         return kontotyp;
     }
-
+    
     public void setKontotyp(final int kontotyp) {
         this.kontotyp = kontotyp;
     }
-
+    
     /*
      * Zahlungseingang Betrag bei Doctor-Doc.com
      */
     public java.sql.Date getPaydate() {
         return paydate;
     }
-
+    
     public void setPaydate(final java.sql.Date paydate) {
         this.paydate = paydate;
     }
-
+    
     public String getIsil() {
         return isil;
     }
-
+    
     public void setIsil(final String isil) {
         this.isil = isil;
     }
-
+    
     public boolean isShowprivsuppliers() {
         return showprivsuppliers;
     }
-
+    
     public void setShowprivsuppliers(final boolean showprivsuppliers) {
         this.showprivsuppliers = showprivsuppliers;
     }
-
+    
     public boolean isShowpubsuppliers() {
         return showpubsuppliers;
     }
-
+    
     public void setShowpubsuppliers(final boolean showpubsuppliers) {
         this.showpubsuppliers = showpubsuppliers;
     }
-
+    
     public int getIlvformnr() {
         return ilvformnr;
     }
-
+    
     public void setIlvformnr(final int ilvformnr) {
         this.ilvformnr = ilvformnr;
     }
-
+    
 }

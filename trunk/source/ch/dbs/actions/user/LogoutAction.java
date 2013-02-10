@@ -26,24 +26,24 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import enums.Result;
 
 /**
- *
  * @author Pascal Steiner
  */
 public class LogoutAction extends Action {
-
-    private static final SimpleLogger LOG = new SimpleLogger(LogoutAction.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(LogoutAction.class);
+    
     /**
      * Logout. Zerstört das Sessionbean
      */
     public ActionForward execute(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         try {
             final Object loc = rq.getSession().getAttribute("org.apache.struts.action.LOCALE"); // get existing Locale
             rq.getSession().invalidate();
@@ -54,7 +54,7 @@ public class LogoutAction extends Action {
         } catch (final Exception e) {
             LOG.error("execute: " + e.toString());
         }
-
+        
         return mp.findForward(Result.SUCCESS.getValue());
     }
 }

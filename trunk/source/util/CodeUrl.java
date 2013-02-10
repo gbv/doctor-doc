@@ -17,7 +17,8 @@
 
 package util;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hilft URLs sicher zu entcodieren
@@ -26,7 +27,7 @@ import org.grlea.log.SimpleLogger;
  */
 public class CodeUrl {
     
-    private static final SimpleLogger LOG = new SimpleLogger(CodeUrl.class);
+    final Logger LOG = LoggerFactory.getLogger(CodeUrl.class);
     
     /**
      * Decodier-Methode

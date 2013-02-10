@@ -40,7 +40,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.MHelper;
@@ -61,8 +62,8 @@ import enums.Result;
  */
 public final class BillingAction extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(BillingAction.class);
-  //Output Stream für PDF erstellen
+    final Logger LOG = LoggerFactory.getLogger(BillingAction.class);
+    //Output Stream für PDF erstellen
     private OutputStream out = null;
     
     /**
@@ -164,7 +165,7 @@ public final class BillingAction extends DispatchAction {
         
         runReport(fm, rp);
         
-     // Report an den Browser senden
+        // Report an den Browser senden
         try {
             out.flush();
             out.close();
@@ -200,7 +201,7 @@ public final class BillingAction extends DispatchAction {
             
             if (bf.getAction().equals("PDF Vorschau")) {
                 forward = "preview";
- 
+                
             } else {
                 final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
@@ -236,9 +237,9 @@ public final class BillingAction extends DispatchAction {
         return mp.findForward(forward);
     }
     
-    private void runReport(ActionForm fm, HttpServletResponse rp){
-    	
-    	final Billing b = new Billing();        
+    private void runReport(final ActionForm fm, final HttpServletResponse rp) {
+        
+        final Billing b = new Billing();
         try {
             
             BillingForm bf = (BillingForm) fm;
@@ -247,10 +248,12 @@ public final class BillingAction extends DispatchAction {
             // Rechnung parameter abfüllen
             final KontoAdmin ka = new KontoAdmin();
             bf = ka.prepareBillingText(k, b.getConnection(), null, bf);
-            StringBuffer kadress = new StringBuffer();
-            kadress.append(k.getBibliotheksname()+"\n"+k.getAdresse()+"\n");
-            if (!k.getAdressenzusatz().equals("")) kadress.append(k.getAdressenzusatz()+"\n");
-            kadress.append(k.getPLZ()+" "+k.getOrt());
+            final StringBuffer kadress = new StringBuffer();
+            kadress.append(k.getBibliotheksname() + "\n" + k.getAdresse() + "\n");
+            if (!k.getAdressenzusatz().equals("")) {
+                kadress.append(k.getAdressenzusatz() + "\n");
+            }
+            kadress.append(k.getPLZ() + " " + k.getOrt());
             
             // Parameter abfüllen
             final Map<String, Object> param = new HashMap<String, Object>();
@@ -261,7 +264,7 @@ public final class BillingAction extends DispatchAction {
             
             final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                     .getResourceAsStream("/reports/rechnung.jasper"));
-                        
+            
             // prepare output stream
             rp.setContentType("application/pdf");
             
@@ -279,11 +282,11 @@ public final class BillingAction extends DispatchAction {
             } catch (final IOException e) {
                 LOG.error(e.toString());
             }
-                        
+            
         } finally {
             b.close();
         }
-    	
+        
     }
     
 }

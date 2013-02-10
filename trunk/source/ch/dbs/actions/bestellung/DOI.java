@@ -17,7 +17,8 @@
 
 package ch.dbs.actions.bestellung;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Http;
 import ch.dbs.actions.openurl.OpenUrl;
@@ -26,7 +27,7 @@ import enums.Connect;
 
 public class DOI {
     
-    private static final SimpleLogger LOG = new SimpleLogger(DOI.class);
+    final Logger LOG = LoggerFactory.getLogger(DOI.class);
     
     /**
      * Extracts the DOI out of a string.

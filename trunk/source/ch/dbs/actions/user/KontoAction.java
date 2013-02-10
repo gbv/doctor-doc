@@ -33,7 +33,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.Check;
@@ -62,7 +63,7 @@ import enums.Result;
 
 public final class KontoAction extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(KontoAction.class);
+    final Logger LOG = LoggerFactory.getLogger(KontoAction.class);
     // This link is used to check if, the GBV credentials are valid
     private static final String GBV_LINK = "http://gso.gbv.de/login/FORM/REQUEST?DBS_ID=2.1&DB=2.1&USER_KEY=";
     private static final String GBV_REDIRECT = "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2FCOPY%3FPPN%3D185280552%26LANGCODE%3DDU";

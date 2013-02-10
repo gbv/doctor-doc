@@ -31,14 +31,15 @@ import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.dbs.entity.Text;
 import ch.dbs.form.OverviewForm;
 
 public class Check {
     
-    private static final SimpleLogger LOG = new SimpleLogger(Check.class);
+    final Logger LOG = LoggerFactory.getLogger(Check.class);
     
     /**
      * Checks if a string is a valid email address.

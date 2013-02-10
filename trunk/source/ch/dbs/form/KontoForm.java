@@ -21,7 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.ReadSystemConfigurations;
 import ch.dbs.entity.Countries;
@@ -30,7 +31,7 @@ import ch.dbs.entity.Text;
 
 public final class KontoForm extends ValidatorForm {
     
-    private static final SimpleLogger LOG = new SimpleLogger(KontoForm.class);
+    final Logger LOG = LoggerFactory.getLogger(KontoForm.class);
     
     private static final long serialVersionUID = 1L;
     private Long kid;
@@ -897,22 +898,22 @@ public final class KontoForm extends ValidatorForm {
         if (konto.getLand() != null) {
             this.Land = konto.getLand();
         }
-        if (konto.getTimezone() != null) {  // only set Timezone if not null, else we will use default value of initialized kontoform
+        if (konto.getTimezone() != null) { // only set Timezone if not null, else we will use default value of initialized kontoform
             this.timezone = konto.getTimezone();
         }
         if (konto.getFaxno() != null) { // Bibliothekar nur Leserecht!
             this.faxno = konto.getFaxno();
         }
-//        Darf nur von Admins eingesehen werden
-//        ***********************************************************************
-//        if (konto.getFaxusername() != null) {
-//            this.faxusername = konto.getFaxusername();
-//        }
-//        if (konto.getFaxpassword() != null) {
-//            this.faxpassword = konto.getFaxpassword();
-//        }
-//        this.gbvrequesterid = konto.getGbvrequesterid();
-//        ***********************************************************************
+        //        Darf nur von Admins eingesehen werden
+        //        ***********************************************************************
+        //        if (konto.getFaxusername() != null) {
+        //            this.faxusername = konto.getFaxusername();
+        //        }
+        //        if (konto.getFaxpassword() != null) {
+        //            this.faxpassword = konto.getFaxpassword();
+        //        }
+        //        this.gbvrequesterid = konto.getGbvrequesterid();
+        //        ***********************************************************************
         if (konto.getPopfaxend() != null) {
             this.popfaxend = konto.getPopfaxend();
         }
@@ -960,7 +961,7 @@ public final class KontoForm extends ValidatorForm {
         this.userlogin = konto.isUserlogin();
         this.userbestellung = konto.isUserbestellung(); // SUBITO
         this.gbvbestellung = konto.isGbvbestellung(); // GBV
-        this.selected = konto.isSelected(); 
+        this.selected = konto.isSelected();
         this.kontostatus = konto.isKontostatus();
         this.kontotyp = konto.getKontotyp(); // Bibliothekar nur Leserecht!
         this.default_deloptions = konto.getDefault_deloptions();

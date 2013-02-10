@@ -31,7 +31,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.Check;
@@ -65,7 +66,7 @@ import enums.TextType;
  */
 public final class OrderGbvAction extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(OrderGbvAction.class);
+    final Logger LOG = LoggerFactory.getLogger(OrderGbvAction.class);
     private static final String BASEURL = "http://cbs4.gbv.de:8080/cgi-bin/vuefl/vuefl_recv_data.pl";
     
     /**
@@ -393,7 +394,7 @@ public final class OrderGbvAction extends DispatchAction {
                                                             + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                             + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
                                                     
-                                                    LOG.ludicrous("Failure GBV-Order: "
+                                                    LOG.debug("Failure GBV-Order: "
                                                             + ui.getKonto().getBibliotheksname() + "\012" + returnValue
                                                             + "\012" + gbvanswer);
                                                 }
@@ -497,9 +498,8 @@ public final class OrderGbvAction extends DispatchAction {
                                                         + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                         + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
                                                 
-                                                LOG.ludicrous("Failure GBV-Order: "
-                                                        + ui.getKonto().getBibliotheksname() + "\012" + returnValue
-                                                        + "\012" + gbvanswer);
+                                                LOG.debug("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
+                                                        + "\012" + returnValue + "\012" + gbvanswer);
                                             }
                                         }
                                         
@@ -662,9 +662,8 @@ public final class OrderGbvAction extends DispatchAction {
                                                         + "&REDIRECT=http%3A%2F%2Fgso.gbv.de%2Frequest%2FFORCETT%3DHTML%2FDB%3D2.1%2FFORM%2F"
                                                         + "COPY%3FPPN%3D" + of.getPpn() + "%26LANGCODE%3DDU");
                                                 
-                                                LOG.ludicrous("Failure GBV-Order: "
-                                                        + ui.getKonto().getBibliotheksname() + "\012" + returnValue
-                                                        + "\012" + gbvanswer);
+                                                LOG.debug("Failure GBV-Order: " + ui.getKonto().getBibliotheksname()
+                                                        + "\012" + returnValue + "\012" + gbvanswer);
                                             }
                                         }
                                         
@@ -1004,7 +1003,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String content
      * @return List<GbvSruForm>
      */
-    private static List<GbvSruForm> getGbvMatches(String content) throws MyException {
+    private List<GbvSruForm> getGbvMatches(String content) throws MyException {
         
         final List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
         int treffer = 0;
@@ -1062,7 +1061,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String content
      * @return GbvSruForm
      */
-    private static GbvSruForm readSruRecord(String content) {
+    private GbvSruForm readSruRecord(String content) {
         
         final GbvSruForm record = new GbvSruForm();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
@@ -1490,7 +1489,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String tag String content
      * @return String data
      */
-    private static String getSruDatafield(final String tag, String content) {
+    private String getSruDatafield(final String tag, String content) {
         
         final StringBuffer buf = new StringBuffer(128);
         
@@ -1535,7 +1534,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String code String content
      * @return String data
      */
-    private static String getSruSubfield(final String code, final String content) {
+    private String getSruSubfield(final String code, final String content) {
         
         String data = "";
         
@@ -1562,7 +1561,7 @@ public final class OrderGbvAction extends DispatchAction {
      * @param String content
      * @return String error
      */
-    private static String getSruErrorCode(final String content) {
+    private String getSruErrorCode(final String content) {
         
         String error = "";
         
@@ -1863,7 +1862,7 @@ public final class OrderGbvAction extends DispatchAction {
      * Wandelt eine e-ZDB-ID in eine p-ZDB-ID um. Optimiert für die Abfrage von
      * ausserhalb OrderGbvAction.
      */
-    protected static String getPrintZdbidIgnoreMultipleHits(final String content) {
+    protected String getPrintZdbidIgnoreMultipleHits(final String content) {
         String pZdbid = null;
         
         try {

@@ -20,7 +20,8 @@ package util;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses the class commons-configuration to read properties files.
@@ -30,7 +31,7 @@ import org.grlea.log.SimpleLogger;
 
 abstract class AbstractReadSystemConfigurations {
     
-    private static final SimpleLogger LOG = new SimpleLogger(AbstractReadSystemConfigurations.class);
+    final static Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
     private static final String PATH = "resources/SystemConfiguration.properties";
     
     protected static final String SYSTEM_TIMEZONE = readSystemTimezone();
@@ -59,8 +60,6 @@ abstract class AbstractReadSystemConfigurations {
     protected static final boolean ACTIVATE_PAID_ACCESS = readActivatePaidAccess();
     
     protected static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
-    protected static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
-    
     protected static final boolean SEARCH_CARELIT = searchCarelit();
     protected static final boolean USE_DAIA = readUseDaia();
     protected static final String[] DAIA_HOSTS = readDaiaHosts();
@@ -79,6 +78,8 @@ abstract class AbstractReadSystemConfigurations {
         
         return systemTimezone;
     }
+    
+    protected static final int ANONYMIZATION_AFTER_MONTHS = readAnonymizationAfterMonths();
     
     private static String readLocale() {
         

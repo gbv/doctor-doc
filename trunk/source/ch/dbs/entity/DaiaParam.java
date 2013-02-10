@@ -22,7 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.CodeUrl;
 import ch.dbs.actions.openurl.ContextObject;
@@ -37,7 +38,7 @@ import ch.dbs.form.OrderForm;
  */
 public class DaiaParam extends AbstractIdEntity {
     
-    private static final SimpleLogger LOG = new SimpleLogger(DaiaParam.class);
+    final Logger LOG = LoggerFactory.getLogger(DaiaParam.class);
     
     private Long kid;
     private String baseurl;

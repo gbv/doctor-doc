@@ -17,11 +17,12 @@
 
 package util;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Base64String {
     
-    private static final SimpleLogger LOG = new SimpleLogger(Base64String.class);
+    final Logger LOG = LoggerFactory.getLogger(Base64String.class);
     
     /**
      * Encodes and decodes a string with Base64. Not meant to be an encryption

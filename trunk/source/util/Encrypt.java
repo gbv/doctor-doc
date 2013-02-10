@@ -19,11 +19,12 @@ package util;
 
 import java.security.MessageDigest;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Encrypt {
     
-    private static final SimpleLogger LOG = new SimpleLogger(Encrypt.class);
+    final Logger LOG = LoggerFactory.getLogger(Encrypt.class);
     
     /**
      * Erstellt aus einem String den SHA-1 Hash.

@@ -26,7 +26,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.Encrypt;
@@ -53,7 +54,7 @@ import enums.Result;
  */
 public final class LoginAction extends Action {
     
-    private static final SimpleLogger LOG = new SimpleLogger(LoginAction.class);
+    final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
     
     public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {

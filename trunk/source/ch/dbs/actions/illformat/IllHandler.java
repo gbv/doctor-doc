@@ -28,12 +28,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import util.Http;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import util.UniqueID;
-import util.Http;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.OrderState;
@@ -45,27 +46,26 @@ import enums.Connect;
 import enums.TextType;
 
 public class IllHandler {
-
-    private static final SimpleLogger LOG = new SimpleLogger(IllHandler.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(IllHandler.class);
+    
     /**
      * Stellt einen ILL-Request zusammen
+     * 
      * @param OrderForm of
      * @param Konto k
      * @param String baseurl
-     *
      * @return String content
-     *
      * @author Markus Fischer
      */
     public String sendIllRequest(final IllForm ill, final String baseurl) {
         String content = "";
-
+        
         final Http http = new Http();
-
+        
         // falls ein Wert unvermittelt null ist wird ein Leerstring verwendet, um in jedem Fall sicherzustellen,
         // dass die Methode nicht kracht
-
+        
         final List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(47);
         if (ill.getMessage_type() != null) {
             nameValuePairs.add(new BasicNameValuePair("message-type", ill.getMessage_type()));
@@ -312,43 +312,41 @@ public class IllHandler {
         } else {
             nameValuePairs.add(new BasicNameValuePair("item-iSBN", ""));
         }
-
+        
         //... bei Subito gibt es noch tonnenweise zusätzlicher Parameter
         // sollte aber kombinierbar sein. GBV wertet einfach nicht alle Parameter aus
-
-        content = http
-                .getContent(baseurl, nameValuePairs, Connect.TIMEOUT_8.getValue(), Connect.TRIES_1.getValue()); // nur einmal abschicken!!!
-
+        
+        content = http.getContent(baseurl, nameValuePairs, Connect.TIMEOUT_8.getValue(), Connect.TRIES_1.getValue()); // nur einmal abschicken!!!
+        
         return content;
-
+        
     }
-
+    
     /**
      * Stellt die GBV-spezifischen ILL-Parameter zusammen
+     * 
      * @param OrderForm of
      * @param Konto k
-     *
      * @return IllForm gbv
-     *
      */
     public IllForm prepareGbvIllRequest(final OrderForm of, final Konto k, final UserInfo ui) {
-
+        
         final IllForm gbv = new IllForm();
-
+        
         try {
-
+            
             final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyyMMddHHmmss");
             final Calendar calendar = new GregorianCalendar();
             Date d = calendar.getTime();
             final String datum = fmt.format(d, k.getTimezone());
             //        System.out.println("Bestelldatum: " + datum);
-
+            
             final ThreadSafeSimpleDateFormat ft = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
             calendar.add(Calendar.MONTH, +1);
             d = calendar.getTime();
             final String dateTo = ft.format(d, k.getTimezone());
             //        System.out.println("Expiry: " + date_to);
-
+            
             String deloptions = "POST"; // default
             if (of.getDeloptions().equals("fax to pdf") && ui.getKonto().getFaxno() != null) {
                 deloptions = "FAX";
@@ -356,7 +354,7 @@ public class IllHandler {
             if (of.getDeloptions().equals("fax") && ui.getKonto().getFax_extern() != null) {
                 deloptions = "FAX";
             }
-
+            
             String fax = ""; // default
             if (ui.getKonto().getFaxno() != null) {
                 fax = correctFaxnumber(ui.getKonto().getFaxno());
@@ -365,17 +363,17 @@ public class IllHandler {
                     fax = correctFaxnumber(ui.getKonto().getFax_extern());
                 }
             }
-
+            
             String serviceType = "COPY";
             if (of.getMediatype().equals("Buch")) {
                 serviceType = "LOAN";
             }
-
+            
             String isiltext = "";
             if (k.getIsil() != null) {
                 isiltext = " | Sigel: " + k.getIsil();
             } // kann null sein
-
+            
             // GBV-spezifische Angaben
             gbv.setClient_identifier(k.getGbvbenutzername()); // kann auch leer sein. momentan deaktiviert
             gbv.setItem_system_no(of.getPpn()); // beim GBV PPN
@@ -383,7 +381,7 @@ public class IllHandler {
             gbv.setRequester_id(k.getGbvrequesterid()); // ID für die jeweilige Bibliothek
             gbv.setResponder_id("8101"); // Das Feld wird im GBV (8101) nicht ausgewertet, in ihm kann auch GBV stehen.
             gbv.setTransaction_initial_req_id_symbol(isilToSigel(k.getIsil())); // beim GBV Sigel
-
+            
             // allgemeine Parameter
             gbv.setMessage_type("REQUEST");
             gbv.setTransaction_id(""); // Das Feld transaction-id ist immer leer.
@@ -432,31 +430,31 @@ public class IllHandler {
             gbv.setItem_pagination(of.getSeiten());
             gbv.setItem_iSSN(of.getIssn());
             gbv.setItem_iSBN(of.getIsbn());
-
+            
         } catch (final Exception e) {
             LOG.error("IllHandler - prepareGbvIllRequest: " + e.toString());
         }
-
+        
         return gbv;
-
+        
     }
-
+    
     /**
-     * Liest die GBV-Bestellnummer aus der Antwort auf einen sendIllRequest aus, oder gibt ggf. die Fehlermeldung zurück
+     * Liest die GBV-Bestellnummer aus der Antwort auf einen sendIllRequest aus,
+     * oder gibt ggf. die Fehlermeldung zurück
+     * 
      * @param String content
-     *
      * @return String gbvanswer
-     *
      */
     public String readGbvIllAnswer(final String content) {
         String gbvanswer = "Fehlende GBV-Antwort!"; // darf nicht null sein, da sonst jsp Anzeige nicht funzt!
-
+        
         if (content == null) {
             return gbvanswer;
         }
-
+        
         try {
-
+            
             if (content.contains("<status>OK</status>") && content.contains("<return_value>")) {
                 // Bestellung hat geklappt
                 gbvanswer = content.substring(content.indexOf("<return_value>") + 14,
@@ -468,37 +466,37 @@ public class IllHandler {
                             content.indexOf("</return_comment>", content.indexOf("<return_comment>")));
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("IllHandler - readGbvIllAnswer: " + "\012" + content);
             // darf, nicht null sein! Hier ist grundsätzlich etwas fehlgeschlagen
             gbvanswer = "Fehler im Bestellablauf!";
         }
-
+        
         return gbvanswer;
     }
-
+    
     /**
-     * Liest einen IllRequest. (Status-Antwort eines gebenden Systems auf eine Bestellung. z.B. shipped...)
+     * Liest einen IllRequest. (Status-Antwort eines gebenden Systems auf eine
+     * Bestellung. z.B. shipped...)
+     * 
      * @param String content
-     *
      * @return String gbvanswer
-     *
      */
     protected IllForm readIllRequest(final HttpServletRequest rq) {
         final IllForm ill = new IllForm();
-
+        
         try {
-
+            
             ill.setTransaction_initial_req_id_symbol(rq.getParameter("transaction-initial-req-id-symbol"));
-
+            
             ill.setClient_identifier(rq.getParameter("client-identifier")); // kann auch leer sein
             ill.setItem_system_no(rq.getParameter("item-system-no")); // beim GBV PPN
             ill.setRequester_group(rq.getParameter("requester-group")); //  Kundengruppe
             ill.setRequester_id(rq.getParameter("requester-id")); // ID der nehmenden Bibliothek
             // Das Feld wird im GBV (8101) nicht ausgewertet, in ihm kann auch GBV stehen.
             ill.setResponder_id(rq.getParameter("responder-id"));
-
+            
             // allgemeine Parameter
             ill.setMessage_type(rq.getParameter("message-type"));
             ill.setTransaction_id(rq.getParameter("transaction-id")); // Das Feld transaction-id ist immer leer.
@@ -549,28 +547,27 @@ public class IllHandler {
             ill.setItem_iSSN(rq.getParameter("item-issn"));
             ill.setItem_iSBN(rq.getParameter("item-isbn"));
             ill.setResponder_note(rq.getParameter("responder-note"));
-
+            
         } catch (final Exception e) {
             LOG.error("IllHandler - readIllRequest(rq): " + e.toString());
         }
-
+        
         return ill;
     }
-
+    
     /**
      * Fährt den Status eine offenen Bestellung nach
+     * 
      * @param IllForm ill
-     *
      * @return String returnvalue
-     *
      */
     protected String updateOrderState(final IllForm ill, final Connection cn) {
-
+        
         String returnvalue = "ERROR";
         final OrderState orderstate = new OrderState();
-
+        
         try {
-
+            
             if (ill.getMessage_type().equals("REQUEST")) {
                 returnvalue = ReadSystemConfigurations.getApplicationName() + " nimmt keine Bestellungen entgegen!";
             }
@@ -580,7 +577,7 @@ public class IllHandler {
                 final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(),
                         ill.getTransaction_sub_transaction_qualifier());
                 if (b.getId() != null) {
-
+                    
                     String date = ill.getService_date_time();
                     // ill enthält gültiges Datum (yyyyMMddHHmmss)
                     if (date.length() == 14 && date.substring(0, 2).equals("20")) {
@@ -595,7 +592,7 @@ public class IllHandler {
                         date = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
                         //                System.out.println("Status-Datum: " + date);
                     }
-
+                    
                     b.setStatustext("geliefert");
                     b.setStatusdate(date);
                     String statustext = null; // darf tatsächlich null sein
@@ -612,7 +609,7 @@ public class IllHandler {
                 final Bestellungen b = new Bestellungen(cn, ill.getTransaction_group_qualifier(),
                         ill.getTransaction_sub_transaction_qualifier());
                 if (b.getId() != null) {
-
+                    
                     String date = ill.getService_date_time();
                     // ill enthält gültiges Datum (yyyyMMddHHmmss)
                     if (date.length() == 14 && date.substring(0, 2).equals("20")) {
@@ -627,7 +624,7 @@ public class IllHandler {
                         date = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
                         //                System.out.println("Status-Datum: " + date);
                     }
-
+                    
                     b.setStatustext("nicht lieferbar");
                     b.setStatusdate(date);
                     String statustext = null; // darf tatsächlich null sein
@@ -637,64 +634,63 @@ public class IllHandler {
                     orderstate.changeOrderState(b, ReadSystemConfigurations.getSystemTimezone(), new Text(cn,
                             TextType.STATE_ORDER, "nicht lieferbar"), statustext, "automatisch", cn);
                 }
-
+                
             }
             if (ill.getMessage_type().equals("BILL")) {
                 returnvalue = "OK";
-
+                
             }
-
+            
         } catch (final Exception e) {
             LOG.error("IllHandler - updateOrderState:" + e.toString());
         }
-
+        
         return returnvalue;
     }
-
+    
     /**
-     * Konvertiert ein deutsches ISIL in ein Sigel. Momentan beim GBV so benötigt
+     * Konvertiert ein deutsches ISIL in ein Sigel. Momentan beim GBV so
+     * benötigt
+     * 
      * @param String isil
-     *
      * @return String sigel
-     *
      */
     private String isilToSigel(final String isil) {
         String sigel = isil;
-
+        
         try {
-
+            
             if (sigel != null && sigel.startsWith("DE-")) {
                 sigel = sigel.substring(3); // entfernt deutschen Länderpräfix für GBV
             }
-
+            
         } catch (final Exception e) {
             LOG.error("IllHandler - isilToSigel: " + isil + "\040" + e.toString());
         }
-
+        
         return sigel;
     }
-
+    
     /**
      * bringt eine Faxnummer beliebigen Formats in das korrekte ILL-Format
+     * 
      * @param String faxnumber
-     *
      * @return String fax
-     *
      */
     private String correctFaxnumber(final String faxnumber) {
         String fax = faxnumber;
-
+        
         try {
-
+            
             if (fax != null && fax.charAt(0) == '+') {
                 fax = "00" + fax.substring(1);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("correctFaxnumber: " + faxnumber + "\040" + e.toString());
         }
-
+        
         return fax;
     }
-
+    
 }

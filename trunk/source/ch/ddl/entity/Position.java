@@ -23,7 +23,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.AbstractIdEntity;
@@ -33,21 +34,22 @@ import ch.dbs.interf.OrderHandler;
 /**
  * Handelt die Datenbankverbindungen/Daten der einzelnen Rechnungspositionen
  * <p></p>
+ * 
  * @author Pascal Steiner
  */
 public class Position extends AbstractIdEntity implements OrderHandler {
-
-    private static final SimpleLogger LOG = new SimpleLogger(Position.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(Position.class);
+    
     private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
     private Konto konto; // Bibliothekskonto
-
+    
     // Lieferinfos
     private String priority = ""; // Normal, Express
     private String deloptions = ""; // Online, Email, Postweg, Fax, Fax to PDF
     private String fileformat = ""; // HTML, PDF, Papierkopie,...
     private Date orderdate; // Datum der Bestellung
-
+    
     // Produktinfos
     private String mediatype = ""; // Artikel, Teilkopie Buch oder Buch
     private String autor = "";
@@ -58,38 +60,38 @@ public class Position extends AbstractIdEntity implements OrderHandler {
     private String titel = ""; // Artikeltiel / Buchtitel
     private String kapitel = "";
     private String seiten = "";
-
+    
     // Preis
     private String waehrung = "";
     private String preis = "";
-
+    
     //Debug
     // Erroremailadresse in properties File umstellen
     //  private String ERRORMAILADRESS = "info@doctor-doc.com";
-
+    
     public Position() {
     }
-
+    
     public Position(final AbstractBenutzer user, final Konto k) {
         this.setBenutzer(user);
         this.setKonto(k);
     }
-
+    
     public Position(final Long id, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM ddl_positionen p "
                     + "INNER JOIN konto k USING(KID)INNER JOIN benutzer u USING(UID)WHERE p.pid=?");
             pstmt.setLong(1, id);
-
+            
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 getPositionen(rs, cn);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("Positionen(Connection cn, Long id): " + e.toString());
         } finally {
@@ -108,11 +110,13 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 }
             }
         }
-
+        
     }
-
+    
     /**
-     * Speichert die Bestellung in der DB ab (hinterlegt die id im Bestellobjekt)
+     * Speichert die Bestellung in der DB ab (hinterlegt die id im
+     * Bestellobjekt)
+     * 
      * @param cn
      * @author Pascal Steiner
      */
@@ -125,7 +129,7 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                     + "`zeitschrift_verlag` , `heft` , `jahrgang` , `jahr` , `titel` , `kapitel` , `seiten` , "
                     + "`waehrung` , `preis`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"));
             pstmt.executeUpdate();
-
+            
             // ID der gerade gespeicherten Bestellung ermitteln und in der bestellung hinterlegen
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
             if (rs.next()) {
@@ -150,24 +154,25 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             }
         }
     }
-
+    
     /**
      * Update this Object in the DB
+     * 
      * @param cn
      * @author Pascal Steiner
      */
     public void update(final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
-
+        
         try {
             pstmt = setPositionenValues(cn.prepareStatement("UPDATE `ddl_positionen` SET UID=? , "
                     + "KID=?, priority=?, deloptions=?, fileformat=?, orderdate=?, mediatype=?, autor=?, "
                     + "zeitschrift_verlag=?, heft=?, jahrgang=? , jahr=?, titel=?, kapitel=?, seiten=?, "
                     + "waehrung=?, preis=? WHERE `pid` = " + this.getId()));
-
+            
             pstmt.executeUpdate();
-
+            
         } catch (final Exception e) {
             LOG.error("update(Connection cn): " + e.toString());
         } finally {
@@ -180,24 +185,24 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             }
         }
     }
-
+    
     /**
      * Löscht dieses Objekt, ohne weitere Prüfungen.
-     *
+     * 
      * @return Rückmeldung o das Objekt gelöscht werden konnte
      * @author Pascal Steiner
      */
     public boolean deleteSelf(final Connection cn) {
-
+        
         boolean success = false;
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE FROM `ddl_positionen` WHERE `pid` = ?");
             pstmt.setLong(1, this.getId());
             pstmt.executeUpdate();
-
+            
             success = true;
-
+            
         } catch (final SQLException e) {
             LOG.error("deleteSelf(Connection cn): " + e.toString());
         } finally {
@@ -209,12 +214,13 @@ public class Position extends AbstractIdEntity implements OrderHandler {
                 }
             }
         }
-
+        
         return success;
     }
-
+    
     /**
      * Füllt dieses Objekt mit den Daten einer Zeile eines ResultSets ab
+     * 
      * @param rs
      * @author Pascal Steiner
      */
@@ -299,158 +305,159 @@ public class Position extends AbstractIdEntity implements OrderHandler {
             }
             this.setWaehrung(rs.getString("waehrung"));
             this.setPreis(rs.getString("preis"));
-
+            
         } catch (final SQLException e) {
             LOG.error("getPositionen(rs): " + e.toString());
         }
-
+        
     }
-
+    
     public AbstractBenutzer getBenutzer() {
         return benutzer;
     }
-
+    
     public void setBenutzer(final AbstractBenutzer benutzer) {
         this.benutzer = benutzer;
     }
-
+    
     public Konto getKonto() {
         return konto;
     }
-
+    
     public void setKonto(final Konto konto) {
         this.konto = konto;
     }
-
+    
     public String getPriority() {
         return priority;
     }
-
+    
     public void setPriority(final String priority) {
         this.priority = priority;
     }
-
+    
     public String getDeloptions() {
         return deloptions;
     }
-
+    
     public void setDeloptions(final String deloptions) {
         this.deloptions = deloptions;
     }
-
+    
     public String getFileformat() {
         return fileformat;
     }
-
+    
     public void setFileformat(final String fileformat) {
         this.fileformat = fileformat;
     }
-
+    
     public Date getOrderdate() {
         return orderdate;
     }
-
+    
     public void setOrderdate(final Date orderdate) {
         this.orderdate = orderdate;
     }
-
+    
     public String getMediatype() {
         return mediatype;
     }
-
+    
     public void setMediatype(final String mediatype) {
         this.mediatype = mediatype;
     }
-
+    
     public String getAutor() {
         return autor;
     }
-
+    
     public void setAutor(final String autor) {
         this.autor = autor;
     }
-
+    
     public String getZeitschrift_verlag() {
         return zeitschrift_verlag;
     }
-
+    
     public void setZeitschrift_verlag(final String zeitschrift_verlag) {
         this.zeitschrift_verlag = zeitschrift_verlag;
     }
-
+    
     public String getHeft() {
         return heft;
     }
-
+    
     public void setHeft(final String heft) {
         this.heft = heft;
     }
-
+    
     public String getJahrgang() {
         return jahrgang;
     }
-
+    
     public void setJahrgang(final String jahrgang) {
         this.jahrgang = jahrgang;
     }
-
+    
     public String getJahr() {
         return jahr;
     }
-
+    
     public void setJahr(final String jahr) {
         this.jahr = jahr;
     }
-
+    
     public String getTitel() {
         return titel;
     }
-
+    
     public void setTitel(final String titel) {
         this.titel = titel;
     }
-
+    
     public String getKapitel() {
         return kapitel;
     }
-
+    
     public void setKapitel(final String kapitel) {
         this.kapitel = kapitel;
     }
-
+    
     public String getSeiten() {
         return seiten;
     }
-
+    
     public void setSeiten(final String seiten) {
         this.seiten = seiten;
     }
-
+    
     public String getWaehrung() {
         return waehrung;
     }
-
+    
     public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
-
+    
     public String getPreis() {
         return preis;
     }
-
+    
     public void setPreis(final String preis) {
         this.preis = preis;
     }
-
+    
     /**
      * ResultSet vorbereiten
+     * 
      * @param ps
      * @return
      * @throws Exception
      * @author Pascal Steiner
      */
     private PreparedStatement setPositionenValues(final PreparedStatement ps) throws Exception {
-
+        
         ps.setLong(1, this.getBenutzer().getId());
         ps.setLong(2, this.getKonto().getId());
         if (this.getPriority() == null) {
@@ -524,8 +531,8 @@ public class Position extends AbstractIdEntity implements OrderHandler {
         } else {
             ps.setString(17, this.getPreis());
         }
-
+        
         return ps;
     }
-
+    
 }

@@ -26,22 +26,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.dbs.form.HoldingForm;
 import ch.dbs.form.OrderForm;
 import enums.TextType;
 
 /**
- * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu schreiben
- * <p></p>
+ * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu
+ * schreiben <p></p>
+ * 
  * @author Markus Fischer
  */
 
 public class Bestand extends AbstractIdEntity {
-
-    private static final SimpleLogger LOG = new SimpleLogger(Bestand.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(Bestand.class);
+    
     private Holding holding;
     private String startyear;
     private String startvolume;
@@ -55,12 +57,12 @@ public class Bestand extends AbstractIdEntity {
     private String shelfmark; // Notation, Büchergestellnummer etc.
     private String bemerkungen = "";
     private boolean internal;
-
+    
     public Bestand() {
         this.setHolding(new Holding());
         this.setStandort(new Text());
     }
-
+    
     public Bestand(final HoldingForm hf) {
         this.setHolding(hf.getHolding());
         this.setStartyear(hf.getStartyear());
@@ -76,7 +78,7 @@ public class Bestand extends AbstractIdEntity {
         this.setBemerkungen(hf.getBemerkungen());
         this.setInternal(hf.isInternal());
     }
-
+    
     public Bestand(final Bestand be) {
         this.setHolding(be.getHolding());
         this.setStartyear(be.getStartyear());
@@ -92,17 +94,17 @@ public class Bestand extends AbstractIdEntity {
         this.setBemerkungen(be.getBemerkungen());
         this.setInternal(be.isInternal());
     }
-
+    
     /**
      * Erstellt einen Bestand anhand einer Verbindung und der ID
-     *
+     * 
      * @param Long stid
      * @param boolean internal
      * @param Connection cn
      * @return Bestand bestand
      */
     public Bestand(final Long stid, final boolean intern, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -111,11 +113,11 @@ public class Bestand extends AbstractIdEntity {
             pstmt.setLong(1, stid);
             pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(cn, rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("Bestand (Long stid, Connection cn): " + e.toString());
         } finally {
@@ -135,7 +137,7 @@ public class Bestand extends AbstractIdEntity {
             }
         }
     }
-
+    
     private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
         this.setId(rs.getLong("STID"));
         this.setHolding(new Holding(cn, rs));
@@ -152,15 +154,15 @@ public class Bestand extends AbstractIdEntity {
         this.setBemerkungen(rs.getString("bemerkungen"));
         this.setInternal(rs.getBoolean("internal"));
     }
-
+    
     /**
      * Erstellt einen Bestand aus einem ResultSet
-     *
+     * 
      * @param cn Connection
      * @param rs ResultSet
      */
     public Bestand(final Connection cn, final ResultSet rs) {
-
+        
         try {
             this.setId(rs.getLong("STID"));
             this.setHolding(new Holding(cn, rs));
@@ -180,14 +182,14 @@ public class Bestand extends AbstractIdEntity {
             LOG.error("Bestand(Connection cn, ResultSet rs): " + e.toString());
         }
     }
-
+    
     /*
      * Sets the values for the PreparedStatement. Leaves the ID blank and lets
      * MySQL autoincrement the STID.
      */
     private PreparedStatement setBestandValuesAutoincrement(final PreparedStatement pstmt, final Bestand be)
             throws Exception {
-
+        
         pstmt.setLong(1, be.getHolding().getId());
         pstmt.setString(2, be.getStartyear());
         pstmt.setString(3, be.getStartvolume());
@@ -201,16 +203,16 @@ public class Bestand extends AbstractIdEntity {
         pstmt.setString(11, be.getShelfmark());
         pstmt.setString(12, be.getBemerkungen());
         pstmt.setBoolean(13, be.isInternal());
-
+        
         return pstmt;
     }
-
+    
     /*
      * Sets the values for the PreparedStatement. Specifies the ID and sets
      * a given STID for MySQL.
      */
     private PreparedStatement setAllBestandValues(final PreparedStatement pstmt, final Bestand be) throws Exception {
-
+        
         pstmt.setLong(1, be.getId());
         pstmt.setLong(2, be.getHolding().getId());
         pstmt.setString(3, be.getStartyear());
@@ -225,34 +227,34 @@ public class Bestand extends AbstractIdEntity {
         pstmt.setString(12, be.getShelfmark());
         pstmt.setString(13, be.getBemerkungen());
         pstmt.setBoolean(14, be.isInternal());
-
+        
         return pstmt;
     }
-
+    
     /**
      * Saves a new Bestand in the database. Will use the autoincremented ID.
-     *
+     * 
      * @param Bestand be
      * @param Connection cn
      */
     public void saveWithoutID(final Bestand be, final Connection cn) {
-
+        
         // if there is no Holding specified, save one first
         if (be.getHolding().getId() == null) {
             Holding h = new Holding();
             h = h.save(be.getHolding(), cn);
             be.setHolding(h);
         }
-
+        
         PreparedStatement pstmt = null;
         try {
             pstmt = setBestandValuesAutoincrement(
                     cn.prepareStatement("INSERT INTO `stock` (`HOID` , `startyear` , `startvolume` , `startissue` , "
                             + "`endyear` , `endvolume` , `endissue` , `suppl` , `eissue` , `standort` , `shelfmark` , "
                             + "`bemerkungen` , `internal`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be);
-
+            
             pstmt.executeUpdate();
-
+            
         } catch (final Exception e) {
             LOG.error("saveWithoutID(Bestand be, Connection cn)" + e.toString());
         } finally {
@@ -265,31 +267,31 @@ public class Bestand extends AbstractIdEntity {
             }
         }
     }
-
+    
     /**
      * Saves a new Bestand in the database. Will use the ID secified.
-     *
+     * 
      * @param Bestand be
      * @param Connection cn
      */
     public void saveWithID(final Bestand be, final Connection cn) {
-
+        
         // if there is no Holding specified, save one first
         if (be.getHolding().getId() == null) {
             Holding h = new Holding();
             h = h.save(be.getHolding(), cn);
             be.setHolding(h);
         }
-
+        
         PreparedStatement pstmt = null;
         try {
             pstmt = setAllBestandValues(cn.prepareStatement("INSERT INTO `stock` (`STID` , `HOID` , "
                     + "`startyear` , `startvolume` , `startissue` , `endyear` , `endvolume` , `endissue` , "
                     + "`suppl` , `eissue` , `standort` , `shelfmark` , `bemerkungen` , `internal`) VALUES "
                     + "(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"), be);
-
+            
             pstmt.executeUpdate();
-
+            
         } catch (final Exception e) {
             LOG.error("saveWithID(Bestand be, Connection cn)" + e.toString());
         } finally {
@@ -302,22 +304,23 @@ public class Bestand extends AbstractIdEntity {
             }
         }
     }
-
+    
     /**
-     * Deletes all Stock from a given account. But does not touch the corresponding holdings.
-     *
+     * Deletes all Stock from a given account. But does not touch the
+     * corresponding holdings.
+     * 
      * @param Konto k
      * @param Connection cn
      */
     public void deleteAllKontoBestand(final Konto k, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         try {
             pstmt = cn.prepareStatement("DELETE a FROM stock AS a INNER JOIN holdings AS b "
                     + "ON a.HOID = b.HOID WHERE b.KID=?;");
             pstmt.setLong(1, k.getId());
             pstmt.executeUpdate();
-
+            
         } catch (final Exception e) {
             LOG.error("deleteAllKontoBestand(Konto k, Connection cn)" + e.toString());
         } finally {
@@ -330,19 +333,18 @@ public class Bestand extends AbstractIdEntity {
             }
         }
     }
-
+    
     /**
      * Gets all "Bestand" from a kid
-     *
+     * 
      * @param Long kid
      * @param boolean internal
      * @param Connection cn
-     *
      * @return List<Bestand> listBestand
      */
     public List<Bestand> getAllKontoBestand(final Long kid, final boolean intern, final Connection cn) {
         final List<Bestand> listBestand = new ArrayList<Bestand>();
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -351,11 +353,11 @@ public class Bestand extends AbstractIdEntity {
             pstmt.setLong(1, kid);
             pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 listBestand.add(new Bestand(cn, rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("ArrayList<Bestand> getAllKontoBestand(Long kid, Connection cn): " + e.toString());
         } finally {
@@ -374,16 +376,15 @@ public class Bestand extends AbstractIdEntity {
                 }
             }
         }
-
+        
         return listBestand;
     }
-
+    
     /**
      * Liefert alle Bestände anhand einer Standort-ID
-     *
+     * 
      * @param tid Long
      * @param cn Connection
-     *
      * @return List mit Bestand
      */
     public List<Bestand> getAllBestandForStandortId(final Long tid, final Connection cn) {
@@ -395,11 +396,11 @@ public class Bestand extends AbstractIdEntity {
                     + "ON a.HOID = b.HOID WHERE a.standort=? ORDER BY a.standort");
             pstmt.setLong(1, tid);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 bestandList.add(new Bestand(cn, rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getAllBestandForStandortId(Long tid, Connection cn): " + e.toString());
         } finally {
@@ -418,123 +419,123 @@ public class Bestand extends AbstractIdEntity {
                 }
             }
         }
-
+        
         return bestandList;
     }
-
+    
     /**
      * Gets all Bestand from a list of holdings for a OrderForm
+     * 
      * @param ArrayList<Holding> holdings
      * @param OrderForm pageForm
      * @param boolean internal
      * @param Connection cn
-     *
      * @return List<Bestand> listBestand
      */
     public List<Bestand> getAllBestandForHoldings(final List<String> hoids, final OrderForm pageForm,
             final boolean intern, final Connection cn) {
         final List<Bestand> listBestand = new ArrayList<Bestand>();
-
+        
         if (!hoids.isEmpty()) {
-
+            
             final int searchMode = getSearchMode(pageForm);
-
+            
             // only proceed if there has been found a search modus (at least an ISSN or a journal title)
             if (searchMode > 0) {
-
+                
                 final StringBuffer sqlQuery = new StringBuffer(getSQL(searchMode));
-
+                
                 final int max = hoids.size();
                 for (int i = 1; i < max; i++) { // only append if there are several holdings
                     sqlQuery.append(" OR a.HOID = ?");
                 }
                 sqlQuery.append(')'); // close SQL Syntax with a parenthesis
-
+                
                 PreparedStatement pstmt = null;
                 ResultSet rs = null;
                 try {
                     pstmt = cn.prepareStatement(sqlQuery.toString());
-
+                    
                     int positionHoid = 2;
-
+                    
                     switch (searchMode) {
-                    case 1: // everything without a year and at least an ISSN
-                        pstmt.setBoolean(1, intern);
-                        break;
-                    case 2: // ISSN, Year
-                        pstmt.setBoolean(1, intern);
-                        pstmt.setString(2, pageForm.getJahr());
-                        pstmt.setString(3, pageForm.getJahr());
-                        positionHoid = 4;
-                        break;
-                    case 3: // ISSN, Year, Volume
-                        pstmt.setBoolean(1, intern);
-                        pstmt.setString(2, pageForm.getJahr());
-                        pstmt.setString(3, pageForm.getJahr());
-                        pstmt.setString(4, pageForm.getJahrgang());
-                        pstmt.setString(5, pageForm.getJahrgang());
-                        positionHoid = 6;
-                        break;
-                    case 4: // ISSN, Year, Volume, Issue
-                        pstmt.setBoolean(1, intern);
-                        pstmt.setString(2, pageForm.getJahr());
-                        pstmt.setString(3, pageForm.getJahr());
-                        pstmt.setString(4, pageForm.getJahrgang());
-                        pstmt.setString(5, pageForm.getJahrgang());
-                        pstmt.setString(6, pageForm.getHeft());
-                        pstmt.setString(7, pageForm.getHeft());
-                        pstmt.setString(8, pageForm.getJahr());
-                        pstmt.setString(9, pageForm.getJahrgang());
-                        pstmt.setString(10, pageForm.getJahrgang());
-                        pstmt.setString(11, pageForm.getHeft());
-                        pstmt.setString(12, pageForm.getJahr());
-                        pstmt.setString(13, pageForm.getJahr());
-                        pstmt.setString(14, pageForm.getJahrgang());
-                        pstmt.setString(15, pageForm.getJahrgang());
-                        pstmt.setString(16, pageForm.getHeft());
-                        pstmt.setString(17, pageForm.getJahr());
-                        positionHoid = 18;
-                        break;
-                    case 5: // ISSN, Year, Issue
-                        pstmt.setBoolean(1, intern);
-                        pstmt.setString(2, pageForm.getJahr());
-                        pstmt.setString(3, pageForm.getJahr());
-                        pstmt.setString(4, pageForm.getHeft());
-                        pstmt.setString(5, pageForm.getHeft());
-                        pstmt.setString(6, pageForm.getJahr());
-                        pstmt.setString(7, pageForm.getHeft());
-                        pstmt.setString(8, pageForm.getJahr());
-                        pstmt.setString(9, pageForm.getJahr());
-                        pstmt.setString(10, pageForm.getHeft());
-                        pstmt.setString(11, pageForm.getJahr());
-                        positionHoid = 12;
-                        break;
-                    default:
-                        LOG.error("Bestand getAllBestandForHoldings - Unpredicted switch case in default: "
-                                + searchMode);
+                        case 1: // everything without a year and at least an ISSN
+                            pstmt.setBoolean(1, intern);
+                            break;
+                        case 2: // ISSN, Year
+                            pstmt.setBoolean(1, intern);
+                            pstmt.setString(2, pageForm.getJahr());
+                            pstmt.setString(3, pageForm.getJahr());
+                            positionHoid = 4;
+                            break;
+                        case 3: // ISSN, Year, Volume
+                            pstmt.setBoolean(1, intern);
+                            pstmt.setString(2, pageForm.getJahr());
+                            pstmt.setString(3, pageForm.getJahr());
+                            pstmt.setString(4, pageForm.getJahrgang());
+                            pstmt.setString(5, pageForm.getJahrgang());
+                            positionHoid = 6;
+                            break;
+                        case 4: // ISSN, Year, Volume, Issue
+                            pstmt.setBoolean(1, intern);
+                            pstmt.setString(2, pageForm.getJahr());
+                            pstmt.setString(3, pageForm.getJahr());
+                            pstmt.setString(4, pageForm.getJahrgang());
+                            pstmt.setString(5, pageForm.getJahrgang());
+                            pstmt.setString(6, pageForm.getHeft());
+                            pstmt.setString(7, pageForm.getHeft());
+                            pstmt.setString(8, pageForm.getJahr());
+                            pstmt.setString(9, pageForm.getJahrgang());
+                            pstmt.setString(10, pageForm.getJahrgang());
+                            pstmt.setString(11, pageForm.getHeft());
+                            pstmt.setString(12, pageForm.getJahr());
+                            pstmt.setString(13, pageForm.getJahr());
+                            pstmt.setString(14, pageForm.getJahrgang());
+                            pstmt.setString(15, pageForm.getJahrgang());
+                            pstmt.setString(16, pageForm.getHeft());
+                            pstmt.setString(17, pageForm.getJahr());
+                            positionHoid = 18;
+                            break;
+                        case 5: // ISSN, Year, Issue
+                            pstmt.setBoolean(1, intern);
+                            pstmt.setString(2, pageForm.getJahr());
+                            pstmt.setString(3, pageForm.getJahr());
+                            pstmt.setString(4, pageForm.getHeft());
+                            pstmt.setString(5, pageForm.getHeft());
+                            pstmt.setString(6, pageForm.getJahr());
+                            pstmt.setString(7, pageForm.getHeft());
+                            pstmt.setString(8, pageForm.getJahr());
+                            pstmt.setString(9, pageForm.getJahr());
+                            pstmt.setString(10, pageForm.getHeft());
+                            pstmt.setString(11, pageForm.getJahr());
+                            positionHoid = 12;
+                            break;
+                        default:
+                            LOG.error("Bestand getAllBestandForHoldings - Unpredicted switch case in default: "
+                                    + searchMode);
                     }
-
+                    
                     for (int i = 0; i < max; i++) {
                         pstmt.setString(positionHoid + i, hoids.get(i));
                     }
-
+                    
                     rs = pstmt.executeQuery();
-
+                    
                     while (rs.next()) {
                         final Bestand be = new Bestand(cn, rs);
                         listBestand.add(be); // there may be multiple stocks per location
                     }
-
+                    
                     // Sort holdings list for library name
                     Collections.sort(listBestand, new Comparator<Bestand>() {
-
+                        
                         public int compare(final Bestand be1, final Bestand be2) {
                             return be1.getHolding().getKonto().getBibliotheksname()
                                     .compareToIgnoreCase(be2.getHolding().getKonto().getBibliotheksname());
                         }
-
+                        
                     });
-
+                    
                 } catch (final Exception e) {
                     LOG.error("ArrayList<Bestand> getAllBestandForHoldings: " + e.toString());
                 } finally {
@@ -555,20 +556,20 @@ public class Bestand extends AbstractIdEntity {
                 }
             }
         }
-
+        
         return listBestand;
     }
-
+    
     /**
      * Gets all Bestand from a holding-ID
+     * 
      * @param Long hoid
      * @param boolean internal
      * @param Connection cn
-     *
      * @return List<Bestand> listBestand
      */
     public List<Bestand> getAllBestandForHoid(final Long hoid, final boolean intern, final Connection cn) {
-
+        
         final List<Bestand> bestandList = new ArrayList<Bestand>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -578,11 +579,11 @@ public class Bestand extends AbstractIdEntity {
             pstmt.setLong(1, hoid);
             pstmt.setBoolean(2, intern);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 bestandList.add(new Bestand(cn, rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getAllBestandForHolding(final Long hoid, final boolean intern, final Connection cn): "
                     + e.toString());
@@ -602,66 +603,66 @@ public class Bestand extends AbstractIdEntity {
                 }
             }
         }
-
+        
         return bestandList;
     }
-
+    
     /**
      * Gets the correct SQL syntax for a given search mode
+     * 
      * @param int mode
-     *
      * @return String sql
      */
     private String getSQL(final int mode) {
         String sql = "";
-
+        
         switch (mode) {
-        case 1: // everything without a year and at least an ISSN
-            sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.HOID = ?";
-            break;
-        case 2: // ISSN, Year
-            sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '')) "
-                    + "AND (a.HOID = ?";
-            break;
-        case 3: // ISSN, Year, Volume
-            sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '') "
-                    + "AND (a.startvolume <= ?+0 OR a.startvolume = '') AND (a.endvolume >= ?+0 OR a.endvolume = '')) AND (a.HOID = ?";
-            break;
-        case 4: // ISSN, Year, Volume, Issue
-            sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
-                    + "(a.startvolume <=?+0 OR a.startvolume = '') AND (a.endvolume >=?+0 OR a.endvolume = '') AND "
-                    + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                    + "((a.endyear > ? OR a.endyear = '') AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
-                    + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
-                    + "(a.startyear < ? AND ((a.endyear = ? AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
-                    + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                    + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
-            break;
-        case 5: // ISSN, Year, Issue
-            sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
-                    + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                    + "((a.endyear > ? OR a.endyear = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
-                    + "(a.startyear < ? AND ((a.endyear = ? AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
-                    + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
-            break;
-        default:
-            LOG.error("Bestand get SQL - Unpredicted switch case in default: " + mode);
+            case 1: // everything without a year and at least an ISSN
+                sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.HOID = ?";
+                break;
+            case 2: // ISSN, Year
+                sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '')) "
+                        + "AND (a.HOID = ?";
+                break;
+            case 3: // ISSN, Year, Volume
+                sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND (a.startyear <= ? AND (a.endyear >= ? OR a.endyear = '') "
+                        + "AND (a.startvolume <= ?+0 OR a.startvolume = '') AND (a.endvolume >= ?+0 OR a.endvolume = '')) AND (a.HOID = ?";
+                break;
+            case 4: // ISSN, Year, Volume, Issue
+                sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
+                        + "(a.startvolume <=?+0 OR a.startvolume = '') AND (a.endvolume >=?+0 OR a.endvolume = '') AND "
+                        + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                        + "((a.endyear > ? OR a.endyear = '') AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
+                        + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
+                        + "(a.startyear < ? AND ((a.endyear = ? AND (a.startvolume <=?+0 OR a.startvolume = '') AND "
+                        + "(a.endvolume >=?+0 OR a.endvolume = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                        + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
+                break;
+            case 5: // ISSN, Year, Issue
+                sql = "SELECT * FROM `stock` AS a JOIN holdings AS b ON a.HOID = b.HOID WHERE a.internal <= ? AND ((a.startyear = ? AND ((a.endyear = ? AND "
+                        + "(a.startissue <= ?+0 OR a.startissue = '') AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                        + "((a.endyear > ? OR a.endyear = '') AND (a.startissue <= ?+0 OR a.startissue = '')))) OR "
+                        + "(a.startyear < ? AND ((a.endyear = ? AND (a.endissue >= ?+0 OR a.endissue = '')) OR "
+                        + "(a.endyear > ? OR a.endyear = ''))) ) AND (a.HOID = ?";
+                break;
+            default:
+                LOG.error("Bestand get SQL - Unpredicted switch case in default: " + mode);
         }
-
+        
         return sql;
     }
-
+    
     public String getCoverage(final Bestand hold) {
-
+        
         final StringBuffer result = new StringBuffer();
-
+        
         // 2003, Vol. 23, (1) -
-
+        
         // we should always have a startyear, except when using a remot DAIA register
         if (hold.getStartyear() != null) {
-
+            
             result.append(hold.getStartyear());
-
+            
             if (!isEmpty(hold.getStartvolume()) || !isEmpty(hold.getStartissue())) {
                 result.append(", ");
             }
@@ -675,17 +676,17 @@ public class Bestand extends AbstractIdEntity {
             if (!isEmpty(hold.getStartissue())) {
                 result.append(hold.getStartissue());
             }
-
+            
             // always append
             result.append(" - ");
-
+            
             if (!isEmpty(hold.getEndyear())) {
                 result.append(hold.getEndyear());
-
+                
                 if (!isEmpty(hold.getEndvolume()) || !isEmpty(hold.getEndissue())) {
                     result.append(", ");
                 }
-
+                
                 if (!isEmpty(hold.getEndvolume())) {
                     result.append("Vol. ");
                     result.append(hold.getEndvolume());
@@ -698,19 +699,19 @@ public class Bestand extends AbstractIdEntity {
                 }
             }
         }
-
+        
         return result.toString();
     }
-
+    
     /**
      * Evaluates the orderform to find the appropriate search mode
+     * 
      * @param OrderForm of
-     *
      * @return int mode
      */
     private int getSearchMode(final OrderForm of) {
         int mode = 0;
-
+        
         // cases with an ISSN!
         if (of.getIssn() != null && !"".equals(of.getIssn())) {
             mode = searchModeHelper(of);
@@ -718,13 +719,13 @@ public class Bestand extends AbstractIdEntity {
         } else if (of.getZeitschriftentitel() != null && !"".equals(of.getZeitschriftentitel())) {
             mode = searchModeHelper(of);
         }
-
+        
         return mode;
     }
-
+    
     private int searchModeHelper(final OrderForm of) {
         int mode = 0;
-
+        
         if (!of.getJahr().equals("") && of.getJahrgang().equals("") && of.getHeft().equals("")) {
             mode = 2; // ISSN, Year
         } else if (!of.getJahr().equals("") && !of.getJahrgang().equals("") && of.getHeft().equals("")) {
@@ -736,121 +737,121 @@ public class Bestand extends AbstractIdEntity {
         } else {
             mode = 1; // everything else without a year and at least an ISSN
         }
-
+        
         return mode;
     }
-
+    
     public Holding getHolding() {
         return holding;
     }
-
+    
     public void setHolding(final Holding holding) {
         this.holding = holding;
     }
-
+    
     public String getStartvolume() {
         return startvolume;
     }
-
+    
     public void setStartvolume(final String startvolume) {
         this.startvolume = startvolume;
     }
-
+    
     public String getStartissue() {
         return startissue;
     }
-
+    
     public void setStartissue(final String startissue) {
         this.startissue = startissue;
     }
-
+    
     public String getStartyear() {
         return startyear;
     }
-
+    
     public void setStartyear(final String startyear) {
         this.startyear = startyear;
     }
-
+    
     public String getEndyear() {
         return endyear;
     }
-
+    
     public void setEndyear(final String endyear) {
         this.endyear = endyear;
     }
-
+    
     public String getEndvolume() {
         return endvolume;
     }
-
+    
     public void setEndvolume(final String endvolume) {
         this.endvolume = endvolume;
     }
-
+    
     public String getEndissue() {
         return endissue;
     }
-
+    
     public void setEndissue(final String endissue) {
         this.endissue = endissue;
     }
-
+    
     public Text getStandort() {
         return standort;
     }
-
+    
     public void setStandort(final Text standort) {
         this.standort = standort;
     }
-
+    
     public String getShelfmark() {
         return shelfmark;
     }
-
+    
     public void setShelfmark(final String shelfmark) {
         this.shelfmark = shelfmark;
     }
-
+    
     public int getSuppl() {
         return suppl;
     }
-
+    
     public void setSuppl(final int suppl) {
         this.suppl = suppl;
     }
-
+    
     public String getBemerkungen() {
         return bemerkungen;
     }
-
+    
     public void setBemerkungen(final String bemerkungen) {
         this.bemerkungen = bemerkungen;
     }
-
+    
     public boolean isEissue() {
         return eissue;
     }
-
+    
     public void setEissue(final boolean eissue) {
         this.eissue = eissue;
     }
-
+    
     public boolean isInternal() {
         return internal;
     }
-
+    
     public void setInternal(final boolean internal) {
         this.internal = internal;
     }
-
+    
     private boolean isEmpty(final String input) {
-
+        
         if (input == null || "".equals(input.trim())) {
             return true;
         }
-
+        
         return false;
     }
-
+    
 }

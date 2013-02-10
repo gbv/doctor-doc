@@ -24,44 +24,45 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.ReadSystemConfigurations;
 
-
 /**
- * Abstract base class for entities having a {@link Long} unique
- * identifier, this provides the base functionality for them.
- * <p></p>
+ * Abstract base class for entities having a {@link Long} unique identifier,
+ * this provides the base functionality for them. <p></p>
+ * 
  * @author Markus Fischer
  */
 public class Countries extends AbstractIdEntity {
-
-    private static final SimpleLogger LOG = new SimpleLogger(Countries.class);
+    
+    final Logger LOG = LoggerFactory.getLogger(Countries.class);
     // defines which locale of iso_countries shall be used
     // you may define your own set of localized countries in the MySQL table
     private static final String LOCALE = ReadSystemConfigurations.getLocale();
-
+    
     private String rowid;
     private String countryid;
     private String locale;
     private String countrycode;
     private String countryname;
     private String phoneprefix;
-
+    
     public Countries() {
-
+        
     }
-
+    
     /**
-     * Gets all Countries for the given locale specified in SystemConfiguartion.properties
-     * <p></p>
+     * Gets all Countries for the given locale specified in
+     * SystemConfiguartion.properties <p></p>
+     * 
      * @return a {@link Countries}
      */
     public List<Countries> getAllCountries(final Connection cn) {
-
+        
         final ArrayList<Countries> cl = new ArrayList<Countries>();
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -72,7 +73,7 @@ public class Countries extends AbstractIdEntity {
             while (rs.next()) {
                 cl.add(getCountries(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getAllActivatedCountries: " + e.toString());
         } finally {
@@ -92,16 +93,17 @@ public class Countries extends AbstractIdEntity {
             }
         }
         return cl;
-
+        
     }
-
+    
     /**
-     * Gets a Country from a countryCode and for the given locale specified in SystemConfiguartion.properties
-     * <p></p>
+     * Gets a Country from a countryCode and for the given locale specified in
+     * SystemConfiguartion.properties <p></p>
+     * 
      * @return a {@link Countries}
      */
     public Countries(final String code, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -113,7 +115,7 @@ public class Countries extends AbstractIdEntity {
             while (rs.next()) {
                 this.setRsValues(rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("Countries getCountry: " + e.toString());
         } finally {
@@ -132,9 +134,9 @@ public class Countries extends AbstractIdEntity {
                 }
             }
         }
-
+        
     }
-
+    
     /*
      * Fills a Countries object with a row of the database
      */
@@ -146,10 +148,10 @@ public class Countries extends AbstractIdEntity {
         country.setCountrycode(rs.getString("countryCode"));
         country.setCountryname(rs.getString("countryName"));
         country.setPhoneprefix(rs.getString("phonePrefix"));
-
+        
         return country;
     }
-
+    
     /*
      * Fills a Countries object with a row of the database
      */
@@ -161,44 +163,53 @@ public class Countries extends AbstractIdEntity {
         this.setCountryname(rs.getString("countryName"));
         this.setPhoneprefix(rs.getString("phonePrefix"));
     }
-
-
+    
     public String getCountrycode() {
         return countrycode;
     }
+    
     public void setCountrycode(final String countrycode) {
         this.countrycode = countrycode;
     }
+    
     public String getCountryid() {
         return countryid;
     }
+    
     public void setCountryid(final String countryid) {
         this.countryid = countryid;
     }
+    
     public String getCountryname() {
         return countryname;
     }
+    
     public void setCountryname(final String countryname) {
         this.countryname = countryname;
     }
+    
     public String getLocale() {
         return locale;
     }
+    
     public void setLocale(final String locale) {
         this.locale = locale;
     }
+    
     public String getPhoneprefix() {
         return phoneprefix;
     }
+    
     public void setPhoneprefix(final String phoneprefix) {
         this.phoneprefix = phoneprefix;
     }
+    
     public String getRowid() {
         return rowid;
     }
+    
     public void setRowid(final String rowid) {
         this.rowid = rowid;
     }
-
-
+    
 }

@@ -34,7 +34,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.ThreadSafeSimpleDateFormat;
@@ -51,7 +52,7 @@ import enums.Result;
  */
 public final class HoldingsReport extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(HoldingsReport.class);
+    final Logger LOG = LoggerFactory.getLogger(HoldingsReport.class);
     
     /**
      * Gets all holdings of a given library and creates an Export-File

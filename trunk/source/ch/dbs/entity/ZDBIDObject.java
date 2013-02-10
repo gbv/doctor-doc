@@ -23,48 +23,48 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.grlea.log.SimpleLogger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Abstract base class for entities having a {@link Long} unique
- * identifier, this provides the base functionality for them.
- * <p></p>
+ * Abstract base class for entities having a {@link Long} unique identifier,
+ * this provides the base functionality for them. <p></p>
+ * 
  * @author Markus Fischer
  */
 public class ZDBIDObject extends AbstractIdEntity {
-
-    private static final SimpleLogger LOG = new SimpleLogger(ZDBIDObject.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(ZDBIDObject.class);
+    
     private String identifier;
     private String identifier_id;
     private String zdbid;
     private List<String> issn;
-
+    
     public ZDBIDObject() {
-
+        
     }
-
+    
     /**
      * Creates a ZDBID-Object from a connection and and ID
-     *
+     * 
      * @param Long zid
      * @param Connection cn
      * @return ZDBIDObject zo
      */
     public ZDBIDObject(final Long zid, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE ZID = ?");
             pstmt.setLong(1, zid);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(cn, rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("ZDBIDObject (Long zid, Connection cn)" + e.toString());
         } finally {
@@ -84,17 +84,18 @@ public class ZDBIDObject extends AbstractIdEntity {
             }
         }
     }
-
+    
     /**
-     * Creates a ZDBID-Object from a connection, an identifier and an identifier_id
-     *
+     * Creates a ZDBID-Object from a connection, an identifier and an
+     * identifier_id
+     * 
      * @param String ident
      * @param String ident_id
      * @param Connection cn
      * @return ZDBIDObject zo
      */
     public ZDBIDObject(final String ident, final String ident_id, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -102,11 +103,11 @@ public class ZDBIDObject extends AbstractIdEntity {
             pstmt.setString(1, ident);
             pstmt.setString(2, ident_id);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(cn, rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("ZDBIDObject (String ident, String ident_id, Connection cn)" + e.toString());
         } finally {
@@ -126,29 +127,29 @@ public class ZDBIDObject extends AbstractIdEntity {
             }
         }
     }
-
+    
     /**
      * Creates a ZDBID-Object from a connection and a zdbid
-     *
+     * 
      * @param String zdbid
      * @param Connection cn
      * @return ZDBIDObject zo
      */
     public ZDBIDObject getZdbidObjectFromZdbid(final String zdbId, final Connection cn) {
-
+        
         ZDBIDObject zo = new ZDBIDObject();
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM zdb_id WHERE zdbid = ?");
             pstmt.setString(1, zdbId);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 zo = new ZDBIDObject(cn, rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getZdbidObjectFromZdbid (String zdbid, Connection cn): " + e.toString());
         } finally {
@@ -167,13 +168,13 @@ public class ZDBIDObject extends AbstractIdEntity {
                 }
             }
         }
-
+        
         return zo;
     }
-
+    
     public ZDBIDObject(final Connection cn, final ResultSet rs) {
         final Issn is = new Issn();
-
+        
         try {
             this.setId(rs.getLong("ZID"));
             this.setIssn(is.getAllIssnsFromOneIdentifierID(rs.getString("identifier_id"), cn));
@@ -184,7 +185,7 @@ public class ZDBIDObject extends AbstractIdEntity {
             LOG.error("ZDBIDObject (Connection cn, ResultSet rs)" + e.toString());
         }
     }
-
+    
     private void setRsValues(final Connection cn, final ResultSet rs) throws Exception {
         final Issn is = new Issn();
         this.setId(rs.getLong("ZID"));
@@ -193,37 +194,37 @@ public class ZDBIDObject extends AbstractIdEntity {
         this.setIdentifier_id(rs.getString("identifier_id"));
         this.setZdbid(rs.getString("zdbid"));
     }
-
+    
     public String getIdentifier() {
         return identifier;
     }
-
+    
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
-
+    
     public String getIdentifier_id() {
         return identifier_id;
     }
-
+    
     public void setIdentifier_id(final String identifierId) {
         identifier_id = identifierId;
     }
-
+    
     public String getZdbid() {
         return zdbid;
     }
-
+    
     public void setZdbid(final String zdbid) {
         this.zdbid = zdbid;
     }
-
+    
     public List<String> getIssn() {
         return issn;
     }
-
+    
     public void setIssn(final List<String> issn) {
         this.issn = issn;
     }
-
+    
 }

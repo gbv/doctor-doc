@@ -22,7 +22,8 @@ import java.sql.Date;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.CodeUrl;
 import ch.dbs.entity.AbstractBenutzer;
@@ -37,7 +38,7 @@ import ch.dbs.interf.OrderHandler;
 
 public final class OrderForm extends ValidatorForm implements OrderHandler {
     
-    private static final SimpleLogger LOG = new SimpleLogger(OrderForm.class);
+    final Logger LOG = LoggerFactory.getLogger(OrderForm.class);
     
     final transient CodeUrl codeUrl = new CodeUrl();
     

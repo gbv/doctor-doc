@@ -25,21 +25,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.dbs.form.Message;
 import enums.TextType;
 
 /**
- * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu schreiben
- * <p></p>
+ * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu
+ * schreiben <p></p>
+ * 
  * @author Markus Fischer
  */
 
 public class BestellParam extends ValidatorForm {
-
-    private static final SimpleLogger LOG = new SimpleLogger(BestellParam.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(BestellParam.class);
+    
     private static final long serialVersionUID = 1L;
     private Long id;
     // we'll have 1 orderform for several IPs within the same account
@@ -50,10 +52,10 @@ public class BestellParam extends ValidatorForm {
     // defines, if this order will be additionally saved in the database
     // an email will always be sent. This can be configured differently for each orderform.
     private boolean saveorder;
-
+    
     // if deactivated, the patron can't order over this OrderForm
     private boolean deactivated;
-
+    
     // Activation of optional fields true / false
     private boolean institution;
     private boolean abteilung;
@@ -70,7 +72,7 @@ public class BestellParam extends ValidatorForm {
     private String lieferart_value1;
     private String lieferart_value2;
     private String lieferart_value3;
-
+    
     // fields that may be named freely
     private boolean freitxt1;
     private boolean freitxt2;
@@ -80,7 +82,7 @@ public class BestellParam extends ValidatorForm {
     private String freitxt3_name;
     private String comment1;
     private String comment2;
-
+    
     // definition of required fields
     private boolean inst_required;
     private boolean abt_required;
@@ -95,7 +97,7 @@ public class BestellParam extends ValidatorForm {
     private boolean land_required;
     private boolean telefon_required;
     private boolean benutzernr_required;
-
+    
     // Option radio button (three buttons)
     private boolean option;
     private String option_name; // Feldbezeichnung
@@ -105,42 +107,42 @@ public class BestellParam extends ValidatorForm {
     private String option_value1; // Inhalte...
     private String option_value2;
     private String option_value3;
-
+    
     // Fees and General Terms and Conditions
     private boolean gebuehren;
     private String link_gebuehren;
     private boolean agb;
     private String link_agb;
-
+    
     // logical parameters without DB entry
     private Message message;
     private boolean back;
     private String link_back;
-
+    
     public BestellParam() {
-
+        
     }
-
+    
     /**
      * Erstellt ein BestellParam anhand seiner ID und einer Verbindung
-     *
+     * 
      * @param Long id
      * @param Connection cn
      * @return BestellParam bp
      */
     public BestellParam(final Long pbId, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE BPID = ?");
             pstmt.setLong(1, pbId);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("BestellParam (Long id, Connection cn): " + e.toString());
         } finally {
@@ -160,17 +162,18 @@ public class BestellParam extends ValidatorForm {
             }
         }
     }
-
+    
     /**
-     * Erstellt ein BestellParam anhand seiner Kennung, der KID und einer Verbindung
-     *
+     * Erstellt ein BestellParam anhand seiner Kennung, der KID und einer
+     * Verbindung
+     * 
      * @param String kennung
      * @param Long kid
      * @param Connection cn
      * @return BestellParam bp
      */
     public BestellParam(final String kenn, final Long pbId, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -178,11 +181,11 @@ public class BestellParam extends ValidatorForm {
             pstmt.setString(1, kenn);
             pstmt.setLong(2, pbId);
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("BestellParam (String kennung, Long id, Connection cn): " + e.toString());
         } finally {
@@ -202,16 +205,16 @@ public class BestellParam extends ValidatorForm {
             }
         }
     }
-
+    
     /**
      * Erstellt ein BestellParam anhand eines Textes und einer Verbindung
-     *
+     * 
      * @param Text t
      * @param Connection cn
      * @return BestellParam bp
      */
     public BestellParam(final Text t, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -220,19 +223,19 @@ public class BestellParam extends ValidatorForm {
                 if (t.getTexttype().getValue() == TextType.IP4.getValue()) {
                     t.setInhalt("");
                 }
-
+                
                 pstmt = cn
                         .prepareStatement("SELECT * FROM bestellform_param WHERE KID = ? AND TYID = ? AND kennung = ?");
                 pstmt.setLong(1, t.getKonto().getId());
                 pstmt.setLong(2, t.getTexttype().getValue());
                 pstmt.setString(3, t.getInhalt());
                 rs = pstmt.executeQuery();
-
+                
                 while (rs.next()) {
                     this.setRsValues(rs);
                 }
             }
-
+            
         } catch (final Exception e) {
             LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
         } finally {
@@ -252,18 +255,19 @@ public class BestellParam extends ValidatorForm {
             }
         }
     }
-
+    
     /**
-     * Erstellt ein BestellParam vom Typ "Bestellformular eingeloggt" anhand eines Kontos und einer Verbindung, für den
-     * Fall, dass der Kunde eingeloggt ist (dieses BestellParam wird NICHT über eine zusätzliche Text-Verknüpfung
-     * abgehandelt, sondern direkt in dbs geschrieben)
-     *
+     * Erstellt ein BestellParam vom Typ "Bestellformular eingeloggt" anhand
+     * eines Kontos und einer Verbindung, für den Fall, dass der Kunde
+     * eingeloggt ist (dieses BestellParam wird NICHT über eine zusätzliche
+     * Text-Verknüpfung abgehandelt, sondern direkt in dbs geschrieben)
+     * 
      * @param Konto k
      * @param Connection cn
      * @return BestellParam bp
      */
     public BestellParam(final Konto k, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -272,11 +276,11 @@ public class BestellParam extends ValidatorForm {
             pstmt.setLong(2, TextType.ORDERFORM_LOGGED_IN.getValue());
             pstmt.setString(3, "Bestellformular eingeloggt");
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 this.setRsValues(rs);
             }
-
+            
         } catch (final Exception e) {
             LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
         } finally {
@@ -296,29 +300,29 @@ public class BestellParam extends ValidatorForm {
             }
         }
     }
-
+    
     /**
      * Gets all existing BestellParams for a given account.
-     *
+     * 
      * @param Konto k
      * @param Connection cn
      * @return List<String> BestellParam result
      */
     public List<BestellParam> getAllBestellParam(final Konto k, final Connection cn) {
-
+        
         final List<BestellParam> result = new ArrayList<BestellParam>();
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE KID = ?");
             pstmt.setLong(1, k.getId());
             rs = pstmt.executeQuery();
-
+            
             while (rs.next()) {
                 result.add(new BestellParam(rs));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
         } finally {
@@ -339,16 +343,16 @@ public class BestellParam extends ValidatorForm {
         }
         return result;
     }
-
+    
     /**
      * Speichert ein neues BestellParam in der Datenbank
-     *
+     * 
      * @param BestellParam bp
      */
     public Long save(final BestellParam bp, final Connection cn) {
-
+        
         Long pbId = null;
-
+        
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -365,15 +369,15 @@ public class BestellParam extends ValidatorForm {
                             + "`tel_required` , `benutzernr_required`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                             + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                             + "?, ?, ?, ?, ?, ?)"), bp);
-
+            
             pstmt.executeUpdate();
-
+            
             //            ID des gerade gespeicherten Benutzers ermitteln und hinterlegen
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
             if (rs.next()) {
                 pbId = rs.getLong("LAST_INSERT_ID()");
             }
-
+            
         } catch (final Exception e) {
             LOG.error("save(BestellParam bp, Connection cn): " + e.toString());
         } finally {
@@ -392,17 +396,17 @@ public class BestellParam extends ValidatorForm {
                 }
             }
         }
-
+        
         return pbId;
     }
-
+    
     /**
      * Verändert ein vorhandenes BestellParam in der DB
-     *
+     * 
      * @param BestellParam bp
      */
     public void update(final BestellParam bp, final Connection cn) {
-
+        
         PreparedStatement pstmt = null;
         try {
             pstmt = setBestellParamValues(
@@ -420,7 +424,7 @@ public class BestellParam extends ValidatorForm {
                             + "`tel_required` = ?, `benutzernr_required` = ? WHERE `BPID` =?"), bp);
             pstmt.setLong(54, bp.getId());
             pstmt.executeUpdate();
-
+            
         } catch (final Exception e) {
             LOG.error("bei update(BestellParam bp, Connection cn): " + e.toString());
         } finally {
@@ -433,9 +437,9 @@ public class BestellParam extends ValidatorForm {
             }
         }
     }
-
+    
     private BestellParam(final ResultSet rs) throws SQLException {
-
+        
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
         this.setTyid(rs.getLong("TYID"));
@@ -495,9 +499,9 @@ public class BestellParam extends ValidatorForm {
         this.setLand_required(rs.getBoolean("land_required"));
         this.setTelefon_required(rs.getBoolean("tel_required"));
         this.setBenutzernr_required(rs.getBoolean("benutzernr_required"));
-
+        
     }
-
+    
     private void setRsValues(final ResultSet rs) throws Exception {
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
@@ -559,14 +563,14 @@ public class BestellParam extends ValidatorForm {
         this.setTelefon_required(rs.getBoolean("tel_required"));
         this.setBenutzernr_required(rs.getBoolean("benutzernr_required"));
     }
-
+    
     /*
      * Setzt die Werte im Preparestatement der Methoden update() sowie save()
      *
      */
     private PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp)
             throws Exception {
-
+        
         pstmt.setLong(1, bp.getKid());
         pstmt.setLong(2, bp.getTyid());
         if (bp.getKennung() != null) {
@@ -695,472 +699,472 @@ public class BestellParam extends ValidatorForm {
         pstmt.setBoolean(51, bp.isLand_required());
         pstmt.setBoolean(52, bp.isTelefon_required());
         pstmt.setBoolean(53, bp.isBenutzernr_required());
-
+        
         return pstmt;
     }
-
+    
     public Long getId() {
         return id;
     }
-
+    
     public void setId(final Long id) {
         this.id = id;
     }
-
+    
     public Long getKid() {
         return kid;
     }
-
+    
     public void setKid(final Long kid) {
         this.kid = kid;
     }
-
+    
     public Long getTyid() {
         return tyid;
     }
-
+    
     public void setTyid(final Long tyid) {
         this.tyid = tyid;
     }
-
+    
     public Long getUse_did() {
         return use_did;
     }
-
+    
     public void setUse_did(final Long useDid) {
         use_did = useDid;
     }
-
+    
     public String getKennung() {
         return kennung;
     }
-
+    
     public void setKennung(final String kennung) {
         this.kennung = kennung;
     }
-
+    
     public boolean isSaveorder() {
         return saveorder;
     }
-
+    
     public void setSaveorder(final boolean saveorder) {
         this.saveorder = saveorder;
     }
-
+    
     public boolean isInstitution() {
         return institution;
     }
-
+    
     public void setInstitution(final boolean institution) {
         this.institution = institution;
     }
-
+    
     public boolean isAbteilung() {
         return abteilung;
     }
-
+    
     public void setAbteilung(final boolean abteilung) {
         this.abteilung = abteilung;
     }
-
+    
     public boolean isCategory() {
         return category;
     }
-
+    
     public void setCategory(final boolean category) {
         this.category = category;
     }
-
+    
     public boolean isAdresse() {
         return adresse;
     }
-
+    
     public void setAdresse(final boolean adresse) {
         this.adresse = adresse;
     }
-
+    
     public boolean isStrasse() {
         return strasse;
     }
-
+    
     public void setStrasse(final boolean strasse) {
         this.strasse = strasse;
     }
-
+    
     public boolean isPlz() {
         return plz;
     }
-
+    
     public void setPlz(final boolean plz) {
         this.plz = plz;
     }
-
+    
     public boolean isOrt() {
         return ort;
     }
-
+    
     public void setOrt(final boolean ort) {
         this.ort = ort;
     }
-
+    
     public boolean isLand() {
         return land;
     }
-
+    
     public void setLand(final boolean land) {
         this.land = land;
     }
-
+    
     public boolean isTelefon() {
         return telefon;
     }
-
+    
     public void setTelefon(final boolean telefon) {
         this.telefon = telefon;
     }
-
+    
     public boolean isBenutzernr() {
         return benutzernr;
     }
-
+    
     public void setBenutzernr(final boolean benutzernr) {
         this.benutzernr = benutzernr;
     }
-
+    
     public boolean isPrio() {
         return prio;
     }
-
+    
     public void setPrio(final boolean prio) {
         this.prio = prio;
     }
-
+    
     public boolean isLieferart() {
         return lieferart;
     }
-
+    
     public void setLieferart(final boolean lieferart) {
         this.lieferart = lieferart;
     }
-
+    
     public String getLieferart_value1() {
         return lieferart_value1;
     }
-
+    
     public void setLieferart_value1(final String lieferart_value1) {
         this.lieferart_value1 = lieferart_value1;
     }
-
+    
     public String getLieferart_value2() {
         return lieferart_value2;
     }
-
+    
     public void setLieferart_value2(final String lieferart_value2) {
         this.lieferart_value2 = lieferart_value2;
     }
-
+    
     public String getLieferart_value3() {
         return lieferart_value3;
     }
-
+    
     public void setLieferart_value3(final String lieferart_value3) {
         this.lieferart_value3 = lieferart_value3;
     }
-
+    
     public boolean isFreitxt1() {
         return freitxt1;
     }
-
+    
     public void setFreitxt1(final boolean freitxt1) {
         this.freitxt1 = freitxt1;
     }
-
+    
     public boolean isFreitxt2() {
         return freitxt2;
     }
-
+    
     public void setFreitxt2(final boolean freitxt2) {
         this.freitxt2 = freitxt2;
     }
-
+    
     public boolean isFreitxt3() {
         return freitxt3;
     }
-
+    
     public void setFreitxt3(final boolean freitxt3) {
         this.freitxt3 = freitxt3;
     }
-
+    
     public String getFreitxt1_name() {
         return freitxt1_name;
     }
-
+    
     public void setFreitxt1_name(final String freitxt1_name) {
         this.freitxt1_name = freitxt1_name;
     }
-
+    
     public String getFreitxt2_name() {
         return freitxt2_name;
     }
-
+    
     public void setFreitxt2_name(final String freitxt2_name) {
         this.freitxt2_name = freitxt2_name;
     }
-
+    
     public String getFreitxt3_name() {
         return freitxt3_name;
     }
-
+    
     public void setFreitxt3_name(final String freitxt3_name) {
         this.freitxt3_name = freitxt3_name;
     }
-
+    
     public String getComment1() {
         return comment1;
     }
-
+    
     public void setComment1(final String comment1) {
         this.comment1 = comment1;
     }
-
+    
     public String getComment2() {
         return comment2;
     }
-
+    
     public void setComment2(final String comment2) {
         this.comment2 = comment2;
     }
-
+    
     public boolean isInst_required() {
         return inst_required;
     }
-
+    
     public void setInst_required(final boolean inst_required) {
         this.inst_required = inst_required;
     }
-
+    
     public boolean isAbt_required() {
         return abt_required;
     }
-
+    
     public void setAbt_required(final boolean abt_required) {
         this.abt_required = abt_required;
     }
-
+    
     public boolean isCategory_required() {
         return category_required;
     }
-
+    
     public void setCategory_required(final boolean categoryRequired) {
         category_required = categoryRequired;
     }
-
+    
     public boolean isFreitxt1_required() {
         return freitxt1_required;
     }
-
+    
     public void setFreitxt1_required(final boolean freitxt1_required) {
         this.freitxt1_required = freitxt1_required;
     }
-
+    
     public boolean isFreitxt2_required() {
         return freitxt2_required;
     }
-
+    
     public void setFreitxt2_required(final boolean freitxt2_required) {
         this.freitxt2_required = freitxt2_required;
     }
-
+    
     public boolean isFreitxt3_required() {
         return freitxt3_required;
     }
-
+    
     public void setFreitxt3_required(final boolean freitxt3_required) {
         this.freitxt3_required = freitxt3_required;
     }
-
+    
     public boolean isAdr_required() {
         return adr_required;
     }
-
+    
     public void setAdr_required(final boolean adr_required) {
         this.adr_required = adr_required;
     }
-
+    
     public boolean isStr_required() {
         return str_required;
     }
-
+    
     public void setStr_required(final boolean str_required) {
         this.str_required = str_required;
     }
-
+    
     public boolean isPlz_required() {
         return plz_required;
     }
-
+    
     public void setPlz_required(final boolean plz_required) {
         this.plz_required = plz_required;
     }
-
+    
     public boolean isOrt_required() {
         return ort_required;
     }
-
+    
     public boolean isLand_required() {
         return land_required;
     }
-
+    
     public void setLand_required(final boolean land_required) {
         this.land_required = land_required;
     }
-
+    
     public void setOrt_required(final boolean ort_required) {
         this.ort_required = ort_required;
     }
-
+    
     public boolean isTelefon_required() {
         return telefon_required;
     }
-
+    
     public void setTelefon_required(final boolean telefon_required) {
         this.telefon_required = telefon_required;
     }
-
+    
     public boolean isBenutzernr_required() {
         return benutzernr_required;
     }
-
+    
     public void setBenutzernr_required(final boolean benutzernr_required) {
         this.benutzernr_required = benutzernr_required;
     }
-
+    
     public boolean isOption() {
         return option;
     }
-
+    
     public void setOption(final boolean option) {
         this.option = option;
     }
-
+    
     public String getOption_name() {
         return option_name;
     }
-
+    
     public void setOption_name(final String option_name) {
         this.option_name = option_name;
     }
-
+    
     public String getOption_comment() {
         return option_comment;
     }
-
+    
     public void setOption_comment(final String option_comment) {
         this.option_comment = option_comment;
     }
-
+    
     public String getOption_linkout() {
         return option_linkout;
     }
-
+    
     public void setOption_linkout(final String option_linkout) {
         this.option_linkout = option_linkout;
     }
-
+    
     public String getOption_linkoutname() {
         return option_linkoutname;
     }
-
+    
     public void setOption_linkoutname(final String option_linkoutname) {
         this.option_linkoutname = option_linkoutname;
     }
-
+    
     public String getOption_value1() {
         return option_value1;
     }
-
+    
     public void setOption_value1(final String option_value1) {
         this.option_value1 = option_value1;
     }
-
+    
     public String getOption_value2() {
         return option_value2;
     }
-
+    
     public void setOption_value2(final String option_value2) {
         this.option_value2 = option_value2;
     }
-
+    
     public String getOption_value3() {
         return option_value3;
     }
-
+    
     public void setOption_value3(final String option_value3) {
         this.option_value3 = option_value3;
     }
-
+    
     public boolean isGebuehren() {
         return gebuehren;
     }
-
+    
     public void setGebuehren(final boolean gebuehren) {
         this.gebuehren = gebuehren;
     }
-
+    
     public String getLink_gebuehren() {
         return link_gebuehren;
     }
-
+    
     public void setLink_gebuehren(final String link_gebuehren) {
         this.link_gebuehren = link_gebuehren;
     }
-
+    
     public boolean isAgb() {
         return agb;
     }
-
+    
     public void setAgb(final boolean agb) {
         this.agb = agb;
     }
-
+    
     public String getLink_agb() {
         return link_agb;
     }
-
+    
     public void setLink_agb(final String link_agb) {
         this.link_agb = link_agb;
     }
-
+    
     public Message getMessage() {
         return message;
     }
-
+    
     public void setMessage(final Message message) {
         this.message = message;
     }
-
+    
     public boolean isBack() {
         return back;
     }
-
+    
     public void setBack(final boolean back) {
         this.back = back;
     }
-
+    
     public String getLink_back() {
         return link_back;
     }
-
+    
     public void setLink_back(final String link_back) {
         this.link_back = link_back;
     }
-
+    
     public boolean isDeactivated() {
         return deactivated;
     }
-
+    
     public void setDeactivated(final boolean deactivated) {
         this.deactivated = deactivated;
     }
-
+    
 }

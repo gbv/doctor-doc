@@ -54,7 +54,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.MHelper;
@@ -83,7 +84,7 @@ import enums.TextType;
  */
 public final class ILVReport extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(ILVReport.class);
+    final Logger LOG = LoggerFactory.getLogger(ILVReport.class);
     
     /**
      * Prepare ILL report data.

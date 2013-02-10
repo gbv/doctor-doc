@@ -39,7 +39,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.RequestUtils;
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.Check;
@@ -72,7 +73,7 @@ import enums.TextType;
 
 public final class UserAction extends DispatchAction {
     
-    private static final SimpleLogger LOG = new SimpleLogger(UserAction.class);
+    final Logger LOG = LoggerFactory.getLogger(UserAction.class);
     private static final String UEBERSICHT = "uebersicht";
     
     public ActionForward stati(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,

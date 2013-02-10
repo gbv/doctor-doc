@@ -22,7 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Konto;
@@ -33,40 +34,41 @@ import enums.TextType;
  * @author Markus Fischer
  */
 public class Gtc {
-
-    private static final SimpleLogger LOG = new SimpleLogger(Gtc.class);
-
+    
+    final Logger LOG = LoggerFactory.getLogger(Gtc.class);
+    
     /**
      * Checkt, ob der Benutzer die neueste Version der GTC abgesegnet hat
-     *
+     * 
      * @param AbstractBenutzer b
      * @param Connection cn Datenbankverbindung
      * @return boolean
      */
     public boolean isAccepted(final AbstractBenutzer b, final Connection cn) {
-
+        
         boolean isAccepted = false;
-
+        
         // Aktuellste GTC aus Datenbank holen
         final Text gtc = getCurrentGtc(cn);
-
+        
         // Hat der Benutzer die aktuellste GTC hinterlegt?
         if (b.getGtc() != null && b.getGtc().equals(gtc.getInhalt())) {
             isAccepted = true;
         }
-
+        
         return isAccepted;
     }
-
+    
     /**
      * Holt die aktuellste GTC aus der Datenbank
+     * 
      * @param Connection cn
      * @return Text GTC
      */
     public Text getCurrentGtc(final Connection cn) {
-
+        
         Text gtc = null;
-
+        
         //Aktuellste GTC aus Datenbank holen
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -81,7 +83,7 @@ public class Gtc {
                 gtc.setTexttype(TextType.GTC);
                 gtc.setInhalt(rs.getString("inhalt"));
             }
-
+            
         } catch (final Exception e) {
             LOG.error("getCurrentGtc(Connection cn): " + e.toString());
         } finally {
@@ -102,5 +104,5 @@ public class Gtc {
         }
         return gtc;
     }
-
+    
 }

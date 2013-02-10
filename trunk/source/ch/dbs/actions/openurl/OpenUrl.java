@@ -21,7 +21,8 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.grlea.log.SimpleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import util.CodeUrl;
 import util.SpecialCharacters;
@@ -29,7 +30,7 @@ import ch.dbs.form.OrderForm;
 
 public class OpenUrl {
     
-    private static final SimpleLogger LOG = new SimpleLogger(OpenUrl.class);
+    final Logger LOG = LoggerFactory.getLogger(OpenUrl.class);
     private static final String PM_ENDTAG = "</Item>";
     
     /**
