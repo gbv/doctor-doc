@@ -1,4 +1,4 @@
-  README - 29.07.2012
+  README - 10.02.2013
   
   Doctor-Doc is a web based and a easy-to-use tracking and
   managing system for scientific literature.
@@ -77,7 +77,7 @@ You also may want to use a custom icon, e.g. from your institution, for your ins
 replace the following two images /img/sp.gif and /war/img/sp.gif with your own image but with the same name.
 The image should be quadratic to avoid distortion. 
 -
-Doctor-Doc is able to use pooled Connections for MySQL. We use c3p0, since with c3p0 we can
+Doctor-Doc is able to use pooled Connections for MySQL. We use BoneCP, since with BoneCP we can
 directly include the necessary libraries. But you still have to configure Tomcat appropriately:
 
 This configuration is easy but the configuration depends on the Tomcat-Version in use. Therefore
@@ -90,31 +90,30 @@ Doctor-Doc works also without pooled Connection. Be careful: enabling the option
 using the configuration below will generate a lot of error messages by email and in the log-file and it will seriously 
 REDUCE SYSTEM PERFORMANCE!
 
-Checkout http://www.mchange.com/projects/c3p0/index.html for all configuration details. 
+Checkout http://jolbox.com/ for all configuration details. 
 
 Tomcat 5.5
 The configuration has to be made in the context.xml. Place in your $CATALINA_HOME/conf/context.xml of your Tomcat-Installation 
 the following configuration:
 
 <Context>
- <!-- Tomcat 5.5 -->
- <Resource auth="Container" 
-  description="DB Connection" 
-  driverClass="com.mysql.jdbc.Driver" 
-  maxPoolSize="30" 
-  minPoolSize="3" 
-  acquireIncrement="5" 
-  maxIdleTimeExcessConnections="1800"
-  automaticTestTable="c3p0TestTable"
-  testConnectionOnCheckin="true"
-  idleConnectionTestPeriod="55"
-  testConnectionOnCheckout="true"
-  name="jdbc/pooledDS" 
-  user="username" 
-  password="password"
-  factory="org.apache.naming.factory.BeanFactory" 
-  type="com.mchange.v2.c3p0.ComboPooledDataSource" 
-  jdbcUrl="jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" />
+ <!-- Configuration for PooledConnections with BoneCP in Tomcat <= 5.5 -->
+      <Resource auth="Container"
+        driverClass="com.mysql.jdbc.Driver"
+        name="jdbc/pooledDS" 
+        username="username" 
+        password="password" 
+        factory="org.apache.naming.factory.BeanFactory" 
+        type="com.jolbox.bonecp.BoneCPDataSource" 
+        jdbcUrl="jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" 
+        idleMaxAgeInMinutes="30"
+        idleConnectionTestPeriodInMinutes="1"
+        partitionCount="3"
+        acquireIncrement="5"
+        maxConnectionsPerPartition="30"
+        minConnectionsPerPartition="3"
+        statementsCacheSize="50"
+        releaseHelperThreads="5" />
 </Context>
 
 ---
