@@ -777,11 +777,16 @@ public final class KontoAction extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         
-        final KontoForm kf = new KontoForm();
+        final KontoForm kf = (KontoForm) fm;
         final Konto k = new Konto();
         
         try {
-            kf.setKontos(k.getAllKontos(k.getConnection()));
+        	if (kf.getSubmenu().equals("premium")) {
+        		kf.setKontos(k.getAdvancedKontos(k.getConnection()));
+        	} else {
+        		kf.setKontos(k.getAllKontos(k.getConnection()));
+        	}
+            
             rq.setAttribute("kontoform", kf);
             if (kf.getKontos() == null) {
                 final ErrorMessage em = new ErrorMessage("error.missingaccounts", "searchfree.do");

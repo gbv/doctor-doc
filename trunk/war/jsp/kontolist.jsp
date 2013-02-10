@@ -18,6 +18,19 @@
 
 <tiles:insert page="import/header.jsp" flush="true" />
 
+ <table style="position:absolute; text-align:left; left:<bean:message key="submenupos.admin" />px; z-index:2;">
+  <tr>
+    <td 
+      <logic:equal name="kontoform" property="submenu" value="all">id="submenuactive"</logic:equal>
+      <logic:notEqual name="kontoform" property="submenu" value="all">id="submenu"</logic:notEqual>       
+      title="<bean:message key="submenu.listkontos.all" />"><a href="http://localhost:8081/docidoc/kontoadmin.do?method=listKontos&activemenu=admin&submenu=all"><bean:message key="submenu.listkontos.all" /></a></td>
+    <td 
+	  <logic:equal name="kontoform" property="submenu" value="premium">id="submenuactive"</logic:equal>
+      <logic:notEqual name="kontoform" property="submenu" value="premium">id="submenu"</logic:notEqual>       
+      title="<bean:message key="submenu.listkontos.premium" />"><a href="kontoadmin.do?method=listKontos&activemenu=admin&submenu=premium"><bean:message key="submenu.listkontos.premium" /></a></td>   
+  </tr>
+</table>
+
 <div class="content">
 
 <br>
@@ -53,6 +66,9 @@
         <option value="3"
           <logic:equal name="k" property="kontotyp" value="3"> selected</logic:equal>>3
         Monate <bean:message bundle="systemConfig" key="application.name"/> Enhanced plus Fax to Mail</option>
+        <option value="4"
+          <logic:equal name="k" property="kontotyp" value="4"> selected</logic:equal>>1
+        Jahr <bean:message bundle="systemConfig" key="application.name"/> Premium</option>
       </select> <input type="hidden" name="method" value="changeKontoTyp" /> <input
         type="hidden" name="kid"
         value="<bean:write name="k" property="id" />" /> <input

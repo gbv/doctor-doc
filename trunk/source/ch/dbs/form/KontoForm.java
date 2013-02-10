@@ -91,6 +91,7 @@ public final class KontoForm extends ValidatorForm {
     private boolean showpubsuppliers;
     private int ilvformnr; // default form number for PDFs and mails for ILV
     private String message;
+    private String submenu = "all";
     
     // dient dazu die Bestellangaben nicht zu verlieren bei Übergabe aus Linkresolver
     
@@ -972,5 +973,12 @@ public final class KontoForm extends ValidatorForm {
         this.gtc = konto.getGtc(); // Alle nur Leserecht!
         this.gtcdate = konto.getGtcdate(); // Alle nur Leserecht!
     }
+	public String getSubmenu() {
+		return submenu;
+	}
+	public void setSubmenu(String submenu) {
+		this.submenu = submenu;
+	}
+    
     
 }

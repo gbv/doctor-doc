@@ -330,12 +330,25 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * @return Kontolist
      */
     public List<Konto> getAllKontos(final Connection cn) {
-        
-        final List<Konto> kontos = new ArrayList<Konto>();
+        return getKontos("SELECT * FROM `konto` order by `kontotyp` desc, `biblioname` asc", cn);
+    }
+    
+    /**
+     * Listet alle advanced Kontos auf, sortiert nach Bibliotheksnamen
+     *
+     * @return Kontolist
+     */
+    public List<Konto> getAdvancedKontos(final Connection cn) {
+        return getKontos("SELECT * FROM `konto` WHERE `kontotyp`>0 order by `kontotyp` desc, `biblioname` asc", cn);
+    }
+    
+    private List<Konto> getKontos(String sql, Connection cn){
+    	final List<Konto> kontos = new ArrayList<Konto>();
+
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.prepareStatement("SELECT * FROM `konto` order by `kontotyp` desc, `biblioname` asc");
+            pstmt = cn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
