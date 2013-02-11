@@ -41,8 +41,6 @@ import ch.ddl.entity.Position;
 
 public class PrepareTestObjects {
     
-    final static Logger LOG = LoggerFactory.getLogger(PrepareTestObjects.class);
-    
     /** Passwort welches zum Login benötigt wird */
     public static final String LOGINPW = "testpw";
     
@@ -127,6 +125,7 @@ public class PrepareTestObjects {
                 try {
                     rs.close();
                 } catch (final SQLException e) {
+                    final Logger LOG = LoggerFactory.getLogger(PrepareTestObjects.class);
                     LOG.error(e.toString());
                 }
             }
@@ -134,6 +133,7 @@ public class PrepareTestObjects {
                 try {
                     pstmt.close();
                 } catch (final SQLException e) {
+                    final Logger LOG = LoggerFactory.getLogger(PrepareTestObjects.class);
                     LOG.error(e.toString());
                 }
             }
@@ -326,6 +326,7 @@ public class PrepareTestObjects {
                 try {
                     rs.close();
                 } catch (final SQLException e) {
+                    final Logger LOG = LoggerFactory.getLogger(PrepareTestObjects.class);
                     LOG.error(e.toString());
                 }
             }
@@ -333,6 +334,7 @@ public class PrepareTestObjects {
                 try {
                     pstmt.close();
                 } catch (final SQLException e) {
+                    final Logger LOG = LoggerFactory.getLogger(PrepareTestObjects.class);
                     LOG.error(e.toString());
                 }
             }
