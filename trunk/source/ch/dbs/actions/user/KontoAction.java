@@ -783,6 +783,8 @@ public final class KontoAction extends DispatchAction {
         try {
         	if (kf.getSubmenu().equals("premium")) {
         		kf.setKontos(k.getAdvancedKontos(k.getConnection()));
+        	} else if (kf.getSubmenu().equals("openbill")){
+        		kf.setKontos(k.getKontosOpenBill(k.getConnection()));
         	} else {
         		kf.setKontos(k.getAllKontos(k.getConnection()));
         	}
