@@ -348,7 +348,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * @return Kontolist
      */
     public List<Konto> getKontosOpenBill(final Connection cn) {
-        return getKontos("SELECT * FROM `billing` INNER JOIN konto USING ( kid ) WHERE `zahlungseingang` IS NULL order by `kontotyp` desc, `biblioname` asc", cn);
+        return getKontos("SELECT * FROM `billing` INNER JOIN konto USING ( kid ) WHERE `zahlungseingang` IS NULL group by `kid` order by `kontotyp` desc, `biblioname` asc", cn);
     }
     
     private List<Konto> getKontos(String sql, Connection cn){
