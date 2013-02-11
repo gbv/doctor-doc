@@ -34,7 +34,8 @@ import org.slf4j.LoggerFactory;
  * DBConn stellt Methoden zum Kommunizieren mit dem DB-Server zur Verfügung
  * DBConn erstellt eine Verbindung zum MySQL-Server, und gibt diese zurück.
  * <p></p>
- * @author Pascal Steiner
+ * 
+ * @author Pascal Steiner, Markus Fischer
  */
 public class DBConn extends AbstractReadSystemConfigurations {
     
@@ -47,9 +48,11 @@ public class DBConn extends AbstractReadSystemConfigurations {
             + DATABASE_NAME
             + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&jdbcCompliantTruncation=false";
     private transient Connection cn;
-
+    
     /**
-     * Stellt die Verbindung zur MySql DB her und speichert die Verbindung im Objekt
+     * Stellt die Verbindung zur MySql DB her und speichert die Verbindung im
+     * Objekt
+     * 
      * @return liefert ein Verbindungsobjekt zurück
      */
     private Connection connect() {
@@ -63,10 +66,10 @@ public class DBConn extends AbstractReadSystemConfigurations {
         }
         return cn;
     }
-
+    
     /**
      * Speichert ein File in der Datenbank
-     *
+     * 
      * @param file ein File übergeben
      * @param id des Datensatzes, welcher das File hinterlegt bekommen soll
      * @param table (Tabelle)
@@ -74,10 +77,10 @@ public class DBConn extends AbstractReadSystemConfigurations {
      */
     public void saveFile(final File fl, final String id, final String table, final String field, final Connection con)
             throws Exception {
-
+        
         FileInputStream fis = null;
         PreparedStatement pstmt = null;
-
+        
         try {
             fis = new FileInputStream(fl);
             pstmt = con.prepareStatement("update " + table + " set " + field + " = ? where did = " + id);
@@ -88,7 +91,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
             fis.close();
         }
     }
-
+    
     /**
      * Schliesst die Datenbankverbindung wieder
      */
@@ -98,16 +101,17 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 //             System.out.println("Verbindungsobjekt " + cn + " wurde geschlossen");
                 cn.close();
             }
-
+            
         } catch (final Exception e) {
             LOG.error("close: " + e.toString());
         }
     }
-
+    
     /**
-     * Diese Methode stellt eine Einzelverbindung (nicht gepoolt) zur Datenbank her. Sie sollte nur ausnahmsweise direkt
-     * aufgerufen werden. => getConnection verwenden
-     *
+     * Diese Methode stellt eine Einzelverbindung (nicht gepoolt) zur Datenbank
+     * her. Sie sollte nur ausnahmsweise direkt aufgerufen werden. =>
+     * getConnection verwenden
+     * 
      * @return Connection
      */
     public Connection getSingleConnection() {
@@ -124,15 +128,16 @@ public class DBConn extends AbstractReadSystemConfigurations {
         }
         return cn;
     }
-
+    
     /**
-     * Stellt die Verbindung zur DB her wenn die Verbindung noch nicht besteht.<p>
-     * Berücksichtigt Einstellungen unter SystemConfigurations für PooledConnections (true / false)</p>
-     *
+     * Stellt die Verbindung zur DB her wenn die Verbindung noch nicht
+     * besteht.<p> Berücksichtigt Einstellungen unter SystemConfigurations für
+     * PooledConnections (true / false)</p>
+     * 
      * @return Connection
      */
     public Connection getConnection() {
-
+        
         try {
             if (cn == null || cn.isClosed()) {
                 if (DATABASE_POOLED_CONNECTIONS) {
@@ -145,18 +150,19 @@ public class DBConn extends AbstractReadSystemConfigurations {
             LOG.error("getConnection: " + e.toString());
             cn = getSingleConnection();
         }
-
+        
         return cn;
     }
-
+    
     /**
-     * Diese Methode stellt eine Verbindung zur Datenbank über Pooled Connections her.
-     * Sie sollte nur ausnahmsweise direkt aufgerufen werden. => getConnection verwenden
-     *
+     * Diese Methode stellt eine Verbindung zur Datenbank über Pooled
+     * Connections her. Sie sollte nur ausnahmsweise direkt aufgerufen werden.
+     * => getConnection verwenden
+     * 
      * @return Connection
      */
     private Connection getPooledConnection() {
-
+        
         if (cn == null) {
             try {
                 final InitialContext ic = new InitialContext();
@@ -172,7 +178,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 cn = getSingleConnection();
                 // Control to see if it works on remote server
                 final MHelper mh = new MHelper();
-                mh.sendErrorMail("Failure in getPooledConnection!!!", e.toString());
+                mh.sendErrorMail("Database failed to respond! getPooledConnection: ", e.toString());
             }
         } else {
             try {
@@ -191,19 +197,19 @@ public class DBConn extends AbstractReadSystemConfigurations {
                         cn = getSingleConnection();
                         // Control to see if it works on remote server
                         final MHelper mh = new MHelper();
-                        mh.sendErrorMail("Failure in getPooledConnection!!!", e.toString());
+                        mh.sendErrorMail("Database failed to respond! getPooledConnection: ", e.toString());
                     }
                 }
             } catch (final SQLException e) {
                 LOG.error("getPooledConnection: " + e.toString());
             }
         }
-
+        
         return cn;
     }
-
+    
     //    public void setCn(final Connection cn) {
     //        this.cn = cn;
     //    }
-
+    
 }
