@@ -23,7 +23,7 @@
     <td 
       <logic:equal name="kontoform" property="submenu" value="all">id="submenuactive"</logic:equal>
       <logic:notEqual name="kontoform" property="submenu" value="all">id="submenu"</logic:notEqual>       
-      title="<bean:message key="submenu.listkontos.all" />"><a href="http://localhost:8081/docidoc/kontoadmin.do?method=listKontos&activemenu=admin&submenu=all"><bean:message key="submenu.listkontos.all" /></a></td>
+      title="<bean:message key="submenu.listkontos.all" />"><a href="kontoadmin.do?method=listKontos&activemenu=admin&submenu=all"><bean:message key="submenu.listkontos.all" /></a></td>
     <td 
 	  <logic:equal name="kontoform" property="submenu" value="premium">id="submenuactive"</logic:equal>
       <logic:notEqual name="kontoform" property="submenu" value="premium">id="submenu"</logic:notEqual>       
