@@ -37,6 +37,7 @@ import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.OrderStatistikForm;
+import ch.dbs.form.OverviewForm;
 import ch.dbs.form.PreisWaehrungForm;
 import enums.TextType;
 
@@ -577,22 +578,28 @@ public class Bestellungen extends AbstractIdEntity {
      * heraus <p></p>
      * 
      * @param the user {@link ch.dbs.entity.Benutzer}
+     * @param OverviewForm of
+     * @param Connection cn
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public List<Bestellungen> getAllUserOrders(final AbstractBenutzer u, final String sort, final String sortorder,
-            final String dateFrom, final String dateTo, final Connection cn) {
+    public List<Bestellungen> getAllUserOrders(final AbstractBenutzer u, final OverviewForm of, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                    + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND orderdate >= ? AND orderdate <= ? "
-                    + "ORDER BY ";
-            sql = sortOrder(sql, sort, sortorder);
-            pstmt = cn.prepareStatement(sql);
+            final StringBuffer sql = new StringBuffer(256);
+            sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON `b`.`UID` = `u`.`UID` "
+                    + "INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `b`.`UID` = ? AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? "
+                    + "ORDER BY ");
+            sortOrder(sql, of.getSort(), of.getSortorder());
+            sql.append(" LIMIT ");
+            sql.append(of.getPage());
+            sql.append(", ");
+            sql.append(of.getShowHits());
+            pstmt = cn.prepareStatement(sql.toString());
             pstmt.setLong(1, u.getId());
-            pstmt.setString(2, dateFrom);
-            pstmt.setString(3, dateTo);
+            pstmt.setString(2, of.getFromdate());
+            pstmt.setString(3, of.getTodate());
             rs = pstmt.executeQuery();
             long bid = 0;
             while (rs.next()) {
@@ -620,8 +627,8 @@ public class Bestellungen extends AbstractIdEntity {
             }
             
         } catch (final Exception e) {
-            LOG.error("getAllUserOrders(AbstractBenutzer u, String sort, String sortorder, String dateFrom, "
-                    + "String dateTo, Connection cn): " + e.toString());
+            LOG.error("getAllUserOrders(final AbstractBenutzer u, final OverviewForm of, final Connection cn: "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -646,56 +653,55 @@ public class Bestellungen extends AbstractIdEntity {
      * einem bestimmten Status heraus <p></p>
      * 
      * @param the user {@link ch.dbs.entity.Benutzer}
-     * @param String status
-     * @param String sort
-     * @param String sortorder
-     * @param String dateFrom Anfang Datumsbereich
-     * @param String dateTo Ende Datumsbereich
+     * @param OberviewForm of
      * @param boolean subitocheck (true => nur Subitobestellungen)
+     * @param Connection cn
      * @return a {@link List} with his {@link ch.dbs.entity.Bestellungen}
      */
-    public List<Bestellungen> getAllUserOrdersPerStatus(final AbstractBenutzer u, final String status,
-            final String sort, final String sortorder, final String dateFrom, final String dateTo,
+    public List<Bestellungen> getAllUserOrdersPerStatus(final AbstractBenutzer u, final OverviewForm of,
             final boolean subitocheck, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String mysql = "";
-            if (!subitocheck) {
-                mysql = sortOrder(
-                        "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? AND orderdate >= ? "
-                                + "AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if ("offen".equals(status)) {
-                    mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
-                            + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? "
-                            + "AND NOT state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort,
-                            sortorder);
-                }
-            }
+            final StringBuffer sql = new StringBuffer(256);
             if (subitocheck) {
-                mysql = sortOrder(
-                        "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? AND state=? "
-                                + "AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort,
-                        sortorder);
-                if ("offen".equals(status)) {
-                    mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
-                            + "s( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE b.uid=? "
-                            + "AND NOT state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? "
-                            + "ORDER BY ", sort, sortorder);
+                if ("offen".equals(of.getFilter())) {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON "
+                            + "`b`.`UID` = `u`.`UID` INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `b`.`UID` = ? "
+                            + "AND NOT `b`.`state` = 'erledigt' AND NOT `b`.`subitonr` = '' AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? "
+                            + "ORDER BY ");
+                } else {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON `b`.`UID` = `u`.`UID` "
+                            + "INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `b`.`UID` = ? AND `b`.`state` = ? "
+                            + "AND NOT `b`.`subitonr` = '' AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? ORDER BY ");
+                }
+            } else {
+                if ("offen".equals(of.getFilter())) {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON "
+                            + "`b`.`UID` = `u`.`UID` INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `b`.`UID` = ? "
+                            + "AND NOT `b`.`state` = 'erledigt' AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? ORDER BY ");
+                } else {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON `b`.`UID` = `u`.`UID` "
+                            + "INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `b`.`UID` = ? AND `b`.`state` = ? AND `b`.`orderdate` >= ? "
+                            + "AND `b`.`orderdate` <= ? ORDER BY ");
                 }
             }
-            pstmt = cn.prepareStatement(mysql);
+            sortOrder(sql, of.getSort(), of.getSortorder());
+            sql.append(" LIMIT ");
+            sql.append(of.getPage());
+            sql.append(", ");
+            sql.append(of.getShowHits());
+            pstmt = cn.prepareStatement(sql.toString());
+            
             pstmt.setLong(1, u.getId());
-            if (!"offen".equals(status)) {
-                pstmt.setString(2, status);
-                pstmt.setString(3, dateFrom);
-                pstmt.setString(4, dateTo);
+            if (!"offen".equals(of.getFilter())) {
+                pstmt.setString(2, of.getFilter());
+                pstmt.setString(3, of.getFromdate());
+                pstmt.setString(4, of.getTodate());
             } else { // for status.equals("offen") => dont't set state, this is a pseudo state.
-                pstmt.setString(2, dateFrom);
-                pstmt.setString(3, dateTo);
+                pstmt.setString(2, of.getFromdate());
+                pstmt.setString(3, of.getTodate());
             }
             rs = pstmt.executeQuery();
             long bid = 0;
@@ -724,8 +730,8 @@ public class Bestellungen extends AbstractIdEntity {
             }
             
         } catch (final Exception e) {
-            LOG.error("getAllUserOrdersPerStatus(AbstractBenutzer u, String status, String sort, String sortorder, "
-                    + "String dateFrom, String dateTo, boolean subitocheck, Connection cn): " + e.toString());
+            LOG.error("getAllUserOrdersPerStatus(final AbstractBenutzer u, final OverviewForm of, final boolean subitocheck, final Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -750,26 +756,28 @@ public class Bestellungen extends AbstractIdEntity {
      * Bestellungen heraus
      * 
      * @param k Konto
-     * @param sort Sortierkriterium
-     * @param String dateFrom Anfang Datumsbereich
-     * @param String dateTo Ende Datumsbereich
-     * @param sortorder Aufsteigend/Absteigend
+     * @param OverviewForm of
+     * @param Connecton cn
      * @return
      */
-    public List<Bestellungen> getOrdersPerKonto(final Konto k, final String sort, final String sortorder,
-            final String dateFrom, final String dateTo, final Connection cn) {
+    public List<Bestellungen> getOrdersPerKonto(final Konto k, final OverviewForm of, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                    + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND orderdate >= ? AND orderdate <= ? "
-                    + "ORDER BY ";
-            sql = sortOrder(sql, sort, sortorder);
-            pstmt = cn.prepareStatement(sql);
+            final StringBuffer sql = new StringBuffer(256);
+            sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON `b`.`UID` = `u`.`UID` "
+                    + "INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `k`.`KID` = ? AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? "
+                    + "ORDER BY ");
+            sortOrder(sql, of.getSort(), of.getSortorder());
+            sql.append(" LIMIT ");
+            sql.append(of.getPage());
+            sql.append(", ");
+            sql.append(of.getShowHits());
+            pstmt = cn.prepareStatement(sql.toString());
             pstmt.setLong(1, k.getId());
-            pstmt.setString(2, dateFrom);
-            pstmt.setString(3, dateTo);
+            pstmt.setString(2, of.getFromdate());
+            pstmt.setString(3, of.getTodate());
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Bestellungen b = new Bestellungen(rs, cn);
@@ -780,8 +788,7 @@ public class Bestellungen extends AbstractIdEntity {
             }
             
         } catch (final Exception e) {
-            LOG.error("getOrdersPerKonto(Konto k, String sort, String sortorder, String dateFrom, String dateTo, "
-                    + "Connection cn): " + e.toString());
+            LOG.error("getOrdersPerKonto(final Konto k, final OverviewForm of, final Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -806,55 +813,56 @@ public class Bestellungen extends AbstractIdEntity {
      * Status heraus
      * 
      * @param long KID
-     * @param String status
-     * @param sort Sortierkriterium
-     * @param sortorder Aufsteigend/Absteigend
-     * @param String dateFrom Anfang Datumsbereich
-     * @param String dateTo Ende Datumsbereich
+     * @param OverviewForm of
      * @param boolean subitocheck (true => nur Subitobestellungen)
+     * @param Connection cn
      * @return
      */
-    public List<Bestellungen> getOrdersPerKontoPerStatus(final long KID, final String status, final String sort,
-            final String sortorder, final String dateFrom, final String dateTo, final boolean subitocheck,
-            final Connection cn) {
+    public List<Bestellungen> getOrdersPerKontoPerStatus(final long KID, final OverviewForm of,
+            final boolean subitocheck, final Connection cn) {
         final ArrayList<Bestellungen> bl = new ArrayList<Bestellungen>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String mysql = "";
-            if (!subitocheck) {
-                mysql = sortOrder(
-                        "SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON ( b.UID = u.UID ) "
-                                + "INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? AND orderdate >= ? "
-                                + "AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if ("offen".equals(status)) {
-                    mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
-                            + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT "
-                            + "state='erledigt' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
+            final StringBuffer sql = new StringBuffer(256);
+            if (subitocheck) {
+                if ("offen".equals(of.getFilter())) {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON "
+                            + "`b`.`UID` = `u`.`UID` INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `k`.`KID` = ? AND NOT "
+                            + "`b`.`state` = 'erledigt' AND NOT `b`.`subitonr` = '' AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? ORDER BY ");
+                } else {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON "
+                            + "`b`.`UID` = `u`.`UID` INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `k`.`KID` = ? AND `b`.`state` = ? "
+                            + "AND NOT `b`.`subitonr` = '' AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? ORDER BY ");
+                }
+            } else {
+                if ("offen".equals(of.getFilter())) {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON "
+                            + "`b`.`UID` = `u`.`UID` INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `k`.`KID` = ? AND NOT "
+                            + "`b`.`state` = 'erledigt' AND `b`.`orderdate` >= ? AND `b`.`orderdate` <= ? ORDER BY ");
+                } else {
+                    sql.append("SELECT * FROM `bestellungen` AS b INNER JOIN `benutzer` AS u ON `b`.`UID` = `u`.`UID` "
+                            + "INNER JOIN `konto` AS k ON `b`.`KID` = `k`.`KID` WHERE `k`.`KID` = ? AND `b`.`state` = ? AND `b`.`orderdate` >= ? "
+                            + "AND `b`.`orderdate` <= ? ORDER BY ");
                 }
             }
-            if (subitocheck) {
-                mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
-                        + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND state=? "
-                        + "AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ", sort, sortorder);
-                if ("offen".equals(status)) {
-                    mysql = sortOrder("SELECT * FROM `bestellungen` AS b INNER JOIN (`benutzer` AS u) ON "
-                            + "( b.UID = u.UID ) INNER JOIN (`konto` AS k) ON ( b.KID = k.KID ) WHERE k.kid=? AND NOT "
-                            + "state='erledigt' AND NOT subitonr='' AND orderdate >= ? AND orderdate <= ? ORDER BY ",
-                            sort, sortorder);
-                }
+            sortOrder(sql, of.getSort(), of.getSortorder());
+            sql.append(" LIMIT ");
+            sql.append(of.getPage());
+            sql.append(", ");
+            sql.append(of.getShowHits());
+            pstmt = cn.prepareStatement(sql.toString());
+            
+            pstmt.setLong(1, KID);
+            if (!"offen".equals(of.getFilter())) {
+                pstmt.setString(2, of.getFilter());
+                pstmt.setString(3, of.getFromdate());
+                pstmt.setString(4, of.getTodate());
+            } else { // for status.equals("offen") => dont't set state, this is a pseudo state.
+                pstmt.setString(2, of.getFromdate());
+                pstmt.setString(3, of.getTodate());
             }
             
-            pstmt = cn.prepareStatement(mysql);
-            pstmt.setString(1, String.valueOf(KID));
-            if (!"offen".equals(status)) {
-                pstmt.setString(2, status);
-                pstmt.setString(3, dateFrom);
-                pstmt.setString(4, dateTo);
-            } else { // for status.equals("offen") => dont't set state, this is a pseudo state.
-                pstmt.setString(2, dateFrom);
-                pstmt.setString(3, dateTo);
-            }
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 Bestellungen b = new Bestellungen();
@@ -870,8 +878,8 @@ public class Bestellungen extends AbstractIdEntity {
             }
             
         } catch (final Exception e) {
-            LOG.error("getOrdersPerKontoPerStatus(long KID, String status, String sort, String sortorder, "
-                    + "String dateFrom, String dateTo, boolean subitocheck, Connection cn): " + e.toString());
+            LOG.error("getOrdersPerKontoPerStatus(final long KID, final OverviewForm of, final boolean subitocheck, final Connection cn): "
+                    + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -1051,28 +1059,25 @@ public class Bestellungen extends AbstractIdEntity {
      * Zeitschrift müssen in der Übersicht die beiden Felder zusammengezogen
      * werden...
      * 
-     * @param String sql
-     * @return
+     * @param StringBuffer sql
+     * @param String sort
+     * @paramString sortorder
      */
-    public String sortOrder(final String sql, final String sort, final String sortorder) {
-        
-        final StringBuffer result = new StringBuffer(sql);
+    public void sortOrder(final StringBuffer sql, final String sort, final String sortorder) {
         
         if ("zeitschrift".equals(sort) || "buchtitel".equals(sort)) {
-            result.append("CONCAT( zeitschrift, buchtitel ) ");
-            result.append(sortorder);
+            sql.append("CONCAT( zeitschrift, buchtitel ) ");
+            sql.append(sortorder.toUpperCase());
         } else {
             if ("artikeltitel".equals(sort) || "kapitel".equals(sort)) {
-                result.append("CONCAT( artikeltitel, buchkapitel ) ");
-                result.append(sortorder);
+                sql.append("CONCAT( artikeltitel, buchkapitel ) ");
+                sql.append(sortorder.toUpperCase());
             } else {
-                result.append(sort);
-                result.append('\040');
-                result.append(sortorder);
+                sql.append(sort);
+                sql.append('\040');
+                sql.append(sortorder.toUpperCase());
             }
         }
-        
-        return result.toString();
     }
     
     /**

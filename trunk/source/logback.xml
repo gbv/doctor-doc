@@ -8,7 +8,7 @@
   </appender>
   
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	  <file>doctor-doc.log</file>
+	  <file>tomcat5/logs/doctor-doc.log</file>
 	  
 	  <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 	    <!-- daily rollover -->
@@ -25,7 +25,8 @@
  
  <!-- set log level on package level -->
  <logger name="ch" level="WARN" />
- <logger name="test" level="WARN" />
+ <logger name="com.jolbox.bonecp" level="WARN" />
+ <logger name="test" level="DEBUG" />
 
   <root level="debug">
     <appender-ref ref="STDOUT" />

@@ -65,7 +65,7 @@ public final class OrderStatistik extends DispatchAction {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
         
-        OverviewForm of = (OverviewForm) fm; // contains the desired time period
+        final OverviewForm of = (OverviewForm) fm; // contains the desired time period
         String forward = Result.FAILURE.getValue();
         final Bestellungen b = new Bestellungen();
         
@@ -95,7 +95,7 @@ public final class OrderStatistik extends DispatchAction {
                 of.setTodate(of.getYto() + "-" + of.getMto() + "-" + of.getDto() + "23:59:59");
             }
             
-            of = check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
+            check.checkDateRegion(of, DEFAULT_PERIOD, ui.getKonto().getTimezone());
             
             rq.setAttribute("overviewform", of);
             

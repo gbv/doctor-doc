@@ -127,9 +127,8 @@ public class Check {
      * Wochen zusammen
      * 
      * @param of
-     * @return
      */
-    public OverviewForm checkDateRegion(final OverviewForm of, final int defaultPeriod, final String defaultTimezone) {
+    public void checkDateRegion(final OverviewForm of, final int defaultPeriod, final String defaultTimezone) {
         
         //Längen Sicherstellen
         if (this.isExactLength(of.getYfrom(), 4) && this.isExactLength(of.getYto(), 4)
@@ -190,8 +189,6 @@ public class Check {
             of.setDto(new SimpleDateFormat("dd").format(calTo.getTime()));
             of.setTodate(of.getYto() + "-" + of.getMto() + "-" + of.getDto() + " 24:00:00");
         }
-        
-        return of;
     }
     
     /**
@@ -200,9 +197,8 @@ public class Check {
      * Sortierung auf asc ausser bei Sortierung nach<br> orderdate nach desc <p>
      * 
      * @param of OverviewForm
-     * @return OverviewForm
      */
-    public OverviewForm checkSortOrderValues(final OverviewForm of) {
+    public void checkSortOrderValues(final OverviewForm of) {
         
         //Check, damit nur gültige Sortierkriterien daherkommen (asc/desc)
         if (of.getSort() == null) {
@@ -216,7 +212,6 @@ public class Check {
                 of.setSortorder("asc");
             }
         }
-        return of;
     }
     
     /**
@@ -225,9 +220,8 @@ public class Check {
      * vorgängig mittels of.setStati abgelegt wurden <p>
      * 
      * @param of OverviewForm
-     * @return of OverviewForm
      */
-    public OverviewForm checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(final OverviewForm of) {
+    public void checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(final OverviewForm of) {
         if (of.getFilter() != null) { // grundsätzlich muss ein zu prüfendes Filterkriterium vorhanden sein
             boolean validCriteria = false;
             // Die kontoabhängigen Stati müssen vorgängig mittels of.setStati abgelegt werden
@@ -242,8 +236,6 @@ public class Check {
                 of.setFilter(null);
             } // ungültige Filterkriterien löschen
         }
-        
-        return of;
     }
     
     /**
@@ -251,9 +243,8 @@ public class Check {
      * ersetzen mit orderdate<p>
      * 
      * @param of OverviewForm
-     * @return of OverviewForm
      */
-    public OverviewForm checkOrdersSortCriterias(final OverviewForm of) {
+    public void checkOrdersSortCriterias(final OverviewForm of) {
         if (of.getSort().equals("mail") || of.getSort().equals("artikeltitel") || of.getSort().equals("zeitschrift")
                 || of.getSort().equals("inhalt") || of.getSort().equals("orderdate")
                 || of.getSort().equals("statedate") || of.getSort().equals("state")
@@ -267,8 +258,6 @@ public class Check {
         } else {
             of.setSort("orderdate");
         }
-        
-        return of;
     }
     
     /**

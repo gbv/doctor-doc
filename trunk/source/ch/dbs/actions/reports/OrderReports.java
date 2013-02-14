@@ -92,7 +92,7 @@ public final class OrderReports extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         
         // Klassen vorbereiten
-        OverviewForm of = (OverviewForm) fm; //Parameter für Einschraenkungen
+        final OverviewForm of = (OverviewForm) fm; //Parameter für Einschraenkungen
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         OutputStream out = null;
         final Text cn = new Text();
@@ -102,10 +102,10 @@ public final class OrderReports extends DispatchAction {
         
         //Eingaben Testen und Notfalls korrigieren mit defaultwerten
         final Check c = new Check();
-        of = c.checkDateRegion(of, 4, ui.getKonto().getTimezone());
-        of = c.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
-        of = c.checkOrdersSortCriterias(of);
-        of = c.checkSortOrderValues(of);
+        c.checkDateRegion(of, 4, ui.getKonto().getTimezone());
+        c.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
+        c.checkOrdersSortCriterias(of);
+        c.checkSortOrderValues(of);
         
         List<SearchesForm> searches = new ArrayList<SearchesForm>();
         
@@ -138,11 +138,9 @@ public final class OrderReports extends DispatchAction {
             } else {
                 // normale Liste...
                 if (of.getFilter() == null) {
-                    orders = b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(), of.getFromdate(),
-                            of.getTodate(), cn.getConnection());
+                    orders = b.getOrdersPerKonto(ui.getKonto(), of, cn.getConnection());
                 } else {
-                    orders = b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(), of.getSort(),
-                            of.getSortorder(), of.getFromdate(), of.getTodate(), false, cn.getConnection());
+                    orders = b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of, false, cn.getConnection());
                 }
                 
             }

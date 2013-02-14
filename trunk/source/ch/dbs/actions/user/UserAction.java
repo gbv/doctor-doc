@@ -116,7 +116,7 @@ public final class UserAction extends DispatchAction {
         // Make sure method is only accessible when user is logged in
         String forward = Result.FAILURE.getValue();
         
-        OverviewForm of = (OverviewForm) fm;
+        final OverviewForm of = (OverviewForm) fm;
         int count = 0;
         final Bestellungen b = new Bestellungen();
         
@@ -141,31 +141,27 @@ public final class UserAction extends DispatchAction {
                         cn.getConnection()));
                 
                 // angegebener Zeitraum prüfen, resp. Defaultbereich von 1 Monat zusammenstellen
-                of = check.checkDateRegion(of, 1, ui.getKonto().getTimezone());
+                check.checkDateRegion(of, 1, ui.getKonto().getTimezone());
                 // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-                of = check.checkSortOrderValues(of);
+                check.checkSortOrderValues(of);
                 //Check, damit nur gültige Sortierkriterien daherkommen
-                of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
+                check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
                 // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-                of = check.checkOrdersSortCriterias(of);
+                check.checkOrdersSortCriterias(of);
                 
                 // Benutzer dürfen nur ihre eigenen Bestellungen sehen
                 if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
                     if (of.getFilter() == null) {
-                        of.setBestellungen(b.getAllUserOrders(ui.getBenutzer(), of.getSort(), of.getSortorder(),
-                                of.getFromdate(), of.getTodate(), cn.getConnection()));
+                        of.setBestellungen(b.getAllUserOrders(ui.getBenutzer(), of, cn.getConnection()));
                     } else {
-                        of.setBestellungen(b.getAllUserOrdersPerStatus(ui.getBenutzer(), of.getFilter(), of.getSort(),
-                                of.getSortorder(), of.getFromdate(), of.getTodate(), false, cn.getConnection()));
+                        of.setBestellungen(b.getAllUserOrdersPerStatus(ui.getBenutzer(), of, false, cn.getConnection()));
                     }
                 } else { // Bibliothekare dürfen nur Bestellungen ihrers Kontos sehen
                     if (of.getFilter() == null) {
-                        of.setBestellungen(b.getOrdersPerKonto(ui.getKonto(), of.getSort(), of.getSortorder(),
-                                of.getFromdate(), of.getTodate(), cn.getConnection()));
+                        of.setBestellungen(b.getOrdersPerKonto(ui.getKonto(), of, cn.getConnection()));
                         count = of.getBestellungen().size();
                     } else {
-                        of.setBestellungen(b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of.getFilter(),
-                                of.getSort(), of.getSortorder(), of.getFromdate(), of.getTodate(), false,
+                        of.setBestellungen(b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of, false,
                                 cn.getConnection()));
                         count = of.getBestellungen().size();
                     }
@@ -1209,7 +1205,7 @@ public final class UserAction extends DispatchAction {
         
         try {
             
-            OverviewForm of = (OverviewForm) fm;
+            final OverviewForm of = (OverviewForm) fm;
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
             
             final ActiveMenusForm mf = new ActiveMenusForm();
@@ -1218,7 +1214,7 @@ public final class UserAction extends DispatchAction {
             
             final Check check = new Check();
             // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
-            of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
+            check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
             
             // Suchfelder bestimmen
             final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -1262,7 +1258,7 @@ public final class UserAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         final Bestellungen b = new Bestellungen();
         
-        OverviewForm of = (OverviewForm) fm;
+        final OverviewForm of = (OverviewForm) fm;
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Check check = new Check();
         final Text cn = new Text();
@@ -1281,13 +1277,13 @@ public final class UserAction extends DispatchAction {
                     cn.getConnection()));
             
             // angegebener Zeitraum prüfen, resp. Defaultbereich von 3 Monaten zusammenstellen
-            of = check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
+            check.checkDateRegion(of, 3, ui.getKonto().getTimezone());
             // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-            of = check.checkSortOrderValues(of);
+            check.checkSortOrderValues(of);
             //Check, damit nur gültige Sortierkriterien daherkommen
-            of = check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
+            check.checkFilterCriteriasAgainstAllTextsFromTexttypPlusKontoTexts(of);
             // Ueberprüfung der Sortierkriterien, ob diese gültig sind. Wenn ja, Sortierung anwenden
-            of = check.checkOrdersSortCriterias(of);
+            check.checkOrdersSortCriterias(of);
             
             //          Suchfelder bestimmen
             final SortedMap<String, String> result = composeSortedLocalisedOrderSearchFields(rq);
@@ -1405,8 +1401,12 @@ public final class UserAction extends DispatchAction {
         }
         
         // erste Klammer wichtig: sonst kann mit OR Bestellungen anderer Kontos ausgelesen werden...!!!
-        sql.append(b.sortOrder(") AND orderdate >= '" + date_from + "' AND orderdate <= '" + date_to + "' ORDER BY ",
-                sort, sortorder));
+        sql.append(") AND orderdate >= '");
+        sql.append(date_from);
+        sql.append("' AND orderdate <= '");
+        sql.append(date_to);
+        sql.append("' ORDER BY ");
+        b.sortOrder(sql, sort, sortorder);
         
         PreparedStatement pstmt = cn.prepareStatement(sql.toString());
         pstmt.setLong(1, k.getId());
