@@ -52,7 +52,7 @@ public class OverviewForm extends ValidatorForm {
     private String fromdate = "";
     private String todate = "";
     private int page;
-    private int showHits = 500; // default value
+    private int hits = 500; // default value
     private Long tid;
     private Long bid;
     private String report;
@@ -307,12 +307,12 @@ public class OverviewForm extends ValidatorForm {
         this.page = page;
     }
     
-    public int getShowHits() {
-        return showHits;
+    public int getHits() {
+        return hits;
     }
     
-    public void setShowHits(final int showHits) {
-        this.showHits = showHits;
+    public void setHits(final int hits) {
+        this.hits = hits;
     }
     
     public String getBoolean1() {

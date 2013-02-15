@@ -595,7 +595,7 @@ public class Bestellungen extends AbstractIdEntity {
             sql.append(" LIMIT ");
             sql.append(of.getPage());
             sql.append(", ");
-            sql.append(of.getShowHits());
+            sql.append(of.getHits());
             pstmt = cn.prepareStatement(sql.toString());
             pstmt.setLong(1, u.getId());
             pstmt.setString(2, of.getFromdate());
@@ -691,7 +691,7 @@ public class Bestellungen extends AbstractIdEntity {
             sql.append(" LIMIT ");
             sql.append(of.getPage());
             sql.append(", ");
-            sql.append(of.getShowHits());
+            sql.append(of.getHits());
             pstmt = cn.prepareStatement(sql.toString());
             
             pstmt.setLong(1, u.getId());
@@ -773,7 +773,7 @@ public class Bestellungen extends AbstractIdEntity {
             sql.append(" LIMIT ");
             sql.append(of.getPage());
             sql.append(", ");
-            sql.append(of.getShowHits());
+            sql.append(of.getHits());
             pstmt = cn.prepareStatement(sql.toString());
             pstmt.setLong(1, k.getId());
             pstmt.setString(2, of.getFromdate());
@@ -850,7 +850,7 @@ public class Bestellungen extends AbstractIdEntity {
             sql.append(" LIMIT ");
             sql.append(of.getPage());
             sql.append(", ");
-            sql.append(of.getShowHits());
+            sql.append(of.getHits());
             pstmt = cn.prepareStatement(sql.toString());
             
             pstmt.setLong(1, KID);
