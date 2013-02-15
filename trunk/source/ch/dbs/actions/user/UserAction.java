@@ -117,7 +117,6 @@ public final class UserAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         
         final OverviewForm of = (OverviewForm) fm;
-        int count = 0;
         final Bestellungen b = new Bestellungen();
         
         final Check check = new Check();
@@ -159,11 +158,9 @@ public final class UserAction extends DispatchAction {
                 } else { // Bibliothekare dürfen nur Bestellungen ihrers Kontos sehen
                     if (of.getFilter() == null) {
                         of.setBestellungen(b.getOrdersPerKonto(ui.getKonto(), of, cn.getConnection()));
-                        count = of.getBestellungen().size();
                     } else {
                         of.setBestellungen(b.getOrdersPerKontoPerStatus(ui.getKonto().getId(), of, false,
                                 cn.getConnection()));
-                        count = of.getBestellungen().size();
                     }
                 }
                 
@@ -172,7 +169,6 @@ public final class UserAction extends DispatchAction {
                 rq.setAttribute("sortedSearchFields", result);
                 
                 rq.setAttribute("overviewform", of);
-                rq.setAttribute("count", count);
                 
             } else { // Umleitung auf Suche
                 forward = "search";
@@ -1262,7 +1258,6 @@ public final class UserAction extends DispatchAction {
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Check check = new Check();
         final Text cn = new Text();
-        int count = 0;
         
         try {
             
@@ -1328,7 +1323,6 @@ public final class UserAction extends DispatchAction {
                     pstmt = composeSearchLogic(searches, ui.getKonto(), of.getSort(), of.getSortorder(), dateFrom,
                             dateTo, cn.getConnection());
                     of.setBestellungen(b.searchOrdersPerKonto(pstmt, cn.getConnection()));
-                    count = of.getBestellungen().size();
                 } catch (final Exception e) { // Fehler aus Methode abfangen
                     // zusätzliche Ausgabe von Fehlermeldung, falls versucht wurde
                     // Bestellungen nach Kunde > als erlaubter Zeitraum (Datenschutz)
@@ -1350,7 +1344,6 @@ public final class UserAction extends DispatchAction {
             }
             
             rq.setAttribute("overviewform", of);
-            rq.setAttribute("count", count);
             
         } finally {
             cn.close();
