@@ -59,6 +59,7 @@ abstract class AbstractReadSystemConfigurations {
     protected static final boolean ACTIVATE_PAID_ACCESS = readActivatePaidAccess();
     
     protected static final boolean ANONYMIZATION_ACTIVATED = readAnonymizationActivated();
+    protected static final int MAX_RESULTS_DISPLAY = maxResultsDisplay();
     protected static final boolean SEARCH_CARELIT = searchCarelit();
     protected static final boolean USE_DAIA = readUseDaia();
     protected static final String[] DAIA_HOSTS = readDaiaHosts();
@@ -415,6 +416,22 @@ abstract class AbstractReadSystemConfigurations {
         }
         
         return months;
+    }
+    
+    private static int maxResultsDisplay() {
+        
+        int maxResults = 0;
+        
+        try {
+            final Configuration config = new PropertiesConfiguration(PATH);
+            maxResults = config.getInt("maxResults.display");
+            
+        } catch (final ConfigurationException e) {
+            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
+            LOG.error(e.toString());
+        }
+        
+        return maxResults;
     }
     
     private static boolean searchCarelit() {

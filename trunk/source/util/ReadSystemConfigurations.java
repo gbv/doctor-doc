@@ -86,6 +86,10 @@ public final class ReadSystemConfigurations {
         return AbstractReadSystemConfigurations.ANONYMIZATION_AFTER_MONTHS;
     }
     
+    public static final int getMaxResultsDisplay() {
+        return AbstractReadSystemConfigurations.MAX_RESULTS_DISPLAY;
+    }
+    
     public static final boolean isSearchCarelit() {
         return AbstractReadSystemConfigurations.SEARCH_CARELIT;
     }

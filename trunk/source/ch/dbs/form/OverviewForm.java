@@ -53,7 +53,7 @@ public class OverviewForm extends ValidatorForm {
     private String todate = "";
     private int page; // used to calculate SQL query
     private int paging = 1; // number of page we are on
-    private int hits = 400; // default value
+    private int hits = ReadSystemConfigurations.getMaxResultsDisplay(); // get default value from SystemConfiguration.properties
     private int pageNext;
     private int pagePrev;
     private Long tid;
