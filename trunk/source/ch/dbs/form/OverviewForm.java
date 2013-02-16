@@ -160,9 +160,9 @@ public class OverviewForm extends ValidatorForm {
             if (this.getBestellungen().size() == this.getHits()) {
                 this.setPageNext(this.getPage() + this.getHits());
             }
-            if (this.getPage() > 0 && !this.getBestellungen().isEmpty()) {
+            if (this.getPage() > 0) {
                 this.setPaging(this.getPage() / this.getHits() + 1);
-                if (this.getPaging() > 2) { // set pagePrev to second and subsequent pages
+                if (this.getPaging() > 2 && !this.getBestellungen().isEmpty()) { // set pagePrev to second and subsequent pages
                     this.setPagePrev(this.getPage() - this.getHits());
                 } else { // set pagePrev to first page, by setting a negative value
                     this.setPagePrev(-1);
