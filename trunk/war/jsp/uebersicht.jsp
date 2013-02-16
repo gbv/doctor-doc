@@ -281,9 +281,7 @@
 
 </html:form>
 
-<div class="centeredImage">
-	<logic:lessThan name="overviewform" property="pagePrev" value="0"><a href="listkontobestellungen.do?method=overview&sort=mediatype&sortorder=asc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" /><logic:present name="overviewform" property="filter">&filter=<bean:write name="overviewform" property="filter" /></logic:present><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>&page=0"> <img src='img/left.png' alt="<bean:message key="uebersicht.previous" />" title="<bean:message key="uebersicht.previous" />" ></a></logic:lessThan><logic:greaterThan name="overviewform" property="pagePrev" value="0"><a href="listkontobestellungen.do?method=overview&sort=mediatype&sortorder=asc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" /><logic:present name="overviewform" property="filter">&filter=<bean:write name="overviewform" property="filter" /></logic:present><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>&page=<bean:write name="overviewform" property="pagePrev" />"> <img src='img/left.png' alt="<bean:message key="uebersicht.previous" />" title="<bean:message key="uebersicht.previous" />" ></a></logic:greaterThan><logic:greaterThan name="overviewform" property="pageNext" value="0"><a href="listkontobestellungen.do?method=overview&sort=mediatype&sortorder=asc&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" /><logic:present name="overviewform" property="filter">&filter=<bean:write name="overviewform" property="filter" /></logic:present><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>&page=<bean:write name="overviewform" property="pageNext" />"> <img src='img/right.png' alt="<bean:message key="uebersicht.next" />" title="<bean:message key="uebersicht.next" />" ></a></logic:greaterThan>
-</div>
+<tiles:insert page="import/paginguebersicht.jsp" flush="true" />
 
 <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
 	<a class="black" target="_blank" href="orderreport.do?method=orderspdf&sort=<bean:write name="overviewform" property="sort" />&sortorder=<bean:write name="overviewform" property="sortorder" />&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />&filter=<bean:write name="overviewform" property="filter" /><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>"><img src='img/pdf-druckvorschau.png' alt="<bean:message key="uebersicht.pdf" />" title="<bean:message key="uebersicht.pdf" />" height="30" width="26" border="0"></a>
@@ -514,6 +512,11 @@
 
 </table>
 <p></p>
+
+<tiles:insert page="import/paginguebersicht.jsp" flush="true" />
+
+<p></p>
+
 </div>
  </body>
 </html>
