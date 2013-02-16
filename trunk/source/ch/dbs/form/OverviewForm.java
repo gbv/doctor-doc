@@ -51,8 +51,11 @@ public class OverviewForm extends ValidatorForm {
     private String notizen;
     private String fromdate = "";
     private String todate = "";
-    private int page;
-    private int hits = 500; // default value
+    private int page; // used to calculate SQL query
+    private int paging = 1; // number of page we are on
+    private int hits = 400; // default value
+    private int pageNext;
+    private int pagePrev;
     private Long tid;
     private Long bid;
     private String report;
@@ -147,6 +150,27 @@ public class OverviewForm extends ValidatorForm {
         return years;
     }
     
+    /**
+     * Sets the paging mechanism (prev/next) depending on the result size of the
+     * records found.
+     */
+    private void setPaging() {
+        if (this.getBestellungen() != null) {
+            // check if there may be more results than hits_max
+            if (this.getBestellungen().size() == this.getHits()) {
+                this.setPageNext(this.getPage() + this.getHits());
+            }
+            if (this.getPage() > 0 && !this.getBestellungen().isEmpty()) {
+                this.setPaging(this.getPage() / this.getHits() + 1);
+                if (this.getPaging() > 2) { // set pagePrev to second and subsequent pages
+                    this.setPagePrev(this.getPage() - this.getHits());
+                } else { // set pagePrev to first page, by setting a negative value
+                    this.setPagePrev(-1);
+                }
+            }
+        }
+    }
+    
     public Long getBid() {
         return bid;
     }
@@ -177,6 +201,7 @@ public class OverviewForm extends ValidatorForm {
     
     public void setBestellungen(final List<Bestellungen> bestellungen) {
         this.bestellungen = bestellungen;
+        setPaging();
     }
     
     public List<SearchesForm> getSearches() {
@@ -305,6 +330,18 @@ public class OverviewForm extends ValidatorForm {
     
     public void setPage(final int page) {
         this.page = page;
+        // make sure there are never negative values
+        if (this.page < 0) {
+            this.page = 0;
+        }
+    }
+    
+    public int getPaging() {
+        return paging;
+    }
+    
+    public void setPaging(final int paging) {
+        this.paging = paging;
     }
     
     public int getHits() {
@@ -313,6 +350,22 @@ public class OverviewForm extends ValidatorForm {
     
     public void setHits(final int hits) {
         this.hits = hits;
+    }
+    
+    public int getPageNext() {
+        return pageNext;
+    }
+    
+    public void setPageNext(final int pageNext) {
+        this.pageNext = pageNext;
+    }
+    
+    public int getPagePrev() {
+        return pagePrev;
+    }
+    
+    public void setPagePrev(final int pagePrev) {
+        this.pagePrev = pagePrev;
     }
     
     public String getBoolean1() {

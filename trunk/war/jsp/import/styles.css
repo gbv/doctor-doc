@@ -188,8 +188,14 @@ img.instlogo {
 
 img.whiteborder {
 border:1px solid #fff;
-} 
+}
 
+.centeredImage {
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
+}
 
 #tab {
   vertical-align: text-bottom;
