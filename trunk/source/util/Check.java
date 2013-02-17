@@ -358,7 +358,7 @@ public class Check {
         if (s != null) {
             
             // remove all non word characters with spaces
-            final String onlyWords = s.replaceAll("[^A-Za-z0-9 ]", " ");
+            final String onlyWords = s.replaceAll("[^\\pL\\p{Nd}]", " ");
             
             final StringTokenizer tokenizer = new StringTokenizer(onlyWords);
             

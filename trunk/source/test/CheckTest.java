@@ -130,6 +130,12 @@ public class CheckTest {
         assertTrue(check.getAlphanumericWordCharacters(" !?--_ * ").size() == 0);
         assertTrue(check.getAlphanumericWordCharacters("Aa9o= 2El ").size() == 2);
         assertTrue(check.getAlphanumericWordCharacters("Aa!9o= 2? El ").size() == 4);
+        assertTrue(check.getAlphanumericWordCharacters("Altersabhängigkeit").size() == 1);
+        assertTrue(check.getAlphanumericWordCharacters("page précédente").size() == 2);
+        assertTrue(check.getAlphanumericWordCharacters("Sïmone").size() == 1);
+        assertTrue(check.getAlphanumericWordCharacters("Château").size() == 1);
+        assertTrue(check.getAlphanumericWordCharacters("niño").size() == 1);
+        assertTrue(check.getAlphanumericWordCharacters("Die Grille zirpt immer um 10.").size() == 6);
         assertTrue(check.getAlphanumericWordCharacters(null).size() == 0);
     }
     
