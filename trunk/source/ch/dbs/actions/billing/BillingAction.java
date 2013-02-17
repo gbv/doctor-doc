@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import util.Auth;
 import util.MHelper;
+import util.ReadSystemConfigurations;
 import ch.dbs.admin.KontoAdmin;
 import ch.dbs.entity.Billing;
 import ch.dbs.entity.Konto;
@@ -75,7 +76,7 @@ public final class BillingAction extends DispatchAction {
     
     final Logger LOG = LoggerFactory.getLogger(BillingAction.class);
     //Output Stream für PDF erstellen
-    private OutputStream out = null;    
+    private OutputStream out = null;
     private InputStream reportStream = null;
     private final Map<String, Object> param = new HashMap<String, Object>();
     
@@ -177,11 +178,11 @@ public final class BillingAction extends DispatchAction {
         }
         
         try {
-			out = rp.getOutputStream();
-		} catch (final IOException e) {
+            out = rp.getOutputStream();
+        } catch (final IOException e) {
             LOG.error(e.toString());
         }
-        BillingForm bf = (BillingForm) fm;
+        final BillingForm bf = (BillingForm) fm;
         pdfPreview(bf, rp);
         
         // Report an den Browser senden
@@ -213,23 +214,23 @@ public final class BillingAction extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
-        BillingForm bf = (BillingForm) fm;       
+        final BillingForm bf = (BillingForm) fm;
         
-        try {           
-             	if (bf.getAction().equals("PDF Vorschau")) {
+        try {
+            if (bf.getAction().equals("PDF Vorschau")) {
                 forward = "preview";
-             } else {            	             
+            } else {
                 
-             // prepare attachement
+                // prepare attachement
                 DataSource aAttachment = null;
-                final ByteArrayOutputStream o = new ByteArrayOutputStream();                
-                pdfMailAttachement(bf, rp, o);                
-                aAttachment = new ByteArrayDataSource(o.toByteArray(), "application/pdf");                
+                final ByteArrayOutputStream o = new ByteArrayOutputStream();
+                pdfMailAttachement(bf, rp, o);
+                aAttachment = new ByteArrayDataSource(o.toByteArray(), "application/pdf");
                 
                 final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
                 final InternetAddress[] to = new InternetAddress[1];
-                to[0] = new InternetAddress(k.getBibliotheksmail());  
+                to[0] = new InternetAddress(k.getBibliotheksmail());
                 
                 // Rechnung speichern
                 bf.getBill().save(cn.getConnection());
@@ -242,36 +243,38 @@ public final class BillingAction extends DispatchAction {
                 // define message
                 final MimeMessage message = mh.getMimeMessage(session);
                 
-             // set header
-                message.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
+                // set header
+                message.setHeader("Content-Type", "text/plain; charset=utf-8");
                 
                 // set subject UTF-8 encoded
-                message.setSubject(MimeUtility.encodeText("Rechnung für ihr doctor-doc.com Konto", "UTF-8", null));
+                message.setSubject(MimeUtility.encodeText(
+                        "Rechnung für ihr Konto bei " + ReadSystemConfigurations.getApplicationName(), "UTF-8", null));
                 
                 // set reply to address
-                message.setReplyTo(new InternetAddress[] { new InternetAddress("info@doctor-doc.com") });
+                message.setReplyTo(new InternetAddress[] { new InternetAddress(ReadSystemConfigurations
+                        .getSystemEmail()) });
                 
                 // create the message part
                 MimeBodyPart messageBodyPart = new MimeBodyPart();
                 
-             // set text message
+                // set text message
                 messageBodyPart.setText(bf.getBillingtext());
                 final Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart(messageBodyPart);
                 
-             // part two is the attachment
+                // part two is the attachment
                 messageBodyPart = new MimeBodyPart();
                 messageBodyPart.setDataHandler(new DataHandler(aAttachment));
-                messageBodyPart.setFileName("doctor-doc_bill.pdf");
+                messageBodyPart.setFileName("invoice.pdf");
                 multipart.addBodyPart(messageBodyPart);
                 
-             // put parts in message
+                // put parts in message
                 message.setContent(multipart);
                 message.saveChanges();
                 
                 // send the email
                 mh.sendMessage(session, message, to);
-                     
+                
                 // Meldung verfassen
                 final Message m = new Message("message.sendbill",
                         k.getBibliotheksname() + "\n\n" + bf.getBillingtext(),
@@ -312,14 +315,14 @@ public final class BillingAction extends DispatchAction {
             kadress.append(k.getPLZ() + " " + k.getOrt());
             
             // Parameter abfüllen
-//            final Map<String, Object> param = new HashMap<String, Object>();
+            //            final Map<String, Object> param = new HashMap<String, Object>();
             param.put("adress", kadress.toString());
             param.put("billingtext", bf.getBillingtext());
             param.put(JRParameter.REPORT_FILE_RESOLVER, new SimpleFileResolver(new File(this.getServlet()
                     .getServletContext().getRealPath("/reports/"))));
             
-//            final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
-//                    .getResourceAsStream("/reports/rechnung.jasper"));
+            //            final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+            //                    .getResourceAsStream("/reports/rechnung.jasper"));
             reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                     .getResourceAsStream("/reports/rechnung.jasper"));
             
@@ -332,11 +335,11 @@ public final class BillingAction extends DispatchAction {
             al.add(hm);
             ds = new JRMapCollectionDataSource(al);
             
-//            try {
-//                JasperRunManager.runReportToPdfStream(reportStream, o, param, ds);
-//            } catch (final JRException e) {
-//                LOG.error(e.toString());
-//            } 
+            //            try {
+            //                JasperRunManager.runReportToPdfStream(reportStream, o, param, ds);
+            //            } catch (final JRException e) {
+            //                LOG.error(e.toString());
+            //            } 
             
         } finally {
             b.close();
@@ -345,23 +348,23 @@ public final class BillingAction extends DispatchAction {
         
     }
     
-    private void pdfPreview(BillingForm bf, final HttpServletResponse rp) {
-    	JRMapCollectionDataSource ds = prepareReport(bf, rp);    	
-    	try {
+    private void pdfPreview(final BillingForm bf, final HttpServletResponse rp) {
+        final JRMapCollectionDataSource ds = prepareReport(bf, rp);
+        try {
             JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
         } catch (final JRException e) {
             LOG.error(e.toString());
-        } 
-    	
+        }
+        
     }
     
-    private void pdfMailAttachement(BillingForm bf, final HttpServletResponse rp, ByteArrayOutputStream o){
-    	JRMapCollectionDataSource ds = prepareReport(bf, rp);    	
-    	try {
+    private void pdfMailAttachement(final BillingForm bf, final HttpServletResponse rp, final ByteArrayOutputStream o) {
+        final JRMapCollectionDataSource ds = prepareReport(bf, rp);
+        try {
             JasperRunManager.runReportToPdfStream(reportStream, o, param, ds);
         } catch (final JRException e) {
             LOG.error(e.toString());
-        } 
+        }
     }
     
 }
