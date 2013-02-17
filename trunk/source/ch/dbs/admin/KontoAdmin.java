@@ -216,7 +216,7 @@ public final class KontoAdmin {
             }
             if (k.getKontotyp() == 4) {
                 b = new Billing(k, new Text(cn, TextType.BILLING_REASON,
-                        "Doctor-Doc Premium"), Double.valueOf("600"), "CHF");
+                        "1 Jahr Doctor-Doc Premium"), Double.valueOf("400"), "CHF");
             }
         }
 
