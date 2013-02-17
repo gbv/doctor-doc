@@ -222,9 +222,9 @@ public final class BillingAction extends DispatchAction {
                 
              // prepare attachement
                 DataSource aAttachment = null;
-                final ByteArrayOutputStream out = new ByteArrayOutputStream();                
-                pdfMailAttachement(bf, rp, out);                
-                aAttachment = new ByteArrayDataSource(out.toByteArray(), "application/pdf");                
+                final ByteArrayOutputStream o = new ByteArrayOutputStream();                
+                pdfMailAttachement(bf, rp, o);                
+                aAttachment = new ByteArrayDataSource(o.toByteArray(), "application/pdf");                
                 
                 final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
@@ -232,8 +232,6 @@ public final class BillingAction extends DispatchAction {
                 to[0] = new InternetAddress(k.getBibliotheksmail());  
                 
                 // Rechnung speichern
-                final KontoAdmin ka = new KontoAdmin();
-                bf = ka.prepareBillingText(k, cn.getConnection(), null, bf);
                 bf.getBill().save(cn.getConnection());
                 
                 // Mail versenden
