@@ -18,6 +18,7 @@
 package ch.dbs.actions.billing;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,7 +75,9 @@ public final class BillingAction extends DispatchAction {
     
     final Logger LOG = LoggerFactory.getLogger(BillingAction.class);
     //Output Stream für PDF erstellen
-    private OutputStream out = null;
+    private OutputStream out = null;    
+    private InputStream reportStream = null;
+    private final Map<String, Object> param = new HashMap<String, Object>();
     
     /**
      * Listet die Rechnungen zu einem Konto sortiert nach Offenen Rechnungen,
@@ -163,7 +176,13 @@ public final class BillingAction extends DispatchAction {
             return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
         }
         
-        runReport(fm, rp);
+        try {
+			out = rp.getOutputStream();
+		} catch (final IOException e) {
+            LOG.error(e.toString());
+        }
+        BillingForm bf = (BillingForm) fm;
+        pdfPreview(bf, rp);
         
         // Report an den Browser senden
         try {
@@ -194,19 +213,23 @@ public final class BillingAction extends DispatchAction {
         
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
+        BillingForm bf = (BillingForm) fm;       
         
-        try {
-            BillingForm bf = (BillingForm) fm;
-            final MHelper mh = new MHelper();
-            
-            if (bf.getAction().equals("PDF Vorschau")) {
+        try {           
+             	if (bf.getAction().equals("PDF Vorschau")) {
                 forward = "preview";
+             } else {            	             
                 
-            } else {
+             // prepare attachement
+                DataSource aAttachment = null;
+                final ByteArrayOutputStream out = new ByteArrayOutputStream();                
+                pdfMailAttachement(bf, rp, out);                
+                aAttachment = new ByteArrayDataSource(out.toByteArray(), "application/pdf");                
+                
                 final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
-                final String[] to = new String[1];
-                to[0] = k.getBibliotheksmail();
+                final InternetAddress[] to = new InternetAddress[1];
+                to[0] = new InternetAddress(k.getBibliotheksmail());  
                 
                 // Rechnung speichern
                 final KontoAdmin ka = new KontoAdmin();
@@ -214,8 +237,43 @@ public final class BillingAction extends DispatchAction {
                 bf.getBill().save(cn.getConnection());
                 
                 // Mail versenden
-                mh.sendMail(to, "Rechnung für ihr doctor-doc.com Konto", bf.getBillingtext());
+                final MHelper mh = new MHelper();
                 
+                final Session session = Session.getDefaultInstance(mh.getProperties());
+                
+                // define message
+                final MimeMessage message = mh.getMimeMessage(session);
+                
+             // set header
+                message.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
+                
+                // set subject UTF-8 encoded
+                message.setSubject(MimeUtility.encodeText("Rechnung für ihr doctor-doc.com Konto", "UTF-8", null));
+                
+                // set reply to address
+                message.setReplyTo(new InternetAddress[] { new InternetAddress("info@doctor-doc.com") });
+                
+                // create the message part
+                MimeBodyPart messageBodyPart = new MimeBodyPart();
+                
+             // set text message
+                messageBodyPart.setText(bf.getBillingtext());
+                final Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(messageBodyPart);
+                
+             // part two is the attachment
+                messageBodyPart = new MimeBodyPart();
+                messageBodyPart.setDataHandler(new DataHandler(aAttachment));
+                messageBodyPart.setFileName("doctor-doc_bill.pdf");
+                multipart.addBodyPart(messageBodyPart);
+                
+             // put parts in message
+                message.setContent(multipart);
+                message.saveChanges();
+                
+                // send the email
+                mh.sendMessage(session, message, to);
+                     
                 // Meldung verfassen
                 final Message m = new Message("message.sendbill",
                         k.getBibliotheksname() + "\n\n" + bf.getBillingtext(),
@@ -237,12 +295,12 @@ public final class BillingAction extends DispatchAction {
         return mp.findForward(forward);
     }
     
-    private void runReport(final ActionForm fm, final HttpServletResponse rp) {
+    private JRMapCollectionDataSource prepareReport(BillingForm bf, final HttpServletResponse rp) {
         
         final Billing b = new Billing();
+        JRMapCollectionDataSource ds = null;
         try {
             
-            BillingForm bf = (BillingForm) fm;
             final Konto k = new Konto(bf.getKontoid(), b.getConnection());
             
             // Rechnung parameter abfüllen
@@ -256,13 +314,15 @@ public final class BillingAction extends DispatchAction {
             kadress.append(k.getPLZ() + " " + k.getOrt());
             
             // Parameter abfüllen
-            final Map<String, Object> param = new HashMap<String, Object>();
+//            final Map<String, Object> param = new HashMap<String, Object>();
             param.put("adress", kadress.toString());
             param.put("billingtext", bf.getBillingtext());
             param.put(JRParameter.REPORT_FILE_RESOLVER, new SimpleFileResolver(new File(this.getServlet()
                     .getServletContext().getRealPath("/reports/"))));
             
-            final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+//            final InputStream reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+//                    .getResourceAsStream("/reports/rechnung.jasper"));
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
                     .getResourceAsStream("/reports/rechnung.jasper"));
             
             // prepare output stream
@@ -272,21 +332,38 @@ public final class BillingAction extends DispatchAction {
             final HashMap<String, String> hm = new HashMap<String, String>();
             hm.put("Fake", "Daten damit Report nicht leer wird..");
             al.add(hm);
-            final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
+            ds = new JRMapCollectionDataSource(al);
             
-            try {
-                out = rp.getOutputStream();
-                JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
-            } catch (final JRException e) {
-                LOG.error(e.toString());
-            } catch (final IOException e) {
-                LOG.error(e.toString());
-            }
+//            try {
+//                JasperRunManager.runReportToPdfStream(reportStream, o, param, ds);
+//            } catch (final JRException e) {
+//                LOG.error(e.toString());
+//            } 
             
         } finally {
             b.close();
         }
+        return ds;
         
+    }
+    
+    private void pdfPreview(BillingForm bf, final HttpServletResponse rp) {
+    	JRMapCollectionDataSource ds = prepareReport(bf, rp);    	
+    	try {
+            JasperRunManager.runReportToPdfStream(reportStream, out, param, ds);
+        } catch (final JRException e) {
+            LOG.error(e.toString());
+        } 
+    	
+    }
+    
+    private void pdfMailAttachement(BillingForm bf, final HttpServletResponse rp, ByteArrayOutputStream o){
+    	JRMapCollectionDataSource ds = prepareReport(bf, rp);    	
+    	try {
+            JasperRunManager.runReportToPdfStream(reportStream, o, param, ds);
+        } catch (final JRException e) {
+            LOG.error(e.toString());
+        } 
     }
     
 }
