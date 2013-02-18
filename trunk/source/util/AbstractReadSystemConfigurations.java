@@ -40,6 +40,7 @@ abstract class AbstractReadSystemConfigurations {
     protected static final String SYSTEM_EMAIL_HOST = readSystemEmailHost();
     protected static final String[] SYSTEM_EMAIL_ACCOUNTNAME = readSystemEmailAccountname();
     protected static final String SYSTEM_EMAIL_PASSWORD = readSystemEmailPassword();
+    protected static final String BILLING_EMAIL = readBillingEmail();
     protected static final String ERROR_EMAIL = readErrorEmail();
     
     protected static final String DATABASE_SERVERADDRESS = readDatabaseServerAddress();
@@ -160,6 +161,22 @@ abstract class AbstractReadSystemConfigurations {
         }
         
         return password;
+    }
+    
+    private static String readBillingEmail() {
+        
+        String billingEmail = "";
+        
+        try {
+            final Configuration config = new PropertiesConfiguration(PATH);
+            billingEmail = config.getString("billing.email");
+            
+        } catch (final ConfigurationException e) {
+            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
+            LOG.error(e.toString());
+        }
+        
+        return billingEmail;
     }
     
     private static String readErrorEmail() {

@@ -42,6 +42,10 @@ public final class ReadSystemConfigurations {
         return AbstractReadSystemConfigurations.SYSTEM_EMAIL;
     }
     
+    public static final String getBillingEmail() {
+        return AbstractReadSystemConfigurations.BILLING_EMAIL;
+    }
+    
     public static final String getErrorEmail() {
         return AbstractReadSystemConfigurations.ERROR_EMAIL;
     }

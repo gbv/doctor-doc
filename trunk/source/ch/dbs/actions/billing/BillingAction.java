@@ -252,7 +252,7 @@ public final class BillingAction extends DispatchAction {
                 
                 // set reply to address
                 message.setReplyTo(new InternetAddress[] { new InternetAddress(ReadSystemConfigurations
-                        .getSystemEmail()) });
+                        .getBillingEmail()) });
                 
                 // create the message part
                 MimeBodyPart messageBodyPart = new MimeBodyPart();

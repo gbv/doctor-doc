@@ -53,21 +53,20 @@ public class MHelper extends AbstractReadSystemConfigurations {
         sendMail(to, msg, PRIORITY);
     }
     
-    public void sendMail(final String[] recipients, final String subject, final String message) {
+    public void sendMail(final String[] to, final String subject, final String mailText) {
         final String from = SYSTEM_EMAIL;
-        sendMail(recipients, subject, message, from, PRIORITY);
+        sendMail(to, subject, mailText, from, PRIORITY);
     }
     
-    public void sendErrorMail(final String subject, final String message) {
-        final String[] recipients = new String[1];
-        recipients[0] = ERROR_EMAIL;
-        final String from = SYSTEM_EMAIL;
-        sendMail(recipients, subject, message, from, PRIORITY);
+    public void sendMailReplyTo(final String[] to, final String subject, final String mailText, final String replyto) {
+        sendMailReplyTo(to, subject, mailText, replyto, PRIORITY);
     }
     
-    public void sendMailReplyTo(final String[] recipients, final String subject, final String message,
-            final String replyto) {
-        sendMailReplyTo(recipients, subject, message, replyto, PRIORITY);
+    public void sendErrorMail(final String subject, final String mailText) {
+        final String[] to = new String[1];
+        to[0] = ERROR_EMAIL;
+        final String from = SYSTEM_EMAIL;
+        sendMail(to, subject, mailText, from, PRIORITY);
     }
     
     /**
@@ -201,13 +200,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
     /**
      * Verschickt ein Mail anhand der mitgegebenen Parameter </P></P>
      * 
-     * @param recipients
+     * @param to
      * @param subject
-     * @param message
+     * @param mailText
      * @param from </P></P>
      * @author Pascal Steiner
      */
-    public void sendMail(final String[] recipients, final String subject, final String message, final String from,
+    public void sendMail(final String[] to, final String subject, final String mailText, final String from,
             final String prio) {
         
         try {
@@ -220,7 +219,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             session.setDebug(false);
             
             // create a message
-            final Message msg = new MimeMessage(session);
+            final MimeMessage msg = new MimeMessage(session);
             
             msg.addHeader(CHARSET, UTF8);
             msg.addHeader(XPRIO, prio);
@@ -232,29 +231,29 @@ public class MHelper extends AbstractReadSystemConfigurations {
             // Setting the Subject and Content Type
             msg.setSubject(MimeUtility.encodeText(subject, UTF8, null));
             msg.setSentDate(new Date());
-            msg.setContent(message, "text/plain; charset=UTF-8");
+            msg.setContent(mailText, "text/plain; charset=UTF-8");
             
-            sendMail(recipients, msg, prio);
+            sendMail(to, msg, prio);
         } catch (final Exception e) {
-            LOG.error("String recipients[], String subject, String message, String from, String prio: " + e.toString());
+            LOG.error("String to[], String subject, String mailText, String from, String prio: " + e.toString());
             // Critical Error-Message
-            sendError(e + "\n" + "sendMail(String recipients[], String subject, "
-                    + "String message, String from, String prio)" + "\n" + message);
+            sendError(e + "\n" + "sendMail(String to[], String subject, "
+                    + "String mailText, String from, String prio)" + "\n" + mailText);
         }
     }
     
     /**
      * Verschickt ein Mail anhand der mitgegebenen Parameter </P></P>
      * 
-     * @param recipients
+     * @param to
      * @param subject
-     * @param message
+     * @param mailText
      * @param from
      * @param replyto </P></P>
      * @author Pascal Steiner
      */
-    public void sendMailReplyTo(final String[] recipients, final String subject, final String message,
-            final String replyto, final String prio) {
+    public void sendMailReplyTo(final String[] to, final String subject, final String mailText, final String replyto,
+            final String prio) {
         
         try {
             // Set the host smtp address
@@ -281,15 +280,15 @@ public class MHelper extends AbstractReadSystemConfigurations {
             // Setting the Subject and Content Type
             msg.setSubject(MimeUtility.encodeText(subject, UTF8, null));
             msg.setSentDate(new Date());
-            msg.setContent(message, "text/plain; charset=UTF-8");
+            msg.setContent(mailText, "text/plain; charset=UTF-8");
             
-            sendMailReplyTo(recipients, msg, replyto, prio);
+            sendMailReplyTo(to, msg, replyto, prio);
         } catch (final Exception e) {
-            LOG.error("sendMailReplyTo(String recipients[], String subject, String message, "
+            LOG.error("sendMailReplyTo(String to[], String subject, String mailText, "
                     + "String replyto, String prio: " + e.toString());
             // Critical Error-Message
-            sendError(e + "\n" + "sendMailReplyTo(String recipients[], String subject, String message, "
-                    + "String from, String replyto, String prio)" + "\n" + message);
+            sendError(e + "\n" + "sendMailReplyTo(String to[], String subject, String mailText, "
+                    + "String from, String replyto, String prio)" + "\n" + mailText);
         }
     }
     
@@ -433,13 +432,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /** send the message to @addressTo */
-    public void sendMessage(final Session session, final Message m, final InternetAddress[] addressTo)
+    public void sendMessage(final Session session, final Message m, final InternetAddress[] to)
             throws MessagingException {
         // Mail versenden
         final Transport bus = session.getTransport("smtp");
         try {
             bus.connect(SYSTEM_EMAIL_HOST, getLoadBalancedAccontname(), SYSTEM_EMAIL_PASSWORD);
-            bus.sendMessage(m, addressTo); // An diese Adressen senden
+            bus.sendMessage(m, to); // An diese Adressen senden
         } finally {
             bus.close();
         }
