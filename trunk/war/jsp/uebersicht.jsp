@@ -287,8 +287,10 @@
 	<a class="black" target="_blank" href="orderreport.do?method=orderspdf&sort=<bean:write name="overviewform" property="sort" />&sortorder=<bean:write name="overviewform" property="sortorder" />&yfrom=<bean:write name="overviewform" property="yfrom" />&mfrom=<bean:write name="overviewform" property="mfrom" />&dfrom=<bean:write name="overviewform" property="dfrom" />&yto=<bean:write name="overviewform" property="yto" />&mto=<bean:write name="overviewform" property="mto" />&dto=<bean:write name="overviewform" property="dto" />&filter=<bean:write name="overviewform" property="filter" /><logic:present name="overviewform" property="s">&s=<bean:write name="overviewform" property="s" /></logic:present>"><img src='img/pdf-druckvorschau.png' alt="<bean:message key="uebersicht.pdf" />" title="<bean:message key="uebersicht.pdf" />" height="30" width="26" border="0"></a>
 </logic:notEqual>
 
+<logic:present name="overviewform" property="bestellungen">
 <bean:size id="size" name="overviewform" property="bestellungen"/>
-<bean:message key="uebersicht.titel" /> - <bean:message key="uebersicht.total" />: <bean:write name="size" /> | <bean:message key="uebersicht.page" />: <bean:write name="overviewform" property="paging" />
+	<bean:message key="uebersicht.titel" /> - <bean:message key="uebersicht.total" />: <bean:write name="size" /> | <bean:message key="uebersicht.page" />: <bean:write name="overviewform" property="paging" />
+</logic:present>
 
 <table class="border">
   <tr>
