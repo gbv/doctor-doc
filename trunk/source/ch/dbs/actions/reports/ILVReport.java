@@ -31,17 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,9 +62,6 @@ import ch.dbs.form.ErrorMessage;
 import ch.dbs.form.IlvReportForm;
 import ch.dbs.form.OrderForm;
 import ch.dbs.form.UserInfo;
-
-import com.sun.mail.smtp.SMTPAddressFailedException;
-
 import enums.Result;
 import enums.TextType;
 
@@ -280,42 +268,13 @@ public final class ILVReport extends DispatchAction {
             // prepare email
             final InternetAddress[] to = new InternetAddress[2];
             to[0] = new InternetAddress(ilvf.getTo());
-            to[1] = new InternetAddress(ui.getKonto().getBibliotheksmail());
+            to[1] = new InternetAddress(ui.getKonto().getDbsmail());
+            
             final MHelper mh = new MHelper();
-            final Session session = Session.getDefaultInstance(mh.getProperties());
             
-            // define message
-            final MimeMessage message = mh.getMimeMessage(session);
-            
-            // set header
-            message.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
-            
-            // set subject UTF-8 encoded
-            message.setSubject(MimeUtility.encodeText(ilvf.getSubject(), "UTF-8", null));
-            
-            // set reply to address
-            message.setReplyTo(new InternetAddress[] { new InternetAddress(ui.getKonto().getBibliotheksmail()) });
-            
-            // create the message part
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
-            
-            // set text message
-            messageBodyPart.setText(composeMailBody(ui, ilvf));
-            final Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-            
-            // part two is the attachment
-            messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setDataHandler(new DataHandler(aAttachment));
-            messageBodyPart.setFileName(composeFilename(ilvf, ui));
-            multipart.addBodyPart(messageBodyPart);
-            
-            // put parts in message
-            message.setContent(multipart);
-            message.saveChanges();
-            
-            // send the email
-            mh.sendMessage(session, message, to);
+            // send the email            
+            mh.sendMailWithAttachement(to, ilvf.getSubject(), composeMailBody(ui, ilvf), ui.getKonto().getDbsmail(),
+                    aAttachment, composeFilename(ilvf, ui));
             
             forward = Result.SUCCESS.getValue();
             final String content = "ilvmail.confirmation";
@@ -326,19 +285,6 @@ public final class ILVReport extends DispatchAction {
             
         } catch (final JRException e1) {
             final ErrorMessage em = new ErrorMessage("error.createilvreport",
-                    "listkontobestellungen.do?method=overview");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-        } catch (final SMTPAddressFailedException e) {
-            final ErrorMessage em = new ErrorMessage("errors.email", e.getMessage(),
-                    "listkontobestellungen.do?method=overview");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-        } catch (final AuthenticationFailedException e) {
-            final ErrorMessage em = new ErrorMessage("error.mailserverconnection", e.getMessage(),
-                    "listkontobestellungen.do?method=overview");
-            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-            //SMTPSendFailedException
-        } catch (final MessagingException e) {
-            final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
                     "listkontobestellungen.do?method=overview");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         } catch (final Exception e) {

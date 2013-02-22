@@ -28,15 +28,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Multipart;
-import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -230,50 +223,20 @@ public final class BillingAction extends DispatchAction {
                 final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
                 final InternetAddress[] to = new InternetAddress[1];
-                to[0] = new InternetAddress(k.getBibliotheksmail());
+                to[0] = new InternetAddress(k.getDbsmail());
                 
                 // Rechnung speichern
                 bf.getBill().save(cn.getConnection());
                 
-                // Mail versenden
+                // Create email
                 final MHelper mh = new MHelper();
                 
-                final Session session = Session.getDefaultInstance(mh.getProperties());
-                
-                // define message
-                final MimeMessage message = mh.getMimeMessage(session);
-                
-                // set header
-                message.setHeader("Content-Type", "text/plain; charset=utf-8");
-                
-                // set subject UTF-8 encoded
-                message.setSubject(MimeUtility.encodeText(
-                        "Rechnung für ihr Konto bei " + ReadSystemConfigurations.getApplicationName(), "UTF-8", null));
-                
-                // set reply to address
-                message.setReplyTo(new InternetAddress[] { new InternetAddress(ReadSystemConfigurations
-                        .getBillingEmail()) });
-                
-                // create the message part
-                MimeBodyPart messageBodyPart = new MimeBodyPart();
-                
-                // set text message
-                messageBodyPart.setText(bf.getBillingtext());
-                final Multipart multipart = new MimeMultipart();
-                multipart.addBodyPart(messageBodyPart);
-                
-                // part two is the attachment
-                messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setDataHandler(new DataHandler(aAttachment));
-                messageBodyPart.setFileName("invoice.pdf");
-                multipart.addBodyPart(messageBodyPart);
-                
-                // put parts in message
-                message.setContent(multipart);
-                message.saveChanges();
+                // define subject
+                final String subject = "Rechnung für ihr Konto bei " + ReadSystemConfigurations.getApplicationName();
                 
                 // send the email
-                mh.sendMessage(session, message, to);
+                mh.sendMailWithAttachement(to, subject, bf.getBillingtext(),
+                        ReadSystemConfigurations.getBillingEmail(), aAttachment, "invoice.pdf");
                 
                 // Meldung verfassen
                 final Message m = new Message("message.sendbill",
