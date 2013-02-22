@@ -138,7 +138,7 @@ public class Pubmed {
         
         final StringBuffer link = new StringBuffer(128);
         link.append("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=");
-        link.append(pageForm.getIssn());
+        link.append(enc.encode(pageForm.getIssn(), "UTF-8"));
         link.append("[TA]");
         if (pageForm.getJahrgang() != null && !"".equals(pageForm.getJahrgang().trim())) {
             link.append("+AND+");
