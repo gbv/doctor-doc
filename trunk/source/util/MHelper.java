@@ -134,7 +134,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             sendMessage(session, msg, addressTo);
             
         } catch (final Exception e) {
-            
+            LOG.error(e.toString());
         }
         
     }
