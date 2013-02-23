@@ -36,6 +36,8 @@ import javax.mail.internet.MimeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import enums.XPrio;
+
 /**
  * Class to send emails. </P></P>
  * 
@@ -49,7 +51,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     private String subject;
     private String text;
     private String replyTo;
-    private String prio = "3"; // Default: 3 = normal
+    private String xprio = XPrio.NORMAL.getValue(); // Default
     private DataSource attachment;
     private String filename;
     
@@ -86,7 +88,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             final Session session = Session.getInstance(getProperties());
             
             // create a message
-            final MimeMessage msg = getMimeMessage(session, this.getPrio());
+            final MimeMessage msg = getMimeMessage(session, this.getXPrio());
             
             // make TO addresses visible
             final InternetAddress[] addressTo = new InternetAddress[this.getTo().length];
@@ -228,12 +230,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
         this.replyTo = replyTo;
     }
     
-    public String getPrio() {
-        return prio;
+    public String getXPrio() {
+        return xprio;
     }
     
-    public void setPrio(final String prio) {
-        this.prio = prio;
+    public void setXPrio(final String xprio) {
+        this.xprio = xprio;
     }
     
     // private to enforce constructor

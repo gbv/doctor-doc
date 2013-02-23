@@ -59,6 +59,7 @@ import ch.dbs.form.UserInfo;
 import enums.BestellformNumber;
 import enums.Result;
 import enums.TextType;
+import enums.XPrio;
 
 /**
  * BestellformAction prüft ip-basierte Zugriffe und erlaubt Kundenbestellungen
@@ -387,7 +388,7 @@ public final class BestellformAction extends DispatchAction {
         final Pubmed pubmed = new Pubmed();
         
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        Konto k = new Konto();
+        Konto konto = new Konto();
         String library = "";
         boolean saveOrder = false;
         
@@ -424,7 +425,7 @@ public final class BestellformAction extends DispatchAction {
                         return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
                     }
                     library = t.getKonto().getBibliotheksname();
-                    k = t.getKonto();
+                    konto = t.getKonto();
                     // set link in request if there is institution logo for this account
                     if (t.getKonto().getInstlogolink() != null) {
                         rq.setAttribute("logolink", t.getKonto().getInstlogolink());
@@ -444,8 +445,8 @@ public final class BestellformAction extends DispatchAction {
                     of.setCountries(allPossCountries);
                 } else {
                     if (auth.isLogin(rq)) {
-                        k = ui.getKonto();
-                        bp = new BestellParam(k, cn.getConnection());
+                        konto = ui.getKonto();
+                        bp = new BestellParam(konto, cn.getConnection());
                         // Länderauswahl setzen
                         final List<Countries> allPossCountries = country.getAllCountries(cn.getConnection());
                         of.setCountries(allPossCountries);
@@ -494,8 +495,8 @@ public final class BestellformAction extends DispatchAction {
                                 of.setNotizen((of.getKundenmail() + "\012" + of.getNotizen()).trim());
                             }
                         } else { // try to look up user from given Emailaddress
-                            library = k.getBibliotheksname();
-                            u = getUserFromBestellformEmail(k, of.getKundenmail(), cn.getConnection());
+                            library = konto.getBibliotheksname();
+                            u = getUserFromBestellformEmail(konto, of.getKundenmail(), cn.getConnection());
                         }
                         
                         if (u.getId() != null) { // we do have already a valid user
@@ -505,21 +506,21 @@ public final class BestellformAction extends DispatchAction {
                             // save as new user
                             final Date d = new Date();
                             final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            final String datum = fmt.format(d, k.getTimezone());
+                            final String datum = fmt.format(d, konto.getTimezone());
                             u = new AbstractBenutzer(of);
                             u.setDatum(datum);
                             if (u.getLand() == null || u.getLand().equals("0")) {
-                                u.setLand(k.getLand());
+                                u.setLand(konto.getLand());
                             } // use same value as library, if not specified
-                            u.setId(u.saveNewUser(u, k.getTimezone(), cn.getConnection()));
+                            u.setId(u.saveNewUser(u, konto.getTimezone(), cn.getConnection()));
                             final VKontoBenutzer vKontoBenutzer = new VKontoBenutzer();
-                            vKontoBenutzer.setKontoUser(u, k, cn.getConnection());
+                            vKontoBenutzer.setKontoUser(u, konto, cn.getConnection());
                             of.setForuser(u.getId().toString());
                         }
                         
                         if (saveOrder) {
                             // save oder
-                            final Bestellungen b = new Bestellungen(of, u, k);
+                            final Bestellungen b = new Bestellungen(of, u, konto);
                             // set standard values. Fileformat isn't implemented in any possible orderform
                             if (!b.getMediatype().equals("Buch")) {
                                 b.setFileformat("PDF");
@@ -531,7 +532,7 @@ public final class BestellformAction extends DispatchAction {
                             
                             final Text state = new Text(cn.getConnection(), TextType.STATE_ORDER, "zu bestellen");
                             final OrderState orderstate = new OrderState();
-                            orderstate.setNewOrderState(b, k, state, null, u.getEmail(), cn.getConnection());
+                            orderstate.setNewOrderState(b, konto, state, null, u.getEmail(), cn.getConnection());
                         }
                         
                         forward = Result.SUCCESS.getValue();
@@ -539,7 +540,7 @@ public final class BestellformAction extends DispatchAction {
                         // set current date
                         final Date d = new Date();
                         final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                        final String date = sdf.format(d, k.getTimezone());
+                        final String date = sdf.format(d, konto.getTimezone());
                         
                         final StringBuffer m = new StringBuffer();
                         m.append("First name: ");
@@ -713,8 +714,8 @@ public final class BestellformAction extends DispatchAction {
                                 
                                 // Add a link to the EZB
                                 String bibid = "AAAAA";
-                                if (k.getEzbid() != null && !k.getEzbid().equals("")) {
-                                    bibid = k.getEzbid();
+                                if (konto.getEzbid() != null && !konto.getEzbid().equals("")) {
+                                    bibid = konto.getEzbid();
                                 }
                                 final String link = "http://ezb.uni-regensburg.de/ezeit/searchres.phtml?bibid="
                                         + bibid
@@ -842,14 +843,10 @@ public final class BestellformAction extends DispatchAction {
                                     + createUrlParamsForAddUser(of);
                         }
                         
-                        String prio = "3"; // Email priority 3 = normal
+                        String xprio = XPrio.NORMAL.getValue();
                         if (of.getPrio() != null && of.getPrio().equals("urgent")) {
-                            prio = "1";
-                        } // high
-                        
-                        final String[] to = new String[2];
-                        to[0] = k.getDbsmail();
-                        to[1] = of.getKundenmail();
+                            xprio = XPrio.IMPORTANT.getValue();
+                        }
                         
                         if (of.getMediatype().equals("Artikel")) {
                             
@@ -857,33 +854,33 @@ public final class BestellformAction extends DispatchAction {
                                     + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten();
                             
                             // send email to patron, ReplyTo library
-                            final String[] toemail = new String[1];
-                            toemail[0] = of.getKundenmail(); // email of patron
+                            final String[] to = new String[1];
+                            to[0] = of.getKundenmail(); // email of patron
                             
-                            final MHelper mh = new MHelper(toemail, subject, m.toString());
-                            mh.setReplyTo(k.getDbsmail());
+                            final MHelper mh = new MHelper(to, subject, m.toString());
+                            mh.setReplyTo(konto.getDbsmail());
                             mh.send(); // send email to patron
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = k.getDbsmail(); // email of library
+                            to[0] = konto.getDbsmail(); // email of library
                             if (u.getId() != null) { // User already exists
                                 // subject is already set
-                                mh.setTo(toemail);
+                                mh.setTo(to);
                                 mh.setText(m.toString() + "\012Save order details in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink);
                                 mh.setReplyTo(of.getKundenmail());
-                                mh.setPrio(prio);
+                                mh.setXPrio(xprio);
                                 mh.send(); // send email to library
                                 
                             } else { // User unknown
                                 // subject is already set
-                                mh.setTo(toemail);
+                                mh.setTo(to);
                                 mh.setText(m.toString() + "\012Unknown Email! Save patron in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink
                                         + "\012" + "\012Save order details in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink);
                                 mh.setReplyTo(of.getKundenmail());
-                                mh.setPrio(prio);
+                                mh.setXPrio(xprio);
                                 mh.send(); // send email to library
                             }
                         }
@@ -898,17 +895,17 @@ public final class BestellformAction extends DispatchAction {
                             toemail[0] = of.getKundenmail(); // email of patron
                             
                             final MHelper mh = new MHelper(toemail, subject, m.toString());
-                            mh.setReplyTo(k.getDbsmail());
+                            mh.setReplyTo(konto.getDbsmail());
                             mh.send();
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = k.getDbsmail(); // email of library
+                            toemail[0] = konto.getDbsmail(); // email of library
                             if (u.getId() != null) { // User already exists
                                 // subject is already set
                                 mh.setTo(toemail);
                                 mh.setText(m.toString());
                                 mh.setReplyTo(of.getKundenmail());
-                                mh.setPrio(prio);
+                                mh.setXPrio(xprio);
                                 mh.send();
                             } else { // User unknown
                                 // subject is already set
@@ -916,7 +913,7 @@ public final class BestellformAction extends DispatchAction {
                                 mh.setText(m.toString() + "\012Unknown Email! Save patron in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink);
                                 mh.setReplyTo(of.getKundenmail());
-                                mh.setPrio(prio);
+                                mh.setXPrio(xprio);
                                 mh.send();
                             }
                         }
@@ -930,16 +927,16 @@ public final class BestellformAction extends DispatchAction {
                             toemail[0] = of.getKundenmail(); // email of patron
                             
                             final MHelper mh = new MHelper(toemail, subject, m.toString());
-                            mh.setReplyTo(k.getDbsmail());
+                            mh.setReplyTo(konto.getDbsmail());
                             mh.send();
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = k.getDbsmail(); // email of library
+                            toemail[0] = konto.getDbsmail(); // email of library
                             if (u.getId() != null) { // User already exists
                                 // subject & text are already set
                                 mh.setTo(toemail);
                                 mh.setReplyTo(of.getKundenmail());
-                                mh.setPrio(prio);
+                                mh.setXPrio(xprio);
                                 mh.send();
                             } else { // User unknown
                                 // subject is already set
@@ -947,13 +944,13 @@ public final class BestellformAction extends DispatchAction {
                                 mh.setText(m.toString() + "\012Unknown Email! Save patron in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink);
                                 mh.setReplyTo(of.getKundenmail());
-                                mh.setPrio(prio);
+                                mh.setXPrio(xprio);
                                 mh.send();
                             }
                         }
                         
                         // temporary log to see who is using the system as mailing system
-                        LOG.warn("Order sent by email for library: " + library + " ; " + to[0]);
+                        LOG.warn("Order sent by email for library: " + library + " ; " + konto.getDbsmail());
                         
                     } else {
                         forward = "missingvalues";
@@ -1363,13 +1360,13 @@ public final class BestellformAction extends DispatchAction {
      * Sucht anhand der im Bestellformular eingegebenen Email den zugehörigen
      * Benutzer des betreffenden Kontos zu holen
      */
-    private AbstractBenutzer getUserFromBestellformEmail(final Konto k, final String email, final Connection cn) {
+    private AbstractBenutzer getUserFromBestellformEmail(final Konto konto, final String email, final Connection cn) {
         
         AbstractBenutzer u = new AbstractBenutzer();
         
         try {
             
-            final List<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(k, email, cn);
+            final List<AbstractBenutzer> list = u.getUserListFromEmailAndKonto(konto, email, cn);
             
             if (!list.isEmpty()) {
                 u = list.get(0);
