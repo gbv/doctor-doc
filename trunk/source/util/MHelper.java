@@ -154,14 +154,14 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /** Gets the MimeMessage */
-    private MimeMessage getMimeMessage(final Session session, final String prio) throws MessagingException {
+    private MimeMessage getMimeMessage(final Session session, final String xprio) throws MessagingException {
         // Define message
         final MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SYSTEM_EMAIL));
         message.setSentDate(new Date()); // set date
         //        message.addHeader("charset", UTF8);
         message.setHeader("Content-Type", "text/plain; charset=utf-8");
-        message.addHeader("X-Priority", prio);
+        message.addHeader("X-Priority", xprio);
         
         return message;
     }
