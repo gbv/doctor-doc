@@ -137,6 +137,9 @@ public class MHelper extends AbstractReadSystemConfigurations {
             
         } catch (final Exception e) {
             LOG.error(e.toString());
+            // from time to time sending of emails may fail due to various reasons.
+            // Try to send report of failed emails.
+            sendInternalErrorReport(e);
         }
         
     }
@@ -192,6 +195,23 @@ public class MHelper extends AbstractReadSystemConfigurations {
     /** Returns a random number between and including a minimum and maximum. */
     private int getRandomNumber(final int min, final int max) {
         return min + (int) (Math.random() * ((max - min) + 1));
+    }
+    
+    /** Try to send an error report by email. */
+    private void sendInternalErrorReport(final Exception e) {
+        
+        try {
+            final String[] errorMail = new String[1];
+            errorMail[0] = ERROR_EMAIL;
+            this.setTo(errorMail);
+            // append original subject
+            this.setSubject("Error sending email: " + this.getSubject());
+            // append original text
+            this.setText(e.toString() + "\n\n" + this.getText());
+            this.send();
+        } catch (final Exception ex) {
+            LOG.error("sendInternalErrorReport:\n" + ex.toString());
+        }
     }
     
     public static void main(final String[] args) {
