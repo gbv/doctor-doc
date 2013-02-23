@@ -19,7 +19,7 @@ package enums;
 
 public enum XPrio {
     
-    NORMAL("NORMAL", "3"), IMPORTANT("IMPORTANT", "1");
+    HIGHEST("HIGHEST", "1"), HIGH("HIGH", "2"), NORMAL("NORMAL", "3"), LOW("LOW", "4"), LOWEST("LOWEST", "5");
     
     private final String name;
     private final String value;

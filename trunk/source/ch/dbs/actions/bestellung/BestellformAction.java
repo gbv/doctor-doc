@@ -845,7 +845,7 @@ public final class BestellformAction extends DispatchAction {
                         
                         String xprio = XPrio.NORMAL.getValue();
                         if (of.getPrio() != null && of.getPrio().equals("urgent")) {
-                            xprio = XPrio.IMPORTANT.getValue();
+                            xprio = XPrio.HIGHEST.getValue();
                         }
                         
                         if (of.getMediatype().equals("Artikel")) {
