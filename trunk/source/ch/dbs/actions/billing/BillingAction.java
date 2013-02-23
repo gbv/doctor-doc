@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.activation.DataSource;
-import javax.mail.internet.InternetAddress;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -222,21 +221,19 @@ public final class BillingAction extends DispatchAction {
                 
                 final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
                 
-                final InternetAddress[] to = new InternetAddress[1];
-                to[0] = new InternetAddress(k.getDbsmail());
+                final String[] to = new String[1];
+                to[0] = new String(k.getDbsmail());
                 
                 // Rechnung speichern
                 bf.getBill().save(cn.getConnection());
                 
-                // Create email
-                final MHelper mh = new MHelper();
-                
                 // define subject
                 final String subject = "Rechnung für ihr Konto bei " + ReadSystemConfigurations.getApplicationName();
                 
-                // send the email
-                mh.sendMailWithAttachement(to, subject, bf.getBillingtext(),
-                        ReadSystemConfigurations.getBillingEmail(), aAttachment, "invoice.pdf");
+                // Create and send email
+                final MHelper mh = new MHelper(to, subject, bf.getBillingtext(), aAttachment, "invoice.pdf");
+                mh.setReplyTo(ReadSystemConfigurations.getBillingEmail());
+                mh.send();
                 
                 // Meldung verfassen
                 final Message m = new Message("message.sendbill",

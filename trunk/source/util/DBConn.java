@@ -177,8 +177,8 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 LOG.error("getPooledConnection: " + e.toString());
                 cn = getSingleConnection();
                 // Control to see if it works on remote server
-                final MHelper mh = new MHelper();
-                mh.sendErrorMail("Database failed to respond! getPooledConnection: ", e.toString());
+                final MHelper mh = new MHelper(e, "Database failed to respond! getPooledConnection");
+                mh.send();
             }
         } else {
             try {
@@ -196,8 +196,8 @@ public class DBConn extends AbstractReadSystemConfigurations {
                         LOG.error("getPooledConnection: " + e.toString());
                         cn = getSingleConnection();
                         // Control to see if it works on remote server
-                        final MHelper mh = new MHelper();
-                        mh.sendErrorMail("Database failed to respond! getPooledConnection: ", e.toString());
+                        final MHelper mh = new MHelper(e, "Database failed to respond! getPooledConnection");
+                        mh.send();
                     }
                 }
             } catch (final SQLException e) {

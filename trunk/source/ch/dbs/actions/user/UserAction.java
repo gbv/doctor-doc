@@ -671,9 +671,13 @@ public final class UserAction extends DispatchAction {
                     msg.append(messageResources.getMessage("resend.email.team"));
                     msg.append('\040');
                     msg.append(ReadSystemConfigurations.getApplicationName());
-                    final MHelper m = new MHelper();
-                    m.sendMail(recipients, messageResources.getMessage("resend.email.subject") + "\040"
-                            + ReadSystemConfigurations.getApplicationName(), msg.toString());
+                    
+                    final String subject = messageResources.getMessage("resend.email.subject") + "\040"
+                            + ReadSystemConfigurations.getApplicationName();
+                    
+                    final MHelper m = new MHelper(recipients, subject, msg.toString());
+                    m.send();
+                    
                     forward = Result.SUCCESS.getValue();
                     rq.setAttribute("message", new Message("message.pwreset", "login.do"));
                     
@@ -681,14 +685,14 @@ public final class UserAction extends DispatchAction {
                     em.setError("error.pwreset");
                     em.setLink("login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                    log.warn(lf.getEmail() + " ist registriert und hat versucht sich "
+                    LOG.warn(lf.getEmail() + " ist registriert und hat versucht sich "
                             + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
                 }
             } else {
                 em.setError("error.unknown_email");
                 em.setLink("login.do");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
-                log.warn(lf.getEmail() + " (unbekannt) hat versucht sich "
+                LOG.warn(lf.getEmail() + " (unbekannt) hat versucht sich "
                         + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
             }
             

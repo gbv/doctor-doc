@@ -541,11 +541,6 @@ public final class BestellformAction extends DispatchAction {
                         final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                         final String date = sdf.format(d, k.getTimezone());
                         
-                        final MHelper mh = new MHelper();
-                        final String[] to = new String[2];
-                        to[0] = k.getDbsmail();
-                        
-                        to[1] = of.getKundenmail();
                         final StringBuffer m = new StringBuffer();
                         m.append("First name: ");
                         m.append(of.getKundenvorname());
@@ -852,81 +847,108 @@ public final class BestellformAction extends DispatchAction {
                             prio = "1";
                         } // high
                         
+                        final String[] to = new String[2];
+                        to[0] = k.getDbsmail();
+                        to[1] = of.getKundenmail();
+                        
                         if (of.getMediatype().equals("Artikel")) {
+                            
+                            final String subject = "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr()
+                                    + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten();
+                            
+                            // send email to patron, ReplyTo library
                             final String[] toemail = new String[1];
+                            toemail[0] = of.getKundenmail(); // email of patron
                             
-                            // Mail to patron, ReplyTo = library
-                            toemail[0] = to[1]; // email of patron
-                            mh.sendMailReplyTo(
-                                    toemail,
-                                    "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr() + ";"
-                                            + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(),
-                                    m.toString(), to[0]);
+                            final MHelper mh = new MHelper(toemail, subject, m.toString());
+                            mh.setReplyTo(k.getDbsmail());
+                            mh.send(); // send email to patron
                             
-                            // Mail to library, ReplyTo = patron
-                            toemail[0] = to[0]; // email of library
+                            // send email to library, ReplyTo patron
+                            toemail[0] = k.getDbsmail(); // email of library
                             if (u.getId() != null) { // User already exists
-                                mh.sendMailReplyTo(
-                                        toemail,
-                                        "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr() + ";"
-                                                + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(),
-                                        m.toString() + "\012Save order details in "
-                                                + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink,
-                                        of.getKundenmail(), prio);
+                                // subject is already set
+                                mh.setTo(toemail);
+                                mh.setText(m.toString() + "\012Save order details in "
+                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink);
+                                mh.setReplyTo(of.getKundenmail());
+                                mh.setPrio(prio);
+                                mh.send(); // send email to library
+                                
                             } else { // User unknown
-                                mh.sendMailReplyTo(
-                                        toemail,
-                                        "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr() + ";"
-                                                + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten(),
-                                        m.toString() + "\012Unknown Email! Save patron in "
-                                                + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink
-                                                + "\012" + "\012Save order details in "
-                                                + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink,
-                                        of.getKundenmail(), prio);
+                                // subject is already set
+                                mh.setTo(toemail);
+                                mh.setText(m.toString() + "\012Unknown Email! Save patron in "
+                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink
+                                        + "\012" + "\012Save order details in "
+                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink);
+                                mh.setReplyTo(of.getKundenmail());
+                                mh.setPrio(prio);
+                                mh.send(); // send email to library
                             }
                         }
                         
                         if (of.getMediatype().equals("Teilkopie Buch")) {
+                            
+                            final String subject = "Book part: " + of.getBuchtitel() + "\040" + of.getJahr() + ":"
+                                    + of.getSeiten();
+                            
+                            // send email to patron, ReplyTo library
                             final String[] toemail = new String[1];
+                            toemail[0] = of.getKundenmail(); // email of patron
                             
-                            // Mail to patron, ReplyTo = library
-                            toemail[0] = to[1]; // email of patron
-                            mh.sendMailReplyTo(toemail, "Book part: " + of.getBuchtitel() + "\040" + of.getJahr() + ":"
-                                    + of.getSeiten(), m.toString(), to[0]);
+                            final MHelper mh = new MHelper(toemail, subject, m.toString());
+                            mh.setReplyTo(k.getDbsmail());
+                            mh.send();
                             
-                            // Mail to library, ReplyTo = patron
-                            toemail[0] = to[0]; // email of library
+                            // send email to library, ReplyTo patron
+                            toemail[0] = k.getDbsmail(); // email of library
                             if (u.getId() != null) { // User already exists
-                                mh.sendMailReplyTo(toemail, "Book part: " + of.getBuchtitel() + "\040" + of.getJahr()
-                                        + ":" + of.getSeiten(), m.toString(), of.getKundenmail(), prio);
+                                // subject is already set
+                                mh.setTo(toemail);
+                                mh.setText(m.toString());
+                                mh.setReplyTo(of.getKundenmail());
+                                mh.setPrio(prio);
+                                mh.send();
                             } else { // User unknown
-                                mh.sendMailReplyTo(toemail, "Book part: " + of.getBuchtitel() + "\040" + of.getJahr()
-                                        + ":" + of.getSeiten(), m.toString() + "\012Unknown Email! Save patron in "
-                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink,
-                                        of.getKundenmail(), prio);
+                                // subject is already set
+                                mh.setTo(toemail);
+                                mh.setText(m.toString() + "\012Unknown Email! Save patron in "
+                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink);
+                                mh.setReplyTo(of.getKundenmail());
+                                mh.setPrio(prio);
+                                mh.send();
                             }
                         }
                         
                         if (of.getMediatype().equals("Buch")) {
+                            
+                            final String subject = "Book: " + of.getBuchtitel() + "\040" + of.getJahr();
+                            
+                            // send email to patron, ReplyTo library
                             final String[] toemail = new String[1];
+                            toemail[0] = of.getKundenmail(); // email of patron
                             
-                            // Mail to patron, ReplyTo = library
-                            toemail[0] = to[1]; // email of patron
-                            mh.sendMailReplyTo(toemail, "Book: " + of.getBuchtitel() + "\040" + of.getJahr(),
-                                    m.toString(), to[0]);
+                            final MHelper mh = new MHelper(toemail, subject, m.toString());
+                            mh.setReplyTo(k.getDbsmail());
+                            mh.send();
                             
-                            // Mail to library, ReplyTo = patron
-                            toemail[0] = to[0]; // email of library
+                            // send email to library, ReplyTo patron
+                            toemail[0] = k.getDbsmail(); // email of library
                             if (u.getId() != null) { // User already exists
-                                mh.sendMailReplyTo(toemail, "Book: " + of.getBuchtitel() + "\040" + of.getJahr(),
-                                        m.toString(), of.getKundenmail(), prio);
+                                // subject & text are already set
+                                mh.setTo(toemail);
+                                mh.setReplyTo(of.getKundenmail());
+                                mh.setPrio(prio);
+                                mh.send();
                             } else { // User unknown
-                                mh.sendMailReplyTo(
-                                        toemail,
-                                        "Book: " + of.getBuchtitel() + "\040" + of.getJahr(),
-                                        m.toString() + "\012Unknown Email! Save patron in "
-                                                + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink,
-                                        of.getKundenmail(), prio);
+                                // subject is already set
+                                mh.setTo(toemail);
+                                mh.setText(m.toString() + "\012Unknown Email! Save patron in "
+                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink);
+                                mh.setReplyTo(of.getKundenmail());
+                                mh.setPrio(prio);
+                                mh.send();
                             }
                         }
                         
@@ -948,8 +970,8 @@ public final class BestellformAction extends DispatchAction {
                     final ErrorMessage em = new ErrorMessage("error.send", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     // Severe error
-                    final MHelper mh = new MHelper();
-                    mh.sendErrorMail(e.toString(), "Order form - Error sending an order");
+                    final MHelper mh = new MHelper(e, "Order form - Error sending an order");
+                    mh.send();
                 }
                 
                 if (auth.isLogin(rq)) {

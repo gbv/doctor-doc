@@ -344,9 +344,7 @@ public final class OrderAction extends DispatchAction {
                     content = getWebcontent(linkGoogle, Connect.TIMEOUT_1.getValue(), Connect.TRIES_1.getValue());
                     
                     if (!check.containsGoogleCaptcha(content)) {
-                        // Important message
-                        final MHelper mh = new MHelper();
-                        mh.sendErrorMail("Catchpa has been successfully resolved!", "Cheers...\012");
+                        LOG.warn("Catchpa has been successfully resolved!");
                     }
                     
                     // Captcha: prepare manual Google search
@@ -548,7 +546,7 @@ public final class OrderAction extends DispatchAction {
                             issnJS = journalseekResult.get(12, TimeUnit.SECONDS);
                         }
                     } catch (final TimeoutException e) {
-                        log.warn("Journalseek-TimeoutException: " + e.toString());
+                        LOG.warn("Journalseek-TimeoutException: " + e.toString());
                     } catch (final Exception e) {
                         LOG.error("Journalseek-Thread failed in issnAssistent: " + e.toString());
                     } finally {
@@ -1850,7 +1848,7 @@ public final class OrderAction extends DispatchAction {
                     if (b.getId() == null) {
                         // Values may get truncated, while saving in DB. We need to use a reduced method to get the order back
                         b = b.getOrderSimpleWay(b, cn.getConnection());
-                        log.warn("b.getId() has been null! We had to use b.getOrderSimpleWay!");
+                        LOG.warn("b.getId() has been null! We had to use b.getOrderSimpleWay!");
                     }
                     
                     final Text t = new Text(cn.getConnection(), TextType.STATE_ORDER, pageForm.getStatus());
@@ -2227,10 +2225,12 @@ public final class OrderAction extends DispatchAction {
         m.setLink(link);
         m.setMessage(id);
         
-        log.warn("Google-Captcha!");
+        LOG.warn("Google-Captcha!");
         // Important message
-        final MHelper mh = new MHelper();
-        mh.sendErrorMail("Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
+        final String[] to = new String[1];
+        to[0] = ReadSystemConfigurations.getErrorEmail();
+        final MHelper mh = new MHelper(to, "Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
+        mh.send();
         
         return m;
     }
@@ -2634,13 +2634,13 @@ public final class OrderAction extends DispatchAction {
             result = webcontent.get(i, TimeUnit.SECONDS);
             
         } catch (final TimeoutException e) {
-            log.warn(serviceName + " thread - TimeoutException: " + e.toString());
+            LOG.warn(serviceName + " thread - TimeoutException: " + e.toString());
         } catch (final InterruptedException e) {
-            log.error(serviceName + " thread - InterruptedException: " + e.toString());
+            LOG.error(serviceName + " thread - InterruptedException: " + e.toString());
         } catch (final ExecutionException e) {
-            log.error(serviceName + " thread - ExecutionException: ", e);
+            LOG.error(serviceName + " thread - ExecutionException: ", e);
         } catch (final CancellationException e) {
-            log.error(serviceName + " thread - CancellationException: " + e.toString());
+            LOG.error(serviceName + " thread - CancellationException: " + e.toString());
         } catch (final Exception e) {
             LOG.error(serviceName + " thread - Exception: " + e.toString());
         } finally {

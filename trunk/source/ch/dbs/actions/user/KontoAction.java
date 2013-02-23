@@ -385,8 +385,8 @@ public final class KontoAction extends DispatchAction {
                     message.append(u.getEmail());
                     final String[] to = new String[1];
                     to[0] = ReadSystemConfigurations.getSystemEmail();
-                    final MHelper mh = new MHelper();
-                    mh.sendMail(to, "New library account!", message.toString());
+                    final MHelper mh = new MHelper(to, "New library account!", message.toString());
+                    mh.send();
                     
                     // Bestätigungsemail mit Angaben zu den nächsten Schritten und Möglichkeiten
                     final StringBuffer mg = new StringBuffer(400);
@@ -430,9 +430,9 @@ public final class KontoAction extends DispatchAction {
                     mg.append(ReadSystemConfigurations.getApplicationName());
                     final String[] sendto = new String[1];
                     sendto[0] = u.getEmail();
-                    final MHelper mailh = new MHelper();
-                    mailh.sendMail(sendto, "Your account at " + ReadSystemConfigurations.getApplicationName(),
-                            mg.toString());
+                    final MHelper mailh = new MHelper(sendto, "Your account at "
+                            + ReadSystemConfigurations.getApplicationName(), mg.toString());
+                    mailh.send();
                     
                     // Kontoform in Session leeren
                     rq.getSession().setAttribute("kontoform", null);
@@ -781,13 +781,13 @@ public final class KontoAction extends DispatchAction {
         final Konto k = new Konto();
         
         try {
-        	if (kf.getSubmenu().equals("premium")) {
-        		kf.setKontos(k.getAdvancedKontos(k.getConnection()));
-        	} else if (kf.getSubmenu().equals("openbill")){
-        		kf.setKontos(k.getKontosOpenBill(k.getConnection()));
-        	} else {
-        		kf.setKontos(k.getAllKontos(k.getConnection()));
-        	}
+            if (kf.getSubmenu().equals("premium")) {
+                kf.setKontos(k.getAdvancedKontos(k.getConnection()));
+            } else if (kf.getSubmenu().equals("openbill")) {
+                kf.setKontos(k.getKontosOpenBill(k.getConnection()));
+            } else {
+                kf.setKontos(k.getAllKontos(k.getConnection()));
+            }
             
             rq.setAttribute("kontoform", kf);
             if (kf.getKontos() == null) {
