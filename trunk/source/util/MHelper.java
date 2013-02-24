@@ -47,6 +47,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
     
     final Logger LOG = LoggerFactory.getLogger(MHelper.class);
     
+    // TODO: "String[] to" should be of type InternetAddress[], which would require proper error
+    // handling in the calling classes...
     private String[] to;
     private String subject;
     private String text;
@@ -80,6 +82,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
         this.setText(e.toString());
     }
     
+    // TODO: implement proper error handling: errors should be thrown to the calling classes.
     public void send() {
         
         try {
