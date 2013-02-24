@@ -197,16 +197,18 @@ public class MHelper extends AbstractReadSystemConfigurations {
     
     /** Try to send an error report by email. */
     private void sendInternalErrorReport(final Exception e) {
-        
+        // The current instance may be partially reused in the original
+        // context: we need to make a copy to modify the contents.        
         try {
             final String[] errorMail = new String[1];
             errorMail[0] = ERROR_EMAIL;
-            this.setTo(errorMail);
             // append original subject
-            this.setSubject("Error sending email: " + this.getSubject());
+            final String errorSubject = "Error sending email: " + this.getSubject();
             // append original text
-            this.setText(e.toString() + "\n\n" + this.getText());
-            this.send();
+            final String errorText = e.toString() + "\n\n" + this.getText();
+            // create a modified copy of the current instance
+            final MHelper report = new MHelper(errorMail, errorSubject, errorText);
+            report.send();
         } catch (final Exception ex) {
             LOG.error("sendInternalErrorReport:\n" + ex.toString());
         }
