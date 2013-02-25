@@ -216,12 +216,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
             // only try to send a report once: if this fails too, this could potentially
             // result in a infinite loop...
             if (this.errrorLoopNr == 0) {
+                this.errrorLoopNr++;
                 report.send();
             }
         } catch (final Exception ex) {
             LOG.error("sendInternalErrorReport:\n" + ex.toString());
-        } finally {
-            this.errrorLoopNr++;
         }
     }
     
