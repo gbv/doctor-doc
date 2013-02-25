@@ -214,7 +214,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
             // create a modified copy of the current instance
             final MHelper report = new MHelper(errorMail, errorSubject, errorText);
             // only try to send a report once: if this fails too, this could potentially
-            // result in a infinite loop...
+            // result in an infinite loop...
             if (this.errrorLoopNr == 0) {
                 this.errrorLoopNr++;
                 report.send();
