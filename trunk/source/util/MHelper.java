@@ -56,6 +56,9 @@ public class MHelper extends AbstractReadSystemConfigurations {
     private DataSource attachment;
     private String filename;
     
+    // control number to avoid infinite loops, while trying to send error reports by email.
+    private int errrorLoopNr;
+    
     private static final String UTF8 = "UTF-8";
     
     public MHelper(final String[] to, final String subject, final String text) {
@@ -210,9 +213,15 @@ public class MHelper extends AbstractReadSystemConfigurations {
             final String errorText = e.toString() + "\n\n" + this.getText();
             // create a modified copy of the current instance
             final MHelper report = new MHelper(errorMail, errorSubject, errorText);
-            report.send();
+            // only try to send a report once: if this fails too, this could potentially
+            // result in a infinite loop...
+            if (this.errrorLoopNr == 0) {
+                report.send();
+            }
         } catch (final Exception ex) {
             LOG.error("sendInternalErrorReport:\n" + ex.toString());
+        } finally {
+            this.errrorLoopNr++;
         }
     }
     
