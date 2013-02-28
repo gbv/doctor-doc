@@ -96,6 +96,7 @@
       <td>
       	<select name="category">
       	<option value="0"><bean:message key="modifykontousers.choose" /></option>
+      	<logic:present name="categories">
       	<logic:present name="userform">
       		<bean:define id="tmp" name="userform" property="category" type="java.lang.String" />
       		<logic:iterate id="cat" name="categories">
@@ -107,6 +108,7 @@
          		<option value="<bean:write name="cat" property="id" />"><bean:write name="cat" property="inhalt" /></option>
         	</logic:iterate>
         </logic:notPresent>
+        </logic:present>
         </select>
         <logic:present name="userinfo" property="benutzer">
      		<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">

@@ -263,6 +263,7 @@
       </tr>      
     </logic:equal>
    <logic:equal name="bestellparam" property="category" value="true">
+   <logic:present name="categories">
       <tr>
         <td>
           <logic:equal name="bestellparam" property="category_required" value="true"><b></logic:equal>
@@ -277,7 +278,8 @@
         	</logic:iterate>
        </select>
       </td>
-      </tr>      
+      </tr>
+    </logic:present>
     </logic:equal>
     <logic:equal name="bestellparam" property="freitxt2" value="true">
       <tr>
