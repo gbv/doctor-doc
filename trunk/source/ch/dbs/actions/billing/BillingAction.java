@@ -171,18 +171,20 @@ public final class BillingAction extends DispatchAction {
         
         try {
             out = rp.getOutputStream();
+            
+            final BillingForm bf = (BillingForm) fm;
+            pdfPreview(bf, rp);
+            
         } catch (final IOException e) {
             LOG.error(e.toString());
-        }
-        final BillingForm bf = (BillingForm) fm;
-        pdfPreview(bf, rp);
-        
-        // Report an den Browser senden
-        try {
-            out.flush();
-            out.close();
-        } catch (final IOException e) {
-            LOG.error("BillingAction.billingPreview: " + e.toString());
+        } finally {
+            try {
+                // Report an den Browser senden
+                out.flush();
+                out.close();
+            } catch (final IOException e) {
+                LOG.error("BillingAction.billingPreview: " + e.toString());
+            }
         }
         
         return mp.findForward(null);
@@ -207,42 +209,41 @@ public final class BillingAction extends DispatchAction {
         String forward = Result.FAILURE.getValue();
         final Text cn = new Text();
         final BillingForm bf = (BillingForm) fm;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
+        if ("PDF Vorschau".equals(bf.getAction())) {
+            forward = "preview";
+        }
         
         try {
-            if (bf.getAction().equals("PDF Vorschau")) {
-                forward = "preview";
-            } else {
-                
-                // prepare attachement
-                DataSource aAttachment = null;
-                final ByteArrayOutputStream o = new ByteArrayOutputStream();
-                pdfMailAttachement(bf, rp, o);
-                aAttachment = new ByteArrayDataSource(o.toByteArray(), "application/pdf");
-                
-                final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
-                
-                final String[] to = new String[1];
-                to[0] = new String(k.getDbsmail());
-                
-                // Rechnung speichern
-                bf.getBill().save(cn.getConnection());
-                
-                // define subject
-                final String subject = "Rechnung für ihr Konto bei " + ReadSystemConfigurations.getApplicationName();
-                
-                // Create and send email
-                final MHelper mh = new MHelper(to, subject, bf.getBillingtext(), aAttachment, "invoice.pdf");
-                mh.setReplyTo(ReadSystemConfigurations.getBillingEmail());
-                mh.send();
-                
-                // Meldung verfassen
-                final Message m = new Message("message.sendbill",
-                        k.getBibliotheksname() + "\n\n" + bf.getBillingtext(),
-                        "listbillings.do?method=listBillings&kid=" + k.getId());
-                rq.setAttribute("message", m);
-                
-                forward = Result.SUCCESS.getValue();
-            }
+            
+            // prepare attachement
+            DataSource aAttachment = null;
+            pdfMailAttachement(bf, rp, baos);
+            aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
+            
+            final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
+            
+            final String[] to = new String[1];
+            to[0] = new String(k.getDbsmail());
+            
+            // Rechnung speichern
+            bf.getBill().save(cn.getConnection());
+            
+            // define subject
+            final String subject = "Rechnung für ihr Konto bei " + ReadSystemConfigurations.getApplicationName();
+            
+            // Create and send email
+            final MHelper mh = new MHelper(to, subject, bf.getBillingtext(), aAttachment, "invoice.pdf");
+            mh.setReplyTo(ReadSystemConfigurations.getBillingEmail());
+            mh.send();
+            
+            // Meldung verfassen
+            final Message m = new Message("message.sendbill", k.getBibliotheksname() + "\n\n" + bf.getBillingtext(),
+                    "listbillings.do?method=listBillings&kid=" + k.getId());
+            rq.setAttribute("message", m);
+            
+            forward = Result.SUCCESS.getValue();
             
         } catch (final Exception e) {
             LOG.error("sendBilling: " + e.toString());
@@ -251,6 +252,11 @@ public final class BillingAction extends DispatchAction {
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
         } finally {
             cn.close();
+            try {
+                baos.close();
+            } catch (final IOException e) {
+                LOG.error(e.toString());
+            }
         }
         
         return mp.findForward(forward);

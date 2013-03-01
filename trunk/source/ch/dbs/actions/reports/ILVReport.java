@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.Auth;
+import util.Check;
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
@@ -253,35 +254,46 @@ public final class ILVReport extends DispatchAction {
         
         final IlvReportForm ilvf = (IlvReportForm) fm;
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Check check = new Check();
+        
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
         try {
-            // prepare attachement
-            DataSource aAttachment = null;
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             
-            // create PDF report using the appropriate ILL form number
-            runReport(ilvf, ui, baos);
-            
-            aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
-            
-            // prepare email
-            final String[] to = new String[2];
-            to[0] = new String(ilvf.getTo());
-            to[1] = new String(ui.getKonto().getDbsmail());
-            
-            // Create and send email
-            final MHelper mh = new MHelper(to, ilvf.getSubject(), composeMailBody(ui, ilvf), aAttachment,
-                    composeFilename(ilvf, ui));
-            mh.setReplyTo(ui.getKonto().getDbsmail());
-            mh.send();
-            
-            forward = Result.SUCCESS.getValue();
-            final String content = "ilvmail.confirmation";
-            final String link = "listkontobestellungen.do?method=overview";
-            final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
-            rq.setAttribute("message", mes);
-            rq.setAttribute("IlvReportForm", ilvf);
-            
+            // validate email: failing mails would be returned to the system email and not
+            // to the library generating the invalid email!
+            if (check.isEmail(ilvf.getTo())) {
+                
+                // prepare attachment
+                DataSource aAttachment = null;
+                
+                // create PDF report using the appropriate ILL form number
+                runReport(ilvf, ui, baos);
+                
+                aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
+                
+                // prepare email
+                final String[] to = new String[2];
+                to[0] = new String(ilvf.getTo());
+                to[1] = new String(ui.getKonto().getDbsmail());
+                
+                // Create and send email
+                final MHelper mh = new MHelper(to, ilvf.getSubject(), composeMailBody(ui, ilvf), aAttachment,
+                        composeFilename(ilvf, ui));
+                mh.setReplyTo(ui.getKonto().getDbsmail());
+                mh.send();
+                
+                forward = Result.SUCCESS.getValue();
+                final String content = "ilvmail.confirmation";
+                final String link = "listkontobestellungen.do?method=overview";
+                final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
+                rq.setAttribute("message", mes);
+                rq.setAttribute("IlvReportForm", ilvf);
+                
+            } else {
+                final ErrorMessage em = new ErrorMessage("error.email", "listkontobestellungen.do?method=overview");
+                rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            }
         } catch (final JRException e1) {
             final ErrorMessage em = new ErrorMessage("error.createilvreport",
                     "listkontobestellungen.do?method=overview");
@@ -290,6 +302,12 @@ public final class ILVReport extends DispatchAction {
             final ErrorMessage em = new ErrorMessage("error.sendmail", e.getMessage(),
                     "listkontobestellungen.do?method=overview");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+        } finally {
+            try {
+                baos.close();
+            } catch (final IOException e) {
+                LOG.error(e.toString());
+            }
         }
         
         return mp.findForward(forward);

@@ -60,6 +60,7 @@ public class CheckTest {
         assertFalse(check.isEmail("test@test.c"));
         assertFalse(check.isEmail("'test@test.ch'"));
         assertFalse(check.isEmail("test@test.kom"));
+        assertFalse(check.isEmail("test@test"));
         assertFalse(check.isEmail("test@"));
         assertFalse(check.isEmail("test"));
         assertFalse(check.isEmail("@"));
