@@ -211,10 +211,6 @@ public final class BillingAction extends DispatchAction {
         final BillingForm bf = (BillingForm) fm;
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
-        if ("PDF Vorschau".equals(bf.getAction())) {
-            forward = "preview";
-        }
-        
         try {
             
             // prepare attachement
@@ -243,7 +239,11 @@ public final class BillingAction extends DispatchAction {
                     "listbillings.do?method=listBillings&kid=" + k.getId());
             rq.setAttribute("message", m);
             
-            forward = Result.SUCCESS.getValue();
+            if ("PDF Vorschau".equals(bf.getAction())) {
+                forward = "preview";
+            } else {
+                forward = Result.SUCCESS.getValue();
+            }
             
         } catch (final Exception e) {
             LOG.error("sendBilling: " + e.toString());
