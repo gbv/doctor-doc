@@ -36,7 +36,7 @@ import enums.TextType;
 
 public class IPChecker {
     
-    final Logger LOG = LoggerFactory.getLogger(IPChecker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IPChecker.class);
     
     /**
      * Checks an IPv4 or IP6 against entries in the database. 1. Priority:

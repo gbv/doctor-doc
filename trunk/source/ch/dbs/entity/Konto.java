@@ -44,7 +44,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
-    final Logger LOG = LoggerFactory.getLogger(Konto.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Konto.class);
     
     private Long did;
     private String bibliotheksname;

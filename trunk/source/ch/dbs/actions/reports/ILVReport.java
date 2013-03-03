@@ -72,7 +72,7 @@ import enums.TextType;
  */
 public final class ILVReport extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(ILVReport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ILVReport.class);
     
     /**
      * Prepare ILL report data.

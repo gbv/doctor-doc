@@ -27,7 +27,7 @@ import enums.Connect;
 
 public class DOI {
     
-    final Logger LOG = LoggerFactory.getLogger(DOI.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DOI.class);
     
     /**
      * Extracts the DOI out of a string.

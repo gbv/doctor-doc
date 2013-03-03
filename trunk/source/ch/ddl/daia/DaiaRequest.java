@@ -29,7 +29,7 @@ import ch.dbs.entity.Bestand;
  */
 public class DaiaRequest {
     
-    final Logger LOG = LoggerFactory.getLogger(DaiaRequest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DaiaRequest.class);
     
     public List<Bestand> get(final String openurl) {
         

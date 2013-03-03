@@ -42,7 +42,7 @@ import enums.TextType;
  */
 public class Billing extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Billing.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Billing.class);
     
     private AbstractBenutzer user;
     private Konto konto;

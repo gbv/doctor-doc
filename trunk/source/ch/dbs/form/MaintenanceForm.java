@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public final class MaintenanceForm extends ActionForm {
     
     private static final long serialVersionUID = 1L;
-    final Logger LOG = LoggerFactory.getLogger(MaintenanceForm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MaintenanceForm.class);
     
     private boolean confirmed;
     private int months;

@@ -29,7 +29,7 @@ import ch.dbs.entity.Bestand;
  */
 public class DaiaXMLResponse {
     
-    final Logger LOG = LoggerFactory.getLogger(DaiaXMLResponse.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DaiaXMLResponse.class);
     private static final String UTF8 = "UTF-8";
     private static final String CDATA = "CDATA";
     private static final String URL = ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do?";

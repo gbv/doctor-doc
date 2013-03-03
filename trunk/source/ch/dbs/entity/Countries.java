@@ -37,7 +37,7 @@ import util.ReadSystemConfigurations;
  */
 public class Countries extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Countries.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Countries.class);
     // defines which locale of iso_countries shall be used
     // you may define your own set of localized countries in the MySQL table
     private static final String LOCALE = ReadSystemConfigurations.getLocale();

@@ -27,7 +27,7 @@ import enums.Result;
 
 public class Daia extends Action {
     
-    final Logger LOG = LoggerFactory.getLogger(Daia.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Daia.class);
     
     /**
      * Interface to query holdings in D-D using OpenURL requests. The response

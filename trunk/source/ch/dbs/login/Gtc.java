@@ -35,7 +35,7 @@ import enums.TextType;
  */
 public class Gtc {
     
-    final Logger LOG = LoggerFactory.getLogger(Gtc.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Gtc.class);
     
     /**
      * Checkt, ob der Benutzer die neueste Version der GTC abgesegnet hat

@@ -90,7 +90,7 @@ import enums.TextType;
 
 public final class OrderAction extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(OrderAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderAction.class);
     
     /**
      * Check if an article is freely available in the Internet.

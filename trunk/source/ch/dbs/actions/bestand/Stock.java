@@ -62,7 +62,7 @@ import enums.TextType;
  */
 public class Stock extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(Stock.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Stock.class);
     private static final int COLUMNS = 21; // Number of columns per import line
     private static final int FILESIZELIMIT = 500000; // ca. 500 KB. Limits the file size for upload to avoid OutOfMemory errors
     private static final char DELIMITER_CSV = ';'; // Delimiter for CSV-Export

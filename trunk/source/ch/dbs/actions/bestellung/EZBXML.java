@@ -55,7 +55,7 @@ import enums.Connect;
  */
 public class EZBXML {
     
-    final Logger LOG = LoggerFactory.getLogger(EZBXML.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EZBXML.class);
     
     public List<JournalDetails> searchByTitle(final String jtitle, final String bibid) {
         

@@ -38,7 +38,7 @@ import ch.dbs.form.OrderForm;
  */
 public class DaiaParam extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(DaiaParam.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DaiaParam.class);
     
     private Long kid;
     private String baseurl;

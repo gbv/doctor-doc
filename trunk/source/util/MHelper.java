@@ -45,7 +45,7 @@ import enums.XPrio;
  */
 public class MHelper extends AbstractReadSystemConfigurations {
     
-    final Logger LOG = LoggerFactory.getLogger(MHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MHelper.class);
     
     // TODO: "String[] to" should be of type InternetAddress[], which would require proper error handling in the calling classes.
     private String[] to;

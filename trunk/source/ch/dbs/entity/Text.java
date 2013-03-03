@@ -37,7 +37,7 @@ import enums.TextType;
  */
 public class Text extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Text.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Text.class);
     
     private Konto konto;
     private TextType texttype;

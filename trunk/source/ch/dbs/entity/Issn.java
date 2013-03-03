@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Issn extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Issn.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Issn.class);
     
     private String identifier;
     private String identifier_id;

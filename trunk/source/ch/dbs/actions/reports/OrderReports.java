@@ -66,7 +66,7 @@ import enums.TextType;
  */
 public final class OrderReports extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(OrderReports.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderReports.class);
     
     /**
      * Erstelt ein PDF- Report wie die aktuelle Sicht der Bestellungen inklusive

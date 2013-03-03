@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class Base64String {
     
-    final Logger LOG = LoggerFactory.getLogger(Base64String.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Base64String.class);
     
     /**
      * Encodes and decodes a string with Base64. Not meant to be an encryption

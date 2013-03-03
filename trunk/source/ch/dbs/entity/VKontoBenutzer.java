@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class VKontoBenutzer extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(VKontoBenutzer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(VKontoBenutzer.class);
     
     private Long KID;
     private Long BID;

@@ -38,7 +38,7 @@ import ch.dbs.interf.OrderHandler;
 
 public final class OrderForm extends ValidatorForm implements OrderHandler {
     
-    final Logger LOG = LoggerFactory.getLogger(OrderForm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderForm.class);
     
     final transient CodeUrl codeUrl = new CodeUrl();
     

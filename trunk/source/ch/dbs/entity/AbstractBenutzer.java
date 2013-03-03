@@ -47,7 +47,7 @@ import enums.TextType;
 
 public class AbstractBenutzer extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(AbstractBenutzer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractBenutzer.class);
     
     private Long billing;
     private String institut;

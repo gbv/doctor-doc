@@ -42,7 +42,7 @@ import enums.Connect;
 
 public class Http {
     
-    final Logger LOG = LoggerFactory.getLogger(Http.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Http.class);
     private static final String USER_AGENT = "Mozilla/6.0 (Windows NT 6.2; WOW64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1";
     
     /**

@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 abstract class AbstractReadSystemConfigurations {
     
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
+    
     private static final String PATH = "resources/SystemConfiguration.properties";
     
     protected static final String SYSTEM_TIMEZONE = readSystemTimezone();
@@ -74,7 +76,6 @@ abstract class AbstractReadSystemConfigurations {
             systemTimezone = config.getString("system.timezone");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -92,7 +93,6 @@ abstract class AbstractReadSystemConfigurations {
             locale = config.getString("locale");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -108,7 +108,6 @@ abstract class AbstractReadSystemConfigurations {
             systemEmail = config.getString("systemEmail.email");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -124,7 +123,6 @@ abstract class AbstractReadSystemConfigurations {
             host = config.getString("systemEmail.host");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -140,7 +138,6 @@ abstract class AbstractReadSystemConfigurations {
             accountname = config.getStringArray("systemEmail.accountname");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -156,7 +153,6 @@ abstract class AbstractReadSystemConfigurations {
             password = config.getString("systemEmail.password");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -172,7 +168,6 @@ abstract class AbstractReadSystemConfigurations {
             billingEmail = config.getString("billing.email");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -188,7 +183,6 @@ abstract class AbstractReadSystemConfigurations {
             errorEmail = config.getString("errorEmail.email");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -204,7 +198,6 @@ abstract class AbstractReadSystemConfigurations {
             databaseServerAdress = config.getString("mysql.serveraddress");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -220,7 +213,6 @@ abstract class AbstractReadSystemConfigurations {
             databaseName = config.getString("mysql.databaseName");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -236,7 +228,6 @@ abstract class AbstractReadSystemConfigurations {
             databaseUser = config.getString("mysql.user");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -252,7 +243,6 @@ abstract class AbstractReadSystemConfigurations {
             databasePassword = config.getString("mysql.password");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -268,7 +258,6 @@ abstract class AbstractReadSystemConfigurations {
             activated = config.getBoolean("mysql.pooledConnections");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -284,7 +273,6 @@ abstract class AbstractReadSystemConfigurations {
             serverAddress = config.getString("server.welcomepage");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -300,7 +288,6 @@ abstract class AbstractReadSystemConfigurations {
             serverInstallation = config.getString("server.installation");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -316,7 +303,6 @@ abstract class AbstractReadSystemConfigurations {
             applicationName = config.getString("application.name");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -332,7 +318,6 @@ abstract class AbstractReadSystemConfigurations {
             allow = config.getBoolean("allow.registerLibraryAccounts");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -348,7 +333,6 @@ abstract class AbstractReadSystemConfigurations {
             allow = config.getBoolean("allow.patronAutomaticGoogleSearch");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -364,7 +348,6 @@ abstract class AbstractReadSystemConfigurations {
             allow = config.getBoolean("activate.GoogleSearch");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -380,7 +363,6 @@ abstract class AbstractReadSystemConfigurations {
             activate = config.getBoolean("activate.gtc");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -396,7 +378,6 @@ abstract class AbstractReadSystemConfigurations {
             activate = config.getBoolean("activate.paidAccess");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -412,7 +393,6 @@ abstract class AbstractReadSystemConfigurations {
             activated = config.getBoolean("anonymization.activated");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -428,7 +408,6 @@ abstract class AbstractReadSystemConfigurations {
             months = config.getInt("anonymization.after.months");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -444,7 +423,6 @@ abstract class AbstractReadSystemConfigurations {
             maxResults = config.getInt("maxResults.display");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -460,7 +438,6 @@ abstract class AbstractReadSystemConfigurations {
             searchCarelit = config.getBoolean("searchCarelit");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -476,7 +453,6 @@ abstract class AbstractReadSystemConfigurations {
             useDaia = config.getBoolean("useDaia");
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         
@@ -492,7 +468,6 @@ abstract class AbstractReadSystemConfigurations {
             daiaHosts = parse(config.getString("daiaHosts"));
             
         } catch (final ConfigurationException e) {
-            final Logger LOG = LoggerFactory.getLogger(AbstractReadSystemConfigurations.class);
             LOG.error(e.toString());
         }
         

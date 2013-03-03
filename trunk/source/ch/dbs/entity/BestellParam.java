@@ -40,7 +40,7 @@ import enums.TextType;
 
 public class BestellParam extends ValidatorForm {
     
-    final Logger LOG = LoggerFactory.getLogger(BestellParam.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BestellParam.class);
     
     private static final long serialVersionUID = 1L;
     private Long id;

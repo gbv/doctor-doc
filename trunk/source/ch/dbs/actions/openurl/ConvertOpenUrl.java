@@ -29,7 +29,7 @@ import ch.dbs.form.OrderForm;
 
 public class ConvertOpenUrl {
     
-    final Logger LOG = LoggerFactory.getLogger(ConvertOpenUrl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConvertOpenUrl.class);
     
     /**
      * Klasse um OpenURL in "Doctor-Doc" zu übersetzen

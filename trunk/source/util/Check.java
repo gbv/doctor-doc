@@ -39,7 +39,7 @@ import ch.dbs.form.OverviewForm;
 
 public class Check {
     
-    final Logger LOG = LoggerFactory.getLogger(Check.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Check.class);
     
     /**
      * Checks if a string is a valid email address.

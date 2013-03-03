@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DBConn extends AbstractReadSystemConfigurations {
     
-    final Logger LOG = LoggerFactory.getLogger(DBConn.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DBConn.class);
     
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String SERVER = "jdbc:mysql://"

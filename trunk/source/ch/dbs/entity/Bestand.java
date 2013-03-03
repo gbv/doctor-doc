@@ -42,7 +42,7 @@ import enums.TextType;
 
 public class Bestand extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Bestand.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Bestand.class);
     
     private Holding holding;
     private String startyear;

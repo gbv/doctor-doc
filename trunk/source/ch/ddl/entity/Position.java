@@ -39,7 +39,7 @@ import ch.dbs.interf.OrderHandler;
  */
 public class Position extends AbstractIdEntity implements OrderHandler {
     
-    final Logger LOG = LoggerFactory.getLogger(Position.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Position.class);
     
     private AbstractBenutzer benutzer; // Endkunde / Bibliothekskunde
     private Konto konto; // Bibliothekskonto

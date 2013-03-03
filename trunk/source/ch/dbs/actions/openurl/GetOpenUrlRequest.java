@@ -45,7 +45,7 @@ import enums.Result;
  */
 public final class GetOpenUrlRequest extends Action {
     
-    final Logger LOG = LoggerFactory.getLogger(GetOpenUrlRequest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GetOpenUrlRequest.class);
     
     /**
      * empfängt OpenURL-Requests und stellt ein OrderForm her

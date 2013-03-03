@@ -66,7 +66,7 @@ import enums.Result;
  */
 public final class BillingAction extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(BillingAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BillingAction.class);
     //Output Stream für PDF erstellen
     private OutputStream out = null;
     private InputStream reportStream = null;

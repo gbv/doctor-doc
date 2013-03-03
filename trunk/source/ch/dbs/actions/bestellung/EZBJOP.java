@@ -50,7 +50,7 @@ import enums.JOPState;
 
 public class EZBJOP {
     
-    final Logger LOG = LoggerFactory.getLogger(EZBJOP.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EZBJOP.class);
     
     /**
      * This class uses the official EZB/ZDB API from

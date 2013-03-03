@@ -54,7 +54,7 @@ import enums.Result;
  */
 public final class LoginAction extends Action {
     
-    final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
     
     public ActionForward execute(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {

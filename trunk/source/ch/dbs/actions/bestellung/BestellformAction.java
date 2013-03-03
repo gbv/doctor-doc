@@ -69,7 +69,7 @@ import enums.XPrio;
  */
 public final class BestellformAction extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(BestellformAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BestellformAction.class);
     
     /**
      * Prüft IP und ordnet den Request der betreffenden Bibliothek zu, ergänzt

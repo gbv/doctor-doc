@@ -31,7 +31,7 @@ import ch.dbs.entity.Text;
 
 public final class KontoForm extends ValidatorForm {
     
-    final Logger LOG = LoggerFactory.getLogger(KontoForm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KontoForm.class);
     
     private static final long serialVersionUID = 1L;
     private Long kid;

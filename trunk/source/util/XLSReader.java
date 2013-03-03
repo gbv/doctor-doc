@@ -47,7 +47,7 @@ public class XLSReader implements HSSFListener {
     private int lastrow = -1; // rows start by 0
     private int lastcol = -1; // columns start by 0
     
-    final Logger LOG = LoggerFactory.getLogger(XLSReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XLSReader.class);
     
     /**
      * This method listens for incoming records and handles them as required.

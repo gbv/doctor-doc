@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class BestandMissing extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(BestandMissing.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BestandMissing.class);
     
     private Bestand bestand;
     private String startyear;

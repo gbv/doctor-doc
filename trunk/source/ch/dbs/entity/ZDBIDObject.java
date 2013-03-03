@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ZDBIDObject extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(ZDBIDObject.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ZDBIDObject.class);
     
     private String identifier;
     private String identifier_id;

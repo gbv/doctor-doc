@@ -41,7 +41,7 @@ import util.ThreadSafeSimpleDateFormat;
  */
 public class OrderState extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(OrderState.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderState.class);
     
     private String orderstate;
     private String date;

@@ -47,7 +47,7 @@ import enums.TextType;
 
 public class IllHandler {
     
-    final Logger LOG = LoggerFactory.getLogger(IllHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IllHandler.class);
     
     /**
      * Stellt einen ILL-Request zusammen

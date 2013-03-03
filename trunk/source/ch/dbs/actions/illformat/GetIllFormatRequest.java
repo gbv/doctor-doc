@@ -38,7 +38,7 @@ import enums.Result;
  */
 public final class GetIllFormatRequest extends Action {
     
-    final Logger LOG = LoggerFactory.getLogger(GetIllFormatRequest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GetIllFormatRequest.class);
     
     /**
      * empfängt Ill-Requests und stellt ein IllForm her

@@ -32,7 +32,7 @@ import ch.dbs.form.UserInfo;
 
 public class Lieferanten extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Lieferanten.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Lieferanten.class);
     
     private Long lid;
     private Long kid;

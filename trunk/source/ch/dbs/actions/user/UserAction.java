@@ -73,7 +73,7 @@ import enums.TextType;
 
 public final class UserAction extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(UserAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserAction.class);
     private static final String UEBERSICHT = "uebersicht";
     
     public ActionForward stati(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,

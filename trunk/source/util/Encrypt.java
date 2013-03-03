@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class Encrypt {
     
-    final Logger LOG = LoggerFactory.getLogger(Encrypt.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Encrypt.class);
     
     /**
      * Erstellt aus einem String den SHA-1 Hash.

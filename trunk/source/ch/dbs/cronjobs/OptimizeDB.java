@@ -33,7 +33,7 @@ import ch.dbs.entity.Text;
 
 public final class OptimizeDB extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(OptimizeDB.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OptimizeDB.class);
     
     /**
      * Allows to optimize the database upon a regular cronjob. Use with caution:

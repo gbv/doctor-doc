@@ -66,7 +66,7 @@ import enums.TextType;
  */
 public final class OrderGbvAction extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(OrderGbvAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderGbvAction.class);
     private static final String BASEURL = "http://cbs4.gbv.de:8080/cgi-bin/vuefl/vuefl_recv_data.pl";
     
     /**

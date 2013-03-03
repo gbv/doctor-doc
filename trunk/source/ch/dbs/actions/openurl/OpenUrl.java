@@ -30,7 +30,7 @@ import ch.dbs.form.OrderForm;
 
 public class OpenUrl {
     
-    final Logger LOG = LoggerFactory.getLogger(OpenUrl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenUrl.class);
     private static final String PM_ENDTAG = "</Item>";
     
     /**

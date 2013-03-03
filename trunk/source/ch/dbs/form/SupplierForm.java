@@ -30,7 +30,7 @@ import ch.dbs.entity.Lieferanten;
 
 public final class SupplierForm extends ValidatorForm {
     
-    final Logger LOG = LoggerFactory.getLogger(SupplierForm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SupplierForm.class);
     private static final long serialVersionUID = 1L;
     
     private Long lid;

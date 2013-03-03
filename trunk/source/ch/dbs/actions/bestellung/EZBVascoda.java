@@ -49,7 +49,7 @@ import enums.JOPState;
 
 public class EZBVascoda {
     
-    final Logger LOG = LoggerFactory.getLogger(EZBVascoda.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EZBVascoda.class);
     
     /**
      * This class uses the EZB API from

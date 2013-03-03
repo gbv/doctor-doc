@@ -40,7 +40,7 @@ import enums.TextType;
  */
 public class DefaultPreis extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(DefaultPreis.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultPreis.class);
     
     private Long tid_waehrung;
     private Long lid;

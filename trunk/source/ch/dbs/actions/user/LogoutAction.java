@@ -36,7 +36,7 @@ import enums.Result;
  */
 public class LogoutAction extends Action {
     
-    final Logger LOG = LoggerFactory.getLogger(LogoutAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LogoutAction.class);
     
     /**
      * Logout. Zerstört das Sessionbean

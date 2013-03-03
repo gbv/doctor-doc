@@ -33,7 +33,7 @@ import enums.Connect;
 
 public class Pubmed {
     
-    final Logger LOG = LoggerFactory.getLogger(Pubmed.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Pubmed.class);
     
     /**
      * Extracts the PMID out of a string.

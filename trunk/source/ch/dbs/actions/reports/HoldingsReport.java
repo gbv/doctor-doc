@@ -52,7 +52,7 @@ import enums.Result;
  */
 public final class HoldingsReport extends DispatchAction {
     
-    final Logger LOG = LoggerFactory.getLogger(HoldingsReport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HoldingsReport.class);
     
     /**
      * Gets all holdings of a given library and creates an Export-File

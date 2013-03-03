@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CodeUrl {
     
-    final Logger LOG = LoggerFactory.getLogger(CodeUrl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CodeUrl.class);
     
     /**
      * Decodier-Methode

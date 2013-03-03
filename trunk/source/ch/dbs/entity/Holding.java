@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Holding extends AbstractIdEntity {
     
-    final Logger LOG = LoggerFactory.getLogger(Holding.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Holding.class);
     
     private Konto konto;
     private Long kid;
