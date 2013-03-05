@@ -31,7 +31,11 @@
   	<td 
 	  <logic:equal name="kontoform" property="submenu" value="openbill">id="submenuactive"</logic:equal>
       <logic:notEqual name="kontoform" property="submenu" value="openbill">id="submenu"</logic:notEqual>       
-      title="<bean:message key="submenu.listkontos.premium" />"><a href="kontoadmin.do?method=listKontos&activemenu=admin&submenu=openbill"><bean:message key="submenu.listkontos.openbill" /></a></td>   
+      title="<bean:message key="submenu.listkontos.openbill" />"><a href="kontoadmin.do?method=listKontos&activemenu=admin&submenu=openbill"><bean:message key="submenu.listkontos.openbill" /></a></td>
+    <td 
+	  <logic:equal name="kontoform" property="submenu" value="memoryusage">id="submenuactive"</logic:equal>
+      <logic:notEqual name="kontoform" property="submenu" value="memoryusage">id="submenu"</logic:notEqual>       
+      title="<bean:message key="submenu.listkontos.memory" />"><a href="showmemory.do?method=showMemory&activemenu=admin&submenu=memoryusage"><bean:message key="submenu.listkontos.memory" /></a></td>   
   </tr>
 </table>
 
