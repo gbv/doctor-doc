@@ -27,10 +27,10 @@
 
 <br>
 <logic:present name="memoryform" property="freeMemory">
-   Free memory (in JMV): <bean:write name="memoryform" property="freeMemory" /> MB<br>
-   Total memory (current size of java heap): <bean:write name="memoryform" property="totalMemory" /> MB<br>
+   Free memory (approximation to the total amount of memory currently available for future allocated objects): <bean:write name="memoryform" property="freeMemory" /> MB<br>
    Memory used (in JMV): <bean:write name="memoryform" property="memoryUsed" /> MB<br>
-   Max memory (in JMV): <bean:write name="memoryform" property="maxMemory" /> MB<br>
+   Total memory (total amount of memory in the Java virtual machine. The value returned by this may vary over time, depending on the host environment): <bean:write name="memoryform" property="totalMemory" /> MB<br>
+   Max memory (maximum amount of memory that the Java virtual machine will attempt to use): <bean:write name="memoryform" property="maxMemory" /> MB<br>
 </logic:present>
   
         
