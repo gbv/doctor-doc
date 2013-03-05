@@ -30,6 +30,7 @@
 		<form-bean name="SearchesForm" type="ch.dbs.form.SearchesForm" />
 		<form-bean name="SupplierForm" type="ch.dbs.form.SupplierForm" />
 		<form-bean name="MaintenanceForm" type="ch.dbs.form.MaintenanceForm" />
+		<form-bean name="MemoryForm" type="ch.dbs.form.MemoryForm" />
 	</form-beans>
 
 	<global-exceptions>
@@ -198,6 +199,12 @@
 		<action path="/test" validate="false" scope="request"
 			type="ch.dbs.admin.AdminServerTest">
 			<forward name="success" path="/jsp/message.jsp" />
+		</action>
+		
+		<!-- Servertest für Admins aktuelle Speichersituation der Applikation anschauen -->
+		<action path="/showmemory" validate="false" scope="request" name="MemoryForm"
+			parameter="method" type="ch.dbs.server.MemoryAction">
+			<forward name="success" path="/jsp/memoryusage.jsp" />
 		</action>
 
 		<!--
