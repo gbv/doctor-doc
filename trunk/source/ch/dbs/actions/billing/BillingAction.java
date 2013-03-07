@@ -294,6 +294,7 @@ public final class BillingAction extends DispatchAction {
             
             // prepare output stream
             rp.setContentType("application/pdf");
+            rp.setCharacterEncoding("UTF-8");
             
             final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
             final HashMap<String, String> hm = new HashMap<String, String>();

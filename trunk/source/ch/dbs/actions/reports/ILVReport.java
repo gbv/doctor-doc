@@ -156,6 +156,7 @@ public final class ILVReport extends DispatchAction {
         // prepare output stream
         rp.setContentType("application/pdf");
         rp.setHeader("Content-Disposition", "attachment;filename=" + composeFilename(ilvf, ui));
+        rp.setCharacterEncoding("UTF-8");
         // run report, depending on ILL form number
         try {
             out = rp.getOutputStream();

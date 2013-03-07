@@ -244,6 +244,7 @@ public final class OrderReports extends DispatchAction {
             
             //Ausgabestream vorbereiten
             rp.setContentType("application/pdf"); //Angabe, damit der Browser weiss wie den Stream behandeln
+            rp.setCharacterEncoding("UTF-8");
             out = rp.getOutputStream();
             
             //Daten zusammenstellen und abfüllen
