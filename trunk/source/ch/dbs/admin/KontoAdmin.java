@@ -17,6 +17,7 @@
 
 package ch.dbs.admin;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,8 +25,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.mail.MessagingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import util.MHelper;
 import util.ReadSystemConfigurations;
+import ch.dbs.actions.bestellung.OrderAction;
 import ch.dbs.entity.Billing;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
@@ -41,6 +48,7 @@ public final class KontoAdmin {
     
     private static final int TWO_WEEKS = 14;
     private static final int TEN_DAYS = 14;
+    private static final Logger LOG = LoggerFactory.getLogger(OrderAction.class);
     
     /**
      * <p>Automatische Rechnungsstellung sowie Zahlungserinnerungen an Konten
@@ -172,14 +180,26 @@ public final class KontoAdmin {
                         + ReadSystemConfigurations.getApplicationName() + ". Ablaufdatum: "
                         + sdf.format(k.getExpdate());
                 final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
-                mh.send();
+                try {
+					mh.send();
+				} catch (UnsupportedEncodingException e1) {
+					LOG.error(this.getClass().getName()+"newKontoAboBill: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+				} catch (MessagingException e1) {
+					LOG.error(this.getClass().getName()+"newKontoAboBill: Error could not be sent by mail: " + e1.toString());
+				}
             } else { // Hinweis senden falls keine Rechnung erstellt werden konnte
                 to[0] = ReadSystemConfigurations.getErrorEmail();
                 final String subject = "WARNUNG: Folgende Rechnung konnte nicht erstellt werden, Kunde "
                         + k.getBibliotheksname()
                         + " ist nicht benachrichtigt worden! Es wurde keine Rechnung gespeichert!";
                 final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
-                mh.send();
+                try {
+					mh.send();
+				} catch (UnsupportedEncodingException e1) {
+					LOG.error(this.getClass().getName()+"newKontoAboBill: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+				} catch (MessagingException e1) {
+					LOG.error(this.getClass().getName()+"newKontoAboBill: Error could not be sent by mail: " + e1.toString());
+				}
             }
         }
     }
@@ -330,7 +350,13 @@ public final class KontoAdmin {
             
             // Rechnung versenden
             final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
-            mh.send();
+            try {
+				mh.send();
+			} catch (UnsupportedEncodingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingReminder: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+			} catch (MessagingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingReminder: Error could not be sent by mail: " + e1.toString());
+			}
         } else { // Hinweis versenden wenn keine offene Zahlung gefunden wurde
             to[0] = ReadSystemConfigurations.getErrorEmail();
             final String subject = "ZAHLUNGSERINNERUNG 30 Tage vor Ablauf: von Kunde " + k.getBibliotheksname()
@@ -338,7 +364,13 @@ public final class KontoAdmin {
             final String text = "Keine offene Rechnung gefunden, alles bezahlt!\n\nBitte Kontoablaufdatum noch richtig setzen, "
                     + "das ist vermutlich beim Zahlungseingang vergessen gegangen... ";
             final MHelper mh = new MHelper(to, subject, text);
-            mh.send();
+            try {
+				mh.send();
+			} catch (UnsupportedEncodingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingReminder: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+			} catch (MessagingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingReminder: Error could not be sent by mail: " + e1.toString());
+			}
         }
     }
     
@@ -379,7 +411,13 @@ public final class KontoAdmin {
             
             //       Rechnung versenden
             final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
-            mh.send();
+            try {
+				mh.send();
+			} catch (UnsupportedEncodingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingWarning: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+			} catch (MessagingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingWarning: Error could not be sent by mail: " + e1.toString());
+			}
         } else { // Hinweis versenden wenn keine offene Zahlung gefunden wurde
             to[0] = ReadSystemConfigurations.getErrorEmail();
             final String subject = "LETZTE ZAHLUNGSERINNERUNG: von Kunde " + k.getBibliotheksname()
@@ -387,7 +425,13 @@ public final class KontoAdmin {
             final String text = "Keine offene Rechnung gefunden, alles bezahlt!\n\nBitte Kontoablaufdatum noch richtig setzen, "
                     + "das ist vermutlich beim Zahlungseingang vergessen gegangen... ";
             final MHelper mh = new MHelper(to, subject, text);
-            mh.send();
+            try {
+				mh.send();
+			} catch (UnsupportedEncodingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingWarning: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+			} catch (MessagingException e1) {
+				LOG.error(this.getClass().getName()+"sendBillingWarning: Error could not be sent by mail: " + e1.toString());
+			}
         }
     }
     
@@ -429,7 +473,13 @@ public final class KontoAdmin {
         to[1] = ReadSystemConfigurations.getBillingEmail(); // billing department
         final MHelper mh = new MHelper(to, "Hinweis: Ihr Faxserver auf doctor-doc.com wurde deaktiviert.",
                 bf.getBillingtext());
-        mh.send();
+        try {
+			mh.send();
+		} catch (UnsupportedEncodingException e1) {
+			LOG.error(this.getClass().getName()+"sendExpireMessage: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+		} catch (MessagingException e1) {
+			LOG.error(this.getClass().getName()+"sendExpireMessage: Error could not be sent by mail: " + e1.toString());
+		}
         
     }
     
