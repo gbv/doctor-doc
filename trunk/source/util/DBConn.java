@@ -183,9 +183,9 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 try {
 					mh.send();
 				} catch (UnsupportedEncodingException e1) {
-					LOG.error("getPooledConnection: Error could be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+					LOG.error("getPooledConnection: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
 				} catch (MessagingException e1) {
-					LOG.error("getPooledConnection: Error could be sent by mail: " + e1.toString());
+					LOG.error("getPooledConnection: Error could not be sent by mail: " + e1.toString());
 				}
             }
         } else {
