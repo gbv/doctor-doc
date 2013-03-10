@@ -17,6 +17,7 @@
 
 package ch.dbs.actions.user;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -29,6 +30,7 @@ import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -676,7 +678,14 @@ public final class UserAction extends DispatchAction {
                             + ReadSystemConfigurations.getApplicationName();
                     
                     final MHelper m = new MHelper(recipients, subject, msg.toString());
-                    m.send();
+                    // TODO: Korrekte Meldung an Benutzer ausgeben, dass es PW-Rücksetzmail nicht versendet wurde
+                    try {
+						m.send();
+					} catch (UnsupportedEncodingException e1) {
+						LOG.error(this.getClass().getName()+"pwreset: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+					} catch (MessagingException e1) {
+						LOG.error(this.getClass().getName()+"pwreset: Error could not be sent by mail: " + e1.toString());
+					}
                     
                     forward = Result.SUCCESS.getValue();
                     rq.setAttribute("message", new Message("message.pwreset", "login.do"));
