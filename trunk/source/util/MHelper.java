@@ -17,6 +17,7 @@
 
 package util;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -84,68 +85,58 @@ public class MHelper extends AbstractReadSystemConfigurations {
         this.setText(e.toString());
     }
     
-    // TODO: implement proper error handling: errors should be thrown to the calling classes.
-    public void send() {
-        
-        try {
-            
-            // create properties and get the default Session
-            final Session session = Session.getInstance(getProperties());
-            
-            // create a message
-            final MimeMessage msg = getMimeMessage(session, this.getXPrio());
-            
-            // make TO addresses visible
-            final InternetAddress[] addressTo = new InternetAddress[this.getTo().length];
-            for (int i = 0; i < this.getTo().length; i++) {
-                addressTo[i] = new InternetAddress(this.getTo()[i]);
-            }
-            msg.setRecipients(Message.RecipientType.TO, addressTo);
-            
-            // set optional replyTo address
-            if (this.getReplyTo() != null) {
-                final InternetAddress[] addressReplyTo = new InternetAddress[1];
-                addressReplyTo[0] = new InternetAddress(this.getReplyTo());
-                msg.setReplyTo(addressReplyTo);
-            }
-            
-            // Setting the Subject
-            msg.setSubject(MimeUtility.encodeText(this.getSubject(), UTF8, null));
-            
-            if (this.getAttachment() == null) { // email without attachement
-                msg.setText(this.getText(), UTF8);
-                msg.saveChanges();
-            } else { // email with attachement
-                // create the message part
-                MimeBodyPart messageBodyPart = new MimeBodyPart();
-                
-                // set text message
-                messageBodyPart.setText(this.getText(), UTF8);
-                final Multipart multipart = new MimeMultipart();
-                multipart.addBodyPart(messageBodyPart);
-                
-                // part two is the attachment
-                messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setDataHandler(new DataHandler(this.getAttachment()));
-                messageBodyPart.setFileName(this.getFilename());
-                multipart.addBodyPart(messageBodyPart);
-                
-                // put parts in message
-                msg.setContent(multipart);
-                msg.saveChanges();
-            }
-            
-            // send email
-            sendMessage(session, msg, addressTo);
-            
-        } catch (final Exception e) {
-            LOG.error(e.toString());
-            // from time to time sending of emails may fail due to various reasons.
-            // Try to send report of failed emails.
-            sendInternalErrorReport(e);
-        }
-        
-    }
+	public void send() throws MessagingException, UnsupportedEncodingException {
+
+		// create properties and get the default Session
+		final Session session = Session.getInstance(getProperties());
+
+		// create a message
+		final MimeMessage msg = getMimeMessage(session, this.getXPrio());
+
+		// make TO addresses visible
+		final InternetAddress[] addressTo = new InternetAddress[this.getTo().length];
+		for (int i = 0; i < this.getTo().length; i++) {
+			addressTo[i] = new InternetAddress(this.getTo()[i]);
+		}
+		msg.setRecipients(Message.RecipientType.TO, addressTo);
+
+		// set optional replyTo address
+		if (this.getReplyTo() != null) {
+			final InternetAddress[] addressReplyTo = new InternetAddress[1];
+			addressReplyTo[0] = new InternetAddress(this.getReplyTo());
+			msg.setReplyTo(addressReplyTo);
+		}
+
+		// Setting the Subject
+		msg.setSubject(MimeUtility.encodeText(this.getSubject(), UTF8, null));
+
+		if (this.getAttachment() == null) { // email without attachement
+			msg.setText(this.getText(), UTF8);
+			msg.saveChanges();
+		} else { // email with attachement
+			// create the message part
+			MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+			// set text message
+			messageBodyPart.setText(this.getText(), UTF8);
+			final Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(messageBodyPart);
+
+			// part two is the attachment
+			messageBodyPart = new MimeBodyPart();
+			messageBodyPart
+					.setDataHandler(new DataHandler(this.getAttachment()));
+			messageBodyPart.setFileName(this.getFilename());
+			multipart.addBodyPart(messageBodyPart);
+
+			// put parts in message
+			msg.setContent(multipart);
+			msg.saveChanges();
+		}
+
+		// send email
+		sendMessage(session, msg, addressTo);
+	}
     
     /** Gets the system properties */
     private Properties getProperties() {
