@@ -17,6 +17,7 @@
 
 package ch.dbs.actions.user;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
@@ -26,6 +27,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -386,7 +388,13 @@ public final class KontoAction extends DispatchAction {
                     final String[] to = new String[1];
                     to[0] = ReadSystemConfigurations.getSystemEmail();
                     final MHelper mh = new MHelper(to, "New library account!", message.toString());
-                    mh.send();
+                    try {
+						mh.send();
+					} catch (UnsupportedEncodingException e1) {
+						LOG.error(this.getClass().getName()+"addNewBibliothekar: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+					} catch (MessagingException e1) {
+						LOG.error(this.getClass().getName()+"addNewBibliothekar: Error could not be sent by mail: " + e1.toString());
+					}
                     
                     // Bestätigungsemail mit Angaben zu den nächsten Schritten und Möglichkeiten
                     final StringBuffer mg = new StringBuffer(400);
@@ -432,7 +440,13 @@ public final class KontoAction extends DispatchAction {
                     sendto[0] = u.getEmail();
                     final MHelper mailh = new MHelper(sendto, "Your account at "
                             + ReadSystemConfigurations.getApplicationName(), mg.toString());
-                    mailh.send();
+                    try {
+						mailh.send();
+					} catch (UnsupportedEncodingException e1) {
+						LOG.error(this.getClass().getName()+"addNewBibliothekar: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+					} catch (MessagingException e1) {
+						LOG.error(this.getClass().getName()+"addNewBibliothekar: Error could not be sent by mail: " + e1.toString());
+					}
                     
                     // Kontoform in Session leeren
                     rq.getSession().setAttribute("kontoform", null);
