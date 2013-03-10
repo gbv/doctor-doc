@@ -678,16 +678,21 @@ public final class UserAction extends DispatchAction {
                             + ReadSystemConfigurations.getApplicationName();
                     
                     final MHelper m = new MHelper(recipients, subject, msg.toString());
-                    // TODO: Korrekte Meldung an Benutzer ausgeben, dass es PW-Rücksetzmail nicht versendet wurde
+                   
                     try {
 						m.send();
+						forward = Result.SUCCESS.getValue();
 					} catch (UnsupportedEncodingException e1) {
 						LOG.error(this.getClass().getName()+"pwreset: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
+						em.setError("error.sendmail <br>"+e1.toString());
+	                    em.setLink("login.do");
+	                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
 					} catch (MessagingException e1) {
 						LOG.error(this.getClass().getName()+"pwreset: Error could not be sent by mail: " + e1.toString());
+						em.setError("error.sendmail <br>"+e1.toString());
+	                    em.setLink("login.do");
+	                    rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
 					}
-                    
-                    forward = Result.SUCCESS.getValue();
                     rq.setAttribute("message", new Message("message.pwreset", "login.do"));
                     
                 } else {
@@ -707,8 +712,7 @@ public final class UserAction extends DispatchAction {
             
         } finally {
             cn.close();
-        }
-        
+        }        
         return mp.findForward(forward);
     }
     
