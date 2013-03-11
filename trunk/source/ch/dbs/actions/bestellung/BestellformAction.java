@@ -17,14 +17,12 @@
 
 package ch.dbs.actions.bestellung;
 
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -838,7 +836,7 @@ public final class BestellformAction extends DispatchAction {
                         final String loginlink = ReadSystemConfigurations.getServerInstallation() + "/pl.do?"
                                 + openurlConv.makeGetMethodString(of) + "&foruser=" + of.getForuser();
                         
-                        String adduserlink = "";
+                        String adduserlink = ""; 
                         if (u.getId() == null) { // User unknown => Prepare a direct login link for librarians, to save new
                             // user
                             adduserlink = ReadSystemConfigurations.getServerInstallation() + "/add.do?"
@@ -970,13 +968,7 @@ public final class BestellformAction extends DispatchAction {
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     // Severe error
                     final MHelper mh = new MHelper(e, "Order form - Error sending an order");
-                    try {
-						mh.send();
-					} catch (UnsupportedEncodingException e1) {
-						LOG.error(this.getClass().getName()+"sendOrder: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
-					} catch (MessagingException e1) {
-						LOG.error(this.getClass().getName()+"sendOrder: Error could not be sent by mail: " + e1.toString());
-					}
+                    mh.send();
                 }
                 
                 if (auth.isLogin(rq)) {
