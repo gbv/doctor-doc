@@ -2230,8 +2230,12 @@ public final class OrderAction extends DispatchAction {
         final String[] to = new String[1];
         to[0] = ReadSystemConfigurations.getErrorEmail();
         final MHelper mh = new MHelper(to, "Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
-        mh.send();
-         
+        try {
+            mh.send();
+        } catch (final Exception e) {
+            LOG.warn(e.toString());
+        }
+        
         return m;
     }
     

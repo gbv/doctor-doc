@@ -836,7 +836,7 @@ public final class BestellformAction extends DispatchAction {
                         final String loginlink = ReadSystemConfigurations.getServerInstallation() + "/pl.do?"
                                 + openurlConv.makeGetMethodString(of) + "&foruser=" + of.getForuser();
                         
-                        String adduserlink = ""; 
+                        String adduserlink = "";
                         if (u.getId() == null) { // User unknown => Prepare a direct login link for librarians, to save new
                             // user
                             adduserlink = ReadSystemConfigurations.getServerInstallation() + "/add.do?"
@@ -968,7 +968,7 @@ public final class BestellformAction extends DispatchAction {
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     // Severe error
                     final MHelper mh = new MHelper(e, "Order form - Error sending an order");
-                    mh.send();
+                    mh.sendError();
                 }
                 
                 if (auth.isLogin(rq)) {

@@ -24,6 +24,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import util.MHelper;
 import util.ReadSystemConfigurations;
 import ch.dbs.entity.Billing;
@@ -41,6 +44,8 @@ public final class KontoAdmin {
     
     private static final int TWO_WEEKS = 14;
     private static final int TEN_DAYS = 14;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(KontoAdmin.class);
     
     /**
      * <p>Automatische Rechnungsstellung sowie Zahlungserinnerungen an Konten
@@ -122,9 +127,12 @@ public final class KontoAdmin {
                         k.update(cn.getConnection());
                     }
                 }
-                
             }
-            
+        } catch (final Exception e) {
+            // TODO: proper error handling in case that sending an invoice failed. We cannot be sure that the error email will be sent...
+            LOG.error(e.toString());
+            final MHelper mh = new MHelper(e, "Fehler beim Versenden von Rechnungen!");
+            mh.sendError();
         } finally {
             cn.close();
         }
@@ -137,7 +145,7 @@ public final class KontoAdmin {
      * @param cn
      * @param lastpaydate
      */
-    private void newKontoAboBill(final Konto k, final Connection cn, final String lastpaydate) {
+    private void newKontoAboBill(final Konto k, final Connection cn, final String lastpaydate) throws Exception {
         // Rechnung erstellen
         Billing b = null;
         //TODO: Nullpointer exception bei Kontotyp 1! noch beheben!
@@ -302,7 +310,7 @@ public final class KontoAdmin {
      * @param cn
      * @param lastpaydate
      */
-    private void sendBillingReminder(final Konto k, final Connection cn, final String lastpaydate) {
+    private void sendBillingReminder(final Konto k, final Connection cn, final String lastpaydate) throws Exception {
         
         // Offene Rechnung heraussuchen
         Billing b = new Billing();
@@ -350,7 +358,7 @@ public final class KontoAdmin {
      * @param expdate
      * @param lastpaydate
      */
-    private void sendBillingWarning(final Konto k, final Connection cn, final String lastpaydate) {
+    private void sendBillingWarning(final Konto k, final Connection cn, final String lastpaydate) throws Exception {
         
         //       Offene Rechnung heraussuchen
         Billing b = new Billing();
@@ -398,7 +406,7 @@ public final class KontoAdmin {
      * 
      * @param Konto
      */
-    private void sendExpireMessage(final Konto k, final Connection cn) {
+    private void sendExpireMessage(final Konto k, final Connection cn) throws Exception {
         
         //       Offene Rechnung heraussuchen
         Billing b = new Billing();
@@ -429,7 +437,7 @@ public final class KontoAdmin {
         to[1] = ReadSystemConfigurations.getBillingEmail(); // billing department
         final MHelper mh = new MHelper(to, "Hinweis: Ihr Faxserver auf doctor-doc.com wurde deaktiviert.",
                 bf.getBillingtext());
-        mh.send(); 
+        mh.send();
         
     }
     

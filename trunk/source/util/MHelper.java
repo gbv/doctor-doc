@@ -17,6 +17,7 @@
 
 package util;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -56,9 +57,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
     private DataSource attachment;
     private String filename;
     
-    // control number to avoid infinite loops, while trying to send error reports by email.
-    private int errrorLoopNr;
-    
     private static final String UTF8 = "UTF-8";
     
     public MHelper(final String[] to, final String subject, final String text) {
@@ -89,65 +87,56 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * 
      * @author Markus Fischer
      */
-    public void send() {
+    public void send() throws MessagingException, UnsupportedEncodingException {
         
-        try {
-            
-            // create properties and get the default Session
-            final Session session = Session.getInstance(getProperties());
-            
-            // create a message
-            final MimeMessage msg = getMimeMessage(session, this.getXPrio());
-            
-            // make TO addresses visible
-            final InternetAddress[] addressTo = new InternetAddress[this.getTo().length];
-            for (int i = 0; i < this.getTo().length; i++) {
-                addressTo[i] = new InternetAddress(this.getTo()[i]);
-            }
-            msg.setRecipients(Message.RecipientType.TO, addressTo);
-            
-            // set optional replyTo address
-            if (this.getReplyTo() != null) {
-                final InternetAddress[] addressReplyTo = new InternetAddress[1];
-                addressReplyTo[0] = new InternetAddress(this.getReplyTo());
-                msg.setReplyTo(addressReplyTo);
-            }
-            
-            // Setting the Subject
-            msg.setSubject(MimeUtility.encodeText(this.getSubject(), UTF8, null));
-            
-            if (this.getAttachment() == null) { // email without attachement
-                msg.setText(this.getText(), UTF8);
-                msg.saveChanges();
-            } else { // email with attachement
-                // create the message part
-                MimeBodyPart messageBodyPart = new MimeBodyPart();
-                
-                // set text message
-                messageBodyPart.setText(this.getText(), UTF8);
-                final Multipart multipart = new MimeMultipart();
-                multipart.addBodyPart(messageBodyPart);
-                
-                // part two is the attachment
-                messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setDataHandler(new DataHandler(this.getAttachment()));
-                messageBodyPart.setFileName(this.getFilename());
-                multipart.addBodyPart(messageBodyPart);
-                
-                // put parts in message
-                msg.setContent(multipart);
-                msg.saveChanges();
-            }
-            
-            // send email
-            sendMessage(session, msg, addressTo);
-            
-        } catch (final Exception e) {
-            LOG.error(e.toString());
-            // from time to time sending of emails may fail due to various reasons.
-            // Try to send report of failed emails.
-            sendInternalErrorReport(e);
+        // create properties and get the default Session
+        final Session session = Session.getInstance(getProperties());
+        
+        // create a message
+        final MimeMessage msg = getMimeMessage(session, this.getXPrio());
+        
+        // make TO addresses visible
+        final InternetAddress[] addressTo = new InternetAddress[this.getTo().length];
+        for (int i = 0; i < this.getTo().length; i++) {
+            addressTo[i] = new InternetAddress(this.getTo()[i]);
         }
+        msg.setRecipients(Message.RecipientType.TO, addressTo);
+        
+        // set optional replyTo address
+        if (this.getReplyTo() != null) {
+            final InternetAddress[] addressReplyTo = new InternetAddress[1];
+            addressReplyTo[0] = new InternetAddress(this.getReplyTo());
+            msg.setReplyTo(addressReplyTo);
+        }
+        
+        // Setting the Subject
+        msg.setSubject(MimeUtility.encodeText(this.getSubject(), UTF8, null));
+        
+        if (this.getAttachment() == null) { // email without attachement
+            msg.setText(this.getText(), UTF8);
+            msg.saveChanges();
+        } else { // email with attachement
+            // create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            
+            // set text message
+            messageBodyPart.setText(this.getText(), UTF8);
+            final Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            
+            // part two is the attachment
+            messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setDataHandler(new DataHandler(this.getAttachment()));
+            messageBodyPart.setFileName(this.getFilename());
+            multipart.addBodyPart(messageBodyPart);
+            
+            // put parts in message
+            msg.setContent(multipart);
+            msg.saveChanges();
+        }
+        
+        // send email
+        sendMessage(session, msg, addressTo);
         
     }
     
@@ -204,27 +193,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
         return min + (int) (Math.random() * ((max - min) + 1));
     }
     
-    /** Try to send an error report by email. */
-    private void sendInternalErrorReport(final Exception e) {
-        // The current instance may be partially reused in the original
-        // context: we need to make a copy to modify the contents.        
+    public void sendError() {
         try {
-            final String[] errorMail = new String[1];
-            errorMail[0] = ERROR_EMAIL;
-            // append original subject
-            final String errorSubject = "Error sending email: " + this.getSubject();
-            // append original text
-            final String errorText = e.toString() + "\n\n" + this.getText();
-            // create a modified copy of the current instance
-            final MHelper report = new MHelper(errorMail, errorSubject, errorText);
-            // only try to send a report once: if this fails too, this could potentially
-            // result in an infinite loop...
-            if (this.errrorLoopNr == 0) {
-                this.errrorLoopNr++;
-                report.send();
-            }
-        } catch (final Exception ex) {
-            LOG.error("sendInternalErrorReport:\n" + ex.toString());
+            send();
+        } catch (final Exception e) {
+            LOG.error(e.toString());
         }
     }
     

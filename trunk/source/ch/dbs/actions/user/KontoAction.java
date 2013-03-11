@@ -432,7 +432,7 @@ public final class KontoAction extends DispatchAction {
                     sendto[0] = u.getEmail();
                     final MHelper mailh = new MHelper(sendto, "Your account at "
                             + ReadSystemConfigurations.getApplicationName(), mg.toString());
-                    mailh.send(); 
+                    mailh.send();
                     
                     // Kontoform in Session leeren
                     rq.getSession().setAttribute("kontoform", null);
@@ -457,6 +457,11 @@ public final class KontoAction extends DispatchAction {
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             }
             
+        } catch (final Exception e) {
+            LOG.error(e.toString());
+            final ErrorMessage em = new ErrorMessage("error.system", "login.do");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            forward = Result.FAILURE.getValue();
         } finally {
             cn.close();
         }

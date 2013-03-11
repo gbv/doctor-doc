@@ -676,7 +676,7 @@ public final class UserAction extends DispatchAction {
                             + ReadSystemConfigurations.getApplicationName();
                     
                     final MHelper m = new MHelper(recipients, subject, msg.toString());
-                    m.send(); 
+                    m.send();
                     
                     forward = Result.SUCCESS.getValue();
                     rq.setAttribute("message", new Message("message.pwreset", "login.do"));
@@ -696,6 +696,11 @@ public final class UserAction extends DispatchAction {
                         + "unberechtigterweise eine Loginberechtigung per Email zu schicken!");
             }
             
+        } catch (final Exception e) {
+            em.setError("error.system");
+            em.setLink("login.do");
+            rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
+            LOG.error(e.toString());
         } finally {
             cn.close();
         }

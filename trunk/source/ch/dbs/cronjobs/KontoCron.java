@@ -27,23 +27,20 @@ import org.apache.struts.actions.DispatchAction;
 import ch.dbs.admin.KontoAdmin;
 
 public final class KontoCron extends DispatchAction {
-
+    
     /**
-     * Automatische Rechnungsstellung sowie Zahlungserinnerungen an Konten vor Konto-Ablaufdatum:
-     * 2 Monate vor Ablauf wird die Rechnung erstellt und versendet
-     * 1 Monat vor Ablauf wird eine Erinnerung inklusive Rechnungsinformationen versendet
-     * 10 Tage vor Ablauf wird eine Warnung inklusive Rechnungsinformationen versendet
-     *
+     * Automatische Rechnungsstellung sowie Zahlungserinnerungen an Konten vor
+     * Konto-Ablaufdatum: 2 Monate vor Ablauf wird die Rechnung erstellt und
+     * versendet 1 Monat vor Ablauf wird eine Erinnerung inklusive
+     * Rechnungsinformationen versendet 10 Tage vor Ablauf wird eine Warnung
+     * inklusive Rechnungsinformationen versendet
      */
-    public void autoBilling(final ActionMapping mp,
-            final ActionForm form,
-            final HttpServletRequest rq,
+    public void autoBilling(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-
+        
         final KontoAdmin k = new KontoAdmin();
         k.autoBillExpdate();
-
+        
     }
-
-
+    
 }
