@@ -19,13 +19,11 @@ package util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import javax.mail.MessagingException;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -180,13 +178,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                 cn = getSingleConnection();
                 // Control to see if it works on remote server
                 final MHelper mh = new MHelper(e, "Database failed to respond! getPooledConnection");
-                try {
-					mh.send();
-				} catch (UnsupportedEncodingException e1) {
-					LOG.error("getPooledConnection: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
-				} catch (MessagingException e1) {
-					LOG.error("getPooledConnection: Error could not be sent by mail: " + e1.toString());
-				}
+                mh.send();
             }
         } else {
             try {
@@ -205,13 +197,7 @@ public class DBConn extends AbstractReadSystemConfigurations {
                         cn = getSingleConnection();
                         // Control to see if it works on remote server
                         final MHelper mh = new MHelper(e, "Database failed to respond! getPooledConnection");
-                        try {
-							mh.send();
-						} catch (UnsupportedEncodingException e1) {
-							LOG.error("getPooledConnection: Error could be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
-						} catch (MessagingException e1) {
-							LOG.error("getPooledConnection: Error could be sent by mail: " + e1.toString());
-						}
+                        mh.send(); 
                     }
                 }
             } catch (final SQLException e) {
