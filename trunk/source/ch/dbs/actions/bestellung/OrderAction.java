@@ -17,7 +17,6 @@
 
 package ch.dbs.actions.bestellung;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +37,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -2232,14 +2230,8 @@ public final class OrderAction extends DispatchAction {
         final String[] to = new String[1];
         to[0] = ReadSystemConfigurations.getErrorEmail();
         final MHelper mh = new MHelper(to, "Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
-        try {
-			mh.send();
-		} catch (UnsupportedEncodingException e1) {
-			LOG.error(this.getClass().getName()+"handleGoogleCatchpa: Error could not be sent by mail becaus an UTF-8 encoding probleme: " + e1.toString());
-		} catch (MessagingException e1) {
-			LOG.error(this.getClass().getName()+"handleGoogleCatchpa: Error could not be sent by mail: " + e1.toString());
-		}
-        
+        mh.send();
+         
         return m;
     }
     
