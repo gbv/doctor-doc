@@ -37,6 +37,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -2226,11 +2227,11 @@ public final class OrderAction extends DispatchAction {
         m.setMessage(id);
         
         LOG.warn("Google-Captcha!");
-        // Important message
-        final String[] to = new String[1];
-        to[0] = ReadSystemConfigurations.getErrorEmail();
-        final MHelper mh = new MHelper(to, "Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
+        // Send an error mail, that we got a captcha
         try {
+            final InternetAddress[] to = new InternetAddress[1];
+            to[0] = new InternetAddress(ReadSystemConfigurations.getErrorEmail());
+            final MHelper mh = new MHelper(to, "Google-Captcha Alarm!!!", "handleGoogleCaptcha:\012" + content);
             mh.send();
         } catch (final Exception e) {
             LOG.warn(e.toString());

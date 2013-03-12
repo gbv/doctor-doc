@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -854,15 +855,15 @@ public final class BestellformAction extends DispatchAction {
                                     + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten();
                             
                             // send email to patron, ReplyTo library
-                            final String[] to = new String[1];
-                            to[0] = of.getKundenmail(); // email of patron
+                            final InternetAddress[] to = new InternetAddress[1];
+                            to[0] = new InternetAddress(of.getKundenmail()); // email of patron
                             
                             final MHelper mh = new MHelper(to, subject, m.toString());
                             mh.setReplyTo(konto.getDbsmail());
                             mh.send(); // send email to patron
                             
                             // send email to library, ReplyTo patron
-                            to[0] = konto.getDbsmail(); // email of library
+                            to[0] = new InternetAddress(konto.getDbsmail()); // email of library
                             if (u.getId() != null) { // User already exists
                                 // subject is already set
                                 mh.setTo(to);
@@ -891,15 +892,15 @@ public final class BestellformAction extends DispatchAction {
                                     + of.getSeiten();
                             
                             // send email to patron, ReplyTo library
-                            final String[] toemail = new String[1];
-                            toemail[0] = of.getKundenmail(); // email of patron
+                            final InternetAddress[] toemail = new InternetAddress[1];
+                            toemail[0] = new InternetAddress(of.getKundenmail()); // email of patron
                             
                             final MHelper mh = new MHelper(toemail, subject, m.toString());
                             mh.setReplyTo(konto.getDbsmail());
                             mh.send();
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = konto.getDbsmail(); // email of library
+                            toemail[0] = new InternetAddress(konto.getDbsmail()); // email of library
                             if (u.getId() != null) { // User already exists
                                 // subject is already set
                                 mh.setTo(toemail);
@@ -923,15 +924,15 @@ public final class BestellformAction extends DispatchAction {
                             final String subject = "Book: " + of.getBuchtitel() + "\040" + of.getJahr();
                             
                             // send email to patron, ReplyTo library
-                            final String[] toemail = new String[1];
-                            toemail[0] = of.getKundenmail(); // email of patron
+                            final InternetAddress[] toemail = new InternetAddress[1];
+                            toemail[0] = new InternetAddress(of.getKundenmail()); // email of patron
                             
                             final MHelper mh = new MHelper(toemail, subject, m.toString());
                             mh.setReplyTo(konto.getDbsmail());
                             mh.send();
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = konto.getDbsmail(); // email of library
+                            toemail[0] = new InternetAddress(konto.getDbsmail()); // email of library
                             if (u.getId() != null) { // User already exists
                                 // subject & text are already set
                                 mh.setTo(toemail);

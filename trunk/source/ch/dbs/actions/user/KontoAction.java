@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -383,8 +384,8 @@ public final class KontoAction extends DispatchAction {
                     message.append(u.getName());
                     message.append("\nLibrarian email: ");
                     message.append(u.getEmail());
-                    final String[] to = new String[1];
-                    to[0] = ReadSystemConfigurations.getSystemEmail();
+                    final InternetAddress[] to = new InternetAddress[1];
+                    to[0] = new InternetAddress(ReadSystemConfigurations.getSystemEmail());
                     final MHelper mh = new MHelper(to, "New library account!", message.toString());
                     mh.send();
                     
@@ -428,8 +429,8 @@ public final class KontoAction extends DispatchAction {
                             + "https://lists.sourceforge.net/lists/listinfo/doctor-doc-general\012\012"
                             + "Best regards\012Your Team\040");
                     mg.append(ReadSystemConfigurations.getApplicationName());
-                    final String[] sendto = new String[1];
-                    sendto[0] = u.getEmail();
+                    final InternetAddress[] sendto = new InternetAddress[1];
+                    sendto[0] = new InternetAddress(u.getEmail());
                     final MHelper mailh = new MHelper(sendto, "Your account at "
                             + ReadSystemConfigurations.getApplicationName(), mg.toString());
                     mailh.send();

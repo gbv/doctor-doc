@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.activation.DataSource;
+import javax.mail.internet.InternetAddress;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -274,9 +275,9 @@ public final class ILVReport extends DispatchAction {
                 aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
                 
                 // prepare email
-                final String[] to = new String[2];
-                to[0] = new String(ilvf.getTo());
-                to[1] = new String(ui.getKonto().getDbsmail());
+                final InternetAddress[] to = new InternetAddress[2];
+                to[0] = new InternetAddress(ilvf.getTo());
+                to[1] = new InternetAddress(ui.getKonto().getDbsmail());
                 
                 // Create and send email
                 final MHelper mh = new MHelper(to, ilvf.getSubject(), composeMailBody(ui, ilvf), aAttachment,

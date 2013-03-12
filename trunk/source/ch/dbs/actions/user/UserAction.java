@@ -29,6 +29,7 @@ import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -659,8 +660,8 @@ public final class UserAction extends DispatchAction {
                     final Konto tz = new Konto(); // we need this for setting a default timezone
                     u.updateUser(u, tz.getTimezone(), cn.getConnection());
                     // Benutzer per Mail das neue Passwort mitteilen
-                    final String[] recipients = new String[1];
-                    recipients[0] = u.getEmail();
+                    final InternetAddress[] recipients = new InternetAddress[1];
+                    recipients[0] = new InternetAddress(u.getEmail());
                     final StringBuffer msg = new StringBuffer();
                     msg.append(messageResources.getMessage("resend.email.intro"));
                     msg.append("\n\n");

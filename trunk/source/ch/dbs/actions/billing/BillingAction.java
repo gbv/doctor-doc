@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.activation.DataSource;
+import javax.mail.internet.InternetAddress;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -220,8 +221,8 @@ public final class BillingAction extends DispatchAction {
             
             final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
             
-            final String[] to = new String[1];
-            to[0] = new String(k.getDbsmail());
+            final InternetAddress[] to = new InternetAddress[1];
+            to[0] = new InternetAddress(k.getDbsmail());
             
             // Rechnung speichern
             bf.getBill().save(cn.getConnection());

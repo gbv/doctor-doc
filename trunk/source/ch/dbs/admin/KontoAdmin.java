@@ -24,6 +24,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.mail.internet.InternetAddress;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,16 +175,16 @@ public final class KontoAdmin {
             bf = this.prepareBillingText(k, cn, lastpaydate, bf);
             
             // Mail senden
-            final String[] to = new String[1];
+            final InternetAddress[] to = new InternetAddress[1];
             if (b.getId() != null) {
-                to[0] = k.getBibliotheksmail();
+                to[0] = new InternetAddress(k.getBibliotheksmail());
                 final String subject = "RECHNUNG: Erneuerung Ihres Faxservers bei "
                         + ReadSystemConfigurations.getApplicationName() + ". Ablaufdatum: "
                         + sdf.format(k.getExpdate());
                 final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
                 mh.send();
             } else { // Hinweis senden falls keine Rechnung erstellt werden konnte
-                to[0] = ReadSystemConfigurations.getErrorEmail();
+                to[0] = new InternetAddress(ReadSystemConfigurations.getErrorEmail());
                 final String subject = "WARNUNG: Folgende Rechnung konnte nicht erstellt werden, Kunde "
                         + k.getBibliotheksname()
                         + " ist nicht benachrichtigt worden! Es wurde keine Rechnung gespeichert!";
@@ -320,10 +322,10 @@ public final class KontoAdmin {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         BillingForm bf = new BillingForm();
         
-        final String[] to = new String[1];
+        final InternetAddress[] to = new InternetAddress[1];
         
         if (b != null) {
-            to[0] = k.getBibliotheksmail();
+            to[0] = new InternetAddress(k.getBibliotheksmail());
             bf.setManuelltext("Ihr Konto auf doctor-doc.com läuft am " + sdf.format(k.getExpdate()) + " ab.");
             bf.setBillingtext("\n\nUm weiterhin vom Faxserver auf " + ReadSystemConfigurations.getApplicationName()
                     + " profitieren zu können, muss der Betrag von " + b.getBetrag() + " " + b.getWaehrung()
@@ -340,7 +342,7 @@ public final class KontoAdmin {
             final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
             mh.send();
         } else { // Hinweis versenden wenn keine offene Zahlung gefunden wurde
-            to[0] = ReadSystemConfigurations.getErrorEmail();
+            to[0] = new InternetAddress(ReadSystemConfigurations.getErrorEmail());
             final String subject = "ZAHLUNGSERINNERUNG 30 Tage vor Ablauf: von Kunde " + k.getBibliotheksname()
                     + " musste nicht versendet werden.";
             final String text = "Keine offene Rechnung gefunden, alles bezahlt!\n\nBitte Kontoablaufdatum noch richtig setzen, "
@@ -369,10 +371,10 @@ public final class KontoAdmin {
         
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         
-        final String[] to = new String[1];
+        final InternetAddress[] to = new InternetAddress[1];
         
         if (b != null) {
-            to[0] = k.getBibliotheksmail();
+            to[0] = new InternetAddress(k.getBibliotheksmail());
             bf.setManuelltext("Wir konnten leider keinen rechtzeitigen Zahlungseingang ihres ausstehenden Betrages bei "
                     + "uns verzeichnen. Wir weisen Sie darauf hin, dass wir aus administrativen Gründen nicht "
                     + "gewährleisten können, dass Ihnen ihr Faxserver unterbrechungsfrei zur Verfügung steht. "
@@ -389,7 +391,7 @@ public final class KontoAdmin {
             final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
             mh.send();
         } else { // Hinweis versenden wenn keine offene Zahlung gefunden wurde
-            to[0] = ReadSystemConfigurations.getErrorEmail();
+            to[0] = new InternetAddress(ReadSystemConfigurations.getErrorEmail());
             final String subject = "LETZTE ZAHLUNGSERINNERUNG: von Kunde " + k.getBibliotheksname()
                     + " musste nicht versendet werden.!";
             final String text = "Keine offene Rechnung gefunden, alles bezahlt!\n\nBitte Kontoablaufdatum noch richtig setzen, "
@@ -432,9 +434,9 @@ public final class KontoAdmin {
         }
         
         // Hinweis an Kunden versenden
-        final String[] to = new String[2];
-        to[0] = k.getBibliotheksmail(); // customer
-        to[1] = ReadSystemConfigurations.getBillingEmail(); // billing department
+        final InternetAddress[] to = new InternetAddress[2];
+        to[0] = new InternetAddress(k.getBibliotheksmail()); // customer
+        to[1] = new InternetAddress(ReadSystemConfigurations.getBillingEmail()); // billing department
         final MHelper mh = new MHelper(to, "Hinweis: Ihr Faxserver auf doctor-doc.com wurde deaktiviert.",
                 bf.getBillingtext());
         mh.send();
