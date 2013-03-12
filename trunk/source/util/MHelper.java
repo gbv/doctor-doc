@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -48,8 +49,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     
     private static final Logger LOG = LoggerFactory.getLogger(MHelper.class);
     
-    // TODO: "String[] to" should be of type InternetAddress[], which would require proper error handling in the calling classes.
-    private String[] to;
+    private InternetAddress[] to;
     private String subject;
     private String text;
     private String replyTo;
@@ -59,13 +59,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
     
     private static final String UTF8 = "UTF-8";
     
-    public MHelper(final String[] to, final String subject, final String text) {
+    public MHelper(final InternetAddress[] to, final String subject, final String text) {
         this.setTo(to);
         this.setSubject(subject);
         this.setText(text);
     }
     
-    public MHelper(final String[] to, final String subject, final String text, final DataSource attachment,
+    public MHelper(final InternetAddress[] to, final String subject, final String text, final DataSource attachment,
             final String filename) {
         this.setTo(to);
         this.setSubject(subject);
@@ -75,8 +75,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     public MHelper(final Exception e, final String subject) {
-        final String[] errorMail = new String[1];
-        errorMail[0] = ERROR_EMAIL;
+        final InternetAddress[] errorMail = new InternetAddress[1];
+        try {
+            errorMail[0] = new InternetAddress(ERROR_EMAIL);
+        } catch (final AddressException ex) {
+            LOG.error("Please check the key 'errorEmail.email' in SystemConfiguration.properties: " + ex.toString());
+        }
         this.setTo(errorMail);
         this.setSubject(subject);
         this.setText(e.toString());
@@ -96,11 +100,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
         final MimeMessage msg = getMimeMessage(session, this.getXPrio());
         
         // make TO addresses visible
-        final InternetAddress[] addressTo = new InternetAddress[this.getTo().length];
-        for (int i = 0; i < this.getTo().length; i++) {
-            addressTo[i] = new InternetAddress(this.getTo()[i]);
-        }
-        msg.setRecipients(Message.RecipientType.TO, addressTo);
+        msg.setRecipients(Message.RecipientType.TO, to);
         
         // set optional replyTo address
         if (this.getReplyTo() != null) {
@@ -136,7 +136,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
         }
         
         // send email
-        sendMessage(session, msg, addressTo);
+        sendMessage(session, msg, to);
         
     }
     
@@ -205,11 +205,11 @@ public class MHelper extends AbstractReadSystemConfigurations {
         
     }
     
-    public String[] getTo() {
+    public InternetAddress[] getTo() {
         return to;
     }
     
-    public void setTo(final String[] to) {
+    public void setTo(final InternetAddress[] to) {
         this.to = to;
     }
     
