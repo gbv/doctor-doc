@@ -849,40 +849,40 @@ public final class BestellformAction extends DispatchAction {
                             xprio = XPrio.HIGHEST.getValue();
                         }
                         
+                        final InternetAddress[] toPatron = new InternetAddress[1];
+                        toPatron[0] = new InternetAddress(of.getKundenmail()); // email of patron
+                        
+                        final InternetAddress[] toLibrary = new InternetAddress[1];
+                        toLibrary[0] = new InternetAddress(konto.getDbsmail()); // email of library
+                        
                         if (of.getMediatype().equals("Artikel")) {
                             
                             final String subject = "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr()
                                     + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten();
                             
-                            // send email to patron, ReplyTo library
-                            final InternetAddress[] to = new InternetAddress[1];
-                            to[0] = new InternetAddress(of.getKundenmail()); // email of patron
-                            
-                            final MHelper mh = new MHelper(to, subject, m.toString());
-                            mh.setReplyTo(konto.getDbsmail());
-                            mh.send(); // send email to patron
+                            // send email to patron, ReplyTo library                            
+                            final MHelper mhPatron = new MHelper(toPatron, subject, m.toString());
+                            mhPatron.setReplyTo(konto.getDbsmail());
+                            mhPatron.send();
                             
                             // send email to library, ReplyTo patron
-                            to[0] = new InternetAddress(konto.getDbsmail()); // email of library
                             if (u.getId() != null) { // User already exists
-                                // subject is already set
-                                mh.setTo(to);
-                                mh.setText(m.toString() + "\012Save order details in "
-                                        + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink);
-                                mh.setReplyTo(of.getKundenmail());
-                                mh.setXPrio(xprio);
-                                mh.send(); // send email to library
+                                final MHelper mhLibrary = new MHelper(toLibrary, subject, m.toString()
+                                        + "\012Save order details in " + ReadSystemConfigurations.getApplicationName()
+                                        + ":\012" + loginlink);
+                                mhLibrary.setReplyTo(of.getKundenmail());
+                                mhLibrary.setXPrio(xprio);
+                                mhLibrary.send(); // send email to library
                                 
                             } else { // User unknown
-                                // subject is already set
-                                mh.setTo(to);
-                                mh.setText(m.toString() + "\012Unknown Email! Save patron in "
+                                final MHelper mhLibrary = new MHelper(toLibrary, subject, m.toString()
+                                        + "\012Unknown Email! Save patron in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink
                                         + "\012" + "\012Save order details in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + loginlink);
-                                mh.setReplyTo(of.getKundenmail());
-                                mh.setXPrio(xprio);
-                                mh.send(); // send email to library
+                                mhLibrary.setReplyTo(of.getKundenmail());
+                                mhLibrary.setXPrio(xprio);
+                                mhLibrary.send();
                             }
                         }
                         
@@ -891,31 +891,24 @@ public final class BestellformAction extends DispatchAction {
                             final String subject = "Book part: " + of.getBuchtitel() + "\040" + of.getJahr() + ":"
                                     + of.getSeiten();
                             
-                            // send email to patron, ReplyTo library
-                            final InternetAddress[] toemail = new InternetAddress[1];
-                            toemail[0] = new InternetAddress(of.getKundenmail()); // email of patron
-                            
-                            final MHelper mh = new MHelper(toemail, subject, m.toString());
-                            mh.setReplyTo(konto.getDbsmail());
-                            mh.send();
+                            // send email to patron, ReplyTo library                            
+                            final MHelper mhPatron = new MHelper(toPatron, subject, m.toString());
+                            mhPatron.setReplyTo(konto.getDbsmail());
+                            mhPatron.send();
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = new InternetAddress(konto.getDbsmail()); // email of library
                             if (u.getId() != null) { // User already exists
-                                // subject is already set
-                                mh.setTo(toemail);
-                                mh.setText(m.toString());
-                                mh.setReplyTo(of.getKundenmail());
-                                mh.setXPrio(xprio);
-                                mh.send();
+                                final MHelper mhLibrary = new MHelper(toLibrary, subject, m.toString());
+                                mhLibrary.setReplyTo(of.getKundenmail());
+                                mhLibrary.setXPrio(xprio);
+                                mhLibrary.send();
                             } else { // User unknown
-                                // subject is already set
-                                mh.setTo(toemail);
-                                mh.setText(m.toString() + "\012Unknown Email! Save patron in "
+                                final MHelper mhLibrary = new MHelper(toLibrary, subject, m.toString()
+                                        + "\012Unknown Email! Save patron in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink);
-                                mh.setReplyTo(of.getKundenmail());
-                                mh.setXPrio(xprio);
-                                mh.send();
+                                mhLibrary.setReplyTo(of.getKundenmail());
+                                mhLibrary.setXPrio(xprio);
+                                mhLibrary.send();
                             }
                         }
                         
@@ -923,30 +916,24 @@ public final class BestellformAction extends DispatchAction {
                             
                             final String subject = "Book: " + of.getBuchtitel() + "\040" + of.getJahr();
                             
-                            // send email to patron, ReplyTo library
-                            final InternetAddress[] toemail = new InternetAddress[1];
-                            toemail[0] = new InternetAddress(of.getKundenmail()); // email of patron
-                            
-                            final MHelper mh = new MHelper(toemail, subject, m.toString());
-                            mh.setReplyTo(konto.getDbsmail());
-                            mh.send();
+                            // send email to patron, ReplyTo library                            
+                            final MHelper mhPatron = new MHelper(toPatron, subject, m.toString());
+                            mhPatron.setReplyTo(konto.getDbsmail());
+                            mhPatron.send();
                             
                             // send email to library, ReplyTo patron
-                            toemail[0] = new InternetAddress(konto.getDbsmail()); // email of library
                             if (u.getId() != null) { // User already exists
-                                // subject & text are already set
-                                mh.setTo(toemail);
-                                mh.setReplyTo(of.getKundenmail());
-                                mh.setXPrio(xprio);
-                                mh.send();
+                                final MHelper mhLibrary = new MHelper(toLibrary, subject, m.toString());
+                                mhLibrary.setReplyTo(of.getKundenmail());
+                                mhLibrary.setXPrio(xprio);
+                                mhLibrary.send();
                             } else { // User unknown
-                                // subject is already set
-                                mh.setTo(toemail);
-                                mh.setText(m.toString() + "\012Unknown Email! Save patron in "
+                                final MHelper mhLibrary = new MHelper(toLibrary, subject, m.toString()
+                                        + "\012Unknown Email! Save patron in "
                                         + ReadSystemConfigurations.getApplicationName() + ":\012" + adduserlink);
-                                mh.setReplyTo(of.getKundenmail());
-                                mh.setXPrio(xprio);
-                                mh.send();
+                                mhLibrary.setReplyTo(of.getKundenmail());
+                                mhLibrary.setXPrio(xprio);
+                                mhLibrary.send();
                             }
                         }
                         

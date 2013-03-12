@@ -100,7 +100,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
         final MimeMessage msg = getMimeMessage(session, this.getXPrio());
         
         // make TO addresses visible
-        msg.setRecipients(Message.RecipientType.TO, to);
+        msg.setRecipients(Message.RecipientType.TO, this.getTo());
         
         // set optional replyTo address
         if (this.getReplyTo() != null) {
@@ -136,7 +136,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
         }
         
         // send email
-        sendMessage(session, msg, to);
+        sendMessage(session, msg);
         
     }
     
@@ -166,13 +166,12 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /** send the message to @addressTo */
-    private void sendMessage(final Session session, final Message m, final InternetAddress[] to)
-            throws MessagingException {
+    private void sendMessage(final Session session, final Message m) throws MessagingException {
         // Mail versenden
         final Transport bus = session.getTransport("smtp");
         try {
             bus.connect(SYSTEM_EMAIL_HOST, getLoadBalancedAccontname(), SYSTEM_EMAIL_PASSWORD);
-            bus.sendMessage(m, to); // An diese Adressen senden
+            bus.sendMessage(m, this.getTo()); // An diese Adressen senden
         } finally {
             bus.close();
         }
@@ -205,30 +204,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
         
     }
     
-    public InternetAddress[] getTo() {
-        return to;
-    }
-    
-    public void setTo(final InternetAddress[] to) {
-        this.to = to;
-    }
-    
-    public String getSubject() {
-        return subject;
-    }
-    
-    public void setSubject(final String subject) {
-        this.subject = subject;
-    }
-    
-    public String getText() {
-        return text;
-    }
-    
-    public void setText(final String text) {
-        this.text = text;
-    }
-    
     public String getReplyTo() {
         return replyTo;
     }
@@ -243,6 +218,36 @@ public class MHelper extends AbstractReadSystemConfigurations {
     
     public void setXPrio(final String xprio) {
         this.xprio = xprio;
+    }
+    
+    // private to enforce constructor
+    private InternetAddress[] getTo() {
+        return to;
+    }
+    
+    // private to enforce constructor
+    private void setTo(final InternetAddress[] to) {
+        this.to = to;
+    }
+    
+    // private to enforce constructor
+    private String getSubject() {
+        return subject;
+    }
+    
+    // private to enforce constructor
+    private void setSubject(final String subject) {
+        this.subject = subject;
+    }
+    
+    // private to enforce constructor
+    private String getText() {
+        return text;
+    }
+    
+    // private to enforce constructor
+    private void setText(final String text) {
+        this.text = text;
     }
     
     // private to enforce constructor
