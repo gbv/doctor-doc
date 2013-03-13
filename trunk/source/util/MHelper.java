@@ -87,7 +87,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /**
-     * Versendet ein Email.</P></P>
+     * Send an email.</P></P>
      * 
      * @author Markus Fischer
      */
@@ -191,13 +191,13 @@ public class MHelper extends AbstractReadSystemConfigurations {
         return message;
     }
     
-    /** send the message to @addressTo */
+    /** Send the message to @To */
     private void sendMessage(final Session session, final Message m) throws MessagingException, NoSuchProviderException {
-        // Mail versenden
+        
         final Transport bus = session.getTransport("smtp");
         try {
             bus.connect(SYSTEM_EMAIL_HOST, getLoadBalancedAccontname(), SYSTEM_EMAIL_PASSWORD);
-            bus.sendMessage(m, this.getTo()); // An diese Adressen senden
+            bus.sendMessage(m, this.getTo());
         } finally {
             bus.close();
         }
