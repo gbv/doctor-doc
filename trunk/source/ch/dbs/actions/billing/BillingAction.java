@@ -214,9 +214,9 @@ public final class BillingAction extends DispatchAction {
         
         try {
             
-            // prepare attachement
+            // prepare attachment
             DataSource aAttachment = null;
-            pdfMailAttachement(bf, rp, baos);
+            pdfMailAttachment(bf, rp, baos);
             aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
             
             final Konto k = new Konto(bf.getKontoid(), cn.getConnection());
@@ -326,7 +326,7 @@ public final class BillingAction extends DispatchAction {
         
     }
     
-    private void pdfMailAttachement(final BillingForm bf, final HttpServletResponse rp, final ByteArrayOutputStream o) {
+    private void pdfMailAttachment(final BillingForm bf, final HttpServletResponse rp, final ByteArrayOutputStream o) {
         final JRMapCollectionDataSource ds = prepareReport(bf, rp);
         try {
             JasperRunManager.runReportToPdfStream(reportStream, o, param, ds);

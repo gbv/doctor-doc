@@ -114,10 +114,10 @@ public class MHelper extends AbstractReadSystemConfigurations {
         // Setting the Subject
         msg.setSubject(MimeUtility.encodeText(this.getSubject(), UTF8, null));
         
-        if (this.getAttachment() == null) { // email without attachement
+        if (this.getAttachment() == null) { // email without attachment
             msg.setText(this.getText(), UTF8);
             msg.saveChanges();
-        } else { // email with attachement
+        } else { // email with attachment
             // create the message part
             MimeBodyPart messageBodyPart = new MimeBodyPart();
             
