@@ -17,7 +17,6 @@
 
 package util;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -26,6 +25,7 @@ import javax.activation.DataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -91,7 +91,9 @@ public class MHelper extends AbstractReadSystemConfigurations {
      * 
      * @author Markus Fischer
      */
-    public void send() throws MessagingException, UnsupportedEncodingException {
+    public void send() throws Exception {
+        
+        validateArguments();
         
         // create properties and get the default Session
         final Session session = Session.getInstance(getProperties());
@@ -140,6 +142,29 @@ public class MHelper extends AbstractReadSystemConfigurations {
         
     }
     
+    /**
+     * Validates input on non null values from constructor, before sending an
+     * email.
+     */
+    private void validateArguments() throws IllegalArgumentException {
+        
+        if (this.getTo() == null || this.getTo().length == 0) {
+            throw new IllegalArgumentException("Invalid to address");
+        }
+        
+        if (this.getSubject() == null) {
+            throw new IllegalArgumentException("Invalid subject");
+        }
+        
+        if (this.getSubject() == null) {
+            throw new IllegalArgumentException("Invalid mail text");
+        }
+        
+        if (this.getAttachment() != null && this.getFilename() == null) {
+            throw new IllegalArgumentException("Missing filename");
+        }
+    }
+    
     /** Gets the system properties */
     private Properties getProperties() {
         // Get system properties
@@ -153,7 +178,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /** Gets the MimeMessage */
-    private MimeMessage getMimeMessage(final Session session, final String xprio) throws MessagingException {
+    private MimeMessage getMimeMessage(final Session session, final String xprio) throws MessagingException,
+            AddressException {
         // Define message
         final MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SYSTEM_EMAIL));
@@ -166,7 +192,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /** send the message to @addressTo */
-    private void sendMessage(final Session session, final Message m) throws MessagingException {
+    private void sendMessage(final Session session, final Message m) throws MessagingException, NoSuchProviderException {
         // Mail versenden
         final Transport bus = session.getTransport("smtp");
         try {
