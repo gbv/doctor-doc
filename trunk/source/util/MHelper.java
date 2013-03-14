@@ -157,25 +157,25 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /**
-     * Validates input on non null values from constructor, before sending an
-     * email.
+     * Validates input on illegal empty or null values from constructor, before
+     * sending an email.
      */
     private void validateArguments() throws IllegalArgumentException {
         
         if (this.getTo() == null || this.getTo().length == 0) {
-            throw new IllegalArgumentException("Invalid to address");
+            throw new IllegalArgumentException("No values for InternetAdress[] to");
         }
         
         if (this.getSubject() == null) {
-            throw new IllegalArgumentException("Invalid subject");
+            throw new IllegalArgumentException("Invalid subject: null");
         }
         
         if (this.getSubject() == null) {
-            throw new IllegalArgumentException("Invalid mail text");
+            throw new IllegalArgumentException("Invalid mail text: null");
         }
         
         if (this.getAttachment() != null && this.getFilename() == null) {
-            throw new IllegalArgumentException("Missing filename");
+            throw new IllegalArgumentException("Missing filename: null");
         }
     }
     
