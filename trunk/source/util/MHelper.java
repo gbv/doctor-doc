@@ -87,7 +87,9 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /**
-     * Send an email.</P></P>
+     * Sends an email depending on the arguments specified: replyto, xprio and
+     * attachements will be set if appropriate. Contents are UTF-8 encoded.
+     * </P></P>
      * 
      * @author Markus Fischer
      */
@@ -140,6 +142,18 @@ public class MHelper extends AbstractReadSystemConfigurations {
         // send email
         sendMessage(session, msg);
         
+    }
+    
+    /**
+     * Convenience method: allows to send an (error) email without having to
+     * deal with exceptions in the calling classes.
+     */
+    public void sendError() {
+        try {
+            send();
+        } catch (final Exception e) {
+            LOG.error(e.toString());
+        }
     }
     
     /**
@@ -216,14 +230,6 @@ public class MHelper extends AbstractReadSystemConfigurations {
     /** Returns a random number between and including a minimum and maximum. */
     private int getRandomNumber(final int min, final int max) {
         return min + (int) (Math.random() * ((max - min) + 1));
-    }
-    
-    public void sendError() {
-        try {
-            send();
-        } catch (final Exception e) {
-            LOG.error(e.toString());
-        }
     }
     
     public static void main(final String[] args) {
