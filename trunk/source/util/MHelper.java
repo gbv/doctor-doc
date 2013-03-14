@@ -87,8 +87,8 @@ public class MHelper extends AbstractReadSystemConfigurations {
     }
     
     /**
-     * Sends an email depending on the arguments specified: replyto, xprio and
-     * attachements will be set if appropriate. Contents are UTF-8 encoded.
+     * Sends an email depending on the arguments specified: replyTo, xprio and
+     * attachment will be set if appropriate. Contents are UTF-8 encoded.
      * </P></P>
      * 
      * @author Markus Fischer
