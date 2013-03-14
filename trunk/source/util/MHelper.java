@@ -163,7 +163,7 @@ public class MHelper extends AbstractReadSystemConfigurations {
     private void validateArguments() throws IllegalArgumentException {
         
         if (this.getTo() == null || this.getTo().length == 0) {
-            throw new IllegalArgumentException("No values for InternetAdress[] to");
+            throw new IllegalArgumentException("No values for InternetAddress[] to");
         }
         
         if (this.getSubject() == null) {
