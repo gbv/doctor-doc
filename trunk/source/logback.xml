@@ -7,23 +7,6 @@
 	    <pattern>%date{"MMM dd, yyyy HH:mm:ss", Europe/Zurich} [%thread] %-5level %logger{36} - %msg%n</pattern>
 	  </encoder>    
   </appender>
-  
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	  <file>tomcat5/logs/doctor-doc.log</file>
-	  
-	  <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-	    <!-- daily rollover -->
-	    <fileNamePattern>doctor-doc.%d{yyyy-MM-dd}.log</fileNamePattern>
-	    
-	    <!-- keep 30 days' worth of history -->
-	    <maxHistory>30</maxHistory>
-	  </rollingPolicy>
-	
-	<!--  to include a comma in your date pattern, enclose the pattern between quotes -->
-	  <encoder>
-		<pattern>%date{"MMM dd, yyyy HH:mm:ss", Europe/Zurich} [%thread] %-5level %logger{36} - %msg%n</pattern>
-	  </encoder>  
- </appender>
  
  <!-- set log level on package level -->
  <logger name="ch" level="WARN" />
@@ -33,6 +16,5 @@
 
   <root level="debug">
     <appender-ref ref="STDOUT" />
-    <appender-ref ref="FILE" />
   </root>
 </configuration>
