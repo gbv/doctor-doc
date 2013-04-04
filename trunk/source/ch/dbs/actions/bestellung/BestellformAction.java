@@ -458,6 +458,8 @@ public final class BestellformAction extends DispatchAction {
                     saveOrder = bp.isSaveorder();
                 } // additionally save order in the database?
                 
+                final StringBuffer m = new StringBuffer();
+                
                 try {
                     // remove empty spaces from email
                     if (of.getKundenmail() != null) {
@@ -543,7 +545,6 @@ public final class BestellformAction extends DispatchAction {
                         final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                         final String date = sdf.format(d, konto.getTimezone());
                         
-                        final StringBuffer m = new StringBuffer();
                         m.append("First name: ");
                         m.append(of.getKundenvorname());
                         m.append("\nLast name: ");
@@ -955,7 +956,7 @@ public final class BestellformAction extends DispatchAction {
                     final ErrorMessage em = new ErrorMessage("error.send", "login.do");
                     rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
                     // Severe error
-                    final MHelper mh = new MHelper(e, "Order form - Error sending an order");
+                    final MHelper mh = new MHelper(e, "Order form - Error sending an order", m.toString());
                     mh.sendError();
                 }
                 

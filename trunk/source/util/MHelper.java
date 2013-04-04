@@ -86,6 +86,18 @@ public class MHelper extends AbstractReadSystemConfigurations {
         this.setText(e.toString());
     }
     
+    public MHelper(final Exception e, final String subject, final String text) {
+        final InternetAddress[] errorMail = new InternetAddress[1];
+        try {
+            errorMail[0] = new InternetAddress(ERROR_EMAIL);
+        } catch (final AddressException ex) {
+            LOG.error("Please check the key 'errorEmail.email' in SystemConfiguration.properties: " + ex.toString());
+        }
+        this.setTo(errorMail);
+        this.setSubject(subject);
+        this.setText(e.toString() + "\n\n" + text);
+    }
+    
     /**
      * Sends an email depending on the arguments specified: replyTo, xprio and
      * attachment will be set if appropriate. Contents are UTF-8 encoded.
