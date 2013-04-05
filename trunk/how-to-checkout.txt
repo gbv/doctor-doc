@@ -1,3 +1,10 @@
+Version 05-April-2013
+
+Important note:
+Due to an Sourceforge update the SVN URL has changed to https://svn.code.sf.net/p/doctor-doc/code/trunk
+You need to do a fresh checkout of the project, if you already have used the old URL https://doctor-doc.svn.sourceforge.net/svnroot/doctor-doc/trunk.
+The old SVN URL will be Read Only and the contents do not get updated anymore.
+
 How to check out Doctor-Doc in Eclipse
 
 Contact us through our developers mailing list:
@@ -20,7 +27,7 @@ You now have an "Dynamic Web Project". Now let's checkout Doctor-Doc over SVN in
 
 9. Right click on your empty project => "import" => "import" => type "SVN" => choose "Checkout projects from SVN"
 10. "Create a new repository location"
-11. URL => https://doctor-doc.svn.sourceforge.net/svnroot/doctor-doc/trunk
+11. URL => https://svn.code.sf.net/p/doctor-doc/code/trunk
 12. Select the folder to be checked out from SVN => click on root level => "next"
 13. Switch to "Check out as project in the workspace"!
 14. Use the same project name you used in step 6!
