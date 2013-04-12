@@ -3,7 +3,7 @@
   Doctor-Doc is a web based and a easy-to-use tracking and
   managing system for scientific literature.
   
-  Copyright (C) 2005 - 2012  Markus Fischer, Pascal Steiner
+  Copyright (C) 2005 - 2013  Markus Fischer, Pascal Steiner
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -31,7 +31,6 @@ We strongly encourage you to get involved!
 Requirements:
 
 ---
-Webserver Apache 1.3 or 2.0
 Tomcat 5.5 or higher
 Java 1.6
 MySQL 5.0 or higher
