@@ -232,13 +232,20 @@ public class DaiaParam extends AbstractIdEntity {
             link.append('=');
             link.append(url.encode(of.getSeiten(), "UTF-8"));
         }
-        if (of.getSeiten() != null && !"".equals(of.getIssn()) && dp.getMapIssn() != null) {
+        // no equivalence in orderform. ReferenceValue has been set before.
+        if (dp.getMapReference() != null && dp.getReferenceValue() != null) {
+            appendParam(link);
+            link.append(dp.getMapReference());
+            link.append('=');
+            link.append(url.encode(dp.getReferenceValue(), "UTF-8"));
+        }
+        if (of.getIssn() != null && !"".equals(of.getIssn()) && dp.getMapIssn() != null) {
             appendParam(link);
             link.append(dp.getMapIssn());
             link.append('=');
             link.append(url.encode(of.getIssn(), "UTF-8"));
         }
-        if (of.getSeiten() != null && !"".equals(of.getIsbn()) && dp.getMapIsbn() != null) {
+        if (of.getIsbn() != null && !"".equals(of.getIsbn()) && dp.getMapIsbn() != null) {
             appendParam(link);
             link.append(dp.getMapIsbn());
             link.append('=');
