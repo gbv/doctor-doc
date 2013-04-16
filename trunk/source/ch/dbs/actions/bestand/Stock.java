@@ -639,7 +639,7 @@ public class Stock extends DispatchAction {
                 if (uniqueSetStockID.contains(b.getId())) {
                     final Message msg = new Message();
                     msg.setMessage("error.import.stid.notUnique");
-                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getId().toString()));
+                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getId()));
                     messageList.add(msg);
                 } else { // if not found add Stock-ID
                     uniqueSetStockID.add(b.getId());
@@ -656,13 +656,13 @@ public class Stock extends DispatchAction {
                     if (!control.getHolding().getId().equals(b.getHolding().getId())) {
                         final Message msg = new Message();
                         msg.setMessage("error.import.hoid.doesNotMatchStid");
-                        msg.setSystemMessage(composeSystemMessage(lineCount, b.getHolding().getId().toString()));
+                        msg.setSystemMessage(composeSystemMessage(lineCount, b.getHolding().getId()));
                         messageList.add(msg);
                     }
                 } else { // KID from Bestand does not match KID from ui!
                     final Message msg = new Message();
                     msg.setMessage("error.import.stid.notFromAccount");
-                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getId().toString()));
+                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getId()));
                     messageList.add(msg);
                 }
             }
@@ -676,7 +676,7 @@ public class Stock extends DispatchAction {
                 if (control.getId() == null) { // Location-ID does not belong to account
                     final Message msg = new Message();
                     msg.setMessage("error.import.locationid");
-                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString()));
+                    msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId()));
                     messageList.add(msg);
                     
                     // Location-ID belongs to account, but do the locations match?
@@ -684,8 +684,12 @@ public class Stock extends DispatchAction {
                         && !b.getStandort().getInhalt().equals(control.getInhalt())) { // locations do not match...
                     final Message msg = new Message();
                     msg.setMessage("error.import.locationsDoNotMatch");
+                    if (b.getStandort().getId() != null) {
                     msg.setSystemMessage(composeSystemMessage(lineCount, b.getStandort().getId().toString() + "/"
                             + b.getStandort().getInhalt()));
+                    } else {
+                    	msg.setSystemMessage(composeSystemMessage(lineCount, "null/" + b.getStandort().getInhalt()));
+                    }
                     messageList.add(msg);
                 }
             } else if (b.getStandort().getInhalt().equals("")) { // check if location is present
@@ -1118,6 +1122,25 @@ public class Stock extends DispatchAction {
         }
         
         return msg;
+    }
+    
+    /**
+     * Uses a StringBuffer to compose a String in the form: Row x: text...
+     * 
+     * @param int
+     * @param Long
+     * @return String
+     */
+    private String composeSystemMessage(final int lineCount, final Long element) {
+        
+        final StringBuffer bf = new StringBuffer();
+        
+        bf.append("Row ");
+        bf.append(lineCount);
+        bf.append(": ");
+        bf.append(element);
+        
+        return bf.toString();
     }
     
     /**
