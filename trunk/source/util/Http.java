@@ -41,38 +41,38 @@ import org.slf4j.LoggerFactory;
 import enums.Connect;
 
 public class Http {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Http.class);
     private static final String USER_AGENT = "Mozilla/6.0 (Windows NT 6.2; WOW64; rv:16.0.1) Gecko/20121011 Firefox/16.0.1";
-    
+
     /**
      * @param link
      * @return web site as String with a timeout of 2 seconds and 3 tries.
      */
     public String getContent(final String link) {
-        return getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue());
+        return getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue(), null);
     }
-    
+
     /**
      * @param link
      * @return web site as String with a timeout of 2 seconds and 3 tries.
      */
     public String getContent(final String link, final List<NameValuePair> nameValuePairs) {
-        return getContent(link, nameValuePairs, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue());
+        return getContent(link, nameValuePairs, Connect.TIMEOUT_2.getValue(), Connect.TRIES_3.getValue(), null);
     }
-    
+
     /**
      * @param String link
      * @param int timeout_ms
      * @return web site as string
      */
-    public String getContent(final String link, final int timeoutMs, final int trys) {
-        
+    public String getContent(final String link, final int timeoutMs, final int trys, final String encoding) {
+
         String content = "";
         HttpEntity entity = null;
-        
+
         final HttpGet httpget = new HttpGet(link);
-        
+
         final HttpParams httpParameters = new BasicHttpParams();
         // Set the timeout in milliseconds until a connection is established.
         HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutMs);
@@ -80,27 +80,33 @@ public class Http {
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutMs);
         // Set user agent
         httpParameters.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-        
+
         final HttpClient httpclient = new DefaultHttpClient(httpParameters);
-        
+
         int runs = 1;
-        
+
         while (entity == null && runs <= trys) {
-            
+
             runs++;
-            
+
             try {
-                
+
                 // Execute the request
                 final HttpResponse response = httpclient.execute(httpget);
-                
+
                 // Get hold of the response entity
                 entity = response.getEntity();
-                
+
                 if (entity != null) {
-                    content = EntityUtils.toString(entity);
+                    if (encoding == null) {
+                        // let httpclient guess encoding
+                        content = EntityUtils.toString(entity);
+                    } else {
+                        // use predefined encoding
+                        content = EntityUtils.toString(entity, encoding);
+                    }
                 }
-                
+
             } catch (final IOException e) {
                 LOG.error(e.toString() + ": " + link);
             } catch (final Exception e) {
@@ -108,12 +114,12 @@ public class Http {
             } finally {
                 EntityUtils.consumeQuietly(entity);
             }
-            
+
         }
-        
+
         return content;
     }
-    
+
     /**
      * @param String link
      * @param List<NameValuePair> nameValuePairs
@@ -121,16 +127,16 @@ public class Http {
      * @return web site as string
      */
     public String getContent(final String link, final List<NameValuePair> nameValuePairs, final int timeoutMs,
-            final int trys) {
-        
+            final int trys, final String encoding) {
+
         String content = "";
         HttpEntity entity = null;
-        
+
         try {
-            
+
             final HttpPost httppost = new HttpPost(link);
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
-            
+
             final HttpParams httpParameters = new BasicHttpParams();
             // Set the timeout in milliseconds until a connection is established.
             HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutMs);
@@ -138,27 +144,33 @@ public class Http {
             HttpConnectionParams.setSoTimeout(httpParameters, timeoutMs);
             // Set user agent
             httpParameters.setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
-            
+
             final HttpClient httpclient = new DefaultHttpClient(httpParameters);
-            
+
             int runs = 1;
-            
+
             while (entity == null && runs <= trys) {
-                
+
                 runs++;
-                
+
                 try {
-                    
+
                     // Execute the request
                     final HttpResponse response = httpclient.execute(httppost);
-                    
+
                     // Get hold of the response entity
                     entity = response.getEntity();
-                    
+
                     if (entity != null) {
-                        content = EntityUtils.toString(entity);
+                        if (encoding == null) {
+                            // let httpclient guess encoding
+                            content = EntityUtils.toString(entity);
+                        } else {
+                            // use predefined encoding
+                            content = EntityUtils.toString(entity, encoding);
+                        }
                     }
-                    
+
                 } catch (final ClientProtocolException e) {
                     LOG.error(e.toString() + ": " + link);
                 } catch (final IOException e) {
@@ -168,14 +180,14 @@ public class Http {
                 } finally {
                     EntityUtils.consumeQuietly(entity);
                 }
-                
+
             }
-            
+
         } catch (final UnsupportedEncodingException e) {
             LOG.error(e.toString());
         }
-        
+
         return content;
     }
-    
+
 }

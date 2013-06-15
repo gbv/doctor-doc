@@ -71,31 +71,14 @@
   </logic:present>  
 </form>
   
-<logic:present name="treffer_gs" property="zeitschriften">
-  <p><i>powered by Google Scholar</i></p>
-  <logic:iterate id="t2" name="treffer_gs" property="zeitschriften">
-    <p><a href="<bean:write name="t2" property="link"/>" target="_blank"><bean:write name="t2" property="url_text"/></a>
-    <logic:present name="userinfo" property="benutzer">
-    <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-      <br><bean:write name="t2" property="link"/>
-    </logic:notEqual>
-    </logic:present>
+<logic:present name="seeksresult">
+  <p><i>powered by Seeks</i></p>
+  <logic:iterate id="hit" name="seeksresult">
+    <p>
+    	<a href="<bean:write name="hit" property="url"/>" target="_blank"><bean:write name="hit" property="title"/></a>
+    	<br><bean:write name="hit" property="url"/>
     </p>
   </logic:iterate>
-    <p>______________________________________________________________</p>
-</logic:present>
-
-<logic:present name="treffer_gl" property="zeitschriften">
-  <p><i>powered by Google</i></p>
-  <logic:iterate id="t1" name="treffer_gl" property="zeitschriften">
-    <p><a href="<bean:write name="t1" property="link"/>" target="_blank"><bean:write name="t1" property="url_text"/></a>
-    <logic:present name="userinfo" property="benutzer">
-    <logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
-      <br><bean:write name="t1" property="link"/>
-    </logic:notEqual>
-    </logic:present>
-    </p>
-     </logic:iterate>
 </logic:present>
 
 <p></p>

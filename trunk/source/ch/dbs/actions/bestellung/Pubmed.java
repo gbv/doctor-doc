@@ -32,14 +32,14 @@ import ch.dbs.form.OrderForm;
 import enums.Connect;
 
 public class Pubmed {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Pubmed.class);
-    
+
     /**
      * Extracts the PMID out of a string.
      */
     public String extractPmid(String pmid) {
-        
+
         if (pmid != null && !pmid.equals("")) {
             try {
                 final Matcher w = Pattern.compile("[0-9]+").matcher(pmid);
@@ -50,15 +50,15 @@ public class Pubmed {
                 LOG.error("extractPmid: " + pmid + "\040" + e.toString());
             }
         }
-        
+
         return pmid;
     }
-    
+
     /**
      * Gets from a PMID all article details.
      */
     public OrderForm resolvePmid(final String pmid) {
-        
+
         OrderForm of = new OrderForm();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
         final OpenUrl openurl = new OpenUrl();
@@ -66,18 +66,18 @@ public class Pubmed {
         final String link = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=xml&id="
                 + pmid;
         String content = "";
-        
+
         try {
-            content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
+            content = http.getContent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue(), null);
             final ContextObject co = openurl.readXmlPubmed(content);
             of = openurlConv.makeOrderform(co);
         } catch (final Exception e) {
             LOG.error("resolvePmid: " + pmid + "\040" + e.toString());
         }
-        
+
         return of;
     }
-    
+
     /**
      * Gets the PMID from the article details.
      * 
@@ -85,26 +85,26 @@ public class Pubmed {
      * @return String pmid
      */
     public String getPmid(final OrderForm of) {
-        
+
         String pmid = "";
         final Http http = new Http();
-        
+
         try {
-            
+
             final String content = http.getContent(composePubmedlinkToPmid(of), Connect.TIMEOUT_2.getValue(),
-                    Connect.TRIES_2.getValue());
-            
+                    Connect.TRIES_2.getValue(), null);
+
             if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
                 pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));
             }
-            
+
         } catch (final Exception e) {
             LOG.error("getPmid(of): " + e.toString());
         }
-        
+
         return pmid;
     }
-    
+
     /**
      * Extracts the PMID from the web content.
      * 
@@ -112,30 +112,30 @@ public class Pubmed {
      * @return String pmid
      */
     public String getPmid(final String content) {
-        
+
         String pmid = "";
-        
+
         try {
-            
+
             if (content.contains("<Count>1</Count>") && content.contains("<Id>")) {
                 pmid = content.substring(content.indexOf("<Id>") + 4, content.indexOf("</Id>"));
             }
-            
+
         } catch (final Exception e) {
             LOG.error("getPmid(String): " + e.toString() + "\012" + content);
         }
-        
+
         return pmid;
     }
-    
+
     /**
      * Creates the search link to get the PMID from the article details.
      */
     public String composePubmedlinkToPmid(final OrderForm pageForm) {
-        
+
         // encode user entered values, to avoid illegalArgumentException
         final CodeUrl enc = new CodeUrl();
-        
+
         final StringBuffer link = new StringBuffer(128);
         link.append("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=");
         link.append(enc.encode(pageForm.getIssn(), "UTF-8"));
@@ -160,23 +160,23 @@ public class Pubmed {
             link.append(enc.encode(pageForm.getJahr().trim(), "UTF-8"));
             link.append("[DP]");
         }
-        
+
         return link.toString();
     }
-    
+
     /**
      * Remove any illegal text. Add "Suppl" if text contains S || s.
      */
     private String prepareVolumeNIssue(final String input) {
-        
+
         final StringBuffer result = new StringBuffer();
-        
+
         final char[] cArray = input.toCharArray();
-        
+
         boolean supplSet = false;
-        
+
         for (final char c : cArray) {
-            
+
             if (Character.isDigit(c) || c == ' ') {
                 result.append(c);
             } else if (!supplSet && c == 'S' || c == 's') {
@@ -185,30 +185,30 @@ public class Pubmed {
                 supplSet = true;
             }
         }
-        
+
         // remove double whitespaces
         return result.toString().replaceAll("\\s+", " ");
     }
-    
+
     /**
      * Remove any illegal text. Returns only the start page and adds S in front
      * of it, if text contains S || s.
      */
     private String preparePage(final String input) {
-        
+
         final StringBuffer result = new StringBuffer();
         final ConvertOpenUrl openurlConv = new ConvertOpenUrl();
-        
+
         // append S for Supplements
         if (input.contains("s") || input.contains("S")) {
             result.append("S");
         }
-        
+
         // use only start page
         result.append(openurlConv.extractFirstNumber(input));
-        
+
         return result.toString();
-        
+
     }
-    
+
 }
