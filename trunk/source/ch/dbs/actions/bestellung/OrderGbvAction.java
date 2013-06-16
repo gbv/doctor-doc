@@ -702,7 +702,6 @@ public final class OrderGbvAction extends DispatchAction {
             }
 
             of.setSubmit("GBV");
-            //TODO: saubere Preisverwaltung
             of.setPreisvorkomma("0");
             of.setPreisnachkomma("00");
             of.setWaehrung("EUR");

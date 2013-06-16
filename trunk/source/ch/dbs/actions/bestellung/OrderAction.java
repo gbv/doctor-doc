@@ -473,7 +473,6 @@ public final class OrderAction extends DispatchAction {
                     carelitcontent = executor.submit(carelitthread);
                 }
 
-                // TODO: open this up: get link for any linkresolver, configured on account level
                 // use link to services from ZDB/EZB
                 // http://services.dnb.de/fize-service/gvr/html-service.htm?
                 final StringBuffer linkEZB = new StringBuffer("http://services.dnb.de/fize-service/gvr/full.xml?");
@@ -494,7 +493,6 @@ public final class OrderAction extends DispatchAction {
                 ezbthread.setLink(linkEZB.toString());
                 ezbcontent = executor.submit(ezbthread);
 
-                // TODO: open this up: get UIlink for any linkresolver, configured on account level
                 // compose link to EZB for UI
                 final StringBuffer linkUIezb = new StringBuffer("http://ezb.uni-regensburg.de/ezeit/vascoda/openURL?");
                 linkUIezb.append(openurl);
@@ -525,7 +523,6 @@ public final class OrderAction extends DispatchAction {
                 internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
                 externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
 
-                // TODO: open this up: read response from any linkresolver, configured on account level
                 // get back EZB thread
                 final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
                 if (ezbanswer != null && !ezbanswer.contains("<Error code=")
@@ -555,7 +552,6 @@ public final class OrderAction extends DispatchAction {
                     }
                 }
 
-                // TODO: open this up: set linkname for any linkresolver, configured on account level
                 // set Link for "Powered by EZB/ZDB" for manual checks by the user
                 ezbform.setLinkezb(linkUIezb.toString());
 

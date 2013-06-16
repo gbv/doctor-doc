@@ -43,12 +43,12 @@ import enums.TextType;
  * @author Pascal Steiner
  */
 public final class KontoAdmin {
-    
+
     private static final int TWO_WEEKS = 14;
     private static final int TEN_DAYS = 14;
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(KontoAdmin.class);
-    
+
     /**
      * <p>Automatische Rechnungsstellung sowie Zahlungserinnerungen an Konten
      * vor Konto-Ablaufdatum:</p> 2 Monate vor Ablauf wird die Rechnung erstellt
@@ -59,71 +59,71 @@ public final class KontoAdmin {
      * @author Pascal Steiner
      */
     public void autoBillExpdate() {
-        
+
         // Datumsformatierung vorbereiten
         final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd"); // Datumsformatierung für Vergleich
         final SimpleDateFormat expdateformater = new SimpleDateFormat("dd.MM.yyyy"); // Datumsformatierung für Mailtext
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
-        
+
         // Delta 2 Monate zu aktuellem Monat ausrechnen
         cal.add(Calendar.MONTH, +2);
         final String expDateMysql = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
         cal.add(Calendar.DAY_OF_MONTH, -TWO_WEEKS);
         final String lastPayDate2Month = expdateformater.format(cal.getTime()); //Letzte Zahlungsmöglichkeit
-        
+
         // Delta 1 Monat ausrechnen
         cal = new GregorianCalendar(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
         cal.add(Calendar.MONTH, +1);
         final String expMysql1Month = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
         cal.add(Calendar.DAY_OF_MONTH, -TWO_WEEKS);
         final String lastPayDate1Month = expdateformater.format(cal.getTime()); // Letzte Zahlungsmöglichkeit
-        
+
         // 10 Tage vor Kontoablauf ausrechnen (Hinweis, dass es zu Unterbruch kommen kann)
         cal = new GregorianCalendar(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
         cal.add(Calendar.DAY_OF_MONTH, +TEN_DAYS);
         final String warnDateMysql = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
         cal.add(Calendar.DAY_OF_MONTH, -TWO_WEEKS);
         final String warnLastPayDate = expdateformater.format(cal.getTime()); // Letzte Zahlungsmöglichkeit vorbei am
-        
+
         // Abgelaufenen Kontos deaktivieren !!CronJob Muss ca 10:30 laufen
         // (cal.add(Calendar.DAY_OF_MONTH, -1); geht nicht, sonst wird eine neue Rechnung erstellt!!
         cal = new GregorianCalendar(TimeZone.getTimeZone(ReadSystemConfigurations.getSystemTimezone()));
         //      cal.add(Calendar.DAY_OF_MONTH, -1);
         final String exp = formater.format(cal.getTime()); // Datum fuer MYSQL vergleich
-        
+
         // Datenbankverbindung aufbauen
         final Text cn = new Text();
-        
+
         try {
-            
+
             //    Alle Kontos holen
             final List<Konto> expKontos = new Konto().getAllKontos(cn.getConnection());
-            
+
             // Kontos abarbeiten, ob eine Rechnung erstelt und versendet werden muss
             for (final Konto k : expKontos) {
                 if (k.getKontotyp() > 0 && k.getExpdate() != null) {
-                    
+
                     //           neue Rechnung erstellen, wenn das Abo in 2 Monaten ablauuft
                     if (k.getExpdate().toString().equals(expDateMysql)) {
                         this.newKontoAboBill(k, cn.getConnection(), lastPayDate2Month);
                     }
-                    
+
                     // Zahlungserinnerung versenden wenn Abo in 1 Monat ablauuft
                     if (k.getExpdate().toString().equals(expMysql1Month)) {
                         this.sendBillingReminder(k, cn.getConnection(), lastPayDate1Month);
                     }
-                    
+
                     // Zahlungserinnerung versenden, wenn Abo in 10 Tagen ablauft
                     if (k.getExpdate().toString().equals(warnDateMysql)) {
                         this.sendBillingWarning(k, cn.getConnection(), warnLastPayDate);
                     }
-                    
+
                     // Bibliothekskonto deaktivieren, wenn Abo ohne Zahlungseingang abläuft
                     if (k.getExpdate().toString().equals(exp)) {
-                        
+
                         // Meldung an Kunden und Team Doctor-Doc senden
                         this.sendExpireMessage(k, cn.getConnection());
-                        
+
                         //             Faxserver deaktivieren
                         k.setFaxno(null);
                         k.update(cn.getConnection());
@@ -131,7 +131,6 @@ public final class KontoAdmin {
                 }
             }
         } catch (final Exception e) {
-            // TODO: proper error handling in case that sending an invoice failed. We cannot be sure that the error email will be sent...
             LOG.error(e.toString());
             final MHelper mh = new MHelper(e, "Fehler beim Versenden von Rechnungen!");
             mh.sendError();
@@ -139,7 +138,7 @@ public final class KontoAdmin {
             cn.close();
         }
     }
-    
+
     /**
      * Rechnung erstellen und an Kunden versenden
      * 
@@ -161,7 +160,7 @@ public final class KontoAdmin {
             b = new Billing(k, new Text(cn, TextType.BILLING_REASON, "3 Monate Doctor-Doc Enhanced plus Fax to Mail"),
                     Double.valueOf("90"), "CHF");
         }
-        
+
         if (b != null) {
             b.save(cn);
             final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -173,7 +172,7 @@ public final class KontoAdmin {
                     + " bis spätestens am " + lastpaydate + " auf dem Konto des " + "Vereins "
                     + ReadSystemConfigurations.getApplicationName() + " eintreffen.");
             bf = this.prepareBillingText(k, cn, lastpaydate, bf);
-            
+
             // Mail senden
             final InternetAddress[] to = new InternetAddress[1];
             if (b.getId() != null) {
@@ -193,7 +192,7 @@ public final class KontoAdmin {
             }
         }
     }
-    
+
     /**
      * Rechnungstext vorbereiten / korrigieren
      * 
@@ -203,11 +202,11 @@ public final class KontoAdmin {
      * @param lastpaydate
      */
     public BillingForm prepareBillingText(final Konto k, final Connection cn, final String lastpaydate, BillingForm bf) {
-        
+
         if (bf == null) {
             bf = new BillingForm();
         }
-        
+
         // Rechnungsobjekt vorbereiten, noch nicht speichern
         // da dies erst geschieht wenn die Rechnung wirklich versendet wird.
         Billing b = new Billing();
@@ -230,34 +229,34 @@ public final class KontoAdmin {
                         Double.valueOf("400"), "CHF");
             }
         }
-        
+
         //Betrag aendern
         if (bf.getBetrag() != 0.0) {
             b.setBetrag(bf.getBetrag());
         }
-        
+
         //Waehrung aendern
         if (bf.getWaehrung() != null && !"".equals(bf.getWaehrung())) {
             b.setWaehrung(bf.getWaehrung());
         }
-        
+
         //    Rechnungsdatum aendern
         if (bf.getRechnungsdatum() != null && !"".equals(bf.getWaehrung())) {
             b.setRechnungsdatum(bf.getRechnungsdatum());
         }
-        
+
         // Rechnungsgrund aendern
         if (bf.getRechnungsgrundid() != null && bf.getRechnungsgrundid() != 0) {
             b.setRechnungsgrund(new Text(cn, bf.getRechnungsgrundid(), TextType.BILLING_REASON));
         }
-        
+
         bf.setBill(b);
-        
+
         //Rechnungseinleitung vorbereiten
         final StringBuffer t = new StringBuffer(500);
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         t.append("RECHNUNG\n\nSehr geehrte Damen und Herren");
-        
+
         //Optionaler Rechnungstext ergänzen (nur für Mail, wird nicht gespeichert
         if (bf.getManuelltext() != null) {
             if (!bf.getManuelltext().equals("")) {
@@ -274,7 +273,7 @@ public final class KontoAdmin {
                 }
             }
         }
-        
+
         t.append("\n\nRechnungsinformationen:\nBetrag: ");
         t.append(b.getBetrag());
         t.append(' ');
@@ -285,10 +284,10 @@ public final class KontoAdmin {
         t.append(sdf.format(b.getRechnungsdatum()));
         t.append("\nRechnungsgrund: ");
         t.append(b.getRechnungsgrund().getInhalt());
-        
+
         //    Zahlungsinformationen hinzufügen
         t.append(getBillingInfos());
-        
+
         // Hinweis Zahlungskreuzung einschieben
         if (bf.getBillingtext() != null && !bf.getBillingtext().equals("")) {
             t.append("\n\n");
@@ -296,15 +295,15 @@ public final class KontoAdmin {
         }
         t.append("\n\nFreundliche Grüsse:\n\nIhr Team ");
         t.append(ReadSystemConfigurations.getApplicationName());
-        
+
         final Text txt = new Text();
         bf.setRechnungsgrundliste(txt.getText(TextType.BILLING_REASON, cn));
-        
+
         bf.setBillingtext(t.toString());
-        
+
         return bf;
     }
-    
+
     /**
      * Zahlungserinnerung versenden
      * 
@@ -313,17 +312,17 @@ public final class KontoAdmin {
      * @param lastpaydate
      */
     private void sendBillingReminder(final Konto k, final Connection cn, final String lastpaydate) throws Exception {
-        
+
         // Offene Rechnung heraussuchen
         Billing b = new Billing();
         b = b.getLastBilling(k, cn);
-        
+
         //       Mailtext vorbereiten
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         BillingForm bf = new BillingForm();
-        
+
         final InternetAddress[] to = new InternetAddress[1];
-        
+
         if (b != null) {
             to[0] = new InternetAddress(k.getBibliotheksmail());
             bf.setManuelltext("Ihr Konto auf doctor-doc.com läuft am " + sdf.format(k.getExpdate()) + " ab.");
@@ -334,10 +333,10 @@ public final class KontoAdmin {
                     + "\n\nSollte sich ihre Zahlung mit dieser Mail gekreuzt haben, betrachten Sie dieses Mail "
                     + "bitte als gegenstandslos."); // Hinweis Zahlungskreuzung, laspaydate
             bf = this.prepareBillingText(k, cn, lastpaydate, bf);
-            
+
             final String subject = "Hinweis: Ihr Faxserver auf doctor-doc.com laeuft am " + sdf.format(k.getExpdate())
                     + " ab";
-            
+
             // Rechnung versenden
             final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
             mh.send();
@@ -351,7 +350,7 @@ public final class KontoAdmin {
             mh.send();
         }
     }
-    
+
     /**
      * Warntext versenden
      * 
@@ -361,18 +360,18 @@ public final class KontoAdmin {
      * @param lastpaydate
      */
     private void sendBillingWarning(final Konto k, final Connection cn, final String lastpaydate) throws Exception {
-        
+
         //       Offene Rechnung heraussuchen
         Billing b = new Billing();
         b = b.getLastBilling(k, cn);
-        
+
         //      Mailtext vorbereiten
         BillingForm bf = new BillingForm();
-        
+
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        
+
         final InternetAddress[] to = new InternetAddress[1];
-        
+
         if (b != null) {
             to[0] = new InternetAddress(k.getBibliotheksmail());
             bf.setManuelltext("Wir konnten leider keinen rechtzeitigen Zahlungseingang ihres ausstehenden Betrages bei "
@@ -383,10 +382,10 @@ public final class KontoAdmin {
             bf.setBillingtext("Sollte sich ihre Zahlung mit dieser Mail gekreuzt haben, betrachten Sie dieses Mail "
                     + "bitte als gegenstandslos."); // Hinweis Zahlungskreuzung
             bf = this.prepareBillingText(k, cn, lastpaydate, bf);
-            
+
             final String subject = "Hinweis: Ihr Faxserver auf doctor-doc.com laeuft ab am "
                     + sdf.format(k.getExpdate());
-            
+
             //       Rechnung versenden
             final MHelper mh = new MHelper(to, subject, bf.getBillingtext());
             mh.send();
@@ -400,7 +399,7 @@ public final class KontoAdmin {
             mh.send();
         }
     }
-    
+
     /**
      * Versendet die Meldung dass das Bibliothekskonto deaktiviert wurde
      * inklusive nochmals Zahlungsdetails und dass das Konto bei Zahlungseingang
@@ -409,11 +408,11 @@ public final class KontoAdmin {
      * @param Konto
      */
     private void sendExpireMessage(final Konto k, final Connection cn) throws Exception {
-        
+
         //       Offene Rechnung heraussuchen
         Billing b = new Billing();
         b = b.getLastBilling(k, cn);
-        
+
         // Hinweismeldung vorbereiten
         BillingForm bf = new BillingForm();
         if (b != null) {
@@ -432,7 +431,7 @@ public final class KontoAdmin {
                     + "geben zu können.\n\n" + "Freundliche Grüsse:\n\n" + "Ihr Team "
                     + ReadSystemConfigurations.getApplicationName());
         }
-        
+
         // Hinweis an Kunden versenden
         final InternetAddress[] to = new InternetAddress[2];
         to[0] = new InternetAddress(k.getBibliotheksmail()); // customer
@@ -440,11 +439,11 @@ public final class KontoAdmin {
         final MHelper mh = new MHelper(to, "Hinweis: Ihr Faxserver auf doctor-doc.com wurde deaktiviert.",
                 bf.getBillingtext());
         mh.send();
-        
+
     }
-    
+
     private String getBillingInfos() {
-        
+
         final StringBuffer t = new StringBuffer(430);
         t.append("\n\n*******************************************************\n" + "Zahlungsinformationen:" + "\n");
         t.append(ReadSystemConfigurations.getApplicationName());
@@ -453,7 +452,7 @@ public final class KontoAdmin {
                 + "Postcheckkonto: 30-38112-0\n" + "Swift-Code:     VABECH22\n\n" + "Name und Adresse:\n"
                 + "Pascal Steiner\n" + "Pfanne 4\n" + "5032 Aaru Rohr (CH)\n"
                 + "*******************************************************");
-        
+
         return t.toString();
     }
 }

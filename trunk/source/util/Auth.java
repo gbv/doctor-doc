@@ -39,9 +39,9 @@ import enums.TextType;
  * @param args
  */
 public class Auth {
-    
+
     private static final String USERINFO = "userinfo";
-    
+
     /**
      * Überprüft, ob eine gültige Session vorhanden ist
      * {@link ch.dbs.form.UserInfo}<p>
@@ -49,9 +49,9 @@ public class Auth {
      * @param rq HttpServletRequest
      * @return auth (true/false)
      */
-    
+
     public boolean isLogin(final HttpServletRequest rq) {
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
@@ -60,7 +60,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Überprüft, ob ein Zugriff berechtigt erfolgt, falls der Kunde nicht
      * eingeloggt ist.
@@ -69,30 +69,30 @@ public class Auth {
      * @return t Text
      */
     public Text grantAccess(final HttpServletRequest rq) {
-        
+
         // es gibt drei mögliche Zugriffsformen, ohne eingeloggt zu sein. Priorisiert wie folgt:
         // 1. Kontokennung (überschreibt IP-basiert)
         // 2. IP-basiert (überschreibt Broker-Kennung)
         // 3. Broker-Kennung (z.B. Careum Explorer)
-        
+
         Text result = new Text();
         final Text cn = new Text();
         final Auth auth = new Auth();
-        
+
         // IP-basiert
         final String ip = rq.getRemoteAddr();
-        
+
         try {
-            
+
             final IPChecker ipck = new IPChecker();
             final Text tip = ipck.contains(ip, cn.getConnection());
-            
+
             // Broker-Kennung
             final Text tbk = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDDEN_BY_IP, rq.getParameter("bkid")); // Text mit Brokerkennung
-            
+
             // Kontokennung
             final Text tkk = new Text(cn.getConnection(), TextType.ACCOUNT_ID_OVERRIDES_IP, rq.getParameter("kkid")); // Text mit Kontokennung
-            
+
             // erste Priorität: ist eine Kontokennung vorhanden?
             if ((tkk != null && tkk.getInhalt() != null) // anhand einer kkid im Request
                     && !auth.isLogin(rq)) {
@@ -110,14 +110,14 @@ public class Auth {
                     }
                 }
             }
-            
+
         } finally {
             cn.close();
         }
-        
+
         return result;
     }
-    
+
     /**
      * Überprüft, ob in der Session ein gültiges {@link ch.dbs.form.KontoForm}
      * vorhanden ist. Gleichzeitig darf kein userinfo vorhanden sein. Wird bei
@@ -127,9 +127,9 @@ public class Auth {
      * @param rq HttpServletRequest
      * @return auth (true/false)
      */
-    
+
     public boolean isKontoform(final HttpServletRequest rq) {
-        
+
         if ((rq.getSession().getAttribute("kontoform") != null) && (rq.getSession().getAttribute(USERINFO) == null)) {
             final KontoForm kf = (KontoForm) rq.getSession().getAttribute("kontoform");
             if (kf.getBiblioname() != null) { // könnte ev. auch etwas anderes sein...
@@ -138,7 +138,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Kontrolliert, ob der angemeldete User ein Benutzer ist
      * 
@@ -146,7 +146,7 @@ public class Auth {
      * @return true / false
      */
     public boolean isBenutzer(final HttpServletRequest rq) {
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
@@ -158,7 +158,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Kontrolliert, ob der angemeldete User ein Bibliothekar ist
      * 
@@ -166,7 +166,7 @@ public class Auth {
      * @return true / false
      */
     public boolean isBibliothekar(final HttpServletRequest rq) {
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
@@ -178,7 +178,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Kontrolliert, ob der angemeldete User ein Administrator ist
      * 
@@ -186,7 +186,7 @@ public class Auth {
      * @return true / false
      */
     public boolean isAdmin(final HttpServletRequest rq) {
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null) {
@@ -198,7 +198,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Checks if the account has paid access. May be invoked in any Action by
      * returning: return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -207,12 +207,12 @@ public class Auth {
      * @return true / false
      */
     public boolean isPaidOnly(final HttpServletRequest rq) {
-        
+
         // only perform check, if activated on system level
         if (!ReadSystemConfigurations.isPaidAccess()) {
             return false;
         }
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getKonto() != null) {
@@ -227,7 +227,7 @@ public class Auth {
         }
         return true;
     }
-    
+
     /**
      * Checks if the account has paid access. May be invoked in any Action by
      * returning: return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
@@ -236,12 +236,12 @@ public class Auth {
      * @return true / false
      */
     public boolean isPaidOnly(final Konto konto) {
-        
+
         // only perform check, if activated on system level
         if (!ReadSystemConfigurations.isPaidAccess()) {
             return false;
         }
-        
+
         if (konto != null) {
             final Date now = new Date();
             // allow 30 days for a trial account
@@ -253,7 +253,7 @@ public class Auth {
         }
         return true;
     }
-    
+
     /**
      * Kontrolliert, ob der angemeldete User bestellen darf
      * 
@@ -261,7 +261,7 @@ public class Auth {
      * @return true / false
      */
     public boolean isBestellopt(final HttpServletRequest rq) {
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             if (ui.getBenutzer() != null && ui.getBenutzer().isUserbestellung()) {
@@ -270,7 +270,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Kontrolliert, ob der User sich einloggen darf
      * 
@@ -279,17 +279,16 @@ public class Auth {
      */
     public boolean isUserlogin(final HttpServletRequest rq) {
         boolean check = false;
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
-            // TODO: ausser wenn Konto deaktiviert...)
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator admin = new Administrator();
             if (b.getClass().isInstance(bib) || b.getClass().isInstance(admin)) {
                 check = true;
             }
-            
+
             if (b != null) {
                 // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
                 if (ui.getKonto() != null) {
@@ -300,12 +299,12 @@ public class Auth {
                     // mehrere Kontos, Prüfung kommt nochmals...
                     check = true;
                 }
-                
+
             }
         }
         return check;
     }
-    
+
     /**
      * Kontrolliert, ob der User der betreffende Bestellungansehen darf
      * 
@@ -314,10 +313,10 @@ public class Auth {
      */
     public boolean isLegitimateOrder(final HttpServletRequest rq, final Bestellungen order) {
         final Auth auth = new Auth();
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
-            
+
             if ((!auth.isBenutzer(rq) && order.getId() != null && ui.getKonto().getId()
                     .equals(order.getKonto().getId()))
                     || // Bibliothekare und Admins sehen Bestellungen des Kontos
@@ -328,7 +327,7 @@ public class Auth {
         }
         return false;
     }
-    
+
     /**
      * Kontrolliert, ob der User bei SUBITO bestellen darf
      * 
@@ -337,18 +336,17 @@ public class Auth {
      */
     public boolean isUserSubitoBestellung(final HttpServletRequest rq) {
         boolean check = false;
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             // Check nach Bibliothekar / Admin => können grundsätzlich immer bestellen
-            // TODO: ausser wenn Konto deaktiviert...
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator a = new Administrator();
             if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
                 check = true;
             }
-            
+
             // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
             if (b != null && ui.getKonto() != null && b.isUserbestellung() && ui.getKonto().isUserbestellung()) {
                 check = true;
@@ -356,7 +354,7 @@ public class Auth {
         }
         return check;
     }
-    
+
     /**
      * Kontrolliert, ob der User beim GBV bestellen darf
      * 
@@ -365,11 +363,10 @@ public class Auth {
      */
     public boolean isUserGBVBestellung(final HttpServletRequest rq) {
         boolean check = false;
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             // Check nach Bibliothekar / Admin => können grundsätzlich immer bestellen
-            // TODO: ausser wenn Konto deaktiviert...
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator a = new Administrator();
@@ -385,7 +382,7 @@ public class Auth {
         }
         return check;
     }
-    
+
     /**
      * Kontrolliert, ob der Useraccount aktiv ist
      * 
@@ -394,18 +391,17 @@ public class Auth {
      */
     public boolean isUserAccount(final HttpServletRequest rq) {
         boolean check = false;
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             // Check nach Bibliothekar / Admin => sind grundsätzlich immer aktiv
-            // TODO: ausser wenn Konto deaktiviert...)
             final AbstractBenutzer b = ui.getBenutzer();
             final Bibliothekar bib = new Bibliothekar();
             final Administrator a = new Administrator();
             if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
                 check = true;
             }
-            
+
             if (b != null) {
                 if (ui.getKonto() != null) {
                     // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
@@ -420,7 +416,7 @@ public class Auth {
         }
         return check;
     }
-    
+
     /**
      * Kontrolliert, ob der Useraccount aktiv ist
      * 
@@ -429,10 +425,10 @@ public class Auth {
      */
     public boolean isUserAccount(final String uid, final Connection cn) {
         boolean check = false;
-        
+
         if (uid != null) {
             AbstractBenutzer b = new AbstractBenutzer();
-            
+
             if ("0".equals(uid)) { // kein Kunde ausgewählt = manuelle Bestellung
                 check = true;
             } else {
@@ -442,10 +438,10 @@ public class Auth {
                 }
             }
         }
-        
+
         return check;
     }
-    
+
     /**
      * Kontrolliert die max. Anzahl Bestellungen eines Kontos pro Kalenderjahr
      * 
@@ -456,10 +452,10 @@ public class Auth {
         boolean check = false;
         int maxordersj = 0;
         final Bestellungen b = new Bestellungen();
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
-            
+
             if (ui.getKonto().getOrderlimits() == 0) {
                 check = true;
             } // falls keine Orderlimitis aktiviert sind...
@@ -467,17 +463,17 @@ public class Auth {
             if (maxordersj == 0) {
                 check = true;
             } // unlimitiert...
-            
+
             // Orderlimits aktiv / maxordersj nicht unlimitiert & Limite noch nicht überschritten
             if (!check && b.allOrdersThisYearForKonto(ui.getKonto(), cn) < maxordersj) {
                 check = true;
             }
-            
+
         }
-        
+
         return check;
     }
-    
+
     /**
      * Kontrolliert die max. Anzahl Bestellungen eines Kunden pro Kalenderjahr
      * 
@@ -488,10 +484,10 @@ public class Auth {
         boolean check = false;
         int maxordersutotal = 0;
         final Bestellungen b = new Bestellungen();
-        
+
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
-            
+
             if (ui.getKonto().getOrderlimits() == 0) {
                 check = true;
             } // falls keine Orderlimitis aktiviert sind...
@@ -499,15 +495,15 @@ public class Auth {
             if (maxordersutotal == 0) {
                 check = true;
             } // unlimitiert...
-            
+
             // Orderlimits aktiv / maxordersutotal nicht unbegrenzt & Limite noch nicht überschritten
             if (!check && b.countOrdersPerUser(uid, ui.getKonto(), cn) < maxordersutotal) {
                 check = true;
             }
-            
+
         }
-        
+
         return check;
     }
-    
+
 }
