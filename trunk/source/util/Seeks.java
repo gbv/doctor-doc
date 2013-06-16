@@ -20,6 +20,8 @@ package util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +79,8 @@ public class Seeks {
                     // we should always have an ID
                     record.setId(jsonElement.getAsJsonObject().get("id").getAsString());
                     // we should always have a title
-                    record.setTitle(jsonElement.getAsJsonObject().get("title").getAsString());
+                    record.setTitle(org.apache.commons.lang.StringEscapeUtils.unescapeHtml(Jsoup.clean(jsonElement
+                            .getAsJsonObject().get("title").getAsString(), Whitelist.none()))); // clean possible HTML entities
                     // we should always have an URL
                     record.setUrl(jsonElement.getAsJsonObject().get("url").getAsString());
                     // type may be null
