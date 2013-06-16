@@ -97,10 +97,6 @@ public final class OrderAction extends DispatchAction {
     public ActionForward findForFree(final ActionMapping mp, final ActionForm form, final HttpServletRequest rq,
             final HttpServletResponse rp) {
 
-        // Replace Google search by open search engine seeks:
-        // http://seeks-project.info/wiki/index.php/API-0.4.0
-        // http://seeks.ch/search/txt/Refined+prediction+of+week+12+response+and+SVR+based+on+week+4+response+in+HCV+genotype+1+patients?output=json
-
         final Auth auth = new Auth();
         // make sure the user is logged in
         if (!auth.isLogin(rq)) {
@@ -130,7 +126,7 @@ public final class OrderAction extends DispatchAction {
                 pageForm.setAutocomplete(autoComplete(pageForm, rq));
             }
 
-            // Check if we have seeks servers
+            // Check if we have Seeks servers to query
             if (ReadSystemConfigurations.getSeeksServer().length > 0
                     && !"".equals(ReadSystemConfigurations.getSeeksServer()[0])) {
                 // Perform search
