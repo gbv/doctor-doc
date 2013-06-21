@@ -18,7 +18,9 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -52,22 +54,30 @@ public class Seeks {
         final List<SeeksForm> firstPriority = new ArrayList<SeeksForm>();
         final List<SeeksForm> secondPriority = new ArrayList<SeeksForm>();
         final List<SeeksForm> thirdPriority = new ArrayList<SeeksForm>();
+        // List of randomly shuffled numbers between a min and max
+        final ListIterator<Integer> shuffledNumbers = getRandomNumber(0,
+                ReadSystemConfigurations.getSeeksServer().length);
+
+        int nextServerNumber = shuffledNumbers.next();
 
         try {
 
             final Http http = new Http();
-            String json = http.getContent(composeSearch(query), Connect.TIMEOUT_3.getValue(),
-                    Connect.TRIES_1.getValue(), "utf-8");
-
-            // retry, possibly with other servers
+            String json = null;
             int retry = 0;
+
+            // repeat requests until we get a response or reach the max number of retries
             while ((json == null || "".equals(json)) && retry < 2) {
-                json = http.getContent(composeSearch(query), Connect.TIMEOUT_3.getValue(), Connect.TRIES_1.getValue(),
-                        "utf-8");
+                json = http.getContent(composeSearch(query, nextServerNumber), Connect.TIMEOUT_3.getValue(),
+                        Connect.TRIES_1.getValue(), "utf-8");
                 retry++;
+                // use next server if there are more...
+                if (shuffledNumbers.hasNext()) {
+                    nextServerNumber = shuffledNumbers.next();
+                }
             }
 
-            // we may get back a null answer
+            // we still may get back a null/empty answer
             if (json != null && !"".equals(json)) {
 
                 final JsonElement jsonRoot = new JsonParser().parse(json);
@@ -166,7 +176,7 @@ public class Seeks {
     /**
      * Creates a UTF-8 encoded search URL to a random Seeks server, specified in SystemConfiguration
      **/
-    private String composeSearch(final String query) throws IllegalArgumentException {
+    private String composeSearch(final String query, final int randomNumber) throws IllegalArgumentException {
 
         // final String search = "http://seeks.ru/search/txt/Refined+prediction+of+week+12+response+and+SVR+based+on+week+4+response+in+HCV+genotype+1+patients?output=json";
 
@@ -178,7 +188,7 @@ public class Seeks {
 
         // get Seeks server to query
         final StringBuffer buf = new StringBuffer(128);
-        buf.append(getDistributedSeekServer());
+        buf.append(ReadSystemConfigurations.getSeeksServer()[randomNumber]);
         if (buf.charAt(buf.length() - 1) != '/') {
             buf.append("/");
         }
@@ -190,19 +200,17 @@ public class Seeks {
         return buf.toString();
     }
 
-    /**
-     * Gets a random Seeks server from the array list of the servers specified.
-     * It returns always the same server, if only one server is specified,
-     **/
-    private String getDistributedSeekServer() {
-        final int randomNumber = getRandomNumber(1, ReadSystemConfigurations.getSeeksServer().length);
-        return ReadSystemConfigurations.getSeeksServer()[randomNumber - 1];
+    /** Returns a ListIterator of number between and including a minimum and maximum, randomly shuffled */
+    private ListIterator<Integer> getRandomNumber(final int min, final int max) {
 
-    }
+        final ArrayList<Integer> numbers = new ArrayList<Integer>(max);
+        for (int i = min; i < max; i++) {
+            numbers.add(i);
+        }
+        Collections.shuffle(numbers);
 
-    /** Returns a random number between and including a minimum and maximum. */
-    private int getRandomNumber(final int min, final int max) {
-        return min + (int) (Math.random() * ((max - min) + 1));
+        return numbers.listIterator();
+
     }
 
 }
