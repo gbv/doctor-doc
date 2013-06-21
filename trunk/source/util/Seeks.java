@@ -50,28 +50,29 @@ public class Seeks {
         // http://seeks-project.info/wiki/index.php/API-0.4.0
 
         final List<SeeksForm> result = new ArrayList<SeeksForm>();
-
         final List<SeeksForm> firstPriority = new ArrayList<SeeksForm>();
         final List<SeeksForm> secondPriority = new ArrayList<SeeksForm>();
         final List<SeeksForm> thirdPriority = new ArrayList<SeeksForm>();
-        // List of randomly shuffled numbers between a min and max
+
+        // List of randomly shuffled numbers between a min and max. Contains no duplicates.
         final ListIterator<Integer> shuffledNumbers = getRandomNumber(0,
                 ReadSystemConfigurations.getSeeksServer().length);
 
+        // read in the first server from randomly shuffled list
         int nextServerNumber = shuffledNumbers.next();
 
         try {
 
             final Http http = new Http();
             String json = null;
-            int retry = 0;
+            int maxRetry = 0;
 
             // repeat requests until we get a response or reach the max number of retries
-            while ((json == null || "".equals(json)) && retry < 2) {
+            while ((json == null || "".equals(json)) && maxRetry < 2) {
                 json = http.getContent(composeSearch(query, nextServerNumber), Connect.TIMEOUT_3.getValue(),
                         Connect.TRIES_1.getValue(), "utf-8");
-                retry++;
-                // use next server if there are more...
+                maxRetry++;
+                // use next server if there are more, if not reuse existing server.
                 if (shuffledNumbers.hasNext()) {
                     nextServerNumber = shuffledNumbers.next();
                 }
