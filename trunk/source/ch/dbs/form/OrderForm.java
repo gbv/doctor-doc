@@ -40,7 +40,7 @@ public final class OrderForm extends ValidatorForm implements OrderHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrderForm.class);
 
-    final transient CodeUrl codeUrl = new CodeUrl();
+    private final transient CodeUrl codeUrl = new CodeUrl();
 
     private static final long serialVersionUID = 1L;
     private transient List<Bestellungen> bestellungen;

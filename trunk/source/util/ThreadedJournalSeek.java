@@ -30,49 +30,49 @@ import ch.dbs.form.OrderForm;
  * @author Markus Fischer
  */
 public class ThreadedJournalSeek implements Callable<List<JournalDetails>> {
-    
+
     private String zeitschriftentitel_encoded;
     private OrderForm pageForm;
     private transient String concurrCopyTitle;
     final CodeUrl codeUrl = new CodeUrl();
-    
+
     public ThreadedJournalSeek() {
     }
-    
-    public ThreadedJournalSeek(final String optimizedZeitschriftenTitel, final OrderForm of, final String concurrCopyZTit) {
+
+    public ThreadedJournalSeek(final String optimizedZeitschriftenTitel, final OrderForm of,
+            final String concurrCopyZTit) {
         this.zeitschriftentitel_encoded = codeUrl.encode(optimizedZeitschriftenTitel, "ISO-8859-1");
         this.pageForm = of;
         this.concurrCopyTitle = concurrCopyZTit;
     }
-    
+
     public List<JournalDetails> call() {
         final OrderAction oa = new OrderAction();
-        final List<JournalDetails> jd = oa.searchJournalseek(zeitschriftentitel_encoded, pageForm, concurrCopyTitle);
-        return jd;
+        return oa.searchJournalseek(zeitschriftentitel_encoded, pageForm, concurrCopyTitle);
     }
-    
+
     public String getZeitschriftentitel_encoded() {
         return zeitschriftentitel_encoded;
     }
-    
+
     public void setZeitschriftentitel_encoded(final String zeitschriftentitelEncoded) {
         zeitschriftentitel_encoded = zeitschriftentitelEncoded;
     }
-    
+
     public OrderForm getPageForm() {
         return pageForm;
     }
-    
+
     public void setPageForm(final OrderForm pageForm) {
         this.pageForm = pageForm;
     }
-    
+
     public String getConcurrentCopyZeitschriftentitel() {
         return concurrCopyTitle;
     }
-    
+
     public void setConcurrentCopyZeitschriftentitel(final String concurrentCopyZeitschriftentitel) {
         this.concurrCopyTitle = concurrentCopyZeitschriftentitel;
     }
-    
+
 }

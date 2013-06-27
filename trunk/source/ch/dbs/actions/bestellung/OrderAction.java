@@ -187,15 +187,15 @@ public final class OrderAction extends DispatchAction {
 
         // no PMID => ordinary processing of ISSN assistent
         if (pageForm.getPmid() == null || pageForm.getPmid().equals("")) {
-            if (!(pageForm.getIssn().length() == 0 && pageForm.getZeitschriftentitel().length() == 0 && !pageForm
-                    .isAutocomplete())) { // exclude no input without autocomplete...
+            if (pageForm.getIssn().length() != 0 || pageForm.getZeitschriftentitel().length() != 0
+                    || pageForm.isAutocomplete()) { // exclude no input without autocomplete...
                 forward = Result.SUCCESS.getValue();
                 try {
 
                     // autocomplete has been already done...
-                    if ((pageForm.isAutocomplete())
+                    if (pageForm.isAutocomplete()
                     //...we have input...
-                            && ((pageForm.getIssn().length() != 0) || (pageForm.getZeitschriftentitel().length() != 0))
+                            && (pageForm.getIssn().length() != 0 || pageForm.getZeitschriftentitel().length() != 0)
                             // ...and it is not the special case autocomplete without ISSN!
                             && !pageForm.isFlag_noissn()) {
                         // we have input to be corrected by autocomplete => empty data in form
@@ -718,8 +718,8 @@ public final class OrderAction extends DispatchAction {
 
         // erster Versuch ueber Journalseek
 
-        String link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query=";
-        link = link + zeitschriftentitel_encoded;
+        String link = "http://journalseek.net/cgi-bin/journalseek/journalsearch.cgi?field=title&editorID=&send=Go&query="
+                + zeitschriftentitel_encoded;
 
         //      System.out.println("Suchstring ISSN Journalseek erster Versuch: " + link + "\012");
         String content = getWebcontent(link, Connect.TIMEOUT_2.getValue(), Connect.TRIES_2.getValue());
@@ -854,10 +854,9 @@ public final class OrderAction extends DispatchAction {
         }
 
         artikeltitelEncoded = codeUrl.encode(artikeltitelEncoded, "ISO-8859-1");
-        //               System.out.println("artikeltitel_encoded_wc: " + artikeltitel_encoded);
+
         if (tmpWC.length() != 0) {
             tmpWC = codeUrl.encode(tmpWC, "ISO-8859-1");
-            //               System.out.println("tmp_wc (Untertitel): " + tmp_wc);
         }
 
         if (run == 0) {
@@ -873,22 +872,20 @@ public final class OrderAction extends DispatchAction {
             }
         }
 
-        String link = "http://www.worldcat.org/search?q=";
+        final StringBuffer link = new StringBuffer("http://www.worldcat.org/search?q=");
         if (tmpWC.length() != 0) {
-            link = link + tmpWC + "+";
+            link.append(tmpWC);
+            link.append("+");
         }
-        link = link + "ti%3A" + artikeltitelEncoded;
+        link.append("ti%3A");
+        link.append(artikeltitelEncoded);
         if (pageForm.getIssn() != null && pageForm.getIssn().length() != 0) {
-            //                link = link + "+issn%3A" + pageForm.getIssn(); // old link
-            link = link + "+n2%3A" + pageForm.getIssn(); // new link
+            link.append("+n2%3A");
+            link.append(pageForm.getIssn());
         }
 
-        // old link, looking only for type article
-        //        final String linkWC = link + "&fq=+dt%3Aart+%3E&qt=advanced";
-        // new link, looking for type article and chapter
-        final String linkWC = link + "&fq=x0%3Aartchap&qt=advanced";
-
-        return linkWC;
+        // look for type article and chapter
+        return link.toString() + "&fq=x0%3Aartchap&qt=advanced";
     }
 
     private boolean searchWorldCat(final String link, final OrderForm pageForm) {

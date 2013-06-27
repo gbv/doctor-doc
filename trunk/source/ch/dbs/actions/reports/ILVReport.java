@@ -72,15 +72,15 @@ import enums.TextType;
  * @author Pascal Steiner, Markus Fischer
  */
 public final class ILVReport extends DispatchAction {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ILVReport.class);
-    
+
     /**
      * Prepare ILL report data.
      */
     public ActionForward prepareFormIlv(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-        
+
         final Auth auth = new Auth();
         // make sure the user is logged in
         if (!auth.isLogin(rq)) {
@@ -90,47 +90,47 @@ public final class ILVReport extends DispatchAction {
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
-        
+
         final OrderForm pageForm = (OrderForm) fm;
         String forward = Result.SUCCESS.getValue();
-        
+
         final Text cn = new Text();
-        
+
         try {
-            
+
             // this is a small hack, because the ILL report is being
             // composed on the JSP, where we can't exchange the country
             // codes (CH / DE / US) against the full name of the country
             final Countries country = new Countries(pageForm.getKonto().getLand(), cn.getConnection());
             pageForm.getKonto().setLand(country.getCountryname());
-            
+
             rq.setAttribute("orderform", pageForm);
             final ActiveMenusForm mf = new ActiveMenusForm();
             mf.setActivemenu("uebersicht");
             rq.setAttribute(Result.ACTIVEMENUS.getValue(), mf);
-            
+
         } catch (final Exception e) {
             forward = Result.FAILURE.getValue();
-            
+
             final ErrorMessage em = new ErrorMessage();
             em.setError("error.system");
             em.setLink("searchfree.do?activemenu=suchenbestellen");
             rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
             LOG.error("journalorderdetail: " + e.toString());
-            
+
         } finally {
             cn.close();
         }
-        
+
         return mp.findForward(forward);
     }
-    
+
     /**
      * Creates a PDF report for an ILL order (ILV-Bestellung).
      */
     public ActionForward PDF(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-        
+
         final Auth auth = new Auth();
         // make sure the user is logged in
         if (!auth.isLogin(rq)) {
@@ -144,16 +144,16 @@ public final class ILVReport extends DispatchAction {
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
-        
+
         String forward = Result.FAILURE.getValue();
-        
+
         final IlvReportForm ilvf = (IlvReportForm) fm;
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         OutputStream out = null;
-        
+
         // set ILL form number from wildcard mapping
         ilvf.setIlvformnr(getIlvNumber(mp.getPath()));
-        
+
         // prepare output stream
         rp.setContentType("application/pdf");
         rp.setHeader("Content-Disposition", "attachment;filename=" + composeFilename(ilvf, ui));
@@ -174,16 +174,16 @@ public final class ILVReport extends DispatchAction {
             }
             forward = null;
         }
-        
+
         return mp.findForward(forward);
     }
-    
+
     /**
      * Prepare the email with attached PDF (ILV-Bestellung) for preparemail.jsp.
      */
     public ActionForward Email(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-        
+
         final Auth auth = new Auth();
         // make sure the user is logged in
         if (!auth.isLogin(rq)) {
@@ -197,17 +197,17 @@ public final class ILVReport extends DispatchAction {
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
-        
+
         String forward = Result.FAILURE.getValue();
-        
+
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final IlvReportForm ilvf = (IlvReportForm) fm;
         final Lieferanten l = new Lieferanten();
-        
+
         try {
-            
+
             ilvf.setTo(l.getLieferantFromLid(ilvf.getLid(), l.getConnection()).getEmailILL());
-            
+
             // default Subject & Mailtext
             final Text subject = new Text(l.getConnection(), TextType.MAIL_SUBJECT, ui.getKonto().getId());
             final Text text = new Text(l.getConnection(), TextType.MAIL_BODY, ui.getKonto().getId());
@@ -217,27 +217,27 @@ public final class ILVReport extends DispatchAction {
             if (text.getInhalt() != null) {
                 ilvf.setMailtext(text.getInhalt());
             }
-            
+
             rq.setAttribute("IlvReportForm", ilvf);
             // set ILL form number back into request
             rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
             // set ILL form number back into request
             rq.setAttribute("ilvformnr", getIlvNumber(mp.getPath()));
             forward = "preparemail";
-            
+
         } finally {
             l.close();
         }
-        
+
         return mp.findForward(forward);
     }
-    
+
     /**
      * Send an email with attached PDF as ILL order (ILV-Bestellung).
      */
     public ActionForward sendIlvMail(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
-        
+
         final Auth auth = new Auth();
         // make sure the user is logged in
         if (!auth.isLogin(rq)) {
@@ -251,47 +251,47 @@ public final class ILVReport extends DispatchAction {
         if (auth.isPaidOnly(rq)) {
             return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
-        
+
         String forward = Result.FAILURE.getValue();
-        
+
         final IlvReportForm ilvf = (IlvReportForm) fm;
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
         final Check check = new Check();
-        
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        
+
         try {
-            
+
             // validate email: failing mails would be returned to the system email and not
             // to the library generating the invalid email!
             if (check.isEmail(ilvf.getTo())) {
-                
+
                 // prepare attachment
                 DataSource aAttachment = null;
-                
+
                 // create PDF report using the appropriate ILL form number
                 runReport(ilvf, ui, baos);
-                
+
                 aAttachment = new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
-                
+
                 // prepare email
                 final InternetAddress[] to = new InternetAddress[2];
                 to[0] = new InternetAddress(ilvf.getTo());
                 to[1] = new InternetAddress(ui.getKonto().getDbsmail());
-                
+
                 // Create and send email
                 final MHelper mh = new MHelper(to, ilvf.getSubject(), composeMailBody(ui, ilvf), aAttachment,
                         composeFilename(ilvf, ui));
                 mh.setReplyTo(ui.getKonto().getDbsmail());
                 mh.send();
-                
+
                 forward = Result.SUCCESS.getValue();
                 final String content = "ilvmail.confirmation";
                 final String link = "listkontobestellungen.do?method=overview";
                 final ch.dbs.form.Message mes = new ch.dbs.form.Message(content, link);
                 rq.setAttribute("message", mes);
                 rq.setAttribute("IlvReportForm", ilvf);
-                
+
             } else {
                 final ErrorMessage em = new ErrorMessage("error.email", "listkontobestellungen.do?method=overview");
                 rq.setAttribute(Result.ERRORMESSAGE.getValue(), em);
@@ -311,51 +311,51 @@ public final class ILVReport extends DispatchAction {
                 LOG.error(e.toString());
             }
         }
-        
+
         return mp.findForward(forward);
     }
-    
+
     private void runReport(final IlvReportForm ilvf, final UserInfo ui, final OutputStream out) throws JRException {
-        
+
         InputStream reportStream;
         Map<String, Object> values;
-        
+
         switch (ilvf.getIlvformnr()) {
-            case 0:
-                values = reportMainz(ilvf, ui);
-                reportStream = new BufferedInputStream(this.getServlet().getServletContext()
-                        .getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                break;
-            case 1:
-                values = reportCharite(ilvf, ui);
-                reportStream = new BufferedInputStream(this.getServlet().getServletContext()
-                        .getResourceAsStream("/reports/ILV-Form_1.jasper"));
-                break;
-            default:
-                values = reportMainz(ilvf, ui); // default case for illegal values
-                reportStream = new BufferedInputStream(this.getServlet().getServletContext()
-                        .getResourceAsStream("/reports/ILV-Form_0.jasper"));
-                break;
+        case 0:
+            values = reportMainz(ilvf, ui);
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                    .getResourceAsStream("/reports/ILV-Form_0.jasper"));
+            break;
+        case 1:
+            values = reportCharite(ilvf, ui);
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                    .getResourceAsStream("/reports/ILV-Form_1.jasper"));
+            break;
+        default:
+            values = reportMainz(ilvf, ui); // default case for illegal values
+            reportStream = new BufferedInputStream(this.getServlet().getServletContext()
+                    .getResourceAsStream("/reports/ILV-Form_0.jasper"));
+            break;
         }
-        
+
         final Collection<Map<String, ?>> al = new ArrayList<Map<String, ?>>();
         final HashMap<String, String> hm = new HashMap<String, String>();
         hm.put("Fake", "Daten damit Report nicht leer wird..");
         al.add(hm);
         final JRMapCollectionDataSource ds = new JRMapCollectionDataSource(al);
-        
+
         JasperRunManager.runReportToPdfStream(reportStream, out, values, ds);
     }
-    
+
     private Map<String, Object> reportMainz(final IlvReportForm ilvf, final UserInfo ui) {
-        
+
         final Map<String, Object> result = new HashMap<String, Object>();
-        
+
         final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
         final Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
-        
+
         // fill in labels
         result.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
         result.put("labelfrom", ilvf.getLabelfrom());
@@ -379,7 +379,7 @@ public final class ILVReport extends DispatchAction {
         result.put("labeltitleofessay", ilvf.getLabeltitleofessay());
         result.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
         result.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
-        
+
         // fill in values
         if (ui.getKonto().getIsil() != null) {
             result.put("isil", ui.getKonto().getIsil());
@@ -416,19 +416,19 @@ public final class ILVReport extends DispatchAction {
         result.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
         result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName() + ": "
                 + ReadSystemConfigurations.getServerWelcomepage());
-        
+
         return result;
     }
-    
+
     private Map<String, Object> reportCharite(final IlvReportForm ilvf, final UserInfo ui) {
-        
+
         final Map<String, Object> result = new HashMap<String, Object>();
-        
+
         final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy");
         tf.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
         final Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone(ui.getKonto().getTimezone()));
-        
+
         // fill in labels
         result.put("reporttitle", ilvf.getReporttitle() + " " + tf.format(cal.getTime(), ui.getKonto().getTimezone()));
         result.put("labelfrom", ilvf.getLabelfrom());
@@ -451,7 +451,7 @@ public final class ILVReport extends DispatchAction {
         result.put("labeltitleofessay", ilvf.getLabeltitleofessay());
         result.put("labelendorsementsofdeliveringlibrary", ilvf.getLabelendorsementsofdeliveringlibrary());
         result.put("labelnotesfromrequestinglibrary", ilvf.getLabelnotesfromrequestinglibrary());
-        
+
         // fill in values
         if (ui.getKonto().getIsil() != null) {
             result.put("isil", ui.getKonto().getIsil());
@@ -487,35 +487,35 @@ public final class ILVReport extends DispatchAction {
         result.put("notesfromrequestinglibrary", ilvf.getNotesfromrequestinglibrary());
         result.put("footer", "Brought to you by " + ReadSystemConfigurations.getApplicationName() + ": "
                 + ReadSystemConfigurations.getServerWelcomepage());
-        
+
         return result;
     }
-    
+
     /**
      * Get the ILL form number from the wildcard mapping. Defaults to 0, if
      * mapping is invalid.
      */
     private int getIlvNumber(final String path) {
-        
+
         int number = 0;
-        
+
         if (path != null && path.contains("-")) {
             try {
-                number = Integer.valueOf(path.substring(path.lastIndexOf("-") + 1, path.length()));
+                number = Integer.valueOf(path.substring(path.lastIndexOf('-') + 1, path.length()));
             } catch (final NumberFormatException e) {
                 LOG.error(e.toString());
             }
         }
-        
+
         return number;
     }
-    
+
     private String composeFilename(final IlvReportForm ilvf, final UserInfo ui) {
         final StringBuffer result = new StringBuffer(27);
-        
+
         // create filename
         result.append("ILL-");
-        
+
         // if we have an ISIL use it...
         if (ui.getKonto().getIsil() != null && !"".equals(ui.getKonto().getIsil())) {
             result.append(removeUnwantedCharacters(ui.getKonto().getIsil()));
@@ -524,50 +524,50 @@ public final class ILVReport extends DispatchAction {
             result.append('K');
             result.append(ui.getKonto().getId());
         }
-        
+
         result.append("-B");
         result.append(ilvf.getBid());
         result.append(".pdf");
-        
+
         return result.toString();
     }
-    
+
     /**
      * Removes all non alphanumeric characters in an ISIL by '-'.
      */
     private String removeUnwantedCharacters(final String isil) {
-        
+
         final StringBuilder result = new StringBuilder(isil.length());
-        
+
         for (int i = 0; i < isil.length(); i++) {
-            
+
             if (org.apache.commons.lang.StringUtils.isAlphanumeric(isil.substring(i, i + 1))) {
                 result.append(isil.charAt(i));
             } else {
                 result.append('-');
             }
         }
-        
+
         return result.toString();
     }
-    
+
     private String composeMailBody(final UserInfo ui, final IlvReportForm ilvf) {
-        
+
         // current date and time
         final Date d = new Date();
         final DOI doi = new DOI();
         final Pubmed pubmed = new Pubmed();
         final ThreadSafeSimpleDateFormat sdf = new ThreadSafeSimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         final String date = sdf.format(d, ui.getKonto().getTimezone());
-        
+
         final StringBuffer result = new StringBuffer(320);
         result.append("Please reply to: ");
         result.append(ui.getKonto().getDbsmail());
         result.append("\n-----\n\n");
-        
+
         // append customized text
         result.append(ilvf.getMailtext());
-        
+
         // signature
         result.append("\n\n");
         result.append(ui.getKonto().getBibliotheksname());
@@ -589,9 +589,9 @@ public final class ILVReport extends DispatchAction {
             result.append("\nFax:\t");
             result.append(ui.getKonto().getFax_extern());
         }
-        
+
         result.append("\n\n-----\n");
-        
+
         // order details
         if (ilvf.getAuthorofessay() != null && !"".equals(ilvf.getAuthorofessay())) {
             result.append("AUTHOR: ");
@@ -654,7 +654,7 @@ public final class ILVReport extends DispatchAction {
                 result.append('\n');
             }
         }
-        
+
         result.append("\n-----\nOrder date: ");
         result.append(date);
         result.append("\nBrought to you by ");
@@ -662,7 +662,7 @@ public final class ILVReport extends DispatchAction {
         result.append(": ");
         result.append(ReadSystemConfigurations.getServerWelcomepage());
         result.append('\n');
-        
+
         return result.toString();
     }
 }

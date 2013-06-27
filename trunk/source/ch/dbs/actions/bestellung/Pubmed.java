@@ -201,7 +201,7 @@ public class Pubmed {
 
         // append S for Supplements
         if (input.contains("s") || input.contains("S")) {
-            result.append("S");
+            result.append('S');
         }
 
         // use only start page
