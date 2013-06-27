@@ -283,12 +283,9 @@ public class Auth {
         if (rq.getSession().getAttribute(USERINFO) != null) {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             final AbstractBenutzer b = ui.getBenutzer();
-            final Bibliothekar bib = new Bibliothekar();
-            final Administrator admin = new Administrator();
-            if (b.getClass().isInstance(bib) || b.getClass().isInstance(admin)) {
+            if (b instanceof Bibliothekar || b instanceof Administrator) {
                 check = true;
             }
-
             if (b != null) {
                 // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
                 if (ui.getKonto() != null) {
@@ -341,9 +338,7 @@ public class Auth {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             // Check nach Bibliothekar / Admin => können grundsätzlich immer bestellen
             final AbstractBenutzer b = ui.getBenutzer();
-            final Bibliothekar bib = new Bibliothekar();
-            final Administrator a = new Administrator();
-            if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
+            if (b instanceof Bibliothekar || b instanceof Administrator) {
                 check = true;
             }
 
@@ -368,11 +363,10 @@ public class Auth {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             // Check nach Bibliothekar / Admin => können grundsätzlich immer bestellen
             final AbstractBenutzer b = ui.getBenutzer();
-            final Bibliothekar bib = new Bibliothekar();
-            final Administrator a = new Administrator();
-            if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
+            if (b instanceof Bibliothekar || b instanceof Administrator) {
                 check = true;
             }
+
             // Sowohl generelle Kontoeinstellungen als auch Berechtigung beim User müssen vorhanden sein...
             if (b != null && ui.getKonto() != null && b.isGbvbestellung() && ui.getKonto().isGbvbestellung()
                     && ui.getKonto().getGbvrequesterid() != null && ui.getKonto().getIsil() != null) {
@@ -396,9 +390,7 @@ public class Auth {
             final UserInfo ui = (UserInfo) rq.getSession().getAttribute(USERINFO);
             // Check nach Bibliothekar / Admin => sind grundsätzlich immer aktiv
             final AbstractBenutzer b = ui.getBenutzer();
-            final Bibliothekar bib = new Bibliothekar();
-            final Administrator a = new Administrator();
-            if (b.getClass().isInstance(bib) || b.getClass().isInstance(a)) {
+            if (b instanceof Bibliothekar || b instanceof Administrator) {
                 check = true;
             }
 
