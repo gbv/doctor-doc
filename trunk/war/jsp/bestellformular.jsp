@@ -59,12 +59,14 @@
   <logic:notPresent name="userinfo" property="benutzer">
     <logic:notEmpty name="orderform" property="artikeltitel">
         <tr>
-          <td><a
+          <td colspan="2">
+          <a
             href="http://www.google.ch/search?as_q=&num=4&btnG=Google-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&as_oq=pdf+full-text&as_eq=&lr=&as_ft=i&as_filetype=&as_qdr=all&as_occt=any&as_dt=i&as_sitesearch=&as_rights=&safe=images"
-            target="_blank"><i><bean:message key="bestellform.google" />&nbsp;</i></a></td>
-          <td><a
+            target="_blank"><img src="img/google-logo-22.png"> <bean:message key="bestellform.google" /></a>
+          <a
             href="http://scholar.google.com/scholar?as_q=&num=10&btnG=Scholar-Suche&as_epq=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&as_oq=&as_eq=&as_occt=any&as_sauthors=&as_publication=&as_ylo=&as_yhi=&lr="
-            target="_blank"><i><bean:message key="bestellform.googlescholar" /></i></a></td>
+            target="_blank"><img src="img/google-scholar-logo-30.png"> <bean:message key="bestellform.googlescholar" /></a>
+          </td>
         </tr>
     </logic:notEmpty>
   </logic:notPresent>
