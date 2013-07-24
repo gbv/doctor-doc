@@ -48,6 +48,26 @@
 
 <html:form action="bfconfigure.do" method="post">
 
+<h4><bean:message key="bestellform.external" /></h4>
+<table class="border">
+  <tr>
+    <th id="th-left"><bean:message key="bestellform.external" /></th>
+    <th id="th-left"><bean:message key="bestellform.select" /></th>
+  </tr>
+  <tr>
+    <td id="border"><bean:message key="bestellform.external" />&nbsp;</td>
+    <td id="border" align="center">
+    	  <select name="external">
+	      	<option value="0" selected="selected"><bean:message key="bestellform.select_internal" /></option>
+	      	<option value="1"><bean:message key="bestellform.select_external" /></option>
+	    </select>
+    </td>
+  </tr>
+</table>
+<p><bean:message key="bestellform.external_explain" /></p>
+<p><a href=""><bean:message key="bestellform.external_create" /></a></p>
+<hr>
+
 <h4><bean:message key="bestellform.deactivate" /></h4>
 <table class="border">
   <tr>
@@ -60,7 +80,7 @@
   </tr>
 </table>
 <p><bean:message key="bestellform.deactivate_explain" /></p>
-<p><br></p><hr>
+<hr>
 
 
 <h4><bean:message key="bestellform.saveorder" /></h4>
@@ -75,7 +95,7 @@
   </tr>
 </table>
 <p><bean:message key="bestellform.saveorder_explain" /></p>
-<p><br></p><hr>
+<hr>
 
 <h4><bean:message key="bestellform.overwritedelivery" /></h4>
 <table class="border">
@@ -103,7 +123,7 @@
   </tr>
 </table>
 <p><bean:message key="bestellform.overwritedelivery_explain" /> "<bean:message key="bestellform.post" /> / <bean:message key="bestellform.pdf" />"</p>
-<p><br></p><hr>
+<hr>
 
 <h4><bean:message key="bestellform.prioselect" /></h4>
 <table class="border">
@@ -117,7 +137,7 @@
   </tr>
 </table>
 <p><bean:message key="bestellform.prioselect_explain" /> "<bean:message key="bestellform.normal" /> / <bean:message key="bestellform.urgent" />"</p>
-<p><br></p><hr>
+<hr>
 
 <h4><bean:message key="bestellform.addcomment" /></h4>
 <table class="border">
