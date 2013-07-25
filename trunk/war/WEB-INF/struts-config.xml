@@ -7,7 +7,7 @@
 
 	<!-- ======================================== Form Bean Definitions -->
 	<form-beans>
-		<form-bean name="BestellParam" type="ch.dbs.entity.BestellParam" />
+		<form-bean name="BestellFormParam" type="ch.dbs.entity.BestellFormParam" />
 		<form-bean name="BillingForm" type="ch.dbs.form.BillingForm" />
 		<form-bean name="HoldingForm" type="ch.dbs.form.HoldingForm" />
 		<form-bean name="LoginForm" type="ch.dbs.form.LoginForm" />
@@ -430,13 +430,13 @@
 			<forward name="missingvalues" path="/bestellform.do?method=validate" />
 		</action>
 
-		<action path="/bfconfigureselect" name="BestellParam" validate="false"
+		<action path="/bfconfigureselect" name="BestellFormParam" validate="false"
 			parameter="method" scope="request"
 			type="ch.dbs.actions.bestellung.BestellformAction">
 			<forward name="success" path="/bestellformconfigureselect.do" />
 		</action>
 
-		<action path="/bfconfigure" name="BestellParam" validate="false"
+		<action path="/bfconfigure" name="BestellFormParam" validate="false"
 			parameter="method" scope="request"
 			type="ch.dbs.actions.bestellung.BestellformAction">
 			<forward name="success" path="/bestellformconfigure.do" />

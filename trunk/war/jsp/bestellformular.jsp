@@ -51,8 +51,8 @@
 
 <br>
 
-<logic:equal name="bestellparam" property="back" value="true">
-  <a href="<bean:write name="bestellparam" property="link_back" />"><bean:message key="bestellform.back" /></a>
+<logic:equal name="bestellformparam" property="back" value="true">
+  <a href="<bean:write name="bestellformparam" property="link_back" />"><bean:message key="bestellform.back" /></a>
 </logic:equal>
 
 <table>
@@ -127,7 +127,7 @@
 
   <html:form action="validateBestellform.do" method="post">
     
-    <logic:equal name="bestellparam" property="lieferart" value="false">
+    <logic:equal name="bestellformparam" property="lieferart" value="false">
     <logic:notEqual name="orderform" property="mediatype" value="Buch">
     <!-- Lieferart Standardparameter -->
       <tr>
@@ -142,26 +142,26 @@
     </logic:equal>
     
     <logic:notEqual name="orderform" property="mediatype" value="Buch">
-    <logic:equal name="bestellparam" property="lieferart" value="true">
+    <logic:equal name="bestellformparam" property="lieferart" value="true">
     <!-- Lieferart Customparameter -->
       <tr>
         <td><bean:message key="bestellform.bestellart" />&nbsp;</td>
         <td><bean:define id="tmp" name="orderform" property="deloptions" type="java.lang.String"/>
-          <logic:present name="bestellparam" property="lieferart_value1">
-            <input type="radio" name="deloptions" value="<bean:write name="bestellparam" property="lieferart_value1" />"
-            <logic:equal name="bestellparam" property="lieferart_value1" value="<%=tmp%>"> checked="checked"
-            </logic:equal> /><bean:write name="bestellparam" property="lieferart_value1" /> </logic:present><logic:present name="bestellparam" property="lieferart_value2"><input type="radio"
-            name="deloptions" value="<bean:write name="bestellparam" property="lieferart_value2" />"
-            <logic:equal name="bestellparam" property="lieferart_value2" value="<%=tmp%>"> checked="checked"
-            </logic:equal> /><bean:write name="bestellparam" property="lieferart_value2" /> </logic:present><logic:present name="bestellparam" property="lieferart_value3"><input type="radio" 
-            name="deloptions" value="<bean:write name="bestellparam" property="lieferart_value3" />" 
-            <logic:equal name="bestellparam" property="lieferart_value3" value="<%=tmp%>"> checked="checked"
-            </logic:equal> /><bean:write name="bestellparam" property="lieferart_value3" /></logic:present></td>
+          <logic:present name="bestellformparam" property="lieferart_value1">
+            <input type="radio" name="deloptions" value="<bean:write name="bestellformparam" property="lieferart_value1" />"
+            <logic:equal name="bestellformparam" property="lieferart_value1" value="<%=tmp%>"> checked="checked"
+            </logic:equal> /><bean:write name="bestellformparam" property="lieferart_value1" /> </logic:present><logic:present name="bestellformparam" property="lieferart_value2"><input type="radio"
+            name="deloptions" value="<bean:write name="bestellformparam" property="lieferart_value2" />"
+            <logic:equal name="bestellformparam" property="lieferart_value2" value="<%=tmp%>"> checked="checked"
+            </logic:equal> /><bean:write name="bestellformparam" property="lieferart_value2" /> </logic:present><logic:present name="bestellformparam" property="lieferart_value3"><input type="radio" 
+            name="deloptions" value="<bean:write name="bestellformparam" property="lieferart_value3" />" 
+            <logic:equal name="bestellformparam" property="lieferart_value3" value="<%=tmp%>"> checked="checked"
+            </logic:equal> /><bean:write name="bestellformparam" property="lieferart_value3" /></logic:present></td>
       </tr>
     </logic:equal>
     </logic:notEqual>
     
-    <logic:equal name="bestellparam" property="prio" value="false">
+    <logic:equal name="bestellformparam" property="prio" value="false">
     <tr>
       <td><br>
       </td>
@@ -196,10 +196,10 @@
       </td>
     </tr>
     
-    <logic:present name="bestellparam" property="comment1">
+    <logic:present name="bestellformparam" property="comment1">
     <tr>
       <td></td>
-      <td><bean:write name="bestellparam" property="comment1" /></td>
+      <td><bean:write name="bestellformparam" property="comment1" /></td>
     </tr>    
     <tr>
       <td><br>
@@ -227,12 +227,12 @@
     </tr>
     
 <!-- Hier folgen allf&auml;llige zus&auml;tzliche Bestellformular-Parameter -->
-    <logic:equal name="bestellparam" property="freitxt1" value="true">
+    <logic:equal name="bestellformparam" property="freitxt1" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="freitxt1_required" value="true"><b></logic:equal>
-          <bean:write name="bestellparam" property="freitxt1_name" /><logic:equal name="bestellparam" property="freitxt1_required" value="true">*</b></logic:equal>&nbsp;
-          <input name="freitxt1_label" type="hidden" value="<bean:write name="bestellparam" property="freitxt1_name" />" />
+          <logic:equal name="bestellformparam" property="freitxt1_required" value="true"><b></logic:equal>
+          <bean:write name="bestellformparam" property="freitxt1_name" /><logic:equal name="bestellformparam" property="freitxt1_required" value="true">*</b></logic:equal>&nbsp;
+          <input name="freitxt1_label" type="hidden" value="<bean:write name="bestellformparam" property="freitxt1_name" />" />
         </td>
         <td><input name="freitxt1_inhalt"
           value="<bean:write name="orderform" property="freitxt1_inhalt" />"
@@ -240,11 +240,11 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="institution" value="true">
+    <logic:equal name="bestellformparam" property="institution" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="inst_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.institution" /><logic:equal name="bestellparam" property="inst_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="inst_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.institution" /><logic:equal name="bestellformparam" property="inst_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><input name="kundeninstitution"
           value="<bean:write name="orderform" property="kundeninstitution" />"
@@ -252,11 +252,11 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="abteilung" value="true">
+    <logic:equal name="bestellformparam" property="abteilung" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="abt_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.abteilung" /><logic:equal name="bestellparam" property="abt_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="abt_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.abteilung" /><logic:equal name="bestellformparam" property="abt_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><input name="kundenabteilung"
           value="<bean:write name="orderform" property="kundenabteilung" />"
@@ -264,12 +264,12 @@
         </td>
       </tr>      
     </logic:equal>
-   <logic:equal name="bestellparam" property="category" value="true">
+   <logic:equal name="bestellformparam" property="category" value="true">
    <logic:present name="categories">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="category_required" value="true"><b></logic:equal>
-          <bean:message key="modifykontousers.category" /><logic:equal name="bestellparam" property="category_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="category_required" value="true"><b></logic:equal>
+          <bean:message key="modifykontousers.category" /><logic:equal name="bestellformparam" property="category_required" value="true">*</b></logic:equal>&nbsp;
         </td>
       <td>
       <select name="kundenkategorieID">
@@ -283,12 +283,12 @@
       </tr>
     </logic:present>
     </logic:equal>
-    <logic:equal name="bestellparam" property="freitxt2" value="true">
+    <logic:equal name="bestellformparam" property="freitxt2" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="freitxt2_required" value="true"><b></logic:equal>
-          <bean:write name="bestellparam" property="freitxt2_name" /><logic:equal name="bestellparam" property="freitxt2_required" value="true">*</b></logic:equal>&nbsp;
-          <input name="freitxt2_label" type="hidden" value="<bean:write name="bestellparam" property="freitxt2_name" />" />
+          <logic:equal name="bestellformparam" property="freitxt2_required" value="true"><b></logic:equal>
+          <bean:write name="bestellformparam" property="freitxt2_name" /><logic:equal name="bestellformparam" property="freitxt2_required" value="true">*</b></logic:equal>&nbsp;
+          <input name="freitxt2_label" type="hidden" value="<bean:write name="bestellformparam" property="freitxt2_name" />" />
         </td>
         <td><input name="freitxt2_inhalt"
           value="<bean:write name="orderform" property="freitxt2_inhalt" />"
@@ -297,11 +297,11 @@
       </tr>      
     </logic:equal>
     <logic:equal name="orderform" property="mediatype" value="Buch">
-    <logic:equal name="bestellparam" property="strasse" value="false">
-    <logic:equal name="bestellparam" property="plz" value="false">
-    <logic:equal name="bestellparam" property="ort" value="false">
-    <logic:equal name="bestellparam" property="adresse" value="false">
-    <!-- erscheint nur bei Buch und wenn keine BestellParam f&uuml;r Strasse, PLZ, Ort und ADRESSE angegeben wurden -->
+    <logic:equal name="bestellformparam" property="strasse" value="false">
+    <logic:equal name="bestellformparam" property="plz" value="false">
+    <logic:equal name="bestellformparam" property="ort" value="false">
+    <logic:equal name="bestellformparam" property="adresse" value="false">
+    <!-- erscheint nur bei Buch und wenn keine BestellFormParam f&uuml;r Strasse, PLZ, Ort und ADRESSE angegeben wurden -->
       <tr>
         <td><bean:message key="bestellform.adress" />&nbsp;</td>
         <td><textarea cols="54" rows="2" name="kundenadresse"
@@ -313,11 +313,11 @@
     </logic:equal>
     </logic:equal>
     </logic:equal>
-    <logic:equal name="bestellparam" property="adresse" value="true">
+    <logic:equal name="bestellformparam" property="adresse" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="adr_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.adress" /><logic:equal name="bestellparam" property="adr_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="adr_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.adress" /><logic:equal name="bestellformparam" property="adr_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><textarea cols="54" rows="2" name="kundenadresse"
           style="word-wrap:break-word;"><bean:write
@@ -325,11 +325,11 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="strasse" value="true">
+    <logic:equal name="bestellformparam" property="strasse" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="str_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.strasse" /><logic:equal name="bestellparam" property="str_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="str_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.strasse" /><logic:equal name="bestellformparam" property="str_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><input name="kundenstrasse"
           value="<bean:write name="orderform" property="kundenstrasse" />"
@@ -337,20 +337,20 @@
         </td>
       </tr>      
     </logic:equal>    
-    <logic:equal name="bestellparam" property="plz" value="true">
+    <logic:equal name="bestellformparam" property="plz" value="true">
     <!-- PLZ und ev. Ort -->
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="plz_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.plz" /><logic:equal name="bestellparam" property="plz_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="plz_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.plz" /><logic:equal name="bestellformparam" property="plz_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td>
             <input name="kundenplz"
             value="<bean:write name="orderform" property="kundenplz" />"
             type="text" size="8" maxlength="8" />          
-              <logic:equal name="bestellparam" property="ort" value="true">
-                <logic:equal name="bestellparam" property="ort_required" value="true"><b></logic:equal>
-                <bean:message key="bestellform.ort" /><logic:equal name="bestellparam" property="ort_required" value="true">*</b></logic:equal>&nbsp;
+              <logic:equal name="bestellformparam" property="ort" value="true">
+                <logic:equal name="bestellformparam" property="ort_required" value="true"><b></logic:equal>
+                <bean:message key="bestellform.ort" /><logic:equal name="bestellformparam" property="ort_required" value="true">*</b></logic:equal>&nbsp;
                 <input name="kundenort"
                 value="<bean:write name="orderform" property="kundenort" />"
                 type="text" size="30" maxlength="100" />
@@ -358,13 +358,13 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="plz" value="false">
-    <logic:equal name="bestellparam" property="ort" value="true">
+    <logic:equal name="bestellformparam" property="plz" value="false">
+    <logic:equal name="bestellformparam" property="ort" value="true">
     <!-- Keine PLZ aber Ort -->
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="ort_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.ort" /><logic:equal name="bestellparam" property="ort_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="ort_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.ort" /><logic:equal name="bestellformparam" property="ort_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><input name="kundenort"
           value="<bean:write name="orderform" property="kundenort" />"
@@ -373,11 +373,11 @@
       </tr>      
     </logic:equal>
     </logic:equal>
-    <logic:equal name="bestellparam" property="land" value="true">
+    <logic:equal name="bestellformparam" property="land" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="land_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.land" /><logic:equal name="bestellparam" property="land_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="land_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.land" /><logic:equal name="bestellformparam" property="land_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td>
         <select name="kundenland">
@@ -390,11 +390,11 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="telefon" value="true">
+    <logic:equal name="bestellformparam" property="telefon" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="telefon_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.telefon" /><logic:equal name="bestellparam" property="telefon_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="telefon_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.telefon" /><logic:equal name="bestellformparam" property="telefon_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><input name="kundentelefon"
           value="<bean:write name="orderform" property="kundentelefon" />"
@@ -402,11 +402,11 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="benutzernr" value="true">
+    <logic:equal name="bestellformparam" property="benutzernr" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="benutzernr_required" value="true"><b></logic:equal>
-          <bean:message key="bestellform.benutzernr" /><logic:equal name="bestellparam" property="benutzernr_required" value="true">*</b></logic:equal>&nbsp;
+          <logic:equal name="bestellformparam" property="benutzernr_required" value="true"><b></logic:equal>
+          <bean:message key="bestellform.benutzernr" /><logic:equal name="bestellformparam" property="benutzernr_required" value="true">*</b></logic:equal>&nbsp;
         </td>
         <td><input name="kundenbenutzernr"
           value="<bean:write name="orderform" property="kundenbenutzernr" />"
@@ -414,12 +414,12 @@
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="freitxt3" value="true">
+    <logic:equal name="bestellformparam" property="freitxt3" value="true">
       <tr>
         <td>
-          <logic:equal name="bestellparam" property="freitxt3_required" value="true"><b></logic:equal>
-          <bean:write name="bestellparam" property="freitxt3_name" /><logic:equal name="bestellparam" property="freitxt3_required" value="true">*</b></logic:equal>&nbsp;
-          <input name="freitxt3_label" type="hidden" value="<bean:write name="bestellparam" property="freitxt3_name" />" />
+          <logic:equal name="bestellformparam" property="freitxt3_required" value="true"><b></logic:equal>
+          <bean:write name="bestellformparam" property="freitxt3_name" /><logic:equal name="bestellformparam" property="freitxt3_required" value="true">*</b></logic:equal>&nbsp;
+          <input name="freitxt3_label" type="hidden" value="<bean:write name="bestellformparam" property="freitxt3_name" />" />
         </td>
         <td><input name="freitxt3_inhalt"
           value="<bean:write name="orderform" property="freitxt3_inhalt" />"
@@ -433,7 +433,7 @@
     </tr>
     
     
-    <logic:equal name="bestellparam" property="option" value="true">
+    <logic:equal name="bestellformparam" property="option" value="true">
     <!-- Allf&auml;llige Radiobuttons -->
     <tr>
       <td><br>
@@ -441,25 +441,25 @@
     </tr>
       <tr>
         <td>
-          <bean:write name="bestellparam" property="option_name" />&nbsp;
-          <input name="radiobutton_name" type="hidden" value="<bean:write name="bestellparam" property="option_name" />" />
+          <bean:write name="bestellformparam" property="option_name" />&nbsp;
+          <input name="radiobutton_name" type="hidden" value="<bean:write name="bestellformparam" property="option_name" />" />
         </td>
         <td>
-          <bean:write name="bestellparam" property="option_comment" />&nbsp; <a href="<bean:write name="bestellparam" property="option_linkout" />" target="_blank"><bean:write name="bestellparam" property="option_linkoutname" /></a>
+          <bean:write name="bestellformparam" property="option_comment" />&nbsp; <a href="<bean:write name="bestellformparam" property="option_linkout" />" target="_blank"><bean:write name="bestellformparam" property="option_linkoutname" /></a>
         </td>
       </tr>
       <tr>
         <td></td>
         <td>
           <bean:define id="tmp" name="orderform" property="radiobutton" type="java.lang.String"/>
-          <logic:notEmpty name="bestellparam" property="option_value1">
-              <input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value1" />" <logic:equal name="bestellparam" property="option_value1" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value1" />
+          <logic:notEmpty name="bestellformparam" property="option_value1">
+              <input type="radio" name="radiobutton" value="<bean:write name="bestellformparam" property="option_value1" />" <logic:equal name="bestellformparam" property="option_value1" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellformparam" property="option_value1" />
           </logic:notEmpty>
-          <logic:notEmpty name="bestellparam" property="option_value2">
-              <input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value2" />" <logic:equal name="bestellparam" property="option_value2" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value2" />
+          <logic:notEmpty name="bestellformparam" property="option_value2">
+              <input type="radio" name="radiobutton" value="<bean:write name="bestellformparam" property="option_value2" />" <logic:equal name="bestellformparam" property="option_value2" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellformparam" property="option_value2" />
           </logic:notEmpty>
-          <logic:notEmpty name="bestellparam" property="option_value3">
-              <input type="radio" name="radiobutton" value="<bean:write name="bestellparam" property="option_value3" />" <logic:equal name="bestellparam" property="option_value3" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellparam" property="option_value3" />
+          <logic:notEmpty name="bestellformparam" property="option_value3">
+              <input type="radio" name="radiobutton" value="<bean:write name="bestellformparam" property="option_value3" />" <logic:equal name="bestellformparam" property="option_value3" value="<%=tmp%>">checked="checked"</logic:equal> /><bean:write name="bestellformparam" property="option_value3" />
           </logic:notEmpty>
         </td>
       </tr>      
@@ -603,18 +603,18 @@
         name="orderform" property="notizen" /></textarea></td>
     </tr>
     
-    <logic:present name="bestellparam" property="comment2">
+    <logic:present name="bestellformparam" property="comment2">
     <tr>
       <td><br>
       </td>
     </tr>
     <tr>
       <td></td>
-      <td><bean:write name="bestellparam" property="comment2" /></td>
+      <td><bean:write name="bestellformparam" property="comment2" /></td>
     </tr>    
     </logic:present>
     
-    <logic:equal name="bestellparam" property="gebuehren" value="true">
+    <logic:equal name="bestellformparam" property="gebuehren" value="true">
     <tr>
       <td><br>
       </td>
@@ -623,12 +623,12 @@
         <td>
         </td>
         <td>
-          <input type="checkbox" name="gebuehren" />&nbsp;<bean:message key="bestellform.gebuehrentxt" />&nbsp;<a href="<bean:write name="bestellparam" property="link_gebuehren" />" target="_blank"><bean:message key="bestellform.gebuehren" /></a>
+          <input type="checkbox" name="gebuehren" />&nbsp;<bean:message key="bestellform.gebuehrentxt" />&nbsp;<a href="<bean:write name="bestellformparam" property="link_gebuehren" />" target="_blank"><bean:message key="bestellform.gebuehren" /></a>
         </td>
       </tr>      
     </logic:equal>
-    <logic:equal name="bestellparam" property="agb" value="true">
-    <logic:equal name="bestellparam" property="gebuehren" value="false">
+    <logic:equal name="bestellformparam" property="agb" value="true">
+    <logic:equal name="bestellformparam" property="gebuehren" value="false">
     <!-- Abstand nur falls gebuhren nicht eingeblendet -->
       <tr>
         <td><br>
@@ -640,7 +640,7 @@
         <td>
         </td>
         <td>
-          <input type="checkbox" name="agb" />&nbsp;<bean:message key="bestellform.agbtxt" />&nbsp;<a href="<bean:write name="bestellparam" property="link_agb" />" target="_blank"><bean:message key="bestellform.agb" /></a>
+          <input type="checkbox" name="agb" />&nbsp;<bean:message key="bestellform.agbtxt" />&nbsp;<a href="<bean:write name="bestellformparam" property="link_agb" />" target="_blank"><bean:message key="bestellform.agb" /></a>
         </td>
       </tr>      
     </logic:equal>

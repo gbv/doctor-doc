@@ -32,15 +32,14 @@ import ch.dbs.form.Message;
 import enums.TextType;
 
 /**
- * Grundlegende Klasse um Bestandesangaben abzubilden und in die Datenbank zu
- * schreiben <p></p>
+ * Class to handle the parameters for the customizable internal order forms.<p></p>
  * 
  * @author Markus Fischer
  */
 
-public class BestellParam extends ValidatorForm {
+public class BestellFormParam extends ValidatorForm {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BestellParam.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BestellFormParam.class);
 
     private static final long serialVersionUID = 1L;
     private Long id;
@@ -100,11 +99,11 @@ public class BestellParam extends ValidatorForm {
 
     // Option radio button (three buttons)
     private boolean option;
-    private String option_name; // Feldbezeichnung
-    private String option_comment; // Kommentar / Beschreibung
-    private String option_linkout; // Zusatzlink extern
-    private String option_linkoutname; // Anzeigename Zusatzlink
-    private String option_value1; // Inhalte...
+    private String option_name; // name of the field
+    private String option_comment; // comment / description
+    private String option_linkout; // additional external link
+    private String option_linkoutname; // name of the link
+    private String option_value1; // select values...
     private String option_value2;
     private String option_value3;
 
@@ -119,18 +118,18 @@ public class BestellParam extends ValidatorForm {
     private boolean back;
     private String link_back;
 
-    public BestellParam() {
+    public BestellFormParam() {
 
     }
 
     /**
-     * Erstellt ein BestellParam anhand seiner ID und einer Verbindung
+     * Creates a BestellFormParam by ID and a Connection.
      * 
      * @param Long id
      * @param Connection cn
-     * @return BestellParam bp
+     * @return BestellFormParam bp
      */
-    public BestellParam(final Long pbId, final Connection cn) {
+    public BestellFormParam(final Long pbId, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -144,7 +143,7 @@ public class BestellParam extends ValidatorForm {
             }
 
         } catch (final Exception e) {
-            LOG.error("BestellParam (Long id, Connection cn): " + e.toString());
+            LOG.error("BestellFormParam (Long id, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -164,22 +163,21 @@ public class BestellParam extends ValidatorForm {
     }
 
     /**
-     * Erstellt ein BestellParam anhand seiner Kennung, der KID und einer
-     * Verbindung
+     * Creates a BestellFormParam by its type, the KID and a Connection.
      * 
      * @param String kennung
      * @param Long kid
      * @param Connection cn
-     * @return BestellParam bp
+     * @return BestellFormParam bp
      */
-    public BestellParam(final String kenn, final Long pbId, final Connection cn) {
+    public BestellFormParam(final String kenn, final Long kid, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM bestellform_param WHERE kennung = ? AND KID = ?");
             pstmt.setString(1, kenn);
-            pstmt.setLong(2, pbId);
+            pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -187,7 +185,7 @@ public class BestellParam extends ValidatorForm {
             }
 
         } catch (final Exception e) {
-            LOG.error("BestellParam (String kennung, Long id, Connection cn): " + e.toString());
+            LOG.error("BestellFormParam (String kennung, Long kid, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -207,13 +205,13 @@ public class BestellParam extends ValidatorForm {
     }
 
     /**
-     * Erstellt ein BestellParam anhand eines Textes und einer Verbindung
+     * Creates a BestellFormParam by a Text a Connection.
      * 
      * @param Text t
      * @param Connection cn
-     * @return BestellParam bp
+     * @return BestellFormParam bp
      */
-    public BestellParam(final Text t, final Connection cn) {
+    public BestellFormParam(final Text t, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -237,7 +235,7 @@ public class BestellParam extends ValidatorForm {
             }
 
         } catch (final Exception e) {
-            LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
+            LOG.error("BestellFormParam (Text t, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -257,16 +255,15 @@ public class BestellParam extends ValidatorForm {
     }
 
     /**
-     * Erstellt ein BestellParam vom Typ "Bestellformular eingeloggt" anhand
-     * eines Kontos und einer Verbindung, für den Fall, dass der Kunde
-     * eingeloggt ist (dieses BestellParam wird NICHT über eine zusätzliche
-     * Text-Verknüpfung abgehandelt, sondern direkt in dbs geschrieben)
+     * Creates a BestellFormParam of the type "oder form logged in" by a Konto and a Connection,
+     * in the case, where a patron is logged in when ordering. This BestellFormParam is written
+     * directly to the DB.
      * 
      * @param Konto k
      * @param Connection cn
-     * @return BestellParam bp
+     * @return BestellFormParam bp
      */
-    public BestellParam(final Konto k, final Connection cn) {
+    public BestellFormParam(final Konto k, final Connection cn) {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -282,7 +279,7 @@ public class BestellParam extends ValidatorForm {
             }
 
         } catch (final Exception e) {
-            LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
+            LOG.error("BestellFormParam (Text t, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -302,15 +299,15 @@ public class BestellParam extends ValidatorForm {
     }
 
     /**
-     * Gets all existing BestellParams for a given account.
+     * Gets all existing BestellFormParams for a given account.
      * 
      * @param Konto k
      * @param Connection cn
-     * @return List<String> BestellParam result
+     * @return List<String> BestellFormParam result
      */
-    public List<BestellParam> getAllBestellParam(final Konto k, final Connection cn) {
+    public List<BestellFormParam> getAllBestellFormParam(final Konto k, final Connection cn) {
 
-        final List<BestellParam> result = new ArrayList<BestellParam>();
+        final List<BestellFormParam> result = new ArrayList<BestellFormParam>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -320,11 +317,11 @@ public class BestellParam extends ValidatorForm {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                result.add(new BestellParam(rs));
+                result.add(new BestellFormParam(rs));
             }
 
         } catch (final Exception e) {
-            LOG.error("BestellParam (Text t, Connection cn): " + e.toString());
+            LOG.error("getAllBestellFormParam (Konto k, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -345,18 +342,18 @@ public class BestellParam extends ValidatorForm {
     }
 
     /**
-     * Speichert ein neues BestellParam in der Datenbank
+     * Saves a new BestellFormParam into the database.
      * 
-     * @param BestellParam bp
+     * @param BestellFormParam bp
      */
-    public Long save(final BestellParam bp, final Connection cn) {
+    public Long save(final BestellFormParam bp, final Connection cn) {
 
         Long pbId = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = setBestellParamValues(
+            pstmt = setBestellFormParamValues(
                     cn.prepareStatement("INSERT INTO `bestellform_param` (`KID` , `TYID` , `USE_DID` , "
                             + "`kennung` , `saveorder` , `deactivated` , `institution` , `abteilung` , `category` , `adresse` , `strasse` , "
                             + "`plz` , `ort` , `telefon` , `benutzernr` , `land` , `prio` , `lieferart` , `lieferart_value1` , "
@@ -372,14 +369,14 @@ public class BestellParam extends ValidatorForm {
 
             pstmt.executeUpdate();
 
-            //            ID des gerade gespeicherten Benutzers ermitteln und hinterlegen
+            // get back last inserted ID
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
             if (rs.next()) {
                 pbId = rs.getLong("LAST_INSERT_ID()");
             }
 
         } catch (final Exception e) {
-            LOG.error("save(BestellParam bp, Connection cn): " + e.toString());
+            LOG.error("save(BestellFormParam bp, Connection cn): " + e.toString());
         } finally {
             if (rs != null) {
                 try {
@@ -401,15 +398,15 @@ public class BestellParam extends ValidatorForm {
     }
 
     /**
-     * Verändert ein vorhandenes BestellParam in der DB
+     * Updates an existing BestellFormParam.
      * 
-     * @param BestellParam bp
+     * @param BestellFormParam bp
      */
-    public void update(final BestellParam bp, final Connection cn) {
+    public void update(final BestellFormParam bp, final Connection cn) {
 
         PreparedStatement pstmt = null;
         try {
-            pstmt = setBestellParamValues(
+            pstmt = setBestellFormParamValues(
                     cn.prepareStatement("UPDATE `bestellform_param` SET "
                             + "`KID` = ?, `TYID` = ?, `USE_DID` = ?, `kennung` = ?, `saveorder` = ?, `deactivated` = ?, `institution` = ?, `abteilung` = ?, "
                             + "`category` = ?, `adresse` = ?,`strasse` = ?, `plz` = ?, `ort` = ?, `telefon` = ?, `benutzernr` = ?, `land` = ?, "
@@ -426,7 +423,7 @@ public class BestellParam extends ValidatorForm {
             pstmt.executeUpdate();
 
         } catch (final Exception e) {
-            LOG.error("bei update(BestellParam bp, Connection cn): " + e.toString());
+            LOG.error("bei update(BestellFormParam bp, Connection cn): " + e.toString());
         } finally {
             if (pstmt != null) {
                 try {
@@ -438,7 +435,7 @@ public class BestellParam extends ValidatorForm {
         }
     }
 
-    private BestellParam(final ResultSet rs) throws SQLException {
+    private BestellFormParam(final ResultSet rs) throws SQLException {
 
         this.setId(rs.getLong("BPID"));
         this.setKid(rs.getLong("KID"));
@@ -569,10 +566,10 @@ public class BestellParam extends ValidatorForm {
     }
 
     /*
-     * Setzt die Werte im Preparestatement der Methoden update() sowie save()
+     * Sets the values in the PreparedStatement of the methods update() and save().
      *
      */
-    private PreparedStatement setBestellParamValues(final PreparedStatement pstmt, final BestellParam bp)
+    private PreparedStatement setBestellFormParamValues(final PreparedStatement pstmt, final BestellFormParam bp)
             throws Exception {
 
         pstmt.setLong(1, bp.getKid());

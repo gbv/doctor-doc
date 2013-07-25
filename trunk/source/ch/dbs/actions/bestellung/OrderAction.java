@@ -63,7 +63,7 @@ import ch.dbs.actions.openurl.ConvertOpenUrl;
 import ch.dbs.actions.openurl.OpenUrl;
 import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Bestand;
-import ch.dbs.entity.BestellParam;
+import ch.dbs.entity.BestellFormParam;
 import ch.dbs.entity.Bestellungen;
 import ch.dbs.entity.DefaultPreis;
 import ch.dbs.entity.Konto;
@@ -1852,11 +1852,11 @@ public final class OrderAction extends DispatchAction {
 
         final Set<String> result = new TreeSet<String>();
 
-        final BestellParam bp = new BestellParam();
-        // get all Bestellparams for the account
-        final List<BestellParam> bps = bp.getAllBestellParam(konto, cn);
+        final BestellFormParam bp = new BestellFormParam();
+        // get all BestellFormparams for the account
+        final List<BestellFormParam> bps = bp.getAllBestellFormParam(konto, cn);
 
-        for (final BestellParam param : bps) {
+        for (final BestellFormParam param : bps) {
             if (param.getLieferart_value1() != null) {
                 result.add(param.getLieferart_value1());
             }
