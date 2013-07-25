@@ -1000,10 +1000,6 @@ public final class BestellformAction extends DispatchAction {
         if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
             return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
         }
-        // if activated on system level, access will be restricted to paid only
-        if (auth.isPaidOnly(rq)) {
-            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
-        }
 
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
@@ -1081,10 +1077,6 @@ public final class BestellformAction extends DispatchAction {
         if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
             return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
         }
-        // if activated on system level, access will be restricted to paid only
-        if (auth.isPaidOnly(rq)) {
-            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
-        }
 
         String forward = Result.FAILURE.getValue();
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
@@ -1137,6 +1129,13 @@ public final class BestellformAction extends DispatchAction {
 
                     rq.setAttribute("bestellform", custom);
 
+                    // do we have a DAIA order form? It may be used as an external order form in replacement
+                    // of the internal oder forms of D-D ...
+                    final DaiaParam dp = new DaiaParam(ui.getKonto(), cn.getConnection());
+                    if (dp.getId() != null) {
+                        rq.setAttribute("daiaparam", dp);
+                    }
+
                 } catch (final Exception e) {
                     LOG.error("modify: " + e.toString());
                 } finally {
@@ -1173,10 +1172,6 @@ public final class BestellformAction extends DispatchAction {
         // check access rights
         if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
             return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
-        }
-        // if activated on system level, access will be restricted to paid only
-        if (auth.isPaidOnly(rq)) {
-            return mp.findForward(Result.ERROR_PAID_ONLY.getValue());
         }
 
         String forward = Result.FAILURE.getValue();

@@ -57,9 +57,11 @@
   <tr>
     <td id="border"><bean:message key="bestellform.external" />&nbsp;</td>
     <td id="border" align="center">
-    	  <select name="external">
-	      	<option value="0" selected="selected"><bean:message key="bestellform.select_internal" /></option>
-	      	<option value="1"><bean:message key="bestellform.select_external" /></option>
+    	  <select name="use_did">
+	      		<option value="0" <logic:equal name="bestellform" property="use_did" value="0">selected="selected"</logic:equal>><bean:message key="bestellform.select_internal" /></option>
+	      	<logic:present name="daiaparam">
+	      		<option value="<bean:write name="daiaparam" property="id" />" <logic:notEqual name="bestellform" property="use_did" value="0">selected="selected"</logic:notEqual>><bean:message key="bestellform.select_external" /></option>
+	      	</logic:present>
 	    </select>
     </td>
   </tr>
