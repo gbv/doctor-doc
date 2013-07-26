@@ -8,6 +8,7 @@
 	<!-- ======================================== Form Bean Definitions -->
 	<form-beans>
 		<form-bean name="BestellFormParam" type="ch.dbs.entity.BestellFormParam" />
+		<form-bean name="DaiaParam" type="ch.dbs.entity.DaiaParam" />
 		<form-bean name="BillingForm" type="ch.dbs.form.BillingForm" />
 		<form-bean name="HoldingForm" type="ch.dbs.form.HoldingForm" />
 		<form-bean name="LoginForm" type="ch.dbs.form.LoginForm" />
@@ -441,6 +442,18 @@
 			type="ch.dbs.actions.bestellung.BestellformAction">
 			<forward name="success" path="/bestellformconfigure.do" />
 			<forward name="bestellform" path="/bestellformjsp.do" />
+		</action>
+
+		<action path="/externalform" name="DaiaParam" validate="false"
+			parameter="method" scope="request"
+			type="ch.dbs.actions.bestellung.BestellformAction">
+			<forward name="success" path="/jsp/bestellformexternal.jsp" />
+		</action>
+
+		<action path="/externalformsave" name="DaiaParam" validate="false"
+			parameter="method" scope="request"
+			type="ch.dbs.actions.bestellung.BestellformAction">
+			<forward name="success" path="/jsp/message.jsp" />
 		</action>
 
 		<action name="ActiveMenus" forward="/jsp/bestellformular.jsp"

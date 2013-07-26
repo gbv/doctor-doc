@@ -46,9 +46,9 @@ public class DaiaParam extends AbstractIdEntity {
     private String linkFees;
     private String firstParam = "?";
     private String protocol = "internal"; // internal / openurl / custom
-    private boolean redirect;
-    private boolean post;
-    private boolean ip_overrides;
+    private boolean redirect = true; // defaults to true
+    private boolean post; // defaults to false
+    private boolean ip_overrides; // defaults to false
     private String mapMediatype;
     private String mapAuthors;
     private String mapAtitle;

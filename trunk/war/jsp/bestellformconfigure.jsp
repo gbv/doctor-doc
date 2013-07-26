@@ -67,7 +67,7 @@
   </tr>
 </table>
 <p><bean:message key="bestellform.external_explain" /></p>
-<p><a href=""><bean:message key="bestellform.external_create" /></a></p>
+<p><a href="externalform.do?method=prepDaiaForm"><bean:message key="bestellform.external_create" /></a></p>
 <hr>
 
 <h4><bean:message key="bestellform.deactivate" /></h4>

@@ -1263,6 +1263,38 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
+     * Manage a possible external order form.
+     */
+    public ActionForward prepDaiaForm(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
+
+        final String forward = Result.SUCCESS.getValue();
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Text cn = new Text();
+
+        try {
+
+            final DaiaParam dp = new DaiaParam(ui.getKonto(), cn.getConnection());
+            rq.setAttribute("daiaparam", dp);
+
+        } finally {
+            cn.close();
+        }
+
+        return mp.findForward(forward);
+    }
+
+    /**
      * Checks if there are required values missing and returns an error message.
      */
     private Message getMessage4MissingBestellFormParam(final OrderForm of, final BestellFormParam bp) {

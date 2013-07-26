@@ -95,6 +95,11 @@
 </logic:present>
 
 <p><bean:message arg0="<%=appName%>" key="bestellformconfigureselect.sprache" /></p>
+
+<p><br></p>
+
+<h3><bean:message key="bestellform.external_title" /></h3>
+<p><a href="externalform.do?method=prepDaiaForm"><bean:message key="bestellform.external_create" /></a></p>
        
 </div>
 

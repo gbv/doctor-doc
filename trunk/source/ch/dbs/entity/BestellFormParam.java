@@ -46,7 +46,7 @@ public class BestellFormParam extends ValidatorForm {
     // we'll have 1 orderform for several IPs within the same account
     private Long kid;
     private Long tyid;
-    private Long use_did = Long.valueOf("0"); // use external order form for this case
+    private Long use_did = Long.valueOf("0");
     private String kennung;
     // defines, if this order will be additionally saved in the database
     // an email will always be sent. This can be configured differently for each orderform.
