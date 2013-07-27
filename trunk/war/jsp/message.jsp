@@ -31,10 +31,11 @@
   <p></p><pre><bean:write name="message" property="systemMessage" /></pre>
 </logic:present>
 
-<br>
+<p>
 <logic:present name="message" property="link">
   <a href="<bean:write name="message" property="link" />"><bean:message key="message.next" /></a>
 </logic:present>
+</p>
 </div>
  </body>
 </html>

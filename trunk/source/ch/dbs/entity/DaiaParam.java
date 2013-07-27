@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.struts.validator.ValidatorForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +37,12 @@ import ch.dbs.form.OrderForm;
  * 
  * @author Markus Fischer
  */
-public class DaiaParam extends AbstractIdEntity {
+public class DaiaParam extends ValidatorForm {
 
     private static final Logger LOG = LoggerFactory.getLogger(DaiaParam.class);
+    private static final long serialVersionUID = 1L;
 
+    private Long id;
     private Long kid;
     private String baseurl;
     private String linkAGB;
@@ -163,6 +166,193 @@ public class DaiaParam extends AbstractIdEntity {
             }
         }
 
+    }
+
+    /**
+     * Saves a DaiamParam into the database.
+     * 
+     * @param Connection cn
+     */
+    public Long save(final Connection cn) {
+
+        Long pbId = null;
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = setDaiaParamValues(cn
+                    .prepareStatement("INSERT INTO `bestellform_daia` (`KID` , `baseurl` , `link_agb` , "
+                            + "`link_fees` , `first_param` , `protocol` , `redirect` , `post` , `ip_overrides` , "
+                            + "`map_mediatype` , `map_authors` , `map_atitle` , `map_btitle` , `map_chapter` , "
+                            + "`map_journal` , `map_publisher` , `map_issn` , `map_isbn` , `map_date` , `map_volume` , "
+                            + "`map_issue` , `map_pages` , `map_pmid` , `map_doi` , `map_reference` , `limitations`) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"));
+
+            pstmt.executeUpdate();
+
+            // get back last inserted ID
+            rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
+            if (rs.next()) {
+                pbId = rs.getLong("LAST_INSERT_ID()");
+            }
+
+        } catch (final Exception e) {
+            LOG.error("save(Connection cn): " + e.toString());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+
+        return pbId;
+    }
+
+    /**
+     * Deletes a all DaiamParams from the database for an account.
+     * 
+     * @param Konto konto
+     * @param Connection cn
+     */
+    public void delete(final Konto konto, final Connection cn) {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("DELETE FROM `bestellform_daia` WHERE `KID` =?");
+            pstmt.setLong(1, konto.getId());
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("delete(final Konto konto, final Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error("delete(final Konto konto, final Connection cn): " + e.toString());
+                }
+            }
+        }
+    }
+
+    private PreparedStatement setDaiaParamValues(final PreparedStatement pstmt) throws Exception {
+
+        pstmt.setLong(1, this.getKid());
+        // remove possible empty characters at the end
+        pstmt.setString(2, this.getBaseurl().trim());
+        if (isEmpty(this.getLinkAGB())) {
+            pstmt.setString(3, "");
+        } else {
+            pstmt.setString(3, this.getLinkAGB().trim());
+        }
+        if (isEmpty(this.getLinkFees())) {
+            pstmt.setString(4, "");
+        } else {
+            pstmt.setString(4, this.getLinkFees().trim());
+        }
+        pstmt.setString(5, this.getFirstParam());
+        pstmt.setString(6, this.getProtocol());
+        pstmt.setBoolean(7, this.isRedirect());
+        pstmt.setBoolean(8, this.isPost());
+        pstmt.setBoolean(9, this.isIp_overrides());
+        if (isEmpty(this.getMapMediatype())) {
+            pstmt.setString(10, null);
+        } else {
+            pstmt.setString(10, this.getMapMediatype().trim());
+        }
+        if (isEmpty(this.getMapAuthors())) {
+            pstmt.setString(11, null);
+        } else {
+            pstmt.setString(11, this.getMapAuthors().trim());
+        }
+        if (isEmpty(this.getMapAtitle())) {
+            pstmt.setString(12, null);
+        } else {
+            pstmt.setString(12, this.getMapAtitle().trim());
+        }
+        if (isEmpty(this.getMapBtitle())) {
+            pstmt.setString(13, null);
+        } else {
+            pstmt.setString(13, this.getMapBtitle().trim());
+        }
+        if (isEmpty(this.getMapChapter())) {
+            pstmt.setString(14, null);
+        } else {
+            pstmt.setString(14, this.getMapChapter().trim());
+        }
+        if (isEmpty(this.getMapJournal())) {
+            pstmt.setString(15, null);
+        } else {
+            pstmt.setString(15, this.getMapJournal().trim());
+        }
+        if (isEmpty(this.getMapPublisher())) {
+            pstmt.setString(16, null);
+        } else {
+            pstmt.setString(16, this.getMapPublisher().trim());
+        }
+        if (isEmpty(this.getMapIssn())) {
+            pstmt.setString(17, null);
+        } else {
+            pstmt.setString(17, this.getMapIssn().trim());
+        }
+        if (isEmpty(this.getMapIsbn())) {
+            pstmt.setString(18, null);
+        } else {
+            pstmt.setString(18, this.getMapIsbn().trim());
+        }
+        if (isEmpty(this.getMapDate())) {
+            pstmt.setString(19, null);
+        } else {
+            pstmt.setString(19, this.getMapDate().trim());
+        }
+        if (isEmpty(this.getMapVolume())) {
+            pstmt.setString(20, null);
+        } else {
+            pstmt.setString(20, this.getMapVolume().trim());
+        }
+        if (isEmpty(this.getMapIssue())) {
+            pstmt.setString(21, null);
+        } else {
+            pstmt.setString(21, this.getMapIssue().trim());
+        }
+        if (isEmpty(this.getMapPages())) {
+            pstmt.setString(22, null);
+        } else {
+            pstmt.setString(22, this.getMapPages().trim());
+        }
+        if (isEmpty(this.getMapPmid())) {
+            pstmt.setString(23, null);
+        } else {
+            pstmt.setString(23, this.getMapPmid().trim());
+        }
+        if (isEmpty(this.getMapDoi())) {
+            pstmt.setString(24, null);
+        } else {
+            pstmt.setString(24, this.getMapDoi().trim());
+        }
+        if (isEmpty(this.getMapReference())) {
+            pstmt.setString(25, null);
+        } else {
+            pstmt.setString(25, this.getMapReference().trim());
+        }
+        if (isEmpty(this.getLimitations())) {
+            pstmt.setString(26, "");
+        } else {
+            // the value comes from a text area => trim
+            pstmt.setString(26, this.getLimitations().trim());
+        }
+
+        return pstmt;
     }
 
     private void getRsValues(final ResultSet rs) throws Exception {
@@ -433,6 +623,14 @@ public class DaiaParam extends AbstractIdEntity {
         }
 
         return ref.toString();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
     }
 
     public Long getKid() {
@@ -833,6 +1031,14 @@ public class DaiaParam extends AbstractIdEntity {
 
     public void setFree9Value(final String free9Value) {
         this.free9Value = free9Value;
+    }
+
+    private boolean isEmpty(final String input) {
+
+        if (input == null || "".equals(input.trim())) {
+            return true;
+        }
+        return false;
     }
 
 }

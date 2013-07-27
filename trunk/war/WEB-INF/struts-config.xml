@@ -453,6 +453,7 @@
 		<action path="/externalformsave" name="DaiaParam" validate="false"
 			parameter="method" scope="request"
 			type="ch.dbs.actions.bestellung.BestellformAction">
+			<forward name="missingvalues" path="/jsp/bestellformexternal.jsp" />
 			<forward name="success" path="/jsp/message.jsp" />
 		</action>
 

@@ -465,7 +465,7 @@ public final class BestellformAction extends DispatchAction {
                     if (of.getKundenmail() != null) {
                         of.setKundenmail(of.getKundenmail().trim());
                     }
-                    final Message message = getMessage4MissingBestellFormParam(of, bp);
+                    final Message message = checkValues4BestellFormParam(of, bp);
                     if (message.getMessage() == null) {
 
                         of.setKundenmail(extractEmail(of.getKundenmail())); // remove invalid characters
@@ -1263,7 +1263,7 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
-     * Manage a possible external order form.
+     * Manage an external order form.
      */
     public ActionForward prepDaiaForm(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
             final HttpServletResponse rp) {
@@ -1295,9 +1295,68 @@ public final class BestellformAction extends DispatchAction {
     }
 
     /**
+     * Save an external order form.
+     */
+    public ActionForward saveDaiaForm(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
+
+        String forward = Result.FAILURE.getValue();
+        final DaiaParam dp = (DaiaParam) fm;
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Text cn = new Text();
+
+        try {
+
+            // set KID to DaiaParam
+            dp.setKid(ui.getKonto().getId());
+
+            final Message message = new Message();
+
+            // make sure base url is valid
+            final Check ck = new Check();
+            if (ck.isUrl(dp.getBaseurl())) {
+
+                forward = Result.SUCCESS.getValue();
+
+                // delete DAIA-Param for account
+                dp.delete(ui.getKonto(), cn.getConnection());
+
+                // save new DAIA-Param
+                dp.save(cn.getConnection());
+
+                // set success message
+                message.setMessage("message.modifyuser");
+                message.setLink("externalform.do?method=prepDaiaForm");
+                rq.setAttribute("message", message);
+
+            } else {
+                forward = "missingvalues";
+                message.setMessage("error.url");
+                rq.setAttribute("message", message);
+                rq.setAttribute("daiaparam", dp);
+            }
+
+        } finally {
+            cn.close();
+        }
+
+        return mp.findForward(forward);
+    }
+
+    /**
      * Checks if there are required values missing and returns an error message.
      */
-    private Message getMessage4MissingBestellFormParam(final OrderForm of, final BestellFormParam bp) {
+    private Message checkValues4BestellFormParam(final OrderForm of, final BestellFormParam bp) {
 
         final Message m = new Message();
         final Check ck = new Check();
@@ -1364,7 +1423,7 @@ public final class BestellformAction extends DispatchAction {
             }
 
         } catch (final Exception e) {
-            LOG.error("getMessage4MissingBestellFormParam: " + e.toString());
+            LOG.error("checkValues4BestellFormParam: " + e.toString());
         }
 
         return m;

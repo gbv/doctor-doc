@@ -38,6 +38,11 @@
   <bean:message key="bestellform.external_title" />
 </h3>
 
+<logic:present name="message" property="message">
+  <bean:define id="missingKey" name="message" property="message" type="java.lang.String"/>
+  <p><font color="red"><bean:message key="<%=missingKey%>" /></font></p>
+</logic:present>
+
 <html:form action="externalformsave.do" method="post">
 
 <h4><bean:message key="bestellform.external_create" /></h4>
@@ -166,6 +171,7 @@
 		<td><bean:message key="daia.reference" /></td>
 		<td><input name="mapReference" type="text" size="20" maxlength="20" <logic:present name="daiaparam" property="mapReference">value="<bean:write name='daiaparam' property='mapReference'/>"</logic:present> /></td>
 	</tr>
+<!-- 
 	<tr>
 		<td><bean:message key="daia.limitations" /></td>
 		<td>
@@ -174,8 +180,7 @@
 			</textarea>
 		</td>
 	</tr>
-
-
+ -->
 </table>
 
 <input name="method" type="hidden" value="saveDaiaForm" />
