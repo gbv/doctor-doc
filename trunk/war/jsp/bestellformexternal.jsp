@@ -47,6 +47,10 @@
 
 <h4><bean:message key="bestellform.external_create" /></h4>
 
+<logic:present name="daiaparam" property="baseurl">
+<p><a href="externalformdelete.do?method=deleteDaiaForm"><bean:message key="bestellform.external_delete" /></a></p>
+</logic:present>
+
 <table>
 	<tr>
 		<td><bean:message key="daia.baseurl" /></td>
@@ -95,6 +99,15 @@
 			<select name="ip_overrides">
 				<option value="false" <logic:present name="daiaparam" property="ip_overrides"><logic:equal name="daiaparam" property="ip_overrides" value="false">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.no" /></option>
 				<option value="true" <logic:present name="daiaparam" property="ip_overrides"><logic:equal name="daiaparam" property="ip_overrides" value="true">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.yes" /></option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><bean:message key="daia.worldWideAccess" /></td>
+		<td>
+			<select name="worldWideAccess">
+				<option value="false" <logic:present name="daiaparam" property="worldWideAccess"><logic:equal name="daiaparam" property="worldWideAccess" value="false">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.no" /></option>
+				<option value="true" <logic:present name="daiaparam" property="worldWideAccess"><logic:equal name="daiaparam" property="worldWideAccess" value="true">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.yes" /></option>
 			</select>
 		</td>
 	</tr>

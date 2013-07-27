@@ -72,6 +72,9 @@ public class DaiaParam extends ValidatorForm {
     private String limitations;
 
     // additional paramateres not from database
+
+    private boolean worldWideAccess;
+
     private String source;
     private String sourceValue;
     private String identification;
@@ -171,15 +174,20 @@ public class DaiaParam extends ValidatorForm {
     /**
      * Saves a DaiamParam into the database.
      * 
+     * @param Konto konto
      * @param Connection cn
      */
-    public Long save(final Connection cn) {
+    public Long save(final Konto konto, final Connection cn) {
 
         Long pbId = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
+
+            // set KID to DaiaParam
+            this.setKid(konto.getId());
+
             pstmt = setDaiaParamValues(cn
                     .prepareStatement("INSERT INTO `bestellform_daia` (`KID` , `baseurl` , `link_agb` , "
                             + "`link_fees` , `first_param` , `protocol` , `redirect` , `post` , `ip_overrides` , "
@@ -194,6 +202,14 @@ public class DaiaParam extends ValidatorForm {
             rs = pstmt.executeQuery("SELECT LAST_INSERT_ID()");
             if (rs.next()) {
                 pbId = rs.getLong("LAST_INSERT_ID()");
+                this.setId(pbId);
+            }
+
+            // set visibility to the account
+            if (this.isWorldWideAccess()) {
+                updateVisibility(this.getId(), cn);
+            } else {
+                updateVisibility(null, cn);
             }
 
         } catch (final Exception e) {
@@ -228,9 +244,16 @@ public class DaiaParam extends ValidatorForm {
 
         PreparedStatement pstmt = null;
         try {
+
+            // set KID to DaiaParam
+            this.setKid(konto.getId());
+
             pstmt = cn.prepareStatement("DELETE FROM `bestellform_daia` WHERE `KID` =?");
             pstmt.setLong(1, konto.getId());
             pstmt.executeUpdate();
+
+            // set visibility to null
+            updateVisibility(null, cn);
 
         } catch (final Exception e) {
             LOG.error("delete(final Konto konto, final Connection cn): " + e.toString());
@@ -240,6 +263,34 @@ public class DaiaParam extends ValidatorForm {
                     pstmt.close();
                 } catch (final SQLException e) {
                     LOG.error("delete(final Konto konto, final Connection cn): " + e.toString());
+                }
+            }
+        }
+    }
+
+    private void updateVisibility(final Long id2, final Connection cn) {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("UPDATE `konto` SET DID=? " + "WHERE `KID` = ?");
+
+            if (id2 != null) {
+                pstmt.setLong(1, id2);
+            } else {
+                pstmt.setString(1, null);
+            }
+            pstmt.setLong(2, this.getKid());
+
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("updateVisibility(final Long id2, final Connection cn): " + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
                 }
             }
         }
@@ -1031,6 +1082,14 @@ public class DaiaParam extends ValidatorForm {
 
     public void setFree9Value(final String free9Value) {
         this.free9Value = free9Value;
+    }
+
+    public boolean isWorldWideAccess() {
+        return worldWideAccess;
+    }
+
+    public void setWorldWideAccess(final boolean worldWideAccess) {
+        this.worldWideAccess = worldWideAccess;
     }
 
     private boolean isEmpty(final String input) {

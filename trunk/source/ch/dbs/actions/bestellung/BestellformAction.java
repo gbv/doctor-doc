@@ -1317,9 +1317,6 @@ public final class BestellformAction extends DispatchAction {
 
         try {
 
-            // set KID to DaiaParam
-            dp.setKid(ui.getKonto().getId());
-
             final Message message = new Message();
 
             // make sure base url is valid
@@ -1332,7 +1329,7 @@ public final class BestellformAction extends DispatchAction {
                 dp.delete(ui.getKonto(), cn.getConnection());
 
                 // save new DAIA-Param
-                dp.save(cn.getConnection());
+                dp.save(ui.getKonto(), cn.getConnection());
 
                 // set success message
                 message.setMessage("message.modifyuser");
@@ -1345,6 +1342,45 @@ public final class BestellformAction extends DispatchAction {
                 rq.setAttribute("message", message);
                 rq.setAttribute("daiaparam", dp);
             }
+
+        } finally {
+            cn.close();
+        }
+
+        return mp.findForward(forward);
+    }
+
+    /**
+     * Delete an external order form.
+     */
+    public ActionForward deleteDaiaForm(final ActionMapping mp, final ActionForm fm, final HttpServletRequest rq,
+            final HttpServletResponse rp) {
+
+        final Auth auth = new Auth();
+        // make sure the user is logged in
+        if (!auth.isLogin(rq)) {
+            return mp.findForward(Result.ERROR_TIMEOUT.getValue());
+        }
+        // check access rights
+        if (!auth.isBibliothekar(rq) && !auth.isAdmin(rq)) {
+            return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
+        }
+
+        final String forward = Result.SUCCESS.getValue();
+        final DaiaParam dp = new DaiaParam();
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+        final Text cn = new Text();
+
+        try {
+
+            // delete DAIA-Params for account
+            dp.delete(ui.getKonto(), cn.getConnection());
+
+            // set success message
+            final Message message = new Message();
+            message.setMessage("message.modifyuser");
+            message.setLink("externalform.do?method=prepDaiaForm");
+            rq.setAttribute("message", message);
 
         } finally {
             cn.close();

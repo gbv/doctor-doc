@@ -456,6 +456,12 @@
 			<forward name="missingvalues" path="/jsp/bestellformexternal.jsp" />
 			<forward name="success" path="/jsp/message.jsp" />
 		</action>
+		
+		<action path="/externalformdelete" name="DaiaParam" validate="false"
+			parameter="method" scope="request"
+			type="ch.dbs.actions.bestellung.BestellformAction">
+			<forward name="success" path="/jsp/message.jsp" />
+		</action>
 
 		<action name="ActiveMenus" forward="/jsp/bestellformular.jsp"
 			path="/bestellformjsp" />
