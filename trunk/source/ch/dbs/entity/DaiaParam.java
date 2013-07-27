@@ -150,6 +150,12 @@ public class DaiaParam extends ValidatorForm {
                 getRsValues(rs);
             }
 
+            // set visibility for modifications
+            final Konto k = new Konto(konto.getId(), cn);
+            if (k.getDid() != null) {
+                this.setWorldWideAccess(true);
+            }
+
         } catch (final Exception e) {
             LOG.error("DaiaParam(final Konto konto, final Connection cn): " + e.toString());
         } finally {
