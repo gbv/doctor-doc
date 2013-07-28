@@ -48,7 +48,7 @@ public class DaiaParam extends ValidatorForm {
     private String linkAGB;
     private String linkFees;
     private String firstParam = "?";
-    private String protocol = "internal"; // internal / openurl / custom
+    private String protocol = "custom"; // internal / openurl / custom
     private boolean redirect = true; // defaults to true
     private boolean post; // defaults to false
     private boolean ip_overrides; // defaults to false

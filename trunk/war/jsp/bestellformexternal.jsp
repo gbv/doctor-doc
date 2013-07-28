@@ -75,6 +75,7 @@
 			</select>
 		</td>
 	</tr>
+<!--
 	<tr>
 		<td><bean:message key="daia.redirect" /></td>
 		<td>
@@ -84,6 +85,7 @@
 			</select>
 		</td>
 	</tr>
+ -->
 	<tr>
 		<td><bean:message key="daia.method" /></td>
 		<td>
@@ -94,21 +96,23 @@
 		</td>
 	</tr>
 	<tr>
-		<td><bean:message key="daia.ip_overrides" /></td>
-		<td>
-			<select name="ip_overrides">
-				<option value="false" <logic:present name="daiaparam" property="ip_overrides"><logic:equal name="daiaparam" property="ip_overrides" value="false">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.no" /></option>
-				<option value="true" <logic:present name="daiaparam" property="ip_overrides"><logic:equal name="daiaparam" property="ip_overrides" value="true">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.yes" /></option>
-			</select>
-		</td>
-	</tr>
-	<tr>
 		<td><bean:message key="daia.worldWideAccess" /></td>
 		<td>
 			<select name="worldWideAccess">
 				<option value="false" <logic:present name="daiaparam" property="worldWideAccess"><logic:equal name="daiaparam" property="worldWideAccess" value="false">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.no" /></option>
 				<option value="true" <logic:present name="daiaparam" property="worldWideAccess"><logic:equal name="daiaparam" property="worldWideAccess" value="true">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.yes" /></option>
 			</select>
+		<bean:message key="daia.worldWideAccess_explain" />
+		</td>
+	</tr>
+	<tr>
+		<td><bean:message key="daia.ip_overrides" /></td>
+		<td>
+			<select name="ip_overrides">
+				<option value="false" <logic:present name="daiaparam" property="ip_overrides"><logic:equal name="daiaparam" property="ip_overrides" value="false">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.no" /></option>
+				<option value="true" <logic:present name="daiaparam" property="ip_overrides"><logic:equal name="daiaparam" property="ip_overrides" value="true">selected="selected"</logic:equal></logic:present>><bean:message key="modifykonto.yes" /></option>
+			</select>
+		<bean:message key="daia.ip_overrides_explain" />
 		</td>
 	</tr>
 	<tr>
