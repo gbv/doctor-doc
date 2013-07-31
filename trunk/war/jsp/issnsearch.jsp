@@ -79,12 +79,12 @@
           <td title="<bean:message key="info.pubmed" />">PMID<img border="0" src="img/info.png" alt="<bean:message key="info.pubmed" />" /></td>
           <td><input name="pmid" type="text"
             value="" 
-            size="9" maxlength="15" /> oder</td>
+            size="9" maxlength="15" /> <bean:message key="searchorders.or" /></td>
         </tr>
           <tr>
             <td><bean:message key="bestellform.issn" /></td>
             <td><input name="issn" value="" type="text" size="9"
-              maxlength="9" /> oder</td>
+              maxlength="9" /> <bean:message key="searchorders.or" /></td>
           </tr>
           <tr>
             <td><bean:message key="bestellform.zeitschrift" /></td>

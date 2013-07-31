@@ -94,7 +94,7 @@
 
 <p><br></p>
 
-<form action="bulkoperation.do?method=deleteusernoroders" method="post">
+<form action="bulkoperation.do?method=deleteusernororders" method="post">
 
 <h4><bean:message key="maintenance.patronsNoOrders" /></h4>
 
