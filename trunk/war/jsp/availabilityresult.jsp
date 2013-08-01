@@ -199,7 +199,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK+&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK+</a></td>
-	  <td id="border" colspan="2"><a href="http://www.e-lib.ch/elib/action/search.do?fn=go&ct=search&vl(215003172UI0)=issn&tab=default_tab&vl(215003177UI5)=all_items&srt=rank&mode=Advanced&Submit=Suche&vl(freeText0)=<bean:write name="orderform" property="issn" />" target="_blank">e-lib.ch</a></td>
+	  <td id="border" colspan="2"><a href="http://www.e-lib.ch/elib/action/search.do?fn=go&ct=search&vl(215003172UI0)=issn&tab=default_tab&vl(215003177UI5)=all_items&srt=rank&mode=Advanced&Submit=Suche&vid=ELIB&vl(freeText0)=<bean:write name="orderform" property="issn" />" target="_blank">e-lib.ch</a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
@@ -292,7 +292,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK+&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK+</a></td>
-      <td id="border" colspan="2"><a href="http://www.e-lib.ch/elib/action/search.do?fn=go&ct=search&&vl(freeText0)=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&vl(215003172UI0)=title&tab=default_tab&vl(215003177UI5)=all_items&srt=rank&mode=Advanced&Submit=Suche" target="_blank">e-lib.ch</a></td>
+      <td id="border" colspan="2"><a href="http://www.e-lib.ch/elib/action/search.do?fn=go&ct=search&vl(freeText0)=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&vl(215003172UI0)=title&tab=default_tab&vl(215003177UI5)=all_items&srt=rank&mode=Advanced&Submit=Suche&vid=ELIB" target="_blank">e-lib.ch</a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
