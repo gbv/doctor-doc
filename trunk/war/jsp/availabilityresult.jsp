@@ -192,13 +192,20 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK</a></td>
-      <td id="border" colspan="2"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=540=%22<bean:write name="orderform" property="issn" />%22" target="_blank">Swissbib</a></td>
+      <td id="border" colspan="2"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=20=%22<bean:write name="orderform" property="issn" />%22" target="_blank">Swissbib</a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
       <td id="border"><a href="http://worldcatlibraries.org/registry/gateway?genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&atitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&aulast=<bean:write name="orderform" property="author_encodedUTF8" />" target="_blank">WorldCat</a></td>
     </tr>
     <tr>
       <td id="border"><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK+&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK+</a></td>
+	  <td id="border" colspan="2"><a href="http://www.e-lib.ch/elib/action/search.do?fn=go&ct=search&vl(215003172UI0)=issn&tab=default_tab&vl(215003177UI5)=all_items&srt=rank&mode=Advanced&Submit=Suche&vl(freeText0)=<bean:write name="orderform" property="issn" />" target="_blank">e-lib.ch</a></td>
+      <td id="border">&nbsp;</td>
+      <td id="border">&nbsp;</td>
+      <td id="border">&nbsp;</td>
+    </tr>
+    <tr>
+      <td id="border"><a href="http://www.portal.hebis.de/direktsuche/vonCBS?issn=<bean:write name="orderform" property="issn" />&db=2.1" target="_blank">HeBis</a></td>
 	  <td id="border"><a href="http://www2.unil.ch/perunil/search.php?allfields=&title=&search=advanced&field=title&publisher=&issn=<bean:write name="orderform" property="issn" />&format=all&accessunil=1&accesslibre=1&sujet=&platform=&licence=&statut=&localisation=&cote=" target="_blank">CHUV</a></td>
       <td id="border"><a href="http://www2.unil.ch/openillink/?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
@@ -206,7 +213,7 @@ h += 96;
       <td id="border">&nbsp;</td>
     </tr>
     <tr>
-      <td id="border"><a href="http://www.portal.hebis.de/direktsuche/vonCBS?issn=<bean:write name="orderform" property="issn" />&db=2.1" target="_blank">HeBis</a></td>
+      <td id="border"><a href="http://www.digibib.net/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&atitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&aulast=<bean:write name="orderform" property="author_encodedUTF8" />" target="_blank">DigiBib</a></td>
       <td id="border"><a href="http://library.epfl.ch/periodicals/?pg=search&genre=journal&string=&stitle=&title=&collection=&publisher=&doi=&medium=&doctype=p&issn=<bean:write name="orderform" property="issn" />" target="_blank">EPFL</a></td>
       <td id="border"><a href="http://library.epfl.ch/pret-inter/?pg=article&pSerial=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&pYear=<bean:write name="orderform" property="jahr" />&pVolume=<bean:write name="orderform" property="jahrgang" />&pIssue=<bean:write name="orderform" property="heft" />&pPage=<bean:write name="orderform" property="seiten" />&pAuthor=<bean:write name="orderform" property="author_encodedUTF8" />&pTitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&pIsbn=<bean:write name="orderform" property="issn" />&uComment=&uName=<bean:write name="userinfo" property="konto.bibliotheksname" />%20%2F%20<bean:write name="userinfo" property="benutzer.vorname" />%20<bean:write name="userinfo" property="benutzer.name" />&uStatus=other&uNebis=<logic:present name="userinfo" property="konto.idsid"><bean:write name="userinfo" property="konto.idsid" /></logic:present>&uEmail=<bean:write name="userinfo" property="konto.dbsmail" />&uAddress=<bean:write name="userinfo" property="konto.adresse" />%2C%20<bean:write name="userinfo" property="konto.adressenzusatz" />%2C%20<bean:write name="userinfo" property="konto.PLZ" />%20<bean:write name="userinfo" property="konto.ort" />&uPhone=<bean:write name="userinfo" property="konto.telefon" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
@@ -214,8 +221,8 @@ h += 96;
       <td id="border">&nbsp;</td>
     </tr>
     <tr>
-      <td id="border"><a href="http://www.digibib.net/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&atitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&aulast=<bean:write name="orderform" property="author_encodedUTF8" />" target="_blank">DigiBib</a></td>
-      <td id="border"><a href="http://ml.metabib.ch/V/?func=quick-1-check1&mode=advanced&find_request_1=&find_code_2=ISSN&find_op_1=AND&find_code_3=WRD&find_request_3=&group_number=000002060&find_request_2=<bean:write name="orderform" property="issn" />" target="_blank">UB Basel</a></td>
+      <td id="border">&nbsp;</td>
+      <td id="border"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=20=%22<bean:write name="orderform" property="issn" />%22" target="_blank">UB Basel</a></td>
       <td id="border"><a href="redirectunibasel.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
@@ -231,7 +238,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border">&nbsp;</td>
-      <td id="border"><a href="http://ml.metabib.ch/V/?func=quick-1-check1&mode=advanced&find_request_1=&find_code_2=ISSN&find_op_1=AND&find_code_3=WRD&find_request_3=&group_number=000002060&find_request_2=<bean:write name="orderform" property="issn" />" target="_blank">MBC Z&uuml;rich</a></td>
+      <td id="border"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=20=%22<bean:write name="orderform" property="issn" />%22" target="_blank">MBC Z&uuml;rich</a></td>
       <td id="border"><a href="redirectmbczurich.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
@@ -278,13 +285,20 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://gso.gbv.de/DB=2.1/" target="_blank">GBV/GVK</a></td>
-      <td id="border" colspan="2"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=331=%22<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />%22" target="_blank">Swissbib</a></td>
+      <td id="border" colspan="2"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=245=%22<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />%22" target="_blank">Swissbib</a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
     </tr>
     <tr>
       <td id="border"><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK+&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK+</a></td>
+      <td id="border" colspan="2"><a href="http://www.e-lib.ch/elib/action/search.do?fn=go&ct=search&&vl(freeText0)=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&vl(215003172UI0)=title&tab=default_tab&vl(215003177UI5)=all_items&srt=rank&mode=Advanced&Submit=Suche" target="_blank">e-lib.ch</a></td>
+      <td id="border">&nbsp;</td>
+      <td id="border">&nbsp;</td>
+      <td id="border">&nbsp;</td>
+    </tr>
+    <tr>
+      <td id="border"><a href="http://www.portal.hebis.de" target="_blank">HeBis</a></td>
 	  <td id="border"><a href="http://www2.unil.ch/perunil/search.php?q=<bean:write name="orderform" property="zeitschriftentitel" />&init=&search=simple&field=title&format=all" target="_blank">CHUV</a></td>
       <td id="border"><a href="http://www2.unil.ch/openillink/?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
@@ -292,7 +306,7 @@ h += 96;
       <td id="border">&nbsp;</td>
     </tr>
     <tr>
-      <td id="border"><a href="http://www.portal.hebis.de" target="_blank">HeBis</a></td>
+      <td id="border"><a href="http://www.digibib.net/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&atitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&aulast=<bean:write name="orderform" property="author_encodedUTF8" />" target="_blank">DigiBib</a></td>
       <td id="border"><a href="http://library.epfl.ch/periodicals/?pg=search&genre=journal&string=&stitle=&collection=&publisher=&doi=&issn=&medium=&doctype=p&title=<bean:write name="orderform" property="zeitschriftentitel" />" target="_blank">EPFL</a></td>
       <td id="border"><a href="http://library.epfl.ch/pret-inter/?pg=article&pSerial=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&pYear=<bean:write name="orderform" property="jahr" />&pVolume=<bean:write name="orderform" property="jahrgang" />&pIssue=<bean:write name="orderform" property="heft" />&pPage=<bean:write name="orderform" property="seiten" />&pAuthor=<bean:write name="orderform" property="author_encodedUTF8" />&pTitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&pIsbn=<bean:write name="orderform" property="issn" />&uComment=&uName=<bean:write name="userinfo" property="konto.bibliotheksname" />%20%2F%20<bean:write name="userinfo" property="benutzer.vorname" />%20<bean:write name="userinfo" property="benutzer.name" />&uStatus=other&uNebis=<logic:present name="userinfo" property="konto.idsid"><bean:write name="userinfo" property="konto.idsid" /></logic:present>&uEmail=<bean:write name="userinfo" property="konto.dbsmail" />&uAddress=<bean:write name="userinfo" property="konto.adresse" />%2C%20<bean:write name="userinfo" property="konto.adressenzusatz" />%2C%20<bean:write name="userinfo" property="konto.PLZ" />%20<bean:write name="userinfo" property="konto.ort" />&uPhone=<bean:write name="userinfo" property="konto.telefon" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
@@ -300,8 +314,8 @@ h += 96;
       <td id="border">&nbsp;</td>
     </tr>
     <tr>
-      <td id="border"><a href="http://www.digibib.net/openurl?sid=DRDOC:doctor-doc&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&atitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&aulast=<bean:write name="orderform" property="author_encodedUTF8" />" target="_blank">DigiBib</a></td>
-      <td id="border"><a href="http://ml.metabib.ch/V/?func=quick-1-check1&mode=advanced&find_request_1=&find_code_2=WRD&find_op_1=AND&find_code_3=WRD&find_request_3=&group_number=000002060&find_request_2=<bean:write name="orderform" property="zeitschriftentitel" />" target="_blank">UB Basel</a></td>
+      <td id="border">&nbsp;</td>
+      <td id="border"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=245=%22<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />%22" target="_blank">UB Basel</a></td>
       <td id="border"><a href="redirectunibasel.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
@@ -317,7 +331,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border">&nbsp;</td>
-      <td id="border"><a href="http://ml.metabib.ch/V/?func=quick-1-check1&mode=advanced&find_request_1=&find_code_2=WRD&find_op_1=AND&find_code_3=WRD&find_request_3=&group_number=000002060&find_request_2=<bean:write name="orderform" property="zeitschriftentitel" />" target="_blank">MBC Z&uuml;rich</a></td>
+      <td id="border"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=245=%22<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />%22" target="_blank">MBC Z&uuml;rich</a></td>
       <td id="border"><a href="redirectmbczurich.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
