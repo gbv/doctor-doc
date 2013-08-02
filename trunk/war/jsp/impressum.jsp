@@ -32,6 +32,11 @@
     <td><bean:message arg0="<%=appName%>" key="anmeldungtyp.kosten" /></td>  
   </tr>
   <tr><td><br></td></tr>
+    <tr>
+    	<td>
+    		<script type="text/javascript" src="http://www.ohloh.net/p/483914/widgets/project_thin_badge.js"></script>
+    	</td>    
+    </tr>
   <tr>
     <td><b>Hosting</b></td>
   </tr>
@@ -39,11 +44,17 @@
     <td><bean:message arg0="<%=appName%>" key="impressum.service" /> <bean:message key="impressum.programmierung" /></td>  
   </tr>
   <tr><td><br></td></tr>
+    <tr>
+    	<td>
+    		<img src="https://uptime.livewatch.de/uptime/4e0adfefb0e3c" alt="Serverüberwachung / Servermonitoring mit Livewatch.de" border="0">
+    	</td>    
+    </tr>
+  <tr><td><br></td></tr>
   <tr>
   <td><b><bean:message key="impressum.contact" /></b></td>
   </tr>
   <tr>
-    <td><bean:message arg0="<%=appName%>" key="impressum.entwicklung" /></td>  
+    <td><bean:message arg0="<%=appName%>" key="impressum.entwicklung" /></td>
   </tr>
   <tr><td><br></td></tr>
   <tr>
@@ -86,12 +97,6 @@
           <li><a href="http://www.doctor-doc.com/Newsletter.pdf">Newsletter 1</a> (08-<bean:message key="impressum.march" />-2009)</li>
         </ul>
       </td>
-    </tr>
-    <tr><td><br></td></tr>
-    <tr>
-    	<td>
-    		<script type="text/javascript" src="http://www.ohloh.net/p/483914/widgets/project_thin_badge.js"></script>
-    	</td>    
     </tr>
 
 </table>
