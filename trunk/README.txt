@@ -39,8 +39,8 @@ MySQL 5.0 or higher
 ---
 Installation / Configuration:
 
-To install Doctor-Doc in a development environment or how to build a war file,
-you may want to take a look at how-to-checkout.txt  
+To install Doctor-Doc in a development environment or to build a war 
+file, take a look at how-to-checkout.txt  
 
 1. Database
 Use master_dump.sql under /db to create the database and
@@ -49,16 +49,17 @@ a demo-account
 ---
 
 2. Configuration
-In the source files in /source/resources/SystemConfiguration.properties please enter 
-the appropriate configurations for your system. Otherwise the system won't work!
+In /source/resources/SystemConfiguration.properties please enter the
+appropriate configurations for your system.
 -
-Doctor-Doc uses UTF-8 encoded URIs. Add the parameter URIEncoding="UTF-8" to the Connector configuration in Tomcats server.xml:
+Doctor-Doc uses UTF-8 encoded URIs. Add the parameter URIEncoding="UTF-8"
+to the Connector configuration in Tomcats server.xml:
 
 <Connector port="... URIEncoding="UTF-8" />
 
 -
 
-Change in the plugin section of struts-config.xml the port numbers needed for you environment:
+Change in struts-config.xml the port numbers needed for you environment:
 
     <plug-in className="org.apache.struts.action.SecurePlugIn">
         <set-property property="httpPort" value="8080"/>
@@ -66,34 +67,24 @@ Change in the plugin section of struts-config.xml the port numbers needed for yo
         <set-property property="enable" value="true"/>
         <set-property property="addSession" value="true"/>
     </plug-in>
-    
-Make sure if you deploy the application to a productive system, you don't forget to adapt the port numbers
-from your test situation to the new environment: e.g. Port 80/443 instead of 8080/8443.
 
 -
 
-You also may want to use a custom icon, e.g. from your institution, for your installation:
-replace the following two images /img/sp.gif and /war/img/sp.gif with your own image but with the same name.
-The image should be quadratic to avoid distortion. 
+You also may want to use a custom icon, e.g. from your institution, for
+your installation: replace /img/sp.gif 
 -
-Doctor-Doc is able to use pooled Connections for MySQL. We use BoneCP, since with BoneCP we can
-directly include the necessary libraries. But you still have to configure Tomcat appropriately:
+Doctor-Doc is able to use pooled database connections. We use BoneCP. 
+To use pooled connections you have to configure Tomcat appropriately:
 
-This configuration is easy but the configuration depends on the Tomcat-Version in use. Therefore
-this option is disabled by default in /source/resources/SystemConfiguration.properties
+Enable pooled connection in /source/resources/SystemConfiguration.properties
 
-If you decide to benefit from an enormous PERFORMANCE BOOST with enabled pooled Connections, you have 
-to configure Tomcat as indicated below.
-
-Doctor-Doc works also without pooled Connection. Be careful: enabling the option in SystemConfiguration.properties and not 
-using the configuration below will generate a lot of error messages by email and in the log-file and it will seriously 
-REDUCE SYSTEM PERFORMANCE!
-
-Checkout http://jolbox.com/ for all configuration details. 
+Configure Tomcat as indicated below. Checkout http://jolbox.com/ for 
+additional configuration details. 
 
 Tomcat 5.5
-The configuration has to be made in the context.xml. Place in your $CATALINA_HOME/conf/context.xml of your Tomcat-Installation 
-the following configuration:
+The configuration has to be made in the context.xml. Place in your 
+$CATALINA_HOME/conf/context.xml of your Tomcat-Installation the
+following configuration:
 
 <Context>
  <!-- Configuration for PooledConnections with BoneCP in Tomcat <= 5.5 -->
@@ -117,7 +108,7 @@ the following configuration:
 
 ---
 
-3. Build a war-file using e.g. the predefined build.xml with Ant.
+3. Build a war-file using the predefined build.xml with Ant.
 Deploy the war-file in the webapps-folder of your Tomcat installation.
 
 ---
@@ -128,14 +119,15 @@ http://{name-of-your-server}:{tomcat-portnumber}/{name-of-the-war-file}/login.do
 staff@doctor-doc.com / staff as librarian
 user@doctor-doc.com / user as patron (with login permission)
 
-For a productive system, please change the passwords and emails, or delete the users!
-
-You may change the account information completely to use the system in a productive environment.
+You may change the account information completely to use the system in a
+productive environment. Please change the default passwords and emails,
+or delete the users!
 
 ---
 5. SSL
 
-To use SSL for the login process, change in the plugin section of struts-config.xml the port numbers needed for you environment:
+To use SSL for the login process, change in the plugin section of
+struts-config.xml the port numbers needed for you environment:
 
     <plug-in className="org.apache.struts.action.SecurePlugIn">
         <set-property property="httpPort" value="80"/>
