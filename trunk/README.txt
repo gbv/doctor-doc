@@ -1,4 +1,4 @@
-  README - 10.02.2013
+  README - 14.08.2013
   
   Doctor-Doc is a web based and a easy-to-use tracking and
   managing system for scientific literature.
@@ -70,8 +70,8 @@ Change in struts-config.xml the port numbers needed for you environment:
 
 -
 
-You also may want to use a custom icon, e.g. from your institution, for
-your installation: replace /img/sp.gif 
+To use a custom icon for your institution replace /img/sp.gif.
+
 -
 Doctor-Doc is able to use pooled database connections. We use BoneCP. 
 To use pooled connections you have to configure Tomcat appropriately:
@@ -81,10 +81,9 @@ Enable pooled connection in /source/resources/SystemConfiguration.properties
 Configure Tomcat as indicated below. Checkout http://jolbox.com/ for 
 additional configuration details. 
 
-Tomcat 5.5
-The configuration has to be made in the context.xml. Place in your 
-$CATALINA_HOME/conf/context.xml of your Tomcat-Installation the
-following configuration:
+
+Since Tomcat 5.5 the configuration has to be made in context.xml.
+Add in $CATALINA_HOME/conf/context.xml the following configuration:
 
 <Context>
  <!-- Configuration for PooledConnections with BoneCP in Tomcat <= 5.5 -->
