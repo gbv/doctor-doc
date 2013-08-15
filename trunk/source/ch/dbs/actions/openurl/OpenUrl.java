@@ -29,46 +29,46 @@ import util.SpecialCharacters;
 import ch.dbs.form.OrderForm;
 
 public class OpenUrl {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(OpenUrl.class);
     private static final String PM_ENDTAG = "</Item>";
-    
+
     /**
      * Class to handle OpenURL.
      * 
      * @author Markus Fischer
      */
-    
+
     /**
      * Gets the contents of an OpenUrl web-request V 0.1 or V 1.0.
      */
     public ContextObject readOpenUrlFromRequest(final HttpServletRequest rq) {
-        
+
         // Since we use URIEncoding="UTF-8" in server.xml, we may get problems with requests sent as ISO-8895-1 encoded:
         // request.getQueryString() gets the raw String ("highByte=%E4%B8%AD"), but if we do request.getParameter("highByte") or
         // rq.getParameterMap() instead, then we'd get ISO-8859-1 encoded values decoded as UTF-8. Sigh. This could
         // not get corrected, since the failed characters will all look the same (�).
-        
+
         // delegate to OpenUrlFromString
         return readOpenUrlFromString(rq.getQueryString());
-        
+
     }
-    
+
     /**
      * Gets the contents of OpenURL from a web-site (e.g. OCoins / Worldcat
      * etc.).
      */
     public ContextObject readOpenUrlFromString(final String content) {
-        
+
         final ContextObject co = new ContextObject();
-        
+
         try {
-            
+
             String openURL = content;
-            
+
             final SpecialCharacters specialCharacters = new SpecialCharacters();
             openURL = specialCharacters.replace(openURL); // remove &amp; and other html entities
-            
+
             // Attention: do not decode OpenURL before if (OpenURL...contains(">")!
             // clashes with rtf.sici (contains <...>)!
             // Upper case
@@ -85,10 +85,10 @@ public class OpenUrl {
                 openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"),
                         openURL.indexOf('>', openURL.indexOf("ver=z39.88-2004"))); // ...search for String with OpenUrl and extract
             }
-            
+
             // OpenURL Version 1.0
             if (openURL.contains("&rft.")) {
-                
+
                 if (openURL.contains("rft_val_fmt=")) {
                     co.setRft_val_fmt(getOpenUrlIdentifiersVersion1_0("rft_val_fmt=", openURL));
                 }
@@ -240,20 +240,20 @@ public class OpenUrl {
                 if (openURL.contains("rft.rights=")) {
                     co.setRft_rights(getOpenUrlIdentifiersVersion1_0("rft.rights=", openURL));
                 }
-                
+
                 final ArrayList<String> id = new ArrayList<String>();
-                
+
                 while (openURL.contains("rft_id=")) { // may conatin several rft_id
                     id.add(getOpenUrlIdentifiersVersion1_0("rft_id=", openURL));
                     openURL = openURL.substring(openURL.indexOf("rft_id=") + 6);
                 }
-                
+
                 if (!id.isEmpty()) {
                     co.setRft_id(id);
                 }
-                
+
             } else {
-                
+
                 //         OpenURL Version 0.1
                 // only appears in OpenURL == Version 1.0
                 if (openURL.contains("rft_val_fmt=")) {
@@ -415,7 +415,7 @@ public class OpenUrl {
                 if (openURL.contains("rights=")) {
                     co.setRft_rights(getOpenUrlIdentifiersVersion0_1("rights=", openURL));
                 }
-                
+
                 final ArrayList<String> id = new ArrayList<String>();
                 // URI-scheme
                 // http://www.info-uri.info/registry/
@@ -467,20 +467,20 @@ public class OpenUrl {
                         id.add(reg);
                     }
                 }
-                
+
                 if (!id.isEmpty()) {
                     co.setRft_id(id);
                 }
-                
+
             }
-            
+
         } catch (final Exception e) {
             LOG.error("readOpenUrl: " + "\012" + content);
         }
-        
+
         return co;
     }
-    
+
     /**
      * Creates an OpenURL link from a ContextObject. This method is optimized
      * for the services of EZB/ZDB, which support only OpenURL V 0.1 and only a
@@ -488,9 +488,9 @@ public class OpenUrl {
      * cause to their service to fail...
      */
     public String composeOpenUrl(final ContextObject co) {
-        
+
         final StringBuffer openURL = new StringBuffer(800);
-        
+
         // hier werden die Identifiers gesetzt
         //        if (co.getRft_val_fmt() != null && !co.getRft_val_fmt().equals("")) {
         //            openURL.append("&rft_val_fmt=");
@@ -639,7 +639,7 @@ public class OpenUrl {
             openURL.append("&artnum=");
             openURL.append(co.getRft_artnum());
         }
-        
+
         // RFTs Dublin Core, z.B. in Blogs:
         //        if (co.getRft_creator() != null && !co.getRft_creator().equals("")) {
         //            openURL.append("&creator=");
@@ -689,35 +689,35 @@ public class OpenUrl {
         //            openURL.append("&rights=");
         //            openURL.append(co.getRft_rights());
         //        }
-        
+
         //        if (co.getRft_id() != null) {
         //            for (final String eachRftID : co.getRft_id()) {
         //                openURL.append("&rft_id=");
         //                openURL.append(eachRftID);
         //            }
         //        }
-        
+
         String output = openURL.toString();
-        
+
         // Strip a starting '&'
         if (output.charAt(0) == '&') {
             output = output.substring(1);
         }
-        
+
         return output;
     }
-    
+
     /**
      * Gets the contents from a Pubmed record in XML and creates aContextObject.
      */
     public ContextObject readXmlPubmed(String content) {
-        
+
         final ContextObject co = new ContextObject();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
         content = specialCharacters.replace(content); // remove &amp; and other html entities
-        
+
         try { // we do not control if it is valid XML!
-        
+
             // will be overriden with "Artikel". ( Contains: Journal Article, Randomized Controlled Trial etc.)
             if (content.contains("<Item Name=\"PubType\"")) {
                 co.setRft_genre(getXmlTag("<Item Name=\"PubType\"", PM_ENDTAG, content));
@@ -772,39 +772,39 @@ public class OpenUrl {
             if (content.contains("<Item Name=\"Lang\"")) {
                 co.setRft_language(getXmlTag("<Item Name=\"Lang\"", PM_ENDTAG, content));
             }
-            
+
             final ArrayList<String> id = new ArrayList<String>();
-            
-            if (content.contains("<Item Name=\"doi\"")) {
-                id.add("info:doi/" + getXmlTag("<Item Name=\"doi\"", PM_ENDTAG, content));
+
+            if (content.contains("<Item Name=\"DOI\"")) {
+                id.add("info:doi/" + getXmlTag("<Item Name=\"DOI\"", PM_ENDTAG, content));
             }
             if (content.contains("<Item Name=\"pubmed\"")) {
                 id.add("info:pmid/" + getXmlTag("<Item Name=\"pubmed\"", PM_ENDTAG, content));
             }
-            
+
             co.setRft_id(id);
-            
+
         } catch (final Exception e) {
             LOG.error("readXmlPubmed/getXmlTag:\012" + content);
         }
-        
+
         return co;
     }
-    
+
     /**
      * Reads the XML part of the HTML response from the CrossRef public
      * resolver.
      */
     public OrderForm readXMLCrossRef(final String content) {
-        
+
         final OrderForm of = new OrderForm();
-        
+
         if (content != null && content.contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
                 && content.contains("<crossref_result") && content.contains("</crossref_result>")) {
-            
+
             final String xml = content.substring(content.indexOf("<crossref_result"),
                     content.indexOf("</crossref_result>") + 18);
-            
+
             if (xml.contains("<doi type=\"book_title\">")) {
                 of.setMediatype("Buch");
                 if (xml.contains("<doi type")) {
@@ -884,18 +884,18 @@ public class OpenUrl {
                 LOG.info("Resolving DOI failed!");
             }
         }
-        
+
         return of;
     }
-    
+
     /**
      * Extracts the content of RFTs, RFRs oder RFEs (standard-version).
      */
     private String getOpenUrlIdentifiersVersion1_0(final String rft, final String content) {
-        
+
         String output = "";
         final CodeUrl codeUrl = new CodeUrl();
-        
+
         // Delimiter is the next &rft (referent), &rfe (referring rntity), &rfr (referrer)
         if (content.substring(content.indexOf(rft)).contains("&rf")) {
             output = content.substring(content.indexOf(rft) + rft.length(),
@@ -922,7 +922,7 @@ public class OpenUrl {
                 }
             }
         }
-        
+
         // decode URL encoded values
         if (!codeUrl.decode(output, "UTF-8").contains("�")) {
             // UTF-8 encoded
@@ -931,26 +931,26 @@ public class OpenUrl {
             // ISO-8859-1 encoded
             output = codeUrl.decode(output, "ISO-8859-1");
         }
-        
+
         return output;
     }
-    
+
     /**
      * Extracts the content of RFTs, RFRs oder RFEs (non standard version RFTs,
      * without RFT-identifier).
      */
     private String getOpenUrlIdentifiersVersion0_1(final String rft, String content) {
-        
+
         String output = "";
         final CodeUrl codeUrl = new CodeUrl();
-        
+
         // we may have " & " in the entities, e.g. jtitle=Anaesthesia%20&%20Analgesia. This
         // will interfere with the & as delimiter. Therefore we escape ampersand to %26%20.
         // This will unescape both with UTF-8 and ISO-8859-1 nicely.
         content = content.replaceAll("&%20", "%26%20");
         content = content.replaceAll("& ", "%26%20");
         content = content.replaceAll("&\\+", "%26%20");
-        
+
         // Delimiter is the next &
         if (content.substring(content.indexOf(rft) + 1).contains("&")) {
             output = content.substring(content.indexOf(rft) + rft.length(),
@@ -977,7 +977,7 @@ public class OpenUrl {
                 }
             }
         }
-        
+
         // decode URL encoded values
         if (!codeUrl.decode(output, "UTF-8").contains("�")) {
             // UTF-8 encoded
@@ -986,21 +986,21 @@ public class OpenUrl {
             // ISO-8859-1 encoded
             output = codeUrl.decode(output, "ISO-8859-1");
         }
-        
+
         return output;
     }
-    
+
     /**
      * Extracts from XML the content of a given tag.
      */
     private String getXmlTag(final String starttag, final String endtag, final String content) {
-        
+
         String output = "";
-        
+
         output = content.substring(content.indexOf('>', content.indexOf(starttag)) + 1,
                 content.indexOf(endtag, content.indexOf(starttag)));
-        
+
         return output;
     }
-    
+
 }
