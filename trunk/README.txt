@@ -1,4 +1,4 @@
-  README - 14.08.2013
+  README - 16.08.2013
   
   Doctor-Doc is a web based and a easy-to-use tracking and
   managing system for scientific literature.
@@ -16,7 +16,8 @@
 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  MA  02110-1301, USA.
 
   Contact: info@doctor-doc.com
 
@@ -26,15 +27,14 @@ There are two mailing lists available for Doctor-Doc:
 https://sourceforge.net/projects/doctor-doc/support
 
 We strongly encourage you to get involved!
-  
-  
-Requirements:
 
----
-Tomcat 5.5 or higher
+---  
+  
+Minimal requirements:
+
+Tomcat 5.5
 Java 1.6
-MySQL 5.0 or higher
-
+MySQL 5.0
 
 ---
 Installation / Configuration:
