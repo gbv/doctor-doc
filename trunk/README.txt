@@ -32,7 +32,7 @@ We strongly encourage you to get involved!
   
 Minimal requirements:
 
-Tomcat 5.5
+Tomcat 6
 Java 1.6
 MySQL 5.0
 
@@ -82,11 +82,11 @@ Configure Tomcat as indicated below. Checkout http://jolbox.com/ for
 additional configuration details. 
 
 
-Since Tomcat 5.5 the configuration has to be made in context.xml.
+The configuration has to be made in context.xml.
 Add in $CATALINA_HOME/conf/context.xml the following configuration:
 
 <Context>
- <!-- Configuration for PooledConnections with BoneCP in Tomcat <= 5.5 -->
+ <!-- Configuration for PooledConnections with BoneCP in Tomcat -->
       <Resource auth="Container"
         driverClass="com.mysql.jdbc.Driver"
         name="jdbc/pooledDS" 
