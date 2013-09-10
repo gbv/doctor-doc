@@ -527,7 +527,7 @@ public final class OrderAction extends DispatchAction {
                 final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
                 if (ezbanswer != null && !ezbanswer.contains("<Error code=")
                         && !ezbanswer.contains("503 Service Temporarily Unavailable")
-                        && !ezbanswer.contains("HTTP Status 404")) {
+                        && !ezbanswer.contains("HTTP Status 4")) { // catching all 4xx errors
                     // read EZB response as XML
                     final EZBJOP ezb = new EZBJOP();
                     ezbform = ezb.read(ezbanswer);
