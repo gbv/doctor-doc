@@ -63,7 +63,12 @@ public class IPChecker {
                     t = lookUpIP(ip, TextType.IP6, cn);
                 }
             } else {
-                // IP to lookup conatins wildcard or range
+                // IP to lookup contains wildcard or range
+                if (ip.contains(".")) {
+                    t = lookUpIPRange(ip, TextType.IP4, cn);
+                } else if (ip.contains(":")) {
+                    t = lookUpIPRange(ip, TextType.IP6, cn);
+                }
             }
 
         } catch (final UnknownHostException ex) {
@@ -104,50 +109,120 @@ public class IPChecker {
         return t;
     }
 
+    private Text lookUpIPRange(final String ip, final TextType type, final Connection cn) {
+
+        Text t = new Text();
+
+        // checking for ranges
+        final List<Text> list = t.possibleIPRanges(ip, type, cn);
+
+        if (TextType.IP4.getValue() == type.getValue()) {
+            for (final Text ipToCheck : list) {
+                if (compareIP4(ip, ipToCheck.getInhalt())) {
+                    t = ipToCheck;
+                    return t;
+                }
+            }
+        } else if (TextType.IP6.getValue() == type.getValue()) {
+            for (final Text ipToCheck : list) {
+                if (compareIP6(ip, ipToCheck.getInhalt())) {
+                    t = ipToCheck;
+                    return t;
+                }
+            }
+        }
+
+        return t;
+    }
+
     private boolean compareIP4(final String ip, final String ip_db) {
-        boolean check = false;
 
         try {
 
-            final String compare = ip_db.substring(ip.indexOf('.', ip.indexOf('.') + 1) + 1);
-            final String oktett3 = ip.substring(ip.indexOf('.', ip.indexOf('.') + 1) + 1, ip.lastIndexOf('.'));
-            final String oktett4 = ip.substring(ip.lastIndexOf('.') + 1);
+            String compare = ip_db.substring(ip.indexOf('.', ip.indexOf('.') + 1) + 1);
 
-            if (!compare.contains(".")) { // Wildcard oder Bereich im dritten Oktett
+            final List<String> parts = new ArrayList<String>();
+            final StringTokenizer tokenizer = new StringTokenizer(ip, ".");
+            while (tokenizer.hasMoreElements()) {
+                parts.add(tokenizer.nextElement().toString());
+            }
 
-                if ("*".equals(compare)) { // Wildcard
-                    check = true;
-                    return check;
+            final String part3 = parts.get(2);
+            String part4 = null;
+            if (parts.size() == 4) {
+                part4 = parts.get(3);
+            }
+
+            // Wildcard oder Bereich im dritten Oktett
+            if (!compare.contains(".") || part4 == null) {
+                // we may have an compare with .
+                if (compare.contains(".")) {
+                    // reset compare to 3th part
+                    compare = compare.substring(0, compare.indexOf("."));
+                }
+                if ("*".equals(compare) || "*".equals(part3)) {
+                    // Wildcard in IP from request or from DB in 3th part
+                    return true;
                 }
                 if (compare.contains("-")) { // Bereich
                     final int compStart = Integer.valueOf(compare.substring(0, compare.indexOf('-')));
                     final int compEnd = Integer.valueOf(compare.substring(compare.indexOf('-') + 1));
-                    final int okt3 = Integer.valueOf(oktett3);
-                    if (compStart <= okt3 && okt3 <= compEnd) {
-                        check = true;
-                        return check;
+
+                    if (part3.contains("-")) {
+                        // 3th part contains range
+                        final int okt3Start = Integer.valueOf(part3.substring(0, part3.indexOf('-')));
+                        final int okt3End = Integer.valueOf(part3.substring(part3.indexOf('-') + 1));
+                        if (compStart <= okt3Start && okt3Start <= compEnd || compStart <= okt3End
+                                && okt3End <= compEnd || okt3Start <= compStart && compStart <= okt3End) {
+                            return true;
+                        }
+                    } else {
+                        // 3th part is normal number
+                        final int okt3 = Integer.valueOf(part3);
+                        if (compStart <= okt3 && okt3 <= compEnd) {
+                            return true;
+                        }
                     }
+                } else if (part3.contains("-")) {
+                    final int part3Start = Integer.valueOf(part3.substring(0, part3.indexOf('-')));
+                    final int part3End = Integer.valueOf(part3.substring(part3.indexOf('-') + 1));
+
+                    // compare is normal number
+                    final int comp3 = Integer.valueOf(compare);
+                    if (part3Start <= comp3 && comp3 <= part3End) {
+                        return true;
+                    }
+
                 }
 
             } else { // Wildcard oder Bereich im vierten Oktett
                 final String compare3 = compare.substring(0, compare.indexOf('.'));
                 final String compare4 = compare.substring(compare.indexOf('.') + 1);
-                if (compare3.equals(oktett3)) { // drittes Oktett muss übereinstimmen
-
-                    if ("*".equals(compare4)) { // Wildcard
-                        check = true;
-                        return check;
+                if (compare3.equals(part3)) { // 3th part must match
+                    if ("*".equals(compare4) || "*".equals(part4)) {
+                        // Wildcard in IP from request or from DB in 4th part
+                        return true;
                     }
                     if (compare4.contains("-")) { // Bereich
                         final int compStart = Integer.valueOf(compare4.substring(0, compare4.indexOf('-')));
                         final int compEnd = Integer.valueOf(compare4.substring(compare4.indexOf('-') + 1));
-                        final int okt4 = Integer.valueOf(oktett4);
-                        if (compStart <= okt4 && okt4 <= compEnd) {
-                            check = true;
-                            return check;
+
+                        if (part4.contains("-")) {
+                            // 4th part contains range
+                            final int okt4Start = Integer.valueOf(part4.substring(0, part4.indexOf('-')));
+                            final int okt4End = Integer.valueOf(part4.substring(part4.indexOf('-') + 1));
+                            if (compStart <= okt4Start && okt4Start <= compEnd || compStart <= okt4End
+                                    && okt4End <= compEnd || okt4Start <= compStart && compStart <= okt4End) {
+                                return true;
+                            }
+                        } else {
+                            // 4th part is normal number
+                            final int okt4 = Integer.valueOf(part4);
+                            if (compStart <= okt4 && okt4 <= compEnd) {
+                                return true;
+                            }
                         }
                     }
-
                 }
             }
 
@@ -155,7 +230,7 @@ public class IPChecker {
             LOG.error("boolean compareIP4(String ip, String ip_db): " + e.toString());
         }
 
-        return check;
+        return false;
     }
 
     private boolean compareIP6(final String ip, final String ip_db) {
