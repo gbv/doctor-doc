@@ -36,17 +36,17 @@ import enums.TextType;
  * @author Pascal Steiner
  */
 public class Text extends AbstractIdEntity {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Text.class);
-    
+
     private Konto konto;
     private TextType texttype;
     private String inhalt;
-    
+
     public Text() {
-        
+
     }
-    
+
     /**
      * Gets a Text from a TextType and the content.
      * 
@@ -68,7 +68,7 @@ public class Text extends AbstractIdEntity {
                 this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
-            
+
         } catch (final Exception e) {
             LOG.error("Text(final Connection cn, final TextType type, final String tInhalt): " + e.toString());
         } finally {
@@ -88,7 +88,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Gets a Text from a TextType, a KID and the content.
      * 
@@ -112,7 +112,7 @@ public class Text extends AbstractIdEntity {
                 this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
-            
+
         } catch (final Exception e) {
             LOG.error("Text(final Connection cn, final TextType type, final Long kid, final String tInhalt): "
                     + e.toString());
@@ -133,7 +133,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Gets a Text from a TextType and a KID.
      * 
@@ -155,7 +155,7 @@ public class Text extends AbstractIdEntity {
                 this.setTexttype(type);
                 this.setInhalt(rs.getString("inhalt"));
             }
-            
+
         } catch (final Exception e) {
             LOG.error("Text(final Connection cn, final TextType type, final long kid): " + e.toString());
         } finally {
@@ -175,7 +175,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Gets a Lis of all Texts from a TextType. <p></p>
      * 
@@ -185,19 +185,19 @@ public class Text extends AbstractIdEntity {
      */
     public List<Text> getText(final TextType type, final Connection cn) {
         final ArrayList<Text> tl = new ArrayList<Text>();
-        
+
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM text WHERE TYID=? ORDER BY inhalt");
             pstmt.setLong(1, type.getValue());
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 final Text text = new Text(cn, rs, type);
                 tl.add(text);
             }
-            
+
         } catch (final Exception e) {
             LOG.error("List<Text> getText(final TextType type, final Connection cn): " + e.toString());
         } finally {
@@ -218,7 +218,7 @@ public class Text extends AbstractIdEntity {
         }
         return tl;
     }
-    
+
     /**
      * Erstellt ein Text aus einem ResultSet
      * 
@@ -226,7 +226,7 @@ public class Text extends AbstractIdEntity {
      * @param rs ResultSet
      */
     public Text(final Connection cn, final ResultSet rs, final TextType type) {
-        
+
         try {
             this.setId(rs.getLong("TID"));
             this.setInhalt(rs.getString("inhalt"));
@@ -236,7 +236,7 @@ public class Text extends AbstractIdEntity {
             LOG.error("Text(Connection cn, ResultSet rs): " + e.toString());
         }
     }
-    
+
     /**
      * Erstellt einen Text anhand seiner ID
      * 
@@ -275,7 +275,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Gets a Text from it's ID, a KID and a TextType
      * 
@@ -318,7 +318,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Speichert einen neuen Text
      * 
@@ -332,9 +332,9 @@ public class Text extends AbstractIdEntity {
             pstmt.setLong(1, t.getKonto().getId());
             pstmt.setLong(2, t.getTexttype().getValue());
             pstmt.setString(3, t.getInhalt());
-            
+
             pstmt.executeUpdate();
-            
+
         } catch (final Exception e) {
             LOG.error("saveNewText(Connection cn, Text t): " + e.toString());
         } finally {
@@ -347,7 +347,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * prüft, ob es IP-Einträge unter einem Konto gibt
      * 
@@ -362,13 +362,13 @@ public class Text extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT * FROM `text` WHERE `KID`=? AND `TYID`=?");
             pstmt.setLong(1, k.getId());
             pstmt.setLong(2, TextType.IP4.getValue());
-            
+
             rs = pstmt.executeQuery();
-            
+
             if (rs.next()) {
                 check = true;
             }
-            
+
         } catch (final Exception e) {
             LOG.error("hasIP(Connection cn, Konto k): " + e.toString());
         } finally {
@@ -389,7 +389,7 @@ public class Text extends AbstractIdEntity {
         }
         return check;
     }
-    
+
     /**
      * Gets all Texts with ranges or wildcards from the first two octets of an
      * IP4 or IP6.
@@ -400,10 +400,10 @@ public class Text extends AbstractIdEntity {
      */
     public List<Text> possibleIPRanges(final String ip, final TextType type, final Connection cn) {
         final List<Text> list = new ArrayList<Text>();
-        
+
         // prevents a possible null pointer exception
         if (ip != null) {
-            
+
             PreparedStatement pstmt = null;
             ResultSet rs = null;
             try {
@@ -412,9 +412,9 @@ public class Text extends AbstractIdEntity {
                         + "AND (`inhalt` LIKE '%.*%' OR `inhalt` LIKE '%-%')");
                 pstmt.setString(1, ipPart + "%");
                 pstmt.setLong(2, type.getValue());
-                
+
                 rs = pstmt.executeQuery();
-                
+
                 while (rs.next()) {
                     final Text txt = new Text();
                     txt.setId(rs.getLong("TID"));
@@ -423,7 +423,7 @@ public class Text extends AbstractIdEntity {
                     txt.setInhalt(rs.getString("inhalt"));
                     list.add(txt);
                 }
-                
+
             } catch (final Exception e) {
                 LOG.error("possibleIPRanges(Connection cn, String ip): " + e.toString());
             } finally {
@@ -445,9 +445,9 @@ public class Text extends AbstractIdEntity {
         }
         return list;
     }
-    
+
     private String getIPPart(final String ip, final TextType type) {
-        
+
         if (TextType.IP4.getValue() == type.getValue()) {
             return ip.substring(0, ip.indexOf(".", ip.indexOf(".") + 1) + 1);
         } else if (TextType.IP6.getValue() == type.getValue()) {
@@ -457,7 +457,7 @@ public class Text extends AbstractIdEntity {
                     + ". Valid TextTypes are IP4 or IP6.");
         }
     }
-    
+
     /**
      * Verändert einen Text
      * 
@@ -472,9 +472,9 @@ public class Text extends AbstractIdEntity {
             pstmt.setLong(2, t.getTexttype().getValue());
             pstmt.setString(3, t.getInhalt());
             pstmt.setLong(4, t.getId());
-            
+
             pstmt.executeUpdate();
-            
+
         } catch (final Exception e) {
             LOG.error("updateText(Connection cn, Text t): " + e.toString());
         } finally {
@@ -487,7 +487,7 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Löscht einen Text
      * 
@@ -499,9 +499,9 @@ public class Text extends AbstractIdEntity {
         try {
             pstmt = cn.prepareStatement("DELETE FROM `text` WHERE `TID` = ?");
             pstmt.setLong(1, t.getId());
-            
+
             pstmt.executeUpdate();
-            
+
         } catch (final Exception e) {
             LOG.error("deleteText(Connection cn, Text t)" + e.toString());
         } finally {
@@ -514,7 +514,36 @@ public class Text extends AbstractIdEntity {
             }
         }
     }
-    
+
+    /**
+     * Deletes all Texts of a given TextType of an account.
+     * 
+     * @param cn Connection
+     * @param type TextType
+     * @param konto Konto
+     */
+    public void deleteAllText(final Connection cn, final TextType type, final Konto konto) {
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = cn.prepareStatement("DELETE FROM `text` WHERE `TYID` = ? AND `KID` = ?");
+            pstmt.setLong(1, type.getValue());
+            pstmt.setLong(2, konto.getId());
+
+            pstmt.executeUpdate();
+
+        } catch (final Exception e) {
+            LOG.error("deleteAllText(final Connection cn, final TextType type, final Konto konto)" + e.toString());
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (final SQLException e) {
+                    LOG.error(e.toString());
+                }
+            }
+        }
+    }
+
     /**
      * Gets all Texts of an account from a given TextType.
      * 
@@ -529,12 +558,12 @@ public class Text extends AbstractIdEntity {
             pstmt.setLong(1, type.getValue());
             pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 final Text text = new Text(cn, rs, type);
                 sl.add(text);
             }
-            
+
         } catch (final Exception e) {
             LOG.error("List<Text> getAllKontoText(final TextType type, final Long kid, final Connection cn): "
                     + e.toString());
@@ -554,10 +583,10 @@ public class Text extends AbstractIdEntity {
                 }
             }
         }
-        
+
         return sl;
     }
-    
+
     /**
      * Gets all general Texts from a TextType plus all account Texts.
      * 
@@ -572,12 +601,12 @@ public class Text extends AbstractIdEntity {
             pstmt.setLong(1, type.getValue());
             pstmt.setLong(2, kid);
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 final Text text = new Text(cn, rs, type);
                 sl.add(text);
             }
-            
+
         } catch (final Exception e) {
             LOG.error("List<Text> getAllTextPlusKontoTexts(final TextType type, final Long kid, final Connection cn): "
                     + e.toString());
@@ -597,32 +626,32 @@ public class Text extends AbstractIdEntity {
                 }
             }
         }
-        
+
         return sl;
     }
-    
+
     public TextType getTexttype() {
         return texttype;
     }
-    
+
     public void setTexttype(final TextType texttype) {
         this.texttype = texttype;
     }
-    
+
     public String getInhalt() {
         return inhalt;
     }
-    
+
     public void setInhalt(final String inhalt) {
         this.inhalt = inhalt;
     }
-    
+
     public Konto getKonto() {
         return konto;
     }
-    
+
     public void setKonto(final Konto konto) {
         this.konto = konto;
     }
-    
+
 }

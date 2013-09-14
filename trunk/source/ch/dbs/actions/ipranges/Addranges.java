@@ -31,9 +31,12 @@ import org.apache.struts.action.ActionMapping;
 
 import util.Auth;
 import util.IPChecker;
+import ch.dbs.entity.Text;
 import ch.dbs.form.IPForm;
 import ch.dbs.form.Message;
+import ch.dbs.form.UserInfo;
 import enums.Result;
+import enums.TextType;
 
 public class Addranges extends Action {
 
@@ -53,6 +56,8 @@ public class Addranges extends Action {
             return mp.findForward(Result.ERROR_MISSING_RIGHTS.getValue());
         }
 
+        final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
+
         // get IPForm containing all IPs in one String
         final IPForm ranges = (IPForm) form;
         // extract all trimmed IPs
@@ -63,15 +68,46 @@ public class Addranges extends Action {
 
         // all IPs are valid
         if (ranges.getInvalidIPs().isEmpty()) {
-            // check for existing overlapping IPs
-
-            // delete old IPs
-
-            // save new IPs
+            final Text cn = new Text();
+            try {
+                // check for existing overlapping IPs
+                for (final String ip : ips) {
+                    final Text t = checker.contains(ip, cn.getConnection());
+                    // we have found an IP of a different account!
+                    if (t != null && t.getId() != null && !ui.getKonto().getId().equals(t.getKonto().getId())) {
+                        final Message msg = new Message("error.ip.alreadyRegistered");
+                        msg.setSystemMessage(ip);
+                        rq.setAttribute("message", msg);
+                        return mp.findForward(Result.SUCCESS.getValue());
+                    }
+                }
+                // delete old IP4s
+                cn.deleteAllText(cn.getConnection(), TextType.IP4, ui.getKonto());
+                // delete old IP6s
+                cn.deleteAllText(cn.getConnection(), TextType.IP6, ui.getKonto());
+                // save new IP4s
+                for (final String ip4 : ranges.getIp4()) {
+                    final Text t = new Text();
+                    t.setKonto(ui.getKonto());
+                    t.setTexttype(TextType.IP4);
+                    t.setInhalt(ip4);
+                    t.saveNewText(cn.getConnection(), t);
+                }
+                // save new IP6s
+                for (final String ip6 : ranges.getIp6()) {
+                    final Text t = new Text();
+                    t.setKonto(ui.getKonto());
+                    t.setTexttype(TextType.IP6);
+                    t.setInhalt(ip6);
+                    t.saveNewText(cn.getConnection(), t);
+                }
+            } finally {
+                cn.close();
+            }
 
         } else {
             // we got invalid IPs
-            final Message msg = new Message("error.ip");
+            final Message msg = new Message("error.ip.invalid");
             msg.setSystemMessage(createErrorText(ranges.getInvalidIPs()));
             rq.setAttribute("message", msg);
         }

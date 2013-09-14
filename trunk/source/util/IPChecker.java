@@ -52,13 +52,18 @@ public class IPChecker {
 
         try {
 
-            // make sure we look up only valid IP addresses
-            final InetAddress inetaddress = InetAddress.getByName(ip);
+            // ordinary lookup: no wildcard or range
+            if (!ip.contains("*") && !ip.contains("-")) {
+                // make sure we look up only valid IP addresses
+                final InetAddress inetaddress = InetAddress.getByName(ip);
 
-            if (inetaddress instanceof Inet4Address) {
-                t = lookUpIP(ip, TextType.IP4, cn);
-            } else if (inetaddress instanceof Inet6Address) {
-                t = lookUpIP(ip, TextType.IP6, cn);
+                if (inetaddress instanceof Inet4Address) {
+                    t = lookUpIP(ip, TextType.IP4, cn);
+                } else if (inetaddress instanceof Inet6Address) {
+                    t = lookUpIP(ip, TextType.IP6, cn);
+                }
+            } else {
+                // IP to lookup conatins wildcard or range
             }
 
         } catch (final UnknownHostException ex) {
@@ -346,7 +351,6 @@ public class IPChecker {
         }
 
         return check;
-
     }
 
 }
