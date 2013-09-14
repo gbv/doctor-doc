@@ -32,6 +32,7 @@
 		<form-bean name="SupplierForm" type="ch.dbs.form.SupplierForm" />
 		<form-bean name="MaintenanceForm" type="ch.dbs.form.MaintenanceForm" />
 		<form-bean name="MemoryForm" type="ch.dbs.form.MemoryForm" />
+		<form-bean name="IPForm" type="ch.dbs.form.IPForm" />
 	</form-beans>
 
 	<global-exceptions>
@@ -389,6 +390,23 @@
 			parameter="method" scope="request" type="ch.dbs.actions.suppliers.Settings">
 			<forward name="success" path="/listsuppliers.do" />
 		</action>
+		
+		
+		<!--
+			*************************************************Manage IP ranges*************************************************
+		-->
+
+		<action path="/listipranges" input="/jsp/ipranges.jsp" validate="false" name="IPForm"
+			parameter="method" scope="request" type="ch.dbs.actions.ipranges.Listranges">
+			<forward name="success" path="/listips.do" />
+		</action>
+		
+		<action path="/addipranges" input="/jsp/ipranges.jsp" validate="false" name="IPForm"
+			parameter="method" scope="request" type="ch.dbs.actions.ipranges.Addranges">
+			<forward name="success" path="/listipranges.do" />
+		</action>
+		
+		<action forward="/jsp/ipranges.jsp" path="/listips" />
 
 		<!--
 			*************************************************ISSN-Search*************************************************

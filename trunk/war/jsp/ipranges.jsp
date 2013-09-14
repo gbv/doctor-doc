@@ -23,34 +23,38 @@
 <table style="position:absolute; text-align:left; left:<bean:message key="submenupos.konto" />px; z-index:2;">
   <tr>
     <td id="submenu" nowrap="nowrap" title="<bean:message key="modifykonto.manage" />"><a href="modifykont.do?method=prepareModifyKonto&activemenu=konto"><bean:message key="modifykonto.header" /></a></td>
-    <td id="submenu" nowrap="nowrap" title="<bean:message key="modifykonto.ip" />"><a href="listipranges.do"><bean:message key="modifykonto.ip" /></a></td>
+    <td id="submenuactive" nowrap="nowrap" title="<bean:message key="modifykonto.ip" />"><a href="listipranges.do"><bean:message key="modifykonto.ip" /></a></td>
     <td id="submenu" nowrap="nowrap" title="<bean:message key="modifykonto.managebf" />"><a href="bfconfigureselect.do?method=prepareConfigure"><bean:message key="bestellformconfigureselect.titel" /></a></td>
     <td id="submenu" nowrap="nowrap" title="<bean:message key="suppliers.title" />"><a href="listsuppliers.do"><bean:message key="suppliers.title" /></a></td>
-    <td id="submenuactive" nowrap="nowrap" title="<bean:message key="maintenance.title" />"><a href="maintenance.do"><bean:message key="maintenance.title" /></a></td>
+    <td id="submenu" nowrap="nowrap" title="<bean:message key="maintenance.title" />"><a href="maintenance.do"><bean:message key="maintenance.title" /></a></td>
   </tr>
 </table>
 
 <br>
 
-<h3><bean:message key="maintenance.confirm" /></h3>
+<h3><bean:message key="modifykonto.ip" /></h3>
 
-<div id="italic"><p><bean:message key="maintenance.warning" /><br></p></div>
+<logic:present name="message">
+<bean:define id="translationKey" name="message" property="message" type="java.lang.String"/>              
+	<div id="italic">
+		<p><bean:message key="<%=translationKey%>" /> <bean:write name="message" property="systemMessage"/></p>
+	</div>
+</logic:present>
 
-<form action="bulkoperation.do?method=<bean:write name="operation" property="method" />" method="post">
+<h4><bean:write name="userinfo" property="konto.bibliotheksname" /></h4>
 
-<bean:write name="operation" property="numerOfRecords" /> <bean:message key="maintenance.numberOfRecordsConfirm" />
-<input type="hidden" name="confirmed" value="true">
-<input type="hidden" name="months" value="<bean:write name="operation" property="months" />">
+<form action="addipranges.do" method="post">
 
-<p><input type="submit" value="<bean:message key="stockplacesmodify.delete" />" /></p>
+<textarea name="ips" rows="10" cols="40"><logic:iterate name="ranges" id="ip">
+<bean:write name="ip" property="inhalt" /></logic:iterate></textarea>
+
+<p><input type="submit" value="<bean:message key="modifykonto.save" />" /></p>
 
 </form>
 
 <p><br></p>
 
-<a href="maintenance.do"><bean:message key="error.back" /></a>
-
-<p><br></p>
+<bean:message key="modifykonto.ip4Example" />
 
 </div>
  </body>

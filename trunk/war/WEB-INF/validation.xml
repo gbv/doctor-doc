@@ -121,6 +121,7 @@
        <form name="SearchesForm" />
        <form name="SupplierForm" />
        <form name="MaintenanceForm" />
+       <form name="IPForm" />
         
   </formset>
 
