@@ -45,7 +45,7 @@
 
 <form action="addipranges.do" method="post">
 
-<textarea name="ips" rows="10" cols="40"><logic:iterate name="ranges" id="ip">
+<textarea name="ips" rows="10" cols="60"><logic:iterate name="ranges" id="ip">
 <bean:write name="ip" property="inhalt" /></logic:iterate></textarea>
 
 <p><input type="submit" value="<bean:message key="modifykonto.save" />" /></p>

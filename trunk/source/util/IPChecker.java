@@ -54,7 +54,7 @@ public class IPChecker {
         try {
 
             // ordinary lookup: no wildcard or range
-            if (!ip.contains("*") && !ip.contains("-")) {
+            if (!ip.contains("*") && !ip.contains("-") && !ip.contains("/")) {
                 // make sure we look up only valid IP addresses
                 final InetAddress inetaddress = InetAddress.getByName(ip);
 
