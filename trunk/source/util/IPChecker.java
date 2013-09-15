@@ -34,6 +34,7 @@ import ch.dbs.form.IPForm;
 
 import com.googlecode.ipv6.IPv6Address;
 import com.googlecode.ipv6.IPv6AddressRange;
+import com.googlecode.ipv6.IPv6Network;
 
 import enums.TextType;
 
@@ -233,24 +234,36 @@ public class IPChecker {
         return false;
     }
 
-    private boolean compareIP6(final String ip, final String ip_db) {
+    private boolean compareIP6(final String ip, final String ipDB) {
         boolean check = false;
 
         try {
-            // valid are only ranges for IP6 and no wildcards.
-            if (ip_db.contains("-")) {
-                final String fromAddress = ip_db.substring(0, ip_db.indexOf('-'));
-                final String toAddress = ip_db.substring(ip_db.indexOf('-') + 1);
+            // all IP6 have been converted to ranges. No wildcards allowed.
+            if (ipDB.contains("-")) {
+                final String firstDB = ipDB.substring(0, ipDB.indexOf('-'));
+                final String lastDB = ipDB.substring(ipDB.indexOf('-') + 1);
 
-                final IPv6AddressRange range = IPv6AddressRange.fromFirstAndLast(IPv6Address.fromString(fromAddress),
-                        IPv6Address.fromString(toAddress));
+                final IPv6AddressRange rangeDB = IPv6AddressRange.fromFirstAndLast(IPv6Address.fromString(firstDB),
+                        IPv6Address.fromString(lastDB));
 
-                check = range.contains(IPv6Address.fromString(ip));
+                if (ip.contains("-")) {
+                    // checking range
+                    final String firstIP = ip.substring(0, ip.indexOf('-'));
+                    final String lastIP = ip.substring(ip.indexOf('-') + 1);
 
+                    final IPv6AddressRange rangeIP = IPv6AddressRange.fromFirstAndLast(IPv6Address.fromString(firstIP),
+                            IPv6Address.fromString(lastIP));
+
+                    check = rangeDB.overlaps(rangeIP);
+
+                } else {
+                    // checking single IP from request
+                    check = rangeDB.contains(IPv6Address.fromString(ip));
+                }
             }
 
         } catch (final Exception e) {
-            LOG.error("boolean compareIP6(String ip, String ip_db): " + e.toString());
+            LOG.error("boolean compareIP6(String ip, String ipDB): " + e.toString());
         }
 
         return check;
@@ -298,7 +311,41 @@ public class IPChecker {
     }
 
     private void validateIP6(final String ip, final IPForm ranges) {
-        // TODO Auto-generated method stub
+
+        try {
+
+            if (ip.contains("-")) {
+                // range
+                final List<String> parts = new ArrayList<String>();
+                final StringTokenizer tokenizer = new StringTokenizer(ip, "-");
+                while (tokenizer.hasMoreElements()) {
+                    parts.add(tokenizer.nextElement().toString());
+                }
+                if (parts.size() == 2) {
+                    // try to parse range
+                    final IPv6AddressRange range = IPv6AddressRange.fromFirstAndLast(
+                            IPv6Address.fromString(parts.get(0)), IPv6Address.fromString(parts.get(1)));
+                    ranges.getIp6().add(range.getFirst().toString() + "-" + range.getLast().toString());
+                } else {
+                    // invalid
+                    ranges.getInvalidIPs().add(ip);
+                }
+            } else if (ip.contains("/")) {
+                // try to parse network address
+                final IPv6Network network = IPv6Network.fromString(ip);
+                // convert to range
+                ranges.getIp6().add(network.getFirst().toString() + "-" + network.getLast().toString());
+            } else {
+                // try to parse single IP6
+                final IPv6Address ip6 = IPv6Address.fromString(ip);
+                // convert to "range"
+                ranges.getIp6().add(ip6.toString() + "-" + ip6.toString());
+            }
+
+        } catch (final Exception e) {
+            // invalid
+            ranges.getInvalidIPs().add(ip);
+        }
 
     }
 
