@@ -66,7 +66,7 @@ public class Addranges extends Action {
         final IPChecker checker = new IPChecker();
         checker.validateIPs(ips, ranges);
 
-        // all IPs are valid
+        // make sure we have no invalid IPs
         if (ranges.getInvalidIPs().isEmpty()) {
             final Text cn = new Text();
             try {

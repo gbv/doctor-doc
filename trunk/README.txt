@@ -101,8 +101,7 @@ Add in $CATALINA_HOME/conf/context.xml the following configuration:
         acquireIncrement="5"
         maxConnectionsPerPartition="15"
         minConnectionsPerPartition="3"
-        statementsCacheSize="50"
-        releaseHelperThreads="5" />
+        statementsCacheSize="50" />
 </Context>
 
 ---
