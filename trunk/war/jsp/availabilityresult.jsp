@@ -222,6 +222,14 @@ h += 96;
     </tr>
     <tr>
       <td id="border">&nbsp;</td>
+      <td id="border"><a href="http://www.unige.ch/biblio/cmu/index.html" target="_blank">UNI GE</a></td>
+      <td id="border"><a href="http://www.medecine.unige.ch/organisation/bfm/openillink/index.php?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
+      <td id="border">&nbsp;</td>
+      <td id="border">&nbsp;</td>
+      <td id="border">&nbsp;</td>
+    </tr>
+    <tr>
+      <td id="border">&nbsp;</td>
       <td id="border"><a href="http://www.e-lib.ch/elib/action/search.do?&vid=ELIB&fn=search&vl(freeText0)=<bean:write name="orderform" property="issn" />&vl(215003172UI0)=issn&mode=Advanced&fctN=facet_domain&fctV=IDSBB" target="_blank">UB Basel</a></td>
       <td id="border"><a href="redirectunibasel.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
