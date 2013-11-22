@@ -103,7 +103,9 @@ h += 96;
 			</td>
 			<td colspan="5">
 			<!-- link to article or journal homepage -->
-				&nbsp;<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><logic:equal name="ref" property="level" value="article"><bean:message key="availresult.fulltext"/></logic:equal><logic:notEqual name="ref" property="level" value="article"><bean:message key="availresult.homepage"/></logic:notEqual></a>&nbsp;
+				<logic:notEmpty name="ref" property="url">
+					&nbsp;<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><logic:equal name="ref" property="level" value="article"><bean:message key="availresult.fulltext"/></logic:equal><logic:notEqual name="ref" property="level" value="article"><bean:message key="availresult.homepage"/></logic:notEqual></a>&nbsp;
+				</logic:notEmpty>
 				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>
 			</td>
 		</tr>
