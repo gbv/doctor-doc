@@ -102,11 +102,26 @@ h += 96;
 				</span>
 			</td>
 			<td colspan="5">
-				&nbsp;<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
+			<!-- link to article or journal homepage -->
+				&nbsp;<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><logic:equal name="ref" property="level" value="article"><bean:message key="availresult.fulltext"/></logic:equal><logic:notEqual name="ref" property="level" value="article"><bean:message key="availresult.homepage"/></logic:notEqual></a>&nbsp;
 				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>
 			</td>
 		</tr>
 	</logic:iterate>
+	<!-- Link to crossref -->
+	<logic:notEmpty name="orderform" property="doi">
+		<tr>
+			<td style="width:10px;" nowrap="nowrap">
+				&nbsp;
+			</td>
+			<td style="width:10px;" nowrap="nowrap">
+				&nbsp;
+			</td>
+			<td colspan="5">
+				<bean:define id="crossref" name="orderform" property="doi" type="java.lang.String"/>&nbsp;<a href="http://dx.doi.org/<% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "")); %>" target="_blank">DOI / CrossRef</a>&nbsp;
+			</td>
+		</tr>
+	</logic:notEmpty>
 </logic:notEmpty>
 <!-- Availability print -->
 <logic:notEmpty name="ezb" property="print">
@@ -145,7 +160,7 @@ h += 96;
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
-					&nbsp;<bean:write name="ref" property="callnr"/>
+					&nbsp;<bean:write name="ref" property="callnr"/>&nbsp;
 				</span>
 			</td>
 			<td>
