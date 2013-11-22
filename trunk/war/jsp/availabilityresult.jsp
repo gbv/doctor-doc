@@ -51,6 +51,8 @@ h += 96;
     <logic:notEmpty name="orderform" property="jahr"><bean:write name="orderform" property="jahr" /></logic:notEmpty><logic:notEmpty name="orderform" property="jahrgang">;<bean:write name="orderform" property="jahrgang" /></logic:notEmpty><logic:notEmpty name="orderform" property="heft">(<bean:write name="orderform" property="heft" />)</logic:notEmpty><logic:notEmpty name="orderform" property="seiten">:<bean:write name="orderform" property="seiten" /></logic:notEmpty>
     <logic:notEmpty name="orderform" property="issn">. - ISSN: <bean:write name="orderform" property="issn" /></logic:notEmpty>
     <logic:notEmpty name="orderform" property="pmid">. - PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="orderform" property="pmid" />" target="_blank"><bean:write name="orderform" property="pmid" /></a></logic:notEmpty>
+	<logic:notEmpty name="orderform" property="doi">. - <bean:define id="crossref" name="orderform" property="doi" type="java.lang.String"/>&nbsp;<a href="http://dx.doi.org/<% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "")); %>" target="_blank">[CrossRef]</a>
+	</logic:notEmpty>
   </div>
 
 
@@ -106,24 +108,11 @@ h += 96;
 				<logic:notEmpty name="ref" property="url">
 					&nbsp;<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><logic:equal name="ref" property="level" value="article"><bean:message key="availresult.fulltext"/></logic:equal><logic:notEqual name="ref" property="level" value="article"><bean:message key="availresult.homepage"/></logic:notEqual></a>&nbsp;
 				</logic:notEmpty>
-				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>
+				<logic:notEmpty name="ref" property="title"><bean:write name="ref" property="title"/></logic:notEmpty>
+				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>&nbsp;
 			</td>
 		</tr>
 	</logic:iterate>
-	<!-- Link to crossref -->
-	<logic:notEmpty name="orderform" property="doi">
-		<tr>
-			<td style="width:10px;" nowrap="nowrap">
-				&nbsp;
-			</td>
-			<td style="width:10px;" nowrap="nowrap">
-				&nbsp;
-			</td>
-			<td colspan="5">
-				<bean:define id="crossref" name="orderform" property="doi" type="java.lang.String"/>&nbsp;<a href="http://dx.doi.org/<% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "")); %>" target="_blank">DOI / CrossRef</a>&nbsp;
-			</td>
-		</tr>
-	</logic:notEmpty>
 </logic:notEmpty>
 <!-- Availability print -->
 <logic:notEmpty name="ezb" property="print">

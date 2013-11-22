@@ -525,9 +525,8 @@ public final class OrderAction extends DispatchAction {
 
                 // get back EZB thread
                 final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
-                if (ezbanswer != null && !ezbanswer.contains("<Error code=")
-                        && !ezbanswer.contains("503 Service Temporarily Unavailable")
-                        && !ezbanswer.contains("HTTP Status 4")) { // catching all 4xx errors
+
+                if (noJOPErrors(ezbanswer, ui, cn, ezbform)) {
                     // read EZB response as XML
                     final EZBJOP ezb = new EZBJOP();
                     ezbform = ezb.read(ezbanswer);
@@ -541,15 +540,6 @@ public final class OrderAction extends DispatchAction {
                             2000, 2));
                     // returns only online holdings. Keep local print holdings...
                     ezbform.setOnline(efVascoda.getOnline());
-
-                    // only show error in UI if library has ZDB holdings
-                    if (ui != null && ui.getKonto().isZdb() || cn != null && cn.getKonto() != null
-                            && cn.getKonto().isZdb()) {
-                        final EZBDataPrint timeout = new EZBDataPrint();
-                        timeout.setAmpel("red");
-                        timeout.setComment("error.zdb_timeout");
-                        ezbform.getPrint().add(timeout);
-                    }
                 }
 
                 // set Link for "Powered by EZB/ZDB" for manual checks by the user
@@ -625,6 +615,53 @@ public final class OrderAction extends DispatchAction {
         }
 
         return mp.findForward(forward);
+    }
+
+    private boolean noJOPErrors(final String ezbanswer, final UserInfo ui, final Text cn, final EZBForm ezbform) {
+
+        boolean hasNoErrors = true;
+
+        // catch all possible errors
+        if (ezbanswer == null || ezbanswer.contains("<Error code=")
+                || ezbanswer.contains("503 Service Temporarily Unavailable") // Tomcat error
+                || ezbanswer.contains("HTTP Status 4")) { // catching all 4xx errors
+            hasNoErrors = false;
+            // set an error for print holdings in UI if library has ZDB holdings
+            if (hasZDBPrintHoldings(ui, cn)) {
+                final EZBDataPrint timeout = new EZBDataPrint();
+                timeout.setAmpel("red");
+                timeout.setComment("error.zdb_timeout");
+                // add messages for specific error cases
+                if (ezbanswer.contains("503 Service Temporarily Unavailable")) {
+                    timeout.setCoverage("503 Service Temporarily Unavailable");
+                } else if (ezbanswer.contains("<Error code=")) {
+                    timeout.setCoverage(readErrorCode(ezbanswer));
+                }
+                ezbform.getPrint().add(timeout);
+            }
+        }
+
+        return hasNoErrors;
+    }
+
+    private String readErrorCode(final String ezbanswer) {
+        // make sure we do not return null
+        String error = "";
+        try {
+            // <Error code="issn">ISSN im falschen Format!</Error>
+            error = ezbanswer.substring(ezbanswer.indexOf(">", ezbanswer.indexOf("<Error code=")) + 1,
+                    ezbanswer.indexOf("</Error>"));
+        } catch (final Exception e) {
+            LOG.error(e.toString());
+        }
+        return error;
+    }
+
+    private boolean hasZDBPrintHoldings(final UserInfo ui, final Text cn) {
+        if (ui != null && ui.getKonto().isZdb() || cn != null && cn.getKonto() != null && cn.getKonto().isZdb()) {
+            return true;
+        }
+        return false;
     }
 
     private void addInternalHoldings(final EZBForm ezbform, final OrderForm pageForm,
