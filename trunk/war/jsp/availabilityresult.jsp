@@ -61,18 +61,22 @@ h += 96;
 	<tr>
 		<th id="th-left" colspan="7">
 			<logic:present name="userinfo" property="benutzer">
+			<!-- Text and link to EZB UI for logged in librarians -->
 				<logic:notEqual name="userinfo" property="benutzer.rechte" value="1">
 					<a href="<bean:write name="ezb" property="linkezb"/>" target="_blank">powered by EZB and ZDB</a>
 				</logic:notEqual>
+				<!-- EZB text for logged in users -->
 				<logic:equal name="userinfo" property="benutzer.rechte" value="1">
 					powered by EZB and ZDB
 				</logic:equal>
 			</logic:present>
+			<!-- EZB text for not logged in users -->
 			<logic:notPresent name="userinfo" property="benutzer">
 				powered by EZB and ZDB
 			</logic:notPresent>
 		</th>
 	</tr>
+<!-- timeout message -->
 <logic:empty name="ezb" property="online">
 	<logic:empty name="ezb" property="print">
 		<tr>
@@ -82,6 +86,7 @@ h += 96;
 		</tr>
 	</logic:empty>
 </logic:empty>
+<!-- Availability online -->
 <logic:notEmpty name="ezb" property="online">
 	<logic:iterate id="ref" name="ezb" property="online">
 		<tr>
@@ -93,16 +98,17 @@ h += 96;
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
 					<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
-					<bean:message key="<%=result%>" />
+					&nbsp;<bean:message key="<%=result%>" />
 				</span>
 			</td>
 			<td colspan="5">
-				<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
+				&nbsp;<a href="<bean:write name="ref" property="url"/>" title="<bean:write name="ref" property="level"/>" target="_blank"><bean:write name="ref" property="title"/></a>
 				<logic:notEmpty name="ref" property="additional">(<bean:write name="ref" property="additional"/>)</logic:notEmpty>
 			</td>
 		</tr>
 	</logic:iterate>
 </logic:notEmpty>
+<!-- Availability print -->
 <logic:notEmpty name="ezb" property="print">
 	<logic:iterate id="ref" name="ezb" property="print">
 		<tr>
@@ -114,32 +120,32 @@ h += 96;
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
 					<bean:define id="result" name="ref" property="comment" type="java.lang.String"/>
-					<bean:message key="<%=result%>" />
+					&nbsp;<bean:message key="<%=result%>" />
 				</span>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
 					<logic:notEmpty name="ref" property="info">
 						<bean:define id="label" name="ref" property="info.label" type="java.lang.String"/>
-						<a href="<bean:write name="ref" property="info.url"/>" target="popup" onclick="wopen('<bean:write name="ref" property="info.url"/>', 'popup', 1040, 880); return false;"><bean:message key="<%=label%>" /></a>
+						&nbsp;<a href="<bean:write name="ref" property="info.url"/>" target="popup" onclick="wopen('<bean:write name="ref" property="info.url"/>', 'popup', 1040, 880); return false;"><bean:message key="<%=label%>" /></a>
 					</logic:notEmpty>
 				</span>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
 					<logic:notEmpty name="ref" property="coverage">
-						(<bean:write name="ref" property="coverage"/>)
+						&nbsp;(<bean:write name="ref" property="coverage"/>)
 					</logic:notEmpty>
 				</span>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
-					<bean:write name="ref" property="location"/>
+					&nbsp;<bean:write name="ref" property="location"/>
 				</span>
 			</td>
 			<td style="width:10px;" nowrap="nowrap">
 				<span style="white-space: nowrap">
-					<bean:write name="ref" property="callnr"/>
+					&nbsp;<bean:write name="ref" property="callnr"/>
 				</span>
 			</td>
 			<td>
