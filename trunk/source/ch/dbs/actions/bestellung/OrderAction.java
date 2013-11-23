@@ -632,9 +632,9 @@ public final class OrderAction extends DispatchAction {
                 timeout.setAmpel("red");
                 timeout.setComment("error.zdb_timeout");
                 // add messages for specific error cases
-                if (ezbanswer.contains("503 Service Temporarily Unavailable")) {
+                if (ezbanswer != null && ezbanswer.contains("503 Service Temporarily Unavailable")) {
                     timeout.setCoverage("503 Service Temporarily Unavailable");
-                } else if (ezbanswer.contains("<Error code=")) {
+                } else if (ezbanswer != null && ezbanswer.contains("<Error code=")) {
                     timeout.setCoverage(readErrorCode(ezbanswer));
                 }
                 ezbform.getPrint().add(timeout);
