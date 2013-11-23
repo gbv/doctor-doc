@@ -203,11 +203,12 @@
   </td>
   <td>
   <logic:notEmpty name="orderform" property="bestellung.doi">
+  <bean:define id="crossref" name="orderform" property="bestellung.doi" type="java.lang.String"/>
        <table class="border">
          <tr>
         <th id="th-left">DOI</th>
       </tr>
-      <tr><td id="border"><a href="http://dx.doi.org/<bean:write name="orderform" property="bestellung.doi" />" target="_blank"><bean:write name="orderform" property="bestellung.doi" /></a>&nbsp;</td></tr>
+      <tr><td id="border"><a href="http://dx.doi.org/<% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "").replaceAll("doi:", "").trim()); %>" target="_blank">http://dx.doi.org/<% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "").replaceAll("doi:", "").trim()); %></a>&nbsp;</td></tr>
     </table>
   </logic:notEmpty>
   </td>

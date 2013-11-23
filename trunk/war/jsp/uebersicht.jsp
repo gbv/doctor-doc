@@ -481,7 +481,7 @@
       		<logic:notEmpty name="b" property="issn">ISSN: <bean:write name="b" property="issn" />|</logic:notEmpty>
       		<logic:notEmpty name="b" property="isbn">ISBN: <bean:write name="b" property="isbn" />|</logic:notEmpty>
 		    <logic:notEmpty name="b" property="pmid">PMID: <a href='http://www.ncbi.nlm.nih.gov/pubmed/<bean:write name="b" property="pmid" />' target='_blank'><bean:write name="b" property="pmid" /></a>|</logic:notEmpty>
-		    <logic:notEmpty name="b" property="doi">DOI: <a href='http://dx.doi.org/<bean:write name="b" property="doi" />' target='_blank'><bean:write name="b" property="doi" /></a>|</logic:notEmpty>
+		    <logic:notEmpty name="b" property="doi"><bean:define id="crossref" name="b" property="doi" type="java.lang.String"/>DOI: <a href='http://dx.doi.org/<% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "").replaceAll("doi:", "").trim()); %>' target='_blank'><% out.println(crossref.replaceAll("info:doi/", "").replaceAll("http://dx.doi.org/", "").replaceAll("doi:", "").trim()); %></a>|</logic:notEmpty>
       		">
       		<bean:write name="b" property="zeitschrift" /><bean:write name="b" property="buchtitel" />&nbsp;
       	</span>
