@@ -530,6 +530,7 @@ public final class OrderAction extends DispatchAction {
                     // read EZB response as XML
                     final EZBJOP ezb = new EZBJOP();
                     ezbform = ezb.read(ezbanswer);
+                    // TODO: custom OpenURL manipulations
                 } else {
                     // use alternate Vascoda API
                     // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
@@ -540,6 +541,7 @@ public final class OrderAction extends DispatchAction {
                             2000, 2));
                     // returns only online holdings. Keep local print holdings...
                     ezbform.setOnline(efVascoda.getOnline());
+                    // TODO: custom OpenURL manipulations
                 }
 
                 // set Link for "Powered by EZB/ZDB" for manual checks by the user
