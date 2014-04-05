@@ -1596,7 +1596,7 @@ public final class OrderGbvAction extends DispatchAction {
         // http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica.
         // http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.
         final String link = "http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica."
-                + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encode(gbvsearchterm, "ISO-8859-1")
+                + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encode(gbvsearchterm, "UTF-8")
                 + "%22&recordSchema=picaxml&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord="
                 + start_record;
 
@@ -1620,7 +1620,7 @@ public final class OrderGbvAction extends DispatchAction {
         final SpecialCharacters specialCharacters = new SpecialCharacters();
 
         final String link = "http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica."
-                + gbvfield.toLowerCase() + "%3D" + codeUrl.encode(gbvsearchterm, "ISO-8859-1")
+                + gbvfield.toLowerCase() + "%3D" + codeUrl.encode(gbvsearchterm, "UTF-8")
                 + "&recordSchema=picaxml&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
