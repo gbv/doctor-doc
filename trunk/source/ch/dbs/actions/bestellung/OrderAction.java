@@ -439,9 +439,9 @@ public final class OrderAction extends DispatchAction {
                 // System.out.println("ZDB-ID aus dbs: " + pageForm.getZdbid());
                 // Try to get from e-ZDB-ID a p-ZDB-ID from GBV using a seperate thread.
                 if (pageForm.getZdbid() != null && !pageForm.getZdbid().equals("")) {
-                    final String gbvlink = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
+                    final String gbvlink = "http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica.zdb%3D%22"
                             + pageForm.getZdbid()
-                            + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
+                            + "%22&recordSchema=picaxml&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=1";
                     gbvthread.setLink(gbvlink);
                     gbvcontent = executor.submit(gbvthread);
                     gbvThread = true;

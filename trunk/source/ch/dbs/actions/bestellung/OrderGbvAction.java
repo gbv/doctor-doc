@@ -1004,36 +1004,36 @@ public final class OrderGbvAction extends DispatchAction {
     private List<GbvSruForm> getGbvMatches(String content) throws Exception {
 
         final List<GbvSruForm> matches = new ArrayList<GbvSruForm>();
-        int treffer = 0;
-        int startRecord = 0;
-        int maximumRecord = 0;
+        int numberOfRecords = 0;
+        int firstRecordPosition = 0;
 
         try {
 
-            if (content.contains("<srw:numberOfRecords>")) {
-                // kracht bewusst, wenn <srw:numberOfRecords></srw:numberOfRecords> gar keine Trefferangaben
+            if (content.contains("<zs:numberOfRecords>")) {
+                // kracht bewusst, wenn <zs:numberOfRecords></zs:numberOfRecords> gar keine Trefferangaben
                 // enthält. Siehe catch
-                treffer = Integer.valueOf(content.substring(content.indexOf("<srw:numberOfRecords>") + 21,
-                        content.indexOf("</srw:numberOfRecords>")));
-                startRecord = Integer.valueOf(content.substring(content.indexOf("<startRecord>") + 13,
-                        content.indexOf("</startRecord>")));
-                maximumRecord = Integer.valueOf(content.substring(content.indexOf("<maximumRecords>") + 16,
-                        content.indexOf("</maximumRecords>")));
+                numberOfRecords = Integer.valueOf(content.substring(content.indexOf("<zs:numberOfRecords>") + 20,
+                        content.indexOf("</zs:numberOfRecords>")));
 
-                while (content.contains("<srw:record>")) {
+                // read SRU response only if we have records to read
+                if (numberOfRecords > 0) {
 
-                    final GbvSruForm gsf = readSruRecord(content.substring(content.indexOf("<srw:record>"),
-                            content.indexOf("</srw:record>")));
-                    gsf.setTreffer_total(treffer);
-                    gsf.setStart_record(startRecord);
-                    gsf.setMaximum_record(maximumRecord);
-                    // rechne
-                    final int i = matches.size();
-                    gsf.setRecord_number(startRecord + i);
-                    matches.add(gsf);
-                    content = content.substring(content.indexOf("</srw:record>") + 12);
+                    firstRecordPosition = Integer.valueOf(content.substring(
+                            content.indexOf("<zs:recordPosition>") + 19, content.indexOf("</zs:recordPosition>")));
+
+                    while (content.contains("<zs:record>")) {
+
+                        final GbvSruForm gsf = readSruRecord(content.substring(content.indexOf("<zs:record>"),
+                                content.indexOf("</zs:record>")));
+                        gsf.setTreffer_total(numberOfRecords);
+                        gsf.setStart_record(firstRecordPosition);
+                        // rechne
+                        final int i = matches.size();
+                        gsf.setRecord_number(gsf.getStart_record() + i);
+                        matches.add(gsf);
+                        content = content.substring(content.indexOf("</zs:record>") + 12);
+                    }
                 }
-
             }
 
         } catch (final Exception e) {
@@ -1046,7 +1046,6 @@ public final class OrderGbvAction extends DispatchAction {
                 final String error = getSruErrorCode(content);
                 throw new Exception("GBV:\040" + error);
             }
-
         }
 
         return matches;
@@ -1498,7 +1497,7 @@ public final class OrderGbvAction extends DispatchAction {
                 String contentCopy = content.substring(content.indexOf("<datafield tag=\"" + tag + "\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"" + tag + "\">")));
 
-                while (contentCopy.contains("<subfield code=\"")) {
+                while (contentCopy.matches("<subfield code=\".\">")) {
 
                     if (buf.length() > 0) {
                         buf.append("\040|\040");
@@ -1594,9 +1593,12 @@ public final class OrderGbvAction extends DispatchAction {
         final CodeUrl codeUrl = new CodeUrl();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
 
-        final String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
+        // http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica.
+        // http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.
+        final String link = "http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica."
                 + gbvfield.toLowerCase() + "%3D%22" + codeUrl.encode(gbvsearchterm, "ISO-8859-1")
-                + "%22&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
+                + "%22&recordSchema=picaxml&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord="
+                + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
                 Connect.TIMEOUT_4.getValue(), Connect.TRIES_2.getValue(), null)));
@@ -1617,9 +1619,9 @@ public final class OrderGbvAction extends DispatchAction {
         final CodeUrl codeUrl = new CodeUrl();
         final SpecialCharacters specialCharacters = new SpecialCharacters();
 
-        final String link = "http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica."
+        final String link = "http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=pica."
                 + gbvfield.toLowerCase() + "%3D" + codeUrl.encode(gbvsearchterm, "ISO-8859-1")
-                + "&recordSchema=pica&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
+                + "&recordSchema=picaxml&sortKeys=YOP%2Cpica%2C0%2C%2C&maximumRecords=10&startRecord=" + start_record;
 
         return specialCharacters.replace(convertStringFromLatin1ToUTF8(http.getContent(link,
                 Connect.TIMEOUT_4.getValue(), Connect.TRIES_2.getValue(), null)));
