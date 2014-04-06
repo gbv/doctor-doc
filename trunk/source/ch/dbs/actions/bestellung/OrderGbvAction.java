@@ -1489,6 +1489,7 @@ public final class OrderGbvAction extends DispatchAction {
     private String getSruDatafield(final String tag, String content) {
 
         final StringBuffer buf = new StringBuffer(128);
+        final Pattern p = Pattern.compile("<subfield code=\".\">");
 
         try {
 
@@ -1497,7 +1498,6 @@ public final class OrderGbvAction extends DispatchAction {
                 final String contentCopy = content.substring(content.indexOf("<datafield tag=\"" + tag + "\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"" + tag + "\">")));
 
-                final Pattern p = Pattern.compile("<subfield code=\".\">");
                 final Matcher m = p.matcher(contentCopy);
 
                 while (m.find()) {
