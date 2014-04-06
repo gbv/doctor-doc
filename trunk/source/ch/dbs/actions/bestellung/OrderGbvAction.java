@@ -1494,18 +1494,19 @@ public final class OrderGbvAction extends DispatchAction {
 
             while (content.contains("<datafield tag=\"" + tag + "\">")) { // ein Tag kann mehrmals vorkommen
 
-                String contentCopy = content.substring(content.indexOf("<datafield tag=\"" + tag + "\">") + 22,
+                final String contentCopy = content.substring(content.indexOf("<datafield tag=\"" + tag + "\">") + 22,
                         content.indexOf("</datafield>", content.indexOf("<datafield tag=\"" + tag + "\">")));
 
-                while (contentCopy.matches("<subfield code=\".\">")) {
+                final Pattern p = Pattern.compile("<subfield code=\".\">");
+                final Matcher m = p.matcher(contentCopy);
+
+                while (m.find()) {
 
                     if (buf.length() > 0) {
+                        // Trennzeichen, falls schon Inhalt vorhanden
                         buf.append("\040|\040");
-                    } // Trennzeichen, falls schon Inhalt vorhanden
-                    buf.append(contentCopy.substring(contentCopy.indexOf("<subfield code=\"") + 19,
-                            contentCopy.indexOf("</subfield>", contentCopy.indexOf("<subfield code=\""))));
-                    // Stringverkürzung für nächsten Treffer
-                    contentCopy = contentCopy.substring(contentCopy.indexOf("<subfield code=\"") + 17);
+                    }
+                    buf.append(contentCopy.substring(m.start() + 19, contentCopy.indexOf("</subfield>", m.start())));
                 }
 
                 // Stringverkürzung für nächsten Treffer
