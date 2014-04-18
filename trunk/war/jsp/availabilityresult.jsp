@@ -203,7 +203,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://www.gbv.de/gso/opengso.php?sid=DRDOC:doctor-doc&db=GVK&genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel" />&atitle=<bean:write name="orderform" property="artikeltitel" />&aulast=<bean:write name="orderform" property="author" />" target="_blank">GBV/GVK</a></td>
-      <td id="border" colspan="2"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=20=%22<bean:write name="orderform" property="issn" />%22" target="_blank">Swissbib</a></td>
+      <td id="border" colspan="2"><a href="https://www.swissbib.ch/Search/Results?join=AND&bool0[]=AND&lookfor0[]=<bean:write name="orderform" property="issn" />&type0[]=ISN&lookfor0[]=&type0[]=AllFields&lookfor0[]=&type0[]=AllFields&limit=20&daterange[]=publishDate" target="_blank">Swissbib</a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
       <td id="border"><a href="http://worldcatlibraries.org/registry/gateway?genre=article&issn=<bean:write name="orderform" property="issn" />&date=<bean:write name="orderform" property="jahr" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&pages=<bean:write name="orderform" property="seiten" />&title=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&atitle=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&aulast=<bean:write name="orderform" property="author_encodedUTF8" />" target="_blank">WorldCat</a></td>
@@ -304,7 +304,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://gso.gbv.de/DB=2.1/" target="_blank">GBV/GVK</a></td>
-      <td id="border" colspan="2"><a href="http://www.swissbib.ch/TouchPoint/start.do?Language=de&View=nose&Query=245=%22<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />%22" target="_blank">Swissbib</a></td>
+      <td id="border" colspan="2"><a href="https://www.swissbib.ch/Search/Results?sort=relevance&join=AND&bool0[]=AND&lookfor0[]=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&type0[]=JournalTitle&limit=20&daterange[]=publishDate" target="_blank">Swissbib</a></td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
       <td id="border">&nbsp;</td>
