@@ -160,7 +160,7 @@ public class Addranges extends Action {
 
     private boolean isEmpty(final String input) {
 
-        if (input == null || "".equals(input.trim())) {
+        if (input == null || input.trim().length() == 0) {
             return true;
         }
         return false;

@@ -503,7 +503,7 @@ public class Lieferanten extends AbstractIdEntity {
         
         boolean result = false;
         
-        if (input == null || "".equals(input.trim())) {
+        if (input == null || input.trim().length() == 0) {
             result = true;
         }
         
