@@ -790,7 +790,7 @@ public final class BestellformAction extends DispatchAction {
                                 m.append(of.getIssn());
                                 m.append('\n');
                             } // Buchserie mit ISSN
-                            m.append("JAHR: ");
+                            m.append("YEAR: ");
                             m.append(of.getJahr());
                             m.append('\n');
                             if (!of.getJahrgang().equals("")) {
