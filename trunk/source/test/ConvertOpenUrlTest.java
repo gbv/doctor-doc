@@ -55,18 +55,18 @@ public class ConvertOpenUrlTest {
     // CHECKSTYLE:OFF
     
     @Test
-    public void extractFirstNumber() throws Exception {
-        assertTrue("60".equals(check.extractFirstNumber("60-4")));
-        assertTrue("60".equals(check.extractFirstNumber("S60-4")));
-        assertTrue("60".equals(check.extractFirstNumber(" 60 - 4")));
-        assertTrue("60".equals(check.extractFirstNumber("saad s60dd-4")));
-        assertTrue("".equals(check.extractFirstNumber("")));
+    public void extractStartPage() throws Exception {
+        assertTrue("60".equals(check.extractStartPage("60-4")));
+        assertTrue("S60".equals(check.extractStartPage("S60-4")));
+        assertTrue("60".equals(check.extractStartPage(" 60 - 4")));
+        assertTrue("e1254".equals(check.extractStartPage(" e1254-56")));
+        assertTrue("".equals(check.extractStartPage("")));
     }
     
     @Test
     public void normalizeIssn() throws Exception {
         assertTrue("1234-1234".equals(check.normalizeIssn("12341234")));
-        assertTrue("".equals(check.extractFirstNumber("")));
+        assertTrue("".equals(check.extractStartPage("")));
     }
     
     @Test

@@ -205,7 +205,7 @@ public class Pubmed {
         }
 
         // use only start page
-        result.append(openurlConv.extractFirstNumber(input));
+        result.append(openurlConv.extractStartPage(input));
 
         return result.toString();
 

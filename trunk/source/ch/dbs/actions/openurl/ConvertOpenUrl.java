@@ -380,7 +380,7 @@ public class ConvertOpenUrl {
         co.setRft_volume(codeUrl.encode(of.getJahrgang(), encoding));
         co.setRft_issue(codeUrl.encode(of.getHeft(), encoding));
         co.setRft_pages(codeUrl.encode(of.getSeiten(), encoding));
-        co.setRft_spage(codeUrl.encode(extractFirstNumber(of.getSeiten()), encoding));
+        co.setRft_spage(codeUrl.encode(extractStartPage(of.getSeiten()), encoding));
         co.setRft_author(codeUrl.encode(of.getAuthor(), encoding));
         
         // enthält uri-infos wie pmid, doi, lccn etc.: // http://www.info-uri.info/registry/
@@ -740,18 +740,20 @@ public class ConvertOpenUrl {
         return input;
     }
     
-    public String extractFirstNumber(final String input) {
+    public String extractStartPage(final String input) {
         String result = "";
         if (input != null) {
             try {
-                final Pattern z = Pattern.compile("\\d+");
+//                final Pattern z = Pattern.compile("\\d+");
+            	// use word characters, since we see numberings like e1254-56
+                final Pattern z = Pattern.compile("\\w+");
                 final Matcher w = z.matcher(input);
                 
                 if (w.find()) { // only extract first number
                     result = input.substring(w.start(), w.end());
                 }
             } catch (final Exception e) {
-                LOG.error("extractFirstNumber: " + input + "\040" + e.toString());
+                LOG.error("extractStartPage: " + input + "\040" + e.toString());
             }
         }
         
