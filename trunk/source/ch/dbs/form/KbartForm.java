@@ -31,12 +31,6 @@ public final class KbartForm extends ValidatorForm {
 
     private static final long serialVersionUID = 1L;
 
-    // properties outside the original KBART format
-    private boolean eissue;
-    private boolean internal;
-    private String sublocation;
-    private String shelf;
-
     // properties of the original KBART format
     private String publication_title;
     private String print_identifier;
@@ -54,6 +48,12 @@ public final class KbartForm extends ValidatorForm {
     private String coverage_depth;
     private String coverage_notes;
     private String publisher_name;
+
+    // properties outside the original KBART format
+    private boolean eissue;
+    private boolean internal;
+    private String sublocation;
+    private String shelf;
 
 
     public KbartForm() {

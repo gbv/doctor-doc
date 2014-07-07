@@ -1,3 +1,20 @@
+//  Copyright (C) 2013  Markus Fischer
+//
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; version 2 of the License.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+//  Contact: info@doctor-doc.com
+
 package ch.ddl.daia;
 
 import java.io.ByteArrayOutputStream;
@@ -28,23 +45,23 @@ import ch.dbs.entity.Bestand;
  * @author Markus Fischer
  */
 public class DaiaXMLResponse {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(DaiaXMLResponse.class);
     private static final String UTF8 = "UTF-8";
     private static final String CDATA = "CDATA";
     private static final String URL = ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do?";
     private static final String URN = "urn:x-domain:" + URL;
-    
+
     protected String listHoldings(final List<Bestand> bestaende, final String rfr_id) {
-        
+
         String xml = "";
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
+
         try {
-            
+
             final StreamResult streamResult = new StreamResult(out);
             final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
-            
+
             final TransformerHandler hd = tf.newTransformerHandler();
             final Transformer serializer = hd.getTransformer();
             serializer.setOutputProperty(OutputKeys.ENCODING, UTF8);
@@ -53,18 +70,18 @@ public class DaiaXMLResponse {
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             //            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
             hd.setResult(streamResult);
-            
+
             // SAX2.0 ContentHandler
             //            final ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
             hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"jsp/import/xsl/daia.xsl\"");
-            
+
             final AttributesImpl atts = new AttributesImpl();
-            
+
             final Date d = new Date();
             final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
-            
+
             // ROOT tag
             atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
             atts.addAttribute("", "", "version", CDATA, "0.5");
@@ -73,7 +90,7 @@ public class DaiaXMLResponse {
                     "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
             atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
-            
+
             // Institution tag
             atts.clear();
             atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
@@ -81,7 +98,7 @@ public class DaiaXMLResponse {
             String text = ReadSystemConfigurations.getApplicationName();
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "institution");
-            
+
             if (rfr_id != null && !rfr_id.equals("")) {
                 // Message tag (used for the rfr_id of a OpenURL request)
                 atts.clear();
@@ -91,14 +108,14 @@ public class DaiaXMLResponse {
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
             }
-            
+
             for (final Bestand b : bestaende) {
                 // Document tag
                 atts.clear();
                 atts.addAttribute("", "", "id", CDATA, URN + "holding=" + b.getHolding().getId().toString()); // Holding-ID
                 atts.addAttribute("", "", "href", CDATA, URL + "holding=" + b.getHolding().getId().toString()); // URL to holding
                 hd.startElement("", "", "document", atts);
-                
+
                 // Message tag (used for journal title)
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
@@ -106,13 +123,13 @@ public class DaiaXMLResponse {
                 text = b.getHolding().getTitel();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
-                
+
                 // Item tag
                 atts.clear();
                 atts.addAttribute("", "", "id", CDATA, URN + "stock=" + b.getId().toString()); // Stock-ID
                 atts.addAttribute("", "", "href", CDATA, URL + "stock=" + b.getId().toString()); // URL to stock
                 hd.startElement("", "", "item", atts);
-                
+
                 // Message tag (used for 'remarks' of a holding)
                 atts.clear();
                 atts.addAttribute("", "", "lang", CDATA, "de");
@@ -120,14 +137,14 @@ public class DaiaXMLResponse {
                 text = b.getBemerkungen();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
-                
+
                 // Label tag (call number / Shelfmark)
                 atts.clear();
                 hd.startElement("", "", "label", atts);
                 text = b.getShelfmark();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "label");
-                
+
                 // Department tag
                 atts.clear();
                 atts.addAttribute("", "", "id", CDATA, URN + "library=" + b.getHolding().getKid().toString());
@@ -138,14 +155,14 @@ public class DaiaXMLResponse {
                 //                text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "department");
-                
+
                 // Storage tag
                 atts.clear();
                 hd.startElement("", "", "storage", atts);
                 text = b.getStandort().getInhalt();
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "storage");
-                
+
                 // Available tag
                 atts.clear();
                 // default service presentation
@@ -156,7 +173,7 @@ public class DaiaXMLResponse {
                 }
                 atts.addAttribute("", "", "service", CDATA, text);
                 hd.startElement("", "", "available", atts);
-                
+
                 // Limitation tag (for countries: CH, DE, AT...)
                 // for now we use only one configuration: the country of the library
                 // TODO: allow multiple, configurable countries
@@ -166,18 +183,18 @@ public class DaiaXMLResponse {
                 //                text = StringEscapeUtils.escapeXml(text);
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "limitation");
-                
+
                 hd.endElement("", "", "available");
                 hd.endElement("", "", "item");
                 hd.endElement("", "", "document");
-                
+
             }
-            
+
             hd.endElement("", "", "daia");
             hd.endDocument();
-            
+
             xml = new String(out.toByteArray(), UTF8);
-            
+
         } catch (final IOException e) {
             LOG.error(e.toString());
         } catch (final SAXException e) {
@@ -191,20 +208,20 @@ public class DaiaXMLResponse {
                 LOG.error(e.toString());
             }
         }
-        
+
         return xml;
     }
-    
+
     protected String noHoldings(final String msg, final String rfr_id) {
-        
+
         String xml = "";
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
+
         try {
-            
+
             final StreamResult streamResult = new StreamResult(out);
             final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
-            
+
             final TransformerHandler hd = tf.newTransformerHandler();
             final Transformer serializer = hd.getTransformer();
             serializer.setOutputProperty(OutputKeys.ENCODING, "UTF8");
@@ -212,20 +229,20 @@ public class DaiaXMLResponse {
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             //            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM,"users.dtd");
-            
+
             hd.setResult(streamResult);
-            
+
             // SAX2.0 ContentHandler
             //            final  ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
             hd.processingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"jsp/import/xsl/daia.xsl\"");
-            
+
             final AttributesImpl atts = new AttributesImpl();
-            
+
             final Date d = new Date();
             final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             final String datum = fmt.format(d, ReadSystemConfigurations.getSystemTimezone());
-            
+
             // ROOT tag
             atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
             atts.addAttribute("", "", "version", CDATA, "0.5");
@@ -234,7 +251,7 @@ public class DaiaXMLResponse {
                     "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
             atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
-            
+
             // Institution tag
             atts.clear();
             atts.addAttribute("", "", "href", CDATA, ReadSystemConfigurations.getServerInstallation() + "/daia.do");
@@ -242,7 +259,7 @@ public class DaiaXMLResponse {
             String text = ReadSystemConfigurations.getApplicationName();
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "institution");
-            
+
             // used for DAIA-Driver in Vufind: setting ID back in response from rfr_id
             // this has to be the first message element!
             if (rfr_id != null && !rfr_id.equals("")) {
@@ -254,7 +271,7 @@ public class DaiaXMLResponse {
                 hd.characters(text.toCharArray(), 0, text.length());
                 hd.endElement("", "", "message");
             }
-            
+
             // official/additional message tag
             atts.clear();
             atts.addAttribute("", "", "lang", CDATA, "de");
@@ -262,12 +279,12 @@ public class DaiaXMLResponse {
             text = msg;
             hd.characters(text.toCharArray(), 0, text.length());
             hd.endElement("", "", "message");
-            
+
             hd.endElement("", "", "daia");
             hd.endDocument();
-            
+
             xml = new String(out.toByteArray(), UTF8);
-            
+
         } catch (final IOException e) {
             LOG.error(e.toString());
         } catch (final SAXException e) {
@@ -281,8 +298,8 @@ public class DaiaXMLResponse {
                 LOG.error(e.toString());
             }
         }
-        
+
         return xml;
     }
-    
+
 }

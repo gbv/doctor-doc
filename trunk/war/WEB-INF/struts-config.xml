@@ -509,6 +509,14 @@
 		</action>
 
 		<!--
+			*************************************************KBART*************************************************
+		-->
+
+		<action path="/kbart" name="OrderForm" validate="false"
+			parameter="method" scope="request" type="ch.ddl.kbart.KbartJsonResponse">
+		</action>
+
+		<!--
 			*************************************************ILL-Format / Base-URL*************************************************
 		-->
 
