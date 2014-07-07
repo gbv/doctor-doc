@@ -1,4 +1,4 @@
-//  Copyright (C) 2013  Markus Fischer
+//  Copyright (C) 2014  Markus Fischer
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -42,17 +42,18 @@ import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
+import ch.dbs.form.KbartForm;
 import ch.dbs.form.UserInfo;
 import enums.Result;
 
 /**
- * Creates an export of the holdings of a given library
+ * Creates a KBART export of the holdings of a given library.
  * 
  * @author Markus Fischer
  */
-public final class HoldingsReport extends DispatchAction {
+public final class KbartReport extends DispatchAction {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HoldingsReport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KbartReport.class);
 
     /**
      * Gets all holdings of a given library and creates an Export-File
@@ -80,7 +81,7 @@ public final class HoldingsReport extends DispatchAction {
 
         try {
             // Compose filename with date and time
-            final StringBuffer filename = new StringBuffer("holdings-");
+            final StringBuffer filename = new StringBuffer("kbart-");
             filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
             filename.append('.');
 
@@ -131,9 +132,9 @@ public final class HoldingsReport extends DispatchAction {
 
         } catch (final IOException e) {
             // Output failed
-            LOG.error("Failure in HoldingsReport.execute: " + e.toString());
+            LOG.error("Failure in KbartReport.execute: " + e.toString());
         } catch (final Exception e) {
-            LOG.error("Failure in HoldingsReport.execute: " + e.toString());
+            LOG.error("Failure in KbartReport.execute: " + e.toString());
         }
 
         return mp.findForward(null);
@@ -148,8 +149,12 @@ public final class HoldingsReport extends DispatchAction {
             // internal holdings are visible
             final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
-            for (final Bestand b : stock) {
-                buf.append(getCSVLine(b, delimiter));
+            // transform to KbartForm
+            final KbartForm kbf = new KbartForm();
+            final List<KbartForm> kbarts = kbf.createKbartForms(stock, cn.getConnection());
+
+            for (final KbartForm kbart : kbarts) {
+                buf.append(getCSVLine(kbart, delimiter));
             }
 
         } finally {
@@ -171,17 +176,21 @@ public final class HoldingsReport extends DispatchAction {
             // internal holdings are visible
             final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
 
+            // transform to KbartForm
+            final KbartForm kbf = new KbartForm();
+            final List<KbartForm> kbarts = kbf.createKbartForms(stock, cn.getConnection());
+
             short rowNr = 0;
 
-            for (final Bestand b : stock) {
+            for (final KbartForm kbart : kbarts) {
                 rowNr++;
                 // add holdings
-                getXLSLine(wb, s, b, rowNr);
+                getXLSLine(wb, s, kbart, rowNr);
             }
 
             // adjust all columns in size
             short columnNr = 0;
-            while (columnNr < 21) {
+            while (columnNr < 16) {
                 s.autoSizeColumn(columnNr);
                 columnNr++;
             }
@@ -193,226 +202,193 @@ public final class HoldingsReport extends DispatchAction {
         return (HSSFWorkbook) wb;
     }
 
-    private String getCSVLine(final Bestand b, final char delimiter) {
+    private String getCSVLine(final KbartForm kbart, final char delimiter) {
 
         final StringBuffer buf = new StringBuffer(336);
 
-        if (b.getId() != null) {
-            buf.append("\"" + b.getId() + "\"");
+        if (kbart.getPublication_title() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getPublication_title()) + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getId() != null) {
-            buf.append("\"" + b.getHolding().getId() + "\"");
+        if (kbart.getPrint_identifier() != null) {
+            buf.append("\"" + kbart.getPrint_identifier() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getStandort().getId() != null) {
-            buf.append("\"" + b.getStandort().getId() + "\"");
+        if (kbart.getOnline_identifier() != null) {
+            buf.append("\"" + kbart.getOnline_identifier() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getStandort().getInhalt() != null) {
-            buf.append("\"" + b.getStandort().getInhalt() + "\"");
+        if (kbart.getDate_first_issue_online() != null) {
+            buf.append("\"" + kbart.getDate_first_issue_online() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getShelfmark() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getShelfmark()) + "\"");
+        if (kbart.getNum_first_vol_online() != null) {
+            buf.append("\"" + kbart.getNum_first_vol_online() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getTitel() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getHolding().getTitel()) + "\"");
+        if (kbart.getNum_first_issue_online() != null) {
+            buf.append("\"" + kbart.getNum_first_issue_online() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getCoden() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getHolding().getCoden()) + "\"");
+        if (kbart.getDate_last_issue_online() != null) {
+            buf.append("\"" + kbart.getDate_last_issue_online() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getVerlag() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getHolding().getVerlag()) + "\"");
+        if (kbart.getNum_last_vol_online() != null) {
+            buf.append("\"" + kbart.getNum_last_vol_online() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getOrt() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getHolding().getOrt()) + "\"");
+        if (kbart.getNum_last_issue_online() != null) {
+            buf.append("\"" + kbart.getNum_last_issue_online() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getIssn() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getHolding().getIssn()) + "\"");
+        if (kbart.getTitle_url() != null) {
+            buf.append("\"" + kbart.getTitle_url() + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getHolding().getZdbid() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getHolding().getZdbid()) + "\"");
+        if (kbart.getFirst_author() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getFirst_author()) + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getStartyear() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getStartyear()) + "\"");
+        if (kbart.getTitle_id() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getTitle_id()) + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getStartvolume() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getStartvolume()) + "\"");
+        if (kbart.getEmbargo_info() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getEmbargo_info()) + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getStartissue() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getStartissue()) + "\"");
+        if (kbart.getCoverage_depth() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getCoverage_depth()) + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getEndyear() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getEndyear()) + "\"");
+        if (kbart.getCoverage_notes() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getCoverage_notes()) + "\"");
         } else {
             buf.append("\"\"");
         }
         buf.append(delimiter);
-        if (b.getEndvolume() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getEndvolume()) + "\"");
+        if (kbart.getPublisher_name() != null) {
+            buf.append("\"" + removeSpecialCharacters(kbart.getPublisher_name()) + "\"\n");
         } else {
-            buf.append("\"\"");
+            buf.append("\"\"\n");
         }
-        buf.append(delimiter);
-        if (b.getEndissue() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getEndissue()) + "\"");
-        } else {
-            buf.append("\"\"");
-        }
-        buf.append(delimiter);
-        buf.append("\"" + b.getSuppl() + "\"");
-        buf.append(delimiter);
-        if (b.getBemerkungen() != null) {
-            buf.append("\"" + removeSpecialCharacters(b.getBemerkungen()) + "\"");
-        } else {
-            buf.append("\"\"");
-        }
-        buf.append(delimiter);
-        buf.append("\"" + b.isEissue() + "\"");
-        buf.append(delimiter);
-        buf.append('"');
-        buf.append(b.isInternal());
-        buf.append("\"\n");
 
         return buf.toString();
     }
 
-    private void getXLSLine(final Workbook wb, final Sheet s, final Bestand b, final short rownumber) {
+    private void getXLSLine(final Workbook wb, final Sheet s, final KbartForm kbart, final short rownumber) {
 
         final Row row = s.createRow(rownumber);
 
-        if (b.getId() != null) {
-            row.createCell((short) 0).setCellValue(b.getId().toString());
+        if (kbart.getPublication_title() != null) {
+            row.createCell((short) 0).setCellValue(removeSpecialCharacters(kbart.getPublication_title()));
         } else {
             row.createCell((short) 0).setCellValue("");
         }
-        if (b.getHolding().getId() != null) {
-            row.createCell((short) 1).setCellValue(b.getHolding().getId().toString());
+        if (kbart.getPrint_identifier() != null) {
+            row.createCell((short) 1).setCellValue(kbart.getPrint_identifier());
         } else {
             row.createCell((short) 1).setCellValue("");
         }
-        if (b.getStandort().getId() != null) {
-            row.createCell((short) 2).setCellValue(b.getStandort().getId().toString());
+        if (kbart.getOnline_identifier() != null) {
+            row.createCell((short) 2).setCellValue(kbart.getOnline_identifier());
         } else {
             row.createCell((short) 2).setCellValue("");
         }
-        if (b.getStandort().getInhalt() != null) {
-            row.createCell((short) 3).setCellValue(b.getStandort().getInhalt());
+        if (kbart.getDate_first_issue_online() != null) {
+            row.createCell((short) 3).setCellValue(kbart.getDate_first_issue_online());
         } else {
             row.createCell((short) 3).setCellValue("");
         }
-        if (b.getShelfmark() != null) {
-            row.createCell((short) 4).setCellValue(removeSpecialCharacters(b.getShelfmark()));
+        if (kbart.getNum_first_vol_online() != null) {
+            row.createCell((short) 4).setCellValue(kbart.getNum_first_vol_online());
         } else {
             row.createCell((short) 4).setCellValue("");
         }
-        if (b.getHolding().getTitel() != null) {
-            row.createCell((short) 5).setCellValue(removeSpecialCharacters(b.getHolding().getTitel()));
+        if (kbart.getNum_first_issue_online() != null) {
+            row.createCell((short) 5).setCellValue(kbart.getNum_first_issue_online());
         } else {
             row.createCell((short) 5).setCellValue("");
         }
-        if (b.getHolding().getCoden() != null) {
-            row.createCell((short) 6).setCellValue(removeSpecialCharacters(b.getHolding().getCoden()));
+        if (kbart.getDate_last_issue_online() != null) {
+            row.createCell((short) 6).setCellValue(kbart.getDate_last_issue_online());
         } else {
             row.createCell((short) 6).setCellValue("");
         }
-        if (b.getHolding().getVerlag() != null) {
-            row.createCell((short) 7).setCellValue(removeSpecialCharacters(b.getHolding().getVerlag()));
+        if (kbart.getNum_last_vol_online() != null) {
+            row.createCell((short) 7).setCellValue(kbart.getNum_last_vol_online());
         } else {
             row.createCell((short) 7).setCellValue("");
         }
-        if (b.getHolding().getOrt() != null) {
-            row.createCell((short) 8).setCellValue(removeSpecialCharacters(b.getHolding().getOrt()));
+        if (kbart.getNum_last_issue_online() != null) {
+            row.createCell((short) 8).setCellValue(kbart.getNum_last_issue_online());
         } else {
             row.createCell((short) 8).setCellValue("");
         }
-        if (b.getHolding().getIssn() != null) {
-            row.createCell((short) 9).setCellValue(removeSpecialCharacters(b.getHolding().getIssn()));
+        if (kbart.getTitle_url() != null) {
+            row.createCell((short) 9).setCellValue(kbart.getTitle_url());
         } else {
             row.createCell((short) 9).setCellValue("");
         }
-        if (b.getHolding().getZdbid() != null) {
-            row.createCell((short) 10).setCellValue(removeSpecialCharacters(b.getHolding().getZdbid()));
+        if (kbart.getFirst_author() != null) {
+            row.createCell((short) 10).setCellValue(removeSpecialCharacters(kbart.getFirst_author()));
         } else {
             row.createCell((short) 10).setCellValue("");
         }
-        if (b.getStartyear() != null) {
-            row.createCell((short) 11).setCellValue(removeSpecialCharacters(b.getStartyear()));
+        if (kbart.getTitle_id() != null) {
+            row.createCell((short) 11).setCellValue(removeSpecialCharacters(kbart.getTitle_id()));
         } else {
             row.createCell((short) 11).setCellValue("");
         }
-        if (b.getStartvolume() != null) {
-            row.createCell((short) 12).setCellValue(removeSpecialCharacters(b.getStartvolume()));
+        if (kbart.getEmbargo_info() != null) {
+            row.createCell((short) 12).setCellValue(removeSpecialCharacters(kbart.getEmbargo_info()));
         } else {
             row.createCell((short) 12).setCellValue("");
         }
-        if (b.getStartissue() != null) {
-            row.createCell((short) 13).setCellValue(removeSpecialCharacters(b.getStartissue()));
+        if (kbart.getCoverage_depth() != null) {
+            row.createCell((short) 13).setCellValue(removeSpecialCharacters(kbart.getCoverage_depth()));
         } else {
             row.createCell((short) 13).setCellValue("");
         }
-        if (b.getEndyear() != null) {
-            row.createCell((short) 14).setCellValue(removeSpecialCharacters(b.getEndyear()));
+        if (kbart.getCoverage_notes() != null) {
+            row.createCell((short) 14).setCellValue(removeSpecialCharacters(kbart.getCoverage_notes()));
         } else {
             row.createCell((short) 14).setCellValue("");
         }
-        if (b.getEndvolume() != null) {
-            row.createCell((short) 15).setCellValue(removeSpecialCharacters(b.getEndvolume()));
+        if (kbart.getPublisher_name() != null) {
+            row.createCell((short) 15).setCellValue(removeSpecialCharacters(kbart.getPublisher_name()));
         } else {
             row.createCell((short) 15).setCellValue("");
         }
-        if (b.getEndissue() != null) {
-            row.createCell((short) 16).setCellValue(removeSpecialCharacters(b.getEndissue()));
-        } else {
-            row.createCell((short) 16).setCellValue("");
-        }
-        row.createCell((short) 17).setCellValue(String.valueOf(b.getSuppl()));
-        if (b.getBemerkungen() != null) {
-            row.createCell((short) 18).setCellValue(removeSpecialCharacters(b.getBemerkungen()));
-        } else {
-            row.createCell((short) 18).setCellValue("");
-        }
-        row.createCell((short) 19).setCellValue(String.valueOf(b.isEissue()));
-        row.createCell((short) 20).setCellValue(String.valueOf(b.isInternal()));
 
     }
 
@@ -420,47 +396,37 @@ public final class HoldingsReport extends DispatchAction {
 
         final StringBuffer buf = new StringBuffer(251);
 
-        buf.append("\"Stock ID\"");
+        buf.append("\"publication_title\"");
         buf.append(delimiter);
-        buf.append("\"Holding ID\"");
+        buf.append("\"print _identifier\"");
         buf.append(delimiter);
-        buf.append("\"Location ID\"");
+        buf.append("\"online_identifier\"");
         buf.append(delimiter);
-        buf.append("\"Location Name\"");
+        buf.append("\"date_first_issue_online\"");
         buf.append(delimiter);
-        buf.append("\"Shelfmark\"");
+        buf.append("\"num_first_vol_online\"");
         buf.append(delimiter);
-        buf.append("\"Title\"");
+        buf.append("\"num_first_issue_online\"");
         buf.append(delimiter);
-        buf.append("\"Coden\"");
+        buf.append("\"date_last_issue_online\"");
         buf.append(delimiter);
-        buf.append("\"Publisher\"");
+        buf.append("\"num_last_vol_online\"");
         buf.append(delimiter);
-        buf.append("\"Place\"");
+        buf.append("\"num_last_issue_online\"");
         buf.append(delimiter);
-        buf.append("\"ISSN\"");
+        buf.append("\"title_url\"");
         buf.append(delimiter);
-        buf.append("\"ZDB-ID\"");
+        buf.append("\"first_author\"");
         buf.append(delimiter);
-        buf.append("\"Startyear\"");
+        buf.append("\"title_id\"");
         buf.append(delimiter);
-        buf.append("\"Startvolume\"");
+        buf.append("\"embargo_info\"");
         buf.append(delimiter);
-        buf.append("\"Startissue\"");
+        buf.append("\"coverage_depth\"");
         buf.append(delimiter);
-        buf.append("\"Endyear\"");
+        buf.append("\"coverage_notes\"");
         buf.append(delimiter);
-        buf.append("\"Endvolume\"");
-        buf.append(delimiter);
-        buf.append("\"Endissue\"");
-        buf.append(delimiter);
-        buf.append("\"Suppl\"");
-        buf.append(delimiter);
-        buf.append("\"remarks\"");
-        buf.append(delimiter);
-        buf.append("\"eissue\"");
-        buf.append(delimiter);
-        buf.append("\"internal\"\n");
+        buf.append("\"publisher_name\"\n");
 
         return buf;
     }
@@ -468,27 +434,22 @@ public final class HoldingsReport extends DispatchAction {
     private void initXLS(final Workbook wb, final Sheet s) {
 
         final Row rowhead = s.createRow((short) 0);
-        rowhead.createCell((short) 0).setCellValue("Stock ID");
-        rowhead.createCell((short) 1).setCellValue("Holding ID");
-        rowhead.createCell((short) 2).setCellValue("Location ID");
-        rowhead.createCell((short) 3).setCellValue("Location Name");
-        rowhead.createCell((short) 4).setCellValue("Shelfmark");
-        rowhead.createCell((short) 5).setCellValue("Title");
-        rowhead.createCell((short) 6).setCellValue("Coden");
-        rowhead.createCell((short) 7).setCellValue("Publisher");
-        rowhead.createCell((short) 8).setCellValue("Place");
-        rowhead.createCell((short) 9).setCellValue("ISSN");
-        rowhead.createCell((short) 10).setCellValue("ZDB-ID");
-        rowhead.createCell((short) 11).setCellValue("Startyear");
-        rowhead.createCell((short) 12).setCellValue("Startvolume");
-        rowhead.createCell((short) 13).setCellValue("Startissue");
-        rowhead.createCell((short) 14).setCellValue("Endyear");
-        rowhead.createCell((short) 15).setCellValue("Endvolume");
-        rowhead.createCell((short) 16).setCellValue("Endissue");
-        rowhead.createCell((short) 17).setCellValue("Suppl");
-        rowhead.createCell((short) 18).setCellValue("remarks");
-        rowhead.createCell((short) 19).setCellValue("eissue");
-        rowhead.createCell((short) 20).setCellValue("internal");
+        rowhead.createCell((short) 0).setCellValue("publication_title");
+        rowhead.createCell((short) 1).setCellValue("print _identifier");
+        rowhead.createCell((short) 2).setCellValue("online_identifier");
+        rowhead.createCell((short) 3).setCellValue("date_first_issue_online");
+        rowhead.createCell((short) 4).setCellValue("num_first_vol_online");
+        rowhead.createCell((short) 5).setCellValue("num_first_issue_online");
+        rowhead.createCell((short) 6).setCellValue("date_last_issue_online");
+        rowhead.createCell((short) 7).setCellValue("num_last_vol_online");
+        rowhead.createCell((short) 8).setCellValue("num_last_issue_online");
+        rowhead.createCell((short) 9).setCellValue("title_url");
+        rowhead.createCell((short) 10).setCellValue("first_author");
+        rowhead.createCell((short) 11).setCellValue("title_id");
+        rowhead.createCell((short) 12).setCellValue("embargo_info");
+        rowhead.createCell((short) 13).setCellValue("coverage_depth");
+        rowhead.createCell((short) 14).setCellValue("coverage_notes");
+        rowhead.createCell((short) 15).setCellValue("publisher_name");
 
     }
 
