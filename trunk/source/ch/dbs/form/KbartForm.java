@@ -129,7 +129,8 @@ public final class KbartForm extends ValidatorForm {
         // use title_id for DAIA-linking over stockid
         this.setTitle_id(bestand.getId().toString());
         // embargo_info not present
-        // coverage_depth not present
+        // set coverage_depth with default value
+        this.setCoverage_depth("fulltext");
         this.setCoverage_notes(bestand.getBemerkungen());
         // set publisher and place
         final StringBuffer publisher = new StringBuffer(bestand.getHolding().getOrt());
