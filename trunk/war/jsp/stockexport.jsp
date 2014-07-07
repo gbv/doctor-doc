@@ -70,6 +70,26 @@
     <td>&nbsp;</td>
   </tr>
 </table>
+
+<p><b><bean:message key="stockexport.kbart" /></b></p>
+
+<table>
+  <tr>
+    <td>MS-Excel:</td>
+    <td><a href="export-kbart.do?filetype=xls" target="_blank">XLS</a></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>OpenOffice:</td>
+    <td><a href="export-kbart.do?filetype=csv" target="_blank">CSV</a></td>
+    <td>&nbsp;(<bean:message key="stockexport.no.excel" />)</td>
+  </tr>
+  <tr>
+    <td>Text (UTF-8):</td>
+    <td><a href="export-kbart.do?filetype=txt" target="_blank">TXT</a></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
  
 <h4><bean:message key="stockexport.subheader1" /></h4>
 
