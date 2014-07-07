@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
 
+import util.ReadSystemConfigurations;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Issn;
 
@@ -126,6 +127,7 @@ public final class KbartForm extends ValidatorForm {
         this.setNum_last_issue_online(bestand.getEndissue());
         this.setNum_last_vol_online(bestand.getEndvolume());
         // title_url not present
+        this.setTitle_url(ReadSystemConfigurations.getServerInstallation() + "/stockinfo.do?stock=" + bestand.getId());
         // use title_id for DAIA-linking over stockid
         this.setTitle_id(bestand.getId().toString());
         // embargo_info not present
