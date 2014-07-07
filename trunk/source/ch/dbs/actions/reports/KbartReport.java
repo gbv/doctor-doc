@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.Auth;
+import util.ReadSystemConfigurations;
 import util.ThreadSafeSimpleDateFormat;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.Konto;
@@ -76,12 +77,14 @@ public final class KbartReport extends DispatchAction {
         String contenttype = "text/txt;charset=UTF-8"; // used for CSV and TXT
 
         final UserInfo ui = (UserInfo) rq.getSession().getAttribute("userinfo");
-        final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        final ThreadSafeSimpleDateFormat tf = new ThreadSafeSimpleDateFormat("yyyy-MM-dd");
         final Date date = new Date();
 
         try {
             // Compose filename with date and time
-            final StringBuffer filename = new StringBuffer("kbart-");
+
+            final StringBuffer filename = new StringBuffer(ReadSystemConfigurations.getApplicationName().toUpperCase());
+            filename.append("_AllTitles_");
             filename.append(tf.format(date, ui.getKonto().getTimezone())); // append date and time
             filename.append('.');
 
