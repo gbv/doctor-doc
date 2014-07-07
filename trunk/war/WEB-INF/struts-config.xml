@@ -33,6 +33,7 @@
 		<form-bean name="MaintenanceForm" type="ch.dbs.form.MaintenanceForm" />
 		<form-bean name="MemoryForm" type="ch.dbs.form.MemoryForm" />
 		<form-bean name="IPForm" type="ch.dbs.form.IPForm" />
+		<form-bean name="KbartForm" type="ch.dbs.form.KbartForm" />
 	</form-beans>
 
 	<global-exceptions>
@@ -833,6 +834,10 @@
 
 		<action path="/export-holdings" scope="request" parameter="method"
 			type="ch.dbs.actions.reports.HoldingsReport">
+		</action>
+
+		<action path="/export-kbart" scope="request" parameter="method"
+			type="ch.dbs.actions.reports.KbartReport">
 		</action>
 
 		<!--
