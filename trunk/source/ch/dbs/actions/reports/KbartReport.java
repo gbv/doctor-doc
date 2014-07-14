@@ -108,7 +108,13 @@ public final class KbartReport extends DispatchAction {
                 PrintWriter pw = null;
                 try {
                     pw = rp.getWriter();
-                    pw.write(getCSVContent(ui.getKonto(), delimiter));
+                    // csv uses " to enclose values
+                    if (filetype.equals("csv")) {
+                        pw.write(getCSVContent(ui.getKonto(), delimiter));
+                    } else {
+                        // KBART in txt does not use " to enclose values
+                        pw.write(getTXTContent(ui.getKonto(), delimiter));
+                    }
                     pw.flush();
                 } finally {
                     pw.close();
@@ -158,6 +164,30 @@ public final class KbartReport extends DispatchAction {
 
             for (final KbartForm kbart : kbarts) {
                 buf.append(getCSVLine(kbart, delimiter));
+            }
+
+        } finally {
+            cn.close();
+        }
+
+        return buf.toString();
+    }
+
+    private String getTXTContent(final Konto k, final char delimiter) {
+        final Text cn = new Text();
+        // get a StringBuffer with a header describing the content of the fields
+        final StringBuffer buf = initTXT(delimiter);
+
+        try {
+            // internal holdings are visible
+            final List<Bestand> stock = new Bestand().getAllKontoBestand(k.getId(), true, cn.getConnection());
+
+            // transform to KbartForm
+            final KbartForm kbf = new KbartForm();
+            final List<KbartForm> kbarts = kbf.createKbartForms(stock, cn.getConnection());
+
+            for (final KbartForm kbart : kbarts) {
+                buf.append(getTXTLine(kbart, delimiter));
             }
 
         } finally {
@@ -308,6 +338,109 @@ public final class KbartReport extends DispatchAction {
         return buf.toString();
     }
 
+    private String getTXTLine(final KbartForm kbart, final char delimiter) {
+
+        final StringBuffer buf = new StringBuffer(336);
+
+        if (kbart.getPublication_title() != null) {
+            buf.append(removeSpecialCharacters(kbart.getPublication_title()));
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getPrint_identifier() != null) {
+            buf.append(kbart.getPrint_identifier());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getOnline_identifier() != null) {
+            buf.append(kbart.getOnline_identifier());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getDate_first_issue_online() != null) {
+            buf.append(kbart.getDate_first_issue_online());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getNum_first_vol_online() != null) {
+            buf.append(kbart.getNum_first_vol_online());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getNum_first_issue_online() != null) {
+            buf.append(kbart.getNum_first_issue_online());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getDate_last_issue_online() != null) {
+            buf.append(kbart.getDate_last_issue_online());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getNum_last_vol_online() != null) {
+            buf.append(kbart.getNum_last_vol_online());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getNum_last_issue_online() != null) {
+            buf.append(kbart.getNum_last_issue_online());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getTitle_url() != null) {
+            buf.append(kbart.getTitle_url());
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getFirst_author() != null) {
+            buf.append(removeSpecialCharacters(kbart.getFirst_author()));
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getTitle_id() != null) {
+            buf.append(removeSpecialCharacters(kbart.getTitle_id()));
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getEmbargo_info() != null) {
+            buf.append(removeSpecialCharacters(kbart.getEmbargo_info()));
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getCoverage_depth() != null) {
+            buf.append(removeSpecialCharacters(kbart.getCoverage_depth()));
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getCoverage_notes() != null) {
+            buf.append(removeSpecialCharacters(kbart.getCoverage_notes()));
+        } else {
+            buf.append("");
+        }
+        buf.append(delimiter);
+        if (kbart.getPublisher_name() != null) {
+            buf.append(removeSpecialCharacters(kbart.getPublisher_name()) + "\n");
+        } else {
+            buf.append('\n');
+        }
+
+        return buf.toString();
+    }
+
     private void getXLSLine(final Workbook wb, final Sheet s, final KbartForm kbart, final short rownumber) {
 
         final Row row = s.createRow(rownumber);
@@ -430,6 +563,45 @@ public final class KbartReport extends DispatchAction {
         buf.append("\"coverage_notes\"");
         buf.append(delimiter);
         buf.append("\"publisher_name\"\n");
+
+        return buf;
+    }
+
+    private StringBuffer initTXT(final char delimiter) {
+
+        final StringBuffer buf = new StringBuffer(251);
+
+        buf.append("publication_title");
+        buf.append(delimiter);
+        buf.append("print _identifier");
+        buf.append(delimiter);
+        buf.append("online_identifier");
+        buf.append(delimiter);
+        buf.append("date_first_issue_online");
+        buf.append(delimiter);
+        buf.append("num_first_vol_online");
+        buf.append(delimiter);
+        buf.append("num_first_issue_online");
+        buf.append(delimiter);
+        buf.append("date_last_issue_online");
+        buf.append(delimiter);
+        buf.append("num_last_vol_online");
+        buf.append(delimiter);
+        buf.append("num_last_issue_online");
+        buf.append(delimiter);
+        buf.append("title_url");
+        buf.append(delimiter);
+        buf.append("first_author");
+        buf.append(delimiter);
+        buf.append("title_id");
+        buf.append(delimiter);
+        buf.append("embargo_info");
+        buf.append(delimiter);
+        buf.append("coverage_depth");
+        buf.append(delimiter);
+        buf.append("coverage_notes");
+        buf.append(delimiter);
+        buf.append("publisher_name\n");
 
         return buf;
     }

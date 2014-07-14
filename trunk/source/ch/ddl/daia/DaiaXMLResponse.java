@@ -40,7 +40,7 @@ import ch.dbs.entity.Bestand;
 
 /**
  * Gives a DAIA response in XML to a OpenURL request. DAIA = Document
- * Availability Information API http://ws.gbv.de/daia/daia.xsd.htm <p></p>
+ * Availability Information API http://daia.gbv.de/daia.xsd.htm <p></p>
  * 
  * @author Markus Fischer
  */
@@ -84,10 +84,10 @@ public class DaiaXMLResponse {
 
             // ROOT tag
             atts.addAttribute("", "", "xmlns", CDATA, "http://ws.gbv.de/daia/");
-            atts.addAttribute("", "", "version", CDATA, "0.5");
+            atts.addAttribute("", "", "version", CDATA, "0.54");
             atts.addAttribute("", "", "xmlns:xsi", CDATA, "http://www.w3.org/2001/XMLSchema-instance");
             atts.addAttribute("", "", "xsi:schemaLocation", CDATA,
-                    "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
+                    "http://ws.gbv.de/daia/ http://daia.gbv.de/daia.xsd");
             atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
 
@@ -248,7 +248,7 @@ public class DaiaXMLResponse {
             atts.addAttribute("", "", "version", CDATA, "0.5");
             atts.addAttribute("", "", "xmlns:xsi", CDATA, "http://www.w3.org/2001/XMLSchema-instance");
             atts.addAttribute("", "", "xsi:schemaLocation", CDATA,
-                    "http://ws.gbv.de/daia/ http://ws.gbv.de/daia/daia.xsd");
+                    "http://ws.gbv.de/daia/ http://daia.gbv.de/daia.xsd");
             atts.addAttribute("", "", "timestamp", CDATA, datum);
             hd.startElement("", "", "daia", atts);
 
