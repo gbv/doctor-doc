@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.validator.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,15 +55,10 @@ public class Check {
             ia.setAddress(email);
             try {
                 ia.validate(); // throws an error for invalid addresses and null input, but does not catch all errors
-                final Pattern p = Pattern
-                        .compile("\\b^['_a-z0-9-\\+]+(\\.['_a-z0-9-\\+]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\"
-                                + ".([a-z]{2}|aero|arpa|asia|biz|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|nato|net|"
-                                + "org|pro|tel|travel|xxx)$\\b");
-                // we need to match against lower case for the above regex
-                final Matcher m = p.matcher(email.toLowerCase());
-                if (m.find()) {
-                    check = true;
-                }
+                // we are using apache commons email validator
+                final EmailValidator validator = EmailValidator.getInstance();
+                check = validator.isValid(email);
+
             } catch (final AddressException e1) {
                 LOG.info("isEmail: " + email + " " + e1.toString());
             }
@@ -332,7 +328,7 @@ public class Check {
                 if (fileNameLower.contains(extensionLower) // must contain extension
                         // extension must be placed at the end
                         && fileNameLower.lastIndexOf(extensionLower) == fileNameLower.length()
-                                - extensionLower.length()) {
+                        - extensionLower.length()) {
                     check = true;
                 }
 
