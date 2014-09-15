@@ -56,11 +56,13 @@ public class CheckTest {
     public void testIsEmail() throws Exception {
         assertTrue(check.isEmail("test@test.ch"));
         assertTrue(check.isEmail("C.O`Su@test.test.ch"));
+        assertTrue(check.isEmail("C.O'Su@test.test.ch"));
+        assertFalse(check.isEmail("C.O’Su@test.test.ch"));
         assertTrue(check.isEmail("Test.TEST@test.ch"));
         assertFalse(check.isEmail("test@testch"));
         assertFalse(check.isEmail("test@test.c"));
         assertFalse(check.isEmail("'test@test.ch'"));
-        assertTrue(check.isEmail("test@test.kom"));
+        assertFalse(check.isEmail("test@test.kom"));
         assertFalse(check.isEmail("test@test"));
         assertFalse(check.isEmail("test@"));
         assertFalse(check.isEmail("test"));

@@ -59,6 +59,19 @@ public class Check {
                 final EmailValidator validator = EmailValidator.getInstance();
                 check = validator.isValid(email);
 
+                // EmailValidator is agnostic about valid domain names...
+                // ...we do an additional check
+                final Pattern p = Pattern
+                        .compile("@[a-z0-9-]+(\\.[a-z0-9-]+)*\\"
+                                + ".([a-z]{2}|aero|arpa|asia|biz|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|nato|net|"
+                                + "org|pro|tel|travel|xxx)$\\b");
+                // we need to match against lower case for the above regex
+                final Matcher m = p.matcher(email.toLowerCase());
+                if (!m.find()) {
+                    // reset to false, if we do not have a match
+                    check = false;
+                }
+
             } catch (final AddressException e1) {
                 LOG.info("isEmail: " + email + " " + e1.toString());
             }
