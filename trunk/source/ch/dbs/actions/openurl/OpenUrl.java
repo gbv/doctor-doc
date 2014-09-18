@@ -69,18 +69,18 @@ public class OpenUrl {
             final SpecialCharacters specialCharacters = new SpecialCharacters();
             openURL = specialCharacters.replace(openURL); // remove &amp; and other html entities
 
-            // Attention: do not decode OpenURL before if (OpenURL...contains(">")!
+            // Caution: do not decode OpenURL before if (OpenURL...contains(">")!
             // clashes with rtf.sici (contains <...>)!
             // Upper case
             if (openURL.contains("ver=Z39.88-2004")
-            // In web-site...
+                    // In web-site...
                     && openURL.substring(openURL.indexOf("ver=Z39.88-2004")).contains(">")) {
                 openURL = openURL.substring(openURL.indexOf("ver=Z39.88-2004"),
                         openURL.indexOf('>', openURL.indexOf("ver=Z39.88-2004"))); // ...search for String with OpenUrl and extract
             }
             // Lower case
             if (openURL.contains("ver=z39.88-2004")
-            // In web-site...
+                    // In web-site...
                     && openURL.substring(openURL.indexOf("ver=z39.88-2004")).contains(">")) {
                 openURL = openURL.substring(openURL.indexOf("ver=z39.88-2004"),
                         openURL.indexOf('>', openURL.indexOf("ver=z39.88-2004"))); // ...search for String with OpenUrl and extract
@@ -267,6 +267,10 @@ public class OpenUrl {
                 if (openURL.contains("sid=")) {
                     co.setRfr_id(getOpenUrlIdentifiersVersion0_1("sid=", openURL));
                 }
+                // overrides &id=
+                if (openURL.contains("source=")) {
+                    co.setRfr_id(getOpenUrlIdentifiersVersion0_1("source=", openURL));
+                }
                 if (openURL.contains("genre=")) {
                     co.setRft_genre(getOpenUrlIdentifiersVersion0_1("genre=", openURL));
                 }
@@ -282,6 +286,9 @@ public class OpenUrl {
                 if (openURL.contains("pub=")) {
                     co.setRft_pub(getOpenUrlIdentifiersVersion0_1("pub=", openURL));
                 }
+                if (openURL.contains("publiPlace=")) {
+                    co.setRft_place(getOpenUrlIdentifiersVersion0_1("publiPlace=", openURL));
+                }
                 if (openURL.contains("place=")) {
                     co.setRft_place(getOpenUrlIdentifiersVersion0_1("place=", openURL));
                 }
@@ -292,11 +299,20 @@ public class OpenUrl {
                 if (openURL.contains("&title=")) {
                     co.setRft_title(getOpenUrlIdentifiersVersion0_1("&title=", openURL));
                 }
+                if (openURL.contains("journal=")) {
+                    co.setRft_jtitle(getOpenUrlIdentifiersVersion0_1("journal=", openURL));
+                }
                 if (openURL.contains("jtitle=")) {
                     co.setRft_jtitle(getOpenUrlIdentifiersVersion0_1("jtitle=", openURL));
                 }
+                if (openURL.contains("abbrev=")) {
+                    co.setRft_stitle(getOpenUrlIdentifiersVersion0_1("abbrev=", openURL));
+                }
                 if (openURL.contains("stitle=")) {
                     co.setRft_stitle(getOpenUrlIdentifiersVersion0_1("stitle=", openURL));
+                }
+                if (openURL.contains("ISSN=")) {
+                    co.setRft_issn(getOpenUrlIdentifiersVersion0_1("ISSN=", openURL));
                 }
                 if (openURL.contains("issn=")) {
                     co.setRft_issn(getOpenUrlIdentifiersVersion0_1("issn=", openURL));
@@ -311,8 +327,14 @@ public class OpenUrl {
                 if (openURL.contains("eissn1=")) {
                     co.setRft_eissn1(getOpenUrlIdentifiersVersion0_1("eissn1=", openURL));
                 }
+                if (openURL.contains("ISBN=")) {
+                    co.setRft_isbn(getOpenUrlIdentifiersVersion0_1("ISBN=", openURL));
+                }
                 if (openURL.contains("isbn=")) {
                     co.setRft_isbn(getOpenUrlIdentifiersVersion0_1("isbn=", openURL));
+                }
+                if (openURL.contains("year=")) {
+                    co.setRft_date(getOpenUrlIdentifiersVersion0_1("year=", openURL));
                 }
                 if (openURL.contains("date=")) {
                     co.setRft_date(getOpenUrlIdentifiersVersion0_1("date=", openURL));
