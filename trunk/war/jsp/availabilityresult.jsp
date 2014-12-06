@@ -218,7 +218,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://www.portal.hebis.de/direktsuche/vonCBS?issn=<bean:write name="orderform" property="issn" />&db=2.1" target="_blank">HeBis</a></td>
-	  <td id="border"><a href="http://www2.unil.ch/perunil/search.php?allfields=&title=&search=advanced&field=title&publisher=&issn=<bean:write name="orderform" property="issn" />&format=all&accessunil=1&accesslibre=1&sujet=&platform=&licence=&statut=&localisation=&cote=" target="_blank">CHUV</a></td>
+	  <td id="border"><a href="http://www2.unil.ch/perunil/pu2/index.php/site/simpleSearchResults?q=<bean:write name="orderform" property="issn" />&field=jrnall&support=0&depotlegal=true" target="_blank">CHUV</a></td>
       <td id="border"><a href="http://www2.unil.ch/openillink/?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border" colspan="2">&nbsp;</td>
@@ -259,7 +259,7 @@ h += 96;
     <tr>
       <td id="border">&nbsp;</td>
       <td id="border"><a href="http://www.recherche-portal.ch/zbz/action/search.do?&vid=ZAD&fn=search&vl(freeText0)=<bean:write name="orderform" property="issn" />&vl(213214094UI0)=issn" target="_blank">MBC Z&uuml;rich</a></td>
-      <td id="border"><a href="redirectmbczurich.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
+      <td id="border"><a href="http://www.hbz.uzh.ch/dokumentlieferdienst/?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border" colspan="2">&nbsp;</td>
       <td id="border">&nbsp;</td>
@@ -320,7 +320,7 @@ h += 96;
     </tr>
     <tr>
       <td id="border"><a href="http://www.portal.hebis.de" target="_blank">HeBis</a></td>
-	  <td id="border"><a href="http://www2.unil.ch/perunil/search.php?q=<bean:write name="orderform" property="zeitschriftentitel" />&init=&search=simple&field=title&format=all" target="_blank">CHUV</a></td>
+	  <td id="border"><a href="http://www2.unil.ch/perunil/pu2/index.php/site/simpleSearchResults?q=<bean:write name="orderform" property="zeitschriftentitel" />&field=jrnall&support=0&depotlegal=true" target="_blank">CHUV</a></td>
       <td id="border"><a href="http://www2.unil.ch/openillink/?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border" colspan="2">&nbsp;</td>
@@ -353,7 +353,7 @@ h += 96;
     <tr>
       <td id="border">&nbsp;</td>
       <td id="border"><a href="http://www.recherche-portal.ch/zbz/action/search.do?&vid=ZAD&fn=search&vl(freeText0)=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8" />&vl(213214094UI0)=title&vl(186672384UI1)=journals" target="_blank">MBC Z&uuml;rich</a></td>
-      <td id="border"><a href="redirectmbczurich.do?issn=<bean:write name="orderform" property="issn" />&jahr=<bean:write name="orderform" property="jahr" />&jahrgang=<bean:write name="orderform" property="jahrgang" />&heft=<bean:write name="orderform" property="heft" />&seiten=<bean:write name="orderform" property="seiten" />&artikeltitel=<bean:write name="orderform" property="artikeltitel_encodedUTF8" />&zeitschriftentitel=<bean:write name="orderform" property="zeitschriftentitel_encodedUTF8"/>&author=<bean:write name="orderform" property="author_encodedUTF8" />&pmid=<bean:write name="orderform" property="pmid" />&doi=<bean:write name="orderform" property="doi" />" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
+      <td id="border"><a href="http://www.hbz.uzh.ch/dokumentlieferdienst/?issn=<bean:write name="orderform" property="issn" />&title=<bean:write name="orderform" property="zeitschriftentitel_encoded" />&volume=<bean:write name="orderform" property="jahrgang" />&issue=<bean:write name="orderform" property="heft" />&date=<bean:write name="orderform" property="jahr" />&pages=<bean:write name="orderform" property="seiten" />&atitle=<bean:write name="orderform" property="artikeltitel_encoded" />&aulast=<bean:write name="orderform" property="author_encoded" />&id=<logic:notEmpty name="orderform" property="pmid">pmid%3A<bean:write name="orderform" property="pmid" /></logic:notEmpty>&sid=doctor-doc&pid=&remarques=" target="_blank"><bean:message key="tabmenu.slide.order"/></a></td>
       <td id="border">&nbsp;</td>
       <td id="border" colspan="2">&nbsp;</td>
       <td id="border">&nbsp;</td>

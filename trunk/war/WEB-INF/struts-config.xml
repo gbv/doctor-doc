@@ -629,12 +629,6 @@
 			type="ch.dbs.actions.bestellung.OrderUBBaselAction">
 			<forward name="redirect" path="/jsp/redirectdaiapost.jsp" />
 		</action>
-		
-		<action path="/redirectmbczurich" name="OrderForm" validate="false"
-			parameter="method" scope="request"
-			type="ch.dbs.actions.bestellung.OrderMBCZurichAction">
-			<forward name="redirect" path="/jsp/redirectdaiapostiso.jsp" />
-		</action>
 
 		<!--
 			*************************************************Bestellungen ändern*************************************************
