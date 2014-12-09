@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import util.Auth;
+import util.Check;
 import util.CodeUrl;
 import util.Http;
 import util.ReadSystemConfigurations;
@@ -194,7 +195,7 @@ public final class OrderAction extends DispatchAction {
 
                     // autocomplete has been already done...
                     if (pageForm.isAutocomplete()
-                    //...we have input...
+                            //...we have input...
                             && (pageForm.getIssn().length() != 0 || pageForm.getZeitschriftentitel().length() != 0)
                             // ...and it is not the special case autocomplete without ISSN!
                             && !pageForm.isFlag_noissn()) {
@@ -227,7 +228,7 @@ public final class OrderAction extends DispatchAction {
                     boolean jsThread = false;
 
                     if ((pageForm.getIssn().length() == 0)
-                    // Ausklammerung von Journalseek bei Eingabe einer ISSN, da Auswertung anders ist...
+                            // Ausklammerung von Journalseek bei Eingabe einer ISSN, da Auswertung anders ist...
                             && (pageForm.getZeitschriftentitel().length() != 0)) {
 
                         jsThread = true;
@@ -523,6 +524,16 @@ public final class OrderAction extends DispatchAction {
                 internalHoldings.addAll(extractInternalHoldings(allHoldings, kid));
                 externalHoldings.addAll(extractExternalHoldings(allHoldings, kid, ui));
 
+                // Compose internal search link to check for multiple NLM orders within the
+                // current year of articles not older than 5 years within the same journal (CCG
+                // Compliance CONTU Guidelines opposed to CCL Compliance Copyright Law for articles
+                // older than 5 years, for which no order limitations apply).
+                final String checkCCG = checkNLM(pageForm);
+                // if CCG apllies, add result to request
+                if (!isEmpty(checkCCG)) {
+                    rq.setAttribute("checkCCG", checkCCG);
+                }
+
                 // get back EZB thread
                 final String ezbanswer = getBackThreadedWebcontent(ezbcontent, 3, "EZB/ZDB");
 
@@ -617,6 +628,55 @@ public final class OrderAction extends DispatchAction {
         }
 
         return mp.findForward(forward);
+    }
+
+    private String checkNLM(final OrderForm pageForm) {
+
+        // Compose internal search link to check for multiple NLM orders within the
+        // current year of articles not older than 5 years within the same journal (CCG
+        // Compliance CONTU Guidelines opposed to CCL Compliance Copyright Law for articles
+        // older than 5 years, for which no order limitations apply).
+
+        final StringBuffer searchString = new StringBuffer();
+        final Check check = new Check();
+
+        if (pageForm != null && check.isYear(pageForm.getJahr())
+                && (!isEmpty(pageForm.getIssn()) || !isEmpty(pageForm.getZeitschriftentitel()))) {
+
+            // check if CCG applies: article not older than 4 years
+            final Date d = new Date();
+
+            final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd");
+            final String dateNow = fmt.format(d, "GMT");
+
+            final int articleAge = Integer.valueOf(dateNow.substring(0, 4)) - Integer.valueOf(pageForm.getJahr());
+            // CCG applies
+            if (articleAge < 5) {
+                // compose search link
+                searchString.append("searchorder.do?method=search&dfrom=1&mfrom=1&yfrom="); // day and month one of
+                searchString.append(dateNow.substring(0, 4)); // current year to
+                searchString.append("&dto=");
+                searchString.append(dateNow.substring(8, 10)); // current day and
+                searchString.append("&mto=");
+                searchString.append(dateNow.substring(5, 7)); // current month of
+                searchString.append("&yto=");
+                searchString.append(dateNow.substring(0, 4)); // current year
+                // supplier is NLM
+                searchString.append("&value1=searchorders.supplier&condition1=is&input1=NLM&boolean1=and");
+
+                if (!isEmpty(pageForm.getIssn())) {
+                    // search by ISSN
+                    searchString.append("&value2=searchorders.issn&condition2=is&input2=");
+                    searchString.append(pageForm.getIssn());
+                } else {
+                    // search by journal title
+                    searchString.append("&value2=searchorders.zeitschrift&condition2=contains&input2=");
+                    searchString.append(pageForm.getZeitschriftentitel());
+                }
+            }
+        }
+
+        return searchString.toString();
     }
 
     private boolean noJOPErrors(final String ezbanswer, final UserInfo ui, final Text cn, final EZBForm ezbform) {
@@ -1275,22 +1335,22 @@ public final class OrderAction extends DispatchAction {
 
                 if (ui == null
                         || // IP-basierter Zugriff
-                           // erste Kondition ist problematisch falls die Übergabe ab pl (prepareLogin)
-                           // kommt und der Kunde Benutzer mit GBV-Bestellberechtigung ist.
-                           // d.h. GBV-Submit ist nicht vorhanden und er hat keine Wahl
-                           // den Artikel beim GBV zu bestellen....
+                        // erste Kondition ist problematisch falls die Übergabe ab pl (prepareLogin)
+                        // kommt und der Kunde Benutzer mit GBV-Bestellberechtigung ist.
+                        // d.h. GBV-Submit ist nicht vorhanden und er hat keine Wahl
+                        // den Artikel beim GBV zu bestellen....
 
                         (!auth.isUserSubitoBestellung(rq)
-                        // keine Bestellberechtigung
-                        && !(auth.isUserGBVBestellung(rq) && pageForm.getSubmit().equals("GBV")))
-                        // Für Subito nur Artikel zugelassen...
-                        || (!pageForm.getSubmit().equals("GBV") && auth.isBenutzer(rq) && (pageForm.getMediatype() == null || !pageForm
+                                // keine Bestellberechtigung
+                                && !(auth.isUserGBVBestellung(rq) && pageForm.getSubmit().equals("GBV")))
+                                // Für Subito nur Artikel zugelassen...
+                                || (!pageForm.getSubmit().equals("GBV") && auth.isBenutzer(rq) && (pageForm.getMediatype() == null || !pageForm
                                 .getMediatype().equals("Artikel")))
-                        || pageForm.getSubmit().contains("meine Bibliothek")
-                        || pageForm.getSubmit().contains("my library")
-                        || pageForm.getSubmit().contains("ma bibliothèque")
-                        // der Kunde will das Doku bei seiner Bibliothek bestellen
-                        || pageForm.getSubmit().contains("bestellform")) {
+                                || pageForm.getSubmit().contains("meine Bibliothek")
+                                || pageForm.getSubmit().contains("my library")
+                                || pageForm.getSubmit().contains("ma bibliothèque")
+                                // der Kunde will das Doku bei seiner Bibliothek bestellen
+                                || pageForm.getSubmit().contains("bestellform")) {
 
                     forward = "bestellform";
                     if (pageForm.getDeloptions() == null || // Defaultwert deloptions
@@ -1397,7 +1457,7 @@ public final class OrderAction extends DispatchAction {
             if (pageForm.getMediatype() == null) {
                 pageForm.setMediatype("Artikel");
             } // default value 'article'
-              // if not coming from function reorder with an existing bid
+            // if not coming from function reorder with an existing bid
             if (pageForm.getBid() == null && pageForm.getMediatype().equals("Buch")) {
                 pageForm.setDeloptions("post"); // logical consequence
                 pageForm.setFileformat("Papierkopie"); // logical consequence
@@ -1479,7 +1539,7 @@ public final class OrderAction extends DispatchAction {
 
         // aufgrund von IE Bug wird value bei einem eigenen Icon im submit nicht übermittelt:
         if (!pageForm.getSubmit().equals("neuen Kunden anlegen") && !pageForm.getSubmit().equals("add new patron")
-        // Post-Methode um vor dem Abspeichern einer Bestellung einen neuen Kunden anzulegen
+                // Post-Methode um vor dem Abspeichern einer Bestellung einen neuen Kunden anzulegen
                 && !pageForm.getSubmit().equals("Ajouter un nouveau client")) {
 
             forward = Result.SUCCESS.getValue();
@@ -1708,7 +1768,7 @@ public final class OrderAction extends DispatchAction {
                 }
 
                 if (auth.isBibliothekar(rq)
-                // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
+                        // Sicherstellen, dass der Bibliothekar nur Bestellungen vom eigenen Konto bearbeitet!
                         && !b.getKonto().getId().equals(ui.getKonto().getId())) {
                     forward = Result.FAILURE.getValue();
                     final ErrorMessage em = new ErrorMessage("error.hack",
@@ -1718,7 +1778,7 @@ public final class OrderAction extends DispatchAction {
                     LOG.info("prepareModifyOrder: prevented URL-hacking! " + ui.getBenutzer().getEmail());
                 }
                 if (auth.isBenutzer(rq)
-                // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
+                        // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
                         && !b.getBenutzer().getId().equals(ui.getBenutzer().getId())) {
                     // Sicherstellen, dass der User nur eigene Bestellungen bearbeitet!
                     forward = Result.FAILURE.getValue();
@@ -2308,6 +2368,14 @@ public final class OrderAction extends DispatchAction {
         }
 
         return result;
+    }
+
+    private boolean isEmpty(final String input) {
+
+        if (input == null || input.trim().length() == 0) {
+            return true;
+        }
+        return false;
     }
 
 }
