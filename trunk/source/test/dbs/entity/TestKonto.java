@@ -58,7 +58,7 @@ public class TestKonto {
     public void testLoadKonto() throws SQLException {
 
         //    Konto laden
-        k = new Konto(id, k.getSingleConnection()); //Lädt das Konto
+        k = new Konto(id, k.getConnection()); //Lädt das Konto
         k.close();
         assertEquals("Es konnte kein Konto mit der ID " + id.toString() + " geladen werden", k.getId(), id);
     }
@@ -67,14 +67,14 @@ public class TestKonto {
     public void testNewKonto() throws SQLException {
 
         //    Konto laden
-        k = new Konto(id, k.getSingleConnection()); //Lädt das Konto
+        k = new Konto(id, k.getConnection()); //Lädt das Konto
         final String plzOriginal = k.getPLZ();
 
         k.setPLZ("4603");
-        k.update(k.getSingleConnection());
-        final Konto changedkonto = new Konto(id, k.getSingleConnection());
+        k.update(k.getConnection());
+        final Konto changedkonto = new Konto(id, k.getConnection());
         k.setPLZ(plzOriginal);
-        k.update(k.getSingleConnection());
+        k.update(k.getConnection());
         k.close();
 
         assertEquals("Error while chaning the zip code", "4603", changedkonto.getPLZ());

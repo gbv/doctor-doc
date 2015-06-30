@@ -40,18 +40,18 @@ import ch.dbs.form.UserForm;
 import ch.ddl.entity.Position;
 
 public class PrepareTestObjects {
-    
+
     /** Passwort welches zum Login benötigt wird */
     public static final String LOGINPW = "testpw";
-    
+
     /** E-Mail welche zum Login benötigt wird */
     public static final String BNEMAIL = "testitestmail@eldali.ch";
-    
+
     public static final Long KONTOID = Long.valueOf(1);
-    
+
     public static final String BIBLIONAME1 = "Biblioname1";
     public static final String BIBLIONAME2 = "Biblioname2";
-    
+
     /**
      * Erstellt ein Loginform mit Linkresolver-Angaben
      * 
@@ -59,7 +59,7 @@ public class PrepareTestObjects {
      */
     public static LoginForm getloginForm() {
         final LoginForm lf = new LoginForm();
-        
+
         lf.setMediatype("Artikel");
         lf.setIssn("0803-5253");
         lf.setJahr("1995");
@@ -72,19 +72,19 @@ public class PrepareTestObjects {
         lf.setGenre("Journal+Article");
         lf.setPmid("info%3Apmid%2F8652953");
         lf.setResolver(true);
-        
+
         return lf;
     }
-    
+
     /**
      * Erstellt ein Test-Kontoform
      * 
      * @return KontoForm
      */
     public static KontoForm getKontoValues() {
-        
+
         final KontoForm kf = new KontoForm();
-        
+
         kf.setBiblioname(BIBLIONAME1);
         kf.setAdresse("adresse");
         kf.setPLZ("1234");
@@ -93,31 +93,31 @@ public class PrepareTestObjects {
         kf.setBibliotheksmail("info@doctor-doc.com");
         kf.setDbsmail("dbs@mail.bl");
         kf.setUserlogin(false);
-        
+
         kf.setEzbid(""); //verhindert NullPointer in KontoAction
-        
+
         return kf;
-        
+
     }
-    
+
     public static List<Konto> getTestkonto() {
-        
+
         final List<Konto> kl = new ArrayList<Konto>();
         final Konto cn = new Konto();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = cn.getSingleConnection().prepareStatement(
+            pstmt = cn.getConnection().prepareStatement(
                     "SELECT * FROM konto WHERE `biblioname` = ? or `biblioname` = ?");
             pstmt.setString(1, BIBLIONAME1);
             pstmt.setString(2, BIBLIONAME2);
-            
+
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 kl.add(new Konto(rs));
             }
-            
+
         } catch (final Exception e) {
             System.out.println("getKontoValues() trat folgender Fehler auf: \012" + e);
         } finally {
@@ -141,36 +141,36 @@ public class PrepareTestObjects {
         }
         return kl;
     }
-    
+
     public static void clearTestObjects() {
         // UserForm vorbereiten
         //    UserForm uf = PrepareTestObjects.getUserForm();
         final List<Konto> oldkl = PrepareTestObjects.getTestkonto();
-        
+
         final Konto cn = new Konto();
-        
+
         for (final Konto k : oldkl) {
             System.out.println("Konto ID = " + k.getId());
-            k.deleteSelf(cn.getSingleConnection());
+            k.deleteSelf(cn.getConnection());
         }
-        
+
         final VKontoBenutzer vkb = new VKontoBenutzer();
         final List<AbstractBenutzer> alb = new AbstractBenutzer()
-                .getAllUserFromEmail(BNEMAIL, cn.getSingleConnection());
+        .getAllUserFromEmail(BNEMAIL, cn.getConnection());
         for (final AbstractBenutzer b : alb) {
-            vkb.deleteAllKontoEntries(b, cn.getSingleConnection());
-            b.deleteUser(b, cn.getSingleConnection());
+            vkb.deleteAllKontoEntries(b, cn.getConnection());
+            b.deleteUser(b, cn.getConnection());
         }
         cn.close();
     }
-    
+
     /**
      * Erstellt ein Test-UserForm
      */
     public static UserForm getUserForm() {
-        
+
         final UserForm uf = new UserForm();
-        
+
         uf.setAnrede("Herr");
         uf.setName("Testname"); //Mussfeld beim Bibliothekar erstellen
         uf.setVorname("Testvorname"); //Mussfeld beim Bibliothekar erstellen
@@ -178,37 +178,37 @@ public class PrepareTestObjects {
         uf.setKontostatus(true);
         final Encrypt e = new Encrypt();
         uf.setPassword(e.makeSHA(LOGINPW)); //Das Passwort muss mindestens 7 Zeichen lang sein
-        
+
         return uf;
     }
-    
+
     /**
      * Erstellt ein Testkontoobjekt
      * 
      * @return Konto
      */
     public static Konto getKonto() {
-        
+
         return new Konto(getKontoValues());
-        
+
     }
-    
+
     /**
      * Erstellt ein TestBenutzerObjekt
      * 
      * @return Benutzer
      */
     public static Benutzer getBenutzer() {
-        
+
         final Text t = new Text();
-        
-        final Benutzer b = new Benutzer(getUserForm(), t.getSingleConnection());
-        
+
+        final Benutzer b = new Benutzer(getUserForm(), t.getConnection());
+
         t.close();
-        
+
         return b;
     }
-    
+
     /**
      * Holt eine Testbenutzer aus der Datenbank
      * 
@@ -227,7 +227,7 @@ public class PrepareTestObjects {
             pstmt.setString(1, BNEMAIL);
             pstmt.setString(2, e.makeSHA(LOGINPW));
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 b = (Benutzer) ab.getUser(rs, cn);
             }
@@ -250,10 +250,10 @@ public class PrepareTestObjects {
                 }
             }
         }
-        
+
         return b;
     }
-    
+
     /**
      * Holt eine Testbibliothekar aus der Datenbank
      * 
@@ -272,7 +272,7 @@ public class PrepareTestObjects {
             pstmt.setString(1, BNEMAIL);
             pstmt.setString(2, e.makeSHA(LOGINPW));
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 b = (Bibliothekar) ab.getUser(rs, cn);
             }
@@ -295,10 +295,10 @@ public class PrepareTestObjects {
                 }
             }
         }
-        
+
         return b;
     }
-    
+
     /**
      * Holt ein Konto aus der Datenbank.
      * 
@@ -314,7 +314,7 @@ public class PrepareTestObjects {
             pstmt = cn.prepareStatement("SELECT * FROM `konto` AS k WHERE k.biblioname = ?");
             pstmt.setString(1, kontoname);
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 k = new Konto(rs);
             }
@@ -339,26 +339,26 @@ public class PrepareTestObjects {
                 }
             }
         }
-        
+
         return k;
     }
-    
+
     /**
      * Erstellt ein TestBibliothekarObjekt
      * 
      * @return Bibliothekar
      */
     public static Bibliothekar getBibliothekar() {
-        
+
         final Text t = new Text();
-        
-        final Bibliothekar b = new Bibliothekar(getUserForm(), t.getSingleConnection());
-        
+
+        final Bibliothekar b = new Bibliothekar(getUserForm(), t.getConnection());
+
         t.close();
-        
+
         return b;
     }
-    
+
     /**
      * Erstellt ein TestPositionenObjekt
      * 
@@ -367,14 +367,14 @@ public class PrepareTestObjects {
     public static Position getPosition() {
         final Position p = new Position();
         p.setAutor("autor");
-        p.setBenutzer(getTestBibliothekarFromDb(p.getSingleConnection()));
+        p.setBenutzer(getTestBibliothekarFromDb(p.getConnection()));
         p.setDeloptions("deloptions");
         p.setFileformat("fileformat");
         p.setHeft("heft");
         p.setJahr("jahr");
         p.setJahrgang("jahrgang");
         p.setKapitel("kapitel");
-        p.setKonto(getTestKontoFromDb("Bibliothek soH/BZ-GS", p.getSingleConnection()));
+        p.setKonto(getTestKontoFromDb("Bibliothek soH/BZ-GS", p.getConnection()));
         p.setMediatype("mediatype");
         p.setOrderdate(new java.sql.Date(1));
         p.setPreis("preis");
@@ -383,9 +383,9 @@ public class PrepareTestObjects {
         p.setTitel("titel");
         p.setWaehrung("waehrung");
         p.setZeitschrift_verlag("zeitschrift_verlag");
-        
+
         p.close();
         return p;
     }
-    
+
 }

@@ -11,6 +11,7 @@
  <!-- set log level on package level -->
  <logger name="ch" level="WARN" />
  <logger name="com.jolbox.bonecp" level="WARN" />
+ <logger name="com.zaxxer.hikari" level="WARN" />
  <logger name="util" level="WARN" />
  <logger name="test" level="DEBUG" />
 

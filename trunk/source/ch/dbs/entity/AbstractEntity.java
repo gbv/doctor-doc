@@ -20,7 +20,7 @@ package ch.dbs.entity;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import util.DBConn;
+import util.PooledConnections;
 
 /**
  * Basis abstract class für die meisten tabellen innerhalb dbs. Beinhaltet
@@ -31,7 +31,7 @@ import util.DBConn;
  * @author Pascal Steiner
  * @version $Id$
  */
-public abstract class AbstractEntity extends DBConn {
+public abstract class AbstractEntity extends PooledConnections {
 
     private Timestamp lastModification = new Timestamp(new Date().getTime());
 

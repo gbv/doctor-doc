@@ -41,7 +41,7 @@ import ch.dbs.entity.Konto;
 import ch.dbs.entity.Text;
 
 public class TestBenutzer {
-    
+
     private static final String anrede = "Testanrede";
     private static final String vorname = "Testvorname";
     private static final String name = "Testname";
@@ -70,29 +70,29 @@ public class TestBenutzer {
     private static final String gtcdate = "2012-05-19 20:19:45";
     private static final Date lastuse = new Date();
     private static final String datum = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastuse);
-    
+
     private static final Konto tz = new Konto(); // we need this for setting a default timezone
-    
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        
+
     }
-    
+
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        
+
     }
-    
+
     @Before
     public void setUp() throws Exception {
-        
+
     }
-    
+
     @After
     public void tearDown() throws Exception {
-        
+
     }
-    
+
     @Test
     public void testSaveBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
@@ -101,16 +101,16 @@ public class TestBenutzer {
         final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final String datum = fmt.format(d, tz.getTimezone());
         u.setDatum(datum);
-        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getSingleConnection());
-        u.saveNewUser(u, tz.getTimezone(), u.getSingleConnection());
+        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getConnection());
+        u.saveNewUser(u, tz.getTimezone(), u.getConnection());
         u.close();
     }
-    
+
     @Test
     public void testLoadBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
         AbstractBenutzer b = new AbstractBenutzer();
-        final Connection cn = b.getSingleConnection();
+        final Connection cn = b.getConnection();
         b = b.getUserFromEmail(email, cn);
         cn.close();
         assertEquals(b.getAnrede(), anrede);
@@ -139,14 +139,14 @@ public class TestBenutzer {
         assertEquals(b.getBilling(), billing);
         assertFalse(b.getGtcdate().equals(gtcdate)); // make sure this gets not overridden
         assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(b.getLastuse()), datum);
-        
+
     }
-    
+
     @Test
     public void testChangeBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
         AbstractBenutzer b = new AbstractBenutzer();
-        final Connection cn = b.getSingleConnection();
+        final Connection cn = b.getConnection();
         b = b.getUserFromEmail(email, cn);
         b.setName(name + "1");
         b.setVorname(vorname + "1");
@@ -156,12 +156,12 @@ public class TestBenutzer {
         assertEquals(b.getVorname(), vorname + "1");
         assertEquals(b.getName(), name + "1");
     }
-    
+
     @Test
     public void testDeleteBenutzer() throws SQLException {
         //Benutzervalues vorbereiten
         AbstractBenutzer b = new AbstractBenutzer();
-        final Connection cn = b.getSingleConnection();
+        final Connection cn = b.getConnection();
         b.deleteUser(b.getUserFromEmail(email, cn), cn);
         b = null;
         final AbstractBenutzer ab = new AbstractBenutzer();
@@ -169,59 +169,59 @@ public class TestBenutzer {
         cn.close();
         assertNull("Noch Testbenutzer im System! Manuell löschen und Test wiederholen ob immer noch fehlschlägt", b);
     }
-    
+
     @Test
     public void testSave2BenutzerWithSameEmail() throws SQLException {
-        
+
         //    Benutzervalues vorbereiten
         final AbstractBenutzer u = this.setUserValues();
         final Date d = new Date();
         final ThreadSafeSimpleDateFormat fmt = new ThreadSafeSimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final String datum = fmt.format(d, tz.getTimezone());
         u.setDatum(datum);
-        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getSingleConnection());
-        u.saveNewUser(u, tz.getTimezone(), u.getSingleConnection());
-        u.saveNewUser(u, tz.getTimezone(), u.getSingleConnection());
-        
-        final List<AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getSingleConnection());
+        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getConnection());
+        u.saveNewUser(u, tz.getTimezone(), u.getConnection());
+        u.saveNewUser(u, tz.getTimezone(), u.getConnection());
+
+        final List<AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getConnection());
         assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!", 2, abl.size());
-        
-        u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
-        u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
-        
-        final AbstractBenutzer b = u.getUserFromEmail(email, u.getSingleConnection());
+
+        u.deleteUser(u.getUserFromEmail(email, u.getConnection()), u.getConnection());
+        u.deleteUser(u.getUserFromEmail(email, u.getConnection()), u.getConnection());
+
+        final AbstractBenutzer b = u.getUserFromEmail(email, u.getConnection());
         u.close();
         assertNull("Noch Testbenutzer im System! Manuell löschen und Test wiederholen ob immer noch fehlschlägt", b);
     }
-    
+
     @Test
     public void testSave2BibliothekareWithSameEmail() throws SQLException {
-        
+
         //    Benutzervalues vorbereiten
         final AbstractBenutzer u = this.setUserValues();
-        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getSingleConnection());
-        u.saveNewUser(u, tz.getTimezone(), u.getSingleConnection());
-        u.saveNewUser(u, tz.getTimezone(), u.getSingleConnection());
-        
-        final List<AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getSingleConnection());
+        assertNotNull("Es konnte keine Verbindung zur Datenbank hergestellt werden", u.getConnection());
+        u.saveNewUser(u, tz.getTimezone(), u.getConnection());
+        u.saveNewUser(u, tz.getTimezone(), u.getConnection());
+
+        final List<AbstractBenutzer> abl = u.getAllUserFromEmail(email, u.getConnection());
         assertEquals("Es befinden sich nicht genau 2 Testbenutzer in der DB!", 2, abl.size());
-        
-        u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
-        u.deleteUser(u.getUserFromEmail(email, u.getSingleConnection()), u.getSingleConnection());
-        
-        final AbstractBenutzer b = u.getUserFromEmail(email, u.getSingleConnection());
+
+        u.deleteUser(u.getUserFromEmail(email, u.getConnection()), u.getConnection());
+        u.deleteUser(u.getUserFromEmail(email, u.getConnection()), u.getConnection());
+
+        final AbstractBenutzer b = u.getUserFromEmail(email, u.getConnection());
         u.close();
         assertNull("Noch Testbenutzer im System! Manuell löschen und Test wiederholen ob immer noch fehlschlägt", b);
     }
-    
+
     /*
      * Füllt die in den Membervariabeln dieser Klasse gesetzten Werte in den AbstractBenutzer
      * (Benutzer / Bibliothekar / Anministrator) ein
      */
     private AbstractBenutzer setUserValues() {
-        
+
         AbstractBenutzer u = null;
-        
+
         //        if (rechte == 3) {
         //            u = new Administrator();
         //        }
@@ -261,8 +261,8 @@ public class TestBenutzer {
             u.setDatum(datum);
             u.setLastuse(lastuse);
         }
-        
+
         return u;
-        
+
     }
 }

@@ -69,7 +69,7 @@ public class TestKontoAction extends MockStrutsTestCase {
 
         //    Kontoform vorbereiten
 
-        k = new Konto(id, k.getSingleConnection());
+        k = new Konto(id, k.getConnection());
         final KontoForm kf = new KontoForm(k);
         kf.setValuesFromKonto();
 

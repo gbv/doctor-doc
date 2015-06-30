@@ -42,9 +42,9 @@ public class Order {
         final Bestellungen b = new Bestellungen();
         final AbstractBenutzer ab = new AbstractBenutzer();
         final Lieferanten supplier = new Lieferanten();
-        b.setKonto(new Konto(Long.valueOf(1), b.getSingleConnection()));
-        b.setBenutzer(ab.getUser(Long.valueOf(1), b.getSingleConnection()));
-        b.setLieferant(supplier.getLieferantFromName("Subito", b.getSingleConnection()));
+        b.setKonto(new Konto(Long.valueOf(1), b.getConnection()));
+        b.setBenutzer(ab.getUser(Long.valueOf(1), b.getConnection()));
+        b.setLieferant(supplier.getLieferantFromName("Subito", b.getConnection()));
         b.setPriority("normal");
         b.setDeloptions("email"); // Lieferbedingungen. In Subito neu "deliveryway". Nur noch "post" und "fax" möglich
         b.setFileformat("Fax to PDF");
@@ -70,7 +70,7 @@ public class Order {
         b.setOrderdate(datum);
         b.setStatusdate(datum);
         b.setStatustext("bestellt");
-        b.save(b.getSingleConnection());
+        b.save(b.getConnection());
         b.close();
 
         return b;
