@@ -66,6 +66,7 @@ import ch.dbs.entity.AbstractBenutzer;
 import ch.dbs.entity.Bestand;
 import ch.dbs.entity.BestellFormParam;
 import ch.dbs.entity.Bestellungen;
+import ch.dbs.entity.DaiaParam;
 import ch.dbs.entity.DefaultPreis;
 import ch.dbs.entity.Konto;
 import ch.dbs.entity.Lieferanten;
@@ -371,6 +372,7 @@ public final class OrderAction extends DispatchAction {
         String bibid = null;
         long daiaId = 0;
         long kid = 0;
+        DaiaParam dp = null;
 
         try {
 
@@ -413,7 +415,15 @@ public final class OrderAction extends DispatchAction {
                     }
                     daiaId = cn.getKonto().getId();
                     kid = cn.getKonto().getId();
+                    // if we are not logged in, try to get a possible DaiaParam
+                    dp = new DaiaParam(cn.getKonto(), cn.getConnection());
                 }
+            }
+
+            // check if the account uses an external order form / linkrsolver
+            if (dp != null && dp.getId() != null && dp.isRedirect()) {
+                // we use directly the external order form without the availability checks below
+                return mp.findForward("bestellform");
             }
 
             // normalize PMID if available
@@ -487,6 +497,8 @@ public final class OrderAction extends DispatchAction {
                     linkEZB.append("&pid=client_ip%3D");
                     linkEZB.append(rq.getRemoteAddr());
                 }
+                // rlink=1 causes the JOP to show article level linking also when there is no availability
+                // linkEZB.append("&rlink=1");
 
                 // set EZB request into thread, get back after timeout and if empty use alternate API over
                 // http://rzblx1.uni-regensburg.de/ezeit/vascoda/info/dokuXML.html
@@ -506,6 +518,8 @@ public final class OrderAction extends DispatchAction {
                     linkUIezb.append("&client_ip=");
                     linkUIezb.append(rq.getRemoteAddr());
                 }
+                // rlink=1 causes the EZB to show article level linking also when there is no availability
+                // linkUIezb.append("&rlink=1");
 
                 // Check for internal / external Holdings using DAIA Document Availability Information API
                 List<Bestand> allHoldings = new ArrayList<Bestand>();
