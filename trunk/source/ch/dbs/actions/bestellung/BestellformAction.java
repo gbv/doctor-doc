@@ -861,7 +861,7 @@ public final class BestellformAction extends DispatchAction {
                             final String subject = "Article: " + of.getZeitschriftentitel() + "\040" + of.getJahr()
                                     + ";" + of.getJahrgang() + "(" + of.getHeft() + "):" + of.getSeiten();
 
-                            // send email to patron, ReplyTo library                            
+                            // send email to patron, ReplyTo library
                             final MHelper mhPatron = new MHelper(toPatron, subject, m.toString());
                             mhPatron.setReplyTo(konto.getDbsmail());
                             mhPatron.send();
@@ -892,7 +892,7 @@ public final class BestellformAction extends DispatchAction {
                             final String subject = "Book part: " + of.getBuchtitel() + "\040" + of.getJahr() + ":"
                                     + of.getSeiten();
 
-                            // send email to patron, ReplyTo library                            
+                            // send email to patron, ReplyTo library
                             final MHelper mhPatron = new MHelper(toPatron, subject, m.toString());
                             mhPatron.setReplyTo(konto.getDbsmail());
                             mhPatron.send();
@@ -917,7 +917,7 @@ public final class BestellformAction extends DispatchAction {
 
                             final String subject = "Book: " + of.getBuchtitel() + "\040" + of.getJahr();
 
-                            // send email to patron, ReplyTo library                            
+                            // send email to patron, ReplyTo library
                             final MHelper mhPatron = new MHelper(toPatron, subject, m.toString());
                             mhPatron.setReplyTo(konto.getDbsmail());
                             mhPatron.send();
@@ -1194,7 +1194,7 @@ public final class BestellformAction extends DispatchAction {
 
                     bp = checkBPLogic(bp); // logische Prüfungen und setzt abhängige Werte
 
-                    if (bp.getMessage() == null) { // keine Fehlermedlungen
+                    if (bp.getMessage() == null) { // keine Fehlermeldungen
 
                         forward = "bestellform";
                         final OrderForm of = new OrderForm();
@@ -1329,7 +1329,19 @@ public final class BestellformAction extends DispatchAction {
                 dp.delete(ui.getKonto(), cn.getConnection());
 
                 // save new DAIA-Param
-                dp.save(ui.getKonto(), cn.getConnection());
+                final Long newDaiaParamID = dp.save(ui.getKonto(), cn.getConnection());
+
+                // do we need to update USE_DID in bestellform_param?
+                final BestellFormParam bf = new BestellFormParam();
+                final List<BestellFormParam> bfps = bf.getAllBestellFormParam(ui.getKonto(), cn.getConnection());
+
+                for (final BestellFormParam bfp : bfps) {
+                    if (bfp.getUse_did() != null && !bfp.getUse_did().equals(Long.valueOf("0"))) {
+                        // set new DAIA-Param ID
+                        bfp.setUse_did(newDaiaParamID);
+                        bf.update(bfp, cn.getConnection());
+                    }
+                }
 
                 // set success message
                 message.setMessage("message.modifyuser");
@@ -1375,6 +1387,18 @@ public final class BestellformAction extends DispatchAction {
 
             // delete DAIA-Params for account
             dp.delete(ui.getKonto(), cn.getConnection());
+
+            // do we need to update USE_DID in bestellform_param?
+            final BestellFormParam bf = new BestellFormParam();
+            final List<BestellFormParam> bfps = bf.getAllBestellFormParam(ui.getKonto(), cn.getConnection());
+
+            for (final BestellFormParam bfp : bfps) {
+                if (bfp.getUse_did() != null && !bfp.getUse_did().equals(Long.valueOf("0"))) {
+                    // set new DAIA-Param ID
+                    bfp.setUse_did(null);
+                    bf.update(bfp, cn.getConnection());
+                }
+            }
 
             // set success message
             final Message message = new Message();
