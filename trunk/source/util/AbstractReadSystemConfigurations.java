@@ -49,7 +49,6 @@ abstract class AbstractReadSystemConfigurations {
     protected static final String DATABASE_NAME = readDatabaseName();
     protected static final String DATABASE_USER = readDatabaseUser();
     protected static final String DATABASE_PASSWORD = readDatabasePassword();
-    protected static final boolean DATABASE_POOLED_CONNECTIONS = readDatabasePooledConnections();
 
     protected static final String SERVER_WELCOMEPAGE = readServerWelcomepage();
     protected static final String SERVER_INSTALLATION = readServerInstallation();
@@ -246,21 +245,6 @@ abstract class AbstractReadSystemConfigurations {
         }
 
         return databasePassword;
-    }
-
-    private static boolean readDatabasePooledConnections() {
-
-        boolean activated = false;
-
-        try {
-            final Configuration config = new PropertiesConfiguration(PATH);
-            activated = config.getBoolean("mysql.pooledConnections");
-
-        } catch (final ConfigurationException e) {
-            LOG.error(e.toString());
-        }
-
-        return activated;
     }
 
     private static String readServerWelcomepage() {

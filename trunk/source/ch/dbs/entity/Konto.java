@@ -29,7 +29,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import util.DBConn;
 import util.ReadSystemConfigurations;
 import ch.dbs.form.KontoForm;
 import ch.dbs.form.UserInfo;
@@ -87,9 +86,9 @@ public class Konto extends AbstractIdEntity implements Serializable {
     // gestellt. Feld leer oder 0 = kein Schwellwert
     private int accounting_rhythmtimeout;
     private int threshold_value; /*
-                                  * Verrechnungsschwellwert Sammelrechnungen in
-                                  * Tagen
-                                  */
+     * Verrechnungsschwellwert Sammelrechnungen in
+     * Tagen
+     */
     private int maxordersu; // Begrenzung mglicher unbezahlter Bestellungen durch einen Benutzer
     private int maxordersutotal; // Begrenzung möglicher Bestellungen durch einen Benutzer pro Jahr
     private int maxordersj; // Legt die maximale Artikelanzahl eines Kontos pro Jahr fest
@@ -538,7 +537,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * @return a {@link Konto}
      */
     public List<Konto> getExpireKontos(final int expiredays) {
-        final DBConn cn = new DBConn();
+        final Text cn = new Text();
         final List<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -580,7 +579,7 @@ public class Konto extends AbstractIdEntity implements Serializable {
      * @return a {@link Konto}
      */
     public List<Konto> getFaxserverKontos() {
-        final DBConn cn = new DBConn();
+        final Text cn = new Text();
         final ArrayList<Konto> kl = new ArrayList<Konto>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;

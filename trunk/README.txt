@@ -1,9 +1,9 @@
-  README - 25.10.2013
+  README - 03.07.2015
   
   Doctor-Doc is a web based and a easy-to-use tracking and
   managing system for scientific literature.
   
-  Copyright (C) 2005 - 2013  Markus Fischer, Pascal Steiner
+  Copyright (C) 2005 - 2015  Markus Fischer, Pascal Steiner
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -71,38 +71,6 @@ Change in struts-config.xml the port numbers needed for you environment:
 -
 
 To use a custom icon for your institution replace /img/sp.gif.
-
--
-Doctor-Doc is able to use pooled database connections. We use BoneCP. 
-To use pooled connections you have to configure Tomcat appropriately:
-
-Enable pooled connection in /source/resources/SystemConfiguration.properties
-
-Configure Tomcat as indicated below. Checkout http://jolbox.com/ for 
-additional configuration details. 
-
-
-The configuration has to be made in context.xml.
-Add in $CATALINA_HOME/conf/context.xml the following configuration:
-
-<Context>
- <!-- Configuration for PooledConnections with BoneCP in Tomcat -->
-      <Resource auth="Container"
-        driverClass="com.mysql.jdbc.Driver"
-        name="jdbc/pooledDS" 
-        username="username" 
-        password="password" 
-        factory="org.apache.naming.factory.BeanFactory" 
-        type="com.jolbox.bonecp.BoneCPDataSource" 
-        jdbcUrl="jdbc:mysql://127.0.0.1/doctor-doc_com_dbs?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false" 
-        idleMaxAgeInMinutes="240"
-        idleConnectionTestPeriodInMinutes="60"
-        partitionCount="3"
-        acquireIncrement="5"
-        maxConnectionsPerPartition="15"
-        minConnectionsPerPartition="3"
-        statementsCacheSize="50" />
-</Context>
 
 ---
 

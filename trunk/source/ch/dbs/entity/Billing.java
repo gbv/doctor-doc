@@ -30,7 +30,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import util.DBConn;
 import ch.dbs.form.BillingForm;
 import enums.TextType;
 
@@ -41,9 +40,9 @@ import enums.TextType;
  * @author Pascal Steiner
  */
 public class Billing extends AbstractIdEntity {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Billing.class);
-    
+
     private AbstractBenutzer user;
     private Konto konto;
     private Text rechnungsgrund;
@@ -53,10 +52,10 @@ public class Billing extends AbstractIdEntity {
     private Date rechnungsdatum;
     private Date zahlungseingang;
     private boolean storniert;
-    
+
     public Billing() {
     }
-    
+
     /**
      * Erstellt für ein Konto ein Rechnungsobjekt
      * 
@@ -73,7 +72,7 @@ public class Billing extends AbstractIdEntity {
         this.waehrung = waehr;
         this.rechnungsdatum = new Date(Calendar.getInstance().getTimeInMillis());
     }
-    
+
     /**
      * Erstellt aus einem Resultset eine Billing Objekt
      * 
@@ -81,18 +80,18 @@ public class Billing extends AbstractIdEntity {
      * @return Billing
      */
     public Billing(final Long id, final Connection cn) {
-        
+
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = cn.prepareStatement("SELECT * FROM `billing` WHERE ID = ?");
             pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 this.setRsValues(rs, cn);
             }
-            
+
         } catch (final SQLException e) {
             LOG.error("Billing(Long, Connection): " + e.toString());
         } finally {
@@ -112,7 +111,7 @@ public class Billing extends AbstractIdEntity {
             }
         }
     }
-    
+
     /**
      * Erstellt aus einem Resultset eine Billing Objekt
      * 
@@ -123,7 +122,7 @@ public class Billing extends AbstractIdEntity {
     private Billing(final ResultSet rs, final Connection cn) {
         this.setRsValues(rs, cn);
     }
-    
+
     private void setRsValues(final ResultSet rs, final Connection cn) {
         try {
             final AbstractBenutzer b = new AbstractBenutzer();
@@ -141,7 +140,7 @@ public class Billing extends AbstractIdEntity {
             LOG.error("RsValues(ResultSet rs): " + e.toString());
         }
     }
-    
+
     /**
      * Erstellt aus einem BillingForm ein Billing Objekt
      * 
@@ -149,9 +148,9 @@ public class Billing extends AbstractIdEntity {
      * @return Billing
      */
     public Billing getBilling(final BillingForm bf) {
-        
+
         final Billing b = new Billing();
-        
+
         try {
             final AbstractBenutzer ab = new AbstractBenutzer();
             b.setId(bf.getBillid());
@@ -170,7 +169,7 @@ public class Billing extends AbstractIdEntity {
         }
         return b;
     }
-    
+
     /**
      * Generiert eine Rechnungsnummer anhand des Kontos und dem Datum sowie aus
      * der Anzahl bereits erstellter Rechnungen für dieses Konto
@@ -192,7 +191,7 @@ public class Billing extends AbstractIdEntity {
         billNr.append(countBillings(k));
         return billNr.toString();
     }
-    
+
     /**
      * Speichert / Veraendert dieses Rechnungsobjekt in der Datenbank
      */
@@ -207,7 +206,7 @@ public class Billing extends AbstractIdEntity {
                                 + "`rechnungsnummer` , `rechnungsdatum`, `zahlungseingang`) "
                                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
                 pstmt.execute();
-                
+
                 // ID im objekt abspeichern
                 pstmt = cn.prepareStatement("SELECT LAST_INSERT_ID()");
                 rs = pstmt.executeQuery();
@@ -219,7 +218,7 @@ public class Billing extends AbstractIdEntity {
                         .prepareStatement("UPDATE `billing` SET `UID`=? , `KID`=? , `rechnungsgrund`=? , "
                                 + "`betrag`=? , `waehrung`=? , `rechnungsnummer`=? , `rechnungsdatum`=?, "
                                 + "`zahlungseingang`=? WHERE `ID`=" + this.getId()));
-                
+
                 pstmt.execute();
             }
         } catch (final Exception e) {
@@ -241,9 +240,9 @@ public class Billing extends AbstractIdEntity {
             }
         }
     }
-    
+
     public List<Billing> getBillings(final Konto k, final Connection cn) {
-        
+
         final ArrayList<Billing> bl = new ArrayList<Billing>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -251,7 +250,7 @@ public class Billing extends AbstractIdEntity {
             pstmt = cn.prepareStatement("SELECT * FROM `billing` WHERE KID=? "
                     + "ORDER BY `zahlungseingang`, `rechnungsdatum`");
             pstmt.setLong(1, k.getId());
-            
+
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 bl.add(new Billing(rs, cn));
@@ -276,17 +275,17 @@ public class Billing extends AbstractIdEntity {
         }
         return bl;
     }
-    
+
     public void update(final Connection cn) {
-        
+
         PreparedStatement pstmt = null;
         try {
             pstmt = setBillingValues(cn.prepareStatement("UPDATE `billing` SET UID=? , "
                     + "KID=?, rechnungsgrund=?, betrag=?, waehrung=?, rechnungsnummer=?, rechnungsdatum=?, "
                     + "zahlungseingang=? WHERE `ID` = " + this.getId()));
-            
+
             pstmt.executeUpdate();
-            
+
         } catch (final Exception e) {
             LOG.error("update(Connection cn): " + e.toString());
         } finally {
@@ -298,9 +297,9 @@ public class Billing extends AbstractIdEntity {
                 }
             }
         }
-        
+
     }
-    
+
     /**
      * Liefert die letzte offene Rechnung zu einem Konto
      * 
@@ -323,7 +322,7 @@ public class Billing extends AbstractIdEntity {
             while (rs.next()) {
                 b = new Billing(rs, cn);
             }
-            
+
         } catch (final Exception e) {
             LOG.error("getLastBilling(Konto k, Connection cn): " + e.toString());
         } finally {
@@ -344,7 +343,7 @@ public class Billing extends AbstractIdEntity {
         }
         return b;
     }
-    
+
     /**
      * Zählt die Rechnungen zum Konto
      * 
@@ -352,7 +351,7 @@ public class Billing extends AbstractIdEntity {
      * @return
      */
     private int countBillings(final Konto k) {
-        final DBConn cn = new DBConn();
+        final Text cn = new Text();
         int z = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -360,11 +359,11 @@ public class Billing extends AbstractIdEntity {
             pstmt = cn.getConnection().prepareStatement("SELECT count(kid) as anzahl FROM `billing` WHERE kid=?");
             pstmt.setLong(1, k.getId());
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 z = rs.getInt("anzahl");
             }
-            
+
         } catch (final Exception e) {
             LOG.error("countBillings(Konto k): " + e.toString());
         } finally {
@@ -386,7 +385,7 @@ public class Billing extends AbstractIdEntity {
         }
         return z;
     }
-    
+
     /**
      * Statement vorbereiten
      * 
@@ -424,80 +423,80 @@ public class Billing extends AbstractIdEntity {
         }
         return pstmt;
     }
-    
+
     public AbstractBenutzer getUser() {
         return user;
     }
-    
+
     public void setUser(final AbstractBenutzer user) {
         this.user = user;
     }
-    
+
     public Konto getKonto() {
         return konto;
     }
-    
+
     public void setKonto(final Konto konto) {
         this.konto = konto;
     }
-    
+
     public Text getRechnungsgrund() {
         return rechnungsgrund;
     }
-    
+
     public void setRechnungsgrund(final Text rechnungsgrund) {
         this.rechnungsgrund = rechnungsgrund;
     }
-    
+
     public double getBetrag() {
         return betrag;
     }
-    
+
     public void setBetrag(final double betrag) {
         this.betrag = betrag;
     }
-    
+
     public String getRechnungsnummer() {
         if (rechnungsnummer == null) {
             rechnungsnummer = generateBillingNumber(this.konto);
         }
         return rechnungsnummer;
     }
-    
+
     public void setRechnungsnummer(final String rechnungsnummer) {
         this.rechnungsnummer = rechnungsnummer;
     }
-    
+
     public Date getRechnungsdatum() {
         return rechnungsdatum;
     }
-    
+
     public void setRechnungsdatum(final Date rechnungsdatum) {
         this.rechnungsdatum = rechnungsdatum;
     }
-    
+
     public Date getZahlungseingang() {
         return zahlungseingang;
     }
-    
+
     public void setZahlungseingang(final Date zahlungseingang) {
         this.zahlungseingang = zahlungseingang;
     }
-    
+
     public String getWaehrung() {
         return waehrung;
     }
-    
+
     public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
-    
+
     public boolean isStorniert() {
         return storniert;
     }
-    
+
     public void setStorniert(final boolean storniert) {
         this.storniert = storniert;
     }
-    
+
 }
